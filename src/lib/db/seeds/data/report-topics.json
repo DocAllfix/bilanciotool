@@ -1,0 +1,110 @@
+[
+ {
+  "id": "T01",
+  "p": "E",
+  "n": "Cambiamento climatico ed emissioni",
+  "r": "ESRS E1 · GRI 305"
+ },
+ {
+  "id": "T02",
+  "p": "E",
+  "n": "Energia ed efficienza energetica",
+  "r": "ESRS E1 · GRI 302"
+ },
+ {
+  "id": "T03",
+  "p": "E",
+  "n": "Inquinamento di aria, acqua e suolo",
+  "r": "ESRS E2 · GRI 305"
+ },
+ {
+  "id": "T04",
+  "p": "E",
+  "n": "Risorse idriche",
+  "r": "ESRS E3 · GRI 303"
+ },
+ {
+  "id": "T05",
+  "p": "E",
+  "n": "Biodiversità ed ecosistemi",
+  "r": "ESRS E4 · GRI 304"
+ },
+ {
+  "id": "T06",
+  "p": "E",
+  "n": "Economia circolare e rifiuti",
+  "r": "ESRS E5 · GRI 306"
+ },
+ {
+  "id": "T07",
+  "p": "S",
+  "n": "Salute e sicurezza sul lavoro",
+  "r": "ESRS S1 · GRI 403"
+ },
+ {
+  "id": "T08",
+  "p": "S",
+  "n": "Condizioni di lavoro e welfare",
+  "r": "ESRS S1 · GRI 401"
+ },
+ {
+  "id": "T09",
+  "p": "S",
+  "n": "Diversità, equità e inclusione",
+  "r": "ESRS S1 · GRI 405-406"
+ },
+ {
+  "id": "T10",
+  "p": "S",
+  "n": "Formazione e sviluppo delle competenze",
+  "r": "ESRS S1 · GRI 404"
+ },
+ {
+  "id": "T11",
+  "p": "S",
+  "n": "Diritti umani nella catena del valore",
+  "r": "ESRS S2 · GRI 414"
+ },
+ {
+  "id": "T12",
+  "p": "S",
+  "n": "Comunità locali e territorio",
+  "r": "ESRS S3 · GRI 413"
+ },
+ {
+  "id": "T13",
+  "p": "S",
+  "n": "Qualità e sicurezza di prodotti e servizi",
+  "r": "ESRS S4 · GRI 416"
+ },
+ {
+  "id": "T14",
+  "p": "G",
+  "n": "Etica di impresa e anticorruzione",
+  "r": "ESRS G1 · GRI 205"
+ },
+ {
+  "id": "T15",
+  "p": "G",
+  "n": "Governance e sistema di controllo",
+  "r": "ESRS 2 GOV · GRI 2"
+ },
+ {
+  "id": "T16",
+  "p": "G",
+  "n": "Gestione responsabile dei fornitori",
+  "r": "ESRS G1-2 · GRI 204"
+ },
+ {
+  "id": "T17",
+  "p": "G",
+  "n": "Sicurezza delle informazioni e dati",
+  "r": "ESRS G1 · GRI 418"
+ },
+ {
+  "id": "T18",
+  "p": "G",
+  "n": "Innovazione e trasformazione digitale",
+  "r": "ESRS 2 SBM-1"
+ }
+]

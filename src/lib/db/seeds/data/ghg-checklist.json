@@ -1,0 +1,92 @@
+[
+ {
+  "id": "v1",
+  "c": "§5.1",
+  "n": "Confini organizzativi definiti e documentati",
+  "d": "L'approccio di consolidamento è dichiarato e applicato in modo coerente a tutte le unità."
+ },
+ {
+  "id": "v2",
+  "c": "§5.2",
+  "n": "Confini di rendicontazione definiti",
+  "d": "Le sei categorie sono state esaminate una per una; per ciascuna è documentata l'inclusione o l'esclusione."
+ },
+ {
+  "id": "v3",
+  "c": "§5.2.4",
+  "n": "Criteri di significatività dichiarati",
+  "d": "È spiegato come sono state individuate le emissioni indirette significative."
+ },
+ {
+  "id": "v4",
+  "c": "§6.1",
+  "n": "Sorgenti e assorbimenti identificati",
+  "d": "Il registro delle sorgenti copre tutti i siti e tutte le attività del perimetro."
+ },
+ {
+  "id": "v5",
+  "c": "§6.2",
+  "n": "Metodologia di quantificazione selezionata e motivata",
+  "d": "Per ogni sorgente è chiaro se si usa il metodo per dati di attività, per bilancio di massa o per misura diretta."
+ },
+ {
+  "id": "v6",
+  "c": "§6.3",
+  "n": "Dati di attività raccolti con evidenza tracciabile",
+  "d": "Ogni voce rinvia a un documento di origine reperibile in caso di verifica."
+ },
+ {
+  "id": "v7",
+  "c": "§6.4",
+  "n": "Fattori di emissione e GWP documentati",
+  "d": "Fonte, anno di pubblicazione e ambito di validità di ogni fattore sono registrati."
+ },
+ {
+  "id": "v8",
+  "c": "§6.4.2",
+  "n": "Doppia rendicontazione della categoria 2",
+  "d": "Sono riportati sia il dato location-based sia il dato market-based, con evidenza dei contratti."
+ },
+ {
+  "id": "v9",
+  "c": "§6.5",
+  "n": "CO2 biogenica rendicontata separatamente",
+  "d": "La CO2 da combustione di biomassa è esclusa dai totali e indicata a parte."
+ },
+ {
+  "id": "v10",
+  "c": "§7.2",
+  "n": "Anno base fissato e giustificato",
+  "d": "L'anno base è rappresentativo e i dati sono verificabili."
+ },
+ {
+  "id": "v11",
+  "c": "§7.3",
+  "n": "Procedura di ricalcolo dell'anno base definita",
+  "d": "Sono fissate le soglie e i casi che impongono il ricalcolo (variazioni societarie, di metodo, errori)."
+ },
+ {
+  "id": "v12",
+  "c": "§8.2",
+  "n": "Valutazione dell'incertezza effettuata",
+  "d": "L'incertezza è stimata almeno in termini qualitativi per le categorie rilevanti."
+ },
+ {
+  "id": "v13",
+  "c": "§8.3",
+  "n": "Sistema di gestione delle informazioni GHG attivo",
+  "d": "Ruoli, responsabilità, controlli e archiviazione dei dati sono definiti per iscritto."
+ },
+ {
+  "id": "v14",
+  "c": "§9.3",
+  "n": "Report GHG completo rispetto ai contenuti minimi",
+  "d": "Il rapporto contiene tutti gli elementi richiesti dal punto 9.3.1."
+ },
+ {
+  "id": "v15",
+  "c": "ISO 14064-3",
+  "n": "Preparazione alla verifica di parte terza",
+  "d": "Livello di garanzia, materialità e criteri sono concordati con l'ente di verifica."
+ }
+]

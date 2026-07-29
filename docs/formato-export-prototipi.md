@@ -33,7 +33,7 @@ L'import del prototipo riconosce entrambe (`d.org && Array.isArray(d.org)` oppur
   },
   "fe": [FattoreEmissione],    // copia per-org della libreria (~60 voci + custom)
   "voci": [Voce],
-  "sorgenti": { "<srcId>": { "st": "in|out|na", "note": "string" } },  // 26 chiavi possibili: 1a..6c
+  "sorgenti": { "<srcId>": { "st": "in|out|na", "note": "string" } },  // 25 chiavi possibili: 1a..6c (4+2+5+7+4+3)
   "anni": { "<anno>": { "ricavi": "", "fte": "", "prod": "", "umProd": "", "superficie": "", "note": "" } },
   "obiettivi": [ { "id": "B_____", "n": "string", "ambito": "1|2|12|3|tot", "anno": "2030", "rid": "30", "note": "" } ],
   "verifica": { "<verId v1..v15>": { "st": "ok|par|no", "note": "" } },

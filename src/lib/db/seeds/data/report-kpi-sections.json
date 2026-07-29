@@ -1,0 +1,50 @@
+[
+ {
+  "id": "ene",
+  "n": "Energia",
+  "r": "ESRS E1-5 · GRI 302-1",
+  "c": "E"
+ },
+ {
+  "id": "acq",
+  "n": "Acqua",
+  "r": "ESRS E3-4 · GRI 303-3",
+  "c": "E"
+ },
+ {
+  "id": "rif",
+  "n": "Rifiuti e materiali",
+  "r": "ESRS E5-4/5 · GRI 306-3",
+  "c": "E"
+ },
+ {
+  "id": "per",
+  "n": "Persone",
+  "r": "ESRS S1-6/9 · GRI 2-7, 405-1",
+  "c": "S"
+ },
+ {
+  "id": "sic",
+  "n": "Salute e sicurezza",
+  "r": "ESRS S1-14 · GRI 403-9",
+  "c": "S"
+ },
+ {
+  "id": "for",
+  "n": "Formazione e retribuzioni",
+  "r": "ESRS S1-13/16 · GRI 404-1, 405-2",
+  "c": "S"
+ },
+ {
+  "id": "eco",
+  "n": "Valore economico e fornitori",
+  "r": "ESRS G1-6 · GRI 201-1, 204-1",
+  "c": "G"
+ },
+ {
+  "id": "gov",
+  "n": "Governance ed etica",
+  "r": "ESRS G1-3/4 · GRI 205-3",
+  "c": "G"
+ }
+]

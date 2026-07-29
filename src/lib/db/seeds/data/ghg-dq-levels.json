@@ -1,0 +1,37 @@
+[
+ {
+  "id": "M",
+  "n": "Misurato",
+  "d": "Lettura diretta da contatore, telemetria, sistema di misura tarato.",
+  "inc": 2,
+  "p": 5
+ },
+ {
+  "id": "F",
+  "n": "Documentale",
+  "d": "Fattura, bolla, registro contabile, DDT.",
+  "inc": 5,
+  "p": 4
+ },
+ {
+  "id": "C",
+  "n": "Calcolato",
+  "d": "Ricavato da altri dati con una relazione documentata.",
+  "inc": 10,
+  "p": 3
+ },
+ {
+  "id": "E",
+  "n": "Estrapolato",
+  "d": "Proiezione da periodi parziali o da un campione.",
+  "inc": 20,
+  "p": 2
+ },
+ {
+  "id": "S",
+  "n": "Stimato",
+  "d": "Ipotesi, medie di settore, proxy monetari.",
+  "inc": 30,
+  "p": 1
+ }
+]

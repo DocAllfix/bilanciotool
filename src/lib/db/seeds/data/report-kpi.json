@@ -1,0 +1,299 @@
+[
+ {
+  "k": "en_ele",
+  "s": "ene",
+  "n": "Energia elettrica prelevata dalla rete",
+  "u": "kWh"
+ },
+ {
+  "k": "en_ele_go",
+  "s": "ene",
+  "n": "di cui coperta da garanzie d'origine",
+  "u": "kWh"
+ },
+ {
+  "k": "en_auto",
+  "s": "ene",
+  "n": "Energia elettrica autoprodotta e consumata",
+  "u": "kWh",
+  "h": "Fotovoltaico o altro impianto proprio"
+ },
+ {
+  "k": "en_gas",
+  "s": "ene",
+  "n": "Gas naturale",
+  "u": "Smc"
+ },
+ {
+  "k": "en_gasolio",
+  "s": "ene",
+  "n": "Gasolio per riscaldamento e generatori",
+  "u": "litri"
+ },
+ {
+  "k": "en_flotta_d",
+  "s": "ene",
+  "n": "Gasolio autotrazione (flotta aziendale)",
+  "u": "litri"
+ },
+ {
+  "k": "en_flotta_b",
+  "s": "ene",
+  "n": "Benzina autotrazione (flotta aziendale)",
+  "u": "litri"
+ },
+ {
+  "k": "en_gpl",
+  "s": "ene",
+  "n": "GPL",
+  "u": "kg"
+ },
+ {
+  "k": "ac_prel",
+  "s": "acq",
+  "n": "Prelievo idrico totale",
+  "u": "m³"
+ },
+ {
+  "k": "ac_pozzo",
+  "s": "acq",
+  "n": "di cui da pozzo o acque superficiali",
+  "u": "m³"
+ },
+ {
+  "k": "ac_scar",
+  "s": "acq",
+  "n": "Scarichi idrici",
+  "u": "m³"
+ },
+ {
+  "k": "ri_np",
+  "s": "rif",
+  "n": "Rifiuti non pericolosi prodotti",
+  "u": "t"
+ },
+ {
+  "k": "ri_p",
+  "s": "rif",
+  "n": "Rifiuti pericolosi prodotti",
+  "u": "t"
+ },
+ {
+  "k": "ri_rec",
+  "s": "rif",
+  "n": "Rifiuti avviati a recupero o riciclo",
+  "u": "t"
+ },
+ {
+  "k": "ma_tot",
+  "s": "rif",
+  "n": "Materie prime e materiali impiegati",
+  "u": "t"
+ },
+ {
+  "k": "ma_ric",
+  "s": "rif",
+  "n": "di cui riciclati o di recupero",
+  "u": "t"
+ },
+ {
+  "k": "hr_tot",
+  "s": "per",
+  "n": "Dipendenti al 31/12",
+  "u": "n."
+ },
+ {
+  "k": "hr_don",
+  "s": "per",
+  "n": "di cui donne",
+  "u": "n."
+ },
+ {
+  "k": "hr_ind",
+  "s": "per",
+  "n": "di cui a tempo indeterminato",
+  "u": "n."
+ },
+ {
+  "k": "hr_pt",
+  "s": "per",
+  "n": "di cui a tempo parziale",
+  "u": "n."
+ },
+ {
+  "k": "hr_u30",
+  "s": "per",
+  "n": "di cui under 30",
+  "u": "n."
+ },
+ {
+  "k": "hr_o50",
+  "s": "per",
+  "n": "di cui over 50",
+  "u": "n."
+ },
+ {
+  "k": "hr_ass",
+  "s": "per",
+  "n": "Assunzioni nell'esercizio",
+  "u": "n."
+ },
+ {
+  "k": "hr_ces",
+  "s": "per",
+  "n": "Cessazioni nell'esercizio",
+  "u": "n."
+ },
+ {
+  "k": "hr_dis",
+  "s": "per",
+  "n": "Lavoratori con disabilità",
+  "u": "n."
+ },
+ {
+  "k": "hr_est",
+  "s": "per",
+  "n": "Collaboratori esterni e somministrati",
+  "u": "n."
+ },
+ {
+  "k": "si_ore",
+  "s": "sic",
+  "n": "Ore lavorate nell'esercizio",
+  "u": "ore",
+  "h": "Base di calcolo degli indici infortunistici"
+ },
+ {
+  "k": "si_inf",
+  "s": "sic",
+  "n": "Infortuni registrabili (esclusi in itinere)",
+  "u": "n."
+ },
+ {
+  "k": "si_gra",
+  "s": "sic",
+  "n": "di cui con conseguenze gravi (>180 gg)",
+  "u": "n."
+ },
+ {
+  "k": "si_gg",
+  "s": "sic",
+  "n": "Giorni di assenza per infortunio",
+  "u": "gg"
+ },
+ {
+  "k": "si_nm",
+  "s": "sic",
+  "n": "Mancati infortuni segnalati",
+  "u": "n."
+ },
+ {
+  "k": "si_mal",
+  "s": "sic",
+  "n": "Malattie professionali riconosciute",
+  "u": "n."
+ },
+ {
+  "k": "fo_ore",
+  "s": "for",
+  "n": "Ore di formazione erogate",
+  "u": "ore"
+ },
+ {
+  "k": "fo_sic",
+  "s": "for",
+  "n": "di cui su salute e sicurezza",
+  "u": "ore"
+ },
+ {
+  "k": "fo_eti",
+  "s": "for",
+  "n": "di cui su etica, 231 e anticorruzione",
+  "u": "ore"
+ },
+ {
+  "k": "re_don",
+  "s": "for",
+  "n": "Retribuzione lorda media donne",
+  "u": "€"
+ },
+ {
+  "k": "re_uom",
+  "s": "for",
+  "n": "Retribuzione lorda media uomini",
+  "u": "€"
+ },
+ {
+  "k": "ec_ric",
+  "s": "eco",
+  "n": "Ricavi delle vendite e prestazioni",
+  "u": "€"
+ },
+ {
+  "k": "ec_van",
+  "s": "eco",
+  "n": "Valore economico distribuito",
+  "u": "€",
+  "h": "Fornitori, personale, finanziatori, PA, comunità"
+ },
+ {
+  "k": "ec_inv",
+  "s": "eco",
+  "n": "Investimenti in ambiente e sicurezza",
+  "u": "€"
+ },
+ {
+  "k": "ec_for",
+  "s": "eco",
+  "n": "Fornitori attivi",
+  "u": "n."
+ },
+ {
+  "k": "ec_loc",
+  "s": "eco",
+  "n": "di cui con sede in Italia",
+  "u": "n."
+ },
+ {
+  "k": "ec_pag",
+  "s": "eco",
+  "n": "Tempo medio di pagamento fornitori",
+  "u": "gg"
+ },
+ {
+  "k": "go_cda",
+  "s": "gov",
+  "n": "Componenti dell'organo amministrativo",
+  "u": "n."
+ },
+ {
+  "k": "go_cdad",
+  "s": "gov",
+  "n": "di cui donne",
+  "u": "n."
+ },
+ {
+  "k": "go_seg",
+  "s": "gov",
+  "n": "Segnalazioni ricevute (whistleblowing)",
+  "u": "n."
+ },
+ {
+  "k": "go_cor",
+  "s": "gov",
+  "n": "Episodi di corruzione accertati",
+  "u": "n."
+ },
+ {
+  "k": "go_san",
+  "s": "gov",
+  "n": "Sanzioni per non conformità (ambiente, lavoro, privacy)",
+  "u": "n."
+ },
+ {
+  "k": "go_forq",
+  "s": "gov",
+  "n": "Fornitori valutati su criteri ESG",
+  "u": "n."
+ }
+]

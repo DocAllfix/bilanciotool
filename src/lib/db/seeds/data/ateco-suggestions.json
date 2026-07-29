@@ -1,0 +1,68 @@
+[
+ {
+  "macro": "C",
+  "descrizione": "Attività manifatturiere",
+  "punteggi": {
+   "T01": { "imp": 4, "fin": 3 }, "T02": { "imp": 4, "fin": 4 }, "T03": { "imp": 3, "fin": 3 },
+   "T06": { "imp": 4, "fin": 3 }, "T07": { "imp": 4, "fin": 4 }, "T10": { "imp": 3, "fin": 3 },
+   "T13": { "imp": 4, "fin": 4 }, "T16": { "imp": 3, "fin": 3 }
+  }
+ },
+ {
+  "macro": "F",
+  "descrizione": "Costruzioni",
+  "punteggi": {
+   "T01": { "imp": 3, "fin": 3 }, "T05": { "imp": 3, "fin": 2 }, "T06": { "imp": 4, "fin": 3 },
+   "T07": { "imp": 5, "fin": 5 }, "T08": { "imp": 3, "fin": 3 }, "T11": { "imp": 3, "fin": 3 },
+   "T14": { "imp": 3, "fin": 4 }
+  }
+ },
+ {
+  "macro": "G",
+  "descrizione": "Commercio all'ingrosso e al dettaglio",
+  "punteggi": {
+   "T01": { "imp": 2, "fin": 2 }, "T06": { "imp": 3, "fin": 3 }, "T08": { "imp": 3, "fin": 3 },
+   "T13": { "imp": 3, "fin": 4 }, "T16": { "imp": 4, "fin": 4 }, "T17": { "imp": 3, "fin": 3 }
+  }
+ },
+ {
+  "macro": "H",
+  "descrizione": "Trasporto e magazzinaggio",
+  "punteggi": {
+   "T01": { "imp": 5, "fin": 4 }, "T02": { "imp": 4, "fin": 4 }, "T07": { "imp": 4, "fin": 4 },
+   "T08": { "imp": 3, "fin": 3 }, "T12": { "imp": 3, "fin": 2 }
+  }
+ },
+ {
+  "macro": "I",
+  "descrizione": "Alloggio e ristorazione",
+  "punteggi": {
+   "T02": { "imp": 3, "fin": 3 }, "T04": { "imp": 3, "fin": 2 }, "T06": { "imp": 3, "fin": 3 },
+   "T08": { "imp": 4, "fin": 4 }, "T12": { "imp": 3, "fin": 3 }, "T13": { "imp": 4, "fin": 4 }
+  }
+ },
+ {
+  "macro": "J",
+  "descrizione": "Servizi di informazione e comunicazione",
+  "punteggi": {
+   "T02": { "imp": 2, "fin": 2 }, "T08": { "imp": 3, "fin": 4 }, "T10": { "imp": 4, "fin": 4 },
+   "T17": { "imp": 5, "fin": 5 }, "T18": { "imp": 4, "fin": 4 }
+  }
+ },
+ {
+  "macro": "A",
+  "descrizione": "Agricoltura, silvicoltura e pesca",
+  "punteggi": {
+   "T01": { "imp": 3, "fin": 3 }, "T04": { "imp": 4, "fin": 4 }, "T05": { "imp": 4, "fin": 3 },
+   "T06": { "imp": 3, "fin": 2 }, "T07": { "imp": 4, "fin": 4 }, "T11": { "imp": 3, "fin": 3 }
+  }
+ },
+ {
+  "macro": "M",
+  "descrizione": "Attività professionali, scientifiche e tecniche",
+  "punteggi": {
+   "T08": { "imp": 3, "fin": 4 }, "T09": { "imp": 3, "fin": 3 }, "T10": { "imp": 4, "fin": 4 },
+   "T14": { "imp": 3, "fin": 4 }, "T17": { "imp": 4, "fin": 4 }
+  }
+ }
+]

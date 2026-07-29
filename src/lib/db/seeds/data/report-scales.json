@@ -1,0 +1,56 @@
+{
+ "imp": [
+  {
+   "v": 1,
+   "n": "Trascurabile",
+   "d": "L'attività non incide in modo apprezzabile su persone o ambiente."
+  },
+  {
+   "v": 2,
+   "n": "Lieve",
+   "d": "Effetti limitati, reversibili, circoscritti a un sito o a poche persone."
+  },
+  {
+   "v": 3,
+   "n": "Moderato",
+   "d": "Effetti apprezzabili su un numero significativo di soggetti o risorse, gestibili con misure ordinarie."
+  },
+  {
+   "v": 4,
+   "n": "Rilevante",
+   "d": "Effetti estesi o difficilmente reversibili, oppure che toccano diritti delle persone."
+  },
+  {
+   "v": 5,
+   "n": "Molto rilevante",
+   "d": "Effetti gravi, diffusi o irreversibili, o violazione di diritti fondamentali."
+  }
+ ],
+ "fin": [
+  {
+   "v": 1,
+   "n": "Nessun effetto",
+   "d": "Non produce conseguenze economiche apprezzabili."
+  },
+  {
+   "v": 2,
+   "n": "Marginale",
+   "d": "Incide su costi o ricavi in misura contenuta."
+  },
+  {
+   "v": 3,
+   "n": "Apprezzabile",
+   "d": "Incide su costi, investimenti necessari o accesso a determinati mercati."
+  },
+  {
+   "v": 4,
+   "n": "Rilevante",
+   "d": "Può incidere sulla marginalità, sui requisiti richiesti dai clienti o sull'accesso al credito."
+  },
+  {
+   "v": 5,
+   "n": "Critico",
+   "d": "Mette a rischio la continuità, la licenza a operare o commesse determinanti."
+  }
+ ]
+}

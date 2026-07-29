@@ -1,0 +1,37 @@
+[
+ {
+  "id": "lettera",
+  "n": "Lettera agli stakeholder",
+  "h": "Perché l'azienda pubblica questo bilancio, cosa è successo nell'anno, quale impegno assume."
+ },
+ {
+  "id": "identita",
+  "n": "Identità e storia",
+  "h": "Chi siete, da quando, dove operate, cosa producete e per quali mercati."
+ },
+ {
+  "id": "business",
+  "n": "Modello di business",
+  "h": "Come si genera valore: input, attività, prodotti, clienti serviti."
+ },
+ {
+  "id": "catena",
+  "n": "Catena del valore",
+  "h": "A monte i fornitori e le materie, a valle i clienti e il fine vita del prodotto."
+ },
+ {
+  "id": "stake",
+  "n": "Coinvolgimento degli stakeholder",
+  "h": "Chi sono, come sono stati ascoltati, cosa è emerso."
+ },
+ {
+  "id": "metodo",
+  "n": "Nota metodologica",
+  "h": "Perimetro, periodo, standard adottati, criteri di calcolo, eventuali esclusioni."
+ },
+ {
+  "id": "impegni",
+  "n": "Impegni per il futuro",
+  "h": "Dove volete arrivare nel prossimo triennio."
+ }
+]

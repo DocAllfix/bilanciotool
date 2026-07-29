@@ -1,0 +1,272 @@
+{
+ "T01": {
+  "def": "Emissioni di gas serra generate dall'attività e contributo al riscaldamento globale, insieme all'esposizione dell'azienda ai rischi fisici e di transizione.",
+  "imp": [
+   "Volume delle emissioni Scope 1 e 2 rispetto alle dimensioni aziendali",
+   "Intensità energetica dei processi produttivi",
+   "Presenza di combustione diretta: forni, caldaie, generatori, flotta propria"
+  ],
+  "fin": [
+   "Peso di energia e combustibili sul conto economico",
+   "Richieste di dati sulle emissioni da parte di clienti, banche e assicurazioni",
+   "Esposizione a ETS, CBAM o incentivi condizionati a obiettivi climatici"
+  ],
+  "alto": "Alza a 4-5 se i processi sono energivori, se hai forni o flotta pesante, o se un cliente ti ha già chiesto la carbon footprint.",
+  "ev": "Bollette, diagnosi energetica, libretti d'impianto, dati di rifornimento carburante."
+ },
+ "T02": {
+  "def": "Quantità e composizione dell'energia consumata, efficienza degli impianti, quota coperta da fonti rinnovabili.",
+  "imp": [
+   "Consumo assoluto in rapporto alle dimensioni dell'azienda",
+   "Quota ancora coperta da fonti fossili",
+   "Sprechi noti su impianti obsoleti o mai revisionati"
+  ],
+  "fin": [
+   "Incidenza della bolletta sui costi totali",
+   "Esposizione alla volatilità dei prezzi dell'energia",
+   "Ritorno atteso degli investimenti in efficienza e autoproduzione"
+  ],
+  "alto": "Alza a 4-5 se l'energia supera il 5% dei costi o se gli impianti hanno più di quindici anni.",
+  "ev": "Bollette, diagnosi energetica ex D.Lgs. 102/2014, registri di manutenzione, dati di produzione fotovoltaica."
+ },
+ "T03": {
+  "def": "Emissioni in atmosfera, scarichi idrici, contaminazione di suolo e sottosuolo, rumore verso l'esterno.",
+  "imp": [
+   "Presenza di emissioni convogliate o diffuse",
+   "Uso di solventi, vernici, acidi, oli o altre sostanze pericolose",
+   "Vicinanza a ricettori sensibili: abitazioni, scuole, corsi d'acqua"
+  ],
+  "fin": [
+   "Costi di autorizzazione, monitoraggio e manutenzione degli abbattitori",
+   "Rischio sanzionatorio e di sospensione dell'attività",
+   "Oneri potenziali di bonifica"
+  ],
+  "alto": "Alza a 4-5 se l'attività è soggetta ad AIA o se ci sono già stati superamenti dei limiti.",
+  "ev": "AUA o AIA, analisi delle emissioni, autorizzazioni allo scarico, verbali ARPA."
+ },
+ "T04": {
+  "def": "Prelievi, consumi e scarichi idrici, con attenzione particolare alle aree soggette a stress idrico.",
+  "imp": [
+   "Volumi prelevati e loro peso sul contesto locale",
+   "Ruolo dell'acqua nel processo produttivo",
+   "Localizzazione in aree a scarsità idrica"
+  ],
+  "fin": [
+   "Costo dell'acqua e della depurazione",
+   "Rischio di limitazioni o razionamenti del prelievo",
+   "Investimenti necessari per il ricircolo"
+  ],
+  "alto": "Alza a 4-5 se il processo usa acqua in modo intensivo (lavaggi, raffreddamento, trattamenti superficiali) o se prelevi da pozzo in zona critica.",
+  "ev": "Fatture idriche, letture del contatore di pozzo, autorizzazione allo scarico, analisi reflui."
+ },
+ "T05": {
+  "def": "Effetti dell'attività su habitat, specie e servizi ecosistemici, diretti o attraverso l'approvvigionamento.",
+  "imp": [
+   "Consumo di suolo e impermeabilizzazione",
+   "Prossimità ad aree protette o siti Natura 2000",
+   "Approvvigionamento di materie di origine agricola o forestale"
+  ],
+  "fin": [
+   "Vincoli autorizzativi in caso di ampliamento",
+   "Obblighi su deforestazione (EUDR) per alcune filiere",
+   "Requisiti di certificazione richiesti dai clienti"
+  ],
+  "alto": "Alza a 4-5 se il sito ricade in area vincolata o se acquisti legno, carta, gomma, soia o derivati.",
+  "ev": "Visure catastali, vincoli urbanistici, certificazioni di filiera dei fornitori."
+ },
+ "T06": {
+  "def": "Quantità e destino dei rifiuti prodotti, impiego di materiali riciclati, durabilità e riciclabilità dei prodotti.",
+  "imp": [
+   "Volumi di rifiuti e quota che finisce a smaltimento anziché a recupero",
+   "Scarti di lavorazione rispetto al materiale in ingresso",
+   "Imballaggi immessi al consumo"
+  ],
+  "fin": [
+   "Costo dello smaltimento, in crescita per i rifiuti pericolosi",
+   "Valore economico recuperabile dagli scarti",
+   "Obblighi su imballaggi e responsabilità estesa del produttore"
+  ],
+  "alto": "Alza a 4-5 se gli scarti superano il 10% del materiale in ingresso o se produci quantità significative di rifiuti pericolosi.",
+  "ev": "MUD, formulari, registro di carico e scarico, contratti con i recuperatori."
+ },
+ "T07": {
+  "def": "Tutela dell'integrità fisica e della salute di lavoratori, appaltatori e visitatori.",
+  "imp": [
+   "Pericolosità intrinseca delle lavorazioni",
+   "Storico infortunistico degli ultimi tre anni",
+   "Presenza di appalti, lavoro in quota, spazi confinati, movimentazione di carichi"
+  ],
+  "fin": [
+   "Premio INAIL e oscillazione per andamento infortunistico",
+   "Costi di fermo, sostituzione e contenzioso",
+   "Responsabilità 231 e possibile sospensione dell'attività"
+  ],
+  "alto": "Per la quasi totalità delle imprese manifatturiere e di costruzioni questo tema è materiale: se lo escludi, la motivazione va scritta nella nota metodologica.",
+  "ev": "DVR, registro infortuni, verbali di ispezione, attestati di formazione, nomine RSPP e RLS."
+ },
+ "T08": {
+  "def": "Stabilità contrattuale, retribuzioni, orari di lavoro, conciliazione vita-lavoro e welfare aziendale.",
+  "imp": [
+   "Quota di contratti a termine sul totale",
+   "Ricorso strutturale allo straordinario",
+   "Uso di somministrazione o appalti di manodopera"
+  ],
+  "fin": [
+   "Costo del turnover, della selezione e dell'addestramento",
+   "Capacità di trattenere competenze difficili da reperire",
+   "Clima aziendale e produttività"
+  ],
+  "alto": "Alza a 4-5 se il turnover supera il 15% o se fai fatica a trovare e trattenere personale qualificato.",
+  "ev": "Libro unico, contratti applicati, prospetto dell'organico, accordi sindacali, indagini di clima."
+ },
+ "T09": {
+  "def": "Pari opportunità, non discriminazione, inclusione di persone con disabilità, equilibrio di genere e generazionale.",
+  "imp": [
+   "Squilibri di genere nei ruoli e nelle retribuzioni",
+   "Rispetto degli obblighi sul collocamento mirato",
+   "Episodi o segnalazioni di discriminazione"
+  ],
+  "fin": [
+   "Requisiti nelle gare pubbliche e nei bandi PNRR",
+   "Accesso a premialità ed esonero contributivo legati alla certificazione di parità",
+   "Reputazione verso i candidati"
+  ],
+  "alto": "Alza a 4-5 se partecipi a gare pubbliche o se hai avviato un percorso UNI/PdR 125.",
+  "ev": "Prospetto informativo disabili, analisi retributiva per genere, organigramma, rapporto biennale sul personale."
+ },
+ "T10": {
+  "def": "Sviluppo professionale, aggiornamento tecnico e trasferimento di competenze tra generazioni.",
+  "imp": [
+   "Ore di formazione effettiva oltre quella obbligatoria",
+   "Esistenza di piani di crescita e affiancamento",
+   "Rischio di perdita di know-how"
+  ],
+  "fin": [
+   "Fabbisogno di competenze tecniche scarse sul mercato",
+   "Finanziamenti dai fondi interprofessionali",
+   "Effetto della competenza sulla produttività e sugli scarti"
+  ],
+  "alto": "Alza a 4-5 se stai attraversando una transizione tecnologica o se il know-how è concentrato su poche persone prossime alla pensione.",
+  "ev": "Registri di formazione, piani formativi, pratiche sui fondi interprofessionali, matrice delle competenze."
+ },
+ "T11": {
+  "def": "Rispetto dei diritti dei lavoratori presso fornitori e subappaltatori, compreso il divieto di lavoro forzato e minorile.",
+  "imp": [
+   "Approvvigionamento da paesi a rischio",
+   "Ricorso a subappalto e manodopera intermediata",
+   "Lunghezza e tracciabilità della filiera"
+  ],
+  "fin": [
+   "Rischio di esclusione dagli albi fornitori dei clienti",
+   "Obblighi di due diligence in arrivo con la direttiva CSDDD",
+   "Rischio reputazionale e responsabilità solidale negli appalti"
+  ],
+  "alto": "Alza a 4-5 se acquisti da paesi extra-UE a rischio o se usi in modo intensivo il subappalto.",
+  "ev": "Elenco fornitori per paese, contratti di subappalto, DURC e verifiche sugli appaltatori, certificazioni di filiera."
+ },
+ "T12": {
+  "def": "Relazione con il territorio in cui l'azienda opera: occupazione, indotto, disturbi generati, iniziative di sostegno.",
+  "imp": [
+   "Peso occupazionale dell'azienda sul territorio",
+   "Rumore, traffico pesante, polveri o odori percepiti dai residenti",
+   "Consumo di risorse condivise con la comunità"
+  ],
+  "fin": [
+   "Licenza sociale a operare",
+   "Rapporti con l'amministrazione per autorizzazioni e ampliamenti",
+   "Rischio di opposizioni a nuovi insediamenti"
+  ],
+  "alto": "Alza a 4-5 se lo stabilimento confina con zone residenziali o se hai già ricevuto esposti o segnalazioni.",
+  "ev": "Segnalazioni ricevute, verbali di incontro con enti locali, elenco delle iniziative sostenute."
+ },
+ "T13": {
+  "def": "Conformità, affidabilità e sicurezza dei prodotti o servizi immessi sul mercato.",
+  "imp": [
+   "Conseguenze di un difetto sull'utilizzatore finale",
+   "Criticità della destinazione d'uso",
+   "Reclami e non conformità registrate"
+  ],
+  "fin": [
+   "Costi della non qualità, richiami e contenzioso",
+   "Requisiti contrattuali, marcature e certificazioni obbligatorie",
+   "Perdita di clienti a seguito di difettosità"
+  ],
+  "alto": "Alza a 4-5 se fornisci settori regolamentati: alimentare, medicale, automotive, edilizia strutturale, ferroviario.",
+  "ev": "Registro non conformità, reclami clienti, fascicoli tecnici, certificazioni di prodotto, dichiarazioni di prestazione."
+ },
+ "T14": {
+  "def": "Correttezza nei rapporti d'affari, prevenzione della corruzione, delle frodi e delle pratiche anticoncorrenziali.",
+  "imp": [
+   "Esposizione nei rapporti con la pubblica amministrazione",
+   "Presenza di agenti, intermediari o procacciatori",
+   "Concentrazione di poteri di spesa senza controlli"
+  ],
+  "fin": [
+   "Responsabilità amministrativa ex D.Lgs. 231/2001, con sanzioni interdittive",
+   "Esclusione dagli appalti pubblici",
+   "Revoca di contributi ricevuti"
+  ],
+  "alto": "Alza a 4-5 se lavori con la pubblica amministrazione, se hai ricevuto contributi pubblici o se operi tramite agenti su mercati esteri.",
+  "ev": "Modello 231, codice etico, sistema di deleghe e procure, procedura whistleblowing, registro omaggi."
+ },
+ "T15": {
+  "def": "Assetto degli organi sociali, deleghe, controlli interni, gestione dei conflitti di interesse e continuità aziendale.",
+  "imp": [
+   "Chiarezza nell'attribuzione delle responsabilità",
+   "Presenza di organi o funzioni di controllo",
+   "Concentrazione delle decisioni su una sola persona"
+  ],
+  "fin": [
+   "Accesso al credito e valutazione bancaria",
+   "Capacità di attrarre soci, investitori o partner",
+   "Continuità in caso di passaggio generazionale o assenza improvvisa"
+  ],
+  "alto": "Alza a 4-5 se le deleghe non sono formalizzate o se è in corso un passaggio generazionale.",
+  "ev": "Visura camerale, statuto, verbali assembleari, organigramma, deleghe e procure."
+ },
+ "T16": {
+  "def": "Criteri di selezione, qualifica e monitoraggio dei fornitori, inclusi quelli di natura ambientale e sociale.",
+  "imp": [
+   "Peso degli acquisti sul valore complessivamente prodotto",
+   "Capacità effettiva di influenzare le pratiche dei fornitori",
+   "Concentrazione su pochi fornitori critici"
+  ],
+  "fin": [
+   "Continuità e affidabilità delle forniture",
+   "Richieste dei clienti sulla tracciabilità della filiera",
+   "Adeguamento agli obblighi di due diligence"
+  ],
+  "alto": "Alza a 4-5 se gli acquisti superano metà dei costi o se un cliente ti ha già chiesto conto dei tuoi fornitori.",
+  "ev": "Albo fornitori, procedura di qualifica, contratti e condizioni generali, questionari inviati ai fornitori."
+ },
+ "T17": {
+  "def": "Protezione dei dati aziendali e personali, continuità operativa dei sistemi informatici.",
+  "imp": [
+   "Trattamento di dati personali di lavoratori, clienti e fornitori",
+   "Conseguenze di una violazione per gli interessati",
+   "Dipendenza dei processi produttivi dai sistemi informatici"
+  ],
+  "fin": [
+   "Costo di un fermo dei sistemi, anche di pochi giorni",
+   "Sanzioni GDPR e obblighi di notifica",
+   "Requisiti contrattuali dei clienti e obblighi NIS2 per alcune filiere"
+  ],
+  "alto": "Alza a 4-5 se la produzione dipende da sistemi informatici o se fornisci soggetti rientranti nel perimetro NIS2.",
+  "ev": "Registro dei trattamenti, valutazioni d'impatto, procedure di backup, registro degli incidenti, contratti con i fornitori IT."
+ },
+ "T18": {
+  "def": "Capacità di rinnovare prodotti, processi e modelli organizzativi, inclusa la transizione digitale.",
+  "imp": [
+   "Contributo dell'innovazione a soluzioni a minore impatto",
+   "Effetti dell'automazione sull'occupazione e sulle mansioni",
+   "Diffusione dei benefici lungo la filiera"
+  ],
+  "fin": [
+   "Tenuta competitiva nel medio periodo",
+   "Accesso a incentivi come Transizione 5.0 o credito d'imposta R&S",
+   "Dipendenza dal fatturato di un prodotto maturo"
+  ],
+  "alto": "Alza a 4-5 se operi in un settore a rapida evoluzione tecnologica o se gran parte del fatturato dipende da un prodotto ormai maturo.",
+  "ev": "Investimenti in ricerca e sviluppo, brevetti, piani di digitalizzazione, pratiche di agevolazione."
+ }
+}

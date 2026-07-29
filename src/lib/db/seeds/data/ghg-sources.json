@@ -1,0 +1,152 @@
+[
+ {
+  "id": "1a",
+  "c": "1",
+  "n": "Combustione fissa",
+  "d": "Caldaie, generatori di calore, gruppi elettrogeni, forni, cogeneratori."
+ },
+ {
+  "id": "1b",
+  "c": "1",
+  "n": "Combustione mobile",
+  "d": "Flotta aziendale: auto, furgoni, mezzi d'opera, carrelli elevatori."
+ },
+ {
+  "id": "1c",
+  "c": "1",
+  "n": "Emissioni fuggitive",
+  "d": "Ricariche di gas refrigerante di climatizzatori e impianti frigo, SF6, estintori a CO2."
+ },
+ {
+  "id": "1d",
+  "c": "1",
+  "n": "Emissioni di processo",
+  "d": "Reazioni chimiche o fisiche del processo produttivo non legate alla combustione."
+ },
+ {
+  "id": "2a",
+  "c": "2",
+  "n": "Energia elettrica acquistata",
+  "d": "Elettricità prelevata dalla rete e consumata nei siti del perimetro."
+ },
+ {
+  "id": "2b",
+  "c": "2",
+  "n": "Calore, vapore e freddo acquistati",
+  "d": "Teleriscaldamento, teleraffrescamento, vapore da terzi."
+ },
+ {
+  "id": "3a",
+  "c": "3",
+  "n": "Trasporto e distribuzione a monte",
+  "d": "Trasporto delle merci in ingresso affidato a terzi."
+ },
+ {
+  "id": "3b",
+  "c": "3",
+  "n": "Trasporto e distribuzione a valle",
+  "d": "Consegne ai clienti effettuate da vettori terzi."
+ },
+ {
+  "id": "3c",
+  "c": "3",
+  "n": "Spostamenti casa-lavoro",
+  "d": "Pendolarismo dei dipendenti, incluso il lavoro da remoto se rendicontato qui."
+ },
+ {
+  "id": "3d",
+  "c": "3",
+  "n": "Trasferte di lavoro",
+  "d": "Viaggi aerei, ferroviari, auto a noleggio e private, pernottamenti."
+ },
+ {
+  "id": "3e",
+  "c": "3",
+  "n": "Trasporto di clienti e visitatori",
+  "d": "Spostamenti generati dall'accesso di clienti o utenti alle sedi."
+ },
+ {
+  "id": "4a",
+  "c": "4",
+  "n": "Beni e materiali acquistati",
+  "d": "Materie prime, semilavorati, imballaggi, materiali di consumo."
+ },
+ {
+  "id": "4b",
+  "c": "4",
+  "n": "Servizi acquistati",
+  "d": "Consulenze, servizi IT e cloud, manutenzioni, mensa, pulizie."
+ },
+ {
+  "id": "4c",
+  "c": "4",
+  "n": "Beni strumentali",
+  "d": "Macchinari, veicoli, immobili, hardware acquistati nell'esercizio."
+ },
+ {
+  "id": "4d",
+  "c": "4",
+  "n": "Emissioni upstream dell'energia",
+  "d": "Estrazione, raffinazione e trasporto dei combustibili; perdite di rete elettrica."
+ },
+ {
+  "id": "4e",
+  "c": "4",
+  "n": "Rifiuti generati",
+  "d": "Rifiuti prodotti nei siti e avviati a smaltimento o recupero da terzi."
+ },
+ {
+  "id": "4f",
+  "c": "4",
+  "n": "Acqua e scarichi idrici",
+  "d": "Prelievo di acqua potabile e trattamento delle acque reflue."
+ },
+ {
+  "id": "4g",
+  "c": "4",
+  "n": "Asset in leasing a monte",
+  "d": "Beni presi in locazione non inclusi nei confini organizzativi."
+ },
+ {
+  "id": "5a",
+  "c": "5",
+  "n": "Uso dei prodotti venduti",
+  "d": "Energia o combustibili consumati dai prodotti durante la vita utile."
+ },
+ {
+  "id": "5b",
+  "c": "5",
+  "n": "Fine vita dei prodotti venduti",
+  "d": "Smaltimento o recupero dei prodotti e degli imballaggi immessi sul mercato."
+ },
+ {
+  "id": "5c",
+  "c": "5",
+  "n": "Trasformazione dei prodotti intermedi",
+  "d": "Lavorazioni effettuate dal cliente su semilavorati venduti."
+ },
+ {
+  "id": "5d",
+  "c": "5",
+  "n": "Asset dati in leasing a valle",
+  "d": "Beni di proprietà concessi in locazione a terzi."
+ },
+ {
+  "id": "6a",
+  "c": "6",
+  "n": "Investimenti",
+  "d": "Partecipazioni, quote di fondi, finanziamenti (emissioni finanziate)."
+ },
+ {
+  "id": "6b",
+  "c": "6",
+  "n": "Franchising",
+  "d": "Emissioni delle unità in franchising non consolidate."
+ },
+ {
+  "id": "6c",
+  "c": "6",
+  "n": "Altre emissioni indirette",
+  "d": "Ogni altra sorgente indiretta ritenuta significativa dall'organizzazione."
+ }
+]

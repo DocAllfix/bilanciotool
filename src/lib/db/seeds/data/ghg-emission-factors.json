@@ -1,0 +1,599 @@
+[
+ {
+  "id": "gas_smc",
+  "g": "Combustione fissa",
+  "n": "Gas naturale",
+  "um": "Smc",
+  "fe": 1.9755,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA/ISPRA"
+ },
+ {
+  "id": "gasolio_ris",
+  "g": "Combustione fissa",
+  "n": "Gasolio da riscaldamento",
+  "um": "litri",
+  "fe": 2.687,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA/ISPRA"
+ },
+ {
+  "id": "gpl_kg",
+  "g": "Combustione fissa",
+  "n": "GPL (massa)",
+  "um": "kg",
+  "fe": 2.984,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA/ISPRA"
+ },
+ {
+  "id": "olio_comb",
+  "g": "Combustione fissa",
+  "n": "Olio combustibile",
+  "um": "kg",
+  "fe": 3.177,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "pellet",
+  "g": "Combustione fissa",
+  "n": "Pellet di legno (quota non biogenica)",
+  "um": "kg",
+  "fe": 0.016,
+  "bio": 1.83,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "cippato",
+  "g": "Combustione fissa",
+  "n": "Cippato di legno (quota non biogenica)",
+  "um": "kg",
+  "fe": 0.015,
+  "bio": 1.56,
+  "cat": "1",
+  "src": "1a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "gasolio_auto",
+  "g": "Combustione mobile",
+  "n": "Gasolio per autotrazione",
+  "um": "litri",
+  "fe": 2.687,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA/ISPRA"
+ },
+ {
+  "id": "benzina_auto",
+  "g": "Combustione mobile",
+  "n": "Benzina",
+  "um": "litri",
+  "fe": 2.313,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA/ISPRA"
+ },
+ {
+  "id": "gpl_auto",
+  "g": "Combustione mobile",
+  "n": "GPL per autotrazione",
+  "um": "litri",
+  "fe": 1.557,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "metano_auto",
+  "g": "Combustione mobile",
+  "n": "Metano per autotrazione",
+  "um": "kg",
+  "fe": 2.697,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "km_auto_d",
+  "g": "Combustione mobile",
+  "n": "Auto aziendale diesel (percorrenza)",
+  "um": "km",
+  "fe": 0.17,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "km_auto_b",
+  "g": "Combustione mobile",
+  "n": "Auto aziendale benzina (percorrenza)",
+  "um": "km",
+  "fe": 0.165,
+  "cat": "1",
+  "src": "1b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "r410a",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R410A",
+  "um": "kg",
+  "fe": 2088,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "r134a",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R134a",
+  "um": "kg",
+  "fe": 1300,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "r404a",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R404A",
+  "um": "kg",
+  "fe": 3943,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "r407c",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R407C",
+  "um": "kg",
+  "fe": 1624,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "r32",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R32",
+  "um": "kg",
+  "fe": 677,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "r22",
+  "g": "Gas fuggitivi",
+  "n": "Refrigerante R22 (HCFC)",
+  "um": "kg",
+  "fe": 1760,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "sf6",
+  "g": "Gas fuggitivi",
+  "n": "SF6 (quadri elettrici)",
+  "um": "kg",
+  "fe": 23500,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC AR5"
+ },
+ {
+  "id": "co2_est",
+  "g": "Gas fuggitivi",
+  "n": "CO2 estintori e saldatura",
+  "um": "kg",
+  "fe": 1,
+  "cat": "1",
+  "src": "1c",
+  "f": "IPCC"
+ },
+ {
+  "id": "ee_loc",
+  "g": "Energia importata",
+  "n": "Energia elettrica — location-based Italia",
+  "um": "kWh",
+  "fe": 0.2565,
+  "mkt": 0.457,
+  "cat": "2",
+  "src": "2a",
+  "f": "ISPRA / AIB residual mix"
+ },
+ {
+  "id": "ee_go",
+  "g": "Energia importata",
+  "n": "Energia elettrica con Garanzia d'Origine",
+  "um": "kWh",
+  "fe": 0.2565,
+  "mkt": 0,
+  "cat": "2",
+  "src": "2a",
+  "f": "ISPRA / contratto GO"
+ },
+ {
+  "id": "teleris",
+  "g": "Energia importata",
+  "n": "Teleriscaldamento",
+  "um": "kWh",
+  "fe": 0.25,
+  "mkt": 0.25,
+  "cat": "2",
+  "src": "2b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "vapore",
+  "g": "Energia importata",
+  "n": "Vapore acquistato",
+  "um": "kWh",
+  "fe": 0.21,
+  "mkt": 0.21,
+  "cat": "2",
+  "src": "2b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "telefr",
+  "g": "Energia importata",
+  "n": "Teleraffrescamento",
+  "um": "kWh",
+  "fe": 0.08,
+  "mkt": 0.08,
+  "cat": "2",
+  "src": "2b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "tkm_gomma",
+  "g": "Trasporto merci",
+  "n": "Trasporto su gomma — articolato >17 t",
+  "um": "t·km",
+  "fe": 0.106,
+  "cat": "3",
+  "src": "3a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "tkm_furg",
+  "g": "Trasporto merci",
+  "n": "Trasporto su gomma — furgone",
+  "um": "t·km",
+  "fe": 0.6,
+  "cat": "3",
+  "src": "3a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "tkm_nave",
+  "g": "Trasporto merci",
+  "n": "Trasporto marittimo — container",
+  "um": "t·km",
+  "fe": 0.0161,
+  "cat": "3",
+  "src": "3a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "tkm_treno",
+  "g": "Trasporto merci",
+  "n": "Trasporto ferroviario merci",
+  "um": "t·km",
+  "fe": 0.028,
+  "cat": "3",
+  "src": "3a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "tkm_aereo",
+  "g": "Trasporto merci",
+  "n": "Trasporto aereo merci",
+  "um": "t·km",
+  "fe": 0.98,
+  "cat": "3",
+  "src": "3a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "corriere",
+  "g": "Trasporto merci",
+  "n": "Corriere espresso",
+  "um": "t·km",
+  "fe": 0.5,
+  "cat": "3",
+  "src": "3b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "pend_auto",
+  "g": "Persone",
+  "n": "Auto privata — media parco",
+  "um": "km",
+  "fe": 0.171,
+  "cat": "3",
+  "src": "3c",
+  "f": "DEFRA"
+ },
+ {
+  "id": "pend_moto",
+  "g": "Persone",
+  "n": "Motociclo",
+  "um": "km",
+  "fe": 0.114,
+  "cat": "3",
+  "src": "3c",
+  "f": "DEFRA"
+ },
+ {
+  "id": "pend_bus",
+  "g": "Persone",
+  "n": "Autobus urbano",
+  "um": "km",
+  "fe": 0.102,
+  "cat": "3",
+  "src": "3c",
+  "f": "DEFRA"
+ },
+ {
+  "id": "pend_treno",
+  "g": "Persone",
+  "n": "Treno regionale o nazionale",
+  "um": "km",
+  "fe": 0.035,
+  "cat": "3",
+  "src": "3c",
+  "f": "DEFRA"
+ },
+ {
+  "id": "aereo_corto",
+  "g": "Persone",
+  "n": "Aereo — tratta breve (<3.700 km)",
+  "um": "pax·km",
+  "fe": 0.158,
+  "cat": "3",
+  "src": "3d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "aereo_lungo",
+  "g": "Persone",
+  "n": "Aereo — tratta lunga (>3.700 km)",
+  "um": "pax·km",
+  "fe": 0.195,
+  "cat": "3",
+  "src": "3d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "hotel",
+  "g": "Persone",
+  "n": "Pernottamento in albergo (Italia)",
+  "um": "notti",
+  "fe": 20,
+  "cat": "3",
+  "src": "3d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "acciaio",
+  "g": "Materiali",
+  "n": "Acciaio",
+  "um": "kg",
+  "fe": 2.46,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "allum",
+  "g": "Materiali",
+  "n": "Alluminio primario",
+  "um": "kg",
+  "fe": 12.5,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "cemento",
+  "g": "Materiali",
+  "n": "Cemento",
+  "um": "kg",
+  "fe": 0.9,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "calcestr",
+  "g": "Materiali",
+  "n": "Calcestruzzo preconfezionato",
+  "um": "kg",
+  "fe": 0.13,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "plastica",
+  "g": "Materiali",
+  "n": "Materie plastiche (media)",
+  "um": "kg",
+  "fe": 3.1,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "carta",
+  "g": "Materiali",
+  "n": "Carta e cartone",
+  "um": "kg",
+  "fe": 0.919,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "vetro",
+  "g": "Materiali",
+  "n": "Vetro",
+  "um": "kg",
+  "fe": 1.4,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "legno_mat",
+  "g": "Materiali",
+  "n": "Legno e derivati",
+  "um": "kg",
+  "fe": 0.45,
+  "cat": "4",
+  "src": "4a",
+  "f": "DEFRA"
+ },
+ {
+  "id": "spesa",
+  "g": "Materiali",
+  "n": "Acquisti per spesa monetaria (metodo spend-based)",
+  "um": "€",
+  "fe": 0.3,
+  "cat": "4",
+  "src": "4b",
+  "f": "Input-output — stima"
+ },
+ {
+  "id": "wtt_ee",
+  "g": "Energia upstream",
+  "n": "Elettricità — WTT e perdite di rete",
+  "um": "kWh",
+  "fe": 0.085,
+  "cat": "4",
+  "src": "4d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "wtt_gas",
+  "g": "Energia upstream",
+  "n": "Gas naturale — WTT",
+  "um": "Smc",
+  "fe": 0.34,
+  "cat": "4",
+  "src": "4d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "wtt_gasolio",
+  "g": "Energia upstream",
+  "n": "Gasolio — WTT",
+  "um": "litri",
+  "fe": 0.61,
+  "cat": "4",
+  "src": "4d",
+  "f": "DEFRA"
+ },
+ {
+  "id": "rif_disc",
+  "g": "Rifiuti e acqua",
+  "n": "Rifiuti a discarica",
+  "um": "t",
+  "fe": 458,
+  "cat": "4",
+  "src": "4e",
+  "f": "DEFRA"
+ },
+ {
+  "id": "rif_ric",
+  "g": "Rifiuti e acqua",
+  "n": "Rifiuti a riciclo",
+  "um": "t",
+  "fe": 21.3,
+  "cat": "4",
+  "src": "4e",
+  "f": "DEFRA"
+ },
+ {
+  "id": "rif_inc",
+  "g": "Rifiuti e acqua",
+  "n": "Rifiuti a incenerimento",
+  "um": "t",
+  "fe": 21.3,
+  "cat": "4",
+  "src": "4e",
+  "f": "DEFRA"
+ },
+ {
+  "id": "acqua_p",
+  "g": "Rifiuti e acqua",
+  "n": "Acqua potabile prelevata",
+  "um": "m³",
+  "fe": 0.149,
+  "cat": "4",
+  "src": "4f",
+  "f": "DEFRA"
+ },
+ {
+  "id": "acqua_r",
+  "g": "Rifiuti e acqua",
+  "n": "Acque reflue trattate",
+  "um": "m³",
+  "fe": 0.272,
+  "cat": "4",
+  "src": "4f",
+  "f": "DEFRA"
+ },
+ {
+  "id": "uso_ee",
+  "g": "Uso e fine vita",
+  "n": "Elettricità consumata dai prodotti venduti",
+  "um": "kWh",
+  "fe": 0.2565,
+  "cat": "5",
+  "src": "5a",
+  "f": "ISPRA"
+ },
+ {
+  "id": "fv_disc",
+  "g": "Uso e fine vita",
+  "n": "Prodotti venduti a discarica",
+  "um": "t",
+  "fe": 458,
+  "cat": "5",
+  "src": "5b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "fv_ric",
+  "g": "Uso e fine vita",
+  "n": "Prodotti venduti a riciclo",
+  "um": "t",
+  "fe": 21.3,
+  "cat": "5",
+  "src": "5b",
+  "f": "DEFRA"
+ },
+ {
+  "id": "invest",
+  "g": "Altre",
+  "n": "Investimenti (quota emissioni partecipate)",
+  "um": "tCO2e",
+  "fe": 1000,
+  "cat": "6",
+  "src": "6a",
+  "f": "PCAF — calcolo esterno"
+ }
+]

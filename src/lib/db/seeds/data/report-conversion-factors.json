@@ -1,0 +1,12 @@
+{
+ "gas": 1.9755,
+ "gasolio": 2.687,
+ "benzina": 2.313,
+ "gpl": 2.984,
+ "ele_loc": 0.2565,
+ "ele_mkt": 0.457,
+ "kwh_smc": 10.55,
+ "kwh_l_gasolio": 9.96,
+ "kwh_l_benzina": 8.78,
+ "kwh_kg_gpl": 12.79
+}

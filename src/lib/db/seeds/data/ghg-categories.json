@@ -1,0 +1,50 @@
+[
+ {
+  "id": "1",
+  "n": "Emissioni dirette",
+  "s": "Scope 1",
+  "col": "var(--s1c)",
+  "t": "t-tea",
+  "d": "Emissioni e rimozioni di GHG da sorgenti possedute o controllate dall'organizzazione: combustione fissa e mobile, processi produttivi, emissioni fuggitive."
+ },
+ {
+  "id": "2",
+  "n": "Emissioni indirette da energia importata",
+  "s": "Scope 2",
+  "col": "var(--s2c)",
+  "t": "t-blu",
+  "d": "Emissioni derivanti dalla generazione di elettricità, calore, vapore e freddo acquistati e consumati dall'organizzazione. Rendicontazione doppia: location-based e market-based."
+ },
+ {
+  "id": "3",
+  "n": "Emissioni indirette da trasporto",
+  "s": "Scope 3",
+  "col": "var(--s3c)",
+  "t": "t-amb",
+  "d": "Trasporto e distribuzione a monte e a valle, spostamenti casa-lavoro dei dipendenti, trasferte di lavoro, trasporto di clienti e visitatori."
+ },
+ {
+  "id": "4",
+  "n": "Emissioni indirette da prodotti utilizzati",
+  "s": "Scope 3",
+  "col": "var(--s3c)",
+  "t": "t-amb",
+  "d": "Beni e servizi acquistati, beni strumentali, rifiuti generati, acqua e reflui, emissioni upstream dei combustibili e perdite di rete."
+ },
+ {
+  "id": "5",
+  "n": "Emissioni indirette associate all'uso dei prodotti",
+  "s": "Scope 3",
+  "col": "var(--s3c)",
+  "t": "t-amb",
+  "d": "Fase d'uso e fine vita dei prodotti venduti, trasformazione di prodotti intermedi, asset dati in leasing a valle."
+ },
+ {
+  "id": "6",
+  "n": "Altre emissioni indirette",
+  "s": "Scope 3",
+  "col": "var(--s3c)",
+  "t": "t-amb",
+  "d": "Investimenti, franchising e ogni altra emissione indiretta significativa non compresa nelle categorie precedenti."
+ }
+]

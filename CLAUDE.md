@@ -72,7 +72,7 @@ SaaS su commissione: suite di rendicontazione ESG che unifica i due prototipi HT
 ### Punti fermi di dominio
 
 - Il motore di calcolo dei prototipi (`riga`/`calc`/`derive`/`stato`) è pura logica: portarlo in moduli TypeScript testati (Vitest) prima di qualsiasi UI.
-- I contenuti metodologici (6 categorie/26 sorgenti ISO, guide dei 18 temi di materialità, checklist §, ~50 KPI, scale di valutazione, libreria ~60 fattori di emissione) sono dati di seed versionati nel DB, non costanti hardcoded.
+- I contenuti metodologici (6 categorie/25 sorgenti ISO, guide dei 18 temi di materialità, checklist di 15 requisiti, 49 KPI, scale di valutazione, libreria di 59 fattori di emissione) sono dati di seed versionati nel DB, non costanti hardcoded. Conteggi ESATTI verificati dall'estrazione automatica (`scripts/extract-seed.mjs`) e dal test `seed-counts.db.test.ts`.
 - I valori derivati non si persistono, si calcolano; il documento pubblicato si congela in uno snapshot (JSONB + PDF) con versioning.
 - Quantità e fattori in NUMERIC, mai float. Import JSON dei prototipi mantenuto come percorso di migrazione.
 
@@ -97,5 +97,7 @@ SaaS su commissione: suite di rendicontazione ESG che unifica i due prototipi HT
 
 **Fase 1 completata** — schema 9 domini (41 tabelle), migrazioni applicate su Supabase dev, ruolo `app_rls` + 81 policy RLS default-deny, `withTenant` con GUC + seam `RLS_FORCE_ROLE`, Better Auth multi-tenant (signup crea lo studio in stato demo), guards, layer entitlement, audit append-only. Gate verde: typecheck, build, 22 test (anche con `RLS_FORCE_ROLE=app_rls`), security-review eseguita con hardening applicato.
 
-**Prossima: Fase 2** — motore di calcolo in TDD (`src/lib/calc/ghg` e `src/lib/calc/report`) + seed dei contenuti metodologici, zero UI.
+**Fase 2 completata** — motore di calcolo in TDD (`src/lib/calc`: GHG row/totals/intensity/targets/status + Bilancio derived-kpi/materiality/gap/narrative-drafts, aritmetica decimale, 65 test pure con branch coverage ~98%); contenuti metodologici **estratti automaticamente dai prototipi** (`scripts/extract-seed.mjs` → JSON in `src/lib/db/seeds/data/`) e seminati su Supabase con `npm run db:seed` (idempotente, conteggi esatti testati); parser zod dell'import JSON dei prototipi (`src/features/import/parser.ts`); `docs/politica-arrotondamento.md` con gli scostamenti documentati dal prototipo. Suite completa: 99 test verdi. NB: le sorgenti ISO sono 25 (non 26), i KPI 49, i fattori 59 — fede ai prototipi.
+
+**Prossima: Fase 3** — design foundation (skill impeccable/ui-ux-pro-max/dataviz, token, DESIGN.md, shell app con dati mock). Le domande di `impeccable shape` vanno poste all'utente. Vercel si collega in Fase 8 (deciso con l'utente).
 
