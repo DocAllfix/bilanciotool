@@ -3,7 +3,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { organization, member, invitation } from "@/lib/db/schema";
 import { orgEntitlement } from "@/lib/db/schema";
 import { auditLog } from "@/lib/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 // Creazione dell'org-studio al signup. Insert diretti nelle stesse tabelle che il
@@ -15,11 +15,21 @@ import { randomUUID } from "node:crypto";
 const slugify = (s: string) =>
   s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
+// Solo inviti ANCORA VALIDI sopprimono la creazione dello studio personale.
+// Senza il filtro sulla scadenza un invito mai accettato (status resta 'pending'
+// per sempre) bloccherebbe a vita la registrazione di quell'indirizzo, lasciando
+// l'utente senza tenant e senza via d'uscita se non accettare l'invito altrui.
 export async function hasPendingInvitation(email: string): Promise<boolean> {
   const rows = await db
     .select({ id: invitation.id })
     .from(invitation)
-    .where(and(eq(invitation.email, email), eq(invitation.status, "pending")))
+    .where(
+      and(
+        eq(invitation.email, email.toLowerCase()),
+        eq(invitation.status, "pending"),
+        gt(invitation.expiresAt, new Date()),
+      ),
+    )
     .limit(1);
   return rows.length > 0;
 }
