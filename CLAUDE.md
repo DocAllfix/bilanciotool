@@ -84,7 +84,18 @@ SaaS su commissione: suite di rendicontazione ESG che unifica i due prototipi HT
 - **Comandi**: `npm run typecheck` · `npm run test` (Vitest, tassonomia `*-pure` / `*.db` self-skipping senza `DATABASE_URL` / `*.smoke`) · `npm run test:e2e` (Playwright, richiede `npm run dev` attivo) · `npm run build`.
 - **Formato export prototipi** (contratto import): `docs/formato-export-prototipi.md`.
 
+### Regole di dominio già codificate (Fase 1)
+
+- **RLS**: ogni tabella tenant porta `organization_id` e ha policy `<tabella>_tenant_rls` (migrazione `0001`). Aggiungendo una tabella tenant va aggiunta la policy, altrimenti `rls-matrix.db.test.ts` fallisce. Eccezioni consentite solo se giustificate per iscritto nel test (oggi: `audit_log`, `member`, `invitation`).
+- **Entitlement**: nessuna server action nuova senza `requireEntitlement(...)`; capability `create_company | write_data | export | generate_pdf`; limiti da `platform_config` (10 aziende attive, warning a 8, 5 membri) con demo/archiviate escluse dal conteggio.
+- **Guards**: `requireActiveOrg` riverifica sempre la membership sul DB (le sessioni non sono autorevoli); `requireConsultant` per le operazioni, `requireStudioAdmin` per inviti/billing.
+- **Migrazioni**: sempre via `DIRECT_URL` (session pooler :5432 — l'host `db.<ref>.supabase.co` non risolve su questo progetto).
+
 ### Stato
 
-**Fase 0 in corso** (setup): git+GitHub ok, scaffold Next.js 16 + Tailwind v4 + shadcn (preset nova/radix) ok, env.ts + toolchain test ok, documenti ok. In attesa dall'utente per chiudere il gate: progetto Supabase dev EU (`DATABASE_URL`+`DIRECT_URL`) e collegamento Vercel.
+**Fase 0 completata** — git+GitHub (`DocAllfix/bilanciotool`), scaffold Next.js 16 + Tailwind v4 + shadcn, env.ts, toolchain test. Resta solo il collegamento Vercel (azione dell'utente).
+
+**Fase 1 completata** — schema 9 domini (41 tabelle), migrazioni applicate su Supabase dev, ruolo `app_rls` + 81 policy RLS default-deny, `withTenant` con GUC + seam `RLS_FORCE_ROLE`, Better Auth multi-tenant (signup crea lo studio in stato demo), guards, layer entitlement, audit append-only. Gate verde: typecheck, build, 22 test (anche con `RLS_FORCE_ROLE=app_rls`), security-review eseguita con hardening applicato.
+
+**Prossima: Fase 2** — motore di calcolo in TDD (`src/lib/calc/ghg` e `src/lib/calc/report`) + seed dei contenuti metodologici, zero UI.
 
