@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percorso Bilancio di Sostenibilità</title>
+<style>
+:root{
+  --teal:#2E7D6B;--teal-dk:#1F5A4C;--teal-lt:#E6F1ED;--teal-mid:#4C9C88;
+  --ink:#14201C;--ink-2:#4A5B55;--ink-3:#7D8C87;
+  --bg:#FAFAF8;--card:#fff;--line:#E4E2DC;--line-2:#F0EEE9;
+  --red:#B3261E;--red-lt:#FBEAE8;--amber:#B06E00;--amber-lt:#FDF2DF;
+  --green:#2E7D32;--green-lt:#E8F3E9;--violet:#5B4B9E;--violet-lt:#EEEBF7;
+  --blue:#1F5F8B;--blue-lt:#E7F0F6;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.app{display:flex;min-height:100vh}
+.side{width:250px;flex:0 0 250px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:16px 18px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 12px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink-2)}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--teal);color:#fff;font-weight:600}
+.nav .st{width:19px;height:19px;flex:0 0 19px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--mono);color:var(--ink-3)}
+.nav.on .st{border-color:rgba(255,255,255,.5);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .st.mid{background:var(--amber);border-color:var(--amber);color:#fff}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.wrap{padding:26px 26px 70px;max-width:1200px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px}
+h2{font-size:15px;margin:0 0 12px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px;max-width:76ch}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--teal-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+.btn.icon{padding:4px 8px;font-size:12px}
+input[type=text],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+textarea{min-height:110px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal-mid);outline-offset:-1px}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.num{font-family:var(--mono);text-align:right}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}.t-tea{background:var(--teal-lt);color:var(--teal-dk)}
+.t-vio{background:var(--violet-lt);color:var(--violet)}.t-blu{background:var(--blue-lt);color:var(--blue)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}
+.empty{padding:30px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .n{font-size:26px;font-weight:650;letter-spacing:-.8px;line-height:1.1;font-family:var(--mono)}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--teal)}
+.hr{height:1px;background:var(--line-2);margin:16px 0}
+.hint{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.45}
+.derived{background:var(--teal-lt);border-radius:8px;padding:12px 14px}
+.derived table td{border-bottom:1px solid rgba(31,90,76,.12)}
+.derived table tr:last-child td{border-bottom:0}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line-2);cursor:pointer}
+.step:last-child{border-bottom:0}
+.step:hover .stepname{color:var(--teal-dk)}
+.stepno{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--line-2);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600}
+.stepno.ok{background:var(--green);color:#fff}.stepno.mid{background:var(--amber);color:#fff}
+.stepname{font-weight:600}.stepdesc{font-size:12.5px;color:var(--ink-3)}
+.stepbar{width:110px;flex:0 0 110px}
+.dot:hover circle{stroke:var(--ink);stroke-width:2}
+
+/* ---- guida materialità ---- */
+.gbtn{border:1px solid var(--line);background:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer;color:var(--ink-3);font-size:12px;line-height:1;padding:0;flex:0 0 22px}
+.gbtn:hover,.gbtn.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.guide{background:var(--teal-lt);border-radius:9px;padding:16px 18px;margin:2px 0 6px}
+.guide .def{font-size:13px;color:var(--ink-2);margin:0 0 14px;line-height:1.55}
+.guide h5{margin:0 0 7px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-dk)}
+.guide ul{margin:0 0 12px;padding-left:17px;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.guide ul li{margin-bottom:3px}
+.lvl{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px 10px;margin-bottom:5px;cursor:pointer;text-align:left;width:100%}
+.lvl:hover{border-color:var(--teal-mid)}
+.lvl.on{border-color:var(--teal);background:var(--teal);color:#fff}
+.lvl .v{font-family:var(--mono);font-weight:700;font-size:13px;flex:0 0 14px}
+.lvl b{display:block;font-size:12.5px;font-weight:600}
+.lvl span{display:block;font-size:11.5px;color:var(--ink-3);line-height:1.4}
+.lvl.on span{color:rgba(255,255,255,.82)}
+.guide .flag{background:#fff;border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.guide .ev{font-size:11.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+
+/* ---- portafoglio ---- */
+.pf{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pfc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
+.pfc:hover{border-color:var(--teal-mid);box-shadow:0 2px 14px rgba(20,32,28,.07)}
+.pfc .hd{padding:16px 16px 12px;display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.pfc .logo{width:44px;height:44px;flex:0 0 44px;border-radius:9px;background:var(--teal-lt);color:var(--teal-dk);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;overflow:hidden}
+.pfc .logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.pfc .nm{font-weight:650;letter-spacing:-.2px;line-height:1.25}
+.pfc .mt{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.pfc .bd{padding:0 16px 12px}
+.pfc .stats{display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line-2)}
+.pfc .stats div{flex:1}
+.pfc .stats b{display:block;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.3px}
+.pfc .stats span{font-size:10.5px;color:var(--ink-3)}
+.pfc .ft{margin-top:auto;padding:10px 16px;background:var(--bg);border-top:1px solid var(--line-2);display:flex;gap:6px}
+.pfnew{border:1.5px dashed var(--line);background:transparent;border-radius:10px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--ink-3)}
+.pfnew:hover{border-color:var(--teal);color:var(--teal-dk);background:var(--teal-lt)}
+.pfnew b{font-size:22px;font-weight:400}
+
+/* ---- media ---- */
+.media{border:1px solid var(--line);border-radius:9px;padding:12px;margin-bottom:10px;display:flex;gap:12px}
+.media .thumb{width:130px;flex:0 0 130px;border-radius:7px;overflow:hidden;background:var(--line-2);display:flex;align-items:center;justify-content:center;min-height:86px}
+.media .thumb img{width:100%;display:block}
+.media .thumb svg{width:100%;height:auto}
+.media .body{flex:1;min-width:0}
+.mediabar{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+figure.fig{margin:16px 0;break-inside:avoid}
+figure.fig img{width:100%;display:block;border-radius:8px}
+figure.fig svg{width:100%;height:auto}
+figure.fig figcaption{font-size:11.5px;color:var(--ink-3);margin-top:6px;line-height:1.45}
+figure.fig.half{width:52%;float:right;margin:6px 0 14px 22px}
+.clear{clear:both}
+
+/* ---- documento ---- */
+.doc{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.doc .cover{background:var(--teal-dk);color:#fff;padding:52px 46px;position:relative}
+.doc .cover.img{padding:0}
+.doc .cover .hero{width:100%;height:270px;object-fit:cover;display:block;opacity:.9}
+.doc .cover .over{padding:34px 46px}
+.doc .cover .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.doc .cover h2{font-size:34px;margin:12px 0 6px;letter-spacing:-.8px;color:#fff}
+.doc .cover p{margin:0;opacity:.85;font-size:14px}
+.doc .cover .lg{position:absolute;top:22px;right:26px;background:#fff;border-radius:8px;padding:8px;max-width:118px}
+.doc .cover .lg img{width:100%;display:block}
+.doc .inner{padding:34px 46px 46px}
+.doc h3{font-size:19px;margin:34px 0 4px;letter-spacing:-.3px;padding-top:18px;border-top:2px solid var(--teal);clear:both}
+.doc h3:first-of-type{margin-top:0;border-top:0;padding-top:0}
+.doc h4{font-size:14px;margin:20px 0 8px;color:var(--teal-dk)}
+.doc p{margin:0 0 11px;line-height:1.65}
+.doc table{margin:10px 0 6px}
+.doc th{background:var(--line-2)}
+.doc .note{font-size:11.5px;color:var(--ink-3);font-style:italic}
+.doc .miss{color:var(--red);font-style:italic}
+@media (max-width:980px){
+  .g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
+  .side{position:fixed;left:-254px;z-index:60;transition:left .2s}.side.open{left:0}
+  .doc .inner,.doc .cover .over{padding:24px}
+  figure.fig.half{width:100%;float:none;margin:16px 0}
+  .media{flex-direction:column}.media .thumb{width:100%;flex:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .side,.top,.noprint{display:none!important}
+  .wrap{padding:0;max-width:100%}
+  .doc{border:0}
+  .doc h3{page-break-after:avoid}
+  table,figure.fig{page-break-inside:avoid}
+  body{background:#fff}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand" id="brandHome"><b>Bilancio di Sostenibilità</b><span>Percorso guidato · GRI + ESRS</span></div>
+  <div class="navgrp">Studio</div>
+  <button class="nav" data-v="pf"><span class="st">▦</span> Portafoglio</button>
+  <div class="navgrp" id="grpPercorso">Percorso</div>
+  <button class="nav on" data-v="home"><span class="st">◇</span> Avanzamento</button>
+  <button class="nav" data-v="org"><span class="st" id="s1">1</span> Organizzazione</button>
+  <button class="nav" data-v="mat"><span class="st" id="s2">2</span> Materialità</button>
+  <button class="nav" data-v="dati"><span class="st" id="s3">3</span> Dati e indicatori</button>
+  <button class="nav" data-v="gest"><span class="st" id="s4">4</span> Politiche e obiettivi</button>
+  <button class="nav" data-v="narr"><span class="st" id="s5">5</span> Racconto</button>
+  <button class="nav" data-v="ver"><span class="st" id="s6">6</span> Verifica</button>
+  <button class="nav" data-v="doc"><span class="st" id="s7">7</span> Bilancio</button>
+  <div class="navgrp">Impostazioni</div>
+  <button class="nav" data-v="conf"><span class="st">⚙</span> Fattori e archivio</button>
+  <div class="navgrp" id="grpAiuto">Aiuto</div>
+  <button class="nav" data-v="guida"><span class="st">?</span> Guida all'uso</button>
+  <div class="sidefoot">I dati restano su questo dispositivo. Esportali dal portafoglio per conservarli.</div>
+</aside>
+<div class="main">
+  <div class="top">
+    <button class="btn ghost sm" id="menuBtn" style="display:none">Menu</button>
+    <select id="coSel" style="width:auto;min-width:210px;font-weight:600"></select>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)">Esercizio
+      <select id="annoSel" style="width:auto;font-weight:600"></select></label>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn ghost sm" id="addCo">Nuova organizzazione</button>
+      <button class="btn sm" id="printBtn">Stampa bilancio</button>
+    </div>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ==========================================================
+   TEMI DI MATERIALITÀ
+   ========================================================== */
+const TOPICS=[
+ {id:"T01",p:"E",n:"Cambiamento climatico ed emissioni",r:"ESRS E1 · GRI 305"},
+ {id:"T02",p:"E",n:"Energia ed efficienza energetica",r:"ESRS E1 · GRI 302"},
+ {id:"T03",p:"E",n:"Inquinamento di aria, acqua e suolo",r:"ESRS E2 · GRI 305"},
+ {id:"T04",p:"E",n:"Risorse idriche",r:"ESRS E3 · GRI 303"},
+ {id:"T05",p:"E",n:"Biodiversità ed ecosistemi",r:"ESRS E4 · GRI 304"},
+ {id:"T06",p:"E",n:"Economia circolare e rifiuti",r:"ESRS E5 · GRI 306"},
+ {id:"T07",p:"S",n:"Salute e sicurezza sul lavoro",r:"ESRS S1 · GRI 403"},
+ {id:"T08",p:"S",n:"Condizioni di lavoro e welfare",r:"ESRS S1 · GRI 401"},
+ {id:"T09",p:"S",n:"Diversità, equità e inclusione",r:"ESRS S1 · GRI 405-406"},
+ {id:"T10",p:"S",n:"Formazione e sviluppo delle competenze",r:"ESRS S1 · GRI 404"},
+ {id:"T11",p:"S",n:"Diritti umani nella catena del valore",r:"ESRS S2 · GRI 414"},
+ {id:"T12",p:"S",n:"Comunità locali e territorio",r:"ESRS S3 · GRI 413"},
+ {id:"T13",p:"S",n:"Qualità e sicurezza di prodotti e servizi",r:"ESRS S4 · GRI 416"},
+ {id:"T14",p:"G",n:"Etica di impresa e anticorruzione",r:"ESRS G1 · GRI 205"},
+ {id:"T15",p:"G",n:"Governance e sistema di controllo",r:"ESRS 2 GOV · GRI 2"},
+ {id:"T16",p:"G",n:"Gestione responsabile dei fornitori",r:"ESRS G1-2 · GRI 204"},
+ {id:"T17",p:"G",n:"Sicurezza delle informazioni e dati",r:"ESRS G1 · GRI 418"},
+ {id:"T18",p:"G",n:"Innovazione e trasformazione digitale",r:"ESRS 2 SBM-1"}
+];
+const PIL={E:{n:"Ambiente",c:"#2E7D32",t:"t-grn"},S:{n:"Sociale",c:"#5B4B9E",t:"t-vio"},G:{n:"Governance",c:"#1F5F8B",t:"t-blu"}};
+
+/* ---- scale di valutazione ---- */
+const SCALA={
+ imp:[
+  {v:1,n:"Trascurabile",d:"L'attività non incide in modo apprezzabile su persone o ambiente."},
+  {v:2,n:"Lieve",d:"Effetti limitati, reversibili, circoscritti a un sito o a poche persone."},
+  {v:3,n:"Moderato",d:"Effetti apprezzabili su un numero significativo di soggetti o risorse, gestibili con misure ordinarie."},
+  {v:4,n:"Rilevante",d:"Effetti estesi o difficilmente reversibili, oppure che toccano diritti delle persone."},
+  {v:5,n:"Molto rilevante",d:"Effetti gravi, diffusi o irreversibili, o violazione di diritti fondamentali."}
+ ],
+ fin:[
+  {v:1,n:"Nessun effetto",d:"Non produce conseguenze economiche apprezzabili."},
+  {v:2,n:"Marginale",d:"Incide su costi o ricavi in misura contenuta."},
+  {v:3,n:"Apprezzabile",d:"Incide su costi, investimenti necessari o accesso a determinati mercati."},
+  {v:4,n:"Rilevante",d:"Può incidere sulla marginalità, sui requisiti richiesti dai clienti o sull'accesso al credito."},
+  {v:5,n:"Critico",d:"Mette a rischio la continuità, la licenza a operare o commesse determinanti."}
+ ]
+};
+
+/* ---- guida per tema ---- */
+const GUIDE={
+ T01:{def:"Emissioni di gas serra generate dall'attività e contributo al riscaldamento globale, insieme all'esposizione dell'azienda ai rischi fisici e di transizione.",
+  imp:["Volume delle emissioni Scope 1 e 2 rispetto alle dimensioni aziendali","Intensità energetica dei processi produttivi","Presenza di combustione diretta: forni, caldaie, generatori, flotta propria"],
+  fin:["Peso di energia e combustibili sul conto economico","Richieste di dati sulle emissioni da parte di clienti, banche e assicurazioni","Esposizione a ETS, CBAM o incentivi condizionati a obiettivi climatici"],
+  alto:"Alza a 4-5 se i processi sono energivori, se hai forni o flotta pesante, o se un cliente ti ha già chiesto la carbon footprint.",
+  ev:"Bollette, diagnosi energetica, libretti d'impianto, dati di rifornimento carburante."},
+ T02:{def:"Quantità e composizione dell'energia consumata, efficienza degli impianti, quota coperta da fonti rinnovabili.",
+  imp:["Consumo assoluto in rapporto alle dimensioni dell'azienda","Quota ancora coperta da fonti fossili","Sprechi noti su impianti obsoleti o mai revisionati"],
+  fin:["Incidenza della bolletta sui costi totali","Esposizione alla volatilità dei prezzi dell'energia","Ritorno atteso degli investimenti in efficienza e autoproduzione"],
+  alto:"Alza a 4-5 se l'energia supera il 5% dei costi o se gli impianti hanno più di quindici anni.",
+  ev:"Bollette, diagnosi energetica ex D.Lgs. 102/2014, registri di manutenzione, dati di produzione fotovoltaica."},
+ T03:{def:"Emissioni in atmosfera, scarichi idrici, contaminazione di suolo e sottosuolo, rumore verso l'esterno.",
+  imp:["Presenza di emissioni convogliate o diffuse","Uso di solventi, vernici, acidi, oli o altre sostanze pericolose","Vicinanza a ricettori sensibili: abitazioni, scuole, corsi d'acqua"],
+  fin:["Costi di autorizzazione, monitoraggio e manutenzione degli abbattitori","Rischio sanzionatorio e di sospensione dell'attività","Oneri potenziali di bonifica"],
+  alto:"Alza a 4-5 se l'attività è soggetta ad AIA o se ci sono già stati superamenti dei limiti.",
+  ev:"AUA o AIA, analisi delle emissioni, autorizzazioni allo scarico, verbali ARPA."},
+ T04:{def:"Prelievi, consumi e scarichi idrici, con attenzione particolare alle aree soggette a stress idrico.",
+  imp:["Volumi prelevati e loro peso sul contesto locale","Ruolo dell'acqua nel processo produttivo","Localizzazione in aree a scarsità idrica"],
+  fin:["Costo dell'acqua e della depurazione","Rischio di limitazioni o razionamenti del prelievo","Investimenti necessari per il ricircolo"],
+  alto:"Alza a 4-5 se il processo usa acqua in modo intensivo (lavaggi, raffreddamento, trattamenti superficiali) o se prelevi da pozzo in zona critica.",
+  ev:"Fatture idriche, letture del contatore di pozzo, autorizzazione allo scarico, analisi reflui."},
+ T05:{def:"Effetti dell'attività su habitat, specie e servizi ecosistemici, diretti o attraverso l'approvvigionamento.",
+  imp:["Consumo di suolo e impermeabilizzazione","Prossimità ad aree protette o siti Natura 2000","Approvvigionamento di materie di origine agricola o forestale"],
+  fin:["Vincoli autorizzativi in caso di ampliamento","Obblighi su deforestazione (EUDR) per alcune filiere","Requisiti di certificazione richiesti dai clienti"],
+  alto:"Alza a 4-5 se il sito ricade in area vincolata o se acquisti legno, carta, gomma, soia o derivati.",
+  ev:"Visure catastali, vincoli urbanistici, certificazioni di filiera dei fornitori."},
+ T06:{def:"Quantità e destino dei rifiuti prodotti, impiego di materiali riciclati, durabilità e riciclabilità dei prodotti.",
+  imp:["Volumi di rifiuti e quota che finisce a smaltimento anziché a recupero","Scarti di lavorazione rispetto al materiale in ingresso","Imballaggi immessi al consumo"],
+  fin:["Costo dello smaltimento, in crescita per i rifiuti pericolosi","Valore economico recuperabile dagli scarti","Obblighi su imballaggi e responsabilità estesa del produttore"],
+  alto:"Alza a 4-5 se gli scarti superano il 10% del materiale in ingresso o se produci quantità significative di rifiuti pericolosi.",
+  ev:"MUD, formulari, registro di carico e scarico, contratti con i recuperatori."},
+ T07:{def:"Tutela dell'integrità fisica e della salute di lavoratori, appaltatori e visitatori.",
+  imp:["Pericolosità intrinseca delle lavorazioni","Storico infortunistico degli ultimi tre anni","Presenza di appalti, lavoro in quota, spazi confinati, movimentazione di carichi"],
+  fin:["Premio INAIL e oscillazione per andamento infortunistico","Costi di fermo, sostituzione e contenzioso","Responsabilità 231 e possibile sospensione dell'attività"],
+  alto:"Per la quasi totalità delle imprese manifatturiere e di costruzioni questo tema è materiale: se lo escludi, la motivazione va scritta nella nota metodologica.",
+  ev:"DVR, registro infortuni, verbali di ispezione, attestati di formazione, nomine RSPP e RLS."},
+ T08:{def:"Stabilità contrattuale, retribuzioni, orari di lavoro, conciliazione vita-lavoro e welfare aziendale.",
+  imp:["Quota di contratti a termine sul totale","Ricorso strutturale allo straordinario","Uso di somministrazione o appalti di manodopera"],
+  fin:["Costo del turnover, della selezione e dell'addestramento","Capacità di trattenere competenze difficili da reperire","Clima aziendale e produttività"],
+  alto:"Alza a 4-5 se il turnover supera il 15% o se fai fatica a trovare e trattenere personale qualificato.",
+  ev:"Libro unico, contratti applicati, prospetto dell'organico, accordi sindacali, indagini di clima."},
+ T09:{def:"Pari opportunità, non discriminazione, inclusione di persone con disabilità, equilibrio di genere e generazionale.",
+  imp:["Squilibri di genere nei ruoli e nelle retribuzioni","Rispetto degli obblighi sul collocamento mirato","Episodi o segnalazioni di discriminazione"],
+  fin:["Requisiti nelle gare pubbliche e nei bandi PNRR","Accesso a premialità ed esonero contributivo legati alla certificazione di parità","Reputazione verso i candidati"],
+  alto:"Alza a 4-5 se partecipi a gare pubbliche o se hai avviato un percorso UNI/PdR 125.",
+  ev:"Prospetto informativo disabili, analisi retributiva per genere, organigramma, rapporto biennale sul personale."},
+ T10:{def:"Sviluppo professionale, aggiornamento tecnico e trasferimento di competenze tra generazioni.",
+  imp:["Ore di formazione effettiva oltre quella obbligatoria","Esistenza di piani di crescita e affiancamento","Rischio di perdita di know-how"],
+  fin:["Fabbisogno di competenze tecniche scarse sul mercato","Finanziamenti dai fondi interprofessionali","Effetto della competenza sulla produttività e sugli scarti"],
+  alto:"Alza a 4-5 se stai attraversando una transizione tecnologica o se il know-how è concentrato su poche persone prossime alla pensione.",
+  ev:"Registri di formazione, piani formativi, pratiche sui fondi interprofessionali, matrice delle competenze."},
+ T11:{def:"Rispetto dei diritti dei lavoratori presso fornitori e subappaltatori, compreso il divieto di lavoro forzato e minorile.",
+  imp:["Approvvigionamento da paesi a rischio","Ricorso a subappalto e manodopera intermediata","Lunghezza e tracciabilità della filiera"],
+  fin:["Rischio di esclusione dagli albi fornitori dei clienti","Obblighi di due diligence in arrivo con la direttiva CSDDD","Rischio reputazionale e responsabilità solidale negli appalti"],
+  alto:"Alza a 4-5 se acquisti da paesi extra-UE a rischio o se usi in modo intensivo il subappalto.",
+  ev:"Elenco fornitori per paese, contratti di subappalto, DURC e verifiche sugli appaltatori, certificazioni di filiera."},
+ T12:{def:"Relazione con il territorio in cui l'azienda opera: occupazione, indotto, disturbi generati, iniziative di sostegno.",
+  imp:["Peso occupazionale dell'azienda sul territorio","Rumore, traffico pesante, polveri o odori percepiti dai residenti","Consumo di risorse condivise con la comunità"],
+  fin:["Licenza sociale a operare","Rapporti con l'amministrazione per autorizzazioni e ampliamenti","Rischio di opposizioni a nuovi insediamenti"],
+  alto:"Alza a 4-5 se lo stabilimento confina con zone residenziali o se hai già ricevuto esposti o segnalazioni.",
+  ev:"Segnalazioni ricevute, verbali di incontro con enti locali, elenco delle iniziative sostenute."},
+ T13:{def:"Conformità, affidabilità e sicurezza dei prodotti o servizi immessi sul mercato.",
+  imp:["Conseguenze di un difetto sull'utilizzatore finale","Criticità della destinazione d'uso","Reclami e non conformità registrate"],
+  fin:["Costi della non qualità, richiami e contenzioso","Requisiti contrattuali, marcature e certificazioni obbligatorie","Perdita di clienti a seguito di difettosità"],
+  alto:"Alza a 4-5 se fornisci settori regolamentati: alimentare, medicale, automotive, edilizia strutturale, ferroviario.",
+  ev:"Registro non conformità, reclami clienti, fascicoli tecnici, certificazioni di prodotto, dichiarazioni di prestazione."},
+ T14:{def:"Correttezza nei rapporti d'affari, prevenzione della corruzione, delle frodi e delle pratiche anticoncorrenziali.",
+  imp:["Esposizione nei rapporti con la pubblica amministrazione","Presenza di agenti, intermediari o procacciatori","Concentrazione di poteri di spesa senza controlli"],
+  fin:["Responsabilità amministrativa ex D.Lgs. 231/2001, con sanzioni interdittive","Esclusione dagli appalti pubblici","Revoca di contributi ricevuti"],
+  alto:"Alza a 4-5 se lavori con la pubblica amministrazione, se hai ricevuto contributi pubblici o se operi tramite agenti su mercati esteri.",
+  ev:"Modello 231, codice etico, sistema di deleghe e procure, procedura whistleblowing, registro omaggi."},
+ T15:{def:"Assetto degli organi sociali, deleghe, controlli interni, gestione dei conflitti di interesse e continuità aziendale.",
+  imp:["Chiarezza nell'attribuzione delle responsabilità","Presenza di organi o funzioni di controllo","Concentrazione delle decisioni su una sola persona"],
+  fin:["Accesso al credito e valutazione bancaria","Capacità di attrarre soci, investitori o partner","Continuità in caso di passaggio generazionale o assenza improvvisa"],
+  alto:"Alza a 4-5 se le deleghe non sono formalizzate o se è in corso un passaggio generazionale.",
+  ev:"Visura camerale, statuto, verbali assembleari, organigramma, deleghe e procure."},
+ T16:{def:"Criteri di selezione, qualifica e monitoraggio dei fornitori, inclusi quelli di natura ambientale e sociale.",
+  imp:["Peso degli acquisti sul valore complessivamente prodotto","Capacità effettiva di influenzare le pratiche dei fornitori","Concentrazione su pochi fornitori critici"],
+  fin:["Continuità e affidabilità delle forniture","Richieste dei clienti sulla tracciabilità della filiera","Adeguamento agli obblighi di due diligence"],
+  alto:"Alza a 4-5 se gli acquisti superano metà dei costi o se un cliente ti ha già chiesto conto dei tuoi fornitori.",
+  ev:"Albo fornitori, procedura di qualifica, contratti e condizioni generali, questionari inviati ai fornitori."},
+ T17:{def:"Protezione dei dati aziendali e personali, continuità operativa dei sistemi informatici.",
+  imp:["Trattamento di dati personali di lavoratori, clienti e fornitori","Conseguenze di una violazione per gli interessati","Dipendenza dei processi produttivi dai sistemi informatici"],
+  fin:["Costo di un fermo dei sistemi, anche di pochi giorni","Sanzioni GDPR e obblighi di notifica","Requisiti contrattuali dei clienti e obblighi NIS2 per alcune filiere"],
+  alto:"Alza a 4-5 se la produzione dipende da sistemi informatici o se fornisci soggetti rientranti nel perimetro NIS2.",
+  ev:"Registro dei trattamenti, valutazioni d'impatto, procedure di backup, registro degli incidenti, contratti con i fornitori IT."},
+ T18:{def:"Capacità di rinnovare prodotti, processi e modelli organizzativi, inclusa la transizione digitale.",
+  imp:["Contributo dell'innovazione a soluzioni a minore impatto","Effetti dell'automazione sull'occupazione e sulle mansioni","Diffusione dei benefici lungo la filiera"],
+  fin:["Tenuta competitiva nel medio periodo","Accesso a incentivi come Transizione 5.0 o credito d'imposta R&S","Dipendenza dal fatturato di un prodotto maturo"],
+  alto:"Alza a 4-5 se operi in un settore a rapida evoluzione tecnologica o se gran parte del fatturato dipende da un prodotto ormai maturo.",
+  ev:"Investimenti in ricerca e sviluppo, brevetti, piani di digitalizzazione, pratiche di agevolazione."}
+};
+
+const SEZ=[
+ {id:"ene",n:"Energia",r:"ESRS E1-5 · GRI 302-1",c:"E"},
+ {id:"acq",n:"Acqua",r:"ESRS E3-4 · GRI 303-3",c:"E"},
+ {id:"rif",n:"Rifiuti e materiali",r:"ESRS E5-4/5 · GRI 306-3",c:"E"},
+ {id:"per",n:"Persone",r:"ESRS S1-6/9 · GRI 2-7, 405-1",c:"S"},
+ {id:"sic",n:"Salute e sicurezza",r:"ESRS S1-14 · GRI 403-9",c:"S"},
+ {id:"for",n:"Formazione e retribuzioni",r:"ESRS S1-13/16 · GRI 404-1, 405-2",c:"S"},
+ {id:"eco",n:"Valore economico e fornitori",r:"ESRS G1-6 · GRI 201-1, 204-1",c:"G"},
+ {id:"gov",n:"Governance ed etica",r:"ESRS G1-3/4 · GRI 205-3",c:"G"}
+];
+const KPI=[
+ {k:"en_ele",s:"ene",n:"Energia elettrica prelevata dalla rete",u:"kWh"},
+ {k:"en_ele_go",s:"ene",n:"di cui coperta da garanzie d'origine",u:"kWh"},
+ {k:"en_auto",s:"ene",n:"Energia elettrica autoprodotta e consumata",u:"kWh",h:"Fotovoltaico o altro impianto proprio"},
+ {k:"en_gas",s:"ene",n:"Gas naturale",u:"Smc"},
+ {k:"en_gasolio",s:"ene",n:"Gasolio per riscaldamento e generatori",u:"litri"},
+ {k:"en_flotta_d",s:"ene",n:"Gasolio autotrazione (flotta aziendale)",u:"litri"},
+ {k:"en_flotta_b",s:"ene",n:"Benzina autotrazione (flotta aziendale)",u:"litri"},
+ {k:"en_gpl",s:"ene",n:"GPL",u:"kg"},
+ {k:"ac_prel",s:"acq",n:"Prelievo idrico totale",u:"m³"},
+ {k:"ac_pozzo",s:"acq",n:"di cui da pozzo o acque superficiali",u:"m³"},
+ {k:"ac_scar",s:"acq",n:"Scarichi idrici",u:"m³"},
+ {k:"ri_np",s:"rif",n:"Rifiuti non pericolosi prodotti",u:"t"},
+ {k:"ri_p",s:"rif",n:"Rifiuti pericolosi prodotti",u:"t"},
+ {k:"ri_rec",s:"rif",n:"Rifiuti avviati a recupero o riciclo",u:"t"},
+ {k:"ma_tot",s:"rif",n:"Materie prime e materiali impiegati",u:"t"},
+ {k:"ma_ric",s:"rif",n:"di cui riciclati o di recupero",u:"t"},
+ {k:"hr_tot",s:"per",n:"Dipendenti al 31/12",u:"n."},
+ {k:"hr_don",s:"per",n:"di cui donne",u:"n."},
+ {k:"hr_ind",s:"per",n:"di cui a tempo indeterminato",u:"n."},
+ {k:"hr_pt",s:"per",n:"di cui a tempo parziale",u:"n."},
+ {k:"hr_u30",s:"per",n:"di cui under 30",u:"n."},
+ {k:"hr_o50",s:"per",n:"di cui over 50",u:"n."},
+ {k:"hr_ass",s:"per",n:"Assunzioni nell'esercizio",u:"n."},
+ {k:"hr_ces",s:"per",n:"Cessazioni nell'esercizio",u:"n."},
+ {k:"hr_dis",s:"per",n:"Lavoratori con disabilità",u:"n."},
+ {k:"hr_est",s:"per",n:"Collaboratori esterni e somministrati",u:"n."},
+ {k:"si_ore",s:"sic",n:"Ore lavorate nell'esercizio",u:"ore",h:"Base di calcolo degli indici infortunistici"},
+ {k:"si_inf",s:"sic",n:"Infortuni registrabili (esclusi in itinere)",u:"n."},
+ {k:"si_gra",s:"sic",n:"di cui con conseguenze gravi (>180 gg)",u:"n."},
+ {k:"si_gg",s:"sic",n:"Giorni di assenza per infortunio",u:"gg"},
+ {k:"si_nm",s:"sic",n:"Mancati infortuni segnalati",u:"n."},
+ {k:"si_mal",s:"sic",n:"Malattie professionali riconosciute",u:"n."},
+ {k:"fo_ore",s:"for",n:"Ore di formazione erogate",u:"ore"},
+ {k:"fo_sic",s:"for",n:"di cui su salute e sicurezza",u:"ore"},
+ {k:"fo_eti",s:"for",n:"di cui su etica, 231 e anticorruzione",u:"ore"},
+ {k:"re_don",s:"for",n:"Retribuzione lorda media donne",u:"€"},
+ {k:"re_uom",s:"for",n:"Retribuzione lorda media uomini",u:"€"},
+ {k:"ec_ric",s:"eco",n:"Ricavi delle vendite e prestazioni",u:"€"},
+ {k:"ec_van",s:"eco",n:"Valore economico distribuito",u:"€",h:"Fornitori, personale, finanziatori, PA, comunità"},
+ {k:"ec_inv",s:"eco",n:"Investimenti in ambiente e sicurezza",u:"€"},
+ {k:"ec_for",s:"eco",n:"Fornitori attivi",u:"n."},
+ {k:"ec_loc",s:"eco",n:"di cui con sede in Italia",u:"n."},
+ {k:"ec_pag",s:"eco",n:"Tempo medio di pagamento fornitori",u:"gg"},
+ {k:"go_cda",s:"gov",n:"Componenti dell'organo amministrativo",u:"n."},
+ {k:"go_cdad",s:"gov",n:"di cui donne",u:"n."},
+ {k:"go_seg",s:"gov",n:"Segnalazioni ricevute (whistleblowing)",u:"n."},
+ {k:"go_cor",s:"gov",n:"Episodi di corruzione accertati",u:"n."},
+ {k:"go_san",s:"gov",n:"Sanzioni per non conformità (ambiente, lavoro, privacy)",u:"n."},
+ {k:"go_forq",s:"gov",n:"Fornitori valutati su criteri ESG",u:"n."}
+];
+const FATTORI_DEF={gas:1.9755,gasolio:2.6870,benzina:2.3130,gpl:2.9840,ele_loc:0.2565,ele_mkt:0.4570,
+  kwh_smc:10.55,kwh_l_gasolio:9.96,kwh_l_benzina:8.78,kwh_kg_gpl:12.79};
+const NARR=[
+ {id:"lettera",n:"Lettera agli stakeholder",h:"Perché l'azienda pubblica questo bilancio, cosa è successo nell'anno, quale impegno assume."},
+ {id:"identita",n:"Identità e storia",h:"Chi siete, da quando, dove operate, cosa producete e per quali mercati."},
+ {id:"business",n:"Modello di business",h:"Come si genera valore: input, attività, prodotti, clienti serviti."},
+ {id:"catena",n:"Catena del valore",h:"A monte i fornitori e le materie, a valle i clienti e il fine vita del prodotto."},
+ {id:"stake",n:"Coinvolgimento degli stakeholder",h:"Chi sono, come sono stati ascoltati, cosa è emerso."},
+ {id:"metodo",n:"Nota metodologica",h:"Perimetro, periodo, standard adottati, criteri di calcolo, eventuali esclusioni."},
+ {id:"impegni",n:"Impegni per il futuro",h:"Dove volete arrivare nel prossimo triennio."}
+];
+
+/* ==========================================================
+   ARCHIVIO
+   ========================================================== */
+const KEY="bilancio-sostenibilita-v2";
+const Store={
+  async load(){try{if(window.storage&&window.storage.get){const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}}catch(e){}
+    try{const raw=localStorage.getItem(KEY);if(raw)return JSON.parse(raw);}catch(e){}return null;},
+  async save(d){const s=JSON.stringify(d);
+    try{if(window.storage&&window.storage.set){await window.storage.set(KEY,s);return true;}}catch(e){}
+    try{localStorage.setItem(KEY,s);return true;}catch(e){toast("Archivio pieno — esporta e alleggerisci le immagini");return false;}}
+};
+let DB={aziende:[],current:null}, view="pf", anno=null;
+const uid=()=>"O"+Math.random().toString(36).slice(2,7).toUpperCase();
+function nuova(nome){
+  const y=new Date().getFullYear()-1;
+  return {id:uid(),nome:nome||"Nuova organizzazione",anno:y,
+    profilo:{forma:"",piva:"",sede:"",settore:"",ateco:"",sitiop:"",mercati:"",contatto:"",logo:"",copertina:"",
+      standard:"GRI 2021 — opzione con riferimento",perimetro:"Tutte le sedi operative della società"},
+    fattori:{...FATTORI_DEF},dati:{},materialita:{},soglia:3,gestione:{},narrativa:{},created:new Date().toISOString()};
+}
+const az=()=>DB.aziende.find(a=>a.id===DB.current);
+const dati=(a,y)=>{a.dati[y]=a.dati[y]||{};return a.dati[y];};
+const num=(a,y,k)=>{const v=dati(a,y)[k];const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:0;};
+const has=(a,y,k)=>{const v=dati(a,y)[k];return v!==undefined&&v!=="";};
+function nar(a,id){let v=a.narrativa[id];
+  if(typeof v==="string")v={testo:v,media:[]};
+  if(!v)v={testo:"",media:[]};
+  if(!v.media)v.media=[];
+  a.narrativa[id]=v;return v;}
+
+/* ==========================================================
+   CALCOLI
+   ========================================================== */
+function derive(a,y){
+  const f=a.fattori,n=k=>num(a,y,k),r=(x,d=1)=>Math.round(x*Math.pow(10,d))/Math.pow(10,d);
+  const s1=(n("en_gas")*f.gas+n("en_gasolio")*f.gasolio+n("en_flotta_d")*f.gasolio+n("en_flotta_b")*f.benzina+n("en_gpl")*f.gpl)/1000;
+  const s2l=n("en_ele")*f.ele_loc/1000;
+  const s2m=Math.max(0,n("en_ele")-n("en_ele_go"))*f.ele_mkt/1000;
+  const enTot=n("en_ele")+n("en_auto")+n("en_gas")*f.kwh_smc+(n("en_gasolio")+n("en_flotta_d"))*f.kwh_l_gasolio+n("en_flotta_b")*f.kwh_l_benzina+n("en_gpl")*f.kwh_kg_gpl;
+  const rin=n("en_ele_go")+n("en_auto"),rifTot=n("ri_np")+n("ri_p"),ric=n("ec_ric"),hr=n("hr_tot");
+  return {scope1:r(s1,2),scope2loc:r(s2l,2),scope2mkt:r(s2m,2),totLoc:r(s1+s2l,2),totMkt:r(s1+s2m,2),
+    enTot_kwh:r(enTot,0),enTot_gj:r(enTot*0.0036,1),pctRin:enTot>0?r(rin/enTot*100,1):0,
+    intCO2:ric>0?r((s1+s2l)/(ric/1e6),2):0,intEn:hr>0?r(enTot/hr,0):0,
+    rifTot:r(rifTot,2),pctRec:rifTot>0?r(n("ri_rec")/rifTot*100,1):0,
+    pctRicMat:n("ma_tot")>0?r(n("ma_ric")/n("ma_tot")*100,1):0,
+    pctDonne:hr>0?r(n("hr_don")/hr*100,1):0,pctInd:hr>0?r(n("hr_ind")/hr*100,1):0,
+    turnover:hr>0?r(n("hr_ces")/hr*100,1):0,turnoverIn:hr>0?r(n("hr_ass")/hr*100,1):0,
+    if_:n("si_ore")>0?r(n("si_inf")/n("si_ore")*1e6,2):0,ig:n("si_ore")>0?r(n("si_gg")/n("si_ore")*1e3,2):0,
+    oreForm:hr>0?r(n("fo_ore")/hr,1):0,payGap:n("re_uom")>0?r((n("re_uom")-n("re_don"))/n("re_uom")*100,1):0,
+    pctLoc:n("ec_for")>0?r(n("ec_loc")/n("ec_for")*100,1):0,pctForQ:n("ec_for")>0?r(n("go_forq")/n("ec_for")*100,1):0,
+    pctCdaD:n("go_cda")>0?r(n("go_cdad")/n("go_cda")*100,1):0,acqua:r(n("ac_prel"),0)};
+}
+const materiali=a=>TOPICS.filter(t=>{const m=a.materialita[t.id];return m&&(+m.imp>=a.soglia||+m.fin>=a.soglia);});
+function stato(a,y){
+  const p=a.profilo,pf=["forma","sede","settore","ateco","sitiop","mercati","contatto"];
+  const s1=pf.filter(k=>p[k]).length/pf.length;
+  const s2=Math.min(1,TOPICS.filter(t=>a.materialita[t.id]&&a.materialita[t.id].imp).length/TOPICS.length);
+  const s3=KPI.filter(k=>has(a,y,k.k)).length/KPI.length;
+  const mt=materiali(a);
+  const s4=mt.length?mt.filter(t=>{const g=a.gestione[t.id]||{};return g.politica&&g.azioni;}).length/mt.length:0;
+  const s5=NARR.filter(n=>(nar(a,n.id).testo||"").trim().length>80).length/NARR.length;
+  const s6=(s1+s2+s3+s4+s5)/5;
+  return {s1,s2,s3,s4,s5,s6,tot:Math.round(s6*100)};
+}
+
+/* ==========================================================
+   DIAGRAMMI — generati dai dati inseriti
+   ========================================================== */
+const CHARTS={
+ emissioni:{n:"Emissioni di gas serra — confronto biennale",f:chEmis},
+ energia:{n:"Composizione dei consumi energetici",f:chEner},
+ persone:{n:"Composizione dell'organico",f:chPers},
+ sicurezza:{n:"Indici infortunistici",f:chSic},
+ rifiuti:{n:"Rifiuti prodotti e avviati a recupero",f:chRif},
+ fornitori:{n:"Fornitori: provenienza e valutazione ESG",f:chFor},
+ materialita:{n:"Matrice di doppia rilevanza",f:chMat}
+};
+const CFONT='font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"';
+function svgGroupBars(groups,cats,colors,unit,dec){
+  const W=620,H=270,L=54,R=14,T=26,B=54,pw=W-L-R,ph=H-T-B;
+  let max=0;groups.forEach(g=>g.v.forEach(v=>{if(v>max)max=v;}));
+  if(max<=0)max=1;
+  const gw=pw/groups.length,bw=Math.min(52,gw/(cats.length+.8));
+  const y=v=>T+ph-(v/max)*ph;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT}>`;
+  for(let i=0;i<=4;i++){const gy=T+ph-ph*i/4,val=max*i/4;
+    s+=`<line x1="${L}" y1="${gy}" x2="${W-R}" y2="${gy}" stroke="#E4E2DC"/>
+        <text x="${L-8}" y="${gy+3.5}" font-size="9.5" fill="#7D8C87" text-anchor="end">${fmt(val,dec||0)}</text>`;}
+  groups.forEach((g,gi)=>{
+    const x0=L+gi*gw+(gw-bw*cats.length)/2;
+    g.v.forEach((v,ci)=>{
+      const bx=x0+ci*bw,by=y(v),bh=T+ph-by;
+      s+=`<rect x="${bx+3}" y="${by}" width="${bw-6}" height="${Math.max(0,bh)}" fill="${colors[ci]}" rx="3"/>`;
+      if(v>0)s+=`<text x="${bx+bw/2}" y="${by-5}" font-size="9.5" fill="#4A5B55" text-anchor="middle">${fmt(v,dec||0)}</text>`;
+    });
+    s+=`<text x="${L+gi*gw+gw/2}" y="${T+ph+17}" font-size="11" fill="#14201C" text-anchor="middle" font-weight="600">${g.n}</text>`;
+  });
+  cats.forEach((c,i)=>{const lx=L+i*130;
+    s+=`<rect x="${lx}" y="${H-20}" width="10" height="10" fill="${colors[i]}" rx="2"/>
+        <text x="${lx+15}" y="${H-11}" font-size="10.5" fill="#4A5B55">${c}</text>`;});
+  if(unit)s+=`<text x="${W-R}" y="${H-11}" font-size="10" fill="#7D8C87" text-anchor="end">${unit}</text>`;
+  return s+"</svg>";
+}
+function svgDonut(items,unit){
+  const W=620,H=250,cx=140,cy=125,r=88,ir=54;
+  const tot=items.reduce((s,i)=>s+i.v,0)||1;
+  let ang=-Math.PI/2,s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT}>`;
+  items.forEach(it=>{
+    const a2=ang+it.v/tot*Math.PI*2,big=(a2-ang)>Math.PI?1:0;
+    const x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    const x3=cx+ir*Math.cos(a2),y3=cy+ir*Math.sin(a2),x4=cx+ir*Math.cos(ang),y4=cy+ir*Math.sin(ang);
+    if(it.v>0)s+=`<path d="M${x1} ${y1} A${r} ${r} 0 ${big} 1 ${x2} ${y2} L${x3} ${y3} A${ir} ${ir} 0 ${big} 0 ${x4} ${y4} Z" fill="${it.c}"/>`;
+    ang=a2;});
+  s+=`<text x="${cx}" y="${cy-2}" font-size="17" fill="#14201C" text-anchor="middle" font-weight="700">${fmt(tot)}</text>
+      <text x="${cx}" y="${cy+14}" font-size="10" fill="#7D8C87" text-anchor="middle">${unit||""}</text>`;
+  items.forEach((it,i)=>{const ly=42+i*29;
+    s+=`<rect x="290" y="${ly-10}" width="11" height="11" fill="${it.c}" rx="2"/>
+        <text x="309" y="${ly}" font-size="11.5" fill="#14201C">${it.n}</text>
+        <text x="${W-16}" y="${ly}" font-size="11.5" fill="#4A5B55" text-anchor="end">${fmt(it.v)} · ${fmt(it.v/tot*100,1)}%</text>`;});
+  return s+"</svg>";
+}
+function svgHBars(items,unit){
+  const W=620,rowH=34,H=18+items.length*rowH+14,L=190;
+  let max=Math.max(...items.map(i=>i.v),1);
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT}>`;
+  items.forEach((it,i)=>{const y=18+i*rowH,w=(it.v/max)*(W-L-70);
+    s+=`<text x="${L-10}" y="${y+14}" font-size="11.5" fill="#14201C" text-anchor="end">${it.n}</text>
+        <rect x="${L}" y="${y+3}" width="${Math.max(2,w)}" height="17" fill="${it.c}" rx="3"/>
+        <text x="${L+w+8}" y="${y+16}" font-size="11" fill="#4A5B55">${fmt(it.v,it.d||0)}${it.u||""}</text>`;});
+  if(unit)s+=`<text x="${W-10}" y="${H-2}" font-size="10" fill="#7D8C87" text-anchor="end">${unit}</text>`;
+  return s+"</svg>";
+}
+function chEmis(a,y){const d=derive(a,y),p=derive(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.scope1,p.scope2loc,p.scope2mkt]},{n:String(y),v:[d.scope1,d.scope2loc,d.scope2mkt]}],
+    ["Scope 1","Scope 2 location","Scope 2 market"],["#1F5A4C","#4C9C88","#9CC9BC"],"tCO₂e",2);}
+function chEner(a,y){const n=k=>num(a,y,k),f=a.fattori;
+  return svgDonut([
+    {n:"Elettricità di rete",v:Math.round(Math.max(0,n("en_ele")-n("en_ele_go"))),c:"#1F5F8B"},
+    {n:"Elettricità con garanzia d'origine",v:Math.round(n("en_ele_go")),c:"#4C9C88"},
+    {n:"Autoproduzione rinnovabile",v:Math.round(n("en_auto")),c:"#2E7D32"},
+    {n:"Gas naturale",v:Math.round(n("en_gas")*f.kwh_smc),c:"#B06E00"},
+    {n:"Carburanti flotta e generatori",v:Math.round((n("en_gasolio")+n("en_flotta_d"))*f.kwh_l_gasolio+n("en_flotta_b")*f.kwh_l_benzina+n("en_gpl")*f.kwh_kg_gpl),c:"#8A7B5C"}
+  ],"kWh totali");}
+function chPers(a,y){const n=k=>num(a,y,k),t=n("hr_tot")||1;
+  return svgHBars([
+    {n:"Donne",v:n("hr_don"),c:"#5B4B9E",u:" ("+fmt(n("hr_don")/t*100,1)+"%)"},
+    {n:"Uomini",v:t-n("hr_don"),c:"#8B80C4",u:" ("+fmt((t-n("hr_don"))/t*100,1)+"%)"},
+    {n:"Tempo indeterminato",v:n("hr_ind"),c:"#2E7D6B",u:" ("+fmt(n("hr_ind")/t*100,1)+"%)"},
+    {n:"Tempo parziale",v:n("hr_pt"),c:"#4C9C88"},
+    {n:"Under 30",v:n("hr_u30"),c:"#1F5F8B"},
+    {n:"Over 50",v:n("hr_o50"),c:"#7FA8C4"},
+    {n:"Con disabilità",v:n("hr_dis"),c:"#B06E00"}
+  ],"numero di dipendenti al 31/12");}
+function chSic(a,y){const d=derive(a,y),p=derive(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.if_,p.ig]},{n:String(y),v:[d.if_,d.ig]}],
+    ["Indice di frequenza","Indice di gravità"],["#B3261E","#D9A17A"],"",2);}
+function chRif(a,y){const n=k=>num(a,y,k),np=k=>num(a,y-1,k);
+  return svgGroupBars([{n:String(y-1),v:[np("ri_np"),np("ri_p"),np("ri_rec")]},{n:String(y),v:[n("ri_np"),n("ri_p"),n("ri_rec")]}],
+    ["Non pericolosi","Pericolosi","Avviati a recupero"],["#4C9C88","#B06E00","#2E7D32"],"tonnellate",1);}
+function chFor(a,y){const n=k=>num(a,y,k),tot=n("ec_for")||1;
+  return svgHBars([
+    {n:"Fornitori attivi",v:n("ec_for"),c:"#1F5A4C"},
+    {n:"Con sede in Italia",v:n("ec_loc"),c:"#4C9C88",u:" ("+fmt(n("ec_loc")/tot*100,1)+"%)"},
+    {n:"Valutati su criteri ESG",v:n("go_forq"),c:"#2E7D32",u:" ("+fmt(n("go_forq")/tot*100,1)+"%)"}
+  ],"numero di fornitori");}
+function chMat(a){
+  const W=620,H=430,pad=56,sc=v=>pad+(v-1)/4*(W-pad*2-120),scY=v=>H-pad-(v-1)/4*(H-pad*2);
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT}>`;
+  s+=`<rect x="${sc(a.soglia)}" y="${pad}" width="${W-pad-120-sc(a.soglia)}" height="${H-pad*2}" fill="#E6F1ED"/>
+      <rect x="${pad}" y="${pad}" width="${W-pad*2-120}" height="${scY(a.soglia)-pad}" fill="#E6F1ED"/>
+      <line x1="${pad}" y1="${H-pad}" x2="${W-pad-120}" y2="${H-pad}" stroke="#E4E2DC"/>
+      <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="#E4E2DC"/>
+      <line x1="${sc(a.soglia)}" y1="${pad}" x2="${sc(a.soglia)}" y2="${H-pad}" stroke="#2E7D6B" stroke-dasharray="4 3"/>
+      <line x1="${pad}" y1="${scY(a.soglia)}" x2="${W-pad-120}" y2="${scY(a.soglia)}" stroke="#2E7D6B" stroke-dasharray="4 3"/>`;
+  [1,2,3,4,5].forEach(v=>{s+=`<text x="${sc(v)}" y="${H-pad+16}" font-size="9.5" fill="#7D8C87" text-anchor="middle">${v}</text>
+    <text x="${pad-9}" y="${scY(v)+3}" font-size="9.5" fill="#7D8C87" text-anchor="end">${v}</text>`;});
+  s+=`<text x="${(pad+W-pad-120)/2}" y="${H-14}" font-size="10.5" fill="#4A5B55" text-anchor="middle">rilevanza finanziaria →</text>
+      <text x="16" y="${H/2}" font-size="10.5" fill="#4A5B55" text-anchor="middle" transform="rotate(-90 16 ${H/2})">rilevanza d'impatto →</text>`;
+  TOPICS.forEach(t=>{const m=a.materialita[t.id];if(!m||!m.imp)return;
+    const mat=(+m.imp>=a.soglia||+m.fin>=a.soglia);
+    s+=`<circle cx="${sc(+m.fin||1)}" cy="${scY(+m.imp)}" r="${mat?10:6.5}" fill="${PIL[t.p].c}" opacity="${mat?.88:.3}"/>
+        <text x="${sc(+m.fin||1)}" y="${scY(+m.imp)+3.5}" font-size="8.5" fill="#fff" text-anchor="middle">${t.id.slice(1)}</text>`;});
+  ["E","S","G"].forEach((p,i)=>{const ly=pad+i*20;
+    s+=`<circle cx="${W-108}" cy="${ly-3}" r="5.5" fill="${PIL[p].c}"/><text x="${W-96}" y="${ly}" font-size="10.5" fill="#4A5B55">${PIL[p].n}</text>`;});
+  return s+"</svg>";
+}
+const chartSVG=(a,y,id)=>CHARTS[id]?CHARTS[id].f(a,y):"";
+
+/* ==========================================================
+   RENDER
+   ========================================================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const fmt=(v,d=0)=>v===0||v?Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+const iniz=n=>n.replace(/[^A-Za-zÀ-ÿ ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("");
+
+function render(){
+  const a=az();
+  const perc=$("#grpPercorso"),show=!!a&&view!=="pf";
+  document.querySelectorAll('.nav:not([data-v="pf"]):not([data-v="guida"])').forEach(n=>n.style.display=a?"flex":"none");
+  perc.style.display=a?"block":"none";
+  $("#coSel").style.display=a?"block":"none";
+  $("#annoSel").parentElement.style.display=a?"flex":"none";
+  $("#printBtn").style.display=a?"block":"none";
+  if(!a&&view!=="guida")view="pf";
+  if(a&&!anno)anno=a.anno;
+  if(a){const st=stato(a,anno);
+    [["s1",st.s1],["s2",st.s2],["s3",st.s3],["s4",st.s4],["s5",st.s5],["s6",st.s6],["s7",st.s6]].forEach(([id,v])=>{
+      const e=$("#"+id);if(!e)return;e.className="st"+(v>=.99?" ok":v>0?" mid":"");e.textContent=v>=.99?"✓":id.slice(1);});}
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("on",n.dataset.v===view));
+  const V={pf:vPf,home:vHome,org:vOrg,mat:vMat,dati:vDati,gest:vGest,narr:vNarr,ver:vVer,doc:vDoc,conf:vConf};
+  $("#view").innerHTML=view==="pf"?vPf():view==="guida"?vGuida():V[view](a,stato(a,anno));
+  bind(a);
+}
+
+/* ---------- portafoglio ---------- */
+let pfq="",openGuide=null;
+function vPf(){
+  const size=(JSON.stringify(DB).length/1048576);
+  const list=DB.aziende.filter(a=>!pfq||(a.nome+" "+(a.profilo.settore||"")+" "+(a.profilo.sede||"")).toLowerCase().includes(pfq.toLowerCase()));
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px">
+    <div><h1>Portafoglio</h1><p class="sub" style="margin:0">${DB.aziende.length} organizzazion${DB.aziende.length===1?"e":"i"} in archivio. Apri una scheda per riprendere il percorso da dove era rimasto.</p></div>
+    <input type="search" id="pfq" placeholder="Cerca per nome, settore, sede…" value="${esc(pfq)}" style="width:260px">
+  </div>
+  <div class="pf" style="margin-top:20px">
+    ${list.map(a=>{
+      const y=a.anno,st=stato(a,y),d=derive(a,y),mt=materiali(a);
+      return `<div class="pfc">
+        <div class="hd" data-open="${a.id}">
+          <div class="logo">${a.profilo.logo?`<img src="${a.profilo.logo}" alt="">`:esc(iniz(a.nome)||"—")}</div>
+          <div style="min-width:0">
+            <div class="nm">${esc(a.nome)}</div>
+            <div class="mt">${esc(a.profilo.settore||"settore da indicare")}${a.profilo.sede?" · "+esc(a.profilo.sede):""}</div>
+            <div class="mt code">esercizio ${y}</div>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="track"><i style="width:${st.tot}%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px" class="code"><span>completamento</span><span>${st.tot}%</span></div>
+          <div class="stats">
+            <div><b>${d.totLoc?fmt(d.totLoc,1):"—"}</b><span>tCO₂e</span></div>
+            <div><b>${has(a,y,"hr_tot")?fmt(num(a,y,"hr_tot")):"—"}</b><span>dipendenti</span></div>
+            <div><b>${mt.length||"—"}</b><span>temi materiali</span></div>
+          </div>
+        </div>
+        <div class="ft">
+          <button class="btn sm" data-open="${a.id}">Apri</button>
+          <button class="btn ghost sm" data-dup="${a.id}">Duplica</button>
+          <button class="btn ghost sm" data-del="${a.id}" style="margin-left:auto">Elimina</button>
+        </div>
+      </div>`;}).join("")}
+    <button class="pfnew" id="pfNew"><b>+</b>Nuova organizzazione</button>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <p class="eyebrow" style="margin-bottom:4px">Archivio</p>
+        <div style="font-size:12.5px;color:var(--ink-2)">Peso attuale <b class="code">${size.toFixed(2)} MB</b>${size>3.2?' — <span style="color:var(--red)">vicino al limite del browser: esporta e riduci le immagini</span>':""}. Le immagini sono ridimensionate automaticamente, ma restano la voce più pesante.</div>
+      </div>
+      <button class="btn ghost sm" id="expBtn">Esporta archivio</button>
+      <button class="btn ghost sm" id="impBtn">Importa archivio</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+    </div>
+  </div>`;
+}
+
+/* ---------- avanzamento ---------- */
+function vHome(a,st){
+  const d=derive(a,anno),mt=materiali(a);
+  const steps=[["org","Organizzazione","Chi rendiconta, con quale perimetro e secondo quale standard",st.s1],
+   ["mat","Materialità","Quali temi contano davvero, per impatto e per rilievo finanziario",st.s2],
+   ["dati","Dati e indicatori","I numeri dell'esercizio: consumi, persone, sicurezza, filiera",st.s3],
+   ["gest","Politiche e obiettivi","Per ogni tema materiale: cosa fate, dove volete arrivare",st.s4],
+   ["narr","Racconto","Capitoli discorsivi, fotografie e diagrammi",st.s5],
+   ["ver","Verifica","Cosa manca prima di pubblicare",st.s6],
+   ["doc","Bilancio","Il documento assemblato, pronto da stampare",st.s6]];
+  return `<h1>${esc(a.nome)} — esercizio ${anno}</h1>
+  <p class="sub">Il bilancio si costruisce inserendo i dati lungo il percorso. Ogni passo alimenta il documento finale.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Completamento</div><div class="n">${st.tot}%</div><div class="track" style="margin-top:8px"><i style="width:${st.tot}%"></i></div></div>
+    <div class="card kpi"><div class="l">Emissioni totali</div><div class="n">${fmt(d.totLoc,1)}</div><div class="h">tCO₂e · Scope 1 + 2 location</div></div>
+    <div class="card kpi"><div class="l">Temi materiali</div><div class="n">${mt.length}</div><div class="h">su ${TOPICS.length} valutati</div></div>
+    <div class="card kpi"><div class="l">Indicatori inseriti</div><div class="n">${KPI.filter(k=>has(a,anno,k.k)).length}</div><div class="h">su ${KPI.length} previsti</div></div>
+  </div>
+  <div class="card"><p class="eyebrow">I sette passi</p>
+    ${steps.map((s,i)=>`<div class="step" data-go="${s[0]}">
+      <div class="stepno ${s[3]>=.99?"ok":s[3]>0?"mid":""}">${s[3]>=.99?"✓":i+1}</div>
+      <div style="flex:1"><div class="stepname">${s[1]}</div><div class="stepdesc">${s[2]}</div></div>
+      <div class="stepbar"><div class="track"><i style="width:${Math.round(s[3]*100)}%"></i></div>
+      <div class="code" style="text-align:right;margin-top:4px">${Math.round(s[3]*100)}%</div></div></div>`).join("")}
+  </div>`;
+}
+
+/* ---------- 1 organizzazione ---------- */
+function vOrg(a){
+  const p=a.profilo,f=(k,l,h)=>`<label class="f"><span>${l}</span><input type="text" data-p="${k}" value="${esc(p[k])}">${h?`<div class="hint">${h}</div>`:""}</label>`;
+  return `<h1>1 · Organizzazione</h1>
+  <p class="sub">Identifica chi rendiconta e con quale perimetro. Logo e immagine di copertina compaiono sulla prima pagina del bilancio.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Identità</p>
+      <label class="f"><span>Denominazione</span><input type="text" data-n="nome" value="${esc(a.nome)}"></label>
+      ${f("forma","Forma giuridica")}${f("piva","Partita IVA")}${f("sede","Sede legale")}
+      ${f("settore","Settore di attività")}${f("ateco","Codice ATECO")}
+      <div class="hr"></div>
+      <p class="eyebrow">Immagini del documento</p>
+      <div class="grid g2">
+        <div><div style="border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center;background:#fff;min-height:84px;display:flex;align-items:center;justify-content:center">
+          ${p.logo?`<img src="${p.logo}" style="max-width:100%;max-height:64px">`:'<span class="code">nessun logo</span>'}</div>
+          <div style="display:flex;gap:6px;margin-top:8px"><button class="btn ghost sm" id="upLogo">Carica logo</button>${p.logo?'<button class="btn ghost sm" id="rmLogo">Rimuovi</button>':""}</div></div>
+        <div><div style="border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--line-2);min-height:84px;display:flex;align-items:center;justify-content:center">
+          ${p.copertina?`<img src="${p.copertina}" style="width:100%;display:block">`:'<span class="code">nessuna copertina</span>'}</div>
+          <div style="display:flex;gap:6px;margin-top:8px"><button class="btn ghost sm" id="upCov">Carica copertina</button>${p.copertina?'<button class="btn ghost sm" id="rmCov">Rimuovi</button>':""}</div></div>
+      </div>
+    </div>
+    <div class="card"><p class="eyebrow">Attività e perimetro</p>
+      ${f("sitiop","Siti operativi","Stabilimenti, magazzini, uffici inclusi nella rendicontazione")}
+      ${f("mercati","Mercati serviti","Aree geografiche e tipologie di cliente")}
+      ${f("contatto","Referente per il bilancio")}
+      <label class="f"><span>Standard adottato</span><select data-p="standard">
+        ${["GRI 2021 — opzione con riferimento","GRI 2021 — in conformità","ESRS (VSME) volontario","GRI 2021 + ESRS"].map(s=>`<option ${p.standard===s?"selected":""}>${esc(s)}</option>`).join("")}</select></label>
+      <label class="f"><span>Perimetro di rendicontazione</span><textarea data-p="perimetro" style="min-height:70px">${esc(p.perimetro)}</textarea></label>
+    </div>
+  </div>`;
+}
+
+/* ---------- 2 materialità ---------- */
+function vMat(a){
+  const scalaBox=(f)=>`<div>
+    <h5 style="margin:0 0 7px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-dk)">${f==="imp"?"Rilevanza d'impatto":"Rilevanza finanziaria"}</h5>
+    <div class="hint" style="margin:0 0 8px">${f==="imp"?"Quanto l'attività dell'azienda incide su persone e ambiente. Si valuta la gravità — portata, estensione, possibilità di rimediare — e la probabilità che l'effetto si verifichi.":"Quanto il tema incide sui conti dell'azienda. Si valuta l'entità degli effetti su ricavi, costi, investimenti e accesso a mercati o credito, e la probabilità che si manifestino."}</div>
+    <table><tbody>${SCALA[f].map(s=>`<tr><td style="width:22px;padding:5px 0" class="code"><b>${s.v}</b></td>
+      <td style="padding:5px 8px"><b style="font-weight:600;font-size:12.5px">${s.n}</b><div style="font-size:11.5px;color:var(--ink-3);line-height:1.4">${s.d}</div></td></tr>`).join("")}</tbody></table>
+  </div>`;
+  const panel=t=>{const g=GUIDE[t.id],m=a.materialita[t.id]||{};
+    if(!g)return "";
+    const lvl=(f)=>SCALA[f].map(s=>`<button class="lvl ${String(m[f])===String(s.v)?"on":""}" data-set="${t.id}" data-f="${f}" data-v="${s.v}">
+      <span class="v">${s.v}</span><span style="flex:1"><b>${s.n}</b><span>${s.d}</span></span></button>`).join("");
+    return `<tr><td colspan="5" style="padding:4px 10px 14px">
+      <div class="guide">
+        <p class="def">${esc(g.def)}</p>
+        <div class="grid g2">
+          <div>
+            <h5>Impatto — cosa guardare</h5>
+            <ul>${g.imp.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+            ${lvl("imp")}
+          </div>
+          <div>
+            <h5>Rilevanza finanziaria — cosa guardare</h5>
+            <ul>${g.fin.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+            ${lvl("fin")}
+          </div>
+        </div>
+        <div class="flag">${esc(g.alto)}</div>
+        <div class="ev"><b>Dove trovare le informazioni:</b> ${esc(g.ev)}</div>
+      </div></td></tr>`;};
+  return `<h1>2 · Materialità</h1>
+  <p class="sub">Doppia rilevanza: quanto l'azienda incide sul tema e quanto il tema incide sull'azienda. Scala 1–5 su entrambe le dimensioni. Un tema è materiale se supera la soglia su almeno una delle due. Il pulsante <b>?</b> accanto a ogni voce apre la guida con i criteri specifici di quel tema.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Matrice</p>
+      ${chMat(a)}
+      <label class="f" style="margin-top:12px"><span>Soglia di materialità</span>
+        <select data-soglia>${[2,3,3.5,4].map(v=>`<option value="${v}" ${a.soglia==v?"selected":""}>≥ ${v}</option>`).join("")}</select></label>
+      <div class="hint">${materiali(a).length} temi materiali su ${TOPICS.length} · ${TOPICS.filter(t=>(a.materialita[t.id]||{}).imp).length} valutati. La selezione determina i capitoli del bilancio e le schede del passo 4.</div>
+    </div>
+    <div class="card"><p class="eyebrow">Come attribuire i punteggi</p>
+      <div class="grid" style="gap:18px">${scalaBox("imp")}${scalaBox("fin")}</div>
+      <div class="hint" style="margin-top:12px">Valuta la situazione reale, non quella desiderata: un punteggio alto non è un giudizio negativo sull'azienda, indica solo che il tema va rendicontato.</div>
+    </div>
+  </div>
+  <div class="card" style="padding:6px 0">
+    <table><thead><tr><th style="width:36px"></th><th>Tema</th><th style="width:84px">Impatto</th><th style="width:84px">Finanz.</th><th style="width:88px">Esito</th></tr></thead>
+    <tbody>${TOPICS.map(t=>{const m=a.materialita[t.id]||{},mat=(+m.imp>=a.soglia||+m.fin>=a.soglia),ap=openGuide===t.id;
+      const sel=f=>`<select data-mat="${t.id}" data-f="${f}"><option value="">—</option>${[1,2,3,4,5].map(v=>`<option value="${v}" ${String(m[f])===String(v)?"selected":""}>${v}</option>`).join("")}</select>`;
+      return `<tr${ap?' style="background:var(--teal-lt)"':""}>
+        <td><button class="gbtn ${ap?"on":""}" data-guide="${t.id}" title="Guida alla valutazione di questo tema">?</button></td>
+        <td><b style="font-weight:500">${esc(t.n)}</b><div class="code">${t.id} · ${esc(t.r)} · ${PIL[t.p].n}</div></td>
+        <td>${sel("imp")}</td><td>${sel("fin")}</td>
+        <td>${m.imp?`<span class="tag ${mat?PIL[t.p].t:"t-gry"}">${mat?"materiale":"escluso"}</span>`:'<span class="code">da valutare</span>'}</td></tr>
+        ${ap?panel(t):""}`;}).join("")}</tbody></table>
+  </div>`;
+}
+
+/* ---------- 3 dati ---------- */
+function vDati(a){
+  const d=derive(a,anno),prev=anno-1;
+  const row=k=>{const cur=dati(a,anno)[k.k],pre=dati(a,prev)[k.k];
+    return `<tr><td><b style="font-weight:500">${esc(k.n)}</b>${k.h?`<div class="hint">${esc(k.h)}</div>`:""}</td>
+    <td style="width:56px" class="code">${k.u}</td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${anno}" value="${esc(cur===undefined?"":cur)}"></td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${prev}" value="${esc(pre===undefined?"":pre)}" style="background:var(--bg)"></td></tr>`;};
+  const dtab=rows=>`<div class="derived"><table><tbody>${rows.map(r=>
+    `<tr><td style="border:0;padding:5px 0;font-size:12.5px">${r[0]}</td><td class="num" style="border:0;padding:5px 0"><b>${r[1]}</b> <span class="code">${r[2]||""}</span></td></tr>`).join("")}</tbody></table></div>`;
+  const D={ene:dtab([["Energia totale consumata",fmt(d.enTot_kwh),"kWh"],["Equivalente in energia",fmt(d.enTot_gj,1),"GJ"],
+      ["Quota da fonti rinnovabili",fmt(d.pctRin,1),"%"],["Emissioni dirette — Scope 1",fmt(d.scope1,2),"tCO₂e"],
+      ["Scope 2 location based",fmt(d.scope2loc,2),"tCO₂e"],["Scope 2 market based",fmt(d.scope2mkt,2),"tCO₂e"],
+      ["Totale Scope 1+2 (location)",fmt(d.totLoc,2),"tCO₂e"],["Intensità carbonica",fmt(d.intCO2,2),"tCO₂e / € mln"],
+      ["Consumo per addetto",fmt(d.intEn),"kWh"]]),
+    acq:dtab([["Prelievo idrico totale",fmt(d.acqua),"m³"]]),
+    rif:dtab([["Rifiuti totali prodotti",fmt(d.rifTot,2),"t"],["Quota avviata a recupero",fmt(d.pctRec,1),"%"],["Materiali riciclati sul totale",fmt(d.pctRicMat,1),"%"]]),
+    per:dtab([["Presenza femminile",fmt(d.pctDonne,1),"%"],["Contratti a tempo indeterminato",fmt(d.pctInd,1),"%"],["Tasso di uscita",fmt(d.turnover,1),"%"],["Tasso di ingresso",fmt(d.turnoverIn,1),"%"]]),
+    sic:dtab([["Indice di frequenza infortuni",fmt(d.if_,2),"per 1.000.000 ore"],["Indice di gravità",fmt(d.ig,2),"per 1.000 ore"]]),
+    for:dtab([["Ore di formazione per addetto",fmt(d.oreForm,1),"ore"],["Divario retributivo di genere",fmt(d.payGap,1),"%"]]),
+    eco:dtab([["Fornitori con sede in Italia",fmt(d.pctLoc,1),"%"]]),
+    gov:dtab([["Presenza femminile nell'organo amministrativo",fmt(d.pctCdaD,1),"%"],["Fornitori valutati su criteri ESG",fmt(d.pctForQ,1),"%"]])};
+  return `<h1>3 · Dati e indicatori</h1>
+  <p class="sub">Inserisci i dati dell'esercizio e dell'anno precedente: il confronto è ciò che rende leggibile un bilancio. Gli indicatori in verde si calcolano da soli e alimentano i diagrammi.</p>
+  ${SEZ.map(s=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+      <div><h2 style="margin:0">${s.n}</h2><span class="code">${esc(s.r)}</span></div>
+      <span class="tag ${PIL[s.c].t}">${PIL[s.c].n}</span></div>
+    <table><thead><tr><th>Indicatore</th><th>Unità</th><th>${anno}</th><th>${prev}</th></tr></thead>
+    <tbody>${KPI.filter(k=>k.s===s.id).map(row).join("")}</tbody></table>
+    <div style="margin-top:12px">${D[s.id]}</div></div>`).join("")}`;
+}
+
+/* ---------- 4 politiche ---------- */
+function vGest(a){
+  const mt=materiali(a);
+  if(!mt.length)return `<h1>4 · Politiche e obiettivi</h1><p class="sub">Le schede compaiono per i temi risultati materiali.</p><div class="card"><div class="empty">Completa prima il passo 2: nessun tema ha ancora superato la soglia.</div></div>`;
+  return `<h1>4 · Politiche e obiettivi</h1>
+  <p class="sub">Per ciascun tema materiale servono tre cose: la politica adottata, le azioni concrete dell'anno, l'obiettivo che vi date.</p>
+  ${mt.map(t=>{const g=a.gestione[t.id]||{};
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0">${esc(t.n)}</h2><span class="tag ${PIL[t.p].t}">${t.id} · ${esc(t.r)}</span></div>
+      <div class="grid g2" style="margin-top:14px">
+        <label class="f"><span>Politica o impegno formalizzato</span><textarea data-g="politica" data-t="${t.id}" style="min-height:80px" placeholder="Quale documento la contiene e cosa stabilisce">${esc(g.politica||"")}</textarea></label>
+        <label class="f"><span>Azioni realizzate nell'esercizio</span><textarea data-g="azioni" data-t="${t.id}" style="min-height:80px" placeholder="Interventi, investimenti, iniziative concrete">${esc(g.azioni||"")}</textarea></label></div>
+      <div class="grid g4">
+        <label class="f"><span>Obiettivo</span><input type="text" data-g="target" data-t="${t.id}" value="${esc(g.target||"")}" placeholder="es. −20% consumi"></label>
+        <label class="f"><span>Anno base</span><input type="text" data-g="base" data-t="${t.id}" value="${esc(g.base||"")}"></label>
+        <label class="f"><span>Anno traguardo</span><input type="text" data-g="anno" data-t="${t.id}" value="${esc(g.anno||"")}"></label>
+        <label class="f"><span>Responsabile</span><input type="text" data-g="resp" data-t="${t.id}" value="${esc(g.resp||"")}"></label></div>
+    </div>`;}).join("")}`;
+}
+
+/* ---------- 5 racconto con media ---------- */
+function vNarr(a){
+  return `<h1>5 · Racconto</h1>
+  <p class="sub">I capitoli discorsivi, con le immagini e i diagrammi che li accompagnano. I diagrammi si costruiscono dai dati del passo 3: se aggiorni un numero, il grafico si aggiorna da solo.</p>
+  ${NARR.map(n=>{const v=nar(a,n.id);
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <h2 style="margin:0">${n.n}</h2>
+        <span class="code">${v.testo.trim().split(/\s+/).filter(Boolean).length} parole · ${v.media.length} elementi visivi</span></div>
+      <div class="hint" style="margin:0 0 8px">${n.h}</div>
+      <textarea data-nar="${n.id}" placeholder="Scrivi qui…">${esc(v.testo)}</textarea>
+      <div class="mediabar">
+        <button class="btn ghost sm" data-addimg="${n.id}">＋ Fotografia</button>
+        <select data-addch="${n.id}" style="width:auto">
+          <option value="">＋ Diagramma dai dati…</option>
+          ${Object.keys(CHARTS).map(k=>`<option value="${k}">${CHARTS[k].n}</option>`).join("")}
+        </select>
+      </div>
+      ${v.media.map((m,i)=>`<div class="media">
+        <div class="thumb">${m.t==="img"?`<img src="${m.src}" alt="">`:chartSVG(a,anno,m.ch)}</div>
+        <div class="body">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <span class="tag ${m.t==="img"?"t-tea":"t-blu"}">${m.t==="img"?"fotografia":"diagramma"}</span>
+            <span class="code">${m.t==="img"?"immagine caricata":esc(CHARTS[m.ch]?CHARTS[m.ch].n:m.ch)}</span>
+            <div style="margin-left:auto;display:flex;gap:4px">
+              <button class="btn ghost icon" data-mv="up" data-n="${n.id}" data-i="${i}" ${i===0?"disabled":""}>↑</button>
+              <button class="btn ghost icon" data-mv="dn" data-n="${n.id}" data-i="${i}" ${i===v.media.length-1?"disabled":""}>↓</button>
+              <button class="btn ghost icon" data-mdel="${i}" data-n="${n.id}">✕</button>
+            </div>
+          </div>
+          <input type="text" placeholder="Didascalia — cosa mostra e perché è rilevante" data-mcap="${i}" data-n="${n.id}" value="${esc(m.cap||"")}" style="margin-bottom:6px">
+          <div style="display:flex;gap:8px">
+            <input type="text" placeholder="Fonte o credito fotografico" data-mcred="${i}" data-n="${n.id}" value="${esc(m.cred||"")}">
+            <select data-mw="${i}" data-n="${n.id}" style="width:170px">
+              <option value="full" ${m.w!=="half"?"selected":""}>Larghezza piena</option>
+              <option value="half" ${m.w==="half"?"selected":""}>Metà colonna</option>
+            </select>
+          </div>
+        </div>
+      </div>`).join("")}
+    </div>`;}).join("")}`;
+}
+
+/* ---------- 6 verifica ---------- */
+function vVer(a,st){
+  const y=anno;
+  const mt=materiali(a);
+  const mancKpi=KPI.filter(k=>!has(a,y,k.k));
+  const mancPrev=KPI.filter(k=>has(a,y,k.k)&&!has(a,y-1,k.k));
+  const mancGest=mt.filter(t=>{const g=a.gestione[t.id]||{};return !g.politica||!g.azioni;});
+  const mancNar=NARR.filter(n=>(nar(a,n.id).testo||"").trim().length<=80);
+  const mancProf=["forma","sede","settore","ateco","sitiop","mercati","contatto"].filter(k=>!a.profilo[k]);
+  const media=NARR.reduce((s,n)=>s+nar(a,n.id).media.length,0);
+  const blocco=(t,arr,label,go)=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><h2 style="margin:0">${t}</h2><span class="code">${arr.length===0?"completo":arr.length+" voci da sistemare"}</span></div>
+      ${arr.length?`<button class="btn ghost sm" data-go="${go}">Vai</button>`:'<span class="tag t-grn">ok</span>'}</div>
+    ${arr.length?`<div style="margin-top:10px;font-size:12.5px;color:var(--ink-2);line-height:1.7">${arr.slice(0,14).map(label).join(" · ")}${arr.length>14?" · <i>e altre "+(arr.length-14)+"</i>":""}</div>`:""}
+  </div>`;
+  return `<h1>6 · Verifica</h1>
+  <p class="sub">Cosa manca prima di pubblicare. Nessuna voce è obbligatoria in assoluto, ma ogni assenza va motivata nella nota metodologica.</p>
+  <div class="card"><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div class="kpi"><div class="l">Pronto a pubblicare</div><div class="n">${st.tot}%</div></div>
+    <div style="flex:1;min-width:220px"><div class="track"><i style="width:${st.tot}%"></i></div>
+    <div class="hint">${st.tot>=90?"Il documento è consegnabile: rileggi il capitolo metodologico e procedi.":st.tot>=60?"Buon punto di avanzamento. Chiudi le voci qui sotto in ordine di elenco.":"Il documento non è ancora rappresentativo: mancano dati o temi di gestione."}</div></div>
+  </div></div>
+  ${blocco("Anagrafica",mancProf,k=>esc(k),"org")}
+  ${blocco("Dati dell'esercizio "+y,mancKpi,k=>esc(k.n),"dati")}
+  ${blocco("Confronto con l'anno precedente",mancPrev,k=>esc(k.n),"dati")}
+  ${blocco("Politiche e obiettivi sui temi materiali",mancGest,t=>esc(t.n),"gest")}
+  ${blocco("Capitoli narrativi",mancNar,n=>esc(n.n),"narr")}
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center">
+    <div><h2 style="margin:0">Apparato visivo</h2><span class="code">${media} tra fotografie e diagrammi</span></div>
+    ${media<3?`<button class="btn ghost sm" data-go="narr">Aggiungi</button>`:'<span class="tag t-grn">ok</span>'}</div>
+    ${media<3?'<div class="hint">Un bilancio con meno di tre elementi visivi risulta ostico da leggere. I diagrammi dai dati sono gratuiti: bastano due clic.</div>':""}
+  </div>`;
+}
+
+/* ---------- 7 bilancio ---------- */
+function vDoc(a){
+  const y=anno,d=derive(a,y),dp=derive(a,y-1),p=a.profilo,mt=materiali(a);
+  const media=(id,pos)=>{const m=nar(a,id).media;if(!m.length)return "";
+    return m.map(x=>`<figure class="fig ${x.w==="half"?"half":""}">
+      ${x.t==="img"?`<img src="${x.src}" alt="${esc(x.cap||"")}">`:chartSVG(a,y,x.ch)}
+      ${x.cap||x.cred?`<figcaption>${esc(x.cap||"")}${x.cred?` <i>— ${esc(x.cred)}</i>`:""}</figcaption>`:""}
+    </figure>`).join("")+'<div class="clear"></div>';};
+  const P=id=>{const t=(nar(a,id).testo||"").trim();
+    return (t?t.split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join(""):`<p class="miss">[Capitolo da completare al passo 5]</p>`)+media(id);};
+  const delta=(c,pr)=>{if(!pr||!c)return "—";const v=(c-pr)/Math.abs(pr)*100;return (v>0?"+":"")+fmt(v,1)+"%";};
+  const T=rows=>`<table><thead><tr><th>Indicatore</th><th class="num">${y}</th><th class="num">${y-1}</th><th class="num" style="width:80px">Var.</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td>${r[0]}${r[3]?` <span class="code">${r[3]}</span>`:""}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[4]||"—"}</td></tr>`).join("")}</tbody></table>`;
+  const n=(k,dec=0)=>has(a,y,k)?fmt(num(a,y,k),dec):"—";
+  const np=(k,dec=0)=>has(a,y-1,k)?fmt(num(a,y-1,k),dec):"—";
+  const dl_=k=>has(a,y,k)&&has(a,y-1,k)?delta(num(a,y,k),num(a,y-1,k)):"—";
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px">
+    <div><h1>7 · Bilancio</h1><p class="sub" style="margin:0">Documento assemblato dai dati inseriti. Usa <b>Stampa bilancio</b> per il PDF.</p></div>
+    <button class="btn ghost sm" id="expDoc">Esporta dati (JSON)</button></div>
+  <div class="doc">
+    <div class="cover ${p.copertina?"img":""}">
+      ${p.copertina?`<img class="hero" src="${p.copertina}" alt="">`:""}
+      ${p.logo?`<div class="lg"><img src="${p.logo}" alt=""></div>`:""}
+      <div class="${p.copertina?"over":""}">
+        <div class="k">Bilancio di sostenibilità · esercizio ${y}</div>
+        <h2>${esc(a.nome)}</h2>
+        <p>${esc(p.settore||"")}${p.sede?" · "+esc(p.sede):""}</p>
+        <p style="margin-top:16px;font-size:12px;opacity:.75">Redatto secondo ${esc(p.standard)}</p>
+      </div>
+    </div>
+    <div class="inner">
+      <h3>Lettera agli stakeholder</h3>${P("lettera")}
+      <h3>Identità dell'organizzazione</h3>${P("identita")}
+      <table><tbody>
+        <tr><td style="width:38%">Denominazione</td><td><b>${esc(a.nome)}</b></td></tr>
+        ${p.forma?`<tr><td>Forma giuridica</td><td>${esc(p.forma)}</td></tr>`:""}
+        ${p.piva?`<tr><td>Partita IVA</td><td>${esc(p.piva)}</td></tr>`:""}
+        ${p.sede?`<tr><td>Sede legale</td><td>${esc(p.sede)}</td></tr>`:""}
+        ${p.ateco?`<tr><td>Attività (ATECO)</td><td>${esc(p.ateco)} — ${esc(p.settore)}</td></tr>`:""}
+        ${p.sitiop?`<tr><td>Siti operativi</td><td>${esc(p.sitiop)}</td></tr>`:""}
+        ${p.mercati?`<tr><td>Mercati serviti</td><td>${esc(p.mercati)}</td></tr>`:""}
+        <tr><td>Dipendenti al 31/12/${y}</td><td>${n("hr_tot")}</td></tr></tbody></table>
+      <h4>Modello di business</h4>${P("business")}
+      <h4>Catena del valore</h4>${P("catena")}
+      <h3>Nota metodologica</h3>${P("metodo")}
+      <p><b>Perimetro.</b> ${esc(p.perimetro)}</p>
+      <p><b>Periodo.</b> Esercizio ${y}, con dati comparativi ${y-1} ove disponibili.</p>
+      <p><b>Emissioni.</b> Calcolate secondo il GHG Protocol; Scope 2 riportato con approccio location based e market based. Fattori applicati: gas naturale ${a.fattori.gas} kgCO₂e/Smc; gasolio ${a.fattori.gasolio} kgCO₂e/l; benzina ${a.fattori.benzina} kgCO₂e/l; GPL ${a.fattori.gpl} kgCO₂e/kg; energia elettrica ${a.fattori.ele_loc} kgCO₂/kWh (location) e ${a.fattori.ele_mkt} kgCO₂/kWh (residual mix).</p>
+      <p class="note">Il presente documento non è stato sottoposto ad assurance esterna, salvo diversa indicazione.</p>
+      <h3>Analisi di materialità</h3>${P("stake")}
+      <p>La valutazione ha considerato ${TOPICS.length} temi secondo la doppia prospettiva di rilevanza — d'impatto e finanziaria — su scala 1–5, con soglia fissata a ${a.soglia}. Sono risultati materiali ${mt.length} temi.</p>
+      <table><thead><tr><th>Tema materiale</th><th>Area</th><th class="num">Impatto</th><th class="num">Finanz.</th></tr></thead>
+      <tbody>${mt.length?mt.map(t=>{const m=a.materialita[t.id];return `<tr><td>${esc(t.n)} <span class="code">${esc(t.r)}</span></td><td>${PIL[t.p].n}</td><td class="num">${m.imp||"—"}</td><td class="num">${m.fin||"—"}</td></tr>`;}).join(""):`<tr><td colspan="4" class="miss">Analisi da completare al passo 2.</td></tr>`}</tbody></table>
+      <h3>Responsabilità ambientale</h3>
+      <h4>Energia</h4>
+      ${T([["Energia elettrica prelevata",n("en_ele"),np("en_ele"),"kWh",dl_("en_ele")],
+           ["di cui con garanzia d'origine",n("en_ele_go"),np("en_ele_go"),"kWh",dl_("en_ele_go")],
+           ["Energia autoprodotta e consumata",n("en_auto"),np("en_auto"),"kWh",dl_("en_auto")],
+           ["Gas naturale",n("en_gas"),np("en_gas"),"Smc",dl_("en_gas")],
+           ["<b>Consumo energetico totale</b>",fmt(d.enTot_kwh),fmt(dp.enTot_kwh),"kWh",delta(d.enTot_kwh,dp.enTot_kwh)],
+           ["Quota rinnovabile",fmt(d.pctRin,1),fmt(dp.pctRin,1),"%",""]])}
+      <h4>Emissioni di gas serra</h4>
+      ${T([["Scope 1 — emissioni dirette",fmt(d.scope1,2),fmt(dp.scope1,2),"tCO₂e",delta(d.scope1,dp.scope1)],
+           ["Scope 2 — location based",fmt(d.scope2loc,2),fmt(dp.scope2loc,2),"tCO₂e",delta(d.scope2loc,dp.scope2loc)],
+           ["Scope 2 — market based",fmt(d.scope2mkt,2),fmt(dp.scope2mkt,2),"tCO₂e",delta(d.scope2mkt,dp.scope2mkt)],
+           ["<b>Totale Scope 1 + 2 (location)</b>",fmt(d.totLoc,2),fmt(dp.totLoc,2),"tCO₂e",delta(d.totLoc,dp.totLoc)],
+           ["Intensità carbonica",fmt(d.intCO2,2),fmt(dp.intCO2,2),"tCO₂e/€ mln",""]])}
+      <h4>Acqua, rifiuti e materiali</h4>
+      ${T([["Prelievo idrico totale",n("ac_prel"),np("ac_prel"),"m³",dl_("ac_prel")],
+           ["Rifiuti non pericolosi",n("ri_np",2),np("ri_np",2),"t",dl_("ri_np")],
+           ["Rifiuti pericolosi",n("ri_p",2),np("ri_p",2),"t",dl_("ri_p")],
+           ["Quota avviata a recupero",fmt(d.pctRec,1),fmt(dp.pctRec,1),"%",""],
+           ["Materiali riciclati sul totale",fmt(d.pctRicMat,1),fmt(dp.pctRicMat,1),"%",""]])}
+      ${schede(a,mt,"E")}
+      <h3>Le persone</h3>
+      ${T([["Dipendenti al 31/12",n("hr_tot"),np("hr_tot"),"n.",dl_("hr_tot")],
+           ["di cui donne",n("hr_don"),np("hr_don"),"n.",dl_("hr_don")],
+           ["Presenza femminile",fmt(d.pctDonne,1),fmt(dp.pctDonne,1),"%",""],
+           ["Contratti a tempo indeterminato",fmt(d.pctInd,1),fmt(dp.pctInd,1),"%",""],
+           ["Assunzioni",n("hr_ass"),np("hr_ass"),"n.",dl_("hr_ass")],
+           ["Cessazioni",n("hr_ces"),np("hr_ces"),"n.",dl_("hr_ces")],
+           ["Tasso di uscita",fmt(d.turnover,1),fmt(dp.turnover,1),"%",""],
+           ["Lavoratori con disabilità",n("hr_dis"),np("hr_dis"),"n.",dl_("hr_dis")]])}
+      <h4>Salute e sicurezza</h4>
+      ${T([["Ore lavorate",n("si_ore"),np("si_ore"),"ore",dl_("si_ore")],
+           ["Infortuni registrabili",n("si_inf"),np("si_inf"),"n.",dl_("si_inf")],
+           ["Giorni di assenza",n("si_gg"),np("si_gg"),"gg",dl_("si_gg")],
+           ["<b>Indice di frequenza</b>",fmt(d.if_,2),fmt(dp.if_,2),"per 10⁶ ore",delta(d.if_,dp.if_)],
+           ["<b>Indice di gravità</b>",fmt(d.ig,2),fmt(dp.ig,2),"per 10³ ore",delta(d.ig,dp.ig)],
+           ["Mancati infortuni segnalati",n("si_nm"),np("si_nm"),"n.",dl_("si_nm")]])}
+      <h4>Formazione e retribuzioni</h4>
+      ${T([["Ore di formazione erogate",n("fo_ore"),np("fo_ore"),"ore",dl_("fo_ore")],
+           ["di cui su salute e sicurezza",n("fo_sic"),np("fo_sic"),"ore",dl_("fo_sic")],
+           ["Ore per addetto",fmt(d.oreForm,1),fmt(dp.oreForm,1),"ore",""],
+           ["Divario retributivo di genere",fmt(d.payGap,1),fmt(dp.payGap,1),"%",""]])}
+      ${schede(a,mt,"S")}
+      <h3>Governance, etica e catena di fornitura</h3>
+      ${T([["Componenti dell'organo amministrativo",n("go_cda"),np("go_cda"),"n.",dl_("go_cda")],
+           ["Presenza femminile nell'organo",fmt(d.pctCdaD,1),fmt(dp.pctCdaD,1),"%",""],
+           ["Segnalazioni ricevute",n("go_seg"),np("go_seg"),"n.",dl_("go_seg")],
+           ["Episodi di corruzione accertati",n("go_cor"),np("go_cor"),"n.",dl_("go_cor")],
+           ["Sanzioni per non conformità",n("go_san"),np("go_san"),"n.",dl_("go_san")],
+           ["Ore di formazione su etica e 231",n("fo_eti"),np("fo_eti"),"ore",dl_("fo_eti")]])}
+      <h4>Valore economico e fornitori</h4>
+      ${T([["Ricavi delle vendite",n("ec_ric"),np("ec_ric"),"€",dl_("ec_ric")],
+           ["Valore economico distribuito",n("ec_van"),np("ec_van"),"€",dl_("ec_van")],
+           ["Investimenti in ambiente e sicurezza",n("ec_inv"),np("ec_inv"),"€",dl_("ec_inv")],
+           ["Fornitori attivi",n("ec_for"),np("ec_for"),"n.",dl_("ec_for")],
+           ["Fornitori con sede in Italia",fmt(d.pctLoc,1),fmt(dp.pctLoc,1),"%",""],
+           ["Fornitori valutati su criteri ESG",fmt(d.pctForQ,1),fmt(dp.pctForQ,1),"%",""],
+           ["Tempo medio di pagamento",n("ec_pag"),np("ec_pag"),"gg",dl_("ec_pag")]])}
+      ${schede(a,mt,"G")}
+      <h3>Obiettivi di miglioramento</h3>
+      <table><thead><tr><th>Tema</th><th>Obiettivo</th><th style="width:80px">Base</th><th style="width:80px">Traguardo</th><th style="width:130px">Responsabile</th></tr></thead>
+      <tbody>${mt.filter(t=>(a.gestione[t.id]||{}).target).map(t=>{const g=a.gestione[t.id];
+        return `<tr><td>${esc(t.n)}</td><td>${esc(g.target)}</td><td>${esc(g.base||"—")}</td><td>${esc(g.anno||"—")}</td><td>${esc(g.resp||"—")}</td></tr>`;}).join("")
+        ||`<tr><td colspan="5" class="miss">Nessun obiettivo inserito al passo 4.</td></tr>`}</tbody></table>
+      ${P("impegni")}
+      <h3>Indice dei contenuti</h3>
+      <table><thead><tr><th>Ambito rendicontato</th><th>Riferimento</th></tr></thead><tbody>
+        <tr><td>Informazioni generali sull'organizzazione</td><td class="code">GRI 2-1/2-6 · ESRS 2 BP/GOV/SBM</td></tr>
+        <tr><td>Analisi di materialità</td><td class="code">GRI 3-1/3-2 · ESRS 1 §3, IRO-1</td></tr>
+        ${SEZ.map(s=>`<tr><td>${s.n}</td><td class="code">${esc(s.r)}</td></tr>`).join("")}
+        <tr><td>Politiche, azioni e obiettivi sui temi materiali</td><td class="code">GRI 3-3 · ESRS MDR-P/A/T</td></tr>
+      </tbody></table>
+      <p class="note" style="margin-top:22px">Documento generato il ${new Date().toLocaleDateString("it-IT")} · ${esc(p.contatto||"")}</p>
+    </div>
+  </div>`;
+}
+function schede(a,mt,pil){
+  const l=mt.filter(t=>t.p===pil&&((a.gestione[t.id]||{}).politica||(a.gestione[t.id]||{}).azioni));
+  if(!l.length)return "";
+  return l.map(t=>{const g=a.gestione[t.id];
+    return `<h4>${esc(t.n)}</h4>${g.politica?`<p><b>Il nostro impegno.</b> ${esc(g.politica)}</p>`:""}${g.azioni?`<p><b>Cosa abbiamo fatto nell'esercizio.</b> ${esc(g.azioni)}</p>`:""}`;}).join("");
+}
+
+/* ---------- guida all'uso ---------- */
+function vGuida(){
+  const FONTI=[
+   ["Energia elettrica, gas, carburanti","Bollette del fornitore elettrico e del gas (kWh e Smc dell'anno solare), fatture o schede carburante per la flotta, contatore dell'inverter fotovoltaico. La copertura con garanzie d'origine è indicata nel contratto o nella bolletta."],
+   ["Acqua","Fatture dell'acquedotto, letture del contatore di pozzo, registro di autocontrollo degli scarichi."],
+   ["Rifiuti","Registro di carico e scarico, formulari di identificazione, dichiarazione MUD dell'anno successivo. La quota a recupero si ricava dal codice di destinazione (R o D) sui formulari."],
+   ["Materiali","Contabilità di magazzino, distinte base, dichiarazioni dei fornitori sul contenuto di riciclato."],
+   ["Organico e contratti","Libro unico del lavoro, prospetto dell'organico al 31 dicembre, denunce UniEmens, prospetto informativo disabili."],
+   ["Salute e sicurezza","Registro infortuni e denunce INAIL, ore lavorate dal riepilogo paghe, segnalazioni di mancato infortunio, DVR per il contesto."],
+   ["Formazione","Registri delle presenze ai corsi, attestati, piattaforma e-learning, rendicontazioni ai fondi interprofessionali."],
+   ["Retribuzioni","Elaborazione paghe: retribuzione lorda annua media, calcolata separatamente per donne e uomini a parità di inquadramento ove possibile."],
+   ["Valore economico e fornitori","Bilancio d'esercizio (ricavi dalla voce A1 del conto economico), contabilità fornitori, scadenzario passivo per i tempi di pagamento."],
+   ["Governance ed etica","Visura camerale, verbali degli organi sociali, registro delle segnalazioni, provvedimenti e verbali ispettivi ricevuti."]
+  ];
+  const FORMULE=[
+   ["Energia totale (kWh)","elettrica di rete + autoprodotta + gas (Smc) × 10,55 + gasolio (l) × 9,96 + benzina (l) × 8,78 + GPL (kg) × 12,79"],
+   ["Energia totale (GJ)","kWh × 0,0036"],
+   ["Quota rinnovabile (%)","(elettrica con garanzia d'origine + autoprodotta) ÷ energia totale × 100"],
+   ["Scope 1 (tCO₂e)","[gas × 1,9755 + gasolio × 2,687 + benzina × 2,313 + GPL × 2,984] ÷ 1.000"],
+   ["Scope 2 location based (tCO₂e)","elettrica prelevata × 0,2565 ÷ 1.000"],
+   ["Scope 2 market based (tCO₂e)","(prelevata − coperta da garanzie d'origine) × 0,457 ÷ 1.000"],
+   ["Intensità carbonica","(Scope 1 + Scope 2 location) ÷ (ricavi ÷ 1.000.000)"],
+   ["Consumo per addetto (kWh)","energia totale ÷ dipendenti al 31/12"],
+   ["Quota rifiuti a recupero (%)","rifiuti avviati a recupero ÷ (non pericolosi + pericolosi) × 100"],
+   ["Indice di frequenza infortuni","infortuni ÷ ore lavorate × 1.000.000"],
+   ["Indice di gravità","giorni di assenza ÷ ore lavorate × 1.000"],
+   ["Tasso di uscita (%)","cessazioni ÷ dipendenti al 31/12 × 100"],
+   ["Divario retributivo di genere (%)","(media uomini − media donne) ÷ media uomini × 100"],
+   ["Presenza femminile (%)","donne ÷ dipendenti al 31/12 × 100"]
+  ];
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div><h1>Guida all'uso</h1><p class="sub" style="margin:0">Manuale operativo del percorso. Puoi stamparlo e consegnarlo al cliente.</p></div>
+    <button class="btn ghost sm" onclick="window.print()">Stampa la guida</button></div>
+  <div class="doc"><div class="inner">
+
+  <h3>A cosa serve</h3>
+  <p class="lead">Questo strumento accompagna un'azienda dalla raccolta dei dati grezzi fino al bilancio di sostenibilità impaginato. Non è un questionario da compilare a posteriori: è un percorso in cui i numeri inseriti diventano indicatori, i temi valutati diventano capitoli e il tutto si assembla in un documento.</p>
+  <p>Il lavoro è organizzato in sette passi che si affrontano nell'ordine. Ogni passo alimenta il documento finale, e la barra di avanzamento nella colonna di sinistra segnala a colpo d'occhio cosa è concluso e cosa no. Si può tornare indietro in qualsiasi momento: nulla è definitivo finché non si stampa.</p>
+  <p><b>Dove finiscono i dati.</b> Restano nel browser del computer che stai usando. Non vengono inviati da nessuna parte, non c'è un server, non serve una connessione. Questo protegge la riservatezza ma comporta una conseguenza importante: se cambi computer, cambi browser o cancelli i dati di navigazione, i dati non ti seguono. Il capitolo sui salvataggi spiega come metterli al sicuro.</p>
+
+  <h3>In dieci minuti</h3>
+  <p>Se è la prima volta, questo è il giro minimo per capire come funziona:</p>
+  <table><tbody>
+    <tr><td style="width:34px" class="code">1</td><td>Dal <b>Portafoglio</b>, apri l'organizzazione di esempio già presente e guarda il passo 7: quello è il risultato finale a cui si arriva.</td></tr>
+    <tr><td class="code">2</td><td>Torna al Portafoglio e crea la tua organizzazione con <b>Nuova organizzazione</b>.</td></tr>
+    <tr><td class="code">3</td><td>Compila il passo 1 e imposta l'esercizio di rendicontazione (di norma l'anno appena chiuso).</td></tr>
+    <tr><td class="code">4</td><td>Al passo 3 inserisci anche solo i dati energetici: vedrai comparire immediatamente Scope 1 e Scope 2 calcolati.</td></tr>
+    <tr><td class="code">5</td><td>Al passo 2 valuta tre o quattro temi usando il pulsante <b>?</b> di ciascuno.</td></tr>
+    <tr><td class="code">6</td><td>Vai al passo 7 e osserva come il documento si è già popolato.</td></tr>
+  </tbody></table>
+  <p>Una volta capito il meccanismo, il lavoro vero consiste nel raccogliere i documenti aziendali e riempire il passo 3 con calma.</p>
+
+  <h3>Il portafoglio</h3>
+  <p>È la schermata d'ingresso e contiene tutte le organizzazioni su cui stai lavorando. Ogni scheda mostra il grado di completamento, le emissioni calcolate, il numero di dipendenti e i temi risultati materiali.</p>
+  <h4>Cosa puoi fare</h4>
+  <table><tbody>
+    <tr><td style="width:30%"><b>Apri</b></td><td>Entra nel percorso di quella organizzazione. Da quel momento la barra in alto mostra il nome e l'esercizio su cui stai lavorando.</td></tr>
+    <tr><td><b>Duplica</b></td><td>Crea una copia completa. Serve quando due aziende hanno struttura simile: duplichi, rinomini e cambi solo i numeri. Attenzione: copia anche i dati, che vanno sostituiti tutti.</td></tr>
+    <tr><td><b>Elimina</b></td><td>Cancella definitivamente. Non c'è cestino: se non hai un'esportazione recente, il lavoro è perso.</td></tr>
+    <tr><td><b>Esporta / Importa</b></td><td>Salva o ricarica l'intero archivio in un file. È anche il modo per spostare il lavoro su un altro computer.</td></tr>
+  </tbody></table>
+  <p>Il riquadro in fondo indica il peso dell'archivio. Superati i 3 MB circa il browser inizia a rifiutare i salvataggi: è quasi sempre colpa delle fotografie. In quel caso esporta e alleggerisci.</p>
+
+  <h3>Passo 1 · Organizzazione</h3>
+  <p>Identifica chi rendiconta. Questi campi aprono il documento e alimentano la tabella anagrafica del bilancio.</p>
+  <h4>Il perimetro</h4>
+  <p>È il campo più delicato e viene spesso liquidato in fretta. Devi dichiarare quali sedi, stabilimenti e società rientrano nei dati. Se hai tre unità produttive ma i consumi che inserisci riguardano solo la principale, va scritto qui — altrimenti il bilancio afferma implicitamente qualcosa di falso. Formule accettabili: "Tutte le sedi operative della società"; "Il solo stabilimento di X, che rappresenta l'85% della produzione; la sede commerciale di Y è esclusa in quanto non significativa".</p>
+  <h4>Lo standard</h4>
+  <p>La scelta cambia il livello di impegno che ti assumi. <b>GRI con riferimento</b> significa che usi gli indicatori GRI dove utili, senza dichiarare conformità piena: è l'opzione realistica per una PMI al primo bilancio. <b>GRI in conformità</b> comporta il rispetto di tutti i requisiti dello standard, inclusa la rendicontazione completa dei temi materiali. <b>VSME</b> è lo standard volontario pensato per le piccole imprese non soggette a CSRD.</p>
+  <h4>Logo e copertina</h4>
+  <p>Le immagini vengono ridotte automaticamente. Il logo conviene caricarlo in PNG con sfondo trasparente; la copertina in orizzontale, larga almeno 1200 pixel — una fotografia dello stabilimento o di una lavorazione funziona meglio di un'immagine di repertorio.</p>
+
+  <h3>Passo 2 · Materialità</h3>
+  <p>Serve a stabilire di cosa parlerà il bilancio. Non tutti i temi contano per tutte le aziende: rendicontare la biodiversità per un'officina meccanica in zona industriale è tempo perso, mentre tacere sulla sicurezza sul lavoro nella stessa officina è un errore grave.</p>
+  <h4>Le due dimensioni</h4>
+  <p>Ogni tema si valuta due volte, su scala da 1 a 5. La <b>rilevanza d'impatto</b> misura quanto l'attività dell'azienda incide su persone e ambiente. La <b>rilevanza finanziaria</b> misura quanto quel tema incide sui conti dell'azienda. Sono indipendenti: la sicurezza sul lavoro può avere impatto alto e rilevanza finanziaria media, l'aumento del costo dell'energia il contrario.</p>
+  <h4>Come si compila</h4>
+  <p>Premi il pulsante <b>?</b> accanto al tema. Si apre una scheda con la definizione, i criteri specifici da guardare per ciascuna delle due dimensioni, i cinque livelli descritti a parole e l'indicazione di quando alzare il punteggio a 4 o 5. Puoi assegnare il valore direttamente da lì cliccando sul livello, oppure usare i menù a tendina nella riga.</p>
+  <p>In fondo a ogni scheda trovi i documenti da consultare per rispondere con cognizione: quasi sempre sono carte che l'azienda ha già.</p>
+  <h4>La soglia</h4>
+  <p>Determina quali temi diventano materiali. Con soglia 3, un tema è materiale se raggiunge 3 in almeno una delle due dimensioni. Alzarla riduce il numero di capitoli e rende il bilancio più snello; abbassarla lo rende più completo ma più oneroso. Per un primo bilancio di una PMI, soglia 3 con otto o dieci temi materiali è un equilibrio ragionevole.</p>
+  <p><b>Errore ricorrente.</b> Molte aziende assegnano punteggi bassi per non "fare brutta figura". È un fraintendimento: un punteggio alto non dice che l'azienda si comporta male, dice che il tema è importante e quindi va raccontato. Un bilancio con due soli temi materiali è meno credibile, non più.</p>
+
+  <h3>Passo 3 · Dati e indicatori</h3>
+  <p>È il passo che richiede più tempo e che produce più valore. Per ogni voce inserisci il dato dell'esercizio e quello dell'anno precedente: senza il confronto il bilancio è una fotografia, non un racconto.</p>
+  <h4>Dove trovare i dati</h4>
+  <table><thead><tr><th style="width:26%">Sezione</th><th>Documenti da recuperare</th></tr></thead>
+  <tbody>${FONTI.map(f=>`<tr><td><b>${esc(f[0])}</b></td><td>${esc(f[1])}</td></tr>`).join("")}</tbody></table>
+  <h4>Regole di compilazione</h4>
+  <p>Usa sempre l'anno solare, coerente per tutte le voci. Se un dato non esiste, lascia il campo vuoto anziché scrivere zero: lo zero è un'informazione ("nessun infortunio"), il vuoto è un'assenza di dato, e il documento li tratta diversamente. Non arrotondare in eccesso: i decimali sui rifiuti servono. Se un dato è stimato anziché misurato — capita per i consumi di gasolio della flotta — annotalo nella nota metodologica al passo 5.</p>
+  <h4>Gli indicatori calcolati</h4>
+  <p>Il riquadro verde sotto ogni sezione mostra ciò che il sistema ricava da solo. Non sono modificabili: cambiano solo cambiando i dati di partenza. Queste le formule applicate, utili se qualcuno ti chiede conto dei numeri.</p>
+  <table><thead><tr><th style="width:34%">Indicatore</th><th>Formula</th></tr></thead>
+  <tbody>${FORMULE.map(f=>`<tr><td><b>${esc(f[0])}</b></td><td class="code" style="font-size:11.5px">${esc(f[1])}</td></tr>`).join("")}</tbody></table>
+  <p class="note">I coefficienti riportati sono quelli precaricati; se li modifichi in Fattori e archivio, i calcoli e la nota metodologica del bilancio si aggiornano di conseguenza.</p>
+
+  <h3>Passo 4 · Politiche e obiettivi</h3>
+  <p>Compare una scheda per ciascun tema risultato materiale al passo 2. È la parte che distingue un bilancio da una raccolta di tabelle, e anche quella che le aziende compilano peggio.</p>
+  <table><tbody>
+    <tr><td style="width:26%"><b>Politica</b></td><td>Che cosa avete deciso e dove è scritto. Se non esiste un documento formale, dillo: «Non è ancora adottata una politica formale; l'impegno è assunto dalla direzione e sarà formalizzato entro il prossimo esercizio». È più credibile di una dichiarazione inventata.</td></tr>
+    <tr><td><b>Azioni</b></td><td>Cosa è stato fatto <i>nell'anno</i>, con fatti verificabili: un impianto entrato in funzione, un corso erogato, una procedura introdotta. Evita le intenzioni: quelle vanno nell'obiettivo.</td></tr>
+    <tr><td><b>Obiettivo</b></td><td>Deve essere misurabile e datato. «Ridurre le emissioni» non è un obiettivo; «−25% di Scope 1+2 entro il 2029 rispetto al 2025» lo è. Compila anche anno base e anno traguardo: finiscono nella tabella riepilogativa del bilancio.</td></tr>
+    <tr><td><b>Responsabile</b></td><td>Una funzione, non necessariamente un nome. Un obiettivo senza responsabile non viene perseguito.</td></tr>
+  </tbody></table>
+
+  <h3>Passo 5 · Racconto</h3>
+  <p>Sette capitoli discorsivi, ciascuno con le sue immagini. Il contatore di parole accanto al titolo aiuta a tenere il ritmo: sotto le ottanta parole il capitolo risulta incompleto anche alla verifica.</p>
+  <h4>Come scrivere</h4>
+  <p>Prima persona plurale, frasi brevi, fatti verificabili. Gli aggettivi enfatici ("eccellenza", "leader", "green") abbassano la credibilità del documento e sono la firma di un bilancio scritto per apparire. Se un risultato è parziale, dirlo apertamente rafforza tutto il resto. La lettera agli stakeholder va firmata dall'organo amministrativo e non delegata: si vede quando non è così.</p>
+  <h4>Fotografie</h4>
+  <p>Il pulsante <b>+ Fotografia</b> apre la selezione dal computer. L'immagine viene ridimensionata e compressa automaticamente. Aggiungi sempre la didascalia: una foto senza didascalia è decorazione, una con didascalia è informazione. Il credito fotografico è opportuno se lo scatto non è aziendale. La larghezza a metà colonna fa scorrere il testo attorno all'immagine e rende la pagina meno monotona.</p>
+  <h4>Diagrammi</h4>
+  <p>Il menù <b>+ Diagramma dai dati</b> offre sette grafici costruiti sui numeri del passo 3: emissioni a confronto biennale, composizione dei consumi energetici, organico, indici infortunistici, rifiuti, fornitori, matrice di materialità. Non sono immagini: se correggi un dato al passo 3, il grafico si aggiorna da solo. È il motivo per cui conviene usarli al posto di grafici incollati da un foglio di calcolo, che invece restano fermi e col tempo diventano sbagliati.</p>
+  <p>Collocazione consigliata: la matrice nel capitolo sugli stakeholder, l'andamento delle emissioni nella lettera o nella nota metodologica, gli indici infortunistici dove parli delle persone.</p>
+
+  <h3>Passo 6 · Verifica</h3>
+  <p>Elenca ciò che manca, diviso per area, con il pulsante per saltare direttamente al punto da correggere. La percentuale in alto pesa in modo uguale i cinque passi di contenuto.</p>
+  <p>Nessuna voce è obbligatoria in senso assoluto: si può pubblicare un bilancio senza il dato dei prelievi idrici. Ma ogni assenza va motivata nella nota metodologica, altrimenti chi legge suppone che il dato sia stato omesso perché scomodo. La formula da usare è semplice: «Il dato relativo a X non è disponibile per l'esercizio in corso; sarà rilevato a partire dal prossimo».</p>
+  <p>Sotto i 60% il documento non è ancora rappresentativo. Tra 60 e 90 è consegnabile con le dovute avvertenze. Sopra 90 è completo.</p>
+
+  <h3>Passo 7 · Bilancio e stampa</h3>
+  <p>Il documento si assembla da solo. Le parti mancanti compaiono in rosso tra parentesi quadre, così sai cosa correggere prima di stampare.</p>
+  <h4>Produrre il PDF</h4>
+  <table><tbody>
+    <tr><td style="width:34px" class="code">1</td><td>Premi <b>Stampa bilancio</b> nella barra in alto.</td></tr>
+    <tr><td class="code">2</td><td>Nella finestra di stampa scegli come destinazione <b>Salva come PDF</b>.</td></tr>
+    <tr><td class="code">3</td><td>Apri le opzioni avanzate e attiva <b>Grafica di sfondo</b>. Senza questa spunta la copertina e le intestazioni delle tabelle escono bianche.</td></tr>
+    <tr><td class="code">4</td><td>Lascia i margini predefiniti e l'orientamento verticale, poi salva.</td></tr>
+  </tbody></table>
+  <p>Il PDF così ottenuto è pronto per la pubblicazione sul sito o per l'invio al committente. Se serve un'impaginazione più curata, esporta i dati e passali al grafico: il contenuto è già ordinato e verificato, che è la parte difficile.</p>
+
+  <h3>Fattori di emissione</h3>
+  <p>I fattori precaricati sono valori indicativi di riferimento e vanno verificati e aggiornati ogni anno prima di pubblicare. Le fonti comunemente usate in Italia sono ISPRA per il fattore elettrico nazionale e per i combustibili, il database DEFRA per i carburanti, l'Association of Issuing Bodies per il residual mix europeo.</p>
+  <p>Qualunque valore usi, dev'essere quello citato nella nota metodologica: il documento riporta automaticamente i fattori impostati, quindi coerenza e trasparenza sono garantite purché tu li aggiorni davvero. Modificarli dopo aver inserito i dati non richiede di rifare nulla: i calcoli si rifanno da soli.</p>
+  <p><b>Cosa non è coperto.</b> Lo strumento calcola Scope 1 e Scope 2. Lo Scope 3 — trasporti a monte e a valle, acquisto di beni e servizi, spostamenti casa-lavoro — richiede dati di filiera e un modello diverso, e non è incluso. Se il bilancio deve trattarlo, va calcolato a parte e inserito nel racconto.</p>
+
+  <h3>Salvataggi, backup e trasferimenti</h3>
+  <p>Il salvataggio è automatico a ogni modifica. Non esiste un pulsante "salva" perché non serve. Esiste però un rischio concreto di perdita, che va gestito.</p>
+  <table><tbody>
+    <tr><td style="width:32%"><b>Quando i dati si perdono</b></td><td>Cancellazione dei dati di navigazione o della cache; uso di una finestra in incognito; cambio di browser o di computer; disinstallazione del browser.</td></tr>
+    <tr><td><b>Come proteggerli</b></td><td>Esporta l'archivio dal Portafoglio a fine di ogni sessione di lavoro e conserva il file con la data nel nome. È l'unico vero backup.</td></tr>
+    <tr><td><b>Spostare il lavoro</b></td><td>Esporta sul primo computer, apri il file dell'applicazione sul secondo, importa. Funziona anche tra sistemi operativi diversi.</td></tr>
+    <tr><td><b>Consegnare al cliente</b></td><td>Puoi esportare la singola organizzazione dal passo Fattori e archivio: il file contiene solo quel cliente e si importa nel portafoglio di destinazione.</td></tr>
+  </tbody></table>
+
+  <h3>Problemi frequenti</h3>
+  <table><tbody>
+    <tr><td style="width:38%"><b>I grafici sono vuoti</b></td><td>Mancano i dati per l'esercizio selezionato nella barra in alto. Verifica di non aver inserito i numeri su un anno diverso da quello che stai visualizzando.</td></tr>
+    <tr><td><b>Le variazioni percentuali mostrano un trattino</b></td><td>Manca il dato dell'anno precedente per quella voce. Il confronto si calcola solo se entrambi gli anni sono compilati.</td></tr>
+    <tr><td><b>Nel bilancio compare «Capitolo da completare»</b></td><td>Quel capitolo narrativo è vuoto al passo 5.</td></tr>
+    <tr><td><b>Le schede del passo 4 non compaiono</b></td><td>Nessun tema ha superato la soglia al passo 2, oppure la soglia è troppo alta.</td></tr>
+    <tr><td><b>Il salvataggio segnala archivio pieno</b></td><td>Troppe fotografie. Esportane una copia, elimina le immagini meno utili o sostituiscile con diagrammi, che non pesano quasi nulla.</td></tr>
+    <tr><td><b>La copertina esce bianca nel PDF</b></td><td>Non è stata attivata l'opzione «Grafica di sfondo» nella finestra di stampa.</td></tr>
+    <tr><td><b>Ho cambiato l'esercizio e i dati sono spariti</b></td><td>Non sono persi: ogni dato è legato all'anno in cui è stato inserito. Riporta il selettore dell'esercizio sull'anno corretto.</td></tr>
+  </tbody></table>
+
+  <h3>Limiti da conoscere</h3>
+  <p>Lo strumento organizza e calcola, non giudica. Non verifica la veridicità dei dati inseriti, non sostituisce il giudizio di chi conosce l'azienda e non costituisce assurance: un bilancio prodotto qui non è per ciò stesso attendibile, lo è nella misura in cui i dati immessi lo sono.</p>
+  <p>Funziona su un solo dispositivo alla volta, senza lavoro simultaneo di più persone. Copre Scope 1 e 2 ma non Scope 3. Gli indicatori proposti coprono i temi ricorrenti di una PMI manifatturiera o di servizi: settori particolari — agroalimentare, chimico, sanitario — richiedono voci aggiuntive che qui non trovi.</p>
+  <p class="note">Documento generato dall'applicazione il ${new Date().toLocaleDateString("it-IT")}.</p>
+  </div></div>`;
+}
+
+/* ---------- impostazioni ---------- */
+function vConf(a){
+  const f=a.fattori,fi=(k,l,u)=>`<label class="f"><span>${l} <span class="code">${u}</span></span><input type="number" step="any" data-fat="${k}" value="${f[k]}"></label>`;
+  return `<h1>Fattori e archivio</h1>
+  <p class="sub">I fattori di emissione vanno aggiornati ogni anno con le fonti che citi in nota metodologica (ISPRA, DEFRA, AIB, IEA). Quelli precaricati sono valori indicativi: verificali prima di pubblicare.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Fattori di emissione</p>
+      <div class="grid g2">${fi("gas","Gas naturale","kgCO₂e/Smc")}${fi("gasolio","Gasolio","kgCO₂e/l")}
+      ${fi("benzina","Benzina","kgCO₂e/l")}${fi("gpl","GPL","kgCO₂e/kg")}
+      ${fi("ele_loc","Elettricità — location","kgCO₂/kWh")}${fi("ele_mkt","Elettricità — residual mix","kgCO₂/kWh")}</div>
+      <div class="hr"></div><p class="eyebrow">Conversioni energetiche</p>
+      <div class="grid g2">${fi("kwh_smc","Gas naturale","kWh/Smc")}${fi("kwh_l_gasolio","Gasolio","kWh/l")}
+      ${fi("kwh_l_benzina","Benzina","kWh/l")}${fi("kwh_kg_gpl","GPL","kWh/kg")}</div>
+      <button class="btn ghost sm" id="resetFat">Ripristina valori di riferimento</button>
+    </div>
+    <div class="card"><p class="eyebrow">Esercizio e dati</p>
+      <label class="f"><span>Esercizio di rendicontazione</span><input type="number" data-anno value="${a.anno}"></label>
+      <div class="hint">Cambiando l'anno di riferimento, i dati già inseriti restano associati all'esercizio in cui li hai registrati.</div>
+      <div class="hr"></div>
+      <button class="btn ghost" id="csvBtn">Esporta indicatori (CSV)</button>
+      <button class="btn ghost" id="expDoc">Esporta questa organizzazione (JSON)</button>
+      <div class="hr"></div>
+      <p class="eyebrow">Peso dei dati</p>
+      <div style="font-size:12.5px;color:var(--ink-2)">Questa organizzazione occupa <b class="code">${(JSON.stringify(a).length/1048576).toFixed(2)} MB</b>, archivio complessivo <b class="code">${(JSON.stringify(DB).length/1048576).toFixed(2)} MB</b>.</div>
+    </div>
+  </div>`;
+}
+
+/* ==========================================================
+   IMMAGINI
+   ========================================================== */
+function pickImage(cb,maxW,quality,keepPng){
+  const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=()=>{const img=new Image();
+      img.onload=()=>{
+        const sc=Math.min(1,maxW/img.width);
+        const c=document.createElement("canvas");
+        c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+        const x=c.getContext("2d");
+        if(!keepPng){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);}
+        x.drawImage(img,0,0,c.width,c.height);
+        cb(keepPng?c.toDataURL("image/png"):c.toDataURL("image/jpeg",quality));
+      };
+      img.onerror=()=>toast("Immagine non leggibile");
+      img.src=r.result;};
+    r.readAsDataURL(f);};
+  inp.click();
+}
+
+/* ==========================================================
+   EVENTI
+   ========================================================== */
+const persist=()=>Store.save(DB);
+function bind(a){
+  document.querySelectorAll("[data-go]").forEach(e=>e.onclick=()=>{view=e.dataset.go;render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-open]").forEach(e=>e.onclick=()=>{DB.current=e.dataset.open;anno=az().anno;persist();fillSel();fillAnni();view="home";render();window.scrollTo(0,0);});
+  document.querySelectorAll("[data-dup]").forEach(e=>e.onclick=()=>{
+    const src=DB.aziende.find(x=>x.id===e.dataset.dup);
+    const c=JSON.parse(JSON.stringify(src));c.id=uid();c.nome=src.nome+" (copia)";c.created=new Date().toISOString();
+    DB.aziende.push(c);persist();fillSel();render();toast("Organizzazione duplicata");});
+  document.querySelectorAll("[data-del]").forEach(e=>e.onclick=()=>{
+    const x=DB.aziende.find(y=>y.id===e.dataset.del);
+    if(!confirm("Eliminare «"+x.nome+"» e tutti i suoi dati?"))return;
+    DB.aziende=DB.aziende.filter(y=>y.id!==e.dataset.del);
+    if(DB.current===e.dataset.del){DB.current=null;anno=null;view="pf";}
+    persist();fillSel();fillAnni();render();toast("Organizzazione eliminata");});
+  const q=$("#pfq");if(q)q.oninput=()=>{pfq=q.value;const p=q.selectionStart;render();const q2=$("#pfq");if(q2){q2.focus();q2.setSelectionRange(p,p);}};
+  const pn=$("#pfNew");if(pn)pn.onclick=creaAzienda;
+
+  if(!a)return;
+  document.querySelectorAll("[data-p]").forEach(i=>i.onchange=()=>{a.profilo[i.dataset.p]=i.value;persist();});
+  document.querySelectorAll("[data-n]:not([data-mv]):not([data-mcap]):not([data-mcred]):not([data-mw]):not([data-mdel])").forEach(i=>{
+    if(i.dataset.n==="nome")i.onchange=()=>{a.nome=i.value||"Senza nome";persist();fillSel();render();};});
+  document.querySelectorAll("[data-kpi]").forEach(i=>i.onchange=()=>{dati(a,+i.dataset.y)[i.dataset.kpi]=i.value;persist();render();});
+  document.querySelectorAll("[data-mat]").forEach(s=>s.onchange=()=>{
+    const t=s.dataset.mat;a.materialita[t]=a.materialita[t]||{};a.materialita[t][s.dataset.f]=s.value;persist();render();});
+  const sg=document.querySelector("[data-soglia]");if(sg)sg.onchange=()=>{a.soglia=+sg.value;persist();render();};
+  document.querySelectorAll("[data-guide]").forEach(b=>b.onclick=()=>{
+    openGuide=openGuide===b.dataset.guide?null:b.dataset.guide;render();
+    if(openGuide){const el=document.querySelector('[data-guide="'+openGuide+'"]');if(el)el.scrollIntoView({block:"center",behavior:"smooth"});}});
+  document.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{
+    const t=b.dataset.set;a.materialita[t]=a.materialita[t]||{};
+    a.materialita[t][b.dataset.f]=String(a.materialita[t][b.dataset.f])===b.dataset.v?"":b.dataset.v;
+    persist();render();});
+  document.querySelectorAll("[data-g]").forEach(e=>e.onchange=()=>{
+    const t=e.dataset.t;a.gestione[t]=a.gestione[t]||{};a.gestione[t][e.dataset.g]=e.value;persist();});
+  document.querySelectorAll("[data-nar]").forEach(e=>e.onchange=()=>{nar(a,e.dataset.nar).testo=e.value;persist();});
+  document.querySelectorAll("[data-fat]").forEach(e=>e.onchange=()=>{a.fattori[e.dataset.fat]=parseFloat(e.value)||0;persist();render();});
+  const an=document.querySelector("[data-anno]");if(an)an.onchange=()=>{a.anno=+an.value;anno=a.anno;persist();fillAnni();render();};
+  const rf=$("#resetFat");if(rf)rf.onclick=()=>{a.fattori={...FATTORI_DEF};persist();render();toast("Fattori ripristinati");};
+
+  // media
+  document.querySelectorAll("[data-addimg]").forEach(b=>b.onclick=()=>{
+    pickImage(src=>{nar(a,b.dataset.addimg).media.push({t:"img",src,cap:"",cred:"",w:"full"});
+      persist();render();toast("Fotografia aggiunta");},1500,.72,false);});
+  document.querySelectorAll("[data-addch]").forEach(s=>s.onchange=()=>{
+    if(!s.value)return;nar(a,s.dataset.addch).media.push({t:"chart",ch:s.value,cap:CHARTS[s.value].n,cred:"Elaborazione su dati aziendali",w:"full"});
+    persist();render();toast("Diagramma aggiunto");});
+  document.querySelectorAll("[data-mdel]").forEach(b=>b.onclick=()=>{
+    nar(a,b.dataset.n).media.splice(+b.dataset.mdel,1);persist();render();});
+  document.querySelectorAll("[data-mv]").forEach(b=>b.onclick=()=>{
+    const m=nar(a,b.dataset.n).media,i=+b.dataset.i,j=b.dataset.mv==="up"?i-1:i+1;
+    if(j<0||j>=m.length)return;[m[i],m[j]]=[m[j],m[i]];persist();render();});
+  document.querySelectorAll("[data-mcap]").forEach(e=>e.onchange=()=>{nar(a,e.dataset.n).media[+e.dataset.mcap].cap=e.value;persist();});
+  document.querySelectorAll("[data-mcred]").forEach(e=>e.onchange=()=>{nar(a,e.dataset.n).media[+e.dataset.mcred].cred=e.value;persist();});
+  document.querySelectorAll("[data-mw]").forEach(e=>e.onchange=()=>{nar(a,e.dataset.n).media[+e.dataset.mw].w=e.value;persist();render();});
+
+  // logo e copertina
+  const ul=$("#upLogo");if(ul)ul.onclick=()=>pickImage(src=>{a.profilo.logo=src;persist();render();toast("Logo caricato");},480,1,true);
+  const rl=$("#rmLogo");if(rl)rl.onclick=()=>{a.profilo.logo="";persist();render();};
+  const uc=$("#upCov");if(uc)uc.onclick=()=>pickImage(src=>{a.profilo.copertina=src;persist();render();toast("Copertina caricata");},1600,.72,false);
+  const rc=$("#rmCov");if(rc)rc.onclick=()=>{a.profilo.copertina="";persist();render();};
+
+  // esportazioni
+  const ex=$("#expBtn");if(ex)ex.onclick=()=>{dlFile("bilancio-archivio.json",JSON.stringify(DB,null,2),"application/json");toast("Archivio esportato");};
+  const ed=$("#expDoc");if(ed)ed.onclick=()=>{dlFile("bilancio-"+a.nome.replace(/\W+/g,"-").toLowerCase()+"-"+anno+".json",JSON.stringify(a,null,2),"application/json");toast("Dati esportati");};
+  const im=$("#impBtn");if(im)im.onclick=()=>$("#impFile").click();
+  const imf=$("#impFile");if(imf)imf.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const o=JSON.parse(r.result);
+      if(o.aziende){DB=o;DB.current=null;anno=null;view="pf";}
+      else if(o.nome&&o.profilo){o.id=uid();DB.aziende.push(o);}
+      else throw 0;
+      persist();fillSel();fillAnni();render();toast("Importazione completata");}catch(x){toast("File non valido");}};
+    r.readAsText(f);};
+  const cv=$("#csvBtn");if(cv)cv.onclick=()=>{
+    const y=anno,rows=[["Sezione","Indicatore","Unità",y,y-1]];
+    SEZ.forEach(s=>KPI.filter(k=>k.s===s.id).forEach(k=>rows.push([s.n,k.n,k.u,dati(a,y)[k.k]||"",dati(a,y-1)[k.k]||""])));
+    const d=derive(a,y),dp=derive(a,y-1);
+    [["Calcolati","Scope 1","tCO2e",d.scope1,dp.scope1],["Calcolati","Scope 2 location","tCO2e",d.scope2loc,dp.scope2loc],
+     ["Calcolati","Scope 2 market","tCO2e",d.scope2mkt,dp.scope2mkt],["Calcolati","Energia totale","kWh",d.enTot_kwh,dp.enTot_kwh],
+     ["Calcolati","Indice frequenza","-",d.if_,dp.if_],["Calcolati","Indice gravità","-",d.ig,dp.ig],
+     ["Calcolati","Turnover","%",d.turnover,dp.turnover],["Calcolati","Divario retributivo","%",d.payGap,dp.payGap]].forEach(r=>rows.push(r));
+    dlFile("indicatori-"+y+".csv","\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n"),"text/csv");
+    toast("Indicatori esportati");};
+}
+function dlFile(name,content,type){const b=new Blob([content],{type:type+";charset=utf-8"});const a=document.createElement("a");
+  a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function fillSel(){$("#coSel").innerHTML=DB.aziende.map(a=>`<option value="${a.id}" ${a.id===DB.current?"selected":""}>${esc(a.nome)}</option>`).join("");}
+function fillAnni(){const a=az();if(!a){$("#annoSel").innerHTML="";return;}const y=a.anno;
+  $("#annoSel").innerHTML=[y+1,y,y-1,y-2].map(v=>`<option value="${v}" ${v===anno?"selected":""}>${v}</option>`).join("");}
+function creaAzienda(){const n=prompt("Denominazione dell'organizzazione");if(n===null)return;
+  const a=nuova(n.trim());DB.aziende.push(a);DB.current=a.id;anno=a.anno;persist();fillSel();fillAnni();view="org";render();toast("Organizzazione creata");}
+
+document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>{view=n.dataset.v;$("#side").classList.remove("open");render();window.scrollTo(0,0);});
+$("#brandHome").onclick=()=>{view="pf";render();};
+$("#coSel").onchange=e=>{DB.current=e.target.value;anno=az().anno;persist();fillAnni();view="home";render();};
+$("#annoSel").onchange=e=>{anno=+e.target.value;render();};
+$("#addCo").onclick=creaAzienda;
+$("#printBtn").onclick=()=>{view="doc";render();setTimeout(()=>window.print(),200);};
+$("#menuBtn").onclick=()=>$("#side").classList.toggle("open");
+function resp(){$("#menuBtn").style.display=window.innerWidth<=980?"block":"none";}
+window.addEventListener("resize",resp);resp();
+
+(async function init(){
+  const d=await Store.load();
+  if(d&&d.aziende&&d.aziende.length)DB=d;
+  else{
+    const a=nuova("Organizzazione di esempio S.r.l.");
+    a.profilo={...a.profilo,forma:"Società a responsabilità limitata",settore:"Carpenteria metallica",ateco:"25.11.00",
+      sede:"Aversa (CE)",sitiop:"Stabilimento produttivo e sede amministrativa",mercati:"Italia e Unione Europea",contatto:"Direzione generale"};
+    const y=a.anno;
+    a.dati[y]={en_ele:428000,en_ele_go:120000,en_auto:96000,en_gas:38500,en_gasolio:4200,en_flotta_d:18600,en_flotta_b:3100,en_gpl:0,
+      ac_prel:3150,ac_scar:2700,ri_np:214.5,ri_p:6.8,ri_rec:186.2,ma_tot:1980,ma_ric:512,
+      hr_tot:42,hr_don:11,hr_ind:38,hr_pt:4,hr_u30:7,hr_o50:12,hr_ass:6,hr_ces:4,hr_dis:2,hr_est:3,
+      si_ore:68400,si_inf:2,si_gra:0,si_gg:34,si_nm:9,si_mal:0,fo_ore:820,fo_sic:410,fo_eti:64,re_don:28400,re_uom:31200,
+      ec_ric:8400000,ec_van:7650000,ec_inv:96000,ec_for:184,ec_loc:151,ec_pag:64,go_cda:3,go_cdad:1,go_seg:0,go_cor:0,go_san:0,go_forq:46};
+    a.dati[y-1]={en_ele:452000,en_ele_go:0,en_auto:72000,en_gas:41200,en_gasolio:5100,en_flotta_d:19800,en_flotta_b:3400,en_gpl:0,
+      ac_prel:3480,ac_scar:3010,ri_np:232.1,ri_p:8.2,ri_rec:178.4,ma_tot:2040,ma_ric:398,
+      hr_tot:40,hr_don:9,hr_ind:35,hr_pt:3,hr_u30:6,hr_o50:11,hr_ass:5,hr_ces:6,hr_dis:2,hr_est:4,
+      si_ore:65200,si_inf:3,si_gra:0,si_gg:51,si_nm:5,si_mal:0,fo_ore:640,fo_sic:380,fo_eti:24,re_don:26900,re_uom:30400,
+      ec_ric:7900000,ec_van:7280000,ec_inv:54000,ec_for:191,ec_loc:148,ec_pag:71,go_cda:3,go_cdad:1,go_seg:1,go_cor:0,go_san:0,go_forq:22};
+    [["T01",4,4],["T02",4,5],["T06",4,3],["T07",5,4],["T08",3,3],["T09",3,2],["T10",3,3],["T11",3,3],
+     ["T14",4,4],["T15",3,4],["T16",4,3],["T17",3,4],["T03",2,2],["T04",2,2],["T05",1,1],["T12",2,2],["T13",4,4],["T18",3,4]]
+     .forEach(([id,i,f])=>a.materialita[id]={imp:i,fin:f});
+    a.gestione["T01"]={politica:"La direzione ha assunto l'impegno di ridurre le emissioni di gas serra attraverso l'efficientamento degli impianti e la progressiva copertura dei consumi elettrici con energia rinnovabile.",azioni:"Nell'esercizio è entrato in funzione l'impianto fotovoltaico da 96.000 kWh annui ed è stata sottoscritta la fornitura elettrica con garanzia d'origine per un terzo dei prelievi.",target:"−25% emissioni Scope 1+2",base:String(y-1),anno:String(y+3),resp:"Direzione tecnica"};
+    a.gestione["T07"]={politica:"La salute e la sicurezza sono gestite attraverso il documento di valutazione dei rischi aggiornato e un piano formativo annuale che copre tutto l'organico.",azioni:"Introdotta la segnalazione strutturata dei mancati infortuni: nove segnalazioni raccolte e altrettante azioni correttive avviate.",target:"Indice di frequenza sotto 20",base:String(y-1),anno:String(y+2),resp:"RSPP"};
+    a.narrativa.lettera={testo:"Questo è il nostro primo bilancio di sostenibilità. Lo pubblichiamo perché i nostri clienti ci chiedono conto di come lavoriamo, e perché misurare è il modo più onesto per migliorare.\n\nNell'anno abbiamo ridotto i consumi elettrici da rete e avviato l'impianto fotovoltaico. Restano aperti i temi della gestione dei rifiuti e della valutazione ESG dei fornitori, su cui ci impegniamo per il prossimo esercizio.",media:[{t:"chart",ch:"emissioni",cap:"Andamento delle emissioni di gas serra nel biennio",cred:"Elaborazione su dati aziendali",w:"full"}]};
+    a.narrativa.stake={testo:"",media:[{t:"chart",ch:"materialita",cap:"Matrice di doppia rilevanza",cred:"Elaborazione su dati aziendali",w:"full"}]};
+    DB={aziende:[a],current:null};
+  }
+  fillSel();fillAnni();render();
+})();
+</script>
+</body>
+</html>

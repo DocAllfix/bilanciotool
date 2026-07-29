@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventario GHG — ISO 14064-1</title>
+<style>
+:root{
+  --teal:#2E7D6B;--teal-dk:#1F5A4C;--teal-lt:#E6F1ED;--teal-mid:#4C9C88;
+  --ink:#14201C;--ink-2:#4A5B55;--ink-3:#7D8C87;
+  --bg:#FAFAF8;--card:#fff;--line:#E4E2DC;--line-2:#F0EEE9;
+  --red:#B3261E;--red-lt:#FBEAE8;--amber:#B06E00;--amber-lt:#FDF2DF;
+  --green:#2E7D32;--green-lt:#E8F3E9;--violet:#5B4B9E;--violet-lt:#EEEBF7;
+  --blue:#1F5F8B;--blue-lt:#E7F0F6;--brown:#8A5A2B;--brown-lt:#F6EDE3;
+  --s1c:#1F5A4C;--s2c:#1F5F8B;--s3c:#B06E00;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.app{display:flex;min-height:100vh}
+.side{width:252px;flex:0 0 252px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:16px 18px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 12px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink-2)}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--teal);color:#fff;font-weight:600}
+.nav .st{width:19px;height:19px;flex:0 0 19px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--mono);color:var(--ink-3)}
+.nav.on .st{border-color:rgba(255,255,255,.5);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .st.mid{background:var(--amber);border-color:var(--amber);color:#fff}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.wrap{padding:26px 26px 70px;max-width:1240px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px}
+h2{font-size:15px;margin:0 0 12px}
+h3{font-size:13.5px;margin:0 0 8px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px;max-width:78ch}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.card.flush{padding:0;overflow:hidden}
+.card.flush .ch{padding:14px 18px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card.flush .cb{padding:4px 8px 8px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--teal-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+.btn.icon{padding:4px 8px;font-size:12px}
+.btn.danger{background:transparent;color:var(--red);border:1px solid var(--red-lt)}
+.btn.danger:hover{background:var(--red-lt)}
+input[type=text],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+textarea{min-height:90px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal-mid);outline-offset:-1px}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--bg)}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}.t-tea{background:var(--teal-lt);color:var(--teal-dk)}
+.t-vio{background:var(--violet-lt);color:var(--violet)}.t-blu{background:var(--blue-lt);color:var(--blue)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}.t-brw{background:var(--brown-lt);color:var(--brown)}
+.empty{padding:30px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .n{font-size:26px;font-weight:650;letter-spacing:-.8px;line-height:1.1;font-family:var(--mono)}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--teal)}
+.hr{height:1px;background:var(--line-2);margin:16px 0}
+.hint{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.45}
+.derived{background:var(--teal-lt);border-radius:8px;padding:12px 14px}
+.derived table td{border-bottom:1px solid rgba(31,90,76,.12)}
+.derived table tr:last-child td{border-bottom:0}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line-2);cursor:pointer}
+.step:last-child{border-bottom:0}
+.step .n{width:26px;height:26px;flex:0 0 26px;border-radius:50%;background:var(--line-2);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono);font-weight:600}
+.step.done .n{background:var(--green);color:#fff}
+.step.part .n{background:var(--amber);color:#fff}
+.step b{display:block;font-size:13.5px;margin-bottom:2px}
+.step p{margin:0;font-size:12px;color:var(--ink-3);max-width:74ch}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--ink-2);background:#fff;cursor:pointer}
+.pill.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.bar-s1{background:var(--s1c)}.bar-s2{background:var(--s2c)}.bar-s3{background:var(--s3c)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.srow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.srow:last-child{border-bottom:0}
+.srow b{font-size:13px;display:block}
+.srow p{margin:2px 0 0;font-size:11.5px;color:var(--ink-3);max-width:70ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{background:#fff;border:0;padding:5px 10px;font-size:11.5px;cursor:pointer;color:var(--ink-2);border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--teal);color:#fff;font-weight:600}
+.seg button.on.no{background:var(--red)}
+.seg button.on.na{background:var(--ink-3)}
+.fig{margin:0 0 8px}
+.fig figcaption{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.warn{background:var(--amber-lt);border:1px solid rgba(176,110,0,.25);color:#6b4400;border-radius:8px;padding:10px 12px;font-size:12px}
+.ok{background:var(--green-lt);border:1px solid rgba(46,125,50,.25);color:#1e5620;border-radius:8px;padding:10px 12px;font-size:12px}
+.tbl-scroll{overflow-x:auto}
+.doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:44px 52px;max-width:900px;font-size:13.5px;line-height:1.62}
+.doc h1{font-size:26px;margin:0 0 4px}
+.doc h2{font-size:17px;margin:30px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.doc h3{font-size:14px;margin:18px 0 6px}
+.doc p{margin:0 0 10px}
+.doc table{margin:10px 0 14px;font-size:12.5px}
+.doc .meta{color:var(--ink-3);font-size:12px}
+@media(max-width:980px){
+  .side{position:fixed;left:-260px;z-index:60;transition:.2s}.side.open{left:0;box-shadow:0 0 0 100vmax rgba(0,0,0,.3)}
+  .g2,.g3,.g4{grid-template-columns:1fr}.wrap{padding:18px 14px 60px}.top{padding:10px 14px}.doc{padding:22px 18px}
+}
+@media print{
+  .side,.top,.noprint{display:none!important}
+  .wrap{padding:0;max-width:none}.doc{border:0;padding:0;max-width:none}
+  .doc h2{page-break-after:avoid}.doc h3{page-break-after:avoid}
+  table,figure.fig,.card{page-break-inside:avoid}
+  body{background:#fff}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand" id="brandHome"><b>Inventario GHG</b><span>ISO 14064-1:2018 · Scope 1 · 2 · 3</span></div>
+  <div class="navgrp">Studio</div>
+  <button class="nav" data-v="pf"><span class="st">▦</span> Portafoglio</button>
+  <div class="navgrp" id="grpPercorso">Inventario</div>
+  <button class="nav on" data-v="home"><span class="st">◇</span> Avanzamento</button>
+  <button class="nav" data-v="org"><span class="st" id="s1">1</span> Confini e perimetro</button>
+  <button class="nav" data-v="srg"><span class="st" id="s2">2</span> Registro sorgenti</button>
+  <button class="nav" data-v="dati"><span class="st" id="s3">3</span> Dati di attività</button>
+  <button class="nav" data-v="fe"><span class="st" id="s4">4</span> Fattori e GWP</button>
+  <button class="nav" data-v="ris"><span class="st" id="s5">5</span> Risultati</button>
+  <button class="nav" data-v="obt"><span class="st" id="s6">6</span> Anno base e obiettivi</button>
+  <button class="nav" data-v="ver"><span class="st" id="s7">7</span> Verifica</button>
+  <button class="nav" data-v="doc"><span class="st" id="s8">8</span> Report GHG</button>
+  <div class="navgrp">Impostazioni</div>
+  <button class="nav" data-v="conf"><span class="st">⚙</span> Archivio e dati</button>
+  <div class="navgrp">Aiuto</div>
+  <button class="nav" data-v="guida"><span class="st">?</span> Guida all'uso</button>
+  <div class="sidefoot">I dati restano su questo dispositivo. Esportali dal portafoglio per conservarli.</div>
+</aside>
+<div class="main">
+  <div class="top">
+    <button class="btn ghost sm" id="menuBtn" style="display:none">Menu</button>
+    <select id="coSel" style="width:auto;min-width:210px;font-weight:600"></select>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)">Periodo
+      <select id="annoSel" style="width:auto;font-weight:600"></select></label>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn ghost sm" id="addCo">Nuova organizzazione</button>
+      <button class="btn sm" id="printBtn">Stampa report</button>
+    </div>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+</div>
+<div id="toast"></div>
+<script>
+/* ==========================================================
+   INVENTARIO GHG — ISO 14064-1:2018
+   Strumento a file singolo. Nessun dato lascia il dispositivo.
+   ========================================================== */
+
+/* ---------- Categorie ISO 14064-1:2018 (§5.2) ---------- */
+const CAT=[
+ {id:"1",n:"Emissioni dirette",s:"Scope 1",col:"var(--s1c)",t:"t-tea",
+  d:"Emissioni e rimozioni di GHG da sorgenti possedute o controllate dall'organizzazione: combustione fissa e mobile, processi produttivi, emissioni fuggitive."},
+ {id:"2",n:"Emissioni indirette da energia importata",s:"Scope 2",col:"var(--s2c)",t:"t-blu",
+  d:"Emissioni derivanti dalla generazione di elettricità, calore, vapore e freddo acquistati e consumati dall'organizzazione. Rendicontazione doppia: location-based e market-based."},
+ {id:"3",n:"Emissioni indirette da trasporto",s:"Scope 3",col:"var(--s3c)",t:"t-amb",
+  d:"Trasporto e distribuzione a monte e a valle, spostamenti casa-lavoro dei dipendenti, trasferte di lavoro, trasporto di clienti e visitatori."},
+ {id:"4",n:"Emissioni indirette da prodotti utilizzati",s:"Scope 3",col:"var(--s3c)",t:"t-amb",
+  d:"Beni e servizi acquistati, beni strumentali, rifiuti generati, acqua e reflui, emissioni upstream dei combustibili e perdite di rete."},
+ {id:"5",n:"Emissioni indirette associate all'uso dei prodotti",s:"Scope 3",col:"var(--s3c)",t:"t-amb",
+  d:"Fase d'uso e fine vita dei prodotti venduti, trasformazione di prodotti intermedi, asset dati in leasing a valle."},
+ {id:"6",n:"Altre emissioni indirette",s:"Scope 3",col:"var(--s3c)",t:"t-amb",
+  d:"Investimenti, franchising e ogni altra emissione indiretta significativa non compresa nelle categorie precedenti."}
+];
+const catOf=id=>CAT.find(c=>c.id===id)||CAT[0];
+const scopeOf=cat=>cat==="1"?1:cat==="2"?2:3;
+
+/* ---------- Sottocategorie operative (registro sorgenti) ---------- */
+const SRC=[
+ {id:"1a",c:"1",n:"Combustione fissa",d:"Caldaie, generatori di calore, gruppi elettrogeni, forni, cogeneratori."},
+ {id:"1b",c:"1",n:"Combustione mobile",d:"Flotta aziendale: auto, furgoni, mezzi d'opera, carrelli elevatori."},
+ {id:"1c",c:"1",n:"Emissioni fuggitive",d:"Ricariche di gas refrigerante di climatizzatori e impianti frigo, SF6, estintori a CO2."},
+ {id:"1d",c:"1",n:"Emissioni di processo",d:"Reazioni chimiche o fisiche del processo produttivo non legate alla combustione."},
+ {id:"2a",c:"2",n:"Energia elettrica acquistata",d:"Elettricità prelevata dalla rete e consumata nei siti del perimetro."},
+ {id:"2b",c:"2",n:"Calore, vapore e freddo acquistati",d:"Teleriscaldamento, teleraffrescamento, vapore da terzi."},
+ {id:"3a",c:"3",n:"Trasporto e distribuzione a monte",d:"Trasporto delle merci in ingresso affidato a terzi."},
+ {id:"3b",c:"3",n:"Trasporto e distribuzione a valle",d:"Consegne ai clienti effettuate da vettori terzi."},
+ {id:"3c",c:"3",n:"Spostamenti casa-lavoro",d:"Pendolarismo dei dipendenti, incluso il lavoro da remoto se rendicontato qui."},
+ {id:"3d",c:"3",n:"Trasferte di lavoro",d:"Viaggi aerei, ferroviari, auto a noleggio e private, pernottamenti."},
+ {id:"3e",c:"3",n:"Trasporto di clienti e visitatori",d:"Spostamenti generati dall'accesso di clienti o utenti alle sedi."},
+ {id:"4a",c:"4",n:"Beni e materiali acquistati",d:"Materie prime, semilavorati, imballaggi, materiali di consumo."},
+ {id:"4b",c:"4",n:"Servizi acquistati",d:"Consulenze, servizi IT e cloud, manutenzioni, mensa, pulizie."},
+ {id:"4c",c:"4",n:"Beni strumentali",d:"Macchinari, veicoli, immobili, hardware acquistati nell'esercizio."},
+ {id:"4d",c:"4",n:"Emissioni upstream dell'energia",d:"Estrazione, raffinazione e trasporto dei combustibili; perdite di rete elettrica."},
+ {id:"4e",c:"4",n:"Rifiuti generati",d:"Rifiuti prodotti nei siti e avviati a smaltimento o recupero da terzi."},
+ {id:"4f",c:"4",n:"Acqua e scarichi idrici",d:"Prelievo di acqua potabile e trattamento delle acque reflue."},
+ {id:"4g",c:"4",n:"Asset in leasing a monte",d:"Beni presi in locazione non inclusi nei confini organizzativi."},
+ {id:"5a",c:"5",n:"Uso dei prodotti venduti",d:"Energia o combustibili consumati dai prodotti durante la vita utile."},
+ {id:"5b",c:"5",n:"Fine vita dei prodotti venduti",d:"Smaltimento o recupero dei prodotti e degli imballaggi immessi sul mercato."},
+ {id:"5c",c:"5",n:"Trasformazione dei prodotti intermedi",d:"Lavorazioni effettuate dal cliente su semilavorati venduti."},
+ {id:"5d",c:"5",n:"Asset dati in leasing a valle",d:"Beni di proprietà concessi in locazione a terzi."},
+ {id:"6a",c:"6",n:"Investimenti",d:"Partecipazioni, quote di fondi, finanziamenti (emissioni finanziate)."},
+ {id:"6b",c:"6",n:"Franchising",d:"Emissioni delle unità in franchising non consolidate."},
+ {id:"6c",c:"6",n:"Altre emissioni indirette",d:"Ogni altra sorgente indiretta ritenuta significativa dall'organizzazione."}
+];
+
+/* ---------- Libreria fattori di emissione ----------
+   Valori indicativi da fonti pubbliche (ISPRA, DEFRA/BEIS, IEA).
+   Vanno verificati e allineati all'anno di rendicontazione prima dell'uso. */
+const FE_LIB=[
+ /* combustione fissa */
+ {id:"gas_smc", g:"Combustione fissa", n:"Gas naturale", um:"Smc", fe:1.9755, cat:"1", src:"1a", f:"DEFRA/ISPRA"},
+ {id:"gasolio_ris", g:"Combustione fissa", n:"Gasolio da riscaldamento", um:"litri", fe:2.6870, cat:"1", src:"1a", f:"DEFRA/ISPRA"},
+ {id:"gpl_kg", g:"Combustione fissa", n:"GPL (massa)", um:"kg", fe:2.9840, cat:"1", src:"1a", f:"DEFRA/ISPRA"},
+ {id:"olio_comb", g:"Combustione fissa", n:"Olio combustibile", um:"kg", fe:3.1770, cat:"1", src:"1a", f:"DEFRA"},
+ {id:"pellet", g:"Combustione fissa", n:"Pellet di legno (quota non biogenica)", um:"kg", fe:0.0160, bio:1.8300, cat:"1", src:"1a", f:"DEFRA"},
+ {id:"cippato", g:"Combustione fissa", n:"Cippato di legno (quota non biogenica)", um:"kg", fe:0.0150, bio:1.5600, cat:"1", src:"1a", f:"DEFRA"},
+ /* combustione mobile */
+ {id:"gasolio_auto", g:"Combustione mobile", n:"Gasolio per autotrazione", um:"litri", fe:2.6870, cat:"1", src:"1b", f:"DEFRA/ISPRA"},
+ {id:"benzina_auto", g:"Combustione mobile", n:"Benzina", um:"litri", fe:2.3130, cat:"1", src:"1b", f:"DEFRA/ISPRA"},
+ {id:"gpl_auto", g:"Combustione mobile", n:"GPL per autotrazione", um:"litri", fe:1.5570, cat:"1", src:"1b", f:"DEFRA"},
+ {id:"metano_auto", g:"Combustione mobile", n:"Metano per autotrazione", um:"kg", fe:2.6970, cat:"1", src:"1b", f:"DEFRA"},
+ {id:"km_auto_d", g:"Combustione mobile", n:"Auto aziendale diesel (percorrenza)", um:"km", fe:0.1700, cat:"1", src:"1b", f:"DEFRA"},
+ {id:"km_auto_b", g:"Combustione mobile", n:"Auto aziendale benzina (percorrenza)", um:"km", fe:0.1650, cat:"1", src:"1b", f:"DEFRA"},
+ /* fuggitive — valore FE = GWP a 100 anni */
+ {id:"r410a", g:"Gas fuggitivi", n:"Refrigerante R410A", um:"kg", fe:2088, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"r134a", g:"Gas fuggitivi", n:"Refrigerante R134a", um:"kg", fe:1300, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"r404a", g:"Gas fuggitivi", n:"Refrigerante R404A", um:"kg", fe:3943, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"r407c", g:"Gas fuggitivi", n:"Refrigerante R407C", um:"kg", fe:1624, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"r32", g:"Gas fuggitivi", n:"Refrigerante R32", um:"kg", fe:677, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"r22", g:"Gas fuggitivi", n:"Refrigerante R22 (HCFC)", um:"kg", fe:1760, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"sf6", g:"Gas fuggitivi", n:"SF6 (quadri elettrici)", um:"kg", fe:23500, cat:"1", src:"1c", f:"IPCC AR5"},
+ {id:"co2_est", g:"Gas fuggitivi", n:"CO2 estintori e saldatura", um:"kg", fe:1, cat:"1", src:"1c", f:"IPCC"},
+ /* energia importata */
+ {id:"ee_loc", g:"Energia importata", n:"Energia elettrica — location-based Italia", um:"kWh", fe:0.2565, mkt:0.4570, cat:"2", src:"2a", f:"ISPRA / AIB residual mix"},
+ {id:"ee_go", g:"Energia importata", n:"Energia elettrica con Garanzia d'Origine", um:"kWh", fe:0.2565, mkt:0, cat:"2", src:"2a", f:"ISPRA / contratto GO"},
+ {id:"teleris", g:"Energia importata", n:"Teleriscaldamento", um:"kWh", fe:0.2500, mkt:0.2500, cat:"2", src:"2b", f:"DEFRA"},
+ {id:"vapore", g:"Energia importata", n:"Vapore acquistato", um:"kWh", fe:0.2100, mkt:0.2100, cat:"2", src:"2b", f:"DEFRA"},
+ {id:"telefr", g:"Energia importata", n:"Teleraffrescamento", um:"kWh", fe:0.0800, mkt:0.0800, cat:"2", src:"2b", f:"DEFRA"},
+ /* trasporti */
+ {id:"tkm_gomma", g:"Trasporto merci", n:"Trasporto su gomma — articolato >17 t", um:"t·km", fe:0.1060, cat:"3", src:"3a", f:"DEFRA"},
+ {id:"tkm_furg", g:"Trasporto merci", n:"Trasporto su gomma — furgone", um:"t·km", fe:0.6000, cat:"3", src:"3a", f:"DEFRA"},
+ {id:"tkm_nave", g:"Trasporto merci", n:"Trasporto marittimo — container", um:"t·km", fe:0.0161, cat:"3", src:"3a", f:"DEFRA"},
+ {id:"tkm_treno", g:"Trasporto merci", n:"Trasporto ferroviario merci", um:"t·km", fe:0.0280, cat:"3", src:"3a", f:"DEFRA"},
+ {id:"tkm_aereo", g:"Trasporto merci", n:"Trasporto aereo merci", um:"t·km", fe:0.9800, cat:"3", src:"3a", f:"DEFRA"},
+ {id:"corriere", g:"Trasporto merci", n:"Corriere espresso", um:"t·km", fe:0.5000, cat:"3", src:"3b", f:"DEFRA"},
+ {id:"pend_auto", g:"Persone", n:"Auto privata — media parco", um:"km", fe:0.1710, cat:"3", src:"3c", f:"DEFRA"},
+ {id:"pend_moto", g:"Persone", n:"Motociclo", um:"km", fe:0.1140, cat:"3", src:"3c", f:"DEFRA"},
+ {id:"pend_bus", g:"Persone", n:"Autobus urbano", um:"km", fe:0.1020, cat:"3", src:"3c", f:"DEFRA"},
+ {id:"pend_treno", g:"Persone", n:"Treno regionale o nazionale", um:"km", fe:0.0350, cat:"3", src:"3c", f:"DEFRA"},
+ {id:"aereo_corto", g:"Persone", n:"Aereo — tratta breve (<3.700 km)", um:"pax·km", fe:0.1580, cat:"3", src:"3d", f:"DEFRA"},
+ {id:"aereo_lungo", g:"Persone", n:"Aereo — tratta lunga (>3.700 km)", um:"pax·km", fe:0.1950, cat:"3", src:"3d", f:"DEFRA"},
+ {id:"hotel", g:"Persone", n:"Pernottamento in albergo (Italia)", um:"notti", fe:20.0000, cat:"3", src:"3d", f:"DEFRA"},
+ /* prodotti utilizzati */
+ {id:"acciaio", g:"Materiali", n:"Acciaio", um:"kg", fe:2.4600, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"allum", g:"Materiali", n:"Alluminio primario", um:"kg", fe:12.5000, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"cemento", g:"Materiali", n:"Cemento", um:"kg", fe:0.9000, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"calcestr", g:"Materiali", n:"Calcestruzzo preconfezionato", um:"kg", fe:0.1300, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"plastica", g:"Materiali", n:"Materie plastiche (media)", um:"kg", fe:3.1000, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"carta", g:"Materiali", n:"Carta e cartone", um:"kg", fe:0.9190, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"vetro", g:"Materiali", n:"Vetro", um:"kg", fe:1.4000, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"legno_mat", g:"Materiali", n:"Legno e derivati", um:"kg", fe:0.4500, cat:"4", src:"4a", f:"DEFRA"},
+ {id:"spesa", g:"Materiali", n:"Acquisti per spesa monetaria (metodo spend-based)", um:"€", fe:0.3000, cat:"4", src:"4b", f:"Input-output — stima"},
+ {id:"wtt_ee", g:"Energia upstream", n:"Elettricità — WTT e perdite di rete", um:"kWh", fe:0.0850, cat:"4", src:"4d", f:"DEFRA"},
+ {id:"wtt_gas", g:"Energia upstream", n:"Gas naturale — WTT", um:"Smc", fe:0.3400, cat:"4", src:"4d", f:"DEFRA"},
+ {id:"wtt_gasolio", g:"Energia upstream", n:"Gasolio — WTT", um:"litri", fe:0.6100, cat:"4", src:"4d", f:"DEFRA"},
+ {id:"rif_disc", g:"Rifiuti e acqua", n:"Rifiuti a discarica", um:"t", fe:458.0000, cat:"4", src:"4e", f:"DEFRA"},
+ {id:"rif_ric", g:"Rifiuti e acqua", n:"Rifiuti a riciclo", um:"t", fe:21.3000, cat:"4", src:"4e", f:"DEFRA"},
+ {id:"rif_inc", g:"Rifiuti e acqua", n:"Rifiuti a incenerimento", um:"t", fe:21.3000, cat:"4", src:"4e", f:"DEFRA"},
+ {id:"acqua_p", g:"Rifiuti e acqua", n:"Acqua potabile prelevata", um:"m³", fe:0.1490, cat:"4", src:"4f", f:"DEFRA"},
+ {id:"acqua_r", g:"Rifiuti e acqua", n:"Acque reflue trattate", um:"m³", fe:0.2720, cat:"4", src:"4f", f:"DEFRA"},
+ /* uso e fine vita */
+ {id:"uso_ee", g:"Uso e fine vita", n:"Elettricità consumata dai prodotti venduti", um:"kWh", fe:0.2565, cat:"5", src:"5a", f:"ISPRA"},
+ {id:"fv_disc", g:"Uso e fine vita", n:"Prodotti venduti a discarica", um:"t", fe:458.0000, cat:"5", src:"5b", f:"DEFRA"},
+ {id:"fv_ric", g:"Uso e fine vita", n:"Prodotti venduti a riciclo", um:"t", fe:21.3000, cat:"5", src:"5b", f:"DEFRA"},
+ /* altre */
+ {id:"invest", g:"Altre", n:"Investimenti (quota emissioni partecipate)", um:"tCO2e", fe:1000.0000, cat:"6", src:"6a", f:"PCAF — calcolo esterno"}
+];
+
+/* ---------- Qualità del dato e incertezza di default ---------- */
+const DQ=[
+ {id:"M", n:"Misurato", d:"Lettura diretta da contatore, telemetria, sistema di misura tarato.", inc:2, p:5},
+ {id:"F", n:"Documentale", d:"Fattura, bolla, registro contabile, DDT.", inc:5, p:4},
+ {id:"C", n:"Calcolato", d:"Ricavato da altri dati con una relazione documentata.", inc:10, p:3},
+ {id:"E", n:"Estrapolato", d:"Proiezione da periodi parziali o da un campione.", inc:20, p:2},
+ {id:"S", n:"Stimato", d:"Ipotesi, medie di settore, proxy monetari.", inc:30, p:1}
+];
+const dqOf=id=>DQ.find(d=>d.id===id)||DQ[2];
+
+/* ---------- Set di GWP ---------- */
+const GWP_SET={
+ AR6:{n:"IPCC AR6 (2021)", ch4:29.8, ch4b:27.0, n2o:273},
+ AR5:{n:"IPCC AR5 (2013)", ch4:28, ch4b:28, n2o:265},
+ AR4:{n:"IPCC AR4 (2007)", ch4:25, ch4b:25, n2o:298}
+};
+
+/* ---------- Checklist di conformità ---------- */
+const VER=[
+ {id:"v1", c:"§5.1", n:"Confini organizzativi definiti e documentati", d:"L'approccio di consolidamento è dichiarato e applicato in modo coerente a tutte le unità."},
+ {id:"v2", c:"§5.2", n:"Confini di rendicontazione definiti", d:"Le sei categorie sono state esaminate una per una; per ciascuna è documentata l'inclusione o l'esclusione."},
+ {id:"v3", c:"§5.2.4", n:"Criteri di significatività dichiarati", d:"È spiegato come sono state individuate le emissioni indirette significative."},
+ {id:"v4", c:"§6.1", n:"Sorgenti e assorbimenti identificati", d:"Il registro delle sorgenti copre tutti i siti e tutte le attività del perimetro."},
+ {id:"v5", c:"§6.2", n:"Metodologia di quantificazione selezionata e motivata", d:"Per ogni sorgente è chiaro se si usa il metodo per dati di attività, per bilancio di massa o per misura diretta."},
+ {id:"v6", c:"§6.3", n:"Dati di attività raccolti con evidenza tracciabile", d:"Ogni voce rinvia a un documento di origine reperibile in caso di verifica."},
+ {id:"v7", c:"§6.4", n:"Fattori di emissione e GWP documentati", d:"Fonte, anno di pubblicazione e ambito di validità di ogni fattore sono registrati."},
+ {id:"v8", c:"§6.4.2", n:"Doppia rendicontazione della categoria 2", d:"Sono riportati sia il dato location-based sia il dato market-based, con evidenza dei contratti."},
+ {id:"v9", c:"§6.5", n:"CO2 biogenica rendicontata separatamente", d:"La CO2 da combustione di biomassa è esclusa dai totali e indicata a parte."},
+ {id:"v10", c:"§7.2", n:"Anno base fissato e giustificato", d:"L'anno base è rappresentativo e i dati sono verificabili."},
+ {id:"v11", c:"§7.3", n:"Procedura di ricalcolo dell'anno base definita", d:"Sono fissate le soglie e i casi che impongono il ricalcolo (variazioni societarie, di metodo, errori)."},
+ {id:"v12", c:"§8.2", n:"Valutazione dell'incertezza effettuata", d:"L'incertezza è stimata almeno in termini qualitativi per le categorie rilevanti."},
+ {id:"v13", c:"§8.3", n:"Sistema di gestione delle informazioni GHG attivo", d:"Ruoli, responsabilità, controlli e archiviazione dei dati sono definiti per iscritto."},
+ {id:"v14", c:"§9.3", n:"Report GHG completo rispetto ai contenuti minimi", d:"Il rapporto contiene tutti gli elementi richiesti dal punto 9.3.1."},
+ {id:"v15", c:"ISO 14064-3", n:"Preparazione alla verifica di parte terza", d:"Livello di garanzia, materialità e criteri sono concordati con l'ente di verifica."}
+];
+
+/* ---------- Archivio ---------- */
+const KEY="inventario-ghg-14064-v1";
+const Store={
+  async load(){try{if(window.storage&&window.storage.get){const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}}catch(e){}
+    try{const raw=localStorage.getItem(KEY);if(raw)return JSON.parse(raw);}catch(e){}return null;},
+  async save(d){const s=JSON.stringify(d);
+    try{if(window.storage&&window.storage.set){await window.storage.set(KEY,s);return true;}}catch(e){}
+    try{localStorage.setItem(KEY,s);return true;}catch(e){toast("Archivio pieno — esporta i dati per liberare spazio");return false;}}
+};
+let DB={org:[],current:null}, view="pf", anno=null;
+const uid=p=>(p||"V")+Math.random().toString(36).slice(2,8).toUpperCase();
+
+function nuova(nome){
+  const y=new Date().getFullYear()-1;
+  return {id:uid("O"),nome:nome||"Nuova organizzazione",anno:y,annoBase:y,
+    profilo:{forma:"",piva:"",sede:"",settore:"",ateco:"",siti:"",dipendenti:"",contatto:"",responsabile:"",
+      consolidamento:"Controllo operativo",perimetroOrg:"",perimetroOp:"",periodo:"1 gennaio – 31 dicembre",
+      standard:"ISO 14064-1:2018",gwp:"AR6",significativita:"",metodologia:"",verifica:"Nessuna verifica di parte terza",
+      motivoBase:"",regolaRicalcolo:"Ricalcolo dell'anno base per variazioni strutturali che modificano il totale di categoria 1 e 2 di oltre il 5%."},
+    fe:JSON.parse(JSON.stringify(FE_LIB)),
+    voci:[], sorgenti:{}, anni:{}, obiettivi:[], verifica:{}, note:{},
+    created:new Date().toISOString()};
+}
+const org=()=>DB.org.find(o=>o.id===DB.current);
+const meta=(o,y)=>{o.anni[y]=o.anni[y]||{ricavi:"",fte:"",prod:"",umProd:"",superficie:"",note:""};return o.anni[y];};
+const anniDi=o=>{const s=new Set(o.voci.map(v=>+v.anno));s.add(+o.anno);s.add(+o.annoBase);return [...s].filter(x=>isFinite(x)).sort((a,b)=>b-a);};
+const feDi=(o,id)=>o.fe.find(f=>f.id===id);
+const nz=v=>{const n=parseFloat(String(v==null?"":v).replace(",","."));return isFinite(n)?n:0;};
+
+/* ---------- Motore di calcolo ---------- */
+function riga(o,v){
+  const q=nz(v.q), fe=nz(v.fe), feM=v.feM===""||v.feM==null?nz(v.fe):nz(v.feM), qGO=nz(v.qGO), feB=nz(v.feB);
+  const t=q*fe/1000;
+  const tM=v.cat==="2"?Math.max(0,q-qGO)*feM/1000:t;
+  const bio=q*feB/1000;
+  const d=dqOf(v.dq);
+  const inc=v.inc===""||v.inc==null?d.inc:nz(v.inc);
+  return {t, tM, bio, inc, tinc:t*inc/100, dqp:d.p};
+}
+function calc(o,y){
+  const vs=o.voci.filter(v=>+v.anno===+y);
+  const cats={},srcs={},top=[];
+  CAT.forEach(c=>cats[c.id]={t:0,tM:0,bio:0,n:0,inc2:0,dqw:0});
+  let bio=0,dqw=0,tw=0,inc2=0,incM2=0;
+  vs.forEach(v=>{
+    const r=riga(o,v), c=cats[v.cat]||cats["1"];
+    c.t+=r.t; c.tM+=r.tM; c.bio+=r.bio; c.n++; c.inc2+=Math.pow(r.tinc,2); c.dqw+=r.dqp*r.t;
+    bio+=r.bio; dqw+=r.dqp*r.t; tw+=r.t; inc2+=Math.pow(r.tinc,2); incM2+=Math.pow(r.tM*r.inc/100,2);
+    srcs[v.src]=(srcs[v.src]||0)+r.t;
+    top.push({n:v.desc||"(senza descrizione)",cat:v.cat,t:r.t});
+  });
+  const s1=cats["1"].t, s2l=cats["2"].t, s2m=cats["2"].tM;
+  const s3=cats["3"].t+cats["4"].t+cats["5"].t+cats["6"].t;
+  const totL=s1+s2l+s3, totM=s1+s2m+s3;
+  const m=meta(o,y), ric=nz(m.ricavi), fte=nz(m.fte), pr=nz(m.prod);
+  CAT.forEach(c=>{const k=cats[c.id];k.inc=k.t>0?Math.sqrt(k.inc2)/k.t*100:0;k.dq=k.t>0?k.dqw/k.t:0;});
+  return {vs,cats,srcs,s1,s2l,s2m,s3,totL,totM,bio,n:vs.length,
+    inc:totL>0?Math.sqrt(inc2)/totL*100:0, incM:totM>0?Math.sqrt(incM2)/totM*100:0,
+    dq:tw>0?dqw/tw:0,
+    intRic:ric>0?totL/(ric/1e6):0, intFte:fte>0?totL*1000/fte:0, intPr:pr>0?totL*1000/pr:0,
+    top:top.sort((a,b)=>b.t-a.t).slice(0,12)};
+}
+function stato(o,y){
+  const p=o.profilo, campi=["forma","sede","settore","ateco","siti","responsabile","perimetroOrg","perimetroOp"];
+  const a1=campi.filter(k=>p[k]).length/campi.length;
+  const a2=SRC.filter(s=>o.sorgenti[s.id]&&o.sorgenti[s.id].st).length/SRC.length;
+  const inc=SRC.filter(s=>(o.sorgenti[s.id]||{}).st==="in");
+  const conVoci=inc.filter(s=>o.voci.some(v=>v.src===s.id&&+v.anno===+y));
+  const a3=inc.length?conVoci.length/inc.length:(o.voci.filter(v=>+v.anno===+y).length?1:0);
+  const usati=[...new Set(o.voci.filter(v=>+v.anno===+y).map(v=>v.feId))].filter(x=>x&&x!=="custom");
+  const a4=usati.length?usati.filter(id=>{const f=feDi(o,id);return f&&f.f;}).length/usati.length:0;
+  const a5=o.voci.filter(v=>+v.anno===+y).length?1:0;
+  const a6=o.obiettivi.length?1:0;
+  const a7=VER.filter(v=>(o.verifica[v.id]||{}).st==="ok").length/VER.length;
+  const a8=(p.metodologia&&p.significativita)?1:(p.metodologia||p.significativita?.5:0);
+  const tot=(a1+a2+a3+a4+a6+a7+a8)/7;
+  return {a1,a2,a3,a4,a5,a6,a7,a8,tot:Math.round(tot*100)};
+}
+
+/* ==========================================================
+   UTILITÀ
+   ========================================================== */
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const fmt=(v,d=0)=>(v===0||v)?Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const pct=(v,d=1)=>fmt(v,d)+"%";
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400);}
+const persist=()=>Store.save(DB);
+
+/* ==========================================================
+   DIAGRAMMI
+   ========================================================== */
+const CFONT='font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"';
+function nice(m){if(m<=0)return 1;const e=Math.pow(10,Math.floor(Math.log10(m)));const r=m/e;return (r<=1?1:r<=2?2:r<=5?5:10)*e;}
+function svgStack(labels,series,unit){
+  const W=700,H=300,L=64,R=12,T=18,B=38,pw=W-L-R,ph=H-T-B;
+  const tot=labels.map((_,i)=>series.reduce((s,x)=>s+(x.vals[i]||0),0));
+  const mx=nice(Math.max(...tot,0.001)), bw=Math.min(64,pw/labels.length*0.52);
+  let g="";
+  for(let i=0;i<=4;i++){const y=T+ph-ph*i/4;
+    g+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#E4E2DC" stroke-width="1"/>`+
+       `<text x="${L-8}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#7D8C87" ${CFONT}>${fmt(mx*i/4,mx<10?1:0)}</text>`;}
+  labels.forEach((lb,i)=>{
+    const cx=L+pw*(i+.5)/labels.length; let base=T+ph;
+    series.forEach(s=>{const v=s.vals[i]||0;if(v<=0)return;const h=ph*v/mx;base-=h;
+      g+=`<rect x="${cx-bw/2}" y="${base}" width="${bw}" height="${h}" fill="${s.c}"/>`;});
+    g+=`<text x="${cx}" y="${T+ph+16}" text-anchor="middle" font-size="11" fill="#4A5B55" ${CFONT}>${esc(lb)}</text>`;
+    g+=`<text x="${cx}" y="${base-6}" text-anchor="middle" font-size="11" font-weight="600" fill="#14201C" ${CFONT}>${fmt(tot[i],tot[i]<100?1:0)}</text>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img"><text x="0" y="12" font-size="10.5" fill="#7D8C87" ${CFONT}>${esc(unit)}</text>${g}</svg>`;
+}
+function svgHBars(items,unit){
+  const W=700,rh=26,H=items.length*rh+26,L=250;
+  const mx=Math.max(...items.map(i=>i.v),0.001);
+  let g=`<text x="0" y="10" font-size="10.5" fill="#7D8C87" ${CFONT}>${esc(unit)}</text>`;
+  items.forEach((it,i)=>{const y=22+i*rh, w=(W-L-70)*it.v/mx;
+    g+=`<text x="0" y="${y+13}" font-size="11.5" fill="#4A5B55" ${CFONT}>${esc(it.n.length>44?it.n.slice(0,43)+"…":it.n)}</text>`+
+       `<rect x="${L}" y="${y+3}" width="${Math.max(1,w)}" height="15" rx="3" fill="${it.c||"#2E7D6B"}"/>`+
+       `<text x="${L+Math.max(1,w)+7}" y="${y+15}" font-size="11" fill="#14201C" ${CFONT}>${fmt(it.v,it.v<100?2:0)}</text>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">${g}</svg>`;
+}
+function svgDonut(items,unit){
+  const tot=items.reduce((s,i)=>s+i.v,0)||1,R=78,r=48,cx=110,cy=110;
+  let a=-Math.PI/2,g="";
+  items.forEach(it=>{const ang=it.v/tot*Math.PI*2;if(ang<=0)return;const b=a+ang,big=ang>Math.PI?1:0;
+    const p=(rad,an)=>[cx+rad*Math.cos(an),cy+rad*Math.sin(an)];
+    const [x1,y1]=p(R,a),[x2,y2]=p(R,b),[x3,y3]=p(r,b),[x4,y4]=p(r,a);
+    g+=`<path d="M${x1} ${y1} A${R} ${R} 0 ${big} 1 ${x2} ${y2} L${x3} ${y3} A${r} ${r} 0 ${big} 0 ${x4} ${y4} Z" fill="${it.c}"/>`;a=b;});
+  g+=`<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="19" font-weight="600" fill="#14201C" ${CFONT}>${fmt(tot,tot<100?1:0)}</text>`;
+  g+=`<text x="${cx}" y="${cy+15}" text-anchor="middle" font-size="10.5" fill="#7D8C87" ${CFONT}>${esc(unit)}</text>`;
+  items.forEach((it,i)=>{const y=32+i*24;
+    g+=`<rect x="238" y="${y-9}" width="11" height="11" rx="3" fill="${it.c}"/>`+
+       `<text x="257" y="${y}" font-size="12" fill="#4A5B55" ${CFONT}>${esc(it.n)}</text>`+
+       `<text x="690" y="${y}" text-anchor="end" font-size="12" ${CFONT} fill="#14201C">${fmt(it.v,it.v<100?2:1)} · ${fmt(it.v/tot*100,1)}%</text>`;});
+  return `<svg viewBox="0 0 700 220" width="100%" role="img">${g}</svg>`;
+}
+
+/* ==========================================================
+   VISTE
+   ========================================================== */
+function render(){
+  const o=org();
+  $$(".nav").forEach(b=>b.classList.toggle("on",b.dataset.v===view));
+  const V=$("#view");
+  if(!o||view==="pf"){V.innerHTML=vPf();bind(null);return;}
+  const st=stato(o,anno);
+  const marks={s1:st.a1,s2:st.a2,s3:st.a3,s4:st.a4,s5:st.a5,s6:st.a6,s7:st.a7,s8:st.a8};
+  Object.keys(marks).forEach(k=>{const e=$("#"+k);if(!e)return;
+    e.className="st"+(marks[k]>=.999?" ok":marks[k]>0?" mid":"");e.textContent=marks[k]>=.999?"✓":k.slice(1);});
+  const H={home:vHome,org:vOrg,srg:vSrg,dati:vDati,fe:vFe,ris:vRis,obt:vObt,ver:vVer,doc:vDoc,conf:vConf,guida:vGuida};
+  V.innerHTML=(H[view]||vHome)(o,st);
+  window.scrollTo(0,0);
+  bind(o);
+}
+
+/* ---------- Portafoglio ---------- */
+function vPf(){
+  const rows=DB.org.map(o=>{
+    const y=o.anno,c=calc(o,y);
+    return `<tr data-open="${o.id}" style="cursor:pointer">
+      <td><b>${esc(o.nome)}</b><div class="code">${esc(o.profilo.settore||"settore non indicato")}</div></td>
+      <td class="code">${y}</td>
+      <td class="num">${fmt(c.s1,1)}</td><td class="num">${fmt(c.s2l,1)}</td><td class="num">${fmt(c.s3,1)}</td>
+      <td class="num"><b>${fmt(c.totL,1)}</b></td>
+      <td class="num">${c.n}</td>
+      <td style="text-align:right"><button class="btn ghost sm" data-del="${o.id}">Elimina</button></td></tr>`;}).join("");
+  return `<h1>Portafoglio inventari</h1>
+  <p class="sub">Ogni organizzazione ha il proprio perimetro, la propria libreria di fattori e la propria serie storica. I dati restano in questo browser: esportali per conservarli o per passarli a un collega.</p>
+  <div class="card flush">
+    <div class="ch"><b style="flex:1">Organizzazioni</b>
+      <button class="btn sm" id="newCo">Nuova organizzazione</button>
+      <button class="btn ghost sm" id="impJson">Importa archivio</button>
+      <button class="btn ghost sm" id="expJson">Esporta archivio</button></div>
+    ${DB.org.length?`<div class="cb tbl-scroll"><table><thead><tr>
+      <th>Organizzazione</th><th>Periodo</th><th style="text-align:right">Cat. 1</th><th style="text-align:right">Cat. 2 loc.</th>
+      <th style="text-align:right">Cat. 3-6</th><th style="text-align:right">Totale tCO₂e</th><th style="text-align:right">Voci</th><th></th>
+      </tr></thead><tbody>${rows}</tbody></table></div>`
+    :`<div class="empty">Nessuna organizzazione. Creane una per iniziare l'inventario.</div>`}
+  </div>`;
+}
+
+/* ---------- Avanzamento ---------- */
+function vHome(o,st){
+  const c=calc(o,anno), cb=calc(o,o.annoBase);
+  const dl=cb.totL>0&&+anno!==+o.annoBase?((c.totL-cb.totL)/cb.totL*100):null;
+  const passi=[
+   {v:"org",n:"Confini e perimetro",p:st.a1,d:"Approccio di consolidamento, siti inclusi, periodo di rendicontazione."},
+   {v:"srg",n:"Registro sorgenti",p:st.a2,d:"Le sei categorie esaminate una per una, con motivazione di ogni esclusione."},
+   {v:"dati",n:"Dati di attività",p:st.a3,d:"Consumi, percorrenze, quantità: una voce per ogni sorgente inclusa."},
+   {v:"fe",n:"Fattori e GWP",p:st.a4,d:"Fonte e anno di ogni fattore utilizzato, set di GWP dichiarato."},
+   {v:"ris",n:"Risultati",p:st.a5,d:"Totali per categoria, intensità, incertezza, qualità del dato."},
+   {v:"obt",n:"Anno base e obiettivi",p:st.a6,d:"Anno di riferimento, regola di ricalcolo, traguardi di riduzione."},
+   {v:"ver",n:"Verifica",p:st.a7,d:"Conformità ai requisiti della norma e preparazione all'audit."},
+   {v:"doc",n:"Report GHG",p:st.a8,d:"Il rapporto d'inventario con i contenuti minimi del punto 9.3."}
+  ];
+  const anni=anniDi(o).slice(0,6).reverse();
+  const serie=[
+   {n:"Categoria 1",c:"#1F5A4C",vals:anni.map(y=>calc(o,y).s1)},
+   {n:"Categoria 2 (location)",c:"#1F5F8B",vals:anni.map(y=>calc(o,y).s2l)},
+   {n:"Categorie 3-6",c:"#B06E00",vals:anni.map(y=>calc(o,y).s3)}
+  ];
+  return `<h1>${esc(o.nome)}</h1>
+  <p class="sub">Inventario dei gas a effetto serra per il periodo ${anno}, redatto secondo ISO 14064-1:2018. Avanzamento complessivo ${st.tot}%.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Categoria 1 · Scope 1</div><div class="n" style="color:var(--s1c)">${fmt(c.s1,1)}</div><div class="h">tCO₂e dirette</div></div>
+    <div class="card kpi"><div class="l">Categoria 2 · Scope 2</div><div class="n" style="color:var(--s2c)">${fmt(c.s2l,1)}</div><div class="h">tCO₂e location-based · ${fmt(c.s2m,1)} market-based</div></div>
+    <div class="card kpi"><div class="l">Categorie 3-6 · Scope 3</div><div class="n" style="color:var(--s3c)">${fmt(c.s3,1)}</div><div class="h">tCO₂e indirette</div></div>
+    <div class="card kpi"><div class="l">Totale location-based</div><div class="n">${fmt(c.totL,1)}</div><div class="h">${dl===null?"anno base":`${dl>=0?"+":""}${fmt(dl,1)}% sul ${o.annoBase}`}</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Andamento</div>
+      ${anni.length?svgStack(anni.map(String),serie,"tCO₂e"):`<div class="empty">Nessun dato inserito.</div>`}
+      <div class="legend">${serie.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join("")}</div>
+    </div>
+    <div class="card"><div class="eyebrow">Passi dell'inventario</div>
+      ${passi.map((p,i)=>`<div class="step ${p.p>=.999?"done":p.p>0?"part":""}" data-go="${p.v}">
+        <div class="n">${p.p>=.999?"✓":i+1}</div>
+        <div style="flex:1"><b>${p.n}</b><p>${p.d}</p>
+          <div class="track" style="margin-top:7px;max-width:220px"><i style="width:${Math.round(p.p*100)}%"></i></div></div></div>`).join("")}
+    </div>
+  </div>
+  ${c.n?"":`<div class="warn">Non ci sono ancora voci per il ${anno}. Parti dal registro delle sorgenti, poi inserisci i dati di attività.</div>`}`;
+}
+
+/* ---------- 1. Confini ---------- */
+function vOrg(o){
+  const p=o.profilo;
+  const f=(k,l,h,ta)=>`<label class="f"><span>${l}</span>${ta
+    ?`<textarea data-p="${k}" placeholder="${esc(h||"")}">${esc(p[k]||"")}</textarea>`
+    :`<input type="text" data-p="${k}" value="${esc(p[k]||"")}" placeholder="${esc(h||"")}">`}</label>`;
+  return `<h1>Confini e perimetro</h1>
+  <p class="sub">La norma chiede di dichiarare quali unità entrano nell'inventario e con quale criterio, prima ancora di contare una sola tonnellata. Quanto scrivi qui finisce nel rapporto e viene chiesto in verifica.</p>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Identificazione</div>
+      ${f("forma","Denominazione e forma giuridica","Alfa S.r.l.")}
+      ${f("piva","Partita IVA / codice fiscale")}
+      ${f("sede","Sede legale")}
+      ${f("settore","Settore di attività","Produzione di componenti meccanici")}
+      ${f("ateco","Codice ATECO")}
+      ${f("dipendenti","Organico medio del periodo (FTE)")}
+      ${f("responsabile","Responsabile dell'inventario GHG","Nome, ruolo, contatto")}
+    </div>
+    <div class="card"><div class="eyebrow">Confini organizzativi</div>
+      <label class="f"><span>Approccio di consolidamento</span>
+        <select data-p="consolidamento">${["Controllo operativo","Controllo finanziario","Quota di partecipazione"].map(x=>`<option ${p.consolidamento===x?"selected":""}>${x}</option>`).join("")}</select>
+        <div class="hint">Il criterio scelto va applicato in modo uniforme a tutte le unità e mantenuto negli anni.</div></label>
+      ${f("perimetroOrg","Unità comprese nel perimetro","Elenca società, stabilimenti, filiali incluse e quelle escluse con la relativa motivazione.",1)}
+      ${f("siti","Siti operativi","Indirizzi e destinazione d'uso dei siti considerati",1)}
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Confini di rendicontazione</div>
+      ${f("perimetroOp","Descrizione dei confini di rendicontazione","Quali categorie di emissioni indirette sono incluse e perché.",1)}
+      ${f("significativita","Criteri di significatività","Come sono state selezionate le emissioni indirette significative: soglia quantitativa, influenza dell'organizzazione, rilevanza per gli stakeholder, rischio.",1)}
+    </div>
+    <div class="card"><div class="eyebrow">Periodo e metodo</div>
+      ${f("periodo","Periodo di rendicontazione","1 gennaio – 31 dicembre")}
+      <label class="f"><span>Set di GWP applicato</span>
+        <select data-p="gwp">${Object.keys(GWP_SET).map(k=>`<option value="${k}" ${p.gwp===k?"selected":""}>${GWP_SET[k].n}</option>`).join("")}</select></label>
+      ${f("metodologia","Metodologia di quantificazione","Metodo per dati di attività moltiplicati per fattori di emissione; indicare le eccezioni (bilancio di massa, misura diretta) e le fonti dei fattori.",1)}
+      <label class="f"><span>Verifica</span>
+        <select data-p="verifica">${["Nessuna verifica di parte terza","Verifica in corso","Verificato con livello di garanzia limitato","Verificato con livello di garanzia ragionevole"].map(x=>`<option ${p.verifica===x?"selected":""}>${x}</option>`).join("")}</select></label>
+    </div>
+  </div>
+  <div class="card"><div class="eyebrow">Dati del periodo ${anno}</div>
+    <div class="grid g4">
+      <label class="f"><span>Ricavi netti (€)</span><input type="text" data-m="ricavi" value="${esc(meta(o,anno).ricavi)}"></label>
+      <label class="f"><span>Organico medio (FTE)</span><input type="text" data-m="fte" value="${esc(meta(o,anno).fte)}"></label>
+      <label class="f"><span>Produzione</span><input type="text" data-m="prod" value="${esc(meta(o,anno).prod)}"></label>
+      <label class="f"><span>Unità di misura della produzione</span><input type="text" data-m="umProd" value="${esc(meta(o,anno).umProd)}" placeholder="t, pezzi, m², ore"></label>
+    </div>
+    <div class="hint">Servono a calcolare le intensità di emissione, che la norma chiede di dichiarare quando l'organizzazione usa indicatori di prestazione.</div>
+  </div>`;
+}
+
+/* ---------- 2. Registro sorgenti ---------- */
+function vSrg(o){
+  const gruppi=CAT.map(c=>{
+    const lista=SRC.filter(s=>s.c===c.id).map(s=>{
+      const st=(o.sorgenti[s.id]||{});
+      const nv=o.voci.filter(v=>v.src===s.id&&+v.anno===+anno).length;
+      return `<div class="srow">
+        <div><b>${s.n} ${nv?`<span class="tag t-tea">${nv} voci</span>`:""}</b><p>${s.d}</p>
+        ${st.st==="out"||st.st==="na"?`<input type="text" data-srcnote="${s.id}" value="${esc(st.note||"")}" placeholder="Motivazione dell'esclusione — richiesta dalla norma" style="margin-top:7px;max-width:520px">`:""}</div>
+        <div class="seg" data-srcseg="${s.id}">
+          <button data-st="in" class="${st.st==="in"?"on":""}">Inclusa</button>
+          <button data-st="out" class="${st.st==="out"?"on no":""}">Esclusa</button>
+          <button data-st="na" class="${st.st==="na"?"on na":""}">Non applicabile</button>
+        </div></div>`;}).join("");
+    return `<div class="card"><div class="eyebrow">Categoria ${c.id} · ${c.s}</div>
+      <h2>${c.n}</h2><p class="hint" style="margin:-6px 0 10px">${c.d}</p>${lista}</div>`;}).join("");
+  const tot=SRC.length, val=SRC.filter(s=>(o.sorgenti[s.id]||{}).st).length;
+  return `<h1>Registro delle sorgenti</h1>
+  <p class="sub">Il punto 5.2 della norma chiede di esaminare tutte e sei le categorie e di dichiarare, per ciascuna sorgente, se è inclusa o esclusa. Un'esclusione senza motivazione è il rilievo più frequente in verifica.</p>
+  <div class="card"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="flex:1;min-width:220px"><div class="eyebrow" style="margin-bottom:6px">Sorgenti valutate</div>
+      <div class="track"><i style="width:${Math.round(val/tot*100)}%"></i></div></div>
+    <div class="code">${val} di ${tot}</div></div></div>
+  ${gruppi}`;
+}
+
+/* ---------- 3. Dati di attività ---------- */
+let edit=null, filtro={cat:"",src:"",q:""};
+function nuovaVoce(){return {id:uid("V"),anno:anno,cat:"1",src:"1a",sede:"",desc:"",feId:"gas_smc",um:"Smc",q:"",fe:1.9755,feM:"",qGO:"",feB:"",dq:"F",inc:"",ev:"",note:""};}
+
+function formVoce(o){
+  const v=edit, cat=v.cat;
+  const lib=o.fe.filter(f=>f.cat===cat);
+  const grp=[...new Set(lib.map(f=>f.g))];
+  const opts=grp.map(g=>`<optgroup label="${esc(g)}">${lib.filter(f=>f.g===g).map(f=>
+    `<option value="${f.id}" ${v.feId===f.id?"selected":""}>${esc(f.n)} — ${fmt(f.fe,4)} kgCO₂e/${esc(f.um)}</option>`).join("")}</optgroup>`).join("")
+    +`<option value="custom" ${v.feId==="custom"?"selected":""}>Fattore personalizzato</option>`;
+  const r=riga(o,v);
+  return `<div class="card" id="formVoce" style="border-color:var(--teal-mid)">
+    <div class="eyebrow">${o.voci.some(x=>x.id===v.id)?"Modifica voce":"Nuova voce"} · periodo ${anno}</div>
+    <div class="grid g3">
+      <label class="f"><span>Categoria ISO 14064-1</span><select data-e="cat">${CAT.map(c=>`<option value="${c.id}" ${cat===c.id?"selected":""}>Categoria ${c.id} — ${c.n} (${c.s})</option>`).join("")}</select></label>
+      <label class="f"><span>Sorgente</span><select data-e="src">${SRC.filter(s=>s.c===cat).map(s=>`<option value="${s.id}" ${v.src===s.id?"selected":""}>${esc(s.n)}</option>`).join("")}</select></label>
+      <label class="f"><span>Sito o unità organizzativa</span><input type="text" data-e="sede" value="${esc(v.sede)}" placeholder="Stabilimento di Aversa"></label>
+    </div>
+    <label class="f"><span>Descrizione della voce</span><input type="text" data-e="desc" value="${esc(v.desc)}" placeholder="Gas naturale — caldaia reparto produzione"></label>
+    <div class="grid g4">
+      <label class="f" style="grid-column:span 2"><span>Fattore di emissione</span><select data-e="feId">${opts}</select></label>
+      <label class="f"><span>Quantità</span><input type="text" data-e="q" value="${esc(v.q)}" placeholder="0"></label>
+      <label class="f"><span>Unità di misura</span><input type="text" data-e="um" value="${esc(v.um)}"></label>
+    </div>
+    <div class="grid g4">
+      <label class="f"><span>Fattore ${cat==="2"?"location-based ":""}(kgCO₂e/${esc(v.um||"u")})</span><input type="text" data-e="fe" value="${esc(v.fe)}"></label>
+      ${cat==="2"?`<label class="f"><span>Fattore market-based</span><input type="text" data-e="feM" value="${esc(v.feM)}" placeholder="residual mix"></label>
+      <label class="f"><span>Quota coperta da GO o PPA (${esc(v.um||"kWh")})</span><input type="text" data-e="qGO" value="${esc(v.qGO)}"></label>`
+      :`<label class="f"><span>CO₂ biogenica (kg/${esc(v.um||"u")})</span><input type="text" data-e="feB" value="${esc(v.feB)}" placeholder="0"></label>
+        <label class="f"><span>&nbsp;</span><div class="hint" style="margin:0">La CO₂ da biomassa si rendiconta separatamente, fuori dai totali.</div></label>`}
+      <label class="f"><span>Qualità del dato</span><select data-e="dq">${DQ.map(d=>`<option value="${d.id}" ${v.dq===d.id?"selected":""}>${d.n} — incertezza ${d.inc}%</option>`).join("")}</select></label>
+    </div>
+    <div class="grid g3">
+      <label class="f"><span>Incertezza (%)</span><input type="text" data-e="inc" value="${esc(v.inc)}" placeholder="${dqOf(v.dq).inc}"></label>
+      <label class="f" style="grid-column:span 2"><span>Evidenza documentale</span><input type="text" data-e="ev" value="${esc(v.ev)}" placeholder="Fatture Enel 2025 — cartella /GHG/2025/energia"></label>
+    </div>
+    <label class="f"><span>Note</span><input type="text" data-e="note" value="${esc(v.note)}"></label>
+    <div class="derived"><table><tr>
+      <td>Emissioni della voce</td><td class="num"><b>${fmt(r.t,3)} tCO₂e</b></td>
+      ${cat==="2"?`<td>Market-based</td><td class="num"><b>${fmt(r.tM,3)} tCO₂e</b></td>`:""}
+      ${r.bio>0?`<td>CO₂ biogenica</td><td class="num">${fmt(r.bio,3)} t</td>`:""}
+      <td>Incertezza</td><td class="num">± ${fmt(r.inc,0)}%</td></tr></table></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn" id="saveVoce">Salva voce</button>
+      <button class="btn ghost" id="cancelVoce">Annulla</button>
+      <button class="btn ghost" id="recalcVoce">Ricalcola anteprima</button>
+    </div></div>`;
+}
+
+function vDati(o){
+  const tutte=o.voci.filter(v=>+v.anno===+anno);
+  const vs=tutte.filter(v=>(!filtro.cat||v.cat===filtro.cat)&&(!filtro.src||v.src===filtro.src)&&
+    (!filtro.q||((v.desc||"")+" "+(v.sede||"")).toLowerCase().includes(filtro.q.toLowerCase())))
+    .sort((a,b)=>a.cat===b.cat?riga(o,b).t-riga(o,a).t:a.cat.localeCompare(b.cat));
+  const c=calc(o,anno);
+  const rows=vs.map(v=>{const r=riga(o,v),ct=catOf(v.cat),s=SRC.find(x=>x.id===v.src);
+    return `<tr>
+      <td><span class="tag ${ct.t}">Cat ${v.cat}</span></td>
+      <td><b>${esc(v.desc||"(senza descrizione)")}</b><div class="code">${esc(s?s.n:"")}${v.sede?" · "+esc(v.sede):""}</div></td>
+      <td class="num">${fmt(nz(v.q),2)}<div class="code">${esc(v.um)}</div></td>
+      <td class="num">${fmt(nz(v.fe),4)}</td>
+      <td class="num"><b>${fmt(r.t,3)}</b>${v.cat==="2"?`<div class="code">mkt ${fmt(r.tM,3)}</div>`:""}</td>
+      <td><span class="tag ${r.dqp>=4?"t-grn":r.dqp>=3?"t-amb":"t-red"}">${dqOf(v.dq).n}</span><div class="code">± ${fmt(r.inc,0)}%</div></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn ghost sm" data-editv="${v.id}">Modifica</button>
+        <button class="btn ghost sm" data-dupv="${v.id}">Duplica</button>
+        <button class="btn danger sm" data-delv="${v.id}">Elimina</button></td></tr>`;}).join("");
+  const prev=anniDi(o).filter(y=>y<+anno)[0];
+  return `<h1>Dati di attività</h1>
+  <p class="sub">Una riga per ogni sorgente e per ogni sito: la quantità consumata, il fattore applicato, l'evidenza che la sostiene. Il calcolo è quantità × fattore ÷ 1.000, in tonnellate di CO₂ equivalente.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Voci nel periodo</div><div class="n">${tutte.length}</div><div class="h">${vs.length!==tutte.length?vs.length+" visibili con i filtri":"nessun filtro attivo"}</div></div>
+    <div class="card kpi"><div class="l">Totale location-based</div><div class="n">${fmt(c.totL,1)}</div><div class="h">tCO₂e</div></div>
+    <div class="card kpi"><div class="l">Incertezza combinata</div><div class="n">± ${fmt(c.inc,1)}%</div><div class="h">somma in quadratura</div></div>
+    <div class="card kpi"><div class="l">Qualità media</div><div class="n">${fmt(c.dq,1)}<span style="font-size:14px;color:var(--ink-3)">/5</span></div><div class="h">ponderata sulle emissioni</div></div>
+  </div>
+  ${edit?formVoce(o):""}
+  <div class="card flush">
+    <div class="ch">
+      <b style="flex:1">Registro delle voci · ${anno}</b>
+      <input type="search" id="fq" value="${esc(filtro.q)}" placeholder="Cerca descrizione o sito" style="width:200px">
+      <select id="fcat" style="width:auto"><option value="">Tutte le categorie</option>${CAT.map(x=>`<option value="${x.id}" ${filtro.cat===x.id?"selected":""}>Categoria ${x.id}</option>`).join("")}</select>
+      <button class="btn sm" id="addVoce">Aggiungi voce</button>
+      ${prev?`<button class="btn ghost sm" id="copyPrev">Copia dal ${prev}</button>`:""}
+      <button class="btn ghost sm" id="expCsv">Esporta CSV</button>
+    </div>
+    ${vs.length?`<div class="cb tbl-scroll"><table><thead><tr>
+      <th>Cat.</th><th>Voce</th><th style="text-align:right">Quantità</th><th style="text-align:right">FE</th>
+      <th style="text-align:right">tCO₂e</th><th>Qualità</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`
+    :`<div class="empty">Nessuna voce per questo periodo. Aggiungine una o copiala dall'anno precedente.</div>`}
+  </div>`;
+}
+
+/* ---------- 4. Fattori e GWP ---------- */
+function vFe(o){
+  const usati=new Set(o.voci.map(v=>v.feId));
+  const grp=[...new Set(o.fe.map(f=>f.g))];
+  const blocchi=grp.map(g=>`<div class="card flush"><div class="ch"><b style="flex:1">${esc(g)}</b><span class="code">categoria ${o.fe.find(f=>f.g===g).cat}</span></div>
+    <div class="cb tbl-scroll"><table><thead><tr><th>Fattore</th><th style="width:90px">Unità</th>
+    <th style="text-align:right;width:130px">kgCO₂e/unità</th><th style="text-align:right;width:130px">Market-based</th><th style="width:210px">Fonte e anno</th><th style="width:80px"></th></tr></thead><tbody>
+    ${o.fe.filter(f=>f.g===g).map(f=>`<tr>
+      <td><b>${esc(f.n)}</b> ${usati.has(f.id)?`<span class="tag t-tea">in uso</span>`:""}<div class="code">${f.id}</div></td>
+      <td class="code">${esc(f.um)}</td>
+      <td><input type="text" class="num" data-fe="${f.id}" data-k="fe" value="${esc(f.fe)}"></td>
+      <td>${f.cat==="2"?`<input type="text" class="num" data-fe="${f.id}" data-k="mkt" value="${esc(f.mkt==null?"":f.mkt)}">`:`<span class="code">—</span>`}</td>
+      <td><input type="text" data-fe="${f.id}" data-k="f" value="${esc(f.f||"")}" placeholder="Fonte, anno"></td>
+      <td style="text-align:right">${usati.has(f.id)?"":`<button class="btn danger sm" data-delfe="${f.id}">Elimina</button>`}</td></tr>`).join("")}
+    </tbody></table></div></div>`).join("");
+  const g=GWP_SET[o.profilo.gwp]||GWP_SET.AR6;
+  return `<h1>Fattori di emissione e GWP</h1>
+  <p class="sub">I valori precaricati sono indicativi e vanno allineati alla fonte e all'anno che dichiari nel rapporto. In verifica viene chiesto il documento da cui proviene ogni fattore, non il nome generico della banca dati.</p>
+  <div class="warn">Prima di chiudere l'inventario: aggiorna i fattori con l'edizione corrente delle fonti che utilizzi (ISPRA per il mix elettrico italiano, DEFRA per combustibili e trasporti, IEA per l'estero) e scrivi nella colonna fonte l'edizione esatta, ad esempio «ISPRA Rapporto 386/2023, tab. 2».</div>
+  <div class="card"><div class="eyebrow">Potenziali di riscaldamento globale</div>
+    <div class="grid g4">
+      <label class="f"><span>Set applicato</span><select data-p="gwp">${Object.keys(GWP_SET).map(k=>`<option value="${k}" ${o.profilo.gwp===k?"selected":""}>${GWP_SET[k].n}</option>`).join("")}</select></label>
+      <div class="card kpi" style="margin:0"><div class="l">CH₄ fossile</div><div class="n">${g.ch4}</div><div class="h">GWP a 100 anni</div></div>
+      <div class="card kpi" style="margin:0"><div class="l">CH₄ biogenico</div><div class="n">${g.ch4b}</div><div class="h">GWP a 100 anni</div></div>
+      <div class="card kpi" style="margin:0"><div class="l">N₂O</div><div class="n">${g.n2o}</div><div class="h">GWP a 100 anni</div></div>
+    </div>
+    <div class="hint">I fattori dei gas refrigeranti coincidono con il loro GWP: se cambi set, verifica i valori nel gruppo «Gas fuggitivi».</div>
+  </div>
+  <div class="card"><div class="eyebrow">Aggiungi un fattore</div>
+    <div class="grid g4">
+      <label class="f"><span>Nome</span><input type="text" id="nfName" placeholder="Bioetanolo E85"></label>
+      <label class="f"><span>Gruppo</span><input type="text" id="nfGrp" placeholder="Combustione mobile"></label>
+      <label class="f"><span>Unità</span><input type="text" id="nfUm" placeholder="litri"></label>
+      <label class="f"><span>kgCO₂e/unità</span><input type="text" id="nfVal" placeholder="0,0000"></label>
+    </div>
+    <div class="grid g3">
+      <label class="f"><span>Categoria</span><select id="nfCat">${CAT.map(c=>`<option value="${c.id}">Categoria ${c.id} — ${c.n}</option>`).join("")}</select></label>
+      <label class="f"><span>Sorgente predefinita</span><select id="nfSrc">${SRC.map(s=>`<option value="${s.id}">${s.c} · ${esc(s.n)}</option>`).join("")}</select></label>
+      <label class="f"><span>Fonte e anno</span><input type="text" id="nfFonte" placeholder="DEFRA 2025"></label>
+    </div>
+    <button class="btn" id="addFe">Aggiungi alla libreria</button>
+  </div>
+  ${blocchi}
+  <div class="card"><button class="btn ghost" id="resetFe">Ripristina la libreria predefinita</button>
+    <div class="hint">Sostituisce i fattori con quelli iniziali. Le voci già inserite conservano il fattore con cui sono state calcolate.</div></div>`;
+}
+
+/* ---------- 5. Risultati ---------- */
+function vRis(o){
+  const c=calc(o,anno), m=meta(o,anno), cb=calc(o,o.annoBase);
+  const dl=cb.totL>0&&+anno!==+o.annoBase?((c.totL-cb.totL)/cb.totL*100):null;
+  const donut=svgDonut([
+    {n:"Categoria 1 — dirette",v:c.s1,c:"#1F5A4C"},
+    {n:"Categoria 2 — energia importata",v:c.s2l,c:"#1F5F8B"},
+    {n:"Categorie 3-6 — altre indirette",v:c.s3,c:"#B06E00"}],"tCO₂e");
+  const bars=svgHBars(CAT.map(x=>({n:"Cat "+x.id+" — "+x.n,v:c.cats[x.id].t,c:x.id==="1"?"#1F5A4C":x.id==="2"?"#1F5F8B":"#B06E00"})),"tCO₂e per categoria");
+  const top=c.top.length?svgHBars(c.top.map(t=>({n:t.n,v:t.t,c:t.cat==="1"?"#1F5A4C":t.cat==="2"?"#1F5F8B":"#B06E00"})),"tCO₂e per voce"):"";
+  const tab=CAT.map(x=>{const k=c.cats[x.id];
+    return `<tr><td><span class="tag ${x.t}">Cat ${x.id}</span> ${esc(x.n)}<div class="code">${x.s}</div></td>
+      <td class="num">${k.n}</td>
+      <td class="num"><b>${fmt(k.t,2)}</b></td>
+      <td class="num">${c.totL>0?fmt(k.t/c.totL*100,1):"0,0"}%</td>
+      <td class="num">± ${fmt(k.inc,1)}%</td>
+      <td class="num">${k.t>0?fmt(k.dq,1):"—"}</td></tr>`;}).join("");
+  return `<h1>Risultati dell'inventario · ${anno}</h1>
+  <p class="sub">Totali per categoria, doppia rendicontazione dell'energia importata, intensità e stima dell'incertezza. La CO₂ biogenica resta fuori dai totali e viene indicata a parte, come chiede la norma.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Totale location-based</div><div class="n">${fmt(c.totL,1)}</div><div class="h">tCO₂e · ± ${fmt(c.inc,1)}%</div></div>
+    <div class="card kpi"><div class="l">Totale market-based</div><div class="n">${fmt(c.totM,1)}</div><div class="h">tCO₂e · ± ${fmt(c.incM,1)}%</div></div>
+    <div class="card kpi"><div class="l">Variazione sull'anno base</div><div class="n" style="color:${dl===null?"var(--ink)":dl<=0?"var(--green)":"var(--red)"}">${dl===null?"—":(dl>=0?"+":"")+fmt(dl,1)+"%"}</div><div class="h">base ${o.annoBase} · ${fmt(cb.totL,1)} tCO₂e</div></div>
+    <div class="card kpi"><div class="l">CO₂ biogenica</div><div class="n">${fmt(c.bio,2)}</div><div class="h">t · riportata separatamente</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Composizione per scope</div>${donut}</div>
+    <div class="card"><div class="eyebrow">Emissioni per categoria</div>${bars}</div>
+  </div>
+  <div class="card flush"><div class="ch"><b>Riepilogo per categoria</b></div>
+    <div class="cb tbl-scroll"><table><thead><tr><th>Categoria</th><th style="text-align:right">Voci</th>
+      <th style="text-align:right">tCO₂e</th><th style="text-align:right">Peso</th><th style="text-align:right">Incertezza</th><th style="text-align:right">Qualità /5</th></tr></thead>
+      <tbody>${tab}
+      <tr><td><b>Totale location-based</b></td><td class="num">${c.n}</td><td class="num"><b>${fmt(c.totL,2)}</b></td><td class="num">100,0%</td><td class="num">± ${fmt(c.inc,1)}%</td><td class="num">${fmt(c.dq,1)}</td></tr>
+      </tbody></table></div></div>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Categoria 2 — doppia rendicontazione</div>
+      <table><tr><td>Location-based (mix di rete)</td><td class="num"><b>${fmt(c.s2l,2)} tCO₂e</b></td></tr>
+      <tr><td>Market-based (contratti e GO)</td><td class="num"><b>${fmt(c.s2m,2)} tCO₂e</b></td></tr>
+      <tr><td>Differenza attribuibile ai contratti</td><td class="num">${fmt(c.s2l-c.s2m,2)} tCO₂e</td></tr></table>
+      <div class="hint">Il valore market-based tiene conto delle quote coperte da Garanzie d'Origine o PPA indicate nelle singole voci.</div></div>
+    <div class="card"><div class="eyebrow">Intensità di emissione</div>
+      <table>
+        <tr><td>Per fatturato</td><td class="num"><b>${m.ricavi?fmt(c.intRic,2):"—"}</b> tCO₂e/M€</td></tr>
+        <tr><td>Per addetto</td><td class="num"><b>${m.fte?fmt(c.intFte,0):"—"}</b> kgCO₂e/FTE</td></tr>
+        <tr><td>Per unità di prodotto</td><td class="num"><b>${m.prod?fmt(c.intPr,2):"—"}</b> kgCO₂e/${esc(m.umProd||"unità")}</td></tr>
+      </table>
+      <div class="hint">${m.ricavi||m.fte||m.prod?"Calcolate sul totale location-based.":"Inserisci ricavi, organico e produzione nella scheda dei confini per ottenere le intensità."}</div></div>
+  </div>
+  ${top?`<div class="card"><div class="eyebrow">Voci più rilevanti</div>${top}
+    <div class="hint">Le prime voci concentrano di norma la maggior parte dell'inventario: è lì che conviene migliorare la qualità del dato prima della verifica.</div></div>`:""}`;
+}
+
+/* ---------- 6. Anno base e obiettivi ---------- */
+function vObt(o){
+  const anni=anniDi(o), c=calc(o,anno), cb=calc(o,o.annoBase);
+  const serie=[
+   {n:"Categoria 1",c:"#1F5A4C",vals:anni.slice().reverse().map(y=>calc(o,y).s1)},
+   {n:"Categoria 2",c:"#1F5F8B",vals:anni.slice().reverse().map(y=>calc(o,y).s2l)},
+   {n:"Categorie 3-6",c:"#B06E00",vals:anni.slice().reverse().map(y=>calc(o,y).s3)}];
+  const obt=o.obiettivi.map(b=>{
+    const base=b.ambito==="1"?cb.s1:b.ambito==="2"?cb.s2l:b.ambito==="12"?cb.s1+cb.s2l:b.ambito==="3"?cb.s3:cb.totL;
+    const att=b.ambito==="1"?c.s1:b.ambito==="2"?c.s2l:b.ambito==="12"?c.s1+c.s2l:b.ambito==="3"?c.s3:c.totL;
+    const obiettivo=base*(1-nz(b.rid)/100);
+    const fatto=base>obiettivo?Math.min(100,Math.max(0,(base-att)/(base-obiettivo)*100)):0;
+    return `<div class="card"><div style="display:flex;gap:12px;align-items:flex-start">
+      <div style="flex:1"><b>${esc(b.n||"Obiettivo senza titolo")}</b>
+        <div class="code">${b.ambito==="1"?"Categoria 1":b.ambito==="2"?"Categoria 2":b.ambito==="12"?"Categorie 1 e 2":b.ambito==="3"?"Categorie 3-6":"Totale"} · −${fmt(nz(b.rid),0)}% al ${esc(b.anno)} sul ${o.annoBase}</div>
+        <p class="hint" style="margin-top:6px">${esc(b.note||"")}</p></div>
+      <button class="btn danger sm" data-delobt="${b.id}">Elimina</button></div>
+      <div class="hr"></div>
+      <div class="grid g4">
+        <div class="kpi"><div class="l">Anno base</div><div class="n" style="font-size:20px">${fmt(base,1)}</div><div class="h">tCO₂e</div></div>
+        <div class="kpi"><div class="l">Periodo ${anno}</div><div class="n" style="font-size:20px">${fmt(att,1)}</div><div class="h">tCO₂e</div></div>
+        <div class="kpi"><div class="l">Traguardo ${esc(b.anno)}</div><div class="n" style="font-size:20px">${fmt(obiettivo,1)}</div><div class="h">tCO₂e</div></div>
+        <div class="kpi"><div class="l">Percorso compiuto</div><div class="n" style="font-size:20px">${fmt(fatto,0)}%</div>
+          <div class="track" style="margin-top:6px"><i style="width:${Math.round(fatto)}%;background:${fatto>=100?"var(--green)":"var(--teal)"}"></i></div></div>
+      </div></div>`;}).join("");
+  return `<h1>Anno base e obiettivi</h1>
+  <p class="sub">L'anno base è il metro con cui si misurano tutte le variazioni successive. La norma chiede di sceglierlo, di giustificarlo e di fissare in anticipo le regole per ricalcolarlo quando l'organizzazione cambia.</p>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Anno base</div>
+      <label class="f"><span>Periodo di riferimento</span>
+        <select id="selBase">${anni.map(y=>`<option value="${y}" ${+o.annoBase===+y?"selected":""}>${y} — ${fmt(calc(o,y).totL,1)} tCO₂e</option>`).join("")}</select></label>
+      <label class="f"><span>Motivazione della scelta</span><textarea data-p="motivoBase" placeholder="Primo anno con dati completi e verificabili su tutti i siti del perimetro.">${esc(o.profilo.motivoBase||"")}</textarea></label>
+      <label class="f"><span>Regola di ricalcolo</span><textarea data-p="regolaRicalcolo">${esc(o.profilo.regolaRicalcolo||"")}</textarea></label>
+      <div class="hint">Casi tipici di ricalcolo: acquisizioni e cessioni, cambio del metodo di quantificazione, correzione di errori significativi, variazione dei confini.</div>
+    </div>
+    <div class="card"><div class="eyebrow">Serie storica</div>
+      ${anni.length?svgStack(anni.slice().reverse().map(String),serie,"tCO₂e"):`<div class="empty">Nessun dato.</div>`}
+      <div class="legend">${serie.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join("")}</div>
+    </div>
+  </div>
+  <div class="card"><div class="eyebrow">Nuovo obiettivo di riduzione</div>
+    <div class="grid g4">
+      <label class="f" style="grid-column:span 2"><span>Descrizione</span><input type="text" id="obN" placeholder="Riduzione delle emissioni dirette e da energia importata"></label>
+      <label class="f"><span>Ambito</span><select id="obA">
+        <option value="12">Categorie 1 e 2</option><option value="1">Categoria 1</option><option value="2">Categoria 2</option>
+        <option value="3">Categorie 3-6</option><option value="tot">Totale</option></select></label>
+      <label class="f"><span>Anno traguardo</span><input type="text" id="obY" placeholder="${+o.annoBase+5}"></label>
+    </div>
+    <div class="grid g4">
+      <label class="f"><span>Riduzione (%)</span><input type="text" id="obR" placeholder="30"></label>
+      <label class="f" style="grid-column:span 3"><span>Azioni previste</span><input type="text" id="obNote" placeholder="Fotovoltaico da 200 kWp, sostituzione della flotta diesel, contratto con Garanzia d'Origine"></label>
+    </div>
+    <button class="btn" id="addObt">Aggiungi obiettivo</button>
+  </div>
+  ${obt||`<div class="card empty">Nessun obiettivo definito.</div>`}`;
+}
+
+/* ---------- 7. Verifica ---------- */
+function vVer(o,st){
+  const rows=VER.map(v=>{const s=o.verifica[v.id]||{};
+    return `<div class="srow">
+      <div><b>${esc(v.n)} <span class="tag t-gry">${v.c}</span></b><p>${v.d}</p>
+      <input type="text" data-vernote="${v.id}" value="${esc(s.note||"")}" placeholder="Evidenza, documento di riferimento, azione da completare" style="margin-top:7px;max-width:560px"></div>
+      <div class="seg" data-verseg="${v.id}">
+        <button data-st="ok" class="${s.st==="ok"?"on":""}">Soddisfatto</button>
+        <button data-st="par" class="${s.st==="par"?"on na":""}">Parziale</button>
+        <button data-st="no" class="${s.st==="no"?"on no":""}">Da fare</button></div></div>`;}).join("");
+  const ok=VER.filter(v=>(o.verifica[v.id]||{}).st==="ok").length;
+  const no=VER.filter(v=>(o.verifica[v.id]||{}).st==="no").length;
+  return `<h1>Verifica e conformità</h1>
+  <p class="sub">Controllo dei requisiti che un verificatore accreditato esamina per primi. Le voci con evidenza documentale annotata si trasformano direttamente in riferimenti per il fascicolo di audit.</p>
+  <div class="grid g3">
+    <div class="card kpi"><div class="l">Requisiti soddisfatti</div><div class="n">${ok}<span style="font-size:15px;color:var(--ink-3)">/${VER.length}</span></div>
+      <div class="track" style="margin-top:8px"><i style="width:${Math.round(ok/VER.length*100)}%"></i></div></div>
+    <div class="card kpi"><div class="l">Ancora da fare</div><div class="n" style="color:${no?"var(--red)":"var(--green)"}">${no}</div><div class="h">requisiti aperti</div></div>
+    <div class="card kpi"><div class="l">Livello di verifica</div><div class="n" style="font-size:16px;font-family:var(--sans);letter-spacing:0">${esc(o.profilo.verifica)}</div><div class="h">dichiarato nella scheda dei confini</div></div>
+  </div>
+  <div class="card">${rows}</div>`;
+}
+
+/* ---------- 8. Report GHG ---------- */
+function vDoc(o){
+  const c=calc(o,anno), cb=calc(o,o.annoBase), p=o.profilo, m=meta(o,anno);
+  const g=GWP_SET[p.gwp]||GWP_SET.AR6;
+  const dl=cb.totL>0&&+anno!==+o.annoBase?((c.totL-cb.totL)/cb.totL*100):null;
+  const tabCat=cid=>{
+    const vs=c.vs.filter(v=>v.cat===cid);
+    if(!vs.length)return `<p class="meta">Nessuna emissione quantificata in questa categoria per il periodo.</p>`;
+    return `<table><thead><tr><th>Sorgente</th><th>Voce</th><th style="text-align:right">Quantità</th><th style="text-align:right">FE</th><th style="text-align:right">tCO₂e</th></tr></thead><tbody>
+      ${vs.map(v=>{const r=riga(o,v),s=SRC.find(x=>x.id===v.src);
+        return `<tr><td>${esc(s?s.n:"")}</td><td>${esc(v.desc)}${v.sede?`<div class="meta">${esc(v.sede)}</div>`:""}</td>
+        <td class="num">${fmt(nz(v.q),2)} ${esc(v.um)}</td><td class="num">${fmt(nz(v.fe),4)}</td><td class="num">${fmt(r.t,3)}</td></tr>`;}).join("")}
+      <tr><td colspan="4"><b>Totale categoria ${cid}</b></td><td class="num"><b>${fmt(c.cats[cid].t,2)}</b></td></tr>
+      </tbody></table>`;};
+  const escl=SRC.filter(s=>["out","na"].includes((o.sorgenti[s.id]||{}).st));
+  const usati=[...new Set(c.vs.map(v=>v.feId))].map(id=>feDi(o,id)).filter(Boolean);
+  return `<div class="noprint" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn" id="printBtn2">Stampa o salva in PDF</button>
+    <button class="btn ghost" id="expHtml">Esporta il rapporto in HTML</button>
+    <span class="hint" style="margin:8px 0 0">Il rapporto raccoglie i contenuti minimi richiesti dal punto 9.3.1 della norma.</span></div>
+  <div class="doc" id="docBody">
+    <h1>Rapporto d'inventario dei gas a effetto serra</h1>
+    <p class="meta">${esc(o.nome)} · periodo di rendicontazione ${anno} (${esc(p.periodo)}) · redatto secondo UNI EN ISO 14064-1:2018</p>
+
+    <h2>1. L'organizzazione e le responsabilità</h2>
+    <p>${esc(p.forma||o.nome)}${p.piva?`, partita IVA ${esc(p.piva)}`:""}${p.sede?`, con sede in ${esc(p.sede)}`:""}, opera nel settore ${esc(p.settore||"non indicato")}${p.ateco?` (ATECO ${esc(p.ateco)})`:""}.</p>
+    <p>Responsabile dell'inventario: ${esc(p.responsabile||"da designare")}. Il presente rapporto è redatto dall'organizzazione, che risponde della completezza e dell'accuratezza dei dati riportati.</p>
+    ${m.fte||m.ricavi?`<p class="meta">Organico medio del periodo: ${m.fte?esc(m.fte)+" FTE":"non indicato"} · ricavi netti: ${m.ricavi?fmt(nz(m.ricavi),0)+" €":"non indicati"}.</p>`:""}
+
+    <h2>2. Confini organizzativi</h2>
+    <p>Approccio di consolidamento adottato: <b>${esc(p.consolidamento)}</b>, applicato in modo uniforme a tutte le unità del perimetro.</p>
+    <p>${esc(p.perimetroOrg||"Perimetro non ancora descritto.")}</p>
+    ${p.siti?`<p><b>Siti operativi.</b> ${esc(p.siti)}</p>`:""}
+
+    <h2>3. Confini di rendicontazione</h2>
+    <p>${esc(p.perimetroOp||"Descrizione non ancora compilata.")}</p>
+    <p><b>Criteri di significatività.</b> ${esc(p.significativita||"Da definire.")}</p>
+    <table><thead><tr><th>Categoria</th><th>Sorgenti incluse</th><th style="text-align:right">tCO₂e</th></tr></thead><tbody>
+      ${CAT.map(x=>{const inc=SRC.filter(s=>s.c===x.id&&(o.sorgenti[s.id]||{}).st==="in").map(s=>s.n);
+        return `<tr><td><b>Categoria ${x.id}</b> — ${esc(x.n)}<div class="meta">${x.s}</div></td>
+        <td>${inc.length?esc(inc.join("; ")):"<span class='meta'>nessuna sorgente inclusa</span>"}</td>
+        <td class="num">${fmt(c.cats[x.id].t,2)}</td></tr>`;}).join("")}
+    </tbody></table>
+    ${escl.length?`<h3>Esclusioni e relative motivazioni</h3><table><thead><tr><th>Sorgente</th><th>Esito</th><th>Motivazione</th></tr></thead><tbody>
+      ${escl.map(s=>{const st=o.sorgenti[s.id];return `<tr><td>Cat. ${s.c} — ${esc(s.n)}</td><td>${st.st==="na"?"Non applicabile":"Esclusa"}</td><td>${esc(st.note||"da motivare")}</td></tr>`;}).join("")}
+      </tbody></table>`:""}
+
+    <h2>4. Metodologia di quantificazione</h2>
+    <p>${esc(p.metodologia||"Le emissioni sono quantificate moltiplicando i dati di attività per i fattori di emissione pertinenti, secondo il metodo per dati di attività.")}</p>
+    <p>Potenziali di riscaldamento globale: <b>${g.n}</b> — CH₄ ${g.ch4}, N₂O ${g.n2o}, orizzonte 100 anni. I gas considerati sono CO₂, CH₄, N₂O, HFC, PFC, SF₆ e NF₃, espressi in tonnellate di CO₂ equivalente.</p>
+    ${usati.length?`<h3>Fattori di emissione utilizzati</h3><table><thead><tr><th>Fattore</th><th style="text-align:right">Valore</th><th>Unità</th><th>Fonte</th></tr></thead><tbody>
+      ${usati.map(f=>`<tr><td>${esc(f.n)}</td><td class="num">${fmt(f.fe,4)}</td><td>kgCO₂e/${esc(f.um)}</td><td>${esc(f.f||"da documentare")}</td></tr>`).join("")}
+      </tbody></table>`:""}
+
+    <h2>5. Emissioni dirette — categoria 1 (Scope 1)</h2>
+    ${tabCat("1")}
+    ${c.bio>0?`<p><b>CO₂ biogenica.</b> Nel periodo sono state emesse ${fmt(c.bio,2)} tonnellate di CO₂ da combustione di biomassa, riportate separatamente e non incluse nei totali, come previsto dalla norma.</p>`:""}
+
+    <h2>6. Emissioni indirette da energia importata — categoria 2 (Scope 2)</h2>
+    ${tabCat("2")}
+    <table><thead><tr><th>Metodo</th><th style="text-align:right">tCO₂e</th></tr></thead><tbody>
+      <tr><td>Location-based — mix medio di rete</td><td class="num"><b>${fmt(c.s2l,2)}</b></td></tr>
+      <tr><td>Market-based — contratti, Garanzie d'Origine, residual mix</td><td class="num"><b>${fmt(c.s2m,2)}</b></td></tr></tbody></table>
+
+    <h2>7. Altre emissioni indirette — categorie 3, 4, 5 e 6 (Scope 3)</h2>
+    <h3>Categoria 3 — trasporto</h3>${tabCat("3")}
+    <h3>Categoria 4 — prodotti utilizzati dall'organizzazione</h3>${tabCat("4")}
+    <h3>Categoria 5 — uso dei prodotti dell'organizzazione</h3>${tabCat("5")}
+    <h3>Categoria 6 — altre emissioni indirette</h3>${tabCat("6")}
+
+    <h2>8. Riepilogo dell'inventario</h2>
+    <table><thead><tr><th>Voce</th><th style="text-align:right">tCO₂e</th><th style="text-align:right">Peso</th></tr></thead><tbody>
+      <tr><td>Categoria 1 — emissioni dirette</td><td class="num">${fmt(c.s1,2)}</td><td class="num">${c.totL?fmt(c.s1/c.totL*100,1):"0,0"}%</td></tr>
+      <tr><td>Categoria 2 — energia importata (location-based)</td><td class="num">${fmt(c.s2l,2)}</td><td class="num">${c.totL?fmt(c.s2l/c.totL*100,1):"0,0"}%</td></tr>
+      <tr><td>Categorie 3-6 — altre emissioni indirette</td><td class="num">${fmt(c.s3,2)}</td><td class="num">${c.totL?fmt(c.s3/c.totL*100,1):"0,0"}%</td></tr>
+      <tr><td><b>Totale location-based</b></td><td class="num"><b>${fmt(c.totL,2)}</b></td><td class="num">100,0%</td></tr>
+      <tr><td><b>Totale market-based</b></td><td class="num"><b>${fmt(c.totM,2)}</b></td><td class="num">—</td></tr>
+      ${c.bio>0?`<tr><td>CO₂ biogenica (fuori totale)</td><td class="num">${fmt(c.bio,2)}</td><td class="num">—</td></tr>`:""}
+    </tbody></table>
+    ${(m.ricavi||m.fte||m.prod)?`<h3>Intensità di emissione</h3><table><tbody>
+      ${m.ricavi?`<tr><td>Per fatturato</td><td class="num">${fmt(c.intRic,2)} tCO₂e/M€</td></tr>`:""}
+      ${m.fte?`<tr><td>Per addetto</td><td class="num">${fmt(c.intFte,0)} kgCO₂e/FTE</td></tr>`:""}
+      ${m.prod?`<tr><td>Per unità di prodotto</td><td class="num">${fmt(c.intPr,2)} kgCO₂e/${esc(m.umProd||"unità")}</td></tr>`:""}
+    </tbody></table>`:""}
+
+    <h2>9. Anno base e confronto</h2>
+    <p>Anno base: <b>${o.annoBase}</b>, con emissioni totali pari a ${fmt(cb.totL,2)} tCO₂e (location-based). ${esc(p.motivoBase||"")}</p>
+    ${dl!==null?`<p>Nel periodo ${anno} le emissioni totali sono ${dl<=0?"diminuite":"aumentate"} del ${fmt(Math.abs(dl),1)}% rispetto all'anno base.</p>`:""}
+    <p><b>Ricalcolo dell'anno base.</b> ${esc(p.regolaRicalcolo||"")}</p>
+    ${o.obiettivi.length?`<h3>Obiettivi di riduzione</h3><table><thead><tr><th>Obiettivo</th><th>Ambito</th><th style="text-align:right">Riduzione</th><th style="text-align:right">Anno</th></tr></thead><tbody>
+      ${o.obiettivi.map(b=>`<tr><td>${esc(b.n)}${b.note?`<div class="meta">${esc(b.note)}</div>`:""}</td>
+      <td>${b.ambito==="12"?"Categorie 1 e 2":b.ambito==="tot"?"Totale":"Categoria "+b.ambito}</td>
+      <td class="num">−${fmt(nz(b.rid),0)}%</td><td class="num">${esc(b.anno)}</td></tr>`).join("")}</tbody></table>`:""}
+
+    <h2>10. Incertezza e qualità dei dati</h2>
+    <p>L'incertezza complessiva dell'inventario, stimata combinando in quadratura le incertezze attribuite a ciascuna voce, è pari a <b>± ${fmt(c.inc,1)}%</b> sul totale location-based. L'indice medio di qualità del dato, ponderato sulle emissioni, è <b>${fmt(c.dq,1)} su 5</b>.</p>
+    <table><thead><tr><th>Categoria</th><th style="text-align:right">tCO₂e</th><th style="text-align:right">Incertezza</th><th style="text-align:right">Qualità /5</th></tr></thead><tbody>
+      ${CAT.map(x=>`<tr><td>Categoria ${x.id}</td><td class="num">${fmt(c.cats[x.id].t,2)}</td><td class="num">± ${fmt(c.cats[x.id].inc,1)}%</td><td class="num">${c.cats[x.id].t>0?fmt(c.cats[x.id].dq,1):"—"}</td></tr>`).join("")}
+    </tbody></table>
+
+    <h2>11. Dichiarazione di conformità e verifica</h2>
+    <p>Il presente inventario è stato predisposto in conformità alla norma UNI EN ISO 14064-1:2018. Stato della verifica: <b>${esc(p.verifica)}</b>.</p>
+    <p class="meta">Documento generato il ${new Date().toLocaleDateString("it-IT")} · i dati di dettaglio e le evidenze documentali sono conservati nel sistema di gestione delle informazioni GHG dell'organizzazione.</p>
+  </div>`;
+}
+
+/* ---------- Archivio ---------- */
+function vConf(o){
+  let kb=0;try{kb=Math.round((localStorage.getItem(KEY)||"").length/1024);}catch(e){}
+  return `<h1>Archivio e dati</h1>
+  <p class="sub">Tutto è salvato nel browser di questo dispositivo. L'esportazione produce un file leggibile che puoi archiviare nel fascicolo del cliente o reimportare altrove.</p>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Questa organizzazione</div>
+      <label class="f"><span>Denominazione</span><input type="text" id="renameCo" value="${esc(o.nome)}"></label>
+      <label class="f"><span>Periodo di rendicontazione predefinito</span><input type="text" id="annoCo" value="${esc(o.anno)}"></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+        <button class="btn ghost" id="expOne">Esporta questa organizzazione</button>
+        <button class="btn ghost" id="expCsv2">Esporta le voci in CSV</button>
+        <button class="btn danger" id="delOne">Elimina l'organizzazione</button></div></div>
+    <div class="card"><div class="eyebrow">Archivio completo</div>
+      <p class="hint" style="margin-top:0">${DB.org.length} ${DB.org.length===1?"organizzazione":"organizzazioni"} · ${DB.org.reduce((s,x)=>s+x.voci.length,0)} voci · ${kb} KB occupati</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="expJson2">Esporta tutto</button>
+        <button class="btn ghost" id="impJson2">Importa un archivio</button></div>
+      <div class="hr"></div>
+      <div class="warn">Svuotare la cronologia del browser o i dati dei siti cancella anche questo archivio. Esporta con regolarità.</div></div>
+  </div>`;
+}
+
+/* ---------- Guida ---------- */
+function vGuida(){
+  const passi=[
+   ["Definisci i confini","Scegli l'approccio di consolidamento e scrivi quali unità entrano nell'inventario. È la prima cosa che un verificatore legge e quella che, se manca, blocca tutto il resto."],
+   ["Esamina le sei categorie","Nel registro delle sorgenti dichiara per ciascuna voce se è inclusa, esclusa o non applicabile. Le esclusioni vanno motivate: «non significativa» senza un criterio dichiarato non regge in audit."],
+   ["Inserisci i dati di attività","Una riga per sorgente e per sito. Indica sempre l'evidenza documentale: la fattura, il registro, il DDT. Il calcolo è automatico."],
+   ["Allinea i fattori","I valori precaricati servono a partire, non a chiudere. Sostituiscili con l'edizione della fonte che dichiari nel rapporto e annota l'anno."],
+   ["Leggi i risultati","Controlla dove si concentrano le emissioni e dove la qualità del dato è più debole: è lì che conviene investire prima della verifica."],
+   ["Fissa anno base e obiettivi","Senza anno base non esiste confronto e senza regola di ricalcolo il confronto diventa fragile alla prima acquisizione."],
+   ["Chiudi con la verifica interna","La checklist ripercorre i requisiti della norma. Ogni voce annotata diventa un riferimento per il fascicolo di audit."],
+   ["Genera il rapporto","Il documento raccoglie i contenuti minimi del punto 9.3.1 e si stampa o si salva in PDF."]
+  ];
+  return `<h1>Guida all'uso</h1>
+  <p class="sub">Lo strumento segue l'ordine logico della norma: prima i confini, poi le sorgenti, poi i numeri. Seguirlo evita di dover rifare i calcoli quando il perimetro cambia.</p>
+  <div class="card">${passi.map((p,i)=>`<div class="step"><div class="n">${i+1}</div><div><b>${p[0]}</b><p>${p[1]}</p></div></div>`).join("")}</div>
+  <div class="grid g2">
+    <div class="card"><div class="eyebrow">Categorie ISO e scope del GHG Protocol</div>
+      <table><thead><tr><th>ISO 14064-1:2018</th><th>Corrispondenza</th></tr></thead><tbody>
+        ${CAT.map(c=>`<tr><td><b>Categoria ${c.id}</b> — ${esc(c.n)}</td><td><span class="tag ${c.t}">${c.s}</span></td></tr>`).join("")}
+      </tbody></table>
+      <div class="hint">La norma ragiona per categorie, il GHG Protocol per scope. La corrispondenza è quella indicata: le categorie da 3 a 6 compongono insieme quello che il Protocol chiama Scope 3.</div></div>
+    <div class="card"><div class="eyebrow">Qualità del dato e incertezza</div>
+      <table><thead><tr><th>Livello</th><th>Quando si applica</th><th style="text-align:right">Incertezza</th></tr></thead><tbody>
+        ${DQ.map(d=>`<tr><td><b>${d.n}</b></td><td class="hint" style="margin:0">${d.d}</td><td class="num">± ${d.inc}%</td></tr>`).join("")}
+      </tbody></table>
+      <div class="hint">Le percentuali predefinite sono modificabili voce per voce. L'incertezza complessiva è calcolata combinando in quadratura i contributi assoluti.</div></div>
+  </div>
+  <div class="card"><div class="eyebrow">Avvertenza</div>
+    <p class="hint" style="margin:0">I fattori di emissione precaricati sono valori indicativi tratti da fonti pubbliche e possono non corrispondere all'edizione corrente. Prima di emettere un inventario destinato alla verifica, aggiornali e documenta la fonte esatta di ciascuno.</p></div>`;
+}
+
+/* ==========================================================
+   INTERAZIONE
+   ========================================================== */
+function fillSel(){$("#coSel").innerHTML=DB.org.map(o=>`<option value="${o.id}" ${o.id===DB.current?"selected":""}>${esc(o.nome)}</option>`).join("");}
+function fillAnni(){const o=org();if(!o){$("#annoSel").innerHTML="";return;}
+  const y=anniDi(o), cur=new Date().getFullYear();
+  const set=[...new Set([...y,cur,cur-1,cur-2,+o.anno])].filter(x=>isFinite(x)).sort((a,b)=>b-a);
+  $("#annoSel").innerHTML=set.map(x=>`<option value="${x}" ${+anno===+x?"selected":""}>${x}</option>`).join("");}
+function bind(o){fillSel();fillAnni();}
+function dlFile(name,content,type){const b=new Blob([content],{type:type+";charset=utf-8"});const a=document.createElement("a");
+  a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40);
+function apri(id){DB.current=id;const o=org();anno=+o.anno;view="home";persist();render();}
+function creaOrg(){const n=prompt("Denominazione dell'organizzazione");if(n===null)return;
+  const o=nuova(n.trim()||"Nuova organizzazione");DB.org.push(o);apri(o.id);toast("Organizzazione creata");}
+function csv(o){
+  const h=["Periodo","Categoria","Scope","Sorgente","Sito","Descrizione","Quantità","Unità","FE kgCO2e/u","FE market","Quota GO","tCO2e","tCO2e market","CO2 biogenica t","Qualità","Incertezza %","Evidenza","Note"];
+  const q=s=>'"'+String(s==null?"":s).replace(/"/g,'""')+'"';
+  const rows=o.voci.slice().sort((a,b)=>b.anno-a.anno||a.cat.localeCompare(b.cat)).map(v=>{const r=riga(o,v),s=SRC.find(x=>x.id===v.src);
+    return [v.anno,"Categoria "+v.cat,"Scope "+scopeOf(v.cat),s?s.n:"",v.sede,v.desc,nz(v.q),v.um,nz(v.fe),v.feM,v.qGO,
+      r.t.toFixed(4),r.tM.toFixed(4),r.bio.toFixed(4),dqOf(v.dq).n,r.inc,v.ev,v.note].map(q).join(";");});
+  return "\uFEFF"+h.map(q).join(";")+"\n"+rows.join("\n");
+}
+function importa(){
+  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";
+  i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const d=JSON.parse(r.result);
+      if(d.org&&Array.isArray(d.org)){d.org.forEach(x=>{x.id=uid("O");DB.org.push(x);});toast(d.org.length+" organizzazioni importate");}
+      else if(d.nome&&d.voci){d.id=uid("O");DB.org.push(d);toast("Organizzazione importata");}
+      else return toast("File non riconosciuto");
+      persist();render();}catch(e){toast("File non leggibile");}};
+    r.readAsText(f);};
+  i.click();
+}
+function setup(){
+  document.addEventListener("click",e=>{
+    const t=e.target, o=org();
+    const nav=t.closest(".nav");
+    if(nav){view=nav.dataset.v;edit=null;$("#side").classList.remove("open");render();return;}
+    const go=t.closest("[data-go]"); if(go){view=go.dataset.go;render();return;}
+    const open=t.closest("[data-open]"); if(open&&!t.closest("[data-del]")){apri(open.dataset.open);return;}
+    const id=t.id;
+    if(id==="brandHome"){view="pf";render();return;}
+    if(id==="menuBtn"){$("#side").classList.toggle("open");return;}
+    if(id==="addCo"||id==="newCo"){creaOrg();return;}
+    if(id==="printBtn"||id==="printBtn2"){if(view!=="doc"&&o){view="doc";render();}setTimeout(()=>window.print(),260);return;}
+    if(id==="expJson"||id==="expJson2"){dlFile("inventario-ghg-archivio.json",JSON.stringify(DB,null,1),"application/json");toast("Archivio esportato");return;}
+    if(id==="impJson"||id==="impJson2"){importa();return;}
+    if(t.dataset.del){e.stopPropagation();const x=DB.org.find(a=>a.id===t.dataset.del);
+      if(x&&confirm("Eliminare «"+x.nome+"» e tutte le sue voci?")){DB.org=DB.org.filter(a=>a.id!==x.id);if(DB.current===x.id)DB.current=DB.org[0]?DB.org[0].id:null;persist();render();}return;}
+    if(!o)return;
+    /* voci */
+    if(id==="addVoce"){edit=nuovaVoce();render();return;}
+    if(id==="cancelVoce"){edit=null;render();return;}
+    if(id==="recalcVoce"){leggiForm();render();return;}
+    if(id==="saveVoce"){leggiForm();
+      const i=o.voci.findIndex(v=>v.id===edit.id);
+      if(i>=0)o.voci[i]=edit;else o.voci.push(edit);
+      edit=null;persist();render();toast("Voce salvata");return;}
+    if(t.dataset.editv){edit=JSON.parse(JSON.stringify(o.voci.find(v=>v.id===t.dataset.editv)));render();return;}
+    if(t.dataset.dupv){const v=JSON.parse(JSON.stringify(o.voci.find(x=>x.id===t.dataset.dupv)));v.id=uid("V");o.voci.push(v);persist();render();toast("Voce duplicata");return;}
+    if(t.dataset.delv){if(confirm("Eliminare la voce?")){o.voci=o.voci.filter(v=>v.id!==t.dataset.delv);persist();render();}return;}
+    if(id==="copyPrev"){const prev=anniDi(o).filter(y=>y<+anno)[0];
+      const src=o.voci.filter(v=>+v.anno===+prev);
+      src.forEach(v=>{const n=JSON.parse(JSON.stringify(v));n.id=uid("V");n.anno=+anno;n.q="";o.voci.push(n);});
+      persist();render();toast(src.length+" voci copiate dal "+prev+" — inserisci le quantità");return;}
+    if(id==="expCsv"||id==="expCsv2"){dlFile("voci-ghg-"+slug(o.nome)+".csv",csv(o),"text/csv");toast("CSV esportato");return;}
+    if(id==="expOne"){dlFile("inventario-"+slug(o.nome)+".json",JSON.stringify(o,null,1),"application/json");return;}
+    if(id==="delOne"){if(confirm("Eliminare «"+o.nome+"»?")){DB.org=DB.org.filter(a=>a.id!==o.id);DB.current=DB.org[0]?DB.org[0].id:null;view="pf";persist();render();}return;}
+    if(id==="expHtml"){const b=$("#docBody");
+      dlFile("rapporto-ghg-"+slug(o.nome)+"-"+anno+".html",
+        `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Rapporto GHG ${esc(o.nome)} ${anno}</title>
+        <style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.6;color:#14201C}
+        h1{font-size:26px}h2{font-size:18px;margin-top:30px;border-bottom:1px solid #ddd;padding-bottom:5px}h3{font-size:14px}
+        table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}th,td{border-bottom:1px solid #eee;padding:6px 8px;text-align:left}
+        th{font-size:11px;text-transform:uppercase;color:#666}.num{text-align:right;font-family:monospace}.meta{color:#777;font-size:12px}</style>
+        </head><body>${b?b.innerHTML:""}</body></html>`,"text/html");toast("Rapporto esportato");return;}
+    /* segmenti sorgenti e verifica */
+    const seg=t.closest("[data-srcseg]");
+    if(seg&&t.dataset.st){const k=seg.dataset.srcseg;o.sorgenti[k]=o.sorgenti[k]||{};o.sorgenti[k].st=t.dataset.st;persist();render();return;}
+    const vseg=t.closest("[data-verseg]");
+    if(vseg&&t.dataset.st){const k=vseg.dataset.verseg;o.verifica[k]=o.verifica[k]||{};o.verifica[k].st=t.dataset.st;persist();render();return;}
+    /* fattori */
+    if(id==="addFe"){const n=$("#nfName").value.trim();if(!n)return toast("Indica il nome del fattore");
+      o.fe.push({id:uid("F").toLowerCase(),n,g:$("#nfGrp").value.trim()||"Personalizzati",um:$("#nfUm").value.trim()||"unità",
+        fe:nz($("#nfVal").value),cat:$("#nfCat").value,src:$("#nfSrc").value,f:$("#nfFonte").value.trim()});
+      persist();render();toast("Fattore aggiunto");return;}
+    if(t.dataset.delfe){o.fe=o.fe.filter(f=>f.id!==t.dataset.delfe);persist();render();return;}
+    if(id==="resetFe"){if(confirm("Ripristinare la libreria predefinita?")){o.fe=JSON.parse(JSON.stringify(FE_LIB));persist();render();}return;}
+    /* obiettivi */
+    if(id==="addObt"){const n=$("#obN").value.trim();
+      o.obiettivi.push({id:uid("B"),n:n||"Obiettivo di riduzione",ambito:$("#obA").value,anno:$("#obY").value.trim()||String(+o.annoBase+5),
+        rid:$("#obR").value.trim()||"30",note:$("#obNote").value.trim()});
+      persist();render();toast("Obiettivo aggiunto");return;}
+    if(t.dataset.delobt){o.obiettivi=o.obiettivi.filter(b=>b.id!==t.dataset.delobt);persist();render();return;}
+  });
+
+  document.addEventListener("input",e=>{
+    const t=e.target,o=org();if(!o)return;
+    if(t.dataset.p!==undefined&&t.tagName!=="SELECT"){o.profilo[t.dataset.p]=t.value;persist();return;}
+    if(t.dataset.m!==undefined){meta(o,anno)[t.dataset.m]=t.value;persist();return;}
+    if(t.dataset.e!==undefined&&edit&&!["cat","feId","dq"].includes(t.dataset.e)){edit[t.dataset.e]=t.value;return;}
+    if(t.dataset.fe!==undefined){const f=feDi(o,t.dataset.fe);if(f){f[t.dataset.k]=t.dataset.k==="f"?t.value:nz(t.value);persist();}return;}
+    if(t.dataset.srcnote!==undefined){const k=t.dataset.srcnote;o.sorgenti[k]=o.sorgenti[k]||{};o.sorgenti[k].note=t.value;persist();return;}
+    if(t.dataset.vernote!==undefined){const k=t.dataset.vernote;o.verifica[k]=o.verifica[k]||{};o.verifica[k].note=t.value;persist();return;}
+    if(t.id==="renameCo"){o.nome=t.value;persist();fillSel();return;}
+    if(t.id==="annoCo"){o.anno=t.value.replace(/\D/g,"").slice(0,4);persist();return;}
+    if(t.id==="fq"){filtro.q=t.value;const s=t.selectionStart;render();const n=$("#fq");if(n){n.focus();n.setSelectionRange(s,s);}return;}
+  });
+
+  document.addEventListener("change",e=>{
+    const t=e.target,o=org();
+    if(t.id==="coSel"){DB.current=t.value;const x=org();anno=+x.anno;persist();render();return;}
+    if(t.id==="annoSel"){anno=+t.value;render();return;}
+    if(!o)return;
+    if(t.dataset.p!==undefined&&t.tagName==="SELECT"){o.profilo[t.dataset.p]=t.value;persist();render();return;}
+    if(t.id==="fcat"){filtro.cat=t.value;filtro.src="";render();return;}
+    if(t.id==="selBase"){o.annoBase=+t.value;persist();render();return;}
+    if(t.dataset.e!==undefined&&edit){
+      const k=t.dataset.e;leggiForm();
+      if(k==="cat"){edit.cat=t.value;const s=SRC.find(x=>x.c===t.value);edit.src=s?s.id:"";
+        const f=o.fe.find(x=>x.cat===t.value);if(f){edit.feId=f.id;edit.um=f.um;edit.fe=f.fe;edit.feM=f.mkt==null?"":f.mkt;}}
+      else if(k==="feId"){edit.feId=t.value;const f=feDi(o,t.value);
+        if(f){edit.um=f.um;edit.fe=f.fe;edit.feM=f.mkt==null?"":f.mkt;if(f.bio)edit.feB=f.bio;if(f.src)edit.src=f.src;}}
+      else edit[k]=t.value;
+      render();return;}
+  });
+
+  window.addEventListener("resize",resp);
+}
+function leggiForm(){
+  if(!edit)return;
+  $$("#formVoce [data-e]").forEach(el=>{edit[el.dataset.e]=el.value;});
+}
+function resp(){const b=$("#menuBtn");if(b)b.style.display=window.innerWidth<=980?"block":"none";}
+
+/* ==========================================================
+   AVVIO
+   ========================================================== */
+(async function init(){
+  const d=await Store.load();
+  if(d&&d.org){DB=d;}
+  if(!DB.org.length){DB.current=null;view="pf";}
+  else{if(!DB.current||!org())DB.current=DB.org[0].id;const o=org();anno=+o.anno;view="home";}
+  setup();resp();render();
+})();
+</script>
+</body>
+</html>
