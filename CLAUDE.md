@@ -76,7 +76,15 @@ SaaS su commissione: suite di rendicontazione ESG che unifica i due prototipi HT
 - I valori derivati non si persistono, si calcolano; il documento pubblicato si congela in uno snapshot (JSONB + PDF) con versioning.
 - Quantità e fattori in NUMERIC, mai float. Import JSON dei prototipi mantenuto come percorso di migrazione.
 
+### Regole operative
+
+- **Commit**: sempre con l'author dell'utente (DocAllfix <titolare@esempio.it>), **senza** trailer Co-Authored-By di Claude. Repo GitHub privata: `DocAllfix/bilanciotool`.
+- **Repo di riferimento**: clonata in sola lettura in `C:\Users\user\riferimenti\FormazioneEvalis`. **Mai modificarla, mai copiare codice 1:1**: i pattern si adattano (vedi `docs/riferimenti/pattern-notes.md`).
+- **Piano approvato**: `C:\Users\user\.claude\plans\per-i-nomi-poi-bright-milner.md` (12 fasi con gate bloccanti). Fine fase = aggiornare questa sezione + commit "Fase N completata".
+- **Comandi**: `npm run typecheck` · `npm run test` (Vitest, tassonomia `*-pure` / `*.db` self-skipping senza `DATABASE_URL` / `*.smoke`) · `npm run test:e2e` (Playwright, richiede `npm run dev` attivo) · `npm run build`.
+- **Formato export prototipi** (contratto import): `docs/formato-export-prototipi.md`.
+
 ### Stato
 
-Fase attuale: pianificazione modulare dello sviluppo (nessun codice applicativo ancora scritto).
+**Fase 0 in corso** (setup): git+GitHub ok, scaffold Next.js 16 + Tailwind v4 + shadcn (preset nova/radix) ok, env.ts + toolchain test ok, documenti ok. In attesa dall'utente per chiudere il gate: progetto Supabase dev EU (`DATABASE_URL`+`DIRECT_URL`) e collegamento Vercel.
 
