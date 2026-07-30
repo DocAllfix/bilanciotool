@@ -48,6 +48,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ snap
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Generazione PDF non riuscita";
-    return NextResponse.json({ errore: msg }, { status: 500 });
+    // Diagnostica del solo problema noto (binari Chromium non inclusi nella
+    // funzione serverless): senza, l'errore in produzione è cieco.
+    let diagnostica: unknown;
+    if (msg.includes("@sparticuz/chromium")) {
+      try {
+        const { readdirSync, existsSync } = await import("node:fs");
+        const base = "/var/task/node_modules/@sparticuz/chromium";
+        diagnostica = {
+          pacchetto: existsSync(base) ? readdirSync(base) : "assente",
+          bin: existsSync(`${base}/bin`) ? readdirSync(`${base}/bin`) : "assente",
+          cwd: process.cwd(),
+        };
+      } catch (err) {
+        diagnostica = String(err);
+      }
+    }
+    return NextResponse.json({ errore: msg, diagnostica }, { status: 500 });
   }
 }

@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   // quindi il file-tracing di Vercel non li segue e la funzione arriva senza
   // binario. Vanno inclusi a mano nella route che genera i PDF.
   outputFileTracingIncludes: {
-    "/api/documenti/[snapshotId]/pdf": ["./node_modules/@sparticuz/chromium/bin/**"],
+    "/api/**": ["./node_modules/@sparticuz/chromium/bin/**"],
   },
   experimental: {
     // Cache del client router. dynamic:0 è deliberato: il prodotto è data-heavy e
