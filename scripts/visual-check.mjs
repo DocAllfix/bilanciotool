@@ -1,8 +1,11 @@
-// Gate visivo Fase 3: screenshot light/dark, desktop/mobile, zero errori console.
+// Gate visivo riusabile: screenshot light/dark + viewport stretti, zero errori console.
+// Uso: SHOT_DIR=... node scripts/visual-check.mjs   (richiede `npm run dev` attivo)
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import postgres from "postgres";
+import "dotenv/config";
 
-const OUT = process.env.SHOT_DIR;
+const OUT = process.env.SHOT_DIR ?? "./shots";
 mkdirSync(OUT, { recursive: true });
 const BASE = "http://localhost:3000";
 const errors = [];
@@ -20,23 +23,25 @@ const go = async (url) => {
   await page.goto(BASE + url);
   await page.waitForLoadState("networkidle");
 };
+const tema = async (verso) => {
+  await page.click(`button[aria-label*="${verso}"]`);
+  await page.waitForTimeout(400);
+};
 
-// 1. Auth pages (light)
+// --- Auth
 await go("/login");
 await shot("01-login-light");
 await go("/registrati");
 await shot("02-registrati-light");
 
-// 2. Design showcase light + dark
+// --- Design system
 await go("/design");
 await shot("03-design-light");
-await page.click('button[aria-label*="scuro"]');
-await page.waitForTimeout(400);
+await tema("scuro");
 await shot("04-design-dark");
-await page.click('button[aria-label*="chiaro"]');
-await page.waitForTimeout(300);
+await tema("chiaro");
 
-// 3. Registrazione reale → dashboard
+// --- Account attivo + percorso GHG con dati reali
 const email = `visual-${Date.now()}@example.com`;
 await go("/registrati");
 await page.fill("#nome", "Franca Verdi");
@@ -44,27 +49,94 @@ await page.fill("#email", email);
 await page.fill("#password", "PasswordSicura123!");
 await page.click('button[type="submit"]');
 await page.waitForURL("**/dashboard", { timeout: 30000 });
+
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
+await sql`
+  update org_entitlement set status = 'active'
+  where organization_id = (
+    select m.organization_id from member m join "user" u on u.id = m.user_id where u.email = ${email}
+  )`;
+await sql.end();
+
+await go("/dashboard");
+await shot("05-portfolio-vuoto");
+await page.click('[data-tour="nuova-azienda"]');
+await page.fill("#na-nome", "Meccanica Adriatica S.r.l.");
+await page.fill("#na-settore", "Componenti meccanici");
+await page.fill("#na-sede", "Bari");
+await page.click('button[type="submit"]:has-text("Crea azienda")');
+await page.waitForTimeout(1500);
+await go("/dashboard");
+await shot("06-portfolio-light");
+await tema("scuro");
+await shot("07-portfolio-dark");
+await tema("chiaro");
+
+await page.click("text=Inventario GHG");
+await page.waitForURL("**/ghg", { timeout: 15000 });
 await page.waitForLoadState("networkidle");
-await shot("05-dashboard-light");
+await page.fill("#ci-anno", "2025");
+await page.click('button:has-text("Crea")');
+await page.waitForURL("**/ghg/2025**", { timeout: 20000 });
+await page.waitForLoadState("networkidle");
+await shot("08-ghg-passo1-confini");
 
-// 4. Dashboard dark
-await page.click('button[aria-label*="scuro"]');
-await page.waitForTimeout(400);
-await shot("06-dashboard-dark");
-await page.click('button[aria-label*="chiaro"]');
-await page.waitForTimeout(300);
+await page.click('[data-tour="ghg-passo-2"]');
+await page.waitForLoadState("networkidle");
+await page.getByRole("group", { name: /Combustione fissa/ }).getByRole("button", { name: "Inclusa" }).click();
+await page.waitForTimeout(900);
+await shot("09-ghg-passo2-sorgenti");
 
-// 5. Mobile viewport
+// Voci: gas naturale + energia elettrica con GO (doppia rendicontazione visibile)
+await page.click('[data-tour="ghg-passo-3"]');
+await page.waitForLoadState("networkidle");
+await page.click('[data-tour="aggiungi-voce"]');
+await page.fill("#v-q", "12500");
+await page.fill("#v-ev", "Fatture gas 2025");
+await page.click('button:has-text("Salva voce")');
+// Attesa sull'esito reale (riga in tabella), non su un timeout arbitrario.
+await page.getByRole("cell", { name: "24,694" }).waitFor({ timeout: 20000 });
+await page.click('[data-tour="aggiungi-voce"]');
+await page.getByRole("combobox").first().click();
+await page.getByRole("option", { name: /Cat\. 2/ }).click();
+await page.waitForTimeout(500);
+await page.fill("#v-q", "100000");
+await page.fill("#v-go", "40000");
+await page.click('button:has-text("Salva voce")');
+await page.getByRole("cell", { name: "25,650" }).waitFor({ timeout: 20000 });
+await shot("10-ghg-passo3-dati");
+
+// Navigazione tra i passi: si attende un elemento proprio del passo di arrivo,
+// non il solo networkidle (la transizione RSC può risolversi dopo).
+const vaiAlPasso = async (n, atteso) => {
+  await page.click(`[data-tour="ghg-passo-${n}"]`);
+  await page.waitForURL(`**?passo=${n}`, { timeout: 15000 });
+  await page.getByText(atteso, { exact: false }).first().waitFor({ timeout: 20000 });
+  await page.waitForTimeout(400);
+};
+
+await vaiAlPasso(4, "Fonte e anno");
+await shot("11-ghg-passo4-fattori");
+
+await vaiAlPasso(5, "Totale location-based");
+await shot("12-ghg-passo5-risultati-light");
+await tema("scuro");
+await shot("13-ghg-passo5-risultati-dark");
+await tema("chiaro");
+
+await vaiAlPasso(6, "Anno base");
+await shot("14-ghg-passo6-obiettivi");
+await vaiAlPasso(7, "Requisiti soddisfatti");
+await shot("15-ghg-passo7-verifica");
+
+// --- Viewport stretti
+await page.setViewportSize({ width: 1024, height: 768 });
+await page.reload();
+await page.waitForLoadState("networkidle");
+await shot("16-ghg-1024");
 await page.setViewportSize({ width: 390, height: 844 });
 await go("/dashboard");
-await shot("07-dashboard-mobile");
-await go("/login");
-await shot("08-login-mobile");
-
-// 6. Viewport 1024 (laptop stretto)
-await page.setViewportSize({ width: 1024, height: 768 });
-await go("/dashboard");
-await shot("09-dashboard-1024");
+await shot("17-portfolio-mobile");
 
 console.log("EMAIL_TEST=" + email);
 if (errors.length) {

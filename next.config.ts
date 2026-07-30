@@ -12,8 +12,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   experimental: {
-    // Cache del client router: le mutazioni invalidano già con router.refresh().
-    staleTimes: { dynamic: 30, static: 180 },
+    // Cache del client router. dynamic:0 è deliberato: il prodotto è data-heavy e
+    // ogni schermata mostra numeri che devono riflettere l'ultima scrittura
+    // (una cache di 30s faceva vedere risultati stantii dopo il salvataggio).
+    staleTimes: { dynamic: 0, static: 180 },
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
