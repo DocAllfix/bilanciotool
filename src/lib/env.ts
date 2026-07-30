@@ -13,6 +13,10 @@ const REQUIRED_IN_PROD = [
   "DIRECT_URL",
   "BETTER_AUTH_SECRET",
   "NEXT_PUBLIC_APP_URL",
+  // Senza Storage l'upload di loghi/foto fallirebbe silenziosamente a runtime:
+  // meglio far fallire il deploy subito.
+  "SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
 ] as const;
 
 const schema = z
@@ -26,6 +30,9 @@ const schema = z
     // Billing (Fase 9)
     STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional(),
     STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
+    // Supabase Storage (loghi, copertine, foto, PDF) — API separata dalla Data API (disattivata)
+    SUPABASE_URL: z.string().url().optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
     // Email (no-op se assente fuori produzione)
     RESEND_API_KEY: z.string().optional(),
     RESEND_FROM: z.string().optional(),
