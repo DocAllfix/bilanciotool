@@ -108,15 +108,7 @@ export default function LandingPage() {
                 </h2>
               </div>
             </Reveal>
-            <div className="relative mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
-              {/* Il ponte: elemento firmato, non decorazione */}
-              <div className="pointer-events-none absolute left-1/2 top-[13%] z-10 hidden -translate-x-1/2 md:block" aria-hidden>
-                <div className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 shadow-md">
-                  <span className="size-2 rounded-full bg-scope-1" />
-                  <ArrowRight className="size-4 text-muted-foreground" />
-                  <span className="text-[11px] font-semibold text-muted-foreground">le emissioni passano da sole</span>
-                </div>
-              </div>
+            <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
               <Reveal>
                 <Percorso
                   indice="A"
@@ -136,6 +128,18 @@ export default function LandingPage() {
                 />
               </Reveal>
             </div>
+            {/* Il legame fra i due percorsi: una riga di testo sotto le colonne,
+                senza pastiglie sovrapposte al contenuto. */}
+            <Reveal delay={200}>
+              <p className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
+                <span className="inline-flex items-center gap-2 font-semibold text-foreground">
+                  <span className="size-2 rounded-full bg-scope-1" aria-hidden />
+                  Dal percorso A al percorso B
+                  <ArrowRight className="size-3.5" aria-hidden />
+                </span>
+                le emissioni calcolate nell&apos;inventario entrano nel bilancio senza essere riscritte.
+              </p>
+            </Reveal>
           </div>
         </section>
 

@@ -47,3 +47,5 @@ playwright-report/
 test-results/
 playwright-report/
 shots*/
+
+video/
