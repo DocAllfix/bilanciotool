@@ -11,6 +11,7 @@ import { PassoKpi } from "./passo-kpi";
 import { PassoPolitiche } from "./passo-politiche";
 import { PassoRacconto } from "./passo-racconto";
 import { PassoVerificaBilancio } from "./passo-verifica-bilancio";
+import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Percorso in 7 passi del bilancio (ordine del prototipo).
@@ -125,12 +126,7 @@ export function ReportWizard(props: {
         {passo === 5 && <PassoRacconto companyId={companyId} progetto={progetto} catalogo={catalogo} stato={stato} />}
         {passo === 6 && <PassoVerificaBilancio catalogo={catalogo} stato={stato} vai={vai} />}
         {passo === 7 && (
-          <div className="rounded-lg border bg-card p-10 text-center">
-            <h2 className="text-lg font-semibold tracking-tight">Il documento</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              L&apos;impaginazione editoriale, la pubblicazione con snapshot e il PDF arrivano col generatore documenti (Fase 8 del piano).
-            </p>
-          </div>
+          <PannelloPubblicazione companyId={companyId} tipo="bilancio" anno={progetto.anno} readyPct={g.readyPct} />
         )}
       </div>
     </div>

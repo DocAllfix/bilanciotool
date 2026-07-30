@@ -15,6 +15,13 @@
       "when": 1785332090795,
       "tag": "0001_rls_tenant_isolation",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785414184281,
+      "tag": "0002_snapshot_immutability",
+      "breakpoints": true
     }
   ]
 }

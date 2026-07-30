@@ -1,0 +1,228 @@
+import { db } from "@/lib/db";
+import { withTenant } from "@/lib/db/tenant";
+import {
+  checklistRequirement, company, documentSnapshot, ghgCategory, ghgSourceType, ghgTarget,
+  kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, reportProject,
+} from "@/lib/db/schema";
+import { logAudit } from "@/lib/audit";
+import { requireEntitlement } from "@/features/entitlement";
+import { getResults } from "@/features/ghg/results";
+import { getWizardData } from "@/features/ghg/queries";
+import { getKpiWithDerived } from "@/features/report/kpi";
+import { getMateriality } from "@/features/report/materiality";
+import { listTopicManagement } from "@/features/report/policies";
+import { listChapters } from "@/features/report/chapters";
+import { getEmissionsBridge } from "@/features/report/ghg-bridge";
+import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
+import { signedUrl } from "@/lib/storage";
+import { and, asc, desc, eq } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
+
+// PUBBLICAZIONE: l'unico punto del sistema in cui i valori derivati vengono
+// SCRITTI — dentro lo snapshot JSONB immutabile. Ripubblicare = nuova versione.
+// Il documento renderizza SOLO dallo snapshot: le modifiche successive ai dati
+// vivi non lo toccano (garanzia d'audit).
+
+async function prossimaVersione(companyId: string, tipo: "ghg" | "bilancio", anno: number): Promise<number> {
+  const rows = await db
+    .select({ versione: documentSnapshot.versione })
+    .from(documentSnapshot)
+    .where(and(eq(documentSnapshot.companyId, companyId), eq(documentSnapshot.tipo, tipo), eq(documentSnapshot.anno, anno)))
+    .orderBy(desc(documentSnapshot.versione))
+    .limit(1);
+  return (rows[0]?.versione ?? 0) + 1;
+}
+
+const s = (d: Decimal, dp = 6) => toFixedStr(d, dp);
+
+// ------------------------------------------------------------------ GHG
+export async function publishGhgSnapshot(userId: string, orgId: string, companyId: string, anno: number): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const wiz = await getWizardData(userId, orgId, companyId, anno);
+  if (!wiz || !wiz.inventario || !wiz.catalogo || !wiz.stato) {
+    throw new Error("Nessun inventario da pubblicare per questo periodo");
+  }
+  const risultati = await getResults(userId, orgId, wiz.inventario.id);
+  const az = await withTenant({ userId, orgId }, async (tx) => {
+    const [a] = await tx.select().from(company).where(eq(company.id, companyId));
+    return a!;
+  });
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: { nome: az.nome, settore: az.settore, sede: az.sede },
+    inventario: {
+      anno: wiz.inventario.anno,
+      annoBase: wiz.inventario.annoBase,
+      gwpSetKey: wiz.inventario.gwpSetKey,
+      boundaries: wiz.inventario.boundaries,
+      ricavi: wiz.inventario.ricavi,
+      fte: wiz.inventario.fte,
+      produzione: wiz.inventario.produzione,
+      umProduzione: wiz.inventario.umProduzione,
+    },
+    catalogo: {
+      categorie: wiz.catalogo.categorie,
+      sorgenti: wiz.catalogo.sorgenti,
+      requisiti: wiz.catalogo.requisiti,
+    },
+    sorgenti: wiz.stato.sorgenti,
+    checklist: wiz.stato.checklist,
+    righe: wiz.stato.righe,
+    obiettivi: wiz.stato.obiettivi,
+    fattoriUsati: wiz.catalogo.fattori.filter((f) => wiz.stato.righe.some((r) => r.factorKey === f.key)),
+    risultati, // derivati congelati QUI
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "ghg", anno, dati);
+}
+
+// ------------------------------------------------------------------ Bilancio
+export async function publishBilancioSnapshot(userId: string, orgId: string, companyId: string, anno: number): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const proj = await withTenant({ userId, orgId }, async (tx) => {
+    const rows = await tx.select().from(reportProject).where(eq(reportProject.companyId, companyId));
+    return rows.find((r) => r.anno === anno) ?? null;
+  });
+  if (!proj) throw new Error("Nessun bilancio da pubblicare per questo esercizio");
+
+  const [az, kpi, materialita, gestione, capitoli, bridge, temi, sezioni, defs, templates] = await Promise.all([
+    withTenant({ userId, orgId }, async (tx) => (await tx.select().from(company).where(eq(company.id, companyId)))[0]!),
+    getKpiWithDerived(userId, orgId, companyId, anno),
+    getMateriality(userId, orgId, proj.id),
+    listTopicManagement(userId, orgId, proj.id),
+    listChapters(userId, orgId, proj.id),
+    getEmissionsBridge(userId, orgId, companyId, anno),
+    db.select().from(materialityTopic).where(eq(materialityTopic.setId, proj.contentSetId)).orderBy(asc(materialityTopic.ordine)),
+    db.select().from(kpiSection).where(eq(kpiSection.setId, proj.contentSetId)).orderBy(asc(kpiSection.ordine)),
+    db.select().from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)).orderBy(asc(kpiDefinition.ordine)),
+    db.select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
+  ]);
+
+  // Immagini: nello snapshot vanno le CHIAVI storage (stabili); gli URL firmati
+  // si generano alla visualizzazione.
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: {
+      nome: az.nome,
+      settore: az.settore,
+      sede: az.sede,
+      logoKey: az.logoStorageKey,
+      coverKey: az.coverStorageKey,
+    },
+    progetto: {
+      anno: proj.anno,
+      standard: proj.standard,
+      perimetro: proj.perimetro,
+      profilo: proj.profilo,
+      soglia: Number(proj.sogliaMaterialita),
+    },
+    catalogo: {
+      temi: temi.map((t) => ({ key: t.key, pillar: t.pillar, nome: t.nome, riferimenti: t.riferimenti })),
+      sezioni: sezioni.map((x) => ({ key: x.key, nome: x.nome, riferimenti: x.riferimenti, pillar: x.pillar })),
+      kpi: defs.map((d) => ({ key: d.key, sectionKey: d.sectionKey, nome: d.nome, um: d.um })),
+      capitoli: templates.map((t) => ({ key: t.key, nome: t.nome })),
+    },
+    materialita: {
+      soglia: materialita.soglia,
+      perTopic: materialita.esito.perTopic,
+      materialKeys: materialita.esito.materialKeys,
+    },
+    kpi: {
+      corrente: kpi.corrente,
+      precedente: kpi.precedente,
+      // Derivati congelati QUI (entrambi gli anni, per le variazioni del documento)
+      derivati: Object.fromEntries(Object.entries(kpi.derivati).map(([k, v]) => [k, s(v as Decimal)])),
+      derivatiPrecedente: Object.fromEntries(Object.entries(kpi.derivatiPrecedente).map(([k, v]) => [k, s(v as Decimal)])),
+    },
+    gestione,
+    capitoli: capitoli.map((c) => ({
+      templateKey: c.templateKey,
+      contenuto: c.contenuto,
+      media: c.media.map((m) => ({
+        tipo: m.tipo,
+        storageKey: m.storageKey,
+        chartKey: m.chartKey,
+        didascalia: m.didascalia,
+        credito: m.credito,
+        larghezza: m.larghezza,
+        posizione: m.posizione,
+      })),
+    })),
+    bridge,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "bilancio", anno, dati);
+}
+
+async function salvaSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: "ghg" | "bilancio",
+  anno: number,
+  dati: unknown,
+): Promise<string> {
+  const versione = await prossimaVersione(companyId, tipo, anno);
+  const id = randomUUID();
+  await withTenant({ userId, orgId }, async (tx) => {
+    await tx.insert(documentSnapshot).values({
+      id,
+      organizationId: orgId,
+      companyId,
+      tipo,
+      anno,
+      versione,
+      dati,
+      publishedBy: userId,
+    });
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: `documento.${tipo}.publish`,
+      entita: "document_snapshot",
+      entitaId: id,
+      dettagli: { anno, versione },
+    });
+  });
+  return id;
+}
+
+export async function getSnapshot(userId: string, orgId: string, snapshotId: string) {
+  return withTenant({ userId, orgId }, async (tx) => {
+    const [row] = await tx.select().from(documentSnapshot).where(eq(documentSnapshot.id, snapshotId));
+    return row ?? null;
+  });
+}
+
+export async function listSnapshots(userId: string, orgId: string, companyId: string) {
+  return withTenant({ userId, orgId }, (tx) =>
+    tx
+      .select({
+        id: documentSnapshot.id,
+        tipo: documentSnapshot.tipo,
+        anno: documentSnapshot.anno,
+        versione: documentSnapshot.versione,
+        pdfStorageKey: documentSnapshot.pdfStorageKey,
+        publishedAt: documentSnapshot.publishedAt,
+      })
+      .from(documentSnapshot)
+      .where(eq(documentSnapshot.companyId, companyId))
+      .orderBy(desc(documentSnapshot.publishedAt)),
+  );
+}
+
+// URL firmati per le immagini referenziate dallo snapshot (alla visualizzazione).
+export async function resolveSnapshotImages(orgId: string, dati: { azienda?: { logoKey?: string | null; coverKey?: string | null }; capitoli?: { media: { storageKey: string | null }[] }[] }) {
+  const urls = new Map<string, string>();
+  const chiavi = new Set<string>();
+  if (dati.azienda?.logoKey) chiavi.add(dati.azienda.logoKey);
+  if (dati.azienda?.coverKey) chiavi.add(dati.azienda.coverKey);
+  for (const c of dati.capitoli ?? []) for (const m of c.media) if (m.storageKey) chiavi.add(m.storageKey);
+  await Promise.all(
+    [...chiavi].map(async (k) => {
+      urls.set(k, await signedUrl(orgId, k, 1800));
+    }),
+  );
+  return urls;
+}

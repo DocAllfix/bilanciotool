@@ -12,6 +12,7 @@ import { PassoFattori } from "./passo-fattori";
 import { PassoRisultati } from "./passo-risultati";
 import { PassoObiettivi } from "./passo-obiettivi";
 import { PassoVerifica } from "./passo-verifica";
+import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -128,12 +129,7 @@ export function GhgWizard(props: {
         {passo === 6 && <PassoObiettivi companyId={companyId} inventario={inventario} inventari={inventari} stato={stato} />}
         {passo === 7 && <PassoVerifica companyId={companyId} inventario={inventario} catalogo={catalogo} stato={stato} />}
         {passo === 8 && (
-          <div className="rounded-lg border bg-card p-10 text-center">
-            <h2 className="text-lg font-semibold tracking-tight">Report GHG</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Il documento conforme al §9.3.1 — impaginazione, pubblicazione e PDF — arriva con il generatore documenti (Fase 8 del piano).
-            </p>
-          </div>
+          <PannelloPubblicazione companyId={companyId} tipo="ghg" anno={inventario.anno} readyPct={stato.progresso.totPct} />
         )}
       </div>
     </div>
