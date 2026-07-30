@@ -176,3 +176,49 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* Font display della landing (Bricolage Grotesque, fallback Geist) */
+@utility font-display {
+  font-family: var(--font-display, var(--font-geist-sans));
+}
+
+/* Popover dei tour guidati (driver.js) allineato ai token */
+.evalisdeck-popover.driver-popover {
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 30px oklch(0.2 0.02 230 / 0.18);
+}
+.evalisdeck-popover .driver-popover-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.evalisdeck-popover .driver-popover-description {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+.evalisdeck-popover .driver-popover-progress-text {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.evalisdeck-popover button.driver-popover-next-btn,
+.evalisdeck-popover button.driver-popover-prev-btn {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 5px 12px;
+  font-weight: 600;
+  text-shadow: none;
+}
+.evalisdeck-popover button.driver-popover-prev-btn {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+.evalisdeck-popover .driver-popover-arrow-side-left { border-left-color: var(--popover); }
+.evalisdeck-popover .driver-popover-arrow-side-right { border-right-color: var(--popover); }
+.evalisdeck-popover .driver-popover-arrow-side-top { border-top-color: var(--popover); }
+.evalisdeck-popover .driver-popover-arrow-side-bottom { border-bottom-color: var(--popover); }

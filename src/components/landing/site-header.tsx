@@ -13,12 +13,11 @@ export async function SiteHeader() {
           <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Leaf className="size-4" strokeWidth={2} />
           </span>
-          <span className="text-[15px] font-semibold tracking-tight">EvalisDeck</span>
+          <span className="font-display text-[16px] font-bold tracking-tight">EvalisDeck</span>
         </Link>
         <nav className="hidden items-center gap-5 text-[13px] font-medium text-muted-foreground md:flex" aria-label="Sezioni">
           <a href="#percorsi" className="transition-colors hover:text-foreground">Percorsi</a>
           <a href="#metodo" className="transition-colors hover:text-foreground">Metodo</a>
-          <a href="#prezzi" className="transition-colors hover:text-foreground">Prezzi</a>
           <a href="#faq" className="transition-colors hover:text-foreground">Domande</a>
         </nav>
         <div className="ml-auto flex items-center gap-2">

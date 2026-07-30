@@ -40,10 +40,18 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          // Ogni self-signup crea il proprio studio (tenant) in stato demo.
+          // Ogni self-signup crea il proprio studio (tenant) in stato demo,
+          // con l'azienda dimostrativa già compilata (il cuore del funnel).
           // Gli invitati NON ricevono uno studio proprio: entreranno in quello che li invita.
           if (await hasPendingInvitation(user.email)) return;
-          await createStudioOrg(user.id, user.name ?? "");
+          const orgId = await createStudioOrg(user.id, user.name ?? "");
+          try {
+            const { seedDemoCompany } = await import("@/features/demo/seed-demo-org");
+            await seedDemoCompany(user.id, orgId);
+          } catch (e) {
+            // Il seed demo non deve MAI bloccare una registrazione.
+            console.error("[demo] seed fallito per", orgId, e);
+          }
         },
       },
     },

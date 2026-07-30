@@ -66,7 +66,7 @@ export default async function DashboardPage() {
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {attive.map((a) => (
-            <Card key={a.id} className="group transition-shadow hover:shadow-md">
+            <Card key={a.id} className="group transition-shadow hover:shadow-md" {...(a.isDemo ? { "data-tour": "azienda-demo" } : {})}>
               <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
