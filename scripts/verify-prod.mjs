@@ -44,7 +44,12 @@ ok("registrazione → dashboard", true, email);
 const demoCard = page.locator('[data-tour="azienda-demo"]');
 await demoCard.waitFor({ timeout: 20000 });
 ok("azienda demo presente", true);
-const tourVisibile = await page.locator(".driver-popover").isVisible().catch(() => false);
+// Il tour parte dopo ~1,1s dal mount: si attende l'esito, non si fotografa l'attimo.
+const tourVisibile = await page
+  .locator(".driver-popover")
+  .waitFor({ timeout: 8000 })
+  .then(() => true)
+  .catch(() => false);
 ok("tour avviato automaticamente", tourVisibile);
 await page.screenshot({ path: `${OUT}/prod-02-dashboard-demo-tour.png` });
 if (tourVisibile) {

@@ -11,6 +11,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Chromium serverless NON va bundlato: il binario vive in node_modules e il
+  // bundler, spostandolo, rompe la generazione PDF in produzione (errore
+  // "input directory .../@sparticuz/chromium/bin does not exist").
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   experimental: {
     // Cache del client router. dynamic:0 è deliberato: il prodotto è data-heavy e
     // ogni schermata mostra numeri che devono riflettere l'ultima scrittura

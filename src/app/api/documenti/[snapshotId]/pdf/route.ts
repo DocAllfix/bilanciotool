@@ -9,7 +9,9 @@ import { documentSnapshot } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { eq } from "drizzle-orm";
 
-export const maxDuration = 120; // Chromium serverless: servono più dei 10s di default
+// Chromium serverless supera i 10s di default. 60s è il tetto del piano Vercel
+// Hobby: se si passa a Pro si può alzare fino a 300.
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ snapshotId: string }> }) {
