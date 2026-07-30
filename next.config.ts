@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
   // bundler, spostandolo, rompe la generazione PDF in produzione (errore
   // "input directory .../@sparticuz/chromium/bin does not exist").
   serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
+  // Escludere dal bundle non basta: i file .br del browser non sono JavaScript,
+  // quindi il file-tracing di Vercel non li segue e la funzione arriva senza
+  // binario. Vanno inclusi a mano nella route che genera i PDF.
+  outputFileTracingIncludes: {
+    "/api/documenti/[snapshotId]/pdf": ["./node_modules/@sparticuz/chromium/bin/**"],
+  },
   experimental: {
     // Cache del client router. dynamic:0 è deliberato: il prodotto è data-heavy e
     // ogni schermata mostra numeri che devono riflettere l'ultima scrittura
