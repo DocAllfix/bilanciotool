@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { fmtNum } from "@/lib/format";
-import { Factory, Leaf } from "lucide-react";
+import { BookOpen, Factory, Leaf } from "lucide-react";
 
 export const metadata: Metadata = { title: "Portafoglio" };
 export const dynamic = "force-dynamic";
@@ -103,8 +103,10 @@ export default async function DashboardPage() {
                     <Factory className="size-3.5" /> Inventario GHG
                   </Link>
                 </Button>
-                <Button variant="outline" size="sm" disabled title="Il modulo Bilancio arriva nella prossima fase">
-                  Bilancio
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/aziende/${a.id}/bilancio`}>
+                    <BookOpen className="size-3.5" /> Bilancio
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>

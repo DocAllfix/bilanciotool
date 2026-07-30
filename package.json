@@ -18,6 +18,8 @@
     "db:extract-seed": "node scripts/extract-seed.mjs"
   },
   "dependencies": {
+    "@tiptap/react": "^3.29.2",
+    "@tiptap/starter-kit": "^3.29.2",
     "better-auth": "^1.6.25",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

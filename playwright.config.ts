@@ -7,6 +7,10 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
   workers: 1,
+  // 1 retry: il dev server sotto carico sequenziale ha latenze di compilazione
+  // che superano i timeout (flakiness nota). In Fase 11 gli e2e girano contro
+  // la build di produzione, dove il retry non dovrebbe mai servire.
+  retries: 1,
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:3000",
     screenshot: "on",

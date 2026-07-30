@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <span className="flex size-7 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
             <Leaf className="size-4" strokeWidth={2} />
           </span>
-          <span className="text-[15px] font-semibold tracking-tight text-white">Bilanciotool</span>
+          <span className="text-[15px] font-semibold tracking-tight text-white">EvalisDeck</span>
         </div>
         <SidebarNav />
         <div className="mt-auto border-t border-sidebar-border p-3">

@@ -7,7 +7,7 @@ import { assessMateriality } from "@/lib/calc/report/materiality";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { punteggioMaterialitaSchema } from "./validation";
-import type { z } from "zod";
+import { z } from "zod";
 
 // Doppia materialità (passo 2). L'esito (temi materiali) si CALCOLA sempre da
 // punteggi+soglia via src/lib/calc: mai persistito.
@@ -45,6 +45,40 @@ export async function setTopicScore(
       entita: "materiality_assessment",
       entitaId: `${projectId}:${v.topicKey}`,
       dettagli: { imp: v.scoreImpact, fin: v.scoreFinancial },
+    });
+  });
+}
+
+// Aggiornamento di UN SOLO campo, atomico lato DB: il client non manda mai lo
+// stato "completo" (potrebbe essere stantio e cancellare l'altro punteggio —
+// race trovata dal gate e2e di Fase 7).
+export async function setTopicScoreField(
+  userId: string,
+  orgId: string,
+  projectId: string,
+  input: { topicKey: string; campo: "imp" | "fin"; valore: number | null },
+): Promise<void> {
+  await requireEntitlement(userId, orgId, "write_data");
+  const topicKey = z.string().regex(/^T\d{2}$/).parse(input.topicKey);
+  const valore = input.valore === null ? null : z.number().int().min(1).max(5).parse(input.valore);
+  const colonna = input.campo === "imp" ? "scoreImpact" : "scoreFinancial";
+  await withTenant({ userId, orgId }, async (tx) => {
+    const [p] = await tx.select({ id: reportProject.id }).from(reportProject).where(eq(reportProject.id, projectId));
+    if (!p) throw new Error("Progetto inesistente o di un altro tenant");
+    await tx
+      .insert(materialityAssessment)
+      .values({ id: randomUUID(), organizationId: orgId, projectId, topicKey, [colonna]: valore })
+      .onConflictDoUpdate({
+        target: [materialityAssessment.projectId, materialityAssessment.topicKey],
+        set: { [colonna]: valore }, // SOLO il campo toccato: l'altro resta com'è nel DB
+      });
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: "report.materialita.set",
+      entita: "materiality_assessment",
+      entitaId: `${projectId}:${topicKey}`,
+      dettagli: { [input.campo]: valore },
     });
   });
 }

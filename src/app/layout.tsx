@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  // Nome di lavoro: il naming definitivo arriva a valle (decisione col committente).
-  title: { default: "Bilanciotool", template: "%s · Bilanciotool" },
+  // Nome scelto dal committente (2026-07-30): famiglia di prodotto Evalis.
+  title: { default: "EvalisDeck", template: "%s · EvalisDeck" },
   description:
     "La piattaforma per bilanci di sostenibilità e inventari GHG delle PMI: percorso guidato GRI/ESRS-VSME e ISO 14064-1.",
 };
