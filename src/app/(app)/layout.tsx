@@ -5,6 +5,7 @@ import { getAccountStatus } from "@/features/entitlement";
 import { SidebarNav } from "@/components/app-shell/sidebar-nav";
 import { UserMenu } from "@/components/app-shell/user-menu";
 import { DemoBanner } from "@/components/app-shell/demo-banner";
+import { MobileNav } from "@/components/app-shell/mobile-nav";
 import { HelpButton } from "@/components/app-shell/help-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Leaf } from "lucide-react";
@@ -37,6 +38,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col md:pl-60">
+        <MobileNav />
         {status === "demo" && <DemoBanner />}
         {status === "past_due" && (
           <div className="border-b border-warning/40 bg-warning-subtle px-5 py-2.5 text-sm">
