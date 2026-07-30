@@ -36,15 +36,19 @@ async function cartello(titolo, sotto, ms = 2600) {
     ([t, s]) => {
       const el = document.createElement("div");
       el.id = "regia-cartello";
-      el.innerHTML = `<div style="max-width:60ch;padding:0 8vw">
-        <p style="margin:0;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:#6FBFAE;font-weight:600">EvalisDeck</p>
-        <h1 style="margin:18px 0 0;font-size:64px;line-height:1.05;letter-spacing:-.03em;font-weight:700">${t}</h1>
-        ${s ? `<p style="margin:18px 0 0;font-size:22px;line-height:1.5;color:rgba(255,255,255,.72)">${s}</p>` : ""}
+      // Larghezze in pixel: 'ch' si calcola sul font base del contenitore e
+      // spezzava i titoli su ogni parola.
+      el.innerHTML = `<div style="width:1180px;max-width:100%">
+        <p style="margin:0;font-size:15px;letter-spacing:.26em;text-transform:uppercase;color:#6FBFAE;font-weight:600">EvalisDeck</p>
+        <h1 style="margin:22px 0 0;font-size:76px;line-height:1.04;letter-spacing:-.035em;font-weight:700;max-width:22ch">${t}</h1>
+        ${s ? `<p style="margin:24px 0 0;font-size:24px;line-height:1.45;color:rgba(255,255,255,.72);max-width:56ch">${s}</p>` : ""}
       </div>`;
       Object.assign(el.style, {
         position: "fixed", inset: "0", zIndex: "2147483647", background: "#16232C", color: "#fff",
         display: "flex", alignItems: "center", justifyContent: "flex-start",
+        padding: "0 9vw", boxSizing: "border-box",
         fontFamily: "'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif",
+        WebkitFontSmoothing: "antialiased",
         opacity: "0", transition: "opacity .55s cubic-bezier(.22,1,.36,1)",
       });
       document.body.appendChild(el);

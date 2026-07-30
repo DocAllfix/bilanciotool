@@ -38,6 +38,17 @@ const chiudiTour = async () => {
     } else break;
   }
 };
+// I tour, partendo da soli dopo ~1,1s, coprono la pagina con l'overlay di
+// driver.js e bloccano ogni clic fuori dall'elemento evidenziato: durante la QA
+// vanno disattivati alla radice, non chiusi a mano (altrimenti ripartono).
+const silenziaTour = () =>
+  page.evaluate(() => {
+    for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+  });
+const riattivaTour = () =>
+  page.evaluate(() => {
+    for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.removeItem(`evalisdeck-tour:${k}`);
+  });
 const vaiPasso = async (prefisso, n, atteso) => {
   await page.click(`[data-tour="${prefisso}-passo-${n}"]`);
   await page.waitForURL(`**passo=${n}`, { timeout: 30000 });
@@ -54,11 +65,12 @@ await check("landing risponde", async () => {
   const r = await page.goto(BASE + "/", { waitUntil: "networkidle" });
   if (!r?.ok()) throw new Error(`HTTP ${r?.status()}`);
 });
-await check("link Accedi dalla landing", async () => {
-  await page.getByRole("link", { name: "Accedi" }).click();
+await check("link Accedi dalla landing (header)", async () => {
+  await page.getByRole("link", { name: "Accedi" }).first().click();
   await page.waitForURL("**/login", { timeout: 20000 });
 });
 await check("login con credenziali errate mostra errore", async () => {
+  await page.goto(BASE + "/login", { waitUntil: "networkidle" });
   await page.fill("#email", "inesistente@example.com");
   await page.fill("#password", "sbagliata123");
   await page.click('button[type="submit"]');
@@ -96,6 +108,9 @@ await check("tour: riapertura dal pulsante Tour", async () => {
   await page.locator(".driver-popover").waitFor({ timeout: 10000 });
   await chiudiTour();
 });
+// Verificato il tour, si silenzia per il resto della QA (il suo overlay
+// bloccherebbe i clic sul resto della pagina).
+await silenziaTour();
 await check("toggle tema scuro e ritorno", async () => {
   await page.click('button[aria-label*="scuro"]');
   await page.waitForTimeout(500);
@@ -141,10 +156,12 @@ await check("archiviazione azienda", async () => {
   await page.getByText("Archivio", { exact: true }).waitFor({ timeout: 25000 });
 });
 await check("ripristino azienda archiviata", async () => {
-  const archiviata = page.locator("div", { hasText: "sola lettura" }).last();
-  await archiviata.getByRole("button", { name: "Altre azioni" }).click();
+  // La card in archivio è l'ultima con il pulsante azioni sotto il titolo "Archivio"
+  await page.getByText("Archivio", { exact: true }).waitFor({ timeout: 20000 });
+  await page.getByRole("button", { name: "Altre azioni" }).last().click();
   await page.getByRole("menuitem", { name: /Ripristina/ }).click();
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3000);
+  await page.getByText("QA Test S.p.A.").first().waitFor({ timeout: 20000 });
 });
 
 // ============================================================ 4. PERCORSO GHG
@@ -154,6 +171,7 @@ await check("apertura inventario GHG della demo", async () => {
   await demo.getByRole("link", { name: /Inventario GHG/ }).click();
   await page.waitForURL("**/ghg/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
+  await silenziaTour();
   await chiudiTour();
 });
 await check("passo 1: salvataggio campo confini", async () => {
@@ -273,11 +291,13 @@ await check("passo 8: pubblicazione + PDF", async () => {
 set("Percorso Bilancio (azienda demo)");
 await check("apertura bilancio della demo", async () => {
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
+  await silenziaTour();
   await chiudiTour();
   const demo = page.locator('[data-tour="azienda-demo"]');
   await demo.getByRole("link", { name: "Bilancio", exact: true }).click();
   await page.waitForURL("**/bilancio/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
+  await silenziaTour();
   await chiudiTour();
 });
 await check("passo 1: campo profilo salvato", async () => {
@@ -302,10 +322,10 @@ await check("passo 2: proposta ATECO", async () => {
 });
 await check("passo 2: cambio soglia", async () => {
   await page.getByLabel("Soglia di materialità").click();
-  await page.getByRole("option", { name: "≥ 4" }).click();
+  await page.getByRole("option", { name: "≥ 4", exact: true }).click();
   await page.waitForTimeout(2500);
   await page.getByLabel("Soglia di materialità").click();
-  await page.getByRole("option", { name: "≥ 3" }).click();
+  await page.getByRole("option", { name: "≥ 3", exact: true }).click();
   await page.waitForTimeout(2500);
 });
 await page.screenshot({ path: `${OUT}/qa-03-materialita.png` });
@@ -345,6 +365,7 @@ await check("passo 6: gap analysis con navigazione", async () => {
 });
 await check("passo 7: pubblicazione bilancio + PDF", async () => {
   await page.goto(page.url().split("?")[0] + "?passo=7", { waitUntil: "networkidle" });
+  await silenziaTour();
   await chiudiTour();
   await page.click('[data-tour="pubblica-documento"]');
   const popup = await page.waitForEvent("popup", { timeout: 90000 });
@@ -361,6 +382,7 @@ set("Mobile");
 await check("dashboard mobile con menu a scomparsa", async () => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
+  await silenziaTour();
   await chiudiTour();
   await page.getByRole("button", { name: "Apri menu" }).click();
   await page.getByRole("link", { name: "Impostazioni" }).click();
@@ -377,6 +399,7 @@ set("Uscita e pagine pubbliche");
 await page.setViewportSize({ width: 1440, height: 950 });
 await check("logout dal menu utente", async () => {
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
+  await silenziaTour();
   await chiudiTour();
   await page.getByRole("button", { name: "Menu utente" }).click();
   await page.getByRole("menuitem", { name: "Esci" }).click();

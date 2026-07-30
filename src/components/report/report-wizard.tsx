@@ -12,6 +12,7 @@ import { PassoPolitiche } from "./passo-politiche";
 import { PassoRacconto } from "./passo-racconto";
 import { PassoVerificaBilancio } from "./passo-verifica-bilancio";
 import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
+import { WizardNav } from "@/components/wizard-nav";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Percorso in 7 passi del bilancio (ordine del prototipo).
@@ -61,7 +62,7 @@ export function ReportWizard(props: {
           <p className="text-xs text-muted-foreground">
             <Link href="/dashboard" className="hover:underline">Portafoglio</Link> · Bilancio di sostenibilità
           </p>
-          <h1 className="truncate text-2xl font-semibold tracking-tight">{azienda.nome}</h1>
+          <h1 className="truncate font-display text-2xl font-semibold tracking-tight">{azienda.nome}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {progetto.standard} · pronto a pubblicare {g.readyPct}%
           </p>
@@ -128,6 +129,7 @@ export function ReportWizard(props: {
         {passo === 7 && (
           <PannelloPubblicazione companyId={companyId} tipo="bilancio" anno={progetto.anno} readyPct={g.readyPct} />
         )}
+        <WizardNav passo={passo} totale={7} nomi={PASSI.map((p) => p.nome)} vai={vai} />
       </div>
     </div>
   );

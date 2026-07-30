@@ -272,6 +272,11 @@ export function DocumentoGhg({ dati }: { dati: Snapshot }) {
       <p className="doc-meta">
         Documento generato il {fmtData(dati.generatoIl)} · i dati di dettaglio e le evidenze documentali sono conservati nel sistema di gestione delle informazioni GHG dell&apos;organizzazione.
       </p>
+      <p className="doc-meta" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/derivati/monogramma.svg" alt="" style={{ height: "14px", width: "auto" }} />
+        Redatto con EvalisDeck
+      </p>
     </div>
   );
 }

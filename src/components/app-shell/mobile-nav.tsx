@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Briefcase, HelpCircle, Leaf, Menu, Settings2, X } from "lucide-react";
+import { Monogramma } from "@/components/brand/logo";
+import { Briefcase, HelpCircle, Menu, Settings2, X } from "lucide-react";
 
 // Navigazione mobile (sotto md la sidebar è nascosta): barra superiore con
 // menu a scomparsa. Stesse voci della sidebar, stesso registro scuro.
@@ -33,9 +34,7 @@ export function MobileNav() {
           {aperto ? <X className="size-5" /> : <Menu className="size-5" />}
         </Button>
         <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setAperto(false)}>
-          <span className="flex size-6 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-            <Leaf className="size-3.5" strokeWidth={2} />
-          </span>
+          <Monogramma suScuro className="size-7" />
           <span className="text-[14px] font-semibold tracking-tight text-white">EvalisDeck</span>
         </Link>
       </div>

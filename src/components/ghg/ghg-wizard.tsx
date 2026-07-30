@@ -13,6 +13,7 @@ import { PassoRisultati } from "./passo-risultati";
 import { PassoObiettivi } from "./passo-obiettivi";
 import { PassoVerifica } from "./passo-verifica";
 import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
+import { WizardNav } from "@/components/wizard-nav";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -55,7 +56,7 @@ export function GhgWizard(props: {
           <p className="text-xs text-muted-foreground">
             <Link href="/dashboard" className="hover:underline">Portafoglio</Link> · Inventario GHG
           </p>
-          <h1 className="truncate text-2xl font-semibold tracking-tight">{azienda.nome}</h1>
+          <h1 className="truncate font-display text-2xl font-semibold tracking-tight">{azienda.nome}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             ISO 14064-1:2018 · avanzamento {stato.progresso.totPct}%
           </p>
@@ -131,6 +132,7 @@ export function GhgWizard(props: {
         {passo === 8 && (
           <PannelloPubblicazione companyId={companyId} tipo="ghg" anno={inventario.anno} readyPct={stato.progresso.totPct} />
         )}
+        <WizardNav passo={passo} totale={8} nomi={PASSI.map((p) => p.nome)} vai={vai} />
       </div>
     </div>
   );

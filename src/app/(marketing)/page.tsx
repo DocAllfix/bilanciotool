@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
 import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
 import { Button } from "@/components/ui/button";
+import { LogoOrizzontale } from "@/components/brand/logo";
 import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
 
@@ -305,7 +306,7 @@ export default function LandingPage() {
       <footer className="border-t bg-background">
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 sm:grid-cols-2 md:grid-cols-4">
           <div>
-            <p className="font-display text-[17px] font-bold tracking-tight">EvalisDeck</p>
+            <LogoOrizzontale className="h-10" />
             <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
               Bilanci di sostenibilità e inventari GHG per le PMI, con il metodo incorporato.
             </p>

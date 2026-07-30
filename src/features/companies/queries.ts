@@ -1,7 +1,7 @@
 import { withTenant } from "@/lib/db/tenant";
-import { company, ghgActivityRow, ghgInventory } from "@/lib/db/schema";
+import { auditLog, company, documentSnapshot, ghgActivityRow, ghgInventory, reportProject } from "@/lib/db/schema";
 import { computeInventory } from "@/lib/calc/ghg/totals";
-import { toFixedStr } from "@/lib/calc/shared/decimal";
+import { dec, toFixedStr } from "@/lib/calc/shared/decimal";
 import { desc, eq, inArray } from "drizzle-orm";
 
 // Statistiche del portafoglio: per ogni azienda l'ultimo inventario e il totale
@@ -18,6 +18,63 @@ export type CompanyCardStats = {
   inventoryId: string | null;
   voci: number;
   totL: string | null;
+  documenti: number;
+  haBilancio: boolean;
+};
+
+// Quadro dello studio: documenti pubblicati e attività recente. Etichette
+// leggibili derivate dal nome macchina delle azioni di audit.
+export type DocumentoRecente = {
+  id: string;
+  companyNome: string;
+  tipo: "ghg" | "bilancio";
+  anno: number;
+  versione: number;
+  publishedAt: Date;
+};
+
+export type VoceAttivita = { etichetta: string; companyNome: string | null; quando: Date };
+
+const ETICHETTE_AUDIT: Record<string, string> = {
+  "company.create": "Nuova azienda in portafoglio",
+  "company.archive": "Azienda archiviata",
+  "company.restore": "Azienda ripristinata",
+  "ghg.inventory.create": "Nuovo inventario GHG",
+  "ghg.boundaries.update": "Confini dell'inventario aggiornati",
+  "ghg.source.set": "Registro sorgenti aggiornato",
+  "ghg.row.create": "Voce di attività inserita",
+  "ghg.row.update": "Voce di attività modificata",
+  "ghg.row.duplicate": "Voce di attività duplicata",
+  "ghg.row.delete": "Voce di attività eliminata",
+  "ghg.factor.upsert": "Fattore di emissione personalizzato",
+  "ghg.factor.delete": "Fattore riportato alla piattaforma",
+  "ghg.target.create": "Obiettivo di riduzione definito",
+  "ghg.target.delete": "Obiettivo di riduzione rimosso",
+  "ghg.baseyear.set": "Anno base impostato",
+  "ghg.checklist.set": "Checklist di verifica aggiornata",
+  "ghg.meta.update": "Impostazioni inventario aggiornate",
+  "ghg.import": "Inventario importato dal prototipo",
+  "report.project.create": "Nuovo bilancio di sostenibilità",
+  "report.profilo.update": "Profilo dell'organizzazione aggiornato",
+  "report.materialita.set": "Valutazione di materialità",
+  "report.soglia.set": "Soglia di materialità modificata",
+  "report.kpi.set": "Indicatore KPI aggiornato",
+  "report.gestione.set": "Politica su tema materiale",
+  "report.capitolo.save": "Capitolo del racconto salvato",
+  "report.media.add": "Elemento visivo aggiunto",
+  "report.media.remove": "Elemento visivo rimosso",
+  "report.impostazioni.update": "Impostazioni bilancio aggiornate",
+  "report.import": "Bilancio importato dal prototipo",
+  "documento.ghg.publish": "Rapporto GHG pubblicato",
+  "documento.bilancio.publish": "Bilancio pubblicato",
+  "demo.seed": "Organizzazione dimostrativa creata",
+  "org.create": "Studio creato",
+};
+
+export type PortfolioOverview = {
+  documentiTotali: number;
+  recenti: DocumentoRecente[];
+  attivita: VoceAttivita[];
 };
 
 export async function listCompaniesWithStats(userId: string, orgId: string): Promise<CompanyCardStats[]> {
@@ -41,9 +98,22 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
     }
 
     const invIds = [...ultimoPerAzienda.values()].map((i) => i.id);
-    const righe = invIds.length
-      ? await tx.select().from(ghgActivityRow).where(inArray(ghgActivityRow.inventoryId, invIds))
-      : [];
+    const [righe, snapshots, bilanci] = await Promise.all([
+      invIds.length
+        ? tx.select().from(ghgActivityRow).where(inArray(ghgActivityRow.inventoryId, invIds))
+        : Promise.resolve([]),
+      tx
+        .select({ companyId: documentSnapshot.companyId })
+        .from(documentSnapshot)
+        .where(eq(documentSnapshot.organizationId, orgId)),
+      tx
+        .select({ companyId: reportProject.companyId })
+        .from(reportProject)
+        .where(eq(reportProject.organizationId, orgId)),
+    ]);
+    const docPerAzienda = new Map<string, number>();
+    for (const s of snapshots) docPerAzienda.set(s.companyId, (docPerAzienda.get(s.companyId) ?? 0) + 1);
+    const conBilancio = new Set(bilanci.map((b) => b.companyId));
     const perInventario = new Map<string, typeof righe>();
     for (const r of righe) {
       const arr = perInventario.get(r.inventoryId) ?? [];
@@ -81,7 +151,84 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
         inventoryId: ultimo?.id ?? null,
         voci: rows.length,
         totL: c ? toFixedStr(c.totL, 3) : null,
+        documenti: docPerAzienda.get(a.id) ?? 0,
+        haBilancio: conBilancio.has(a.id),
       };
     });
+  });
+}
+
+// Somma delle tCO₂e (location-based) sull'ultimo esercizio di ogni azienda attiva:
+// derivata al volo dalle card, mai persistita.
+export function sommaPortafoglio(stats: CompanyCardStats[]): string | null {
+  const attive = stats.filter((s) => s.stato === "active" && s.totL);
+  if (!attive.length) return null;
+  let tot = dec("0");
+  for (const s of attive) tot = tot.plus(dec(s.totL!));
+  return toFixedStr(tot, 1);
+}
+
+export async function getPortfolioOverview(userId: string, orgId: string): Promise<PortfolioOverview> {
+  return withTenant({ userId, orgId }, async (tx) => {
+    const [docs, audit] = await Promise.all([
+      tx
+        .select({
+          id: documentSnapshot.id,
+          companyId: documentSnapshot.companyId,
+          tipo: documentSnapshot.tipo,
+          anno: documentSnapshot.anno,
+          versione: documentSnapshot.versione,
+          publishedAt: documentSnapshot.publishedAt,
+        })
+        .from(documentSnapshot)
+        .where(eq(documentSnapshot.organizationId, orgId))
+        .orderBy(desc(documentSnapshot.publishedAt)),
+      tx
+        .select({
+          azione: auditLog.azione,
+          dettagli: auditLog.dettagli,
+          createdAt: auditLog.createdAt,
+        })
+        .from(auditLog)
+        .where(eq(auditLog.organizationId, orgId))
+        .orderBy(desc(auditLog.createdAt))
+        .limit(60),
+    ]);
+
+    const companyIds = [...new Set(docs.map((d) => d.companyId))];
+    const nomi = companyIds.length
+      ? await tx
+          .select({ id: company.id, nome: company.nome })
+          .from(company)
+          .where(inArray(company.id, companyIds))
+      : [];
+    const nomePerId = new Map(nomi.map((n) => [n.id, n.nome]));
+
+    // L'attività si compatta: azioni uguali consecutive (autosave, editing fitto)
+    // diventano una voce sola, per un flusso leggibile e non rumoroso.
+    const attivita: VoceAttivita[] = [];
+    for (const a of audit) {
+      const etichetta = ETICHETTE_AUDIT[a.azione] ?? a.azione;
+      const dettagli = (a.dettagli ?? {}) as Record<string, unknown>;
+      const companyNome =
+        typeof dettagli.companyNome === "string" ? dettagli.companyNome : null;
+      const ultima = attivita[attivita.length - 1];
+      if (ultima && ultima.etichetta === etichetta && ultima.companyNome === companyNome) continue;
+      attivita.push({ etichetta, companyNome, quando: a.createdAt });
+      if (attivita.length >= 8) break;
+    }
+
+    return {
+      documentiTotali: docs.length,
+      recenti: docs.slice(0, 5).map((d) => ({
+        id: d.id,
+        companyNome: nomePerId.get(d.companyId) ?? "—",
+        tipo: d.tipo,
+        anno: d.anno,
+        versione: d.versione,
+        publishedAt: d.publishedAt,
+      })),
+      attivita,
+    };
   });
 }

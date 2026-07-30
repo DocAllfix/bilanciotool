@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getSessionOrNull } from "@/features/auth/guards";
 import { Button } from "@/components/ui/button";
-import { Leaf } from "lucide-react";
+import { LogoOrizzontale } from "@/components/brand/logo";
 
 // Header sottile e sticky. Auth-aware: chi è già dentro va alla dashboard.
 export async function SiteHeader() {
@@ -9,11 +9,8 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-5">
-        <Link href="/" className="flex items-center gap-2" aria-label="EvalisDeck">
-          <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Leaf className="size-4" strokeWidth={2} />
-          </span>
-          <span className="font-display text-[16px] font-bold tracking-tight">EvalisDeck</span>
+        <Link href="/" className="flex items-center" aria-label="EvalisDeck">
+          <LogoOrizzontale className="h-10" />
         </Link>
         <nav className="hidden items-center gap-5 text-[13px] font-medium text-muted-foreground md:flex" aria-label="Sezioni">
           <a href="#percorsi" className="transition-colors hover:text-foreground">Percorsi</a>
