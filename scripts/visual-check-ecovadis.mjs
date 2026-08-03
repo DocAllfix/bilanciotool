@@ -4,7 +4,7 @@ import { mkdirSync } from "node:fs";
 
 const OUT = "./shots-ecovadis";
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://localhost:3000";
+const BASE = process.env.BASE ?? "http://localhost:3000";
 const errors = [];
 let ok = 0, ko = 0;
 const check = async (nome, fn) => {
