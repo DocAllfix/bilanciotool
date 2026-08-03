@@ -1,0 +1,38 @@
+{
+ "27001": {
+  "n": "ISO/IEC 27001:2022 — Allegato A",
+  "ab": "27001",
+  "fix": true,
+  "c": "var(--navy)",
+  "t": "t-nav",
+  "d": "Controlli di sicurezza delle informazioni. Sempre in ambito: la SoA li deve elencare tutti e 93."
+ },
+ "27017": {
+  "n": "ISO/IEC 27017:2015 — Controlli estesi cloud",
+  "ab": "27017",
+  "c": "var(--cyan)",
+  "t": "t-cya",
+  "d": "Sette controlli aggiuntivi per fornitori e clienti di servizi cloud."
+ },
+ "27018": {
+  "n": "ISO/IEC 27018:2019 — Allegato A",
+  "ab": "27018",
+  "c": "var(--violet)",
+  "t": "t-vio",
+  "d": "Controlli per chi tratta dati personali come responsabile in cloud pubblico."
+ },
+ "27701A": {
+  "n": "ISO/IEC 27701:2019 — Allegato A",
+  "ab": "27701-A",
+  "c": "var(--green)",
+  "t": "t-grn",
+  "d": "Controlli PIMS per il titolare del trattamento."
+ },
+ "27701B": {
+  "n": "ISO/IEC 27701:2019 — Allegato B",
+  "ab": "27701-B",
+  "c": "var(--amber)",
+  "t": "t-amb",
+  "d": "Controlli PIMS per il responsabile del trattamento."
+ }
+}

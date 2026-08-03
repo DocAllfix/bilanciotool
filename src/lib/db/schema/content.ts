@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, numeric, jsonb, boolean, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, numeric, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 // Contenuti metodologici versionati (seed di piattaforma, Fase 2C).
 // Tabelle NON-tenant: leggibili da tutti i tenant (passthrough RLS scoped ad app_rls),
@@ -310,4 +310,64 @@ export const supplierQuestion = pgTable(
     ordine: integer("ordine").notNull(),
   },
   (t) => [uniqueIndex("supplier_question_set_key_uq").on(t.setId, t.key)],
+);
+
+// ────────────────────────── DICHIARAZIONE DI APPLICABILITÀ ─────────────────────
+
+// 5 quadri di riferimento. Solo la 27001 è sempre in ambito: gli altri si
+// attivano se pertinenti al profilo dell'organizzazione.
+export const soaFramework = pgTable(
+  "soa_framework",
+  {
+    id: text("id").primaryKey(), // es. 'soa-v1:27017'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // '27001','27017','27018','27701A','27701B'
+    nome: text("nome").notNull(),
+    abbreviazione: text("abbreviazione").notNull(),
+    descrizione: text("descrizione").notNull(),
+    // true SOLO per la 27001: la SoA deve elencarne tutti e 93 i controlli.
+    sempreInAmbito: boolean("sempre_in_ambito").default(false).notNull(),
+    colore: text("colore").notNull(),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("soa_framework_set_key_uq").on(t.setId, t.key)],
+);
+
+// 21 sezioni, ciascuna appartenente a un quadro.
+export const soaSection = pgTable(
+  "soa_section",
+  {
+    id: text("id").primaryKey(), // es. 'soa-v1:A.5'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'A.5','CLD','P.1','T.2','R.5', …
+    frameworkKey: text("framework_key").notNull(),
+    nome: text("nome").notNull(),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("soa_section_set_key_uq").on(t.setId, t.key)],
+);
+
+// 174 controlli: 93 (27001) + 7 (27017) + 25 (27018) + 31 (27701-A) + 18 (27701-B).
+export const soaControl = pgTable(
+  "soa_control",
+  {
+    id: text("id").primaryKey(), // es. 'soa-v1:27001:8.4'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    frameworkKey: text("framework_key").notNull(),
+    sectionKey: text("section_key").notNull(),
+    controlloId: text("controllo_id").notNull(), // '8.4', 'CLD.6.3.1', 'A.11.2'
+    titolo: text("titolo").notNull(),
+    evidenzaAttesa: text("evidenza_attesa").notNull(),
+    // 61 controlli cardine: quelli che un organismo di certificazione guarda per
+    // primi, e che il piano di attuazione mette sempre in priorità alta.
+    cardine: boolean("cardine").default(false).notNull(),
+    // Rimandi ad altri quadri ("27017 · 27701"): aiutano a capire perché lo
+    // stesso presidio ricorre in più norme.
+    rimandi: text("rimandi"),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [
+    uniqueIndex("soa_control_set_fw_ctl_uq").on(t.setId, t.frameworkKey, t.controlloId),
+    index("soa_control_set_fw_idx").on(t.setId, t.frameworkKey),
+  ],
 );

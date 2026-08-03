@@ -1,0 +1,22 @@
+{
+ "rv": {
+  "n": "Valutazione del rischio",
+  "ab": "VR"
+ },
+ "ol": {
+  "n": "Obbligo legale o regolamentare",
+  "ab": "OL"
+ },
+ "oc": {
+  "n": "Obbligo contrattuale",
+  "ab": "OC"
+ },
+ "rb": {
+  "n": "Requisito di business",
+  "ab": "RB"
+ },
+ "bp": {
+  "n": "Buona prassi di settore",
+  "ab": "BP"
+ }
+}

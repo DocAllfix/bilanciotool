@@ -1,0 +1,32 @@
+{
+ "nd": {
+  "n": "Non attuato",
+  "v": 0,
+  "c": "t-red",
+  "r": "r-nd"
+ },
+ "pl": {
+  "n": "Pianificato",
+  "v": 20,
+  "c": "t-amb",
+  "r": "r-pl"
+ },
+ "pa": {
+  "n": "Parzialmente attuato",
+  "v": 55,
+  "c": "t-amb",
+  "r": "r-pa"
+ },
+ "at": {
+  "n": "Attuato",
+  "v": 90,
+  "c": "t-grn",
+  "r": "r-at"
+ },
+ "av": {
+  "n": "Attuato e verificato",
+  "v": 100,
+  "c": "t-grn",
+  "r": "r-av"
+ }
+}

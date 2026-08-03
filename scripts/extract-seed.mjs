@@ -46,6 +46,7 @@ const ghgHtml = readFileSync(join(root, "archivio", "gestionale-ghg-14064.html")
 const bilHtml = readFileSync(join(root, "archivio", "percorso-bilancio-v4.html"), "utf8");
 const eneHtml = readFileSync(join(root, "archivio", "bilancio-energetico-v1.html"), "utf8");
 const supHtml = readFileSync(join(root, "archivio", "esg-supplier-ready.html"), "utf8");
+const soaHtml = readFileSync(join(root, "archivio", "soa-iso27001.html"), "utf8");
 
 const out = {
   // Prototipo GHG (ISO 14064-1)
@@ -83,6 +84,16 @@ const out = {
   "supplier-questions.json": extractConst(supHtml, "Q"),
   "supplier-bands.json": extractConst(supHtml, "BANDS"),
   "supplier-effort.json": extractConst(supHtml, "EFFORT"),
+  // Prototipo SoA (ISO/IEC 27001 e moduli estesi). `C` termina con `.map(...)`
+  // che aggiunge fw e la chiave incollata: l'estrattore si ferma al literal e
+  // scarta la coda, che è esattamente quello che serve — la sezione basta a
+  // ricavare il quadro, e la chiave incollata qui non la vogliamo.
+  "soa-frameworks.json": extractConst(soaHtml, "FW"),
+  "soa-sections.json": extractConst(soaHtml, "SEC"),
+  "soa-controls.json": extractConst(soaHtml, "C"),
+  "soa-states.json": extractConst(soaHtml, "ST"),
+  "soa-motivations.json": extractConst(soaHtml, "MOT"),
+  "soa-bands.json": extractConst(soaHtml, "BANDS"),
 };
 
 for (const [file, data] of Object.entries(out)) {

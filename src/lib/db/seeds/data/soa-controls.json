@@ -1,0 +1,1163 @@
+[
+ {
+  "s": "A.5",
+  "id": "5.1",
+  "c": 1,
+  "t": "Politiche per la sicurezza delle informazioni",
+  "d": "Politica del SGSI approvata dalla direzione e diffusa",
+  "x": "27017 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.2",
+  "c": 1,
+  "t": "Ruoli e responsabilità per la sicurezza delle informazioni",
+  "d": "Organigramma del SGSI e lettere di incarico",
+  "x": "27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.3",
+  "t": "Separazione dei compiti",
+  "d": "Matrice di segregazione dei compiti"
+ },
+ {
+  "s": "A.5",
+  "id": "5.4",
+  "t": "Responsabilità della direzione",
+  "d": "Verbale del riesame di direzione"
+ },
+ {
+  "s": "A.5",
+  "id": "5.5",
+  "t": "Contatti con le autorità",
+  "d": "Elenco dei contatti con autorità (Garante privacy, ACN, forze dell'ordine)",
+  "x": "27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.6",
+  "t": "Contatti con gruppi di interesse specialistici",
+  "d": "Elenco di adesioni e fonti informative (CERT, CSIRT, associazioni)"
+ },
+ {
+  "s": "A.5",
+  "id": "5.7",
+  "t": "Intelligence sulle minacce",
+  "d": "Procedura di threat intelligence e report periodici",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.8",
+  "t": "Sicurezza delle informazioni nella gestione dei progetti",
+  "d": "Checklist di sicurezza applicata ai progetti"
+ },
+ {
+  "s": "A.5",
+  "id": "5.9",
+  "c": 1,
+  "t": "Inventario delle informazioni e degli altri asset associati",
+  "d": "Registro degli asset informativi con proprietario",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.5",
+  "id": "5.10",
+  "c": 1,
+  "t": "Uso accettabile delle informazioni e degli altri asset associati",
+  "d": "Regolamento sull'uso degli strumenti aziendali",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.11",
+  "t": "Restituzione degli asset",
+  "d": "Modulo di riconsegna degli asset alla cessazione",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.12",
+  "c": 1,
+  "t": "Classificazione delle informazioni",
+  "d": "Criteri di classificazione e schema dei livelli",
+  "x": "27017 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.13",
+  "t": "Etichettatura delle informazioni",
+  "d": "Procedura di etichettatura dei documenti e dei supporti"
+ },
+ {
+  "s": "A.5",
+  "id": "5.14",
+  "t": "Trasferimento delle informazioni",
+  "d": "Procedura di scambio informazioni e accordi con le controparti",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.15",
+  "c": 1,
+  "t": "Controllo degli accessi",
+  "d": "Politica di controllo degli accessi",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.5",
+  "id": "5.16",
+  "c": 1,
+  "t": "Gestione delle identità",
+  "d": "Procedura di gestione delle identità (ingresso, cambio, uscita)",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.5",
+  "id": "5.17",
+  "c": 1,
+  "t": "Informazioni di autenticazione",
+  "d": "Politica sulle credenziali e sulla loro consegna",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.18",
+  "c": 1,
+  "t": "Diritti di accesso",
+  "d": "Matrice dei profili e registro dei riesami periodici",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.5",
+  "id": "5.19",
+  "t": "Sicurezza delle informazioni nelle relazioni con i fornitori",
+  "d": "Politica di sicurezza nei rapporti con i fornitori",
+  "x": "27017 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.20",
+  "c": 1,
+  "t": "Sicurezza delle informazioni negli accordi con i fornitori",
+  "d": "Clausole contrattuali di sicurezza e riservatezza",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.21",
+  "t": "Gestione della sicurezza nella catena di fornitura ICT",
+  "d": "Criteri di qualifica dei fornitori ICT",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.22",
+  "t": "Monitoraggio, riesame e gestione del cambiamento dei servizi dei fornitori",
+  "d": "Report di riesame dei fornitori e verifica degli SLA",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.23",
+  "c": 1,
+  "t": "Sicurezza delle informazioni per l'utilizzo di servizi cloud",
+  "d": "Registro dei servizi cloud e valutazione dei fornitori",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.5",
+  "id": "5.24",
+  "c": 1,
+  "t": "Pianificazione e preparazione della gestione degli incidenti",
+  "d": "Procedura di gestione degli incidenti con ruoli e tempi",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.25",
+  "t": "Valutazione e decisione sugli eventi di sicurezza delle informazioni",
+  "d": "Criteri di classificazione e triage degli eventi"
+ },
+ {
+  "s": "A.5",
+  "id": "5.26",
+  "c": 1,
+  "t": "Risposta agli incidenti di sicurezza delle informazioni",
+  "d": "Registro degli incidenti e rapporti di risposta",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.27",
+  "t": "Apprendere dagli incidenti di sicurezza delle informazioni",
+  "d": "Analisi delle cause e azioni correttive tracciate"
+ },
+ {
+  "s": "A.5",
+  "id": "5.28",
+  "t": "Raccolta di evidenze",
+  "d": "Procedura di raccolta e conservazione delle evidenze digitali",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.29",
+  "t": "Sicurezza delle informazioni durante le interruzioni",
+  "d": "Piano di continuità con i requisiti di sicurezza"
+ },
+ {
+  "s": "A.5",
+  "id": "5.30",
+  "c": 1,
+  "t": "Prontezza ICT per la continuità operativa",
+  "d": "Piano di ripristino ICT con RTO e RPO ed esiti dei test",
+  "x": "27017"
+ },
+ {
+  "s": "A.5",
+  "id": "5.31",
+  "c": 1,
+  "t": "Requisiti legali, statutari, regolamentari e contrattuali",
+  "d": "Registro dei requisiti cogenti applicabili",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.32",
+  "t": "Diritti di proprietà intellettuale",
+  "d": "Procedura sulle licenze software e registro delle licenze"
+ },
+ {
+  "s": "A.5",
+  "id": "5.33",
+  "t": "Protezione delle registrazioni",
+  "d": "Piano di conservazione e protezione delle registrazioni",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.34",
+  "c": 1,
+  "t": "Privacy e protezione dei dati personali",
+  "d": "Registro dei trattamenti e misure di conformità al GDPR",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.5",
+  "id": "5.35",
+  "t": "Riesame indipendente della sicurezza delle informazioni",
+  "d": "Programma e rapporti di audit interno"
+ },
+ {
+  "s": "A.5",
+  "id": "5.36",
+  "t": "Conformità a politiche, regole e standard per la sicurezza delle informazioni",
+  "d": "Checklist di verifica della conformità interna"
+ },
+ {
+  "s": "A.5",
+  "id": "5.37",
+  "t": "Procedure operative documentate",
+  "d": "Istruzioni operative ICT rilasciate e aggiornate",
+  "x": "27017"
+ },
+ {
+  "s": "A.6",
+  "id": "6.1",
+  "t": "Selezione del personale",
+  "d": "Procedura di selezione con verifiche pre-assunzione"
+ },
+ {
+  "s": "A.6",
+  "id": "6.2",
+  "t": "Termini e condizioni di impiego",
+  "d": "Clausole di sicurezza inserite nel contratto di lavoro"
+ },
+ {
+  "s": "A.6",
+  "id": "6.3",
+  "c": 1,
+  "t": "Consapevolezza, istruzione e formazione sulla sicurezza delle informazioni",
+  "d": "Piano formativo e registri delle sessioni erogate",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.6",
+  "id": "6.4",
+  "t": "Processo disciplinare",
+  "d": "Procedura disciplinare formalizzata e comunicata"
+ },
+ {
+  "s": "A.6",
+  "id": "6.5",
+  "t": "Responsabilità dopo la cessazione o il cambiamento del rapporto di lavoro",
+  "d": "Checklist di cessazione del rapporto"
+ },
+ {
+  "s": "A.6",
+  "id": "6.6",
+  "c": 1,
+  "t": "Accordi di riservatezza o di non divulgazione",
+  "d": "Modello di NDA sottoscritto da personale e terzi",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.6",
+  "id": "6.7",
+  "t": "Lavoro da remoto",
+  "d": "Politica sul lavoro da remoto e sui dispositivi usati"
+ },
+ {
+  "s": "A.6",
+  "id": "6.8",
+  "t": "Segnalazione degli eventi di sicurezza delle informazioni",
+  "d": "Canale di segnalazione e modulo dedicato"
+ },
+ {
+  "s": "A.7",
+  "id": "7.1",
+  "t": "Perimetri di sicurezza fisica",
+  "d": "Planimetria con perimetri e aree classificate"
+ },
+ {
+  "s": "A.7",
+  "id": "7.2",
+  "c": 1,
+  "t": "Ingressi fisici",
+  "d": "Procedura di accesso fisico e registro dei visitatori"
+ },
+ {
+  "s": "A.7",
+  "id": "7.3",
+  "t": "Messa in sicurezza di uffici, locali e strutture",
+  "d": "Verbale di sopralluogo sulla sicurezza fisica"
+ },
+ {
+  "s": "A.7",
+  "id": "7.4",
+  "t": "Monitoraggio della sicurezza fisica",
+  "d": "Progetto di videosorveglianza e allarmi con informativa"
+ },
+ {
+  "s": "A.7",
+  "id": "7.5",
+  "t": "Protezione da minacce fisiche e ambientali",
+  "d": "Valutazione dei rischi ambientali del sito"
+ },
+ {
+  "s": "A.7",
+  "id": "7.6",
+  "t": "Lavoro in aree sicure",
+  "d": "Regole di condotta nelle aree sicure"
+ },
+ {
+  "s": "A.7",
+  "id": "7.7",
+  "t": "Scrivania pulita e schermo pulito",
+  "d": "Politica clear desk e clear screen",
+  "x": "27018"
+ },
+ {
+  "s": "A.7",
+  "id": "7.8",
+  "t": "Posizionamento e protezione delle apparecchiature",
+  "d": "Layout del locale tecnico e misure di protezione"
+ },
+ {
+  "s": "A.7",
+  "id": "7.9",
+  "t": "Sicurezza degli asset fuori sede",
+  "d": "Registro degli asset in uso esterno",
+  "x": "27018"
+ },
+ {
+  "s": "A.7",
+  "id": "7.10",
+  "c": 1,
+  "t": "Supporti di memorizzazione",
+  "d": "Procedura di gestione dei supporti removibili",
+  "x": "27018"
+ },
+ {
+  "s": "A.7",
+  "id": "7.11",
+  "t": "Servizi di supporto",
+  "d": "Verifiche su UPS, gruppo elettrogeno e condizionamento"
+ },
+ {
+  "s": "A.7",
+  "id": "7.12",
+  "t": "Sicurezza del cablaggio",
+  "d": "Schema del cablaggio e certificazioni di posa"
+ },
+ {
+  "s": "A.7",
+  "id": "7.13",
+  "t": "Manutenzione delle apparecchiature",
+  "d": "Piano e registro delle manutenzioni"
+ },
+ {
+  "s": "A.7",
+  "id": "7.14",
+  "c": 1,
+  "t": "Dismissione o riutilizzo sicuro delle apparecchiature",
+  "d": "Verbali di cancellazione sicura o distruzione",
+  "x": "27018 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.1",
+  "c": 1,
+  "t": "Dispositivi endpoint dell'utente",
+  "d": "Standard di configurazione degli endpoint e gestione MDM",
+  "x": "27018"
+ },
+ {
+  "s": "A.8",
+  "id": "8.2",
+  "c": 1,
+  "t": "Diritti di accesso privilegiati",
+  "d": "Registro delle utenze amministrative e dei riesami",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.8",
+  "id": "8.3",
+  "t": "Restrizione dell'accesso alle informazioni",
+  "d": "Matrice dei permessi sui repository",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.8",
+  "id": "8.4",
+  "t": "Accesso al codice sorgente",
+  "d": "Regole di accesso al repository di codice"
+ },
+ {
+  "s": "A.8",
+  "id": "8.5",
+  "c": 1,
+  "t": "Autenticazione sicura",
+  "d": "Configurazione dell'autenticazione a più fattori",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.6",
+  "t": "Gestione della capacità",
+  "d": "Monitoraggio della capacità e piano di crescita",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.7",
+  "c": 1,
+  "t": "Protezione dal malware",
+  "d": "Configurazione della protezione antimalware e report"
+ },
+ {
+  "s": "A.8",
+  "id": "8.8",
+  "c": 1,
+  "t": "Gestione delle vulnerabilità tecniche",
+  "d": "Procedura di patching e report delle scansioni",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.9",
+  "t": "Gestione della configurazione",
+  "d": "Baseline di configurazione e inventario configurazioni",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.10",
+  "c": 1,
+  "t": "Cancellazione delle informazioni",
+  "d": "Procedura di cancellazione sicura dei dati",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.11",
+  "t": "Mascheramento dei dati",
+  "d": "Regole di mascheramento e pseudonimizzazione",
+  "x": "27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.12",
+  "t": "Prevenzione della fuga di dati",
+  "d": "Configurazione degli strumenti di prevenzione e regole attive",
+  "x": "27018"
+ },
+ {
+  "s": "A.8",
+  "id": "8.13",
+  "c": 1,
+  "t": "Backup delle informazioni",
+  "d": "Piano di backup ed esiti dei test di ripristino",
+  "x": "27017 · 27018"
+ },
+ {
+  "s": "A.8",
+  "id": "8.14",
+  "t": "Ridondanza delle strutture di elaborazione delle informazioni",
+  "d": "Schema architetturale delle ridondanze",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.15",
+  "c": 1,
+  "t": "Registrazione degli eventi",
+  "d": "Politica di logging e periodo di conservazione",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.16",
+  "c": 1,
+  "t": "Attività di monitoraggio",
+  "d": "Configurazione del monitoraggio e degli avvisi, report periodici",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.17",
+  "t": "Sincronizzazione degli orologi",
+  "d": "Configurazione dei server orari di riferimento",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.18",
+  "t": "Uso di programmi di utilità privilegiati",
+  "d": "Elenco degli strumenti privilegiati autorizzati",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.19",
+  "t": "Installazione di software sui sistemi operativi",
+  "d": "Procedura di rilascio del software in esercizio"
+ },
+ {
+  "s": "A.8",
+  "id": "8.20",
+  "c": 1,
+  "t": "Sicurezza delle reti",
+  "d": "Schema di rete e regole del firewall",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.21",
+  "t": "Sicurezza dei servizi di rete",
+  "d": "Requisiti di sicurezza e SLA dei servizi di rete",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.22",
+  "t": "Segregazione delle reti",
+  "d": "Piano di segmentazione e configurazione delle VLAN",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.23",
+  "t": "Filtraggio web",
+  "d": "Configurazione del filtraggio della navigazione"
+ },
+ {
+  "s": "A.8",
+  "id": "8.24",
+  "c": 1,
+  "t": "Uso della crittografia",
+  "d": "Politica crittografica e procedura di gestione delle chiavi",
+  "x": "27017 · 27018 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.25",
+  "t": "Ciclo di vita di sviluppo sicuro",
+  "d": "Procedura di sviluppo sicuro del software"
+ },
+ {
+  "s": "A.8",
+  "id": "8.26",
+  "t": "Requisiti di sicurezza delle applicazioni",
+  "d": "Specifica dei requisiti di sicurezza applicativi",
+  "x": "27017 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.27",
+  "t": "Principi di ingegneria e architettura di sistemi sicuri",
+  "d": "Linee guida di architettura sicura"
+ },
+ {
+  "s": "A.8",
+  "id": "8.28",
+  "t": "Codifica sicura",
+  "d": "Standard di codifica sicura ed esiti delle revisioni del codice"
+ },
+ {
+  "s": "A.8",
+  "id": "8.29",
+  "t": "Test di sicurezza in sviluppo e accettazione",
+  "d": "Piano ed esiti dei test di sicurezza"
+ },
+ {
+  "s": "A.8",
+  "id": "8.30",
+  "t": "Sviluppo affidato all'esterno",
+  "d": "Requisiti contrattuali per lo sviluppo esternalizzato"
+ },
+ {
+  "s": "A.8",
+  "id": "8.31",
+  "t": "Separazione degli ambienti di sviluppo, test ed esercizio",
+  "d": "Schema degli ambienti e regole di separazione",
+  "x": "27017"
+ },
+ {
+  "s": "A.8",
+  "id": "8.32",
+  "c": 1,
+  "t": "Gestione del cambiamento",
+  "d": "Procedura di gestione del cambiamento e registro delle richieste",
+  "x": "27017 · 27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.33",
+  "t": "Informazioni di test",
+  "d": "Regole per la selezione e la protezione dei dati di test",
+  "x": "27701"
+ },
+ {
+  "s": "A.8",
+  "id": "8.34",
+  "t": "Protezione dei sistemi informativi durante i test di audit",
+  "d": "Piano dei test di audit concordato con i proprietari"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.6.3.1",
+  "c": 1,
+  "t": "Ruoli e responsabilità condivisi in un ambiente cloud",
+  "d": "Matrice di ripartizione delle responsabilità fra fornitore e cliente"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.8.1.5",
+  "t": "Rimozione degli asset del cliente del servizio cloud",
+  "d": "Procedura di restituzione e rimozione degli asset a fine servizio"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.9.5.1",
+  "c": 1,
+  "t": "Segregazione negli ambienti virtuali",
+  "d": "Configurazione dell'isolamento fra ambienti dei diversi clienti"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.9.5.2",
+  "t": "Protezione delle macchine virtuali",
+  "d": "Baseline di irrobustimento delle macchine virtuali"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.12.1.5",
+  "t": "Amministrazione delle operazioni",
+  "d": "Procedure operative di amministrazione documentate"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.12.4.5",
+  "c": 1,
+  "t": "Monitoraggio dei servizi cloud da parte del cliente",
+  "d": "Funzioni di log e monitoraggio rese disponibili al cliente"
+ },
+ {
+  "s": "CLD",
+  "id": "CLD.13.1.4",
+  "t": "Allineamento della sicurezza delle reti virtuali e fisiche",
+  "d": "Configurazione coerente fra reti virtuali e reti fisiche"
+ },
+ {
+  "s": "P.1",
+  "id": "A.1.1",
+  "c": 1,
+  "t": "Obbligo di cooperare per l'esercizio dei diritti degli interessati",
+  "d": "Procedura di supporto al titolare nelle richieste degli interessati"
+ },
+ {
+  "s": "P.2",
+  "id": "A.2.1",
+  "t": "Finalità del trattamento del responsabile in cloud pubblico",
+  "d": "Istruzioni documentate ricevute dal titolare"
+ },
+ {
+  "s": "P.2",
+  "id": "A.2.2",
+  "t": "Uso commerciale dei dati personali",
+  "d": "Divieto contrattuale di uso per marketing senza consenso"
+ },
+ {
+  "s": "P.4",
+  "id": "A.4.1",
+  "t": "Cancellazione sicura dei file temporanei",
+  "d": "Procedura di cancellazione dei file temporanei"
+ },
+ {
+  "s": "P.5",
+  "id": "A.5.1",
+  "t": "Notifica delle comunicazioni di dati personali",
+  "d": "Procedura di notifica al cliente delle richieste di divulgazione"
+ },
+ {
+  "s": "P.5",
+  "id": "A.5.2",
+  "t": "Registrazione delle comunicazioni di dati personali",
+  "d": "Registro delle comunicazioni effettuate"
+ },
+ {
+  "s": "P.7",
+  "id": "A.7.1",
+  "c": 1,
+  "t": "Comunicazione del subaffidamento del trattamento",
+  "d": "Elenco aggiornato dei sub-responsabili reso disponibile al cliente"
+ },
+ {
+  "s": "P.9",
+  "id": "A.9.1",
+  "c": 1,
+  "t": "Notifica della violazione dei dati personali",
+  "d": "Procedura di notifica della violazione al cliente"
+ },
+ {
+  "s": "P.9",
+  "id": "A.9.2",
+  "t": "Periodo di conservazione delle politiche e delle linee guida",
+  "d": "Piano di conservazione della documentazione del sistema"
+ },
+ {
+  "s": "P.9",
+  "id": "A.9.3",
+  "c": 1,
+  "t": "Restituzione, trasferimento e cancellazione dei dati personali",
+  "d": "Procedura di uscita con restituzione e cancellazione dei dati"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.1",
+  "t": "Accordi di riservatezza o di non divulgazione",
+  "d": "NDA sottoscritti dal personale con accesso ai dati personali"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.2",
+  "t": "Limitazione della produzione di materiale cartaceo",
+  "d": "Regole sulla stampa dei dati personali"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.3",
+  "t": "Controllo e registrazione del ripristino dei dati",
+  "d": "Registro delle operazioni di ripristino"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.4",
+  "t": "Protezione dei dati su supporti che lasciano i locali",
+  "d": "Procedura per il trasporto dei supporti"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.5",
+  "t": "Uso di supporti portatili non cifrati",
+  "d": "Divieto d'uso e registro delle deroghe autorizzate"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.6",
+  "c": 1,
+  "t": "Cifratura dei dati personali trasmessi su reti pubbliche",
+  "d": "Configurazione dei canali cifrati in uso"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.7",
+  "t": "Distruzione sicura del materiale cartaceo",
+  "d": "Verbali di distruzione dei documenti cartacei"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.8",
+  "t": "Univocità degli identificativi utente",
+  "d": "Regola di assegnazione di identificativi univoci"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.9",
+  "t": "Registrazione degli utenti autorizzati",
+  "d": "Elenco degli utenti con accesso ai dati personali"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.10",
+  "t": "Gestione degli identificativi utente",
+  "d": "Procedura di disattivazione e non riassegnazione degli identificativi"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.11",
+  "c": 1,
+  "t": "Misure contrattuali",
+  "d": "Contratto di trattamento conforme all'art. 28 del GDPR"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.12",
+  "c": 1,
+  "t": "Subaffidamento del trattamento dei dati personali",
+  "d": "Autorizzazione del titolare e contratti con i sub-responsabili"
+ },
+ {
+  "s": "P.10",
+  "id": "A.10.13",
+  "t": "Accesso ai dati su spazi di memorizzazione già utilizzati",
+  "d": "Procedura di sanificazione dello spazio di memorizzazione"
+ },
+ {
+  "s": "P.11",
+  "id": "A.11.1",
+  "c": 1,
+  "t": "Ubicazione geografica dei dati personali",
+  "d": "Elenco dei centri dati e delle giurisdizioni interessate"
+ },
+ {
+  "s": "P.11",
+  "id": "A.11.2",
+  "t": "Destinazione prevista dei dati personali",
+  "d": "Informativa sui trasferimenti e garanzie applicate"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.1",
+  "c": 1,
+  "t": "Individuare e documentare le finalità",
+  "d": "Elenco delle finalità per ciascun trattamento"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.2",
+  "c": 1,
+  "t": "Individuare la base giuridica",
+  "d": "Analisi delle basi giuridiche per trattamento"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.3",
+  "t": "Stabilire quando e come raccogliere il consenso",
+  "d": "Procedura di raccolta del consenso"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.4",
+  "t": "Ottenere e registrare il consenso",
+  "d": "Registro dei consensi con prova della raccolta"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.5",
+  "c": 1,
+  "t": "Valutazione d'impatto sulla protezione dei dati",
+  "d": "DPIA per i trattamenti a rischio elevato"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.6",
+  "c": 1,
+  "t": "Contratti con i responsabili del trattamento",
+  "d": "Atti di nomina dei responsabili ex art. 28 del GDPR"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.7",
+  "t": "Contitolarità del trattamento",
+  "d": "Accordo di contitolarità con ripartizione dei compiti"
+ },
+ {
+  "s": "T.2",
+  "id": "A.7.2.8",
+  "c": 1,
+  "t": "Registrazioni relative al trattamento dei dati personali",
+  "d": "Registro dei trattamenti del titolare"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.1",
+  "t": "Determinare e assolvere gli obblighi verso gli interessati",
+  "d": "Procedura sui diritti degli interessati"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.2",
+  "t": "Determinare le informazioni da fornire agli interessati",
+  "d": "Contenuti minimi delle informative"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.3",
+  "c": 1,
+  "t": "Fornire le informazioni agli interessati",
+  "d": "Informative pubblicate e consegnate"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.4",
+  "t": "Meccanismo per modificare o revocare il consenso",
+  "d": "Funzione di revoca del consenso disponibile"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.5",
+  "t": "Meccanismo per opporsi al trattamento",
+  "d": "Procedura di gestione dell'opposizione"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.6",
+  "c": 1,
+  "t": "Accesso, rettifica e cancellazione",
+  "d": "Procedura di evasione delle richieste di accesso e cancellazione"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.7",
+  "t": "Obbligo di informare i terzi",
+  "d": "Procedura di comunicazione delle rettifiche ai destinatari"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.8",
+  "t": "Fornire copia dei dati personali trattati",
+  "d": "Procedura di portabilità dei dati"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.9",
+  "t": "Gestione delle richieste",
+  "d": "Registro delle richieste degli interessati con tempi di risposta"
+ },
+ {
+  "s": "T.3",
+  "id": "A.7.3.10",
+  "t": "Processo decisionale automatizzato",
+  "d": "Elenco dei trattamenti automatizzati e misure di tutela"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.1",
+  "t": "Limitare la raccolta",
+  "d": "Criteri di minimizzazione applicati alla raccolta"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.2",
+  "t": "Limitare il trattamento",
+  "d": "Regole di limitazione alle sole finalità dichiarate"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.3",
+  "t": "Accuratezza e qualità",
+  "d": "Procedura di verifica e aggiornamento dei dati"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.4",
+  "t": "Obiettivi di minimizzazione dei dati personali",
+  "d": "Obiettivi documentati di minimizzazione"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.5",
+  "c": 1,
+  "t": "De-identificazione e cancellazione al termine del trattamento",
+  "d": "Procedura di anonimizzazione o cancellazione a fine trattamento"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.6",
+  "t": "File temporanei",
+  "d": "Regole di gestione e cancellazione dei file temporanei"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.7",
+  "c": 1,
+  "t": "Conservazione",
+  "d": "Piano di conservazione dei dati personali per trattamento"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.8",
+  "t": "Smaltimento",
+  "d": "Procedura di distruzione sicura dei supporti e dei documenti"
+ },
+ {
+  "s": "T.4",
+  "id": "A.7.4.9",
+  "t": "Controlli sulla trasmissione dei dati personali",
+  "d": "Misure di protezione dei canali di trasmissione"
+ },
+ {
+  "s": "T.5",
+  "id": "A.7.5.1",
+  "c": 1,
+  "t": "Individuare la base per il trasferimento tra giurisdizioni",
+  "d": "Analisi delle basi di trasferimento (adeguatezza, clausole standard)"
+ },
+ {
+  "s": "T.5",
+  "id": "A.7.5.2",
+  "t": "Paesi e organizzazioni internazionali destinatari",
+  "d": "Elenco dei paesi di destinazione dei dati"
+ },
+ {
+  "s": "T.5",
+  "id": "A.7.5.3",
+  "t": "Registrazioni dei trasferimenti di dati personali",
+  "d": "Registro dei trasferimenti"
+ },
+ {
+  "s": "T.5",
+  "id": "A.7.5.4",
+  "t": "Registrazioni delle comunicazioni a terzi",
+  "d": "Registro delle comunicazioni a soggetti terzi"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.1",
+  "c": 1,
+  "t": "Accordo con il cliente",
+  "d": "Contratto di trattamento sottoscritto con il titolare"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.2",
+  "t": "Finalità dell'organizzazione",
+  "d": "Dichiarazione di trattamento su sola istruzione documentata"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.3",
+  "t": "Uso per marketing e pubblicità",
+  "d": "Divieto d'uso salvo consenso documentato"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.4",
+  "t": "Istruzione in violazione di legge",
+  "d": "Procedura di segnalazione delle istruzioni illegittime"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.5",
+  "t": "Obblighi del cliente",
+  "d": "Informazioni fornite al titolare per adempiere ai suoi obblighi"
+ },
+ {
+  "s": "R.2",
+  "id": "B.8.2.6",
+  "c": 1,
+  "t": "Registrazioni relative al trattamento dei dati personali",
+  "d": "Registro dei trattamenti del responsabile"
+ },
+ {
+  "s": "R.3",
+  "id": "B.8.3.1",
+  "c": 1,
+  "t": "Obblighi verso gli interessati",
+  "d": "Procedura di supporto al titolare per i diritti degli interessati"
+ },
+ {
+  "s": "R.4",
+  "id": "B.8.4.1",
+  "t": "File temporanei",
+  "d": "Procedura di cancellazione dei file temporanei"
+ },
+ {
+  "s": "R.4",
+  "id": "B.8.4.2",
+  "c": 1,
+  "t": "Restituzione, trasferimento o cancellazione dei dati personali",
+  "d": "Procedura di uscita e restituzione dei dati al titolare"
+ },
+ {
+  "s": "R.4",
+  "id": "B.8.4.3",
+  "t": "Controlli sulla trasmissione dei dati personali",
+  "d": "Misure di protezione dei canali di trasmissione"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.1",
+  "c": 1,
+  "t": "Base per il trasferimento tra giurisdizioni",
+  "d": "Analisi delle basi di trasferimento"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.2",
+  "t": "Paesi e organizzazioni internazionali destinatari",
+  "d": "Elenco dei paesi di destinazione dei dati"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.3",
+  "t": "Registrazioni delle comunicazioni a terzi",
+  "d": "Registro delle comunicazioni a soggetti terzi"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.4",
+  "t": "Notifica delle richieste di divulgazione",
+  "d": "Procedura di notifica al titolare delle richieste ricevute"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.5",
+  "t": "Comunicazioni giuridicamente vincolanti",
+  "d": "Registro delle comunicazioni imposte dall'autorità"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.6",
+  "c": 1,
+  "t": "Comunicazione dei subincaricati",
+  "d": "Elenco dei sub-responsabili comunicato al titolare"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.7",
+  "c": 1,
+  "t": "Incarico di un subincaricato",
+  "d": "Procedura di autorizzazione e contratto con il sub-responsabile"
+ },
+ {
+  "s": "R.5",
+  "id": "B.8.5.8",
+  "t": "Cambio di subincaricato",
+  "d": "Procedura di notifica preventiva delle variazioni"
+ }
+]

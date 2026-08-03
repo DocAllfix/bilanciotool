@@ -29,6 +29,8 @@ const id = (key) => `v1:${key}`;
 const eid = (key) => `${ENERGY_SET}:${key}`;
 const SUPPLIER_SET = "supplier-v1";
 const sid = (key) => `${SUPPLIER_SET}:${key}`;
+const SOA_SET = "soa-v1";
+const oid = (key) => `${SOA_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
@@ -37,7 +39,8 @@ try {
     values (${GHG_SET}, 'ghg', 1, 'Estratto dal prototipo gestionale-ghg-14064.html'),
            (${REPORT_SET}, 'report', 1, 'Estratto dal prototipo percorso-bilancio-v4.html'),
            (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html'),
-           (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html')
+           (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html'),
+           (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -227,6 +230,47 @@ try {
     values (${sid("fascia")}, ${SUPPLIER_SET}, 'fascia', ${sql.json(load("supplier-bands.json"))})
     on conflict (id) do update set livelli = excluded.livelli`;
 
+  // --- Dichiarazione di Applicabilità (ISO/IEC 27001 e moduli estesi) ---
+  const quadri = load("soa-frameworks.json");
+  for (const [i, k] of Object.keys(quadri).entries()) {
+    const f = quadri[k];
+    await sql`
+      insert into soa_framework (id, set_id, key, nome, abbreviazione, descrizione, sempre_in_ambito, colore, ordine)
+      values (${oid(k)}, ${SOA_SET}, ${k}, ${f.n}, ${f.ab}, ${f.d}, ${f.fix === true}, ${f.c}, ${i})
+      on conflict (id) do update set nome = excluded.nome, abbreviazione = excluded.abbreviazione,
+        descrizione = excluded.descrizione, sempre_in_ambito = excluded.sempre_in_ambito,
+        colore = excluded.colore, ordine = excluded.ordine`;
+  }
+
+  const sezioni = load("soa-sections.json");
+  for (const [i, k] of Object.keys(sezioni).entries()) {
+    const x = sezioni[k];
+    await sql`
+      insert into soa_section (id, set_id, key, framework_key, nome, ordine)
+      values (${oid(k)}, ${SOA_SET}, ${k}, ${x.fw}, ${x.n}, ${i})
+      on conflict (id) do update set framework_key = excluded.framework_key, nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  // Il quadro si ricava dalla sezione: nel prototipo lo faceva una .map() in
+  // coda al literal, qui lo fa il seed una volta sola.
+  for (const [i, c] of load("soa-controls.json").entries()) {
+    const fw = sezioni[c.s].fw;
+    await sql`
+      insert into soa_control (id, set_id, framework_key, section_key, controllo_id, titolo, evidenza_attesa, cardine, rimandi, ordine)
+      values (${oid(`${fw}:${c.id}`)}, ${SOA_SET}, ${fw}, ${c.s}, ${c.id}, ${c.t}, ${c.d}, ${c.c === 1}, ${c.x ?? null}, ${i})
+      on conflict (id) do update set framework_key = excluded.framework_key, section_key = excluded.section_key,
+        titolo = excluded.titolo, evidenza_attesa = excluded.evidenza_attesa, cardine = excluded.cardine,
+        rimandi = excluded.rimandi, ordine = excluded.ordine`;
+  }
+
+  // Stati, motivazioni e fasce riusano rating_scale, come gli altri moduli.
+  for (const [k, file] of [["stato", "soa-states.json"], ["motivazione", "soa-motivations.json"], ["fascia", "soa-bands.json"]]) {
+    await sql`
+      insert into rating_scale (id, set_id, key, livelli)
+      values (${oid(k)}, ${SOA_SET}, ${k}, ${sql.json(load(file))})
+      on conflict (id) do update set livelli = excluded.livelli`;
+  }
+
   // Config limiti di piattaforma (se assente: default del piano 10/8/5).
   await sql`
     insert into platform_config (key, value)
@@ -241,6 +285,7 @@ try {
     "rating_scale", "narrative_template", "ateco_suggestion",
     "energy_vector", "energy_area", "energy_end_use", "energy_driver_definition", "energy_indicator",
     "supplier_area", "supplier_question",
+    "soa_framework", "soa_section", "soa_control",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

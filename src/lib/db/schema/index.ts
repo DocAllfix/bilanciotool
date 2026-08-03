@@ -6,6 +6,7 @@ export * from "./ghg";
 export * from "./report";
 export * from "./energy";
 export * from "./supplier";
+export * from "./soa";
 export * from "./documents";
 export * from "./billing";
 export * from "./security";

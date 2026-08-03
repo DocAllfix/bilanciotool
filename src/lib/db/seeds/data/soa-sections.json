@@ -1,0 +1,86 @@
+{
+ "A.5": {
+  "fw": "27001",
+  "n": "A.5 — Controlli organizzativi"
+ },
+ "A.6": {
+  "fw": "27001",
+  "n": "A.6 — Controlli relativi alle persone"
+ },
+ "A.7": {
+  "fw": "27001",
+  "n": "A.7 — Controlli fisici"
+ },
+ "A.8": {
+  "fw": "27001",
+  "n": "A.8 — Controlli tecnologici"
+ },
+ "CLD": {
+  "fw": "27017",
+  "n": "CLD — Controlli estesi per i servizi cloud"
+ },
+ "P.1": {
+  "fw": "27018",
+  "n": "A.1 — Consenso e scelta"
+ },
+ "P.2": {
+  "fw": "27018",
+  "n": "A.2 — Legittimità e specificazione della finalità"
+ },
+ "P.4": {
+  "fw": "27018",
+  "n": "A.4 — Minimizzazione dei dati"
+ },
+ "P.5": {
+  "fw": "27018",
+  "n": "A.5 — Limitazione di uso, conservazione e comunicazione"
+ },
+ "P.7": {
+  "fw": "27018",
+  "n": "A.7 — Trasparenza e informazione"
+ },
+ "P.9": {
+  "fw": "27018",
+  "n": "A.9 — Responsabilizzazione"
+ },
+ "P.10": {
+  "fw": "27018",
+  "n": "A.10 — Sicurezza delle informazioni"
+ },
+ "P.11": {
+  "fw": "27018",
+  "n": "A.11 — Conformità in materia di privacy"
+ },
+ "T.2": {
+  "fw": "27701A",
+  "n": "A.7.2 — Condizioni per la raccolta e il trattamento"
+ },
+ "T.3": {
+  "fw": "27701A",
+  "n": "A.7.3 — Obblighi verso gli interessati"
+ },
+ "T.4": {
+  "fw": "27701A",
+  "n": "A.7.4 — Privacy by design e by default"
+ },
+ "T.5": {
+  "fw": "27701A",
+  "n": "A.7.5 — Condivisione, trasferimento e comunicazione dei PII"
+ },
+ "R.2": {
+  "fw": "27701B",
+  "n": "B.8.2 — Condizioni per la raccolta e il trattamento"
+ },
+ "R.3": {
+  "fw": "27701B",
+  "n": "B.8.3 — Obblighi verso gli interessati"
+ },
+ "R.4": {
+  "fw": "27701B",
+  "n": "B.8.4 — Privacy by design e by default"
+ },
+ "R.5": {
+  "fw": "27701B",
+  "n": "B.8.5 — Condivisione, trasferimento e comunicazione dei PII"
+ }
+}

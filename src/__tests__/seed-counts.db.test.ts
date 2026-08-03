@@ -7,9 +7,11 @@ import {
   ratingScale, narrativeTemplate, atecoSuggestion,
   energyVector, energyArea, energyEndUse, energyDriverDefinition, energyIndicator,
   supplierArea, supplierQuestion,
+  soaFramework, soaSection, soaControl,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
+import { VALORE_STATO } from "@/lib/calc/soa/scoring";
 
 // Conteggi ESATTI dei contenuti metodologici estratti dai prototipi
 // (estrazione automatica via scripts/extract-seed.mjs — niente trascrizione manuale).
@@ -23,7 +25,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
   };
 
   it("conteggi esatti per ogni catalogo", async () => {
-    expect(await conta(contentSet)).toBe(4); // ghg-v1 + report-v1 + energy-v1 + supplier-v1
+    expect(await conta(contentSet)).toBe(5); // ghg + report + energy + supplier + soa
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);
@@ -32,7 +34,8 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect(await conta(materialityTopic)).toBe(18);
     expect(await conta(kpiSection)).toBe(8);
     expect(await conta(kpiDefinition)).toBe(49);
-    expect(await conta(ratingScale)).toBe(5); // dq + imp + fin + energy:metodo + supplier:fascia
+    // dq + imp + fin + energy:metodo + supplier:fascia + soa:stato/motivazione/fascia
+    expect(await conta(ratingScale)).toBe(8);
     expect(await conta(narrativeTemplate)).toBe(14); // 7 bilancio + 7 energetico
     expect(await conta(atecoSuggestion)).toBe(8);
   });
@@ -78,7 +81,40 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     }
   });
 
-  it("i cataloghi dei quattro domini restano separati", async () => {
+  it("conteggi esatti del modulo SoA", async () => {
+    expect(await conta(soaFramework)).toBe(5);
+    expect(await conta(soaSection)).toBe(21);
+    expect(await conta(soaControl)).toBe(174);
+    // 93 (27001) + 7 (27017) + 25 (27018) + 31 (27701-A) + 18 (27701-B).
+    const controlli = await db.select().from(soaControl);
+    const per = (f: string) => controlli.filter((c) => c.frameworkKey === f).length;
+    expect([per("27001"), per("27017"), per("27018"), per("27701A"), per("27701B")])
+      .toEqual([93, 7, 25, 31, 18]);
+    // 61 controlli cardine: quelli che un organismo di certificazione guarda per primi.
+    expect(controlli.filter((c) => c.cardine).length).toBe(61);
+  });
+
+  it("solo la 27001 è sempre in ambito", async () => {
+    const quadri = await db.select().from(soaFramework);
+    expect(quadri.filter((f) => f.sempreInAmbito).map((f) => f.key)).toEqual(["27001"]);
+  });
+
+  it("ogni controllo SoA ha titolo, evidenza e una sezione del proprio quadro", async () => {
+    const sezioni = new Map((await db.select().from(soaSection)).map((s2) => [s2.key, s2.frameworkKey]));
+    for (const c of await db.select().from(soaControl)) {
+      expect(sezioni.get(c.sectionKey), `${c.controlloId}→${c.sectionKey}`).toBe(c.frameworkKey);
+      expect(c.titolo, `${c.controlloId}: titolo`).toBeTruthy();
+      expect(c.evidenzaAttesa, `${c.controlloId}: evidenza attesa`).toBeTruthy();
+    }
+  });
+
+  it("gli stati seminati hanno i valori di maturità del motore", async () => {
+    const [scala] = (await db.select().from(ratingScale)).filter((r) => r.setId === "soa-v1" && r.key === "stato");
+    const livelli = scala.livelli as Record<string, { v: number }>;
+    expect(Object.fromEntries(Object.entries(livelli).map(([k, v]) => [k, v.v]))).toEqual(VALORE_STATO);
+  });
+
+  it("i cataloghi dei cinque domini restano separati", async () => {
     // narrative_template e rating_scale ospitano più domini: una query che
     // dimenticasse il filtro su set_id restituirebbe capitoli di un altro modulo.
     const perSet = (rows: { setId: string }[], set: string) => rows.filter((r) => r.setId === set).length;
@@ -88,6 +124,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     const scale = await db.select().from(ratingScale);
     expect(perSet(scale, "energy-v1")).toBe(1);
     expect(perSet(scale, "supplier-v1")).toBe(1);
+    expect(perSet(scale, "soa-v1")).toBe(3);
   });
 
   it("ogni uso finale ha una guida completa e un'area esistente", async () => {

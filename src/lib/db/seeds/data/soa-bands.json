@@ -1,0 +1,27 @@
+[
+ {
+  "min": 90,
+  "l": "Pronto per la certificazione",
+  "c": "t-grn"
+ },
+ {
+  "min": 75,
+  "l": "Maturo",
+  "c": "t-grn"
+ },
+ {
+  "min": 55,
+  "l": "In consolidamento",
+  "c": "t-nav"
+ },
+ {
+  "min": 30,
+  "l": "In avvio",
+  "c": "t-amb"
+ },
+ {
+  "min": 0,
+  "l": "Non presidiato",
+  "c": "t-red"
+ }
+]
