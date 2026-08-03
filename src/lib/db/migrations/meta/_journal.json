@@ -57,6 +57,13 @@
       "when": 1785759882471,
       "tag": "0007_supplier_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1785760572105,
+      "tag": "0008_vincoli_supplier",
+      "breakpoints": true
     }
   ]
 }
