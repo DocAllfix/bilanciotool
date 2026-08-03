@@ -27,6 +27,10 @@ const DOMANDE: [string, string][] = [
     "Su database europei (Francoforte), isolati per studio a livello di database. Se non rinnovi, l'account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili. Non cancelliamo il lavoro di nessuno.",
   ],
   [
+    "Chi c'è dietro EvalisDeck?",
+    "Il prodotto è sviluppato per Evalis Srl, studio di consulenza e certificazione con sede ad Aversa. Nel giugno 2026 Evalis ha ottenuto da EcoVadis la medaglia Platinum con 89/100 e 99° percentile: il primo 1% delle aziende valutate. EcoVadis è una piattaforma internazionale che valuta le organizzazioni su ambiente, pratiche lavorative e diritti umani, etica e acquisti sostenibili. Una precisazione doverosa: quella valutazione riguarda Evalis come azienda, non certifica EvalisDeck né i documenti che il software produce. La conformità dei tuoi documenti dipende dai dati che inserisci e dalle norme che segui, non dal nostro punteggio.",
+  ],
+  [
     "Cosa succede quando pubblico un documento?",
     "La pubblicazione congela dati e calcoli in una versione numerata e immutabile: un vincolo a livello di database, non una promessa. Puoi sempre ripubblicare una nuova versione; quelle consegnate restano identiche per sempre. È la garanzia che porti in verifica.",
   ],

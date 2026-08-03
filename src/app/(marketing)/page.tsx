@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { LogoOrizzontale } from "@/components/brand/logo";
 import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
+import { BadgeEcoVadis, FasciaEcoVadis } from "@/components/landing/ecovadis";
+import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 
 export const metadata: Metadata = {
   title: "EvalisDeck · Bilanci di sostenibilità e inventari GHG per PMI",
@@ -16,9 +18,47 @@ export const metadata: Metadata = {
 
 const NORME = ["ISO 14064-1:2018", "GRI Standards 2021", "ESRS · VSME", "GHG Protocol"];
 
+// Dati strutturati: chi produce lo strumento e con quale riconoscimento.
+// Il rating sta su Organization (è di Evalis), non sul software: la stessa
+// distinzione che facciamo in pagina, detta ai motori di ricerca.
+const DATI_STRUTTURATI = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Evalis Srl",
+  url: "https://evalisdeck.vercel.app",
+  ...(ecovadisValido()
+    ? {
+        award: `Medaglia EcoVadis ${ECOVADIS.medaglia} (${ECOVADIS.punteggio}/100, ${ECOVADIS.percentile}° percentile), ${ECOVADIS.mese}`,
+        hasCredential: {
+          "@type": "EducationalOccupationalCredential",
+          name: `Valutazione di sostenibilità EcoVadis — medaglia ${ECOVADIS.medaglia}`,
+          credentialCategory: "rating",
+          recognizedBy: { "@type": "Organization", name: "EcoVadis" },
+          validFrom: ECOVADIS.emessoIl,
+          validUntil: ECOVADIS.validoFino,
+        },
+      }
+    : {}),
+  makesOffer: {
+    "@type": "Offer",
+    itemOffered: {
+      "@type": "SoftwareApplication",
+      name: "EvalisDeck",
+      applicationCategory: "BusinessApplication",
+      description:
+        "Percorsi guidati ISO 14064-1 e GRI/ESRS-VSME per studi di consulenza e PMI: inventario GHG, bilancio di sostenibilità, diagnosi energetica, autovalutazione fornitori, Dichiarazione di Applicabilità ISO 27001.",
+    },
+  },
+};
+
 export default function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
+      <script
+        type="application/ld+json"
+        // Contenuto nostro, costante e serializzato: nessun input esterno.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(DATI_STRUTTURATI) }}
+      />
       <SiteHeader />
       <main className="flex-1">
         {/* ============================================================ HERO */}
@@ -254,6 +294,9 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ================================================ CHI C'È DIETRO */}
+        <FasciaEcoVadis />
+
         {/* ============================================================== FAQ */}
         <section id="faq" className="scroll-mt-20 border-b">
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-24 md:grid-cols-[1fr_1.4fr]">
@@ -310,6 +353,8 @@ export default function LandingPage() {
             <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
               Bilanci di sostenibilità e inventari GHG per le PMI, con il metodo incorporato.
             </p>
+            {/* 68 px: sotto questa misura "Sustainability Rating" e la data non si leggono più. */}
+            <BadgeEcoVadis dimensione={68} className="mt-5" />
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prodotto</p>
