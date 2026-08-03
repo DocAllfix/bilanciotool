@@ -5,7 +5,8 @@ import { EntitlementError } from "@/features/entitlement";
 import type { ActionEsito } from "@/features/companies/actions";
 import type { TipoDocumento } from "./tipi";
 import {
-  listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot, publishSupplierSnapshot,
+  listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot,
+  publishSoaSnapshot, publishSupplierSnapshot,
 } from "./snapshot";
 
 function daErrore(e: unknown): ActionEsito<never> {
@@ -29,6 +30,8 @@ export async function publishDocumentAction(
           return publishBilancioSnapshot;
         case "energetico":
           return publishEnergySnapshot;
+        case "soa":
+          return (u: string, o: string, c: string) => publishSoaSnapshot(u, o, c);
         case "attestato":
           // Non ha esercizio: l'anno ricevuto è SENZA_ESERCIZIO e va scartato.
           return (u: string, o: string, c: string) => publishSupplierSnapshot(u, o, c);

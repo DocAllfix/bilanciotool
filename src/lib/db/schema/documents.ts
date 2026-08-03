@@ -14,7 +14,7 @@ export const documentSnapshot = pgTable(
     companyId: text("company_id")
       .notNull()
       .references(() => company.id, { onDelete: "cascade" }),
-    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato"] }).notNull(),
+    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa"] }).notNull(),
     anno: integer("anno").notNull(),
     versione: integer("versione").notNull(),
     dati: jsonb("dati").notNull(), // tutti i dati risolti + derivati calcolati alla pubblicazione

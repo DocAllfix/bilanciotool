@@ -16,6 +16,7 @@ import { getEmissionsBridge } from "@/features/report/ghg-bridge";
 import { getWizardData as getEnergyWizardData } from "@/features/energy/queries";
 import { listChapters as listEnergyChapters } from "@/features/energy/narrative";
 import { getSupplierData } from "@/features/supplier/queries";
+import { getSoaData } from "@/features/soa/queries";
 import { SENZA_ESERCIZIO } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
@@ -251,6 +252,45 @@ export async function publishSupplierSnapshot(userId: string, orgId: string, com
   };
 
   return salvaSnapshot(userId, orgId, companyId, "attestato", SENZA_ESERCIZIO, dati);
+}
+
+// ------------------------------------------------------------------ SoA
+export async function publishSoaSnapshot(userId: string, orgId: string, companyId: string): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSoaData(userId, orgId, companyId);
+  if (!d || !d.dichiarazione || !d.catalogo || !d.stato || !d.esito) {
+    throw new Error("Nessuna Dichiarazione da pubblicare per questa azienda");
+  }
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    dichiarazione: {
+      sogliaObiettivo: d.dichiarazione.sogliaObiettivo,
+      ruoloPrivacy: d.dichiarazione.ruoloPrivacy,
+      ruoloCloud: d.dichiarazione.ruoloCloud,
+      profilo: d.dichiarazione.profilo,
+    },
+    catalogo: {
+      quadri: d.catalogo.quadri,
+      sezioni: d.catalogo.sezioni,
+      // SOLO i controlli in ambito: la Dichiarazione elenca quello che copre,
+      // non l'intero catalogo delle norme esistenti.
+      controlli: d.catalogo.controlli.filter((c) => c.inAmbito),
+      stati: d.catalogo.stati,
+      motivazioni: d.catalogo.motivazioni,
+      fasce: d.catalogo.fasce,
+    },
+    stato: {
+      moduliAttivi: d.stato.moduliAttivi,
+      decisioni: d.stato.decisioni,
+      piano: d.stato.piano,
+      rilievi: d.stato.rilievi,
+    },
+    esito: d.esito, // derivati congelati QUI
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "soa", SENZA_ESERCIZIO, dati);
 }
 
 async function salvaSnapshot(
