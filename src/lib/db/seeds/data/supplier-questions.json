@@ -1,0 +1,298 @@
+[
+ {
+  "id": "B1",
+  "p": "base",
+  "w": 2,
+  "t": "È stata adottata una politica di sostenibilità approvata dalla direzione?",
+  "r": "ESRS 2 GOV-1 · GRI 2-23",
+  "d": "Politica di sostenibilità firmata"
+ },
+ {
+  "id": "B2",
+  "p": "base",
+  "w": 2,
+  "t": "Esiste un referente interno responsabile dei temi ESG?",
+  "r": "ESRS 2 GOV-1",
+  "d": "Lettera di incarico referente ESG"
+ },
+ {
+  "id": "B3",
+  "p": "base",
+  "w": 1,
+  "t": "Sono stati individuati i temi di sostenibilità rilevanti per l'attività?",
+  "r": "ESRS 1 §3 · GRI 3-1",
+  "d": "Analisi di materialità"
+ },
+ {
+  "id": "B4",
+  "p": "base",
+  "w": 2,
+  "t": "L'azienda dispone di sistemi di gestione certificati (ISO 9001, 14001, 45001, 27001)?",
+  "r": "ISO HLS",
+  "d": "Certificati in corso di validità"
+ },
+ {
+  "id": "B5",
+  "p": "base",
+  "w": 1,
+  "t": "Sono fissati obiettivi ESG misurabili con orizzonte temporale?",
+  "r": "ESRS 2 MDR-T",
+  "d": "Piano obiettivi e indicatori"
+ },
+ {
+  "id": "E1",
+  "p": "env",
+  "w": 3,
+  "t": "I consumi energetici totali sono rilevati e archiviati (elettrici e termici)?",
+  "r": "ESRS E1-5",
+  "d": "Registro consumi energetici"
+ },
+ {
+  "id": "E2",
+  "p": "env",
+  "w": 3,
+  "t": "Sono calcolate le emissioni di gas serra Scope 1 e Scope 2?",
+  "r": "ESRS E1-6 · ISO 14064-1",
+  "d": "Inventario GHG"
+ },
+ {
+  "id": "E3",
+  "p": "env",
+  "w": 2,
+  "t": "Sono state stimate le categorie rilevanti di Scope 3?",
+  "r": "ESRS E1-6 · GHG Protocol",
+  "d": "Stima Scope 3"
+ },
+ {
+  "id": "E4",
+  "p": "env",
+  "w": 2,
+  "t": "Esiste un obiettivo di riduzione delle emissioni con anno base e target?",
+  "r": "ESRS E1-4",
+  "d": "Target di decarbonizzazione"
+ },
+ {
+  "id": "E5",
+  "p": "env",
+  "w": 2,
+  "t": "I rifiuti sono quantificati per tipologia e destino (recupero/smaltimento)?",
+  "r": "ESRS E5-5",
+  "d": "Registro rifiuti · MUD"
+ },
+ {
+  "id": "E6",
+  "p": "env",
+  "w": 2,
+  "t": "I prelievi idrici sono monitorati?",
+  "r": "ESRS E3-4",
+  "d": "Registro consumi idrici"
+ },
+ {
+  "id": "E7",
+  "p": "env",
+  "w": 1,
+  "t": "Le autorizzazioni ambientali applicabili sono censite e in corso di validità?",
+  "r": "D.Lgs. 152/2006",
+  "d": "Elenco autorizzazioni"
+ },
+ {
+  "id": "E8",
+  "p": "env",
+  "w": 2,
+  "t": "Sono stati valutati i rischi fisici e di transizione legati al clima?",
+  "r": "ESRS E1-9 · TCFD",
+  "d": "Analisi rischi climatici"
+ },
+ {
+  "id": "E9",
+  "p": "env",
+  "w": 1,
+  "t": "È in uso energia da fonti rinnovabili (autoprodotta o con garanzia d'origine)?",
+  "r": "ESRS E1-5",
+  "d": "Garanzie d'origine · dati impianto"
+ },
+ {
+  "id": "S1",
+  "p": "soc",
+  "w": 3,
+  "t": "Il documento di valutazione dei rischi è aggiornato e completo?",
+  "r": "D.Lgs. 81/2008 art. 28",
+  "d": "DVR aggiornato"
+ },
+ {
+  "id": "S2",
+  "p": "soc",
+  "w": 3,
+  "t": "Infortuni e mancati infortuni sono registrati con indici di frequenza e gravità?",
+  "r": "ESRS S1-14",
+  "d": "Registro infortuni e indici"
+ },
+ {
+  "id": "S3",
+  "p": "soc",
+  "w": 2,
+  "t": "La formazione obbligatoria su salute e sicurezza è erogata e tracciata per tutti?",
+  "r": "Accordo Stato-Regioni",
+  "d": "Registro formazione sicurezza"
+ },
+ {
+  "id": "S4",
+  "p": "soc",
+  "w": 2,
+  "t": "Organico, tipologie contrattuali e turnover sono rendicontati?",
+  "r": "ESRS S1-6 · GRI 401-1",
+  "d": "Prospetto organico e turnover"
+ },
+ {
+  "id": "S5",
+  "p": "soc",
+  "w": 2,
+  "t": "È adottata una politica di non discriminazione e pari opportunità?",
+  "r": "ESRS S1-17 · UNI/PdR 125",
+  "d": "Politica diversità e inclusione"
+ },
+ {
+  "id": "S6",
+  "p": "soc",
+  "w": 2,
+  "t": "Il divario retributivo di genere è misurato?",
+  "r": "ESRS S1-16",
+  "d": "Analisi divario retributivo"
+ },
+ {
+  "id": "S7",
+  "p": "soc",
+  "w": 2,
+  "t": "Sono adottate misure contro lavoro forzato e minorile lungo la filiera?",
+  "r": "ESRS S2 · SA 8000",
+  "d": "Dichiarazione e clausole contrattuali"
+ },
+ {
+  "id": "S8",
+  "p": "soc",
+  "w": 1,
+  "t": "Esistono canali strutturati di dialogo o rappresentanza dei lavoratori?",
+  "r": "ESRS S1-2",
+  "d": "Verbali incontri RSU/RLS"
+ },
+ {
+  "id": "S9",
+  "p": "soc",
+  "w": 1,
+  "t": "Sono attive iniziative di welfare o formazione professionale continua?",
+  "r": "GRI 404",
+  "d": "Piano formativo e welfare"
+ },
+ {
+  "id": "G1",
+  "p": "eth",
+  "w": 3,
+  "t": "È adottato un codice etico diffuso a dipendenti e fornitori?",
+  "r": "ESRS G1-1",
+  "d": "Codice etico"
+ },
+ {
+  "id": "G2",
+  "p": "eth",
+  "w": 3,
+  "t": "È adottato un modello di organizzazione e gestione ex D.Lgs. 231/2001?",
+  "r": "D.Lgs. 231/2001",
+  "d": "MOG 231 e delibera"
+ },
+ {
+  "id": "G3",
+  "p": "eth",
+  "w": 2,
+  "t": "È attivo un canale di segnalazione conforme alla normativa whistleblowing?",
+  "r": "D.Lgs. 24/2023 · ESRS G1-1",
+  "d": "Procedura segnalazioni"
+ },
+ {
+  "id": "G4",
+  "p": "eth",
+  "w": 2,
+  "t": "Esiste una procedura anticorruzione con mappatura delle aree a rischio?",
+  "r": "ESRS G1-3 · ISO 37001",
+  "d": "Procedura anticorruzione"
+ },
+ {
+  "id": "G5",
+  "p": "eth",
+  "w": 2,
+  "t": "I conflitti di interesse sono gestiti con dichiarazioni periodiche?",
+  "r": "ESRS G1-1",
+  "d": "Registro conflitti di interesse"
+ },
+ {
+  "id": "G6",
+  "p": "eth",
+  "w": 2,
+  "t": "Sono adottate misure di sicurezza delle informazioni e protezione dei dati?",
+  "r": "GDPR · ISO/IEC 27001",
+  "d": "Registro trattamenti e misure ICT"
+ },
+ {
+  "id": "G7",
+  "p": "eth",
+  "w": 1,
+  "t": "I tempi di pagamento verso i fornitori sono monitorati?",
+  "r": "ESRS G1-6",
+  "d": "Report tempi medi di pagamento"
+ },
+ {
+  "id": "G8",
+  "p": "eth",
+  "w": 1,
+  "t": "Il personale è formato su codice etico e anticorruzione?",
+  "r": "ESRS G1-3",
+  "d": "Registro formazione etica"
+ },
+ {
+  "id": "P1",
+  "p": "proc",
+  "w": 3,
+  "t": "La qualifica dei fornitori include criteri ESG?",
+  "r": "ISO 20400 · ESRS G1-2",
+  "d": "Procedura qualifica fornitori"
+ },
+ {
+  "id": "P2",
+  "p": "proc",
+  "w": 2,
+  "t": "I fornitori critici sono identificati e rivalutati periodicamente?",
+  "r": "ISO 20400",
+  "d": "Albo fornitori con classificazione"
+ },
+ {
+  "id": "P3",
+  "p": "proc",
+  "w": 2,
+  "t": "I contratti contengono clausole ESG e sul rispetto dei diritti umani?",
+  "r": "ESRS S2-1",
+  "d": "Modello clausole contrattuali"
+ },
+ {
+  "id": "P4",
+  "p": "proc",
+  "w": 2,
+  "t": "È stata mappata la rischiosità ESG della catena di fornitura?",
+  "r": "ESRS S2 · CSDDD",
+  "d": "Mappa rischi filiera"
+ },
+ {
+  "id": "P5",
+  "p": "proc",
+  "w": 1,
+  "t": "Sono previsti audit o questionari ESG verso i fornitori?",
+  "r": "ISO 20400",
+  "d": "Piano audit fornitori"
+ },
+ {
+  "id": "P6",
+  "p": "proc",
+  "w": 1,
+  "t": "Il codice di condotta fornitori è formalizzato e sottoscritto?",
+  "r": "ESRS G1-2",
+  "d": "Codice di condotta fornitori"
+ }
+]

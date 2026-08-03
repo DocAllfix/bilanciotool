@@ -43,6 +43,20 @@
       "when": 1785748200000,
       "tag": "0005_energy_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785759855461,
+      "tag": "0006_supplier_module",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1785759882471,
+      "tag": "0007_supplier_rls",
+      "breakpoints": true
     }
   ]
 }

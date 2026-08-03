@@ -6,8 +6,10 @@ import {
   checklistRequirement, materialityTopic, kpiSection, kpiDefinition,
   ratingScale, narrativeTemplate, atecoSuggestion,
   energyVector, energyArea, energyEndUse, energyDriverDefinition, energyIndicator,
+  supplierArea, supplierQuestion,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
+import { AREE_PESI } from "@/lib/calc/supplier/scoring";
 
 // Conteggi ESATTI dei contenuti metodologici estratti dai prototipi
 // (estrazione automatica via scripts/extract-seed.mjs — niente trascrizione manuale).
@@ -21,7 +23,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
   };
 
   it("conteggi esatti per ogni catalogo", async () => {
-    expect(await conta(contentSet)).toBe(3); // ghg-v1 + report-v1 + energy-v1
+    expect(await conta(contentSet)).toBe(4); // ghg-v1 + report-v1 + energy-v1 + supplier-v1
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);
@@ -30,7 +32,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect(await conta(materialityTopic)).toBe(18);
     expect(await conta(kpiSection)).toBe(8);
     expect(await conta(kpiDefinition)).toBe(49);
-    expect(await conta(ratingScale)).toBe(4); // dq + imp + fin + energy:metodo
+    expect(await conta(ratingScale)).toBe(5); // dq + imp + fin + energy:metodo + supplier:fascia
     expect(await conta(narrativeTemplate)).toBe(14); // 7 bilancio + 7 energetico
     expect(await conta(atecoSuggestion)).toBe(8);
   });
@@ -46,7 +48,37 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect(predefiniti).toHaveLength(11);
   });
 
-  it("i cataloghi dei tre domini restano separati", async () => {
+  it("conteggi esatti del modulo supplier", async () => {
+    expect(await conta(supplierArea)).toBe(5);
+    expect(await conta(supplierQuestion)).toBe(37);
+    // 5 governo + 9 ambiente + 9 sociale + 8 etica + 6 filiera.
+    const domande = await db.select().from(supplierQuestion);
+    const per = (a: string) => domande.filter((q) => q.areaKey === a).length;
+    expect([per("base"), per("env"), per("soc"), per("eth"), per("proc")]).toEqual([5, 9, 9, 8, 6]);
+  });
+
+  it("le aree supplier hanno i pesi del motore e sommano a cento", async () => {
+    const aree = await db.select().from(supplierArea);
+    expect(Object.fromEntries(aree.map((a) => [a.key, a.peso]))).toEqual(AREE_PESI);
+    expect(aree.reduce((s2, a) => s2 + a.peso, 0)).toBe(100);
+  });
+
+  it("ogni domanda supplier ha peso, riferimento, evidenza e area esistente", async () => {
+    const aree = new Set((await db.select().from(supplierArea)).map((a) => a.key));
+    const giorniAttesi: Record<number, number> = { 3: 10, 2: 6, 1: 3 };
+    for (const q of await db.select().from(supplierQuestion)) {
+      expect(aree.has(q.areaKey), `${q.key}→${q.areaKey}`).toBe(true);
+      expect([1, 2, 3], `${q.key}: peso`).toContain(q.peso);
+      expect(q.testo, `${q.key}: testo`).toBeTruthy();
+      expect(q.riferimento, `${q.key}: riferimento normativo`).toBeTruthy();
+      expect(q.evidenzaAttesa, `${q.key}: evidenza documentale`).toBeTruthy();
+      // I giorni stimati derivano dal peso: se divergessero, il piano
+      // ordinerebbe le lacune con un impegno che nessuno ha dichiarato.
+      expect(q.giorniStimati, `${q.key}: giornate`).toBe(giorniAttesi[q.peso]);
+    }
+  });
+
+  it("i cataloghi dei quattro domini restano separati", async () => {
     // narrative_template e rating_scale ospitano più domini: una query che
     // dimenticasse il filtro su set_id restituirebbe capitoli di un altro modulo.
     const perSet = (rows: { setId: string }[], set: string) => rows.filter((r) => r.setId === set).length;
@@ -55,6 +87,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect(perSet(templates, "energy-v1")).toBe(7);
     const scale = await db.select().from(ratingScale);
     expect(perSet(scale, "energy-v1")).toBe(1);
+    expect(perSet(scale, "supplier-v1")).toBe(1);
   });
 
   it("ogni uso finale ha una guida completa e un'area esistente", async () => {

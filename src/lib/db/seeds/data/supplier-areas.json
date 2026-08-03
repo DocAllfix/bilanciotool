@@ -1,0 +1,27 @@
+{
+ "base": {
+  "n": "Governo della sostenibilità",
+  "w": 10,
+  "c": "var(--teal)"
+ },
+ "env": {
+  "n": "Ambiente",
+  "w": 25,
+  "c": "var(--green)"
+ },
+ "soc": {
+  "n": "Lavoro e diritti umani",
+  "w": 25,
+  "c": "var(--violet)"
+ },
+ "eth": {
+  "n": "Etica e conformità",
+  "w": 25,
+  "c": "var(--amber)"
+ },
+ "proc": {
+  "n": "Catena di fornitura",
+  "w": 15,
+  "c": "var(--teal-mid)"
+ }
+}

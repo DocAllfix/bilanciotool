@@ -274,3 +274,40 @@ export const energyIndicator = pgTable(
   },
   (t) => [uniqueIndex("energy_indicator_set_key_uq").on(t.setId, t.key)],
 );
+
+// ─────────────────────────────── ESG SUPPLIER READY ────────────────────────────
+
+// 5 aree di valutazione, con il peso che ciascuna ha sull'indice complessivo.
+export const supplierArea = pgTable(
+  "supplier_area",
+  {
+    id: text("id").primaryKey(), // es. 'supplier-v1:env'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'base','env','soc','eth','proc'
+    nome: text("nome").notNull(),
+    peso: integer("peso").notNull(), // 10 | 25 | 25 | 25 | 15 — somma 100
+    colore: text("colore").notNull(),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("supplier_area_set_key_uq").on(t.setId, t.key)],
+);
+
+// 37 domande della banca. Il peso (1..3) misura quanto la domanda conta dentro
+// la sua area; `giorniStimati` è l'impegno per portarla a "sì", e serve a
+// ordinare il piano per punti guadagnati per giornata di lavoro.
+export const supplierQuestion = pgTable(
+  "supplier_question",
+  {
+    id: text("id").primaryKey(), // es. 'supplier-v1:E2'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'B1'..'P6'
+    areaKey: text("area_key").notNull(),
+    peso: integer("peso").notNull(), // 1 | 2 | 3
+    testo: text("testo").notNull(),
+    riferimento: text("riferimento").notNull(), // norma o standard di riferimento
+    evidenzaAttesa: text("evidenza_attesa").notNull(), // il documento da esibire
+    giorniStimati: integer("giorni_stimati").notNull(), // 10 | 6 | 3, da EFFORT[peso]
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("supplier_question_set_key_uq").on(t.setId, t.key)],
+);

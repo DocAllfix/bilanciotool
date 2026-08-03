@@ -45,6 +45,7 @@ function extractConst(source, name) {
 const ghgHtml = readFileSync(join(root, "archivio", "gestionale-ghg-14064.html"), "utf8");
 const bilHtml = readFileSync(join(root, "archivio", "percorso-bilancio-v4.html"), "utf8");
 const eneHtml = readFileSync(join(root, "archivio", "bilancio-energetico-v1.html"), "utf8");
+const supHtml = readFileSync(join(root, "archivio", "esg-supplier-ready.html"), "utf8");
 
 const out = {
   // Prototipo GHG (ISO 14064-1)
@@ -77,6 +78,11 @@ const out = {
   // formule vivono in src/lib/calc/energy/indicators.ts e un test verifica che
   // catalogo e registro abbiano le stesse chiavi.
   "energy-indicators.json": extractConst(eneHtml, "ENPI"),
+  // Prototipo ESG Supplier Ready (ESRS / GRI / ISO 20400)
+  "supplier-areas.json": extractConst(supHtml, "PILLARS"),
+  "supplier-questions.json": extractConst(supHtml, "Q"),
+  "supplier-bands.json": extractConst(supHtml, "BANDS"),
+  "supplier-effort.json": extractConst(supHtml, "EFFORT"),
 };
 
 for (const [file, data] of Object.entries(out)) {

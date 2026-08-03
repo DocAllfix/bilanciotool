@@ -27,6 +27,8 @@ const id = (key) => `v1:${key}`;
 // e rating_scale ospitano ora più domini, e la forma globale `v1:<key>` diventerebbe
 // ambigua. Le righe già seminate non si toccano.
 const eid = (key) => `${ENERGY_SET}:${key}`;
+const SUPPLIER_SET = "supplier-v1";
+const sid = (key) => `${SUPPLIER_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
@@ -34,7 +36,8 @@ try {
     insert into content_set (id, dominio, versione, note)
     values (${GHG_SET}, 'ghg', 1, 'Estratto dal prototipo gestionale-ghg-14064.html'),
            (${REPORT_SET}, 'report', 1, 'Estratto dal prototipo percorso-bilancio-v4.html'),
-           (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html')
+           (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html'),
+           (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -192,6 +195,38 @@ try {
       on conflict (id) do update set nome = excluded.nome, hint = excluded.hint, ordine = excluded.ordine`;
   }
 
+  // --- ESG Supplier Ready ---
+  const aree = load("supplier-areas.json");
+  for (const [i, k] of Object.keys(aree).entries()) {
+    const a = aree[k];
+    await sql`
+      insert into supplier_area (id, set_id, key, nome, peso, colore, ordine)
+      values (${sid(k)}, ${SUPPLIER_SET}, ${k}, ${a.n}, ${a.w}, ${a.c}, ${i})
+      on conflict (id) do update set nome = excluded.nome, peso = excluded.peso,
+        colore = excluded.colore, ordine = excluded.ordine`;
+  }
+
+  // I giorni stimati non stanno nella domanda del prototipo ma nella tabella
+  // EFFORT, chiavata sul peso: qui si materializzano sulla riga, così il piano
+  // non deve consultare due cataloghi per ordinare le lacune.
+  const effort = load("supplier-effort.json");
+  for (const [i, q] of load("supplier-questions.json").entries()) {
+    await sql`
+      insert into supplier_question (id, set_id, key, area_key, peso, testo, riferimento, evidenza_attesa, giorni_stimati, ordine)
+      values (${sid(q.id)}, ${SUPPLIER_SET}, ${q.id}, ${q.p}, ${q.w}, ${q.t}, ${q.r}, ${q.d}, ${effort[String(q.w)]}, ${i})
+      on conflict (id) do update set area_key = excluded.area_key, peso = excluded.peso,
+        testo = excluded.testo, riferimento = excluded.riferimento,
+        evidenza_attesa = excluded.evidenza_attesa, giorni_stimati = excluded.giorni_stimati,
+        ordine = excluded.ordine`;
+  }
+
+  // Le cinque fasce di giudizio riusano rating_scale, come i metodi del modulo
+  // energetico e i livelli di qualità del dato del GHG.
+  await sql`
+    insert into rating_scale (id, set_id, key, livelli)
+    values (${sid("fascia")}, ${SUPPLIER_SET}, 'fascia', ${sql.json(load("supplier-bands.json"))})
+    on conflict (id) do update set livelli = excluded.livelli`;
+
   // Config limiti di piattaforma (se assente: default del piano 10/8/5).
   await sql`
     insert into platform_config (key, value)
@@ -205,6 +240,7 @@ try {
     "checklist_requirement", "materiality_topic", "kpi_section", "kpi_definition",
     "rating_scale", "narrative_template", "ateco_suggestion",
     "energy_vector", "energy_area", "energy_end_use", "energy_driver_definition", "energy_indicator",
+    "supplier_area", "supplier_question",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

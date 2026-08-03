@@ -1,0 +1,27 @@
+[
+ {
+  "min": 90,
+  "l": "Avanzato",
+  "c": "t-grn"
+ },
+ {
+  "min": 75,
+  "l": "Supplier Ready",
+  "c": "t-grn"
+ },
+ {
+  "min": 60,
+  "l": "Adeguato",
+  "c": "t-tea"
+ },
+ {
+  "min": 40,
+  "l": "In avvio",
+  "c": "t-amb"
+ },
+ {
+  "min": 0,
+  "l": "Non pronto",
+  "c": "t-red"
+ }
+]
