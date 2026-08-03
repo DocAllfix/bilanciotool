@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { user, organization, member, orgEntitlement, company, auditLog, supplierAnswer } from "@/lib/db/schema";
 import { createAssessment, listAnswers, setAnswerField, setSoglia, updateProfilo } from "@/features/supplier/assessments";
 import { getSupplierData } from "@/features/supplier/queries";
+import { publishSupplierSnapshot, getSnapshot } from "@/features/documents/snapshot";
+import { documentSnapshot } from "@/lib/db/schema";
 
 // Ciclo completo dell'autovalutazione fornitore sui fatti del database: quello
 // che il motore calcola in memoria deve risultare identico partendo dalle righe
@@ -33,6 +35,7 @@ describe.skipIf(!url)("modulo fornitori — ciclo completo", () => {
 
   afterAll(async () => {
     await db.delete(auditLog).where(eq(auditLog.organizationId, orgId));
+    await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
     await db.delete(company).where(eq(company.organizationId, orgId));
     await db.delete(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     await db.delete(member).where(eq(member.organizationId, orgId));
@@ -150,6 +153,43 @@ describe.skipIf(!url)("modulo fornitori — ciclo completo", () => {
 
     const righe = await db.select().from(supplierAnswer).where(eq(supplierAnswer.assessmentId, assessmentId));
     expect(righe.every((r) => r.risposta === null || ["si", "parziale", "no", "na"].includes(r.risposta))).toBe(true);
+  });
+
+  it("l'attestato si congela e si RIGENERA coi dati nuovi", async () => {
+    type Dati = { esito: { indice: number; valutate: number }; risposte: { questionKey: string }[] };
+    const snapId = await publishSupplierSnapshot(userId, orgId, companyId);
+    const v1 = (await getSnapshot(userId, orgId, snapId))!;
+    expect(v1.tipo).toBe("attestato");
+    expect(v1.versione).toBe(1);
+    // Non ha esercizio: l'anno convenzionale è zero.
+    expect(v1.anno).toBe(0);
+    const indiceCongelato = (v1.dati as Dati).esito.indice;
+    expect(indiceCongelato).toBe(58);
+
+    // Il questionario cambia: due "no" diventano "si".
+    await setAnswerField(userId, orgId, assessmentId, "E4", "risposta", "si");
+    await setAnswerField(userId, orgId, assessmentId, "G2", "risposta", "si");
+    const vivo = (await getSupplierData(userId, orgId, companyId))!.esito!;
+    expect(vivo.indice).toBeGreaterThan(58);
+
+    // L'attestato già consegnato NON cambia.
+    const rilettura = (await getSnapshot(userId, orgId, snapId))!;
+    expect((rilettura.dati as Dati).esito.indice).toBe(58);
+
+    // La nuova revisione porta il punteggio aggiornato, identico a quello vivo.
+    const snapId2 = await publishSupplierSnapshot(userId, orgId, companyId);
+    const v2 = (await getSnapshot(userId, orgId, snapId2))!;
+    expect(v2.versione).toBe(2);
+    expect((v2.dati as Dati).esito.indice).toBe(vivo.indice);
+    expect((v2.dati as Dati).esito.indice).not.toBe(indiceCongelato);
+
+    // E l'update dello snapshot resta impossibile, anche da connessione privilegiata.
+    await expect(
+      db.update(documentSnapshot).set({ dati: { manomesso: true } }).where(eq(documentSnapshot.id, snapId)),
+    ).rejects.toThrow();
+
+    await setAnswerField(userId, orgId, assessmentId, "E4", "risposta", "no");
+    await setAnswerField(userId, orgId, assessmentId, "G2", "risposta", "no");
   });
 
   it("account expired: scrittura bloccata, lettura consentita", async () => {

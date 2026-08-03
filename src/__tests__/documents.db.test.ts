@@ -58,11 +58,15 @@ describe.skipIf(!url)("documenti: snapshot e immutabilità", () => {
     const rilettura = await getSnapshot(userId, orgId, snapId);
     expect((rilettura!.dati as { risultati: { totL: string } }).risultati.totL).toBe("24.69375");
 
-    // Ripubblicare = versione 2 con i dati nuovi
+    // Ripubblicare = versione 2 CON I DATI NUOVI, non solo "diversi":
+    // 99.999 Smc x 1,9755 kgCO2e/Smc / 1000 = 197,548 tCO2e.
     const snapId2 = await publishGhgSnapshot(userId, orgId, companyId, 2025);
     const snap2 = await getSnapshot(userId, orgId, snapId2);
     expect(snap2!.versione).toBe(2);
-    expect((snap2!.dati as { risultati: { totL: string } }).risultati.totL).not.toBe("24.69375");
+    expect(Number((snap2!.dati as { risultati: { totL: string } }).risultati.totL)).toBeCloseTo(197.548, 3);
+    // E la versione 1 resta consultabile col valore di allora.
+    const v1 = await getSnapshot(userId, orgId, snapId);
+    expect((v1!.dati as { risultati: { totL: string } }).risultati.totL).toBe("24.69375");
   });
 
   it("il trigger DB blocca QUALSIASI update dei dati, anche privilegiato", async () => {
@@ -92,6 +96,17 @@ describe.skipIf(!url)("documenti: snapshot e immutabilità", () => {
     const dati = snap!.dati as { kpi: { derivati: Record<string, string> }; bridge: { corrente: { stato: string } } };
     expect(dati.kpi.derivati.scope2Loc).toBe("25.65");
     expect(dati.bridge.corrente.stato).toBe("ok"); // il bridge vede l'inventario del test precedente
+
+    // Il KPI cambia: la revisione già consegnata resta ferma, la nuova recepisce.
+    // 200.000 kWh x 0,2565 kgCO2/kWh / 1000 = 51,30 tCO2e.
+    await setKpiValue(userId, orgId, companyId, { kpiKey: "en_ele", anno: 2025, valore: "200000" });
+    const fermo = await getSnapshot(userId, orgId, snapId);
+    expect((fermo!.dati as typeof dati).kpi.derivati.scope2Loc).toBe("25.65");
+
+    const snapId2 = await publishBilancioSnapshot(userId, orgId, companyId, 2025);
+    const snap2 = await getSnapshot(userId, orgId, snapId2);
+    expect(snap2!.versione).toBe(2);
+    expect((snap2!.dati as typeof dati).kpi.derivati.scope2Loc).toBe("51.3");
   });
 
   it("demo: la pubblicazione è dietro paywall (generate_pdf)", async () => {

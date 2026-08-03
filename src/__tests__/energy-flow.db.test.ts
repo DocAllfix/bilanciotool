@@ -252,10 +252,19 @@ describe.skipIf(!url)("modulo energetico — ciclo completo", () => {
     const dopo = (await getSnapshot(userId, orgId, snapId))!;
     expect(Number((dopo.dati as typeof dati).risultati.totali.kwh)).toBe(kwhCongelato);
 
-    // Ripubblicare produce la versione 2, e la prima resta.
+    // Ripubblicare produce la versione 2 CON I DATI NUOVI: il documento si
+    // rigenera davvero, non si limita a incrementare il numero di revisione.
+    // I 2.280.000 kWh elettrici sono diventati 9.999.999.
     const snapId2 = await publishEnergySnapshot(userId, orgId, companyId, 2025);
-    expect((await getSnapshot(userId, orgId, snapId2))!.versione).toBe(2);
-    expect(await getSnapshot(userId, orgId, snapId)).not.toBeNull();
+    const snap2 = (await getSnapshot(userId, orgId, snapId2))!;
+    expect(snap2.versione).toBe(2);
+    const kwhNuovo = Number((snap2.dati as typeof dati).risultati.totali.kwh);
+    expect(kwhNuovo).toBeGreaterThan(kwhCongelato);
+    expect(kwhNuovo - kwhCongelato).toBeCloseTo(9999999 - 2280000, 3);
+
+    // E la versione 1 resta consultabile con i numeri di allora.
+    const v1 = (await getSnapshot(userId, orgId, snapId))!;
+    expect(Number((v1.dati as typeof dati).risultati.totali.kwh)).toBe(kwhCongelato);
 
     await setVectorField(userId, orgId, balanceId, { vettoreKey: "ele", campo: "quantita", valore: "2280000" });
   });

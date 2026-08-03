@@ -7,6 +7,8 @@ import {
   createDeclaration, setDecisionField, setModule, setRuoli, toggleMotivazione, updateProfilo, listDecisions,
 } from "@/features/soa/declarations";
 import { getSoaData } from "@/features/soa/queries";
+import { publishSoaSnapshot, getSnapshot } from "@/features/documents/snapshot";
+import { documentSnapshot } from "@/lib/db/schema";
 
 // Ciclo completo della Dichiarazione di Applicabilità sui fatti del database:
 // quello che il motore calcola in memoria deve risultare identico partendo
@@ -31,6 +33,7 @@ describe.skipIf(!url)("modulo SoA — ciclo completo", () => {
 
   afterAll(async () => {
     await db.delete(auditLog).where(eq(auditLog.organizationId, orgId));
+    await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
     await db.delete(company).where(eq(company.organizationId, orgId));
     await db.delete(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     await db.delete(member).where(eq(member.organizationId, orgId));
@@ -206,6 +209,43 @@ describe.skipIf(!url)("modulo SoA — ciclo completo", () => {
         controlloId: "ZZ.9",
         motivazioni: ["inventata"],
       }),
+    ).rejects.toThrow();
+  });
+
+  it("la Dichiarazione si congela e si RIGENERA coi dati nuovi", async () => {
+    type Dati = { esito: { indice: number; applicabili: number }; catalogo: { controlli: unknown[] } };
+    const snapId = await publishSoaSnapshot(userId, orgId, companyId);
+    const v1 = (await getSnapshot(userId, orgId, snapId))!;
+    expect(v1.tipo).toBe("soa");
+    expect(v1.versione).toBe(1);
+    expect(v1.anno).toBe(0);
+    const indiceCongelato = (v1.dati as Dati).esito.indice;
+    expect(indiceCongelato).toBe(51);
+    // Nello snapshot vanno SOLO i controlli in ambito, non l'intero catalogo.
+    expect((v1.dati as Dati).catalogo.controlli.length).toBe(143);
+
+    // Tre controlli senza stato passano ad "attuato e verificato".
+    const d0 = (await getSoaData(userId, orgId, companyId))!;
+    const muti = d0.stato!.decisioni.filter((x) => x.applicabile && !x.stato).slice(0, 3);
+    expect(muti.length).toBe(3);
+    for (const m of muti) {
+      await setDecisionField(userId, orgId, declarationId, m.frameworkKey, m.controlloId, "stato", "av");
+    }
+    const vivo = (await getSoaData(userId, orgId, companyId))!.esito!;
+    expect(vivo.indice).toBeGreaterThan(51);
+
+    // La revisione già consegnata all'organismo di certificazione NON cambia.
+    expect(((await getSnapshot(userId, orgId, snapId))!.dati as Dati).esito.indice).toBe(51);
+
+    // La nuova porta l'indice aggiornato, identico a quello vivo.
+    const snapId2 = await publishSoaSnapshot(userId, orgId, companyId);
+    const v2 = (await getSnapshot(userId, orgId, snapId2))!;
+    expect(v2.versione).toBe(2);
+    expect((v2.dati as Dati).esito.indice).toBe(vivo.indice);
+    expect((v2.dati as Dati).esito.indice).not.toBe(indiceCongelato);
+
+    await expect(
+      db.update(documentSnapshot).set({ dati: { manomesso: true } }).where(eq(documentSnapshot.id, snapId)),
     ).rejects.toThrow();
   });
 
