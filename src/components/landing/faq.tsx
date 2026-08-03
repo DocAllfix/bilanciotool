@@ -8,15 +8,19 @@ import { ChevronDown } from "lucide-react";
 const DOMANDE: [string, string][] = [
   [
     "Come funziona la demo guidata?",
-    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere entrambi i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
+    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti e cinque i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
   ],
   [
     "Serve essere consulenti per usarlo?",
     "No, ma è pensato per chi la rendicontazione la fa di mestiere: studi, consulenti HSE/ESG, responsabili qualità. Una PMI può usarlo in autonomia, perché le guide di valutazione tema per tema spiegano cosa guardare e dove trovare i dati in azienda.",
   ],
   [
+    "Devo comprarli tutti e cinque?",
+    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono la diagnosi energetica o la Dichiarazione ISO 27001 quando arriva il cliente che le chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
+  ],
+  [
     "A quali norme sono conformi i documenti?",
-    "Il rapporto GHG segue i contenuti minimi del §9.3.1 della UNI EN ISO 14064-1:2018, con doppia rendicontazione Scope 2 e CO₂ biogenica separata. Il bilancio è redatto con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, con analisi di doppia rilevanza e indice dei contenuti.",
+    "Il rapporto GHG segue i contenuti minimi del §9.3.1 della UNI EN ISO 14064-1:2018, con doppia rendicontazione Scope 2 e CO₂ biogenica separata. Il bilancio è redatto con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, con analisi di doppia rilevanza e indice dei contenuti. La diagnosi energetica segue la UNI CEI EN 16247 e la struttura richiesta dall'articolo 8 del D.Lgs. 102/2014. La Dichiarazione di Applicabilità copre i 174 controlli di ISO/IEC 27001:2022 e dei quadri 27017, 27018 e 27701, con la nota di conformità al punto 6.1.3 lettera d). L'autovalutazione del fornitore si appoggia a ESRS, GRI e ISO 20400.",
   ],
   [
     "I fattori di emissione sono aggiornati?",

@@ -59,6 +59,22 @@ for (const p of ["/privacy", "/termini", "/cookie", "/llms.txt", "/robots.txt", 
   if (!res?.ok()) errors.push(`[${p}] HTTP ${res?.status()}`);
 }
 
+// Codifica dei caratteri: una modifica automatica al sorgente può trasformare
+// «sostenibilità» in «sostenibilitÃ» senza rompere niente, e a occhio in un
+// paragrafo lungo non si nota. Qui è un errore, non un avviso.
+for (const p of ["/", "/privacy", "/cookie", "/termini"]) {
+  const res = await page.request.get(BASE + p);
+  const html = await res.text();
+  const rotti = [...new Set((html.match(/[ÂÃâ][-¿]|�/g) ?? []))];
+  if (rotti.length) errors.push(`[${p}] caratteri con codifica rotta: ${rotti.join(" ")}`);
+}
+
+// I cinque documenti devono esserci tutti: la sezione è la promessa del prodotto.
+await page.setViewportSize({ width: 1440, height: 900 });
+await page.goto(BASE + "/", { waitUntil: "networkidle" });
+const percorsi = await page.evaluate(() => (document.body.innerText.match(/PERCORSO [A-E]/g) ?? []).length);
+if (percorsi !== 5) errors.push(`percorsi in pagina: ${percorsi} invece di 5`);
+
 if (errors.length) {
   console.log("PROBLEMI:");
   for (const e of errors) console.log("  " + e);

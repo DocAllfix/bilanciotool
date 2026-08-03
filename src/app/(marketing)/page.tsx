@@ -12,12 +12,19 @@ import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 
 export const metadata: Metadata = {
-  title: "EvalisDeck · Bilanci di sostenibilità e inventari GHG per PMI",
+  title: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
   description:
-    "Dalla raccolta dati al documento firmato: percorsi guidati ISO 14064-1 e GRI/ESRS-VSME per studi di consulenza e PMI. Calcoli automatici, documento impaginato, versioni immutabili.",
+    "Inventario GHG ISO 14064-1, bilancio di sostenibilità GRI/VSME, diagnosi energetica UNI CEI EN 16247, autovalutazione ESG dei fornitori e Dichiarazione di Applicabilità ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
 };
 
-const NORME = ["ISO 14064-1:2018", "GRI Standards 2021", "ESRS · VSME", "GHG Protocol"];
+const NORME = [
+  "ISO 14064-1:2018",
+  "GRI 2021 · ESRS VSME",
+  "UNI CEI EN 16247",
+  "ISO 50001",
+  "ISO/IEC 27001:2022",
+  "ISO 20400",
+];
 
 // Dati strutturati: chi produce lo strumento e con quale riconoscimento.
 // Il rating sta su Organization (è di Evalis), non sul software: la stessa
@@ -69,7 +76,7 @@ export default function LandingPage() {
             <div>
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                 <span className="h-px w-8 bg-primary" aria-hidden />
-                Rendicontazione ESG · studi e PMI
+                Rendicontazione · studi di consulenza e PMI
               </p>
               <h1 className="font-display mt-5 text-[44px] font-bold leading-[1.02] tracking-[-0.03em] md:text-[64px]">
                 Dalla raccolta dati al documento firmato.
@@ -78,8 +85,9 @@ export default function LandingPage() {
                 Un solo strumento.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                EvalisDeck guida lo studio dall&apos;inventario GHG ISO 14064-1 al bilancio di sostenibilità GRI/VSME:
-                percorso passo per passo, calcoli che si fanno da soli, un documento che regge la verifica.
+                Cinque percorsi guidati, dall&apos;inventario GHG alla Dichiarazione di Applicabilità: ogni passo sa
+                cosa chiede la norma, i calcoli si fanno da soli, e quello che ne esce è un documento impaginato che
+                regge la verifica.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button size="lg" asChild data-tour="cta-demo">
@@ -107,9 +115,9 @@ export default function LandingPage() {
             <div className="grid gap-x-0 gap-y-10 md:grid-cols-[1fr_1fr_1fr_1.2fr]">
               {(
                 [
-                  [25, "", "sorgenti ISO 14064", "valutate una per una nel registro guidato"],
-                  [18, "", "temi GRI / ESRS", "ognuno con la sua guida alla valutazione"],
-                  [49, "", "indicatori", "30 dei quali calcolati in automatico"],
+                  [5, "", "documenti pubblicabili", "dall'inventario GHG alla Dichiarazione ISO 27001"],
+                  [174, "", "controlli ISO 27001", "61 dei quali cardine, con verifiche di coerenza"],
+                  [49, "", "indicatori di bilancio", "30 dei quali calcolati in automatico"],
                 ] as [number, string, string, string][]
               ).map(([n, suff, titolo, sotto], i) => (
                 <div key={titolo} className={i > 0 ? "md:border-l md:border-white/10 md:pl-10" : ""}>
@@ -136,21 +144,32 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ======================================================= I PERCORSI */}
+        {/* ==================================================== I CINQUE DOCUMENTI */}
         <section id="percorsi" className="scroll-mt-20 border-b">
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <Reveal>
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                   <span className="h-px w-8 bg-primary" aria-hidden />
-                  Due percorsi, una sola verità
+                  Cinque documenti, un solo archivio
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
-                  L&apos;inventario alimenta il bilancio. Nessun numero copiato due volte.
+                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, cinque percorsi.
                 </h2>
+                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+                  Tre si redigono per esercizio e seguono il calendario. Due sono fotografie che si aggiornano per
+                  revisioni, quando il committente le chiede.
+                </p>
               </div>
             </Reveal>
-            <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-16">
+
+            <Reveal delay={80}>
+              <p className="mt-14 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <span className="h-px w-6 bg-border" aria-hidden />
+                Per esercizio
+              </p>
+            </Reveal>
+            <div className="mt-6 grid gap-10 md:grid-cols-3 md:gap-8">
               <Reveal>
                 <Percorso
                   indice="A"
@@ -160,7 +179,7 @@ export default function LandingPage() {
                   punto="Doppia rendicontazione Scope 2, CO₂ biogenica separata, incertezza in quadratura: ciò che l'ente di verifica chiede, già al posto giusto."
                 />
               </Reveal>
-              <Reveal delay={120}>
+              <Reveal delay={100}>
                 <Percorso
                   indice="B"
                   titolo="Bilancio di sostenibilità"
@@ -169,17 +188,53 @@ export default function LandingPage() {
                   punto="La sezione emissioni legge direttamente dall'inventario GHG della stessa azienda: una modifica lì, aggiornata qui."
                 />
               </Reveal>
+              <Reveal delay={200}>
+                <Percorso
+                  indice="C"
+                  titolo="Diagnosi energetica"
+                  norma="UNI CEI EN 16247 · ISO 50001"
+                  passi={["Sito e perimetro", "12 vettori energetici", "Ripartizione sui 20 usi finali", "Indicatori di prestazione", "Interventi e ritorno", "Racconto", "Verifica", "Diagnosi impaginata"]}
+                  punto="La ripartizione si quadra da sola: le celle restano nell'unità del vettore, quindi correggere un potere calorifico non invalida un esercizio già chiuso."
+                />
+              </Reveal>
             </div>
-            {/* Il legame fra i due percorsi: una riga di testo sotto le colonne,
-                senza pastiglie sovrapposte al contenuto. */}
+
+            <Reveal delay={80}>
+              <p className="mt-16 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <span className="h-px w-6 bg-border" aria-hidden />
+                Fotografie con revisioni
+              </p>
+            </Reveal>
+            <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-16">
+              <Reveal>
+                <Percorso
+                  indice="D"
+                  titolo="Autovalutazione ESG del fornitore"
+                  norma="ESRS · GRI · ISO 20400"
+                  passi={["Anagrafica e committente", "37 domande su 5 aree pesate", "Indice di prontezza con soglia", "Piano di adeguamento ordinato", "Evidenze documentali", "Attestato con codice di verifica"]}
+                  punto="L'indice si rinormalizza sulle sole aree valutate: chi ha compilato una sola area non risulta bocciato sulle altre quattro."
+                />
+              </Reveal>
+              <Reveal delay={120}>
+                <Percorso
+                  indice="E"
+                  titolo="Dichiarazione di Applicabilità"
+                  norma="ISO/IEC 27001:2022 §6.1.3 d)"
+                  passi={["Contesto e ambito", "174 controlli su 5 quadri", "Applicabilità e motivazioni", "Verifiche di coerenza", "Piano di attuazione", "Dichiarazione firmata"]}
+                  punto="Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice."
+                />
+              </Reveal>
+            </div>
+
             <Reveal delay={200}>
-              <p className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
+              <p className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
                 <span className="inline-flex items-center gap-2 font-semibold text-foreground">
                   <span className="size-2 rounded-full bg-scope-1" aria-hidden />
-                  Dal percorso A al percorso B
+                  Dall&apos;inventario al bilancio
                   <ArrowRight className="size-3.5" aria-hidden />
                 </span>
-                le emissioni calcolate nell&apos;inventario entrano nel bilancio senza essere riscritte.
+                le emissioni calcolate nell&apos;inventario entrano nel bilancio senza essere riscritte: una sola fonte,
+                mai due versioni dello stesso numero in due documenti.
               </p>
             </Reveal>
           </div>
@@ -271,10 +326,12 @@ export default function LandingPage() {
             <div>
               {(
                 [
-                  ["Guide di valutazione per ogni tema", "Per ciascuno dei 18 temi: cosa guardare, quando alzare il punteggio, in quali documenti aziendali trovare l'evidenza."],
+                  ["Guide di valutazione per ogni tema", "Per ciascuno dei 18 temi di materialità e dei 20 usi finali dell'energia: cosa guardare, come stimarlo, in quali documenti aziendali trovare l'evidenza."],
                   ["Esclusioni sempre motivate", "Il rilievo più frequente in audit è l'esclusione non giustificata. Qui senza motivazione scritta non si esclude."],
                   ["Scope 2 a doppia rendicontazione", "Location-based e market-based con Garanzie d'Origine e residual mix, come chiede la norma. Non un campo unico."],
                   ["Una sola fonte per le emissioni", "Il bilancio legge i numeri dall'inventario GHG: mai due versioni dello stesso dato in due documenti."],
+                  ["Esclusioni motivate anche nella SoA", "I 174 controlli della ISO 27001 con la giustificazione richiesta dal punto 6.1.3 lettera d): senza, la Dichiarazione non è conforme."],
+                  ["Verifiche di coerenza, non solo calcoli", "Il sistema confronta quello che hai dichiarato con quello che hai compilato e segnala le contraddizioni prima che lo faccia un auditor."],
                   ["Versioni immutabili", "Ogni pubblicazione è congelata a livello di database. Il documento consegnato tre anni fa è ancora esattamente quello."],
                   ["Porta i lavori esistenti", "Import degli archivi dallo strumento precedente: voci, fattori, materialità e capitoli migrati in un clic."],
                 ] as [string, string][]
@@ -324,7 +381,7 @@ export default function LandingPage() {
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <div className="max-w-2xl">
               <h2 className="font-display text-[36px] font-bold leading-[1.06] tracking-[-0.02em] text-white md:text-[46px]">
-                Il prossimo bilancio parte da un&apos;azienda d&apos;esempio già compilata.
+Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
               </h2>
               <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-sidebar-foreground/80">
                 Registrati, apri la demo guidata, guarda come lavora. Se convince, sblocchi e porti dentro i tuoi clienti.
@@ -352,7 +409,7 @@ export default function LandingPage() {
           <div>
             <LogoOrizzontale className="h-10" />
             <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
-              Bilanci di sostenibilità e inventari GHG per le PMI, con il metodo incorporato.
+Cinque documenti di rendicontazione per le PMI, con il metodo incorporato.
             </p>
             {/* 68 px: sotto questa misura "Sustainability Rating" e la data non si leggono più. */}
             <BadgeEcoVadis dimensione={68} className="mt-5" />
@@ -360,7 +417,7 @@ export default function LandingPage() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prodotto</p>
             <ul className="mt-3 space-y-2 text-sm">
-              <li><a href="#percorsi" className="text-muted-foreground transition-colors hover:text-foreground">I due percorsi</a></li>
+              <li><a href="#percorsi" className="text-muted-foreground transition-colors hover:text-foreground">I cinque documenti</a></li>
               <li><a href="#metodo" className="text-muted-foreground transition-colors hover:text-foreground">Il metodo</a></li>
               <li><a href="/esempi/esempio-bilancio-2025.pdf" target="_blank" rel="noopener" className="text-muted-foreground transition-colors hover:text-foreground">Bilancio d&apos;esempio</a></li>
             </ul>
