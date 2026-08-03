@@ -157,7 +157,25 @@ Difetti trovati dal collaudo e corretti: 6 (vedi commit 12.E e 12.F).
 
 Gate 13 verde: typecheck · build · **226 test** anche con `RLS_FORCE_ROLE=app_rls` · e2e `fornitore.spec.ts` · **collaudo di 28 comandi** con `scripts/visual-check-fornitore.mjs` (zero errori di console) · attestato reale pubblicato e PDF verificato (`scripts/visual-check-attestato.mjs`).
 
-**Prossima: Fase 14** — SoA ISO 27001. Poi il rientro su **Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
+**Fase 14 completata (SoA ISO/IEC 27001)** — quinto e ultimo modulo, dal prototipo `soa-iso27001.html`.
+- **Schema**: cataloghi `soa_framework` (5), `soa_section` (21), `soa_control` (**174**: 93 + 7 + 25 + 31 + 18, con 61 cardine); tenant `soa_declaration` (unique su `companyId`), `soa_module`, `soa_control_decision`. Migrazioni `0009` + `0010` (RLS e domini chiusi, compreso il vincolo sull'array delle motivazioni).
+- **Chiave a due colonne** `(frameworkKey, controlloId)`, mai la stringa `"27001|8.4"` del prototipo: è inqueribile (il punteggio per quadro diventerebbe un `LIKE`) e l'unicità globale degli identificativi regge solo per caso — la 27018 usa già la forma `A.x`.
+- **Motivazioni come `text[]`**: accendere o spegnere una motivazione è `array_append` / `array_remove` in una sola istruzione atomica.
+- **Ruoli privacy e cloud come enum chiusi**, non testo libero.
+- **Motore** in TDD (`src/lib/calc/soa/`, 21 test): `scoring`, `plan`, `checks`. Golden estratto eseguendo `compute()` del prototipo sul suo dataset di esempio: 143 in ambito, 141 applicabili, indice 51, per quadro 50/59/49/51.
+- **Interfaccia**: sei viste, quadro col **rack** (una casella per controllo in ambito, colorata per stato, anello sui cardine), registro con **sette filtri**, verifiche, piano, documento.
+- **Documento**: tabella per sezione con riferimento, controllo, applicabilità, motivazioni in sigle, stato e riferimento documentale; legenda, piano, firme e la **nota di conformità al punto 6.1.3 lettera d)** riquadrata.
+
+**Due punti difesi da test**, perché è lì che una reimplementazione diverge:
+1. **Un controllo applicabile senza stato pesa zero**, non viene ignorato. Mediare sui soli valutati farebbe salire l'indice man mano che si saltano i controlli difficili: il contrario del vero.
+2. **Falso positivo del prototipo corretto**: `/cloud/i` corrispondeva anche a "Nessun servizio cloud", e l'avviso compariva proprio a chi aveva dichiarato di non usarne, senza modo di farlo sparire. Con gli enum il confronto è per valore e l'esaustività la controlla il compilatore.
+
+Gate 14 verde: typecheck · build · **262 test** anche con `RLS_FORCE_ROLE=app_rls` · e2e `soa.spec.ts` · **collaudo di 34 comandi** con `scripts/visual-check-soa-percorso.mjs` (zero errori di console) · Dichiarazione reale pubblicata e PDF verificato (`scripts/visual-check-soa.mjs`).
+
+### I cinque documenti del prodotto
+`document_snapshot.tipo`: `ghg` · `bilancio` · `energetico` · `attestato` · `soa`. I primi tre sono annuali, gli ultimi due usano `SENZA_ESERCIZIO` (0) e formano una serie unica di revisioni. Tutti e cinque renderizzano SOLO dallo snapshot immutabile.
+
+**Prossima: rientro su Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
 
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
