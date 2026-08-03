@@ -13,8 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { etichettaDocumento } from "@/features/documents/tipi";
+import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { fmtNum, fmtRelativa } from "@/lib/format";
-import { BadgeCheck, BookOpen, ExternalLink, Factory, FileText, Leaf, ShieldCheck, Zap } from "lucide-react";
+import { ExternalLink, FileText, Leaf } from "lucide-react";
 
 export const metadata: Metadata = { title: "Portafoglio" };
 export const dynamic = "force-dynamic";
@@ -149,32 +150,22 @@ export default async function DashboardPage() {
                       </div>
                     </dl>
                   </CardContent>
-                  <CardFooter className="relative z-10 gap-2">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/aziende/${a.id}/ghg`}>
-                        <Factory className="size-3.5" /> Inventario GHG
+                  {/* Cinque moduli in una riga di caselle uguali, non cinque bottoni in fila:
+                      con etichette a larghezza libera il footer non stava nella card e
+                      Fornitore e SoA finivano tagliati fuori, irraggiungibili. */}
+                  <CardFooter className="relative z-10 grid grid-cols-5 gap-1 p-2">
+                    {MODULI_AZIENDA.map((m) => (
+                      <Link
+                        key={m.href}
+                        href={`/aziende/${a.id}/${m.href}`}
+                        // Colore esplicito: senza, i moduli già aperti rendevano col
+                        // colore dei link visitati e la riga usciva a due tinte.
+                        className="flex min-w-0 flex-col items-center gap-1 rounded-md px-1 py-2 text-center text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
+                        <m.icona className="size-4 shrink-0" strokeWidth={1.75} />
+                        <span className="w-full truncate text-[10.5px] font-medium leading-none">{m.etichetta}</span>
                       </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/aziende/${a.id}/bilancio`}>
-                        <BookOpen className="size-3.5" /> Bilancio
-                      </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/aziende/${a.id}/energetico`}>
-                        <Zap className="size-3.5" /> Energetico
-                      </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/aziende/${a.id}/fornitore`}>
-                        <BadgeCheck className="size-3.5" /> Fornitore
-                      </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/aziende/${a.id}/soa`}>
-                        <ShieldCheck className="size-3.5" /> SoA
-                      </Link>
-                    </Button>
+                    ))}
                   </CardFooter>
                 </Card>
               ))}

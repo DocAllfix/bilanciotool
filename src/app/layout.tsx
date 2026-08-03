@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { InformativaCookie } from "@/components/landing/informativa-cookie";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -42,6 +43,10 @@ export default function RootLayout({
         {/* Tema chiaro di default (decisione di prodotto); dark disponibile e memorizzato */}
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
+          {/* Alla radice e non nel solo gruppo marketing: il cookie di sessione
+              nasce dentro l'app, quindi l'informativa deve raggiungere anche chi
+              arriva direttamente su /login o su un documento condiviso. */}
+          <InformativaCookie />
         </ThemeProvider>
       </body>
     </html>

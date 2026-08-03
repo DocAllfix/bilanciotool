@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { TITOLARE } from "@/lib/legale";
 import { getSessionOrNull } from "@/features/auth/guards";
 import { firstMembershipOrgId } from "@/features/auth/orgs";
 import { getAccountStatus } from "@/features/entitlement";
@@ -31,6 +33,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         )}
         <main className="flex-1 px-5 py-6 md:px-8 md:py-8">{children}</main>
+        {/* I documenti legali devono essere raggiungibili anche da dentro l'app:
+            chi lavora qui non torna alla landing per cercarli. */}
+        <footer className="border-t px-5 py-4 md:px-8">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+            <span>
+              {TITOLARE.ragioneSociale} · P.IVA {TITOLARE.partitaIva}
+            </span>
+            <Link href="/privacy" className="transition-colors hover:text-foreground">
+              Privacy
+            </Link>
+            <Link href="/cookie" className="transition-colors hover:text-foreground">
+              Cookie
+            </Link>
+            <Link href="/termini" className="transition-colors hover:text-foreground">
+              Termini
+            </Link>
+            <span className="ml-auto">Dati ospitati nell&apos;Unione Europea</span>
+          </div>
+        </footer>
       </CollapsibleShell>
       <HelpButton />
     </>

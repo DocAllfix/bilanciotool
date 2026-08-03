@@ -9,6 +9,7 @@ import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
 import { BadgeEcoVadis, FasciaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
+import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 
 export const metadata: Metadata = {
   title: "EvalisDeck · Bilanci di sostenibilità e inventari GHG per PMI",
@@ -381,8 +382,13 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="border-t">
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-4 text-xs text-muted-foreground">
-            <span>© {new Date().getFullYear()} EvalisDeck · Un prodotto della famiglia Evalis</span>
+          {/* Identificazione del prestatore: art. 7 del D.Lgs. 70/2003. Deve stare
+              nel piede di ogni pagina, non solo dentro i documenti legali. */}
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-xs text-muted-foreground">
+            <span>
+              © {new Date().getFullYear()} EvalisDeck · {TITOLARE.ragioneSociale} · {SEDE_COMPLETA} · P.IVA{" "}
+              {TITOLARE.partitaIva}
+            </span>
             <span>Dati ospitati nell&apos;Unione Europea</span>
           </div>
         </div>

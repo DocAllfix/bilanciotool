@@ -1,0 +1,9 @@
+# Segnalazioni di sicurezza su EvalisDeck.
+# Se hai individuato una vulnerabilita, scrivici prima di divulgarla:
+# rispondiamo, correggiamo e ti diamo credito se lo desideri.
+
+Contact: mailto:info@evalisdeck.it
+Expires: 2027-08-03T00:00:00.000Z
+Preferred-Languages: it, en
+Canonical: https://evalisdeck.vercel.app/.well-known/security.txt
+Policy: https://evalisdeck.vercel.app/termini
