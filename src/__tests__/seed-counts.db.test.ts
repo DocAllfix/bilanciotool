@@ -5,7 +5,9 @@ import {
   contentSet, ghgCategory, ghgSourceType, emissionFactor, gwpSet,
   checklistRequirement, materialityTopic, kpiSection, kpiDefinition,
   ratingScale, narrativeTemplate, atecoSuggestion,
+  energyVector, energyArea, energyEndUse, energyDriverDefinition, energyIndicator,
 } from "@/lib/db/schema";
+import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 
 // Conteggi ESATTI dei contenuti metodologici estratti dai prototipi
 // (estrazione automatica via scripts/extract-seed.mjs — niente trascrizione manuale).
@@ -19,7 +21,7 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
   };
 
   it("conteggi esatti per ogni catalogo", async () => {
-    expect(await conta(contentSet)).toBe(2); // ghg-v1 + report-v1
+    expect(await conta(contentSet)).toBe(3); // ghg-v1 + report-v1 + energy-v1
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);
@@ -28,9 +30,68 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect(await conta(materialityTopic)).toBe(18);
     expect(await conta(kpiSection)).toBe(8);
     expect(await conta(kpiDefinition)).toBe(49);
-    expect(await conta(ratingScale)).toBe(3); // dq + imp + fin
-    expect(await conta(narrativeTemplate)).toBe(7);
+    expect(await conta(ratingScale)).toBe(4); // dq + imp + fin + energy:metodo
+    expect(await conta(narrativeTemplate)).toBe(14); // 7 bilancio + 7 energetico
     expect(await conta(atecoSuggestion)).toBe(8);
+  });
+
+  it("conteggi esatti del modulo energetico", async () => {
+    expect(await conta(energyVector)).toBe(12);
+    expect(await conta(energyArea)).toBe(4);
+    expect(await conta(energyEndUse)).toBe(20);
+    expect(await conta(energyDriverDefinition)).toBe(8);
+    expect(await conta(energyIndicator)).toBe(10);
+    // Gli 11 usi accesi su un nuovo bilancio (USI_DEF del prototipo).
+    const predefiniti = (await db.select().from(energyEndUse)).filter((u) => u.predefinito);
+    expect(predefiniti).toHaveLength(11);
+  });
+
+  it("i cataloghi dei tre domini restano separati", async () => {
+    // narrative_template e rating_scale ospitano più domini: una query che
+    // dimenticasse il filtro su set_id restituirebbe capitoli di un altro modulo.
+    const perSet = (rows: { setId: string }[], set: string) => rows.filter((r) => r.setId === set).length;
+    const templates = await db.select().from(narrativeTemplate);
+    expect(perSet(templates, "report-v1")).toBe(7);
+    expect(perSet(templates, "energy-v1")).toBe(7);
+    const scale = await db.select().from(ratingScale);
+    expect(perSet(scale, "energy-v1")).toBe(1);
+  });
+
+  it("ogni uso finale ha una guida completa e un'area esistente", async () => {
+    const aree = new Set((await db.select().from(energyArea)).map((a) => a.key));
+    const usi = await db.select().from(energyEndUse);
+    for (const u of usi) {
+      expect(aree.has(u.areaKey as "P" | "A" | "G" | "T"), `${u.key}→${u.areaKey}`).toBe(true);
+      const g = u.guida as { def?: string; come?: string[]; stima?: string; flag?: string; ev?: string };
+      expect(g.def, `${u.key}: definizione`).toBeTruthy();
+      expect(g.come?.length, `${u.key}: modi di determinazione`).toBeGreaterThanOrEqual(2);
+      expect(g.stima, `${u.key}: formula di stima`).toBeTruthy();
+      expect(g.flag, `${u.key}: errore ricorrente`).toBeTruthy();
+      expect(g.ev, `${u.key}: evidenze`).toBeTruthy();
+    }
+  });
+
+  it("ogni indicatore seminato ha una formula nel motore, e viceversa", async () => {
+    // Il catalogo porta le etichette, il motore le formule: se divergono, un
+    // indicatore comparirebbe nel documento senza mai essere calcolato.
+    const catalogo = (await db.select().from(energyIndicator)).map((i) => i.key).sort();
+    expect(catalogo).toEqual([...INDICATORI_KEYS].sort());
+  });
+
+  it("i vettori energetici portano i tre fattori di conversione", async () => {
+    const vettori = await db.select().from(energyVector);
+    for (const v of vettori) {
+      expect(v.kwhUnita, `${v.key}: potere calorifico`).toBeTruthy();
+      expect(v.tepUnita, `${v.key}: energia primaria`).toBeTruthy();
+      expect(v.feUnita !== null, `${v.key}: fattore di emissione`).toBe(true);
+    }
+    const [ele] = vettori.filter((v) => v.key === "ele");
+    expect(ele.feUnita).toBe("0.2565");
+    expect(ele.feMarket).toBe("0.4570"); // residual mix, solo sull'elettricità
+    const [go] = vettori.filter((v) => v.key === "ele_go");
+    expect(go.sub).toBe(true); // dettaglio di 'ele': fuori dai totali
+    const [gas] = vettori.filter((v) => v.key === "gas");
+    expect(gas.kwhUnita).toBe("9.72");
   });
 
   it("i contenuti campione sono fedeli al prototipo", async () => {

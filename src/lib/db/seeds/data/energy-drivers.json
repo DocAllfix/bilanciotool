@@ -1,0 +1,45 @@
+[
+ {
+  "k": "prod",
+  "n": "Produzione dell'esercizio",
+  "u": "unità",
+  "h": "Nell'unità fisica dichiarata al passo 1: tonnellate, pezzi, m², litri"
+ },
+ {
+  "k": "sup",
+  "n": "Superficie utile climatizzata",
+  "u": "m²"
+ },
+ {
+  "k": "suptot",
+  "n": "Superficie coperta totale",
+  "u": "m²"
+ },
+ {
+  "k": "vol",
+  "n": "Volume riscaldato",
+  "u": "m³"
+ },
+ {
+  "k": "add",
+  "n": "Addetti equivalenti a tempo pieno",
+  "u": "n."
+ },
+ {
+  "k": "ore",
+  "n": "Ore di funzionamento dello stabilimento",
+  "u": "h",
+  "h": "Ore di apertura produttiva nell'anno"
+ },
+ {
+  "k": "gg",
+  "n": "Gradi giorno effettivi della località",
+  "u": "GG",
+  "h": "Valore reale dell'anno, non quello convenzionale di zona climatica"
+ },
+ {
+  "k": "fatt",
+  "n": "Fatturato dell'esercizio",
+  "u": "€"
+ }
+]

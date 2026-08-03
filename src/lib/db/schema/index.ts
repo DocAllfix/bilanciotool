@@ -4,6 +4,7 @@ export * from "./platform";
 export * from "./content";
 export * from "./ghg";
 export * from "./report";
+export * from "./energy";
 export * from "./documents";
 export * from "./billing";
 export * from "./security";

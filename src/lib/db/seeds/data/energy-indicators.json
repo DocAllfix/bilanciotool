@@ -1,0 +1,79 @@
+[
+ {
+  "k": "cs",
+  "n": "Consumo specifico di processo",
+  "u": "kWh/unità",
+  "d": 1,
+  "verso": -1,
+  "h": "Energia finale complessiva rapportata alla produzione dell'anno"
+ },
+ {
+  "k": "csp",
+  "n": "Intensità energetica primaria",
+  "u": "tep/unità",
+  "d": 4,
+  "verso": -1,
+  "h": "Espresso in tep, è l'indicatore usato nelle diagnosi e nei confronti di settore"
+ },
+ {
+  "k": "cse",
+  "n": "Consumo elettrico specifico",
+  "u": "kWh/unità",
+  "d": 1,
+  "verso": -1,
+  "h": "Isola la parte elettrica, quella su cui incidono gli ausiliari"
+ },
+ {
+  "k": "csm2",
+  "n": "Consumo per superficie coperta",
+  "u": "kWh/m²",
+  "d": 1,
+  "verso": -1,
+  "h": "Utile per confronti tra siti dello stesso gruppo"
+ },
+ {
+  "k": "term",
+  "n": "Consumo termico normalizzato",
+  "u": "kWh/(m³·GG)",
+  "d": 4,
+  "verso": -1,
+  "h": "Depura l'andamento del riscaldamento dalla severità dell'inverno"
+ },
+ {
+  "k": "csad",
+  "n": "Consumo per addetto",
+  "u": "kWh/addetto",
+  "d": 0,
+  "verso": -1
+ },
+ {
+  "k": "csor",
+  "n": "Consumo per ora di funzionamento",
+  "u": "kWh/h",
+  "d": 1,
+  "verso": -1,
+  "h": "Rivela i consumi di base indipendenti dalla produzione"
+ },
+ {
+  "k": "cco2",
+  "n": "Emissioni specifiche",
+  "u": "kgCO₂e/unità",
+  "d": 2,
+  "verso": -1
+ },
+ {
+  "k": "ceur",
+  "n": "Costo energetico specifico",
+  "u": "€/unità",
+  "d": 2,
+  "verso": -1
+ },
+ {
+  "k": "cinc",
+  "n": "Incidenza della spesa energetica sul fatturato",
+  "u": "%",
+  "d": 2,
+  "verso": -1,
+  "h": "Sopra il 3% l'energia è una leva di margine, non un costo generale"
+ }
+]

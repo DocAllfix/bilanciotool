@@ -1,0 +1,102 @@
+[
+ {
+  "id": "U01",
+  "a": "P",
+  "n": "Forni fusori e processi termici primari"
+ },
+ {
+  "id": "U02",
+  "a": "P",
+  "n": "Forni di mantenimento e trattamento termico"
+ },
+ {
+  "id": "U03",
+  "a": "P",
+  "n": "Macchine di formatura e lavorazione"
+ },
+ {
+  "id": "U04",
+  "a": "P",
+  "n": "Finitura, sbavatura, granigliatura"
+ },
+ {
+  "id": "U05",
+  "a": "P",
+  "n": "Essiccazione, preriscaldo, verniciatura"
+ },
+ {
+  "id": "U06",
+  "a": "P",
+  "n": "Altre lavorazioni di processo"
+ },
+ {
+  "id": "U07",
+  "a": "A",
+  "n": "Aria compressa"
+ },
+ {
+  "id": "U08",
+  "a": "A",
+  "n": "Produzione del freddo e raffreddamento di processo"
+ },
+ {
+  "id": "U09",
+  "a": "A",
+  "n": "Pompaggi e circolazione fluidi"
+ },
+ {
+  "id": "U10",
+  "a": "A",
+  "n": "Ventilazione e aspirazione fumi"
+ },
+ {
+  "id": "U11",
+  "a": "A",
+  "n": "Trattamento acque e reflui"
+ },
+ {
+  "id": "U12",
+  "a": "A",
+  "n": "Generazione di vapore e acqua calda di processo"
+ },
+ {
+  "id": "U13",
+  "a": "G",
+  "n": "Riscaldamento degli ambienti"
+ },
+ {
+  "id": "U14",
+  "a": "G",
+  "n": "Raffrescamento degli ambienti"
+ },
+ {
+  "id": "U15",
+  "a": "G",
+  "n": "Illuminazione"
+ },
+ {
+  "id": "U16",
+  "a": "G",
+  "n": "Uffici, ICT e sala server"
+ },
+ {
+  "id": "U17",
+  "a": "G",
+  "n": "Acqua calda sanitaria, spogliatoi e mensa"
+ },
+ {
+  "id": "U18",
+  "a": "G",
+  "n": "Altri servizi generali"
+ },
+ {
+  "id": "U19",
+  "a": "T",
+  "n": "Movimentazione interna (carrelli e mezzi di piazzale)"
+ },
+ {
+  "id": "U20",
+  "a": "T",
+  "n": "Flotta aziendale su strada"
+ }
+]

@@ -1,0 +1,37 @@
+[
+ {
+  "id": "sintesi",
+  "n": "Sintesi per la direzione",
+  "h": "Quanto consuma il sito, dove va l'energia, quanto costa e quali sono le tre cose da fare."
+ },
+ {
+  "id": "contesto",
+  "n": "Il sito e le attività",
+  "h": "Dove si trova, cosa produce, come è organizzato il lavoro nell'arco dell'anno."
+ },
+ {
+  "id": "impianti",
+  "n": "Impianti e utenze energetiche",
+  "h": "Descrizione degli impianti principali: potenze, età, stato di manutenzione, regolazione."
+ },
+ {
+  "id": "metodo",
+  "n": "Metodo di raccolta e ripartizione",
+  "h": "Da dove vengono i dati, cosa è misurato e cosa è stimato, con quali criteri."
+ },
+ {
+  "id": "analisi",
+  "n": "Lettura del bilancio e criticità",
+  "h": "Cosa dicono i numeri: sprechi, anomalie stagionali, utenze fuori scala, confronti."
+ },
+ {
+  "id": "azioni",
+  "n": "Programma di miglioramento",
+  "h": "Logica con cui sono stati scelti e ordinati gli interventi, vincoli, risorse."
+ },
+ {
+  "id": "monitor",
+  "n": "Piano di monitoraggio",
+  "h": "Cosa si misura d'ora in poi, con quali strumenti, con quale frequenza e chi lo fa."
+ }
+]

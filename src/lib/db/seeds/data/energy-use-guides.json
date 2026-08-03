@@ -1,0 +1,220 @@
+{
+ "U01": {
+  "def": "Forni fusori, forni di processo, essiccatoi ad alta temperatura: l'utenza che nelle lavorazioni a caldo assorbe da sola metà o più dell'energia del sito.",
+  "come": [
+   "Contatore dedicato sul quadro di alimentazione del forno, quando esiste",
+   "Registro di produzione: cariche fuse per turno e consumo specifico di targa",
+   "Analizzatore di rete installato per almeno due settimane rappresentative"
+  ],
+  "stima": "potenza assorbita media (kW) × ore di funzionamento effettivo (h). Per i forni a induzione il fattore di carico reale è tipicamente 0,55–0,75, non 1.",
+  "flag": "È l'utenza su cui vale la pena spendere una misura vera: un errore del 10% qui sposta il bilancio più di qualunque stima raffinata sull'illuminazione.",
+  "ev": "Schemi unifilari, targhe dei forni, rapporti di produzione, letture dei contatori divisionali."
+ },
+ "U02": {
+  "def": "Forni di mantenimento, trattamento termico, ricottura, tempra: funzionano a lungo con carichi modesti, e per questo pesano più di quanto ci si aspetti.",
+  "come": [
+   "Contatore o analizzatore dedicato",
+   "Ore di accensione dal PLC o dal registro di reparto",
+   "Consumo di gas dal contatore fiscale del reparto, se separato"
+  ],
+  "stima": "potenza di mantenimento (kW) × ore di accensione, incluse le ore di fermo in cui il forno resta in temperatura.",
+  "flag": "Verifica quante ore il forno resta caldo a vuoto nel fine settimana: è la voce di spreco più frequente e più facile da correggere.",
+  "ev": "Libretti di impianto, registri di reparto, dati di supervisione."
+ },
+ "U03": {
+  "def": "Presse, macchine utensili, linee di formatura, estrusori: il consumo dipende dal ciclo e dal grado di utilizzo.",
+  "come": [
+   "Analizzatore sul quadro di linea",
+   "Somma delle potenze di targa corretta per fattore di utilizzo osservato",
+   "Contatori di reparto già presenti per motivi di manutenzione"
+  ],
+  "stima": "Σ (potenza di targa × fattore di carico × ore di marcia). Il fattore di carico su macchine utensili è spesso 0,3–0,5.",
+  "flag": "Non sommare le potenze di targa senza fattore di carico: si ottengono valori doppi rispetto al reale e la quadratura salta.",
+  "ev": "Distinta macchine, targhe, calendario dei turni, dati MES."
+ },
+ "U04": {
+  "def": "Granigliatrici, molatrici, banchi di finitura, aspirazioni localizzate collegate.",
+  "come": [
+   "Misura sul quadro dell'area finitura",
+   "Ore effettive di lavorazione dal ciclo",
+   "Potenza dei motori dalle schede di manutenzione"
+  ],
+  "stima": "potenza motori (kW) × ore di lavorazione × 0,6.",
+  "flag": "Se l'aspirazione dell'area di finitura è comune ad altri reparti, il suo consumo va in Ventilazione e aspirazione, non qui.",
+  "ev": "Schede macchina, registri di manutenzione."
+ },
+ "U05": {
+  "def": "Forni di essiccazione, cabine di verniciatura, preriscaldo di siviere e stampi. Spesso alimentati a gas, con quota elettrica per ventilatori e bruciatori.",
+  "come": [
+   "Contatore gas dedicato alla linea",
+   "Ore di funzionamento del bruciatore dal contaore",
+   "Portata e temperatura dell'aria trattata, per il calcolo termico"
+  ],
+  "stima": "portata aria (m³/h) × 0,34 Wh/m³K × ΔT × ore ÷ rendimento del generatore.",
+  "flag": "Nelle cabine di verniciatura il grosso del consumo è il riscaldamento dell'aria di ricambio, non il ciclo di essiccazione.",
+  "ev": "Schede tecniche della cabina, letture del contatore gas divisionale."
+ },
+ "U06": {
+  "def": "Voce residuale per le lavorazioni non riconducibili alle precedenti. Da usare con parsimonia.",
+  "come": [
+   "Differenza tra consumo di reparto misurato e utenze già attribuite",
+   "Misura diretta se la voce supera il 5% del totale"
+  ],
+  "stima": "da evitare: se questa voce cresce, conviene aprire una riga dedicata.",
+  "flag": "Una voce residuale sopra il 10% del totale indica che il bilancio non è stato chiuso, non che esiste un consumo generico.",
+  "ev": "Bilanci di reparto, letture dei sottocontatori."
+ },
+ "U07": {
+  "def": "Compressori, essiccatori d'aria, rete di distribuzione. In molti stabilimenti è la prima utenza ausiliaria e quella con più perdite.",
+  "come": [
+   "Contatore dedicato alla sala compressori: quasi sempre già presente o facile da installare",
+   "Ore a carico e a vuoto dal quadro del compressore",
+   "Prova di svuotamento della rete a impianto fermo per stimare le perdite"
+  ],
+  "stima": "potenza del compressore (kW) × ore a carico + potenza a vuoto × ore a vuoto. Riferimento: 0,10–0,12 kWh per m³ di aria a 7 bar.",
+  "flag": "Le perdite della rete valgono comunemente il 20–30% dell'aria prodotta: misurarle con la prova a impianto fermo richiede mezz'ora e vale un intervento.",
+  "ev": "Display del compressore (ore carico/vuoto), schede tecniche, prova di tenuta della rete."
+ },
+ "U08": {
+  "def": "Gruppi frigoriferi di processo, torri evaporative, chiller, celle. Consumo fortemente stagionale.",
+  "come": [
+   "Contatore dedicato al gruppo frigo",
+   "Ore di funzionamento e fattore di carico dal supervisore",
+   "Bilancio termico: carico asportato ÷ EER"
+  ],
+  "stima": "potenza frigorifera richiesta (kW) ÷ EER × ore di funzionamento. EER indicativo 2,8–4,0 per chiller ad aria.",
+  "flag": "Distingui il freddo di processo, che è servizio ausiliario, dal raffrescamento degli ambienti, che è servizio generale: hanno andamenti e interventi diversi.",
+  "ev": "Schede tecniche dei chiller, dati di supervisione, letture dei contatori."
+ },
+ "U09": {
+  "def": "Pompe di circolazione, rilanci, pompe di processo. Molte funzionano a portata fissa quando servirebbe portata variabile.",
+  "come": [
+   "Misura sul quadro pompe",
+   "Curva della pompa e punto di lavoro effettivo",
+   "Ore di funzionamento dal contaore o dal supervisore"
+  ],
+  "stima": "potenza assorbita (kW) × ore. Attenzione: la potenza assorbita è quella al punto di lavoro, non quella di targa.",
+  "flag": "Le pompe che girano 8.760 ore l'anno sono candidate naturali all'inverter: verifica sempre le ore prima di scartare l'intervento.",
+  "ev": "Schede pompe, schemi funzionali, contaore."
+ },
+ "U10": {
+  "def": "Ventilatori di aspirazione fumi, ricambio aria, filtrazione. Funzionano quasi sempre a portata costante.",
+  "come": [
+   "Misura sul quadro dei ventilatori",
+   "Ore di funzionamento reali, spesso superiori alle ore di produzione",
+   "Potenza assorbita dei motori"
+  ],
+  "stima": "potenza motori (kW) × ore di funzionamento × 0,8.",
+  "flag": "Controlla se l'aspirazione resta accesa anche a reparto fermo: capita più spesso di quanto si creda ed è correggibile senza investimento.",
+  "ev": "Schede dei ventilatori, autorizzazione alle emissioni, registri di manutenzione."
+ },
+ "U11": {
+  "def": "Impianti di depurazione, osmosi, addolcimento, sollevamento reflui.",
+  "come": [
+   "Contatore dedicato all'impianto di trattamento",
+   "Ore di funzionamento delle pompe e dei soffianti",
+   "Volumi trattati e consumo specifico"
+  ],
+  "stima": "volume trattato (m³) × consumo specifico (kWh/m³). Riferimento 0,3–0,8 kWh/m³ per depurazione biologica.",
+  "flag": "I soffianti dei comparti di ossidazione lavorano in continuo: sono la voce principale di questo uso, non le pompe.",
+  "ev": "Registri dell'impianto, letture dei contatori, autorizzazione allo scarico."
+ },
+ "U12": {
+  "def": "Generatori di vapore, caldaie di processo, produzione di acqua surriscaldata.",
+  "come": [
+   "Contatore del combustibile dedicato alla centrale termica",
+   "Contatore del vapore prodotto",
+   "Rendimento di combustione da analisi fumi"
+  ],
+  "stima": "vapore prodotto (t) × entalpia (kWh/t) ÷ rendimento del generatore. Indicativamente 750 kWh per tonnellata di vapore saturo a 8 bar.",
+  "flag": "Il consumo va imputato qui e il vapore ceduto ai reparti va tracciato separatamente: altrimenti l'energia risulta contata due volte.",
+  "ev": "Libretto di centrale, analisi di combustione, contatori di vapore e di gas."
+ },
+ "U13": {
+  "def": "Riscaldamento di capannoni, uffici e locali accessori. Nei siti produttivi è meno rilevante di quanto si pensi, ma è la voce più sensibile al clima.",
+  "come": [
+   "Contatore gas della centrale termica, separato da quello di processo",
+   "Consumo dei mesi invernali meno la media dei mesi estivi, se il contatore è unico",
+   "Ore di funzionamento e temperature di mandata"
+  ],
+  "stima": "consumo dei mesi non produttivi come base, oppure volume riscaldato (m³) × gradi giorno × coefficiente di dispersione.",
+  "flag": "Se il contatore del gas è unico, ricava questa voce come differenza stagionale e dichiaralo: è la prassi corretta, non un ripiego.",
+  "ev": "Bollette mensili del gas, libretto di impianto, gradi giorno della località."
+ },
+ "U14": {
+  "def": "Raffrescamento estivo degli ambienti di lavoro e degli uffici.",
+  "come": [
+   "Consumo elettrico dei mesi estivi meno la media dei mesi intermedi",
+   "Contatore dedicato alle unità di climatizzazione",
+   "Potenza dei condizionatori e ore di funzionamento"
+  ],
+  "stima": "potenza elettrica assorbita (kW) × ore di funzionamento stagionale × 0,5.",
+  "flag": "Non confonderla con il freddo di processo: se l'impianto è unico, ripartisci in base alle potenze frigorifere destinate ai due usi.",
+  "ev": "Bollette elettriche mensili, schede tecniche delle unità, registro di manutenzione."
+ },
+ "U15": {
+  "def": "Illuminazione dei reparti, delle aree esterne e degli uffici.",
+  "come": [
+   "Censimento dei corpi illuminanti per tipologia e potenza",
+   "Ore di accensione per zona, distinte tra reparto e aree comuni",
+   "Misura sul quadro luce, quando è separato"
+  ],
+  "stima": "Σ (numero corpi × potenza compresi gli alimentatori × ore di accensione).",
+  "flag": "Le aree esterne e i corridoi accesi 8.760 ore l'anno pesano spesso più dell'illuminazione di reparto: censiscile con attenzione.",
+  "ev": "Planimetrie, censimento illuminotecnico, schede dei corpi illuminanti."
+ },
+ "U16": {
+  "def": "Postazioni di lavoro, server, apparati di rete, gruppi di continuità.",
+  "come": [
+   "Contatore o presa strumentata sul quadro uffici",
+   "Numero di postazioni e ore di utilizzo",
+   "Potenza assorbita del rack server, che funziona in continuo"
+  ],
+  "stima": "postazioni × 0,15 kW × ore di ufficio + potenza rack (kW) × 8.760.",
+  "flag": "Il rack server e il suo condizionamento lavorano tutto l'anno: in un ufficio di piccole dimensioni possono superare tutte le postazioni messe insieme.",
+  "ev": "Inventario informatico, schede degli UPS, letture dei contatori di piano."
+ },
+ "U17": {
+  "def": "Produzione di acqua calda per docce, spogliatoi, mensa e cucina.",
+  "come": [
+   "Contatore del boiler o della caldaia dedicata",
+   "Volumi di acqua calda consumati",
+   "Numero di docce e utilizzi giornalieri"
+  ],
+  "stima": "volume acqua calda (m³) × 1,163 kWh/m³K × ΔT ÷ rendimento del generatore.",
+  "flag": "Nei siti con molti addetti in produzione le docce di fine turno sono una voce reale e ricorrente: non liquidarla a zero.",
+  "ev": "Letture dei contatori, dimensionamento dell'impianto sanitario, presenze."
+ },
+ "U18": {
+  "def": "Voce residuale dei servizi generali: cancelli, portineria, sistemi antincendio, piccole utenze diffuse.",
+  "come": [
+   "Differenza tra il totale del quadro servizi e le utenze già attribuite",
+   "Misura puntuale se la voce supera qualche punto percentuale"
+  ],
+  "stima": "da contenere entro il 3–5% del totale del sito.",
+  "flag": "Se questa voce diventa grande, il bilancio non è chiuso: cerca l'utenza mancante invece di ampliarla.",
+  "ev": "Quadri elettrici di servizio, letture differenziali."
+ },
+ "U19": {
+  "def": "Carrelli elevatori, transpallet, mezzi di piazzale. Alimentazione elettrica, a GPL o a gasolio.",
+  "come": [
+   "Consumo di GPL o gasolio dai buoni di prelievo e dalle bombole sostituite",
+   "Energia di ricarica delle batterie dai contatori delle colonnine",
+   "Ore di impiego dai contaore dei mezzi"
+  ],
+  "stima": "numero mezzi × consumo orario × ore di impiego. Riferimento per carrello elettrico da 2 t: 4–6 kWh per ora di lavoro.",
+  "flag": "Le batterie hanno un rendimento di carica intorno al 75%: l'energia prelevata dalla rete è superiore a quella resa dal mezzo.",
+  "ev": "Registri di prelievo carburante, contaore dei carrelli, contatori delle sale di ricarica."
+ },
+ "U20": {
+  "def": "Automezzi aziendali su strada: consegne, trasferte, autovetture assegnate.",
+  "come": [
+   "Litri erogati dalle carte carburante nell'anno solare",
+   "Chilometri percorsi e consumo medio",
+   "Note spese, se i rifornimenti sono rimborsati"
+  ],
+  "stima": "chilometri percorsi ÷ consumo medio (km/l).",
+  "flag": "Dichiara se sono inclusi solo i mezzi di proprietà o anche quelli a noleggio: cambia il perimetro e va scritto.",
+  "ev": "Estratti delle carte carburante, libretti dei mezzi, contratti di noleggio."
+ }
+}

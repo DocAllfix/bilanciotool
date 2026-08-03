@@ -44,6 +44,7 @@ function extractConst(source, name) {
 
 const ghgHtml = readFileSync(join(root, "archivio", "gestionale-ghg-14064.html"), "utf8");
 const bilHtml = readFileSync(join(root, "archivio", "percorso-bilancio-v4.html"), "utf8");
+const eneHtml = readFileSync(join(root, "archivio", "bilancio-energetico-v1.html"), "utf8");
 
 const out = {
   // Prototipo GHG (ISO 14064-1)
@@ -61,6 +62,21 @@ const out = {
   "report-kpi.json": extractConst(bilHtml, "KPI"),
   "report-narrative-templates.json": extractConst(bilHtml, "NARR"),
   "report-conversion-factors.json": extractConst(bilHtml, "FATTORI_DEF"),
+  // Prototipo Bilancio energetico (EN 16247 / ISO 50001)
+  "energy-vectors.json": extractConst(eneHtml, "VETTORI"),
+  "energy-vector-factors.json": extractConst(eneHtml, "FATTORI_DEF"),
+  "energy-areas.json": extractConst(eneHtml, "AREE"),
+  "energy-end-uses.json": extractConst(eneHtml, "USI"),
+  "energy-end-uses-default.json": extractConst(eneHtml, "USI_DEF"),
+  "energy-use-guides.json": extractConst(eneHtml, "GU"),
+  "energy-methods.json": extractConst(eneHtml, "METODI"),
+  "energy-drivers.json": extractConst(eneHtml, "DRIVER"),
+  "energy-narrative-templates.json": extractConst(eneHtml, "NARR"),
+  // ENPI contiene valori-funzione (le formule): JSON.stringify li scarta in
+  // silenzio, lasciando esattamente il catalogo di etichette che serve. Le
+  // formule vivono in src/lib/calc/energy/indicators.ts e un test verifica che
+  // catalogo e registro abbiano le stesse chiavi.
+  "energy-indicators.json": extractConst(eneHtml, "ENPI"),
 };
 
 for (const [file, data] of Object.entries(out)) {

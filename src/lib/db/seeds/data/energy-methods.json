@@ -1,0 +1,17 @@
+[
+ {
+  "v": "mis",
+  "n": "Misurato",
+  "d": "contatore dedicato o campagna di misura"
+ },
+ {
+  "v": "cal",
+  "n": "Calcolato",
+  "d": "da grandezze misurate e bilanci di impianto"
+ },
+ {
+  "v": "sti",
+  "n": "Stimato",
+  "d": "da potenza installata e ore di funzionamento"
+ }
+]

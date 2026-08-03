@@ -1,0 +1,26 @@
+{
+ "P": {
+  "n": "Attività principali",
+  "c": "#1F5A4C",
+  "t": "t-tea",
+  "d": "Le lavorazioni che realizzano il prodotto o il servizio"
+ },
+ "A": {
+  "n": "Servizi ausiliari",
+  "c": "#4C9C88",
+  "t": "t-grn",
+  "d": "Impianti che servono il processo senza trasformare il prodotto"
+ },
+ "G": {
+  "n": "Servizi generali",
+  "c": "#1F5F8B",
+  "t": "t-blu",
+  "d": "Utenze dell'edificio e delle funzioni non produttive"
+ },
+ "T": {
+  "n": "Trasporti",
+  "c": "#B06E00",
+  "t": "t-amb",
+  "d": "Movimentazione interna e flotta aziendale"
+ }
+}

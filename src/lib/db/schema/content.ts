@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, numeric, jsonb, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, numeric, jsonb, boolean, uniqueIndex } from "drizzle-orm/pg-core";
 
 // Contenuti metodologici versionati (seed di piattaforma, Fase 2C).
 // Tabelle NON-tenant: leggibili da tutti i tenant (passthrough RLS scoped ad app_rls),
@@ -9,7 +9,7 @@ export const contentSet = pgTable(
   "content_set",
   {
     id: text("id").primaryKey(),
-    dominio: text("dominio", { enum: ["ghg", "report"] }).notNull(),
+    dominio: text("dominio", { enum: ["ghg", "report", "energy", "supplier", "soa"] }).notNull(),
     versione: integer("versione").notNull(),
     note: text("note"),
     publishedAt: timestamp("published_at").defaultNow().notNull(),
@@ -176,4 +176,101 @@ export const atecoSuggestion = pgTable(
     punteggi: jsonb("punteggi").notNull(), // { T01: {imp,fin}, ... } valori indicativi di partenza
   },
   (t) => [uniqueIndex("ateco_suggestion_set_macro_uq").on(t.setId, t.macroSettore)],
+);
+
+// ============================================================================
+// MODULO ENERGETICO (UNI CEI EN 16247 · ISO 50001) — cataloghi versionati
+// ============================================================================
+
+// 12 vettori energetici con i tre fattori di conversione. A differenza del GHG,
+// dove il fattore si congela sulla riga di attività, qui il vettore È il fattore:
+// esiste un solo valore per bilancio, sovrascrivibile per azienda (energy_company_factor).
+export const energyVector = pgTable(
+  "energy_vector",
+  {
+    id: text("id").primaryKey(), // es. 'energy-v1:ele'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'ele','ele_go','fv','gas','gasolio','gpl','olio','biomassa','tlr','vapore','gasolio_t','benzina'
+    nome: text("nome").notNull(),
+    um: text("um").notNull(), // kWh | Smc | l | kg | t
+    categoria: text("categoria", { enum: ["E", "T", "M"] }).notNull(), // elettrico | termico | autotrazione
+    rinnovabile: boolean("rinnovabile").default(false).notNull(),
+    // 'ele_go' (quota coperta da garanzie d'origine) è un DETTAGLIO di 'ele':
+    // va escluso da tutti i totali, altrimenti l'energia si conta due volte.
+    sub: boolean("sub").default(false).notNull(),
+    colore: text("colore"),
+    kwhUnita: numeric("kwh_unita").notNull(), // potere calorifico inferiore
+    tepUnita: numeric("tep_unita").notNull(), // energia primaria (convenzione diagnosi)
+    feUnita: numeric("fe_unita").notNull(), // kgCO2e/unità
+    feMarket: numeric("fe_market"), // solo 'ele': residual mix nazionale
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("energy_vector_set_key_uq").on(t.setId, t.key)],
+);
+
+// 4 aree funzionali della diagnosi energetica.
+export const energyArea = pgTable(
+  "energy_area",
+  {
+    id: text("id").primaryKey(), // es. 'energy-v1:P'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key", { enum: ["P", "A", "G", "T"] }).notNull(),
+    nome: text("nome").notNull(),
+    descrizione: text("descrizione").notNull(),
+    colore: text("colore").notNull(),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("energy_area_set_key_uq").on(t.setId, t.key)],
+);
+
+// 20 usi finali, ciascuno con la guida operativa per determinarlo.
+export const energyEndUse = pgTable(
+  "energy_end_use",
+  {
+    id: text("id").primaryKey(), // es. 'energy-v1:U01'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'U01'..'U20'
+    areaKey: text("area_key").notNull(),
+    nome: text("nome").notNull(),
+    // { def, come[], stima, flag, ev } — definizione, modi di determinazione in
+    // ordine di affidabilità, formula di stima, errore ricorrente, evidenze.
+    guida: jsonb("guida").notNull(),
+    // Gli 11 usi accesi di default su un nuovo bilancio.
+    predefinito: boolean("predefinito").default(false).notNull(),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("energy_end_use_set_key_uq").on(t.setId, t.key)],
+);
+
+// 8 variabili di riferimento: i denominatori degli indicatori.
+export const energyDriverDefinition = pgTable(
+  "energy_driver_definition",
+  {
+    id: text("id").primaryKey(), // es. 'energy-v1:prod'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'prod','sup','suptot','vol','add','ore','gg','fatt'
+    nome: text("nome").notNull(),
+    um: text("um").notNull(),
+    hint: text("hint"),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("energy_driver_def_set_key_uq").on(t.setId, t.key)],
+);
+
+// 10 indicatori di prestazione: qui vivono SOLO le etichette. Le formule sono
+// funzioni e stanno in src/lib/calc/energy/indicators.ts, chiavate sulla stessa
+// `key`; un test verifica che catalogo e registro delle formule coincidano.
+export const energyIndicator = pgTable(
+  "energy_indicator",
+  {
+    id: text("id").primaryKey(), // es. 'energy-v1:cs'
+    setId: text("set_id").notNull().references(() => contentSet.id),
+    key: text("key").notNull(), // 'cs','csp','cse','csm2','term','csad','csor','cco2','ceur','cinc'
+    nome: text("nome").notNull(),
+    um: text("um").notNull(),
+    decimali: integer("decimali").notNull(),
+    hint: text("hint"),
+    ordine: integer("ordine").notNull(),
+  },
+  (t) => [uniqueIndex("energy_indicator_set_key_uq").on(t.setId, t.key)],
 );

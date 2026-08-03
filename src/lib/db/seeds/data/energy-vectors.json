@@ -1,0 +1,88 @@
+[
+ {
+  "k": "ele",
+  "n": "Energia elettrica prelevata dalla rete",
+  "u": "kWh",
+  "c": "E",
+  "col": "#1F5F8B"
+ },
+ {
+  "k": "ele_go",
+  "n": "di cui coperta da garanzie d'origine",
+  "u": "kWh",
+  "c": "E",
+  "sub": true
+ },
+ {
+  "k": "fv",
+  "n": "Energia elettrica autoprodotta e autoconsumata",
+  "u": "kWh",
+  "c": "E",
+  "rin": true,
+  "col": "#2E7D32"
+ },
+ {
+  "k": "gas",
+  "n": "Gas naturale",
+  "u": "Smc",
+  "c": "T",
+  "col": "#B06E00"
+ },
+ {
+  "k": "gasolio",
+  "n": "Gasolio per riscaldamento e generatori",
+  "u": "l",
+  "c": "T",
+  "col": "#8A7B5C"
+ },
+ {
+  "k": "gpl",
+  "n": "GPL",
+  "u": "kg",
+  "c": "T",
+  "col": "#C79A4B"
+ },
+ {
+  "k": "olio",
+  "n": "Olio combustibile",
+  "u": "kg",
+  "c": "T",
+  "col": "#6E5C3E"
+ },
+ {
+  "k": "biomassa",
+  "n": "Biomassa legnosa (cippato o pellet)",
+  "u": "t",
+  "c": "T",
+  "rin": true,
+  "col": "#5E8C3A"
+ },
+ {
+  "k": "tlr",
+  "n": "Calore da teleriscaldamento",
+  "u": "kWh",
+  "c": "T",
+  "col": "#A05C5C"
+ },
+ {
+  "k": "vapore",
+  "n": "Vapore acquistato",
+  "u": "t",
+  "c": "T",
+  "col": "#7E6FA8"
+ },
+ {
+  "k": "gasolio_t",
+  "n": "Gasolio per autotrazione",
+  "u": "l",
+  "c": "M",
+  "col": "#4A5B55"
+ },
+ {
+  "k": "benzina",
+  "n": "Benzina per autotrazione",
+  "u": "l",
+  "c": "M",
+  "col": "#96A29D"
+ }
+]

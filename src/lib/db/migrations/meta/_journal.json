@@ -29,6 +29,20 @@
       "when": 1785744000000,
       "tag": "0003_vincoli_documenti",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785748188275,
+      "tag": "0004_fine_the_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785748200000,
+      "tag": "0005_energy_rls",
+      "breakpoints": true
     }
   ]
 }

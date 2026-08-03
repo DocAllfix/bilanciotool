@@ -21,14 +21,20 @@ const sql = postgres(url, { max: 1, prepare: false, connect_timeout: 15 });
 
 const GHG_SET = "ghg-v1";
 const REPORT_SET = "report-v1";
+const ENERGY_SET = "energy-v1";
 const id = (key) => `v1:${key}`;
+// I domini aggiunti dopo i primi due usano una chiave prefissata: narrative_template
+// e rating_scale ospitano ora più domini, e la forma globale `v1:<key>` diventerebbe
+// ambigua. Le righe già seminate non si toccano.
+const eid = (key) => `${ENERGY_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
   await sql`
     insert into content_set (id, dominio, versione, note)
     values (${GHG_SET}, 'ghg', 1, 'Estratto dal prototipo gestionale-ghg-14064.html'),
-           (${REPORT_SET}, 'report', 1, 'Estratto dal prototipo percorso-bilancio-v4.html')
+           (${REPORT_SET}, 'report', 1, 'Estratto dal prototipo percorso-bilancio-v4.html'),
+           (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -117,6 +123,75 @@ try {
       on conflict (id) do update set descrizione = excluded.descrizione, punteggi = excluded.punteggi`;
   }
 
+  // --- ENERGETICO (EN 16247 / ISO 50001) ---
+  // I fattori stanno in una costante separata dal catalogo dei vettori: si
+  // uniscono qui sulla chiave. Il residual mix elettrico è un valore a sé nel
+  // prototipo (MKT_DEF 0,4570) e finisce su 'ele', l'unico vettore che lo usa.
+  const eFattori = load("energy-vector-factors.json");
+  const RESIDUAL_MIX = "0.4570";
+  for (const [i, v] of load("energy-vectors.json").entries()) {
+    const f = eFattori[v.k] ?? {};
+    await sql`
+      insert into energy_vector (id, set_id, key, nome, um, categoria, rinnovabile, sub, colore,
+                                 kwh_unita, tep_unita, fe_unita, fe_market, ordine)
+      values (${eid(v.k)}, ${ENERGY_SET}, ${v.k}, ${v.n}, ${v.u}, ${v.c}, ${v.rin === true}, ${v.sub === true}, ${v.col ?? null},
+              ${numStr(f.kwh)}, ${numStr(f.tep)}, ${numStr(f.fe)}, ${v.k === "ele" ? RESIDUAL_MIX : null}, ${i})
+      on conflict (id) do update set nome = excluded.nome, um = excluded.um, categoria = excluded.categoria,
+        rinnovabile = excluded.rinnovabile, sub = excluded.sub, colore = excluded.colore,
+        kwh_unita = excluded.kwh_unita, tep_unita = excluded.tep_unita, fe_unita = excluded.fe_unita,
+        fe_market = excluded.fe_market, ordine = excluded.ordine`;
+  }
+
+  const eAree = load("energy-areas.json");
+  for (const [i, [key, a]] of Object.entries(eAree).entries()) {
+    await sql`
+      insert into energy_area (id, set_id, key, nome, descrizione, colore, ordine)
+      values (${eid(key)}, ${ENERGY_SET}, ${key}, ${a.n}, ${a.d}, ${a.c}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione,
+        colore = excluded.colore, ordine = excluded.ordine`;
+  }
+
+  const eGuide = load("energy-use-guides.json");
+  const ePredefiniti = new Set(load("energy-end-uses-default.json"));
+  for (const [i, u] of load("energy-end-uses.json").entries()) {
+    const g = eGuide[u.id];
+    if (!g) throw new Error(`Uso finale ${u.id} senza guida: il seed sarebbe incompleto`);
+    await sql`
+      insert into energy_end_use (id, set_id, key, area_key, nome, guida, predefinito, ordine)
+      values (${eid(u.id)}, ${ENERGY_SET}, ${u.id}, ${u.a}, ${u.n}, ${sql.json(g)}, ${ePredefiniti.has(u.id)}, ${i})
+      on conflict (id) do update set area_key = excluded.area_key, nome = excluded.nome,
+        guida = excluded.guida, predefinito = excluded.predefinito, ordine = excluded.ordine`;
+  }
+
+  for (const [i, d] of load("energy-drivers.json").entries()) {
+    await sql`
+      insert into energy_driver_definition (id, set_id, key, nome, um, hint, ordine)
+      values (${eid(d.k)}, ${ENERGY_SET}, ${d.k}, ${d.n}, ${d.u}, ${d.h ?? null}, ${i})
+      on conflict (id) do update set nome = excluded.nome, um = excluded.um, hint = excluded.hint, ordine = excluded.ordine`;
+  }
+
+  for (const [i, e] of load("energy-indicators.json").entries()) {
+    await sql`
+      insert into energy_indicator (id, set_id, key, nome, um, decimali, hint, ordine)
+      values (${eid(e.k)}, ${ENERGY_SET}, ${e.k}, ${e.n}, ${e.u}, ${e.d}, ${e.h ?? null}, ${i})
+      on conflict (id) do update set nome = excluded.nome, um = excluded.um,
+        decimali = excluded.decimali, hint = excluded.hint, ordine = excluded.ordine`;
+  }
+
+  // I metodi di determinazione riusano rating_scale, come i livelli di qualità
+  // del dato del GHG: sono una scala di valori, non meritano una tabella propria.
+  await sql`
+    insert into rating_scale (id, set_id, key, livelli)
+    values (${eid("metodo")}, ${ENERGY_SET}, 'metodo', ${sql.json(load("energy-methods.json"))})
+    on conflict (id) do update set livelli = excluded.livelli`;
+
+  for (const [i, n] of load("energy-narrative-templates.json").entries()) {
+    await sql`
+      insert into narrative_template (id, set_id, key, nome, hint, ordine)
+      values (${eid(n.id)}, ${ENERGY_SET}, ${n.id}, ${n.n}, ${n.h}, ${i})
+      on conflict (id) do update set nome = excluded.nome, hint = excluded.hint, ordine = excluded.ordine`;
+  }
+
   // Config limiti di piattaforma (se assente: default del piano 10/8/5).
   await sql`
     insert into platform_config (key, value)
@@ -129,6 +204,7 @@ try {
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",
     "checklist_requirement", "materiality_topic", "kpi_section", "kpi_definition",
     "rating_scale", "narrative_template", "ateco_suggestion",
+    "energy_vector", "energy_area", "energy_end_use", "energy_driver_definition", "energy_indicator",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }
