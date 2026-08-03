@@ -10,12 +10,17 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = join(root, "src", "lib", "db", "seeds", "data");
 mkdirSync(outDir, { recursive: true });
 
-// Ritaglia il blocco `const NAME=...;` dal sorgente e lo valuta in un sandbox.
+// Ritaglia il blocco `const NAME = ...;` dal sorgente e lo valuta in un sandbox.
+// Gli spazi attorno all'uguale sono facoltativi: i prototipi GHG e Bilancio scrivono
+// `const CAT=`, quelli di supplier e SoA `const Q = `.
 function extractConst(source, name) {
-  const start = source.indexOf(`const ${name}=`);
-  if (start < 0) throw new Error(`Costante ${name} non trovata`);
-  // fine del literal: il primo `];` o `};` a profondità zero dal segno di uguale
-  let i = source.indexOf("=", start) + 1;
+  const decl = new RegExp(`const\\s+${name}\\s*=`).exec(source);
+  if (!decl) throw new Error(`Costante ${name} non trovata`);
+  // Fine del literal: la parentesi che riporta la profondità a zero. Se la
+  // dichiarazione prosegue (es. `const C = [...].map(...)`) la coda viene
+  // scartata di proposito: al seed servono le righe grezze, non i derivati.
+  const inizio = decl.index + decl[0].length;
+  let i = inizio;
   let depth = 0;
   let inStr = null;
   for (; i < source.length; i++) {
@@ -32,7 +37,8 @@ function extractConst(source, name) {
       if (depth === 0) break;
     }
   }
-  const literal = source.slice(source.indexOf("=", start) + 1, i + 1);
+  if (depth !== 0) throw new Error(`Literal di ${name} non chiuso`);
+  const literal = source.slice(inizio, i + 1);
   return vm.runInNewContext(`(${literal})`, {}, { timeout: 5000 });
 }
 

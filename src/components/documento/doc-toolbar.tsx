@@ -1,11 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { etichettaDocumento, nomeFileDocumento, type TipoDocumento } from "@/features/documents/tipi";
 import { ArrowLeft, FileDown, Printer } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function DocToolbar({ snapshotId, tipo, anno, versione }: { snapshotId: string; tipo: string; anno: number; versione: number }) {
+export function DocToolbar({
+  snapshotId,
+  tipo,
+  anno,
+  versione,
+}: {
+  snapshotId: string;
+  tipo: TipoDocumento;
+  anno: number;
+  versione: number;
+}) {
   const router = useRouter();
   const [inCorso, setInCorso] = useState(false);
   return (
@@ -14,7 +25,7 @@ export function DocToolbar({ snapshotId, tipo, anno, versione }: { snapshotId: s
         <ArrowLeft className="size-3.5" /> Torna al percorso
       </Button>
       <span className="text-sm" style={{ color: "var(--doc-muted)" }}>
-        {tipo === "ghg" ? "Rapporto GHG" : "Bilancio di sostenibilità"} {anno} · versione {versione}
+        {etichettaDocumento(tipo, anno, true)} · versione {versione}
       </span>
       <div className="ml-auto flex gap-2">
         <Button variant="outline" size="sm" onClick={() => window.print()}>
@@ -36,7 +47,7 @@ export function DocToolbar({ snapshotId, tipo, anno, versione }: { snapshotId: s
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a");
               a.href = url;
-              a.download = `${tipo === "ghg" ? "rapporto-ghg" : "bilancio-sostenibilita"}-${anno}-v${versione}.pdf`;
+              a.download = nomeFileDocumento(tipo, anno, versione);
               a.click();
               setTimeout(() => URL.revokeObjectURL(url), 2000);
             } finally {

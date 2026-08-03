@@ -2,6 +2,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { auditLog, company, documentSnapshot, ghgActivityRow, ghgInventory, reportProject } from "@/lib/db/schema";
 import { computeInventory } from "@/lib/calc/ghg/totals";
 import { dec, toFixedStr } from "@/lib/calc/shared/decimal";
+import type { TipoDocumento } from "@/features/documents/tipi";
 import { desc, eq, inArray } from "drizzle-orm";
 
 // Statistiche del portafoglio: per ogni azienda l'ultimo inventario e il totale
@@ -27,7 +28,7 @@ export type CompanyCardStats = {
 export type DocumentoRecente = {
   id: string;
   companyNome: string;
-  tipo: "ghg" | "bilancio";
+  tipo: TipoDocumento;
   anno: number;
   versione: number;
   publishedAt: Date;

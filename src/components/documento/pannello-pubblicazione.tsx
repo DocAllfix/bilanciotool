@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { listSnapshotsAction, publishDocumentAction, type SnapshotRiga } from "@/features/documents/actions";
+import { DOCUMENTI, etichettaDocumento, type TipoDocumento } from "@/features/documents/tipi";
 import { fmtData } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ export function PannelloPubblicazione({
   companyId, tipo, anno, readyPct,
 }: {
   companyId: string;
-  tipo: "ghg" | "bilancio";
+  tipo: TipoDocumento;
   anno: number;
   readyPct: number;
 }) {
@@ -44,7 +45,7 @@ export function PannelloPubblicazione({
     window.open(`/documento/${esito.dati!.snapshotId}`, "_blank");
   }
 
-  const nome = tipo === "ghg" ? "Rapporto GHG (§9.3.1)" : "Bilancio di sostenibilità";
+  const nome = DOCUMENTI[tipo].nome;
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -64,7 +65,7 @@ export function PannelloPubblicazione({
           )}
           {errore && <p role="alert" className="text-sm text-destructive">{errore}</p>}
           <Button onClick={pubblica} disabled={inCorso} data-tour="pubblica-documento">
-            <BookOpenCheck className="size-4" /> {inCorso ? "Pubblicazione…" : `Pubblica ${nome} ${anno}`}
+            <BookOpenCheck className="size-4" /> {inCorso ? "Pubblicazione…" : `Pubblica ${etichettaDocumento(tipo, anno)}`}
           </Button>
         </CardContent>
       </Card>

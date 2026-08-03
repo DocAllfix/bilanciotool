@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESG Supplier Ready — Autovalutazione fornitori</title>
+<style>
+:root{
+  --teal:#2E7D6B; --teal-dk:#1F5A4C; --teal-lt:#E6F1ED; --teal-mid:#4C9C88;
+  --ink:#14201C; --ink-2:#4A5B55; --ink-3:#7D8C87;
+  --bg:#FAFAF8; --card:#FFFFFF; --line:#E4E2DC; --line-2:#F0EEE9;
+  --red:#B3261E; --red-lt:#FBEAE8;
+  --amber:#B06E00; --amber-lt:#FDF2DF;
+  --green:#2E7D32; --green-lt:#E8F3E9;
+  --violet:#5B4B9E; --violet-lt:#EEEBF7;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--teal-dk)}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.side{width:236px;flex:0 0 236px;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{padding:18px 18px 14px;border-bottom:1px solid var(--line-2)}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 10px 4px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 12px;margin:1px 8px;width:calc(100% - 16px);border-radius:8px;cursor:pointer;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--teal);color:#fff;font-weight:600}
+.nav .pill{font-size:10px;font-family:var(--mono);background:rgba(0,0,0,.06);padding:1px 6px;border-radius:20px}
+.nav.on .pill{background:rgba(255,255,255,.22)}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3);line-height:1.45}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.top .sel{margin-left:auto;display:flex;gap:8px;align-items:center}
+.wrap{padding:26px 26px 60px;max-width:1180px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px}
+h2{font-size:15px;margin:0 0 12px;letter-spacing:-.1px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 8px}
+
+/* ---------- primitives ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--teal-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal-mid);outline-offset:-1px;border-color:var(--teal-mid)}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}
+.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}
+.t-tea{background:var(--teal-lt);color:var(--teal-dk)}
+.t-vio{background:var(--violet-lt);color:var(--violet)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}
+.empty{padding:34px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .n{font-size:30px;font-weight:650;letter-spacing:-1px;line-height:1.1}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.hr{height:1px;background:var(--line-2);margin:18px 0}
+
+/* ---------- signature: readiness meter ---------- */
+.meter{position:relative;height:38px;border-radius:8px;overflow:hidden;background:linear-gradient(90deg,#F6DDDB 0%,#FBEFD8 40%,#E9F2E4 62%,#DCEDE6 100%);border:1px solid var(--line)}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;background:var(--teal);opacity:.92}
+.meter .thr{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.meter .thrlab{position:absolute;top:-19px;font-size:10px;font-family:var(--mono);color:var(--ink);transform:translateX(-50%);white-space:nowrap}
+.meter .val{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 10px;color:#fff;font-weight:700;font-size:15px;font-family:var(--mono)}
+.bands{display:flex;font-size:10px;color:var(--ink-3);font-family:var(--mono);margin-top:5px}
+.bands span{flex:1}
+.bands span:last-child{text-align:right}
+
+/* pillar bar */
+.pb{margin-bottom:13px}
+.pb .r{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+.pb .r b{font-family:var(--mono);font-weight:600}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--teal)}
+
+/* ---------- assessment ---------- */
+.q{border-bottom:1px solid var(--line-2);padding:15px 0}
+.q:last-child{border-bottom:0}
+.q .head{display:flex;gap:12px;align-items:flex-start}
+.q .txt{flex:1;min-width:0}
+.q .txt p{margin:0 0 4px;font-weight:500}
+.q .meta{font-size:11px;color:var(--ink-3);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.opts{display:flex;gap:6px;flex:0 0 auto}
+.opt{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 11px;cursor:pointer;font-size:12.5px;color:var(--ink-2)}
+.opt:hover{border-color:var(--teal-mid)}
+.opt.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.opt.on.no{background:var(--red);border-color:var(--red)}
+.opt.on.pa{background:var(--amber);border-color:var(--amber)}
+.opt.on.na{background:var(--ink-3);border-color:var(--ink-3)}
+.qnote{margin-top:9px}
+.secthead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+
+/* ---------- attestato ---------- */
+.att{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:0;overflow:hidden;max-width:760px}
+.att .band{background:var(--teal-dk);color:#fff;padding:20px 30px}
+.att .band .k{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.att .band h3{margin:4px 0 0;font-size:22px;letter-spacing:-.3px}
+.att .body{padding:26px 30px}
+.att .score{font-size:56px;font-weight:650;letter-spacing:-2px;line-height:1;font-family:var(--mono)}
+.att .rows{margin-top:20px}
+.att .rows div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.att .disc{margin-top:22px;padding:13px 15px;background:var(--line-2);border-radius:8px;font-size:11.5px;color:var(--ink-2);line-height:1.55}
+.att .vc{font-family:var(--mono);font-size:12px;letter-spacing:1px}
+
+@media (max-width:980px){
+  .g4{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:1fr} .g2{grid-template-columns:1fr}
+  .side{position:fixed;left:-240px;z-index:60;transition:left .2s} .side.open{left:0}
+  .app.mobile-pad .main{width:100%}
+  .q .head{flex-direction:column} .opts{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  .side,.top,.noprint{display:none!important}
+  .wrap{padding:0}
+  .att{border:0;max-width:100%}
+  body{background:#fff}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="brand">
+      <b>ESG Supplier Ready</b>
+      <span>Autovalutazione fornitori · v1.0</span>
+    </div>
+    <div class="navgrp">Percorso</div>
+    <button class="nav on" data-v="dash">Quadro di sintesi</button>
+    <button class="nav" data-v="profilo">Anagrafica</button>
+    <button class="nav" data-v="assess">Questionario <span class="pill" id="pillQ">0/37</span></button>
+    <button class="nav" data-v="piano">Piano di adeguamento <span class="pill" id="pillA">0</span></button>
+    <button class="nav" data-v="doc">Documenti <span class="pill" id="pillD">0</span></button>
+    <button class="nav" data-v="att">Attestato</button>
+    <div class="navgrp">Gestione</div>
+    <button class="nav" data-v="dati">Aziende e dati</button>
+    <div class="sidefoot">
+      Strumento di autovalutazione.<br>Non costituisce certificazione né verifica di parte terza.
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <button class="btn ghost sm" id="menuBtn" style="display:none">Menu</button>
+      <div style="font-size:12.5px;color:var(--ink-3)">Azienda in valutazione</div>
+      <select id="companySel" style="width:auto;min-width:220px;font-weight:600"></select>
+      <div class="sel">
+        <button class="btn ghost sm" id="addCo">Aggiungi azienda</button>
+        <button class="btn sm" id="printBtn">Stampa attestato</button>
+      </div>
+    </div>
+    <div class="wrap" id="view"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   BANCA DOMANDE
+   w = peso (1..3) · doc = evidenza documentale attesa
+   ============================================================ */
+const PILLARS = {
+  base:  {n:"Governo della sostenibilità", w:10, c:"var(--teal)"},
+  env:   {n:"Ambiente",                    w:25, c:"var(--green)"},
+  soc:   {n:"Lavoro e diritti umani",      w:25, c:"var(--violet)"},
+  eth:   {n:"Etica e conformità",          w:25, c:"var(--amber)"},
+  proc:  {n:"Catena di fornitura",         w:15, c:"var(--teal-mid)"}
+};
+
+const Q = [
+ // --- governo ---
+ {id:"B1",p:"base",w:2,t:"È stata adottata una politica di sostenibilità approvata dalla direzione?",r:"ESRS 2 GOV-1 · GRI 2-23",d:"Politica di sostenibilità firmata"},
+ {id:"B2",p:"base",w:2,t:"Esiste un referente interno responsabile dei temi ESG?",r:"ESRS 2 GOV-1",d:"Lettera di incarico referente ESG"},
+ {id:"B3",p:"base",w:1,t:"Sono stati individuati i temi di sostenibilità rilevanti per l'attività?",r:"ESRS 1 §3 · GRI 3-1",d:"Analisi di materialità"},
+ {id:"B4",p:"base",w:2,t:"L'azienda dispone di sistemi di gestione certificati (ISO 9001, 14001, 45001, 27001)?",r:"ISO HLS",d:"Certificati in corso di validità"},
+ {id:"B5",p:"base",w:1,t:"Sono fissati obiettivi ESG misurabili con orizzonte temporale?",r:"ESRS 2 MDR-T",d:"Piano obiettivi e indicatori"},
+ // --- ambiente ---
+ {id:"E1",p:"env",w:3,t:"I consumi energetici totali sono rilevati e archiviati (elettrici e termici)?",r:"ESRS E1-5",d:"Registro consumi energetici"},
+ {id:"E2",p:"env",w:3,t:"Sono calcolate le emissioni di gas serra Scope 1 e Scope 2?",r:"ESRS E1-6 · ISO 14064-1",d:"Inventario GHG"},
+ {id:"E3",p:"env",w:2,t:"Sono state stimate le categorie rilevanti di Scope 3?",r:"ESRS E1-6 · GHG Protocol",d:"Stima Scope 3"},
+ {id:"E4",p:"env",w:2,t:"Esiste un obiettivo di riduzione delle emissioni con anno base e target?",r:"ESRS E1-4",d:"Target di decarbonizzazione"},
+ {id:"E5",p:"env",w:2,t:"I rifiuti sono quantificati per tipologia e destino (recupero/smaltimento)?",r:"ESRS E5-5",d:"Registro rifiuti · MUD"},
+ {id:"E6",p:"env",w:2,t:"I prelievi idrici sono monitorati?",r:"ESRS E3-4",d:"Registro consumi idrici"},
+ {id:"E7",p:"env",w:1,t:"Le autorizzazioni ambientali applicabili sono censite e in corso di validità?",r:"D.Lgs. 152/2006",d:"Elenco autorizzazioni"},
+ {id:"E8",p:"env",w:2,t:"Sono stati valutati i rischi fisici e di transizione legati al clima?",r:"ESRS E1-9 · TCFD",d:"Analisi rischi climatici"},
+ {id:"E9",p:"env",w:1,t:"È in uso energia da fonti rinnovabili (autoprodotta o con garanzia d'origine)?",r:"ESRS E1-5",d:"Garanzie d'origine · dati impianto"},
+ // --- sociale ---
+ {id:"S1",p:"soc",w:3,t:"Il documento di valutazione dei rischi è aggiornato e completo?",r:"D.Lgs. 81/2008 art. 28",d:"DVR aggiornato"},
+ {id:"S2",p:"soc",w:3,t:"Infortuni e mancati infortuni sono registrati con indici di frequenza e gravità?",r:"ESRS S1-14",d:"Registro infortuni e indici"},
+ {id:"S3",p:"soc",w:2,t:"La formazione obbligatoria su salute e sicurezza è erogata e tracciata per tutti?",r:"Accordo Stato-Regioni",d:"Registro formazione sicurezza"},
+ {id:"S4",p:"soc",w:2,t:"Organico, tipologie contrattuali e turnover sono rendicontati?",r:"ESRS S1-6 · GRI 401-1",d:"Prospetto organico e turnover"},
+ {id:"S5",p:"soc",w:2,t:"È adottata una politica di non discriminazione e pari opportunità?",r:"ESRS S1-17 · UNI/PdR 125",d:"Politica diversità e inclusione"},
+ {id:"S6",p:"soc",w:2,t:"Il divario retributivo di genere è misurato?",r:"ESRS S1-16",d:"Analisi divario retributivo"},
+ {id:"S7",p:"soc",w:2,t:"Sono adottate misure contro lavoro forzato e minorile lungo la filiera?",r:"ESRS S2 · SA 8000",d:"Dichiarazione e clausole contrattuali"},
+ {id:"S8",p:"soc",w:1,t:"Esistono canali strutturati di dialogo o rappresentanza dei lavoratori?",r:"ESRS S1-2",d:"Verbali incontri RSU/RLS"},
+ {id:"S9",p:"soc",w:1,t:"Sono attive iniziative di welfare o formazione professionale continua?",r:"GRI 404",d:"Piano formativo e welfare"},
+ // --- etica ---
+ {id:"G1",p:"eth",w:3,t:"È adottato un codice etico diffuso a dipendenti e fornitori?",r:"ESRS G1-1",d:"Codice etico"},
+ {id:"G2",p:"eth",w:3,t:"È adottato un modello di organizzazione e gestione ex D.Lgs. 231/2001?",r:"D.Lgs. 231/2001",d:"MOG 231 e delibera"},
+ {id:"G3",p:"eth",w:2,t:"È attivo un canale di segnalazione conforme alla normativa whistleblowing?",r:"D.Lgs. 24/2023 · ESRS G1-1",d:"Procedura segnalazioni"},
+ {id:"G4",p:"eth",w:2,t:"Esiste una procedura anticorruzione con mappatura delle aree a rischio?",r:"ESRS G1-3 · ISO 37001",d:"Procedura anticorruzione"},
+ {id:"G5",p:"eth",w:2,t:"I conflitti di interesse sono gestiti con dichiarazioni periodiche?",r:"ESRS G1-1",d:"Registro conflitti di interesse"},
+ {id:"G6",p:"eth",w:2,t:"Sono adottate misure di sicurezza delle informazioni e protezione dei dati?",r:"GDPR · ISO/IEC 27001",d:"Registro trattamenti e misure ICT"},
+ {id:"G7",p:"eth",w:1,t:"I tempi di pagamento verso i fornitori sono monitorati?",r:"ESRS G1-6",d:"Report tempi medi di pagamento"},
+ {id:"G8",p:"eth",w:1,t:"Il personale è formato su codice etico e anticorruzione?",r:"ESRS G1-3",d:"Registro formazione etica"},
+ // --- filiera ---
+ {id:"P1",p:"proc",w:3,t:"La qualifica dei fornitori include criteri ESG?",r:"ISO 20400 · ESRS G1-2",d:"Procedura qualifica fornitori"},
+ {id:"P2",p:"proc",w:2,t:"I fornitori critici sono identificati e rivalutati periodicamente?",r:"ISO 20400",d:"Albo fornitori con classificazione"},
+ {id:"P3",p:"proc",w:2,t:"I contratti contengono clausole ESG e sul rispetto dei diritti umani?",r:"ESRS S2-1",d:"Modello clausole contrattuali"},
+ {id:"P4",p:"proc",w:2,t:"È stata mappata la rischiosità ESG della catena di fornitura?",r:"ESRS S2 · CSDDD",d:"Mappa rischi filiera"},
+ {id:"P5",p:"proc",w:1,t:"Sono previsti audit o questionari ESG verso i fornitori?",r:"ISO 20400",d:"Piano audit fornitori"},
+ {id:"P6",p:"proc",w:1,t:"Il codice di condotta fornitori è formalizzato e sottoscritto?",r:"ESRS G1-2",d:"Codice di condotta fornitori"}
+];
+
+const SCORES = {si:100, parziale:50, no:0};
+const BANDS = [
+  {min:90,l:"Avanzato",c:"t-grn"},
+  {min:75,l:"Supplier Ready",c:"t-grn"},
+  {min:60,l:"Adeguato",c:"t-tea"},
+  {min:40,l:"In avvio",c:"t-amb"},
+  {min:0, l:"Non pronto",c:"t-red"}
+];
+const band = s => BANDS.find(b => s >= b.min);
+const EFFORT = {3:10, 2:6, 1:3}; // giorni-uomo stimati
+
+/* ============================================================
+   PERSISTENZA — usa window.storage se disponibile,
+   altrimenti localStorage (file scaricato / dominio proprio)
+   ============================================================ */
+const KEY = "esg-supplier-ready-v1";
+const Store = {
+  async load(){
+    try{ if(window.storage&&window.storage.get){ const r=await window.storage.get(KEY); if(r&&r.value) return JSON.parse(r.value); } }catch(e){}
+    try{ const raw=localStorage.getItem(KEY); if(raw) return JSON.parse(raw); }catch(e){}
+    return null;
+  },
+  async save(d){
+    const s=JSON.stringify(d);
+    try{ if(window.storage&&window.storage.set){ await window.storage.set(KEY,s); return; } }catch(e){}
+    try{ localStorage.setItem(KEY,s); }catch(e){}
+  }
+};
+
+let DB = {companies:[], current:null};
+let view = "dash";
+
+const uid = () => "C"+Math.random().toString(36).slice(2,8).toUpperCase();
+const newCompany = (nome) => ({
+  id:uid(), nome:nome||"Nuova azienda",
+  profilo:{piva:"",settore:"",ateco:"",dipendenti:"",fatturato:"",sede:"",referente:"",committente:"",soglia:60,scadenza:""},
+  answers:{}, notes:{}, actions:{}, docs:{}, created:new Date().toISOString()
+});
+const co = () => DB.companies.find(c => c.id === DB.current);
+
+/* ============================================================
+   CALCOLO PUNTEGGI
+   ============================================================ */
+function compute(c){
+  const perP = {}; let overall = 0, wsum = 0;
+  for(const k in PILLARS){
+    const qs = Q.filter(q => q.p === k);
+    let got = 0, max = 0, answered = 0;
+    qs.forEach(q => {
+      const a = c.answers[q.id];
+      if(a === "na" || a === undefined) { if(a==="na") answered++; return; }
+      answered++; got += q.w * SCORES[a]; max += q.w * 100;
+    });
+    const sc = max > 0 ? Math.round(got / max * 100) : null;
+    perP[k] = {score:sc, answered, total:qs.length, max};
+    if(sc !== null){ overall += sc * PILLARS[k].w; wsum += PILLARS[k].w; }
+  }
+  const total = wsum > 0 ? Math.round(overall / wsum) : 0;
+  const answered = Q.filter(q => c.answers[q.id]).length;
+  return {perP, total, answered, pct:Math.round(answered / Q.length * 100)};
+}
+
+// punti di punteggio complessivo recuperabili portando la domanda a "sì"
+function upside(c, q, calc){
+  const a = c.answers[q.id];
+  if(a === "si" || a === "na") return 0;
+  const P = calc.perP[q.p];
+  let max = P.max, got = 0;
+  if(a === undefined){ max += q.w * 100; }        // risposta assente: entra ora nel denominatore
+  const cur = P.score === null ? 0 : P.score;
+  const qs = Q.filter(x => x.p === q.p);
+  let g = 0, m = 0;
+  qs.forEach(x => {
+    const ax = c.answers[x.id];
+    if(ax === "na") return;
+    if(ax === undefined && x.id !== q.id) return;
+    const v = x.id === q.id ? 100 : SCORES[ax];
+    g += x.w * v; m += x.w * 100;
+  });
+  const nuovo = m > 0 ? g / m * 100 : 0;
+  let wsum = 0; for(const k in PILLARS){ if(calc.perP[k].score !== null || k === q.p) wsum += PILLARS[k].w; }
+  const delta = (nuovo - cur) * PILLARS[q.p].w / (wsum || 1);
+  return Math.max(0, Math.round(delta * 10) / 10);
+}
+
+function gaps(c, calc){
+  return Q.filter(q => { const a = c.answers[q.id]; return a === "no" || a === "parziale"; })
+    .map(q => {
+      const a = c.answers[q.id];
+      const st = c.actions[q.id] || {};
+      return {
+        q, a,
+        azione:(a === "no" ? "Predisporre e formalizzare — " : "Completare e aggiornare — ") + q.d,
+        pt:upside(c, q, calc),
+        gg:EFFORT[q.w],
+        resp:st.resp || "", due:st.due || "", stato:st.stato || "Da avviare"
+      };
+    })
+    .sort((x, y) => (y.pt / y.gg) - (x.pt / x.gg));
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1800); }
+
+function render(){
+  const c = co();
+  if(!c){ $("#view").innerHTML = '<div class="empty">Nessuna azienda in archivio. Usa <b>Aggiungi azienda</b> per iniziare.</div>'; return; }
+  const calc = compute(c);
+  const gl = gaps(c, calc);
+  $("#pillQ").textContent = calc.answered + "/" + Q.length;
+  $("#pillA").textContent = gl.filter(g => g.stato !== "Completata").length;
+  $("#pillD").textContent = Object.values(c.docs).filter(d => d === "Disponibile").length + "/" + Q.length;
+  document.querySelectorAll(".nav").forEach(n => n.classList.toggle("on", n.dataset.v === view));
+  $("#view").innerHTML = ({dash:vDash, profilo:vProfilo, assess:vAssess, piano:vPiano, doc:vDoc, att:vAtt, dati:vDati})[view](c, calc, gl);
+  bind(c);
+}
+
+/* ---- quadro di sintesi ---- */
+function vDash(c, calc, gl){
+  const b = band(calc.total), thr = +c.profilo.soglia || 60;
+  const diff = calc.total - thr;
+  const top = gl.slice(0, 5);
+  return `
+  <h1>${esc(c.nome)}</h1>
+  <p class="sub">${c.profilo.committente ? "Richiesta di " + esc(c.profilo.committente) + " · " : ""}Questionario compilato al ${calc.pct}% (${calc.answered} di ${Q.length} domande)</p>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="secthead"><p class="eyebrow">Indice di prontezza</p><span class="tag ${b.c}">${b.l}</span></div>
+    <div style="margin-top:22px">
+      <div class="meter">
+        <div class="fill" style="width:${calc.total}%"></div>
+        <div class="val">${calc.total}</div>
+        <div class="thr" style="left:${thr}%"></div>
+        <div class="thrlab" style="left:${thr}%">soglia richiesta ${thr}</div>
+      </div>
+      <div class="bands"><span>0 · non pronto</span><span style="text-align:center">60 · adeguato</span><span>100</span></div>
+    </div>
+    <p style="margin:16px 0 0;font-size:13px;color:var(--ink-2)">
+      ${diff >= 0
+        ? `Sei <b>${diff} punti sopra</b> la soglia. ${top.length ? "Restano " + top.length + " azioni per consolidare il margine." : ""}`
+        : `Ti mancano <b>${Math.abs(diff)} punti</b> per raggiungere la soglia. Le prime ${Math.min(3, top.length)} azioni del piano ne recuperano ${top.slice(0,3).reduce((s, g) => s + g.pt, 0).toFixed(1)}.`}
+    </p>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card">
+      <p class="eyebrow">Punteggio per area</p>
+      ${Object.keys(PILLARS).map(k => {
+        const p = calc.perP[k], s = p.score === null ? 0 : p.score;
+        return `<div class="pb">
+          <div class="r"><span>${PILLARS[k].n} <span class="code">· peso ${PILLARS[k].w}%</span></span><b>${p.score === null ? "—" : s}</b></div>
+          <div class="track"><i style="width:${s}%;background:${PILLARS[k].c}"></i></div>
+        </div>`;
+      }).join("")}
+    </div>
+    <div class="card">
+      <p class="eyebrow">Priorità — punti guadagnati per giornata di lavoro</p>
+      ${top.length ? `<table><tbody>${top.map(g => `
+        <tr><td style="width:34px" class="code">${g.q.id}</td>
+        <td>${esc(g.azione)}<div class="code" style="margin-top:2px">${esc(g.q.r)}</div></td>
+        <td style="text-align:right;white-space:nowrap"><b class="code">+${g.pt}</b><div class="code">${g.gg} gg</div></td></tr>`).join("")}</tbody></table>`
+       : '<div class="empty">Nessuno scostamento aperto. Compila il questionario per generare il piano.</div>'}
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Scostamenti</div><div class="n">${gl.length}</div><div class="h">risposte negative o parziali</div></div>
+    <div class="card kpi"><div class="l">Azioni chiuse</div><div class="n">${gl.filter(g => g.stato === "Completata").length}</div><div class="h">su ${gl.length} del piano</div></div>
+    <div class="card kpi"><div class="l">Impegno residuo</div><div class="n">${gl.filter(g => g.stato !== "Completata").reduce((s, g) => s + g.gg, 0)}</div><div class="h">giornate-uomo stimate</div></div>
+    <div class="card kpi"><div class="l">Evidenze pronte</div><div class="n">${Object.values(c.docs).filter(d => d === "Disponibile").length}</div><div class="h">documenti su ${Q.length} attesi</div></div>
+  </div>`;
+}
+
+/* ---- anagrafica ---- */
+function vProfilo(c){
+  const p = c.profilo, f = (k, l, t = "text") => `<label class="f"><span>${l}</span><input type="${t}" data-p="${k}" value="${esc(p[k])}"></label>`;
+  return `
+  <h1>Anagrafica</h1>
+  <p class="sub">Dati identificativi e requisito richiesto dal committente.</p>
+  <div class="grid g2">
+    <div class="card">
+      <p class="eyebrow">Azienda</p>
+      <label class="f"><span>Ragione sociale</span><input type="text" data-n="nome" value="${esc(c.nome)}"></label>
+      ${f("piva", "Partita IVA")}${f("ateco", "Codice ATECO")}${f("settore", "Settore")}
+      ${f("sede", "Sede operativa")}
+      <div class="grid g2">${f("dipendenti", "Dipendenti", "number")}${f("fatturato", "Fatturato (€ mln)", "number")}</div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Richiesta del committente</p>
+      ${f("committente", "Cliente / capofila che richiede la valutazione")}
+      <label class="f"><span>Punteggio minimo richiesto</span><input type="number" min="0" max="100" data-p="soglia" value="${esc(p.soglia)}"></label>
+      ${f("scadenza", "Termine di consegna", "date")}
+      ${f("referente", "Referente interno")}
+      <div class="disc" style="font-size:11.5px;color:var(--ink-3);margin-top:6px">
+        La soglia orienta il piano di adeguamento: le azioni vengono ordinate per recuperare il divario nel minor tempo.
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- questionario ---- */
+function vAssess(c, calc){
+  return `
+  <h1>Questionario</h1>
+  <p class="sub">${Q.length} domande su cinque aree. Rispondi <b>Sì</b> solo se esiste evidenza documentale reperibile.</p>
+  ${Object.keys(PILLARS).map(k => {
+    const qs = Q.filter(q => q.p === k), p = calc.perP[k];
+    return `<div class="card" style="margin-bottom:14px">
+      <div class="secthead">
+        <div><h2 style="margin:0">${PILLARS[k].n}</h2><span class="code">${qs.filter(q => c.answers[q.id]).length} di ${qs.length} · peso ${PILLARS[k].w}%</span></div>
+        <span class="tag ${p.score === null ? "t-gry" : band(p.score).c}">${p.score === null ? "non valutata" : p.score + "/100"}</span>
+      </div>
+      <div style="margin-top:10px">
+      ${qs.map(q => {
+        const a = c.answers[q.id];
+        const o = (v, l, cl) => `<button class="opt ${a === v ? "on " + (cl || "") : ""}" data-q="${q.id}" data-a="${v}">${l}</button>`;
+        return `<div class="q">
+          <div class="head">
+            <div class="txt">
+              <p><span class="code">${q.id}</span> ${esc(q.t)}</p>
+              <div class="meta"><span>${esc(q.r)}</span><span>·</span><span>evidenza: ${esc(q.d)}</span><span>·</span><span>peso ${q.w}</span></div>
+            </div>
+            <div class="opts">${o("si", "Sì")}${o("parziale", "In parte", "pa")}${o("no", "No", "no")}${o("na", "N/A", "na")}</div>
+          </div>
+          ${a && a !== "si" ? `<div class="qnote"><input type="text" placeholder="Nota interna — stato attuale, chi se ne occupa…" data-note="${q.id}" value="${esc(c.notes[q.id] || "")}"></div>` : ""}
+        </div>`;
+      }).join("")}
+      </div>
+    </div>`;
+  }).join("")}`;
+}
+
+/* ---- piano ---- */
+function vPiano(c, calc, gl){
+  if(!gl.length) return `<h1>Piano di adeguamento</h1><p class="sub">Generato automaticamente dalle risposte negative o parziali.</p><div class="card"><div class="empty">Nessuno scostamento da colmare. Compila il questionario per generare le azioni.</div></div>`;
+  return `
+  <h1>Piano di adeguamento</h1>
+  <p class="sub">${gl.length} azioni, ordinate per punti recuperati rispetto all'impegno richiesto. <button class="btn ghost sm" id="csvBtn">Esporta CSV</button></p>
+  <div class="card" style="padding:6px 0">
+  <table>
+    <thead><tr><th style="width:44px">#</th><th>Azione</th><th style="width:76px">Impatto</th><th style="width:64px">Stima</th><th style="width:140px">Responsabile</th><th style="width:130px">Scadenza</th><th style="width:130px">Stato</th></tr></thead>
+    <tbody>${gl.map((g, i) => `<tr>
+      <td class="code">${String(i + 1).padStart(2, "0")}</td>
+      <td>
+        <div style="font-weight:500">${esc(g.azione)}</div>
+        <div class="code" style="margin-top:3px">${g.q.id} · ${esc(g.q.r)}</div>
+        ${c.notes[g.q.id] ? `<div style="font-size:11.5px;color:var(--ink-3);margin-top:3px">Nota: ${esc(c.notes[g.q.id])}</div>` : ""}
+      </td>
+      <td><b class="code">+${g.pt}</b><div class="code">punti</div></td>
+      <td class="code">${g.gg} gg</td>
+      <td><input type="text" data-act="resp" data-id="${g.q.id}" value="${esc(g.resp)}" placeholder="—"></td>
+      <td><input type="date" data-act="due" data-id="${g.q.id}" value="${esc(g.due)}"></td>
+      <td><select data-act="stato" data-id="${g.q.id}">${["Da avviare", "In corso", "Completata"].map(s => `<option ${g.stato === s ? "selected" : ""}>${s}</option>`).join("")}</select></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+/* ---- documenti ---- */
+function vDoc(c){
+  const stati = ["Assente", "In redazione", "Disponibile", "Non applicabile"];
+  return `
+  <h1>Documenti</h1>
+  <p class="sub">Evidenze attese dal questionario. Tienile allineate: sono ciò che il committente chiederà di vedere.</p>
+  ${Object.keys(PILLARS).map(k => `
+    <div class="card" style="margin-bottom:14px">
+      <p class="eyebrow">${PILLARS[k].n}</p>
+      <table><tbody>${Q.filter(q => q.p === k).map(q => {
+        const st = c.docs[q.id] || "Assente";
+        const cl = st === "Disponibile" ? "t-grn" : st === "In redazione" ? "t-amb" : st === "Non applicabile" ? "t-gry" : "t-red";
+        return `<tr>
+          <td style="width:40px" class="code">${q.id}</td>
+          <td><b style="font-weight:500">${esc(q.d)}</b><div class="code">${esc(q.r)}</div></td>
+          <td style="width:80px"><span class="tag ${cl}">${st === "Non applicabile" ? "N/A" : st}</span></td>
+          <td style="width:160px"><select data-doc="${q.id}">${stati.map(s => `<option ${st === s ? "selected" : ""}>${s}</option>`).join("")}</select></td>
+        </tr>`;
+      }).join("")}</tbody></table>
+    </div>`).join("")}`;
+}
+
+/* ---- attestato ---- */
+function vAtt(c, calc){
+  const b = band(calc.total);
+  const seed = c.id + calc.total + calc.answered;
+  let h = 0; for(let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  const vc = "SR-" + h.toString(36).toUpperCase().padStart(7, "0").slice(0, 7);
+  const oggi = new Date().toLocaleDateString("it-IT");
+  const scad = new Date(Date.now() + 365 * 864e5).toLocaleDateString("it-IT");
+  return `
+  <h1 class="noprint">Attestato</h1>
+  <p class="sub noprint">Sintesi da consegnare al committente. Usa <b>Stampa attestato</b> per il PDF.</p>
+  <div class="att">
+    <div class="band">
+      <div class="k">Esito autovalutazione fornitore</div>
+      <h3>${esc(c.nome)}</h3>
+    </div>
+    <div class="body">
+      <div style="display:flex;gap:30px;align-items:flex-end;flex-wrap:wrap">
+        <div><div class="score">${calc.total}</div><div class="code">indice di prontezza / 100</div></div>
+        <div style="padding-bottom:6px"><span class="tag ${b.c}" style="font-size:13px;padding:5px 14px">${b.l}</span></div>
+        <div style="margin-left:auto;text-align:right;padding-bottom:6px">
+          <div class="code">codice di verifica</div><div class="vc"><b>${vc}</b></div>
+        </div>
+      </div>
+      <div class="rows">
+        ${Object.keys(PILLARS).map(k => `<div><span>${PILLARS[k].n}</span><b class="code">${calc.perP[k].score === null ? "non valutata" : calc.perP[k].score + "/100"}</b></div>`).join("")}
+        <div><span>Domande valutate</span><b class="code">${calc.answered} di ${Q.length}</b></div>
+        ${c.profilo.committente ? `<div><span>Su richiesta di</span><b>${esc(c.profilo.committente)}</b></div>` : ""}
+        ${c.profilo.piva ? `<div><span>Partita IVA</span><b class="code">${esc(c.profilo.piva)}</b></div>` : ""}
+        <div><span>Data di emissione</span><b class="code">${oggi}</b></div>
+        <div><span>Da rinnovare entro</span><b class="code">${scad}</b></div>
+      </div>
+      <div class="disc">
+        <b>Natura del documento.</b> Questo attestato riporta l'esito di un'<b>autovalutazione</b> compilata dall'azienda sulla base delle proprie evidenze documentali.
+        Non costituisce certificazione, non deriva da verifica ispettiva di parte terza e non è rilasciato sotto accreditamento.
+        Il committente può richiedere le evidenze a supporto e disporre verifiche indipendenti.
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- dati ---- */
+function vDati(c){
+  return `
+  <h1>Aziende e dati</h1>
+  <p class="sub">Le valutazioni restano su questo dispositivo. Esportale per conservarle o trasferirle.</p>
+  <div class="grid g2">
+    <div class="card">
+      <p class="eyebrow">Archivio</p>
+      <table><tbody>${DB.companies.map(x => {
+        const k = compute(x);
+        return `<tr>
+          <td><b style="font-weight:600">${esc(x.nome)}</b><div class="code">${x.id} · creata il ${new Date(x.created).toLocaleDateString("it-IT")}</div></td>
+          <td style="width:70px"><span class="tag ${band(k.total).c}">${k.total}</span></td>
+          <td style="width:150px;text-align:right">
+            <button class="btn ghost sm" data-open="${x.id}">Apri</button>
+            <button class="btn ghost sm" data-del="${x.id}">Elimina</button>
+          </td></tr>`;
+      }).join("")}</tbody></table>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Trasferimento</p>
+      <p style="font-size:13px;color:var(--ink-2);margin-top:0">Il file JSON contiene tutte le aziende, le risposte e i piani.</p>
+      <button class="btn" id="expBtn">Esporta archivio</button>
+      <button class="btn ghost" id="impBtn">Importa archivio</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+      <div class="hr"></div>
+      <p class="eyebrow">Metodo</p>
+      <p style="font-size:12.5px;color:var(--ink-2);margin:0">
+        Punteggio per area = somma dei pesi delle risposte ottenute sul massimo ottenibile, escluse le voci N/A.
+        L'indice complessivo pondera le aree: governo 10, ambiente 25, lavoro 25, etica 25, filiera 15.
+        L'impatto di ogni azione è il guadagno sull'indice complessivo se la domanda passasse a "Sì".
+      </p>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   EVENTI
+   ============================================================ */
+function persist(){ Store.save(DB); }
+
+function bind(c){
+  document.querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
+    c.answers[b.dataset.q] = c.answers[b.dataset.q] === b.dataset.a ? undefined : b.dataset.a;
+    if(c.answers[b.dataset.q] === undefined) delete c.answers[b.dataset.q];
+    persist(); render();
+  });
+  document.querySelectorAll("[data-note]").forEach(i => i.onchange = () => { c.notes[i.dataset.note] = i.value; persist(); });
+  document.querySelectorAll("[data-p]").forEach(i => i.onchange = () => { c.profilo[i.dataset.p] = i.value; persist(); render(); });
+  document.querySelectorAll("[data-n]").forEach(i => i.onchange = () => { c.nome = i.value || "Senza nome"; persist(); fillSel(); render(); });
+  document.querySelectorAll("[data-doc]").forEach(s => s.onchange = () => { c.docs[s.dataset.doc] = s.value; persist(); render(); });
+  document.querySelectorAll("[data-act]").forEach(el => el.onchange = () => {
+    const id = el.dataset.id;
+    c.actions[id] = c.actions[id] || {};
+    c.actions[id][el.dataset.act] = el.value;
+    persist(); if(el.dataset.act === "stato") render();
+  });
+  document.querySelectorAll("[data-open]").forEach(b => b.onclick = () => { DB.current = b.dataset.open; persist(); fillSel(); view = "dash"; render(); });
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    const x = DB.companies.find(y => y.id === b.dataset.del);
+    if(!confirm("Eliminare «" + x.nome + "» e tutte le sue risposte?")) return;
+    DB.companies = DB.companies.filter(y => y.id !== b.dataset.del);
+    if(DB.current === b.dataset.del) DB.current = DB.companies[0] ? DB.companies[0].id : null;
+    persist(); fillSel(); render(); toast("Azienda eliminata");
+  });
+
+  const csv = $("#csvBtn");
+  if(csv) csv.onclick = () => {
+    const g = gaps(c, compute(c));
+    const rows = [["#", "ID", "Azione", "Riferimento", "Impatto (pt)", "Stima (gg)", "Responsabile", "Scadenza", "Stato"]]
+      .concat(g.map((x, i) => [i + 1, x.q.id, x.azione, x.q.r, x.pt, x.gg, x.resp, x.due, x.stato]));
+    download("piano-" + c.nome.replace(/\W+/g, "-").toLowerCase() + ".csv",
+      "\uFEFF" + rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(";")).join("\n"), "text/csv");
+    toast("Piano esportato");
+  };
+  const exp = $("#expBtn");
+  if(exp) exp.onclick = () => { download("esg-supplier-ready.json", JSON.stringify(DB, null, 2), "application/json"); toast("Archivio esportato"); };
+  const imp = $("#impBtn");
+  if(imp) imp.onclick = () => $("#impFile").click();
+  const impf = $("#impFile");
+  if(impf) impf.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const d = JSON.parse(r.result);
+        if(!d.companies) throw 0;
+        DB = d; DB.current = DB.current || (DB.companies[0] && DB.companies[0].id);
+        persist(); fillSel(); render(); toast("Archivio importato");
+      }catch(err){ toast("File non valido — serve un archivio esportato da qui"); }
+    };
+    r.readAsText(f);
+  };
+}
+
+function download(name, content, type){
+  const b = new Blob([content], {type:type + ";charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
+function fillSel(){
+  const s = $("#companySel");
+  s.innerHTML = DB.companies.map(c => `<option value="${c.id}" ${c.id === DB.current ? "selected" : ""}>${esc(c.nome)}</option>`).join("");
+}
+
+document.querySelectorAll(".nav").forEach(n => n.onclick = () => { view = n.dataset.v; $("#side").classList.remove("open"); render(); });
+$("#companySel").onchange = e => { DB.current = e.target.value; persist(); view = "dash"; render(); };
+$("#addCo").onclick = () => {
+  const n = prompt("Ragione sociale dell'azienda da valutare");
+  if(n === null) return;
+  const c = newCompany(n.trim());
+  DB.companies.push(c); DB.current = c.id;
+  persist(); fillSel(); view = "profilo"; render(); toast("Azienda aggiunta");
+};
+$("#printBtn").onclick = () => { view = "att"; render(); setTimeout(() => window.print(), 120); };
+$("#menuBtn").onclick = () => $("#side").classList.toggle("open");
+function responsive(){ $("#menuBtn").style.display = window.innerWidth <= 980 ? "block" : "none"; }
+window.addEventListener("resize", responsive); responsive();
+
+/* ---- avvio ---- */
+(async function init(){
+  const d = await Store.load();
+  if(d && d.companies && d.companies.length){ DB = d; }
+  else {
+    const c = newCompany("Azienda di esempio S.r.l.");
+    c.profilo = {...c.profilo, settore:"Carpenteria metallica", dipendenti:"42", fatturato:"8.4", committente:"Capofila di filiera", soglia:60};
+    ["B1","B4","E1","E5","E7","S1","S3","S4","G1","G6","P2"].forEach(k => c.answers[k] = "si");
+    ["B2","E2","S2","S5","G3","P1"].forEach(k => c.answers[k] = "parziale");
+    ["E4","E8","S6","S7","G2","G4","P4"].forEach(k => c.answers[k] = "no");
+    DB = {companies:[c], current:c.id};
+  }
+  if(!DB.current && DB.companies[0]) DB.current = DB.companies[0].id;
+  fillSel(); render();
+})();
+</script>
+</body>
+</html>

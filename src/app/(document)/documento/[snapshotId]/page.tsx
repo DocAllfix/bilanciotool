@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
 import { getSnapshot, resolveSnapshotImages } from "@/features/documents/snapshot";
+import { DOCUMENTI } from "@/features/documents/tipi";
 import { DocumentoGhg } from "@/components/documento/documento-ghg";
 import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
@@ -17,15 +18,30 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
   if (!snap) notFound();
 
   const dati = snap.dati as never;
-  const imageUrls =
-    snap.tipo === "bilancio" ? await resolveSnapshotImages(s.orgId, snap.dati as never) : new Map<string, string>();
+  // Gli URL firmati si generano solo per i documenti che portano immagini nello snapshot.
+  const imageUrls = DOCUMENTI[snap.tipo].haMedia
+    ? await resolveSnapshotImages(s.orgId, snap.dati as never)
+    : new Map<string, string>();
+
+  // Switch esaustivo: aggiungendo un tipo in TIPI_DOCUMENTO senza il suo template,
+  // il compilatore fallisce qui invece di rendere silenziosamente il template sbagliato.
+  const corpo = (() => {
+    switch (snap.tipo) {
+      case "ghg":
+        return <DocumentoGhg dati={dati} />;
+      case "bilancio":
+        return <DocumentoBilancio dati={dati} imageUrls={imageUrls} />;
+      default: {
+        const mai: never = snap.tipo;
+        throw new Error(`Tipo di documento senza template: ${String(mai)}`);
+      }
+    }
+  })();
 
   return (
     <div className="px-4 py-4">
       <DocToolbar snapshotId={snap.id} tipo={snap.tipo} anno={snap.anno} versione={snap.versione} />
-      <article className="doc-pagina">
-        {snap.tipo === "ghg" ? <DocumentoGhg dati={dati} /> : <DocumentoBilancio dati={dati} imageUrls={imageUrls} />}
-      </article>
+      <article className="doc-pagina">{corpo}</article>
     </div>
   );
 }

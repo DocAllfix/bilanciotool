@@ -14,6 +14,7 @@ import { listTopicManagement } from "@/features/report/policies";
 import { listChapters } from "@/features/report/chapters";
 import { getEmissionsBridge } from "@/features/report/ghg-bridge";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
+import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
@@ -23,7 +24,9 @@ import { randomUUID } from "node:crypto";
 // Il documento renderizza SOLO dallo snapshot: le modifiche successive ai dati
 // vivi non lo toccano (garanzia d'audit).
 
-async function prossimaVersione(companyId: string, tipo: "ghg" | "bilancio", anno: number): Promise<number> {
+// Per i documenti non annuali `anno` è SENZA_ESERCIZIO (0): il filtro degenera
+// in (companyId, tipo) e le revisioni formano una serie unica e monotona.
+async function prossimaVersione(companyId: string, tipo: TipoDocumento, anno: number): Promise<number> {
   const rows = await db
     .select({ versione: documentSnapshot.versione })
     .from(documentSnapshot)
@@ -159,7 +162,7 @@ async function salvaSnapshot(
   userId: string,
   orgId: string,
   companyId: string,
-  tipo: "ghg" | "bilancio",
+  tipo: TipoDocumento,
   anno: number,
   dati: unknown,
 ): Promise<string> {

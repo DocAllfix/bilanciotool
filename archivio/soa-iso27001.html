@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S.o.A. — Statement of Applicability ISO/IEC 27001</title>
+<style>
+:root{
+  --navy:#1F4E78; --navy-dk:#15385A; --navy-lt:#E7EEF5; --navy-mid:#3D7BB0;
+  --ink:#141A20; --ink-2:#4A5763; --ink-3:#7C8894;
+  --bg:#FAFAF8; --card:#FFFFFF; --line:#E2E5E9; --line-2:#F0F2F4;
+  --red:#B3261E; --red-lt:#FBEAE8;
+  --amber:#B06E00; --amber-lt:#FDF2DF;
+  --green:#2E7D32; --green-lt:#E8F3E9;
+  --violet:#5B4B9E; --violet-lt:#EEEBF7;
+  --cyan:#0F7B8A; --cyan-lt:#E2F1F3;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--navy-dk)}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.side{width:246px;flex:0 0 246px;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{padding:18px 18px 14px;border-bottom:1px solid var(--line-2)}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 10px 4px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{text-align:left;background:none;border:0;padding:9px 12px;margin:1px 8px;width:calc(100% - 16px);border-radius:8px;cursor:pointer;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--navy);color:#fff;font-weight:600}
+.nav .pill{font-size:10px;font-family:var(--mono);background:rgba(0,0,0,.06);padding:1px 6px;border-radius:20px}
+.nav.on .pill{background:rgba(255,255,255,.22)}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3);line-height:1.45}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.top .sel{margin-left:auto;display:flex;gap:8px;align-items:center}
+.wrap{padding:26px 26px 60px;max-width:1240px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px}
+h2{font-size:15px;margin:0 0 12px;letter-spacing:-.1px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 8px}
+
+/* ---------- primitives ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.btn{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--navy-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+textarea{resize:vertical;min-height:58px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--navy-mid);outline-offset:-1px;border-color:var(--navy-mid)}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}
+.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}
+.t-nav{background:var(--navy-lt);color:var(--navy-dk)}
+.t-vio{background:var(--violet-lt);color:var(--violet)}
+.t-cya{background:var(--cyan-lt);color:var(--cyan)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}
+.empty{padding:34px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .n{font-size:30px;font-weight:650;letter-spacing:-1px;line-height:1.1}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.hr{height:1px;background:var(--line-2);margin:18px 0}
+.secthead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:2px}
+
+/* ---------- signature: rack dei controlli ---------- */
+.rack{display:flex;flex-wrap:wrap;gap:3px}
+.rack i{width:15px;height:15px;border-radius:3px;display:block;border:1px solid rgba(0,0,0,.06);cursor:default}
+.r-nv{background:#EDEFF2}
+.r-nd{background:#E9A9A4}
+.r-pl{background:#F3D28C}
+.r-pa{background:#E9B85C}
+.r-at{background:#7FB683}
+.r-av{background:#2E7D32}
+.r-ex{background:repeating-linear-gradient(45deg,#F2F3F5,#F2F3F5 3px,#DDE0E4 3px,#DDE0E4 6px)}
+.rackrow{margin-bottom:12px}
+.rackrow .lb{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-2);margin-bottom:5px}
+.rackrow .lb b{font-family:var(--mono);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px;font-size:11px;color:var(--ink-3)}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend em{width:11px;height:11px;border-radius:3px;display:block;font-style:normal}
+
+/* meter */
+.meter{position:relative;height:38px;border-radius:8px;overflow:hidden;background:linear-gradient(90deg,#F6DDDB 0%,#FBEFD8 45%,#E4EEF6 70%,#DCEDE6 100%);border:1px solid var(--line)}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;background:var(--navy);opacity:.92}
+.meter .thr{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.meter .thrlab{position:absolute;top:-19px;font-size:10px;font-family:var(--mono);color:var(--ink);transform:translateX(-50%);white-space:nowrap}
+.meter .val{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 10px;color:#fff;font-weight:700;font-size:15px;font-family:var(--mono)}
+.bands{display:flex;font-size:10px;color:var(--ink-3);font-family:var(--mono);margin-top:5px}
+.bands span{flex:1}
+.bands span:last-child{text-align:right}
+.pb{margin-bottom:13px}
+.pb .r{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;gap:10px}
+.pb .r b{font-family:var(--mono);font-weight:600}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--navy)}
+
+/* ---------- riga controllo ---------- */
+.ctl{border-bottom:1px solid var(--line-2);padding:14px 0}
+.ctl:last-child{border-bottom:0}
+.ctl .head{display:flex;gap:14px;align-items:flex-start}
+.ctl .txt{flex:1;min-width:0}
+.ctl .txt p{margin:0 0 4px;font-weight:500}
+.ctl .meta{font-size:11px;color:var(--ink-3);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ctl.off .txt p,.ctl.off .meta{opacity:.55}
+.opts{display:flex;gap:6px;flex:0 0 auto}
+.opt{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 11px;cursor:pointer;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.opt:hover{border-color:var(--navy-mid)}
+.opt.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+.opt.on.ex{background:var(--ink-3);border-color:var(--ink-3)}
+.det{margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 10px;cursor:pointer;font-size:11.5px;color:var(--ink-2)}
+.chip:hover{border-color:var(--navy-mid)}
+.chip.on{background:var(--navy-lt);border-color:var(--navy-mid);color:var(--navy-dk);font-weight:600}
+.flt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.flt select,.flt input{width:auto;min-width:150px}
+.warn{background:var(--amber-lt);border:1px solid #F0DCB4;color:#6E4700;border-radius:8px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+
+/* ---------- documento SoA ---------- */
+.doc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:0;overflow:hidden}
+.doc .band{background:var(--navy-dk);color:#fff;padding:20px 30px}
+.doc .band .k{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.doc .band h3{margin:4px 0 0;font-size:22px;letter-spacing:-.3px}
+.doc .body{padding:26px 30px 30px}
+.doc .rows div{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.doc table{margin-top:8px}
+.doc table td,.doc table th{padding:6px 8px;font-size:11.5px}
+.doc h4{font-size:13px;margin:24px 0 4px;letter-spacing:-.1px}
+.doc .disc{margin-top:22px;padding:13px 15px;background:var(--line-2);border-radius:8px;font-size:11.5px;color:var(--ink-2);line-height:1.55}
+.sign{display:flex;gap:40px;margin-top:28px;flex-wrap:wrap}
+.sign div{flex:1;min-width:200px;border-top:1px solid var(--ink-3);padding-top:6px;font-size:11.5px;color:var(--ink-3)}
+
+@media (max-width:1080px){
+  .g4{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:1fr} .g2{grid-template-columns:1fr}
+  .det{grid-template-columns:1fr}
+  .side{position:fixed;left:-250px;z-index:60;transition:left .2s} .side.open{left:0}
+  .ctl .head{flex-direction:column} .opts{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  .side,.top,.noprint{display:none!important}
+  .wrap{padding:0;max-width:100%}
+  .doc{border:0}
+  .doc .band{background:#fff;color:#000;border-bottom:2px solid #000;padding:0 0 10px}
+  .doc .band .k{opacity:1}
+  .doc .body{padding:14px 0 0}
+  body{background:#fff;font-size:11px}
+  table{page-break-inside:auto} tr{page-break-inside:avoid}
+  h4{page-break-after:avoid}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="brand">
+      <b>S.o.A. — Statement of Applicability</b>
+      <span>ISO/IEC 27001:2022 · 27017 · 27018 · 27701 — v1.0</span>
+    </div>
+    <div class="navgrp">Dichiarazione</div>
+    <button class="nav on" data-v="dash">Quadro di sintesi</button>
+    <button class="nav" data-v="ctx">Contesto e ambito</button>
+    <button class="nav" data-v="soa">Controlli <span class="pill" id="pillC">0/93</span></button>
+    <button class="nav" data-v="check">Verifiche di coerenza <span class="pill" id="pillV">0</span></button>
+    <button class="nav" data-v="piano">Piano di attuazione <span class="pill" id="pillA">0</span></button>
+    <button class="nav" data-v="doc">Documento SoA</button>
+    <div class="navgrp">Gestione</div>
+    <button class="nav" data-v="dati">Organizzazioni e dati</button>
+    <div class="sidefoot">
+      Strumento di redazione della Dichiarazione di Applicabilità.<br>Il contenuto resta su questo dispositivo.
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <button class="btn ghost sm" id="menuBtn" style="display:none">Menu</button>
+      <div style="font-size:12.5px;color:var(--ink-3)">Organizzazione</div>
+      <select id="orgSel" style="width:auto;min-width:230px;font-weight:600"></select>
+      <div class="sel">
+        <button class="btn ghost sm" id="addOrg">Aggiungi organizzazione</button>
+        <button class="btn sm" id="printBtn">Stampa SoA</button>
+      </div>
+    </div>
+    <div class="wrap" id="view"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+/* ============================================================
+   CATALOGO DEI CONTROLLI
+   fw = quadro di riferimento · s = sezione · t = titolo · d = evidenza attesa
+   x  = norme che forniscono guida aggiuntiva sul controllo
+   c  = controllo cardine (priorità alta nel piano)
+   ============================================================ */
+const FW = {
+  "27001": {n:"ISO/IEC 27001:2022 — Allegato A", ab:"27001", fix:true,  c:"var(--navy)",   t:"t-nav",
+            d:"Controlli di sicurezza delle informazioni. Sempre in ambito: la SoA li deve elencare tutti e 93."},
+  "27017": {n:"ISO/IEC 27017:2015 — Controlli estesi cloud", ab:"27017", c:"var(--cyan)",  t:"t-cya",
+            d:"Sette controlli aggiuntivi per fornitori e clienti di servizi cloud."},
+  "27018": {n:"ISO/IEC 27018:2019 — Allegato A", ab:"27018", c:"var(--violet)", t:"t-vio",
+            d:"Controlli per chi tratta dati personali come responsabile in cloud pubblico."},
+  "27701A":{n:"ISO/IEC 27701:2019 — Allegato A", ab:"27701-A", c:"var(--green)", t:"t-grn",
+            d:"Controlli PIMS per il titolare del trattamento."},
+  "27701B":{n:"ISO/IEC 27701:2019 — Allegato B", ab:"27701-B", c:"var(--amber)", t:"t-amb",
+            d:"Controlli PIMS per il responsabile del trattamento."}
+};
+
+const SEC = {
+  "A.5":  {fw:"27001", n:"A.5 — Controlli organizzativi"},
+  "A.6":  {fw:"27001", n:"A.6 — Controlli relativi alle persone"},
+  "A.7":  {fw:"27001", n:"A.7 — Controlli fisici"},
+  "A.8":  {fw:"27001", n:"A.8 — Controlli tecnologici"},
+  "CLD":  {fw:"27017", n:"CLD — Controlli estesi per i servizi cloud"},
+  "P.1":  {fw:"27018", n:"A.1 — Consenso e scelta"},
+  "P.2":  {fw:"27018", n:"A.2 — Legittimità e specificazione della finalità"},
+  "P.4":  {fw:"27018", n:"A.4 — Minimizzazione dei dati"},
+  "P.5":  {fw:"27018", n:"A.5 — Limitazione di uso, conservazione e comunicazione"},
+  "P.7":  {fw:"27018", n:"A.7 — Trasparenza e informazione"},
+  "P.9":  {fw:"27018", n:"A.9 — Responsabilizzazione"},
+  "P.10": {fw:"27018", n:"A.10 — Sicurezza delle informazioni"},
+  "P.11": {fw:"27018", n:"A.11 — Conformità in materia di privacy"},
+  "T.2":  {fw:"27701A", n:"A.7.2 — Condizioni per la raccolta e il trattamento"},
+  "T.3":  {fw:"27701A", n:"A.7.3 — Obblighi verso gli interessati"},
+  "T.4":  {fw:"27701A", n:"A.7.4 — Privacy by design e by default"},
+  "T.5":  {fw:"27701A", n:"A.7.5 — Condivisione, trasferimento e comunicazione dei PII"},
+  "R.2":  {fw:"27701B", n:"B.8.2 — Condizioni per la raccolta e il trattamento"},
+  "R.3":  {fw:"27701B", n:"B.8.3 — Obblighi verso gli interessati"},
+  "R.4":  {fw:"27701B", n:"B.8.4 — Privacy by design e by default"},
+  "R.5":  {fw:"27701B", n:"B.8.5 — Condivisione, trasferimento e comunicazione dei PII"}
+};
+
+const C = [
+/* ---------- ISO/IEC 27001:2022 — A.5 Organizzativi (37) ---------- */
+{s:"A.5",id:"5.1", c:1,t:"Politiche per la sicurezza delle informazioni",d:"Politica del SGSI approvata dalla direzione e diffusa",x:"27017 · 27701"},
+{s:"A.5",id:"5.2", c:1,t:"Ruoli e responsabilità per la sicurezza delle informazioni",d:"Organigramma del SGSI e lettere di incarico",x:"27701"},
+{s:"A.5",id:"5.3", t:"Separazione dei compiti",d:"Matrice di segregazione dei compiti"},
+{s:"A.5",id:"5.4", t:"Responsabilità della direzione",d:"Verbale del riesame di direzione"},
+{s:"A.5",id:"5.5", t:"Contatti con le autorità",d:"Elenco dei contatti con autorità (Garante privacy, ACN, forze dell'ordine)",x:"27701"},
+{s:"A.5",id:"5.6", t:"Contatti con gruppi di interesse specialistici",d:"Elenco di adesioni e fonti informative (CERT, CSIRT, associazioni)"},
+{s:"A.5",id:"5.7", t:"Intelligence sulle minacce",d:"Procedura di threat intelligence e report periodici",x:"27017"},
+{s:"A.5",id:"5.8", t:"Sicurezza delle informazioni nella gestione dei progetti",d:"Checklist di sicurezza applicata ai progetti"},
+{s:"A.5",id:"5.9", c:1,t:"Inventario delle informazioni e degli altri asset associati",d:"Registro degli asset informativi con proprietario",x:"27017 · 27018"},
+{s:"A.5",id:"5.10",c:1,t:"Uso accettabile delle informazioni e degli altri asset associati",d:"Regolamento sull'uso degli strumenti aziendali",x:"27017"},
+{s:"A.5",id:"5.11",t:"Restituzione degli asset",d:"Modulo di riconsegna degli asset alla cessazione",x:"27017"},
+{s:"A.5",id:"5.12",c:1,t:"Classificazione delle informazioni",d:"Criteri di classificazione e schema dei livelli",x:"27017 · 27701"},
+{s:"A.5",id:"5.13",t:"Etichettatura delle informazioni",d:"Procedura di etichettatura dei documenti e dei supporti"},
+{s:"A.5",id:"5.14",t:"Trasferimento delle informazioni",d:"Procedura di scambio informazioni e accordi con le controparti",x:"27018 · 27701"},
+{s:"A.5",id:"5.15",c:1,t:"Controllo degli accessi",d:"Politica di controllo degli accessi",x:"27017 · 27018"},
+{s:"A.5",id:"5.16",c:1,t:"Gestione delle identità",d:"Procedura di gestione delle identità (ingresso, cambio, uscita)",x:"27017 · 27018"},
+{s:"A.5",id:"5.17",c:1,t:"Informazioni di autenticazione",d:"Politica sulle credenziali e sulla loro consegna",x:"27017"},
+{s:"A.5",id:"5.18",c:1,t:"Diritti di accesso",d:"Matrice dei profili e registro dei riesami periodici",x:"27017 · 27018"},
+{s:"A.5",id:"5.19",t:"Sicurezza delle informazioni nelle relazioni con i fornitori",d:"Politica di sicurezza nei rapporti con i fornitori",x:"27017 · 27701"},
+{s:"A.5",id:"5.20",c:1,t:"Sicurezza delle informazioni negli accordi con i fornitori",d:"Clausole contrattuali di sicurezza e riservatezza",x:"27017 · 27018 · 27701"},
+{s:"A.5",id:"5.21",t:"Gestione della sicurezza nella catena di fornitura ICT",d:"Criteri di qualifica dei fornitori ICT",x:"27017"},
+{s:"A.5",id:"5.22",t:"Monitoraggio, riesame e gestione del cambiamento dei servizi dei fornitori",d:"Report di riesame dei fornitori e verifica degli SLA",x:"27017"},
+{s:"A.5",id:"5.23",c:1,t:"Sicurezza delle informazioni per l'utilizzo di servizi cloud",d:"Registro dei servizi cloud e valutazione dei fornitori",x:"27017 · 27018"},
+{s:"A.5",id:"5.24",c:1,t:"Pianificazione e preparazione della gestione degli incidenti",d:"Procedura di gestione degli incidenti con ruoli e tempi",x:"27017 · 27018 · 27701"},
+{s:"A.5",id:"5.25",t:"Valutazione e decisione sugli eventi di sicurezza delle informazioni",d:"Criteri di classificazione e triage degli eventi"},
+{s:"A.5",id:"5.26",c:1,t:"Risposta agli incidenti di sicurezza delle informazioni",d:"Registro degli incidenti e rapporti di risposta",x:"27018 · 27701"},
+{s:"A.5",id:"5.27",t:"Apprendere dagli incidenti di sicurezza delle informazioni",d:"Analisi delle cause e azioni correttive tracciate"},
+{s:"A.5",id:"5.28",t:"Raccolta di evidenze",d:"Procedura di raccolta e conservazione delle evidenze digitali",x:"27017"},
+{s:"A.5",id:"5.29",t:"Sicurezza delle informazioni durante le interruzioni",d:"Piano di continuità con i requisiti di sicurezza"},
+{s:"A.5",id:"5.30",c:1,t:"Prontezza ICT per la continuità operativa",d:"Piano di ripristino ICT con RTO e RPO ed esiti dei test",x:"27017"},
+{s:"A.5",id:"5.31",c:1,t:"Requisiti legali, statutari, regolamentari e contrattuali",d:"Registro dei requisiti cogenti applicabili",x:"27017 · 27018 · 27701"},
+{s:"A.5",id:"5.32",t:"Diritti di proprietà intellettuale",d:"Procedura sulle licenze software e registro delle licenze"},
+{s:"A.5",id:"5.33",t:"Protezione delle registrazioni",d:"Piano di conservazione e protezione delle registrazioni",x:"27018 · 27701"},
+{s:"A.5",id:"5.34",c:1,t:"Privacy e protezione dei dati personali",d:"Registro dei trattamenti e misure di conformità al GDPR",x:"27018 · 27701"},
+{s:"A.5",id:"5.35",t:"Riesame indipendente della sicurezza delle informazioni",d:"Programma e rapporti di audit interno"},
+{s:"A.5",id:"5.36",t:"Conformità a politiche, regole e standard per la sicurezza delle informazioni",d:"Checklist di verifica della conformità interna"},
+{s:"A.5",id:"5.37",t:"Procedure operative documentate",d:"Istruzioni operative ICT rilasciate e aggiornate",x:"27017"},
+
+/* ---------- A.6 Persone (8) ---------- */
+{s:"A.6",id:"6.1", t:"Selezione del personale",d:"Procedura di selezione con verifiche pre-assunzione"},
+{s:"A.6",id:"6.2", t:"Termini e condizioni di impiego",d:"Clausole di sicurezza inserite nel contratto di lavoro"},
+{s:"A.6",id:"6.3", c:1,t:"Consapevolezza, istruzione e formazione sulla sicurezza delle informazioni",d:"Piano formativo e registri delle sessioni erogate",x:"27017 · 27018 · 27701"},
+{s:"A.6",id:"6.4", t:"Processo disciplinare",d:"Procedura disciplinare formalizzata e comunicata"},
+{s:"A.6",id:"6.5", t:"Responsabilità dopo la cessazione o il cambiamento del rapporto di lavoro",d:"Checklist di cessazione del rapporto"},
+{s:"A.6",id:"6.6", c:1,t:"Accordi di riservatezza o di non divulgazione",d:"Modello di NDA sottoscritto da personale e terzi",x:"27018 · 27701"},
+{s:"A.6",id:"6.7", t:"Lavoro da remoto",d:"Politica sul lavoro da remoto e sui dispositivi usati"},
+{s:"A.6",id:"6.8", t:"Segnalazione degli eventi di sicurezza delle informazioni",d:"Canale di segnalazione e modulo dedicato"},
+
+/* ---------- A.7 Fisici (14) ---------- */
+{s:"A.7",id:"7.1", t:"Perimetri di sicurezza fisica",d:"Planimetria con perimetri e aree classificate"},
+{s:"A.7",id:"7.2", c:1,t:"Ingressi fisici",d:"Procedura di accesso fisico e registro dei visitatori"},
+{s:"A.7",id:"7.3", t:"Messa in sicurezza di uffici, locali e strutture",d:"Verbale di sopralluogo sulla sicurezza fisica"},
+{s:"A.7",id:"7.4", t:"Monitoraggio della sicurezza fisica",d:"Progetto di videosorveglianza e allarmi con informativa"},
+{s:"A.7",id:"7.5", t:"Protezione da minacce fisiche e ambientali",d:"Valutazione dei rischi ambientali del sito"},
+{s:"A.7",id:"7.6", t:"Lavoro in aree sicure",d:"Regole di condotta nelle aree sicure"},
+{s:"A.7",id:"7.7", t:"Scrivania pulita e schermo pulito",d:"Politica clear desk e clear screen",x:"27018"},
+{s:"A.7",id:"7.8", t:"Posizionamento e protezione delle apparecchiature",d:"Layout del locale tecnico e misure di protezione"},
+{s:"A.7",id:"7.9", t:"Sicurezza degli asset fuori sede",d:"Registro degli asset in uso esterno",x:"27018"},
+{s:"A.7",id:"7.10",c:1,t:"Supporti di memorizzazione",d:"Procedura di gestione dei supporti removibili",x:"27018"},
+{s:"A.7",id:"7.11",t:"Servizi di supporto",d:"Verifiche su UPS, gruppo elettrogeno e condizionamento"},
+{s:"A.7",id:"7.12",t:"Sicurezza del cablaggio",d:"Schema del cablaggio e certificazioni di posa"},
+{s:"A.7",id:"7.13",t:"Manutenzione delle apparecchiature",d:"Piano e registro delle manutenzioni"},
+{s:"A.7",id:"7.14",c:1,t:"Dismissione o riutilizzo sicuro delle apparecchiature",d:"Verbali di cancellazione sicura o distruzione",x:"27018 · 27701"},
+
+/* ---------- A.8 Tecnologici (34) ---------- */
+{s:"A.8",id:"8.1", c:1,t:"Dispositivi endpoint dell'utente",d:"Standard di configurazione degli endpoint e gestione MDM",x:"27018"},
+{s:"A.8",id:"8.2", c:1,t:"Diritti di accesso privilegiati",d:"Registro delle utenze amministrative e dei riesami",x:"27017 · 27018"},
+{s:"A.8",id:"8.3", t:"Restrizione dell'accesso alle informazioni",d:"Matrice dei permessi sui repository",x:"27017 · 27018"},
+{s:"A.8",id:"8.4", t:"Accesso al codice sorgente",d:"Regole di accesso al repository di codice"},
+{s:"A.8",id:"8.5", c:1,t:"Autenticazione sicura",d:"Configurazione dell'autenticazione a più fattori",x:"27017"},
+{s:"A.8",id:"8.6", t:"Gestione della capacità",d:"Monitoraggio della capacità e piano di crescita",x:"27017"},
+{s:"A.8",id:"8.7", c:1,t:"Protezione dal malware",d:"Configurazione della protezione antimalware e report"},
+{s:"A.8",id:"8.8", c:1,t:"Gestione delle vulnerabilità tecniche",d:"Procedura di patching e report delle scansioni",x:"27017"},
+{s:"A.8",id:"8.9", t:"Gestione della configurazione",d:"Baseline di configurazione e inventario configurazioni",x:"27017"},
+{s:"A.8",id:"8.10",c:1,t:"Cancellazione delle informazioni",d:"Procedura di cancellazione sicura dei dati",x:"27017 · 27018 · 27701"},
+{s:"A.8",id:"8.11",t:"Mascheramento dei dati",d:"Regole di mascheramento e pseudonimizzazione",x:"27701"},
+{s:"A.8",id:"8.12",t:"Prevenzione della fuga di dati",d:"Configurazione degli strumenti di prevenzione e regole attive",x:"27018"},
+{s:"A.8",id:"8.13",c:1,t:"Backup delle informazioni",d:"Piano di backup ed esiti dei test di ripristino",x:"27017 · 27018"},
+{s:"A.8",id:"8.14",t:"Ridondanza delle strutture di elaborazione delle informazioni",d:"Schema architetturale delle ridondanze",x:"27017"},
+{s:"A.8",id:"8.15",c:1,t:"Registrazione degli eventi",d:"Politica di logging e periodo di conservazione",x:"27017 · 27018 · 27701"},
+{s:"A.8",id:"8.16",c:1,t:"Attività di monitoraggio",d:"Configurazione del monitoraggio e degli avvisi, report periodici",x:"27017"},
+{s:"A.8",id:"8.17",t:"Sincronizzazione degli orologi",d:"Configurazione dei server orari di riferimento",x:"27017"},
+{s:"A.8",id:"8.18",t:"Uso di programmi di utilità privilegiati",d:"Elenco degli strumenti privilegiati autorizzati",x:"27017"},
+{s:"A.8",id:"8.19",t:"Installazione di software sui sistemi operativi",d:"Procedura di rilascio del software in esercizio"},
+{s:"A.8",id:"8.20",c:1,t:"Sicurezza delle reti",d:"Schema di rete e regole del firewall",x:"27017"},
+{s:"A.8",id:"8.21",t:"Sicurezza dei servizi di rete",d:"Requisiti di sicurezza e SLA dei servizi di rete",x:"27017"},
+{s:"A.8",id:"8.22",t:"Segregazione delle reti",d:"Piano di segmentazione e configurazione delle VLAN",x:"27017"},
+{s:"A.8",id:"8.23",t:"Filtraggio web",d:"Configurazione del filtraggio della navigazione"},
+{s:"A.8",id:"8.24",c:1,t:"Uso della crittografia",d:"Politica crittografica e procedura di gestione delle chiavi",x:"27017 · 27018 · 27701"},
+{s:"A.8",id:"8.25",t:"Ciclo di vita di sviluppo sicuro",d:"Procedura di sviluppo sicuro del software"},
+{s:"A.8",id:"8.26",t:"Requisiti di sicurezza delle applicazioni",d:"Specifica dei requisiti di sicurezza applicativi",x:"27017 · 27701"},
+{s:"A.8",id:"8.27",t:"Principi di ingegneria e architettura di sistemi sicuri",d:"Linee guida di architettura sicura"},
+{s:"A.8",id:"8.28",t:"Codifica sicura",d:"Standard di codifica sicura ed esiti delle revisioni del codice"},
+{s:"A.8",id:"8.29",t:"Test di sicurezza in sviluppo e accettazione",d:"Piano ed esiti dei test di sicurezza"},
+{s:"A.8",id:"8.30",t:"Sviluppo affidato all'esterno",d:"Requisiti contrattuali per lo sviluppo esternalizzato"},
+{s:"A.8",id:"8.31",t:"Separazione degli ambienti di sviluppo, test ed esercizio",d:"Schema degli ambienti e regole di separazione",x:"27017"},
+{s:"A.8",id:"8.32",c:1,t:"Gestione del cambiamento",d:"Procedura di gestione del cambiamento e registro delle richieste",x:"27017 · 27701"},
+{s:"A.8",id:"8.33",t:"Informazioni di test",d:"Regole per la selezione e la protezione dei dati di test",x:"27701"},
+{s:"A.8",id:"8.34",t:"Protezione dei sistemi informativi durante i test di audit",d:"Piano dei test di audit concordato con i proprietari"},
+
+/* ---------- ISO/IEC 27017:2015 — controlli estesi (7) ---------- */
+{s:"CLD",id:"CLD.6.3.1", c:1,t:"Ruoli e responsabilità condivisi in un ambiente cloud",d:"Matrice di ripartizione delle responsabilità fra fornitore e cliente"},
+{s:"CLD",id:"CLD.8.1.5", t:"Rimozione degli asset del cliente del servizio cloud",d:"Procedura di restituzione e rimozione degli asset a fine servizio"},
+{s:"CLD",id:"CLD.9.5.1", c:1,t:"Segregazione negli ambienti virtuali",d:"Configurazione dell'isolamento fra ambienti dei diversi clienti"},
+{s:"CLD",id:"CLD.9.5.2", t:"Protezione delle macchine virtuali",d:"Baseline di irrobustimento delle macchine virtuali"},
+{s:"CLD",id:"CLD.12.1.5",t:"Amministrazione delle operazioni",d:"Procedure operative di amministrazione documentate"},
+{s:"CLD",id:"CLD.12.4.5",c:1,t:"Monitoraggio dei servizi cloud da parte del cliente",d:"Funzioni di log e monitoraggio rese disponibili al cliente"},
+{s:"CLD",id:"CLD.13.1.4",t:"Allineamento della sicurezza delle reti virtuali e fisiche",d:"Configurazione coerente fra reti virtuali e reti fisiche"},
+
+/* ---------- ISO/IEC 27018:2019 — Allegato A (25) ---------- */
+{s:"P.1", id:"A.1.1",  c:1,t:"Obbligo di cooperare per l'esercizio dei diritti degli interessati",d:"Procedura di supporto al titolare nelle richieste degli interessati"},
+{s:"P.2", id:"A.2.1",  t:"Finalità del trattamento del responsabile in cloud pubblico",d:"Istruzioni documentate ricevute dal titolare"},
+{s:"P.2", id:"A.2.2",  t:"Uso commerciale dei dati personali",d:"Divieto contrattuale di uso per marketing senza consenso"},
+{s:"P.4", id:"A.4.1",  t:"Cancellazione sicura dei file temporanei",d:"Procedura di cancellazione dei file temporanei"},
+{s:"P.5", id:"A.5.1",  t:"Notifica delle comunicazioni di dati personali",d:"Procedura di notifica al cliente delle richieste di divulgazione"},
+{s:"P.5", id:"A.5.2",  t:"Registrazione delle comunicazioni di dati personali",d:"Registro delle comunicazioni effettuate"},
+{s:"P.7", id:"A.7.1",  c:1,t:"Comunicazione del subaffidamento del trattamento",d:"Elenco aggiornato dei sub-responsabili reso disponibile al cliente"},
+{s:"P.9", id:"A.9.1",  c:1,t:"Notifica della violazione dei dati personali",d:"Procedura di notifica della violazione al cliente"},
+{s:"P.9", id:"A.9.2",  t:"Periodo di conservazione delle politiche e delle linee guida",d:"Piano di conservazione della documentazione del sistema"},
+{s:"P.9", id:"A.9.3",  c:1,t:"Restituzione, trasferimento e cancellazione dei dati personali",d:"Procedura di uscita con restituzione e cancellazione dei dati"},
+{s:"P.10",id:"A.10.1", t:"Accordi di riservatezza o di non divulgazione",d:"NDA sottoscritti dal personale con accesso ai dati personali"},
+{s:"P.10",id:"A.10.2", t:"Limitazione della produzione di materiale cartaceo",d:"Regole sulla stampa dei dati personali"},
+{s:"P.10",id:"A.10.3", t:"Controllo e registrazione del ripristino dei dati",d:"Registro delle operazioni di ripristino"},
+{s:"P.10",id:"A.10.4", t:"Protezione dei dati su supporti che lasciano i locali",d:"Procedura per il trasporto dei supporti"},
+{s:"P.10",id:"A.10.5", t:"Uso di supporti portatili non cifrati",d:"Divieto d'uso e registro delle deroghe autorizzate"},
+{s:"P.10",id:"A.10.6", c:1,t:"Cifratura dei dati personali trasmessi su reti pubbliche",d:"Configurazione dei canali cifrati in uso"},
+{s:"P.10",id:"A.10.7", t:"Distruzione sicura del materiale cartaceo",d:"Verbali di distruzione dei documenti cartacei"},
+{s:"P.10",id:"A.10.8", t:"Univocità degli identificativi utente",d:"Regola di assegnazione di identificativi univoci"},
+{s:"P.10",id:"A.10.9", t:"Registrazione degli utenti autorizzati",d:"Elenco degli utenti con accesso ai dati personali"},
+{s:"P.10",id:"A.10.10",t:"Gestione degli identificativi utente",d:"Procedura di disattivazione e non riassegnazione degli identificativi"},
+{s:"P.10",id:"A.10.11",c:1,t:"Misure contrattuali",d:"Contratto di trattamento conforme all'art. 28 del GDPR"},
+{s:"P.10",id:"A.10.12",c:1,t:"Subaffidamento del trattamento dei dati personali",d:"Autorizzazione del titolare e contratti con i sub-responsabili"},
+{s:"P.10",id:"A.10.13",t:"Accesso ai dati su spazi di memorizzazione già utilizzati",d:"Procedura di sanificazione dello spazio di memorizzazione"},
+{s:"P.11",id:"A.11.1", c:1,t:"Ubicazione geografica dei dati personali",d:"Elenco dei centri dati e delle giurisdizioni interessate"},
+{s:"P.11",id:"A.11.2", t:"Destinazione prevista dei dati personali",d:"Informativa sui trasferimenti e garanzie applicate"},
+
+/* ---------- ISO/IEC 27701:2019 — Allegato A, titolare (31) ---------- */
+{s:"T.2",id:"A.7.2.1", c:1,t:"Individuare e documentare le finalità",d:"Elenco delle finalità per ciascun trattamento"},
+{s:"T.2",id:"A.7.2.2", c:1,t:"Individuare la base giuridica",d:"Analisi delle basi giuridiche per trattamento"},
+{s:"T.2",id:"A.7.2.3", t:"Stabilire quando e come raccogliere il consenso",d:"Procedura di raccolta del consenso"},
+{s:"T.2",id:"A.7.2.4", t:"Ottenere e registrare il consenso",d:"Registro dei consensi con prova della raccolta"},
+{s:"T.2",id:"A.7.2.5", c:1,t:"Valutazione d'impatto sulla protezione dei dati",d:"DPIA per i trattamenti a rischio elevato"},
+{s:"T.2",id:"A.7.2.6", c:1,t:"Contratti con i responsabili del trattamento",d:"Atti di nomina dei responsabili ex art. 28 del GDPR"},
+{s:"T.2",id:"A.7.2.7", t:"Contitolarità del trattamento",d:"Accordo di contitolarità con ripartizione dei compiti"},
+{s:"T.2",id:"A.7.2.8", c:1,t:"Registrazioni relative al trattamento dei dati personali",d:"Registro dei trattamenti del titolare"},
+{s:"T.3",id:"A.7.3.1", t:"Determinare e assolvere gli obblighi verso gli interessati",d:"Procedura sui diritti degli interessati"},
+{s:"T.3",id:"A.7.3.2", t:"Determinare le informazioni da fornire agli interessati",d:"Contenuti minimi delle informative"},
+{s:"T.3",id:"A.7.3.3", c:1,t:"Fornire le informazioni agli interessati",d:"Informative pubblicate e consegnate"},
+{s:"T.3",id:"A.7.3.4", t:"Meccanismo per modificare o revocare il consenso",d:"Funzione di revoca del consenso disponibile"},
+{s:"T.3",id:"A.7.3.5", t:"Meccanismo per opporsi al trattamento",d:"Procedura di gestione dell'opposizione"},
+{s:"T.3",id:"A.7.3.6", c:1,t:"Accesso, rettifica e cancellazione",d:"Procedura di evasione delle richieste di accesso e cancellazione"},
+{s:"T.3",id:"A.7.3.7", t:"Obbligo di informare i terzi",d:"Procedura di comunicazione delle rettifiche ai destinatari"},
+{s:"T.3",id:"A.7.3.8", t:"Fornire copia dei dati personali trattati",d:"Procedura di portabilità dei dati"},
+{s:"T.3",id:"A.7.3.9", t:"Gestione delle richieste",d:"Registro delle richieste degli interessati con tempi di risposta"},
+{s:"T.3",id:"A.7.3.10",t:"Processo decisionale automatizzato",d:"Elenco dei trattamenti automatizzati e misure di tutela"},
+{s:"T.4",id:"A.7.4.1", t:"Limitare la raccolta",d:"Criteri di minimizzazione applicati alla raccolta"},
+{s:"T.4",id:"A.7.4.2", t:"Limitare il trattamento",d:"Regole di limitazione alle sole finalità dichiarate"},
+{s:"T.4",id:"A.7.4.3", t:"Accuratezza e qualità",d:"Procedura di verifica e aggiornamento dei dati"},
+{s:"T.4",id:"A.7.4.4", t:"Obiettivi di minimizzazione dei dati personali",d:"Obiettivi documentati di minimizzazione"},
+{s:"T.4",id:"A.7.4.5", c:1,t:"De-identificazione e cancellazione al termine del trattamento",d:"Procedura di anonimizzazione o cancellazione a fine trattamento"},
+{s:"T.4",id:"A.7.4.6", t:"File temporanei",d:"Regole di gestione e cancellazione dei file temporanei"},
+{s:"T.4",id:"A.7.4.7", c:1,t:"Conservazione",d:"Piano di conservazione dei dati personali per trattamento"},
+{s:"T.4",id:"A.7.4.8", t:"Smaltimento",d:"Procedura di distruzione sicura dei supporti e dei documenti"},
+{s:"T.4",id:"A.7.4.9", t:"Controlli sulla trasmissione dei dati personali",d:"Misure di protezione dei canali di trasmissione"},
+{s:"T.5",id:"A.7.5.1", c:1,t:"Individuare la base per il trasferimento tra giurisdizioni",d:"Analisi delle basi di trasferimento (adeguatezza, clausole standard)"},
+{s:"T.5",id:"A.7.5.2", t:"Paesi e organizzazioni internazionali destinatari",d:"Elenco dei paesi di destinazione dei dati"},
+{s:"T.5",id:"A.7.5.3", t:"Registrazioni dei trasferimenti di dati personali",d:"Registro dei trasferimenti"},
+{s:"T.5",id:"A.7.5.4", t:"Registrazioni delle comunicazioni a terzi",d:"Registro delle comunicazioni a soggetti terzi"},
+
+/* ---------- ISO/IEC 27701:2019 — Allegato B, responsabile (18) ---------- */
+{s:"R.2",id:"B.8.2.1", c:1,t:"Accordo con il cliente",d:"Contratto di trattamento sottoscritto con il titolare"},
+{s:"R.2",id:"B.8.2.2", t:"Finalità dell'organizzazione",d:"Dichiarazione di trattamento su sola istruzione documentata"},
+{s:"R.2",id:"B.8.2.3", t:"Uso per marketing e pubblicità",d:"Divieto d'uso salvo consenso documentato"},
+{s:"R.2",id:"B.8.2.4", t:"Istruzione in violazione di legge",d:"Procedura di segnalazione delle istruzioni illegittime"},
+{s:"R.2",id:"B.8.2.5", t:"Obblighi del cliente",d:"Informazioni fornite al titolare per adempiere ai suoi obblighi"},
+{s:"R.2",id:"B.8.2.6", c:1,t:"Registrazioni relative al trattamento dei dati personali",d:"Registro dei trattamenti del responsabile"},
+{s:"R.3",id:"B.8.3.1", c:1,t:"Obblighi verso gli interessati",d:"Procedura di supporto al titolare per i diritti degli interessati"},
+{s:"R.4",id:"B.8.4.1", t:"File temporanei",d:"Procedura di cancellazione dei file temporanei"},
+{s:"R.4",id:"B.8.4.2", c:1,t:"Restituzione, trasferimento o cancellazione dei dati personali",d:"Procedura di uscita e restituzione dei dati al titolare"},
+{s:"R.4",id:"B.8.4.3", t:"Controlli sulla trasmissione dei dati personali",d:"Misure di protezione dei canali di trasmissione"},
+{s:"R.5",id:"B.8.5.1", c:1,t:"Base per il trasferimento tra giurisdizioni",d:"Analisi delle basi di trasferimento"},
+{s:"R.5",id:"B.8.5.2", t:"Paesi e organizzazioni internazionali destinatari",d:"Elenco dei paesi di destinazione dei dati"},
+{s:"R.5",id:"B.8.5.3", t:"Registrazioni delle comunicazioni a terzi",d:"Registro delle comunicazioni a soggetti terzi"},
+{s:"R.5",id:"B.8.5.4", t:"Notifica delle richieste di divulgazione",d:"Procedura di notifica al titolare delle richieste ricevute"},
+{s:"R.5",id:"B.8.5.5", t:"Comunicazioni giuridicamente vincolanti",d:"Registro delle comunicazioni imposte dall'autorità"},
+{s:"R.5",id:"B.8.5.6", c:1,t:"Comunicazione dei subincaricati",d:"Elenco dei sub-responsabili comunicato al titolare"},
+{s:"R.5",id:"B.8.5.7", c:1,t:"Incarico di un subincaricato",d:"Procedura di autorizzazione e contratto con il sub-responsabile"},
+{s:"R.5",id:"B.8.5.8", t:"Cambio di subincaricato",d:"Procedura di notifica preventiva delle variazioni"}
+].map(o => ({...o, fw:SEC[o.s].fw, k:SEC[o.s].fw + "|" + o.id}));
+
+/* stati di attuazione */
+const ST = {
+  nd:{n:"Non attuato",           v:0,   c:"t-red", r:"r-nd"},
+  pl:{n:"Pianificato",           v:20,  c:"t-amb", r:"r-pl"},
+  pa:{n:"Parzialmente attuato",  v:55,  c:"t-amb", r:"r-pa"},
+  at:{n:"Attuato",               v:90,  c:"t-grn", r:"r-at"},
+  av:{n:"Attuato e verificato",  v:100, c:"t-grn", r:"r-av"}
+};
+const ST_ORD = ["nd","pl","pa","at","av"];
+
+/* motivazioni di inclusione */
+const MOT = {
+  rv:{n:"Valutazione del rischio", ab:"VR"},
+  ol:{n:"Obbligo legale o regolamentare", ab:"OL"},
+  oc:{n:"Obbligo contrattuale", ab:"OC"},
+  rb:{n:"Requisito di business", ab:"RB"},
+  bp:{n:"Buona prassi di settore", ab:"BP"}
+};
+
+const BANDS = [
+  {min:90,l:"Pronto per la certificazione",c:"t-grn"},
+  {min:75,l:"Maturo",c:"t-grn"},
+  {min:55,l:"In consolidamento",c:"t-nav"},
+  {min:30,l:"In avvio",c:"t-amb"},
+  {min:0, l:"Non presidiato",c:"t-red"}
+];
+const band = s => BANDS.find(b => s >= b.min);
+
+/* ============================================================
+   PERSISTENZA
+   ============================================================ */
+const KEY = "soa-27001-27017-27018-27701-v1";
+const Store = {
+  async load(){
+    try{ if(window.storage && window.storage.get){ const r = await window.storage.get(KEY); if(r && r.value) return JSON.parse(r.value); } }catch(e){}
+    try{ const raw = localStorage.getItem(KEY); if(raw) return JSON.parse(raw); }catch(e){}
+    return null;
+  },
+  async save(d){
+    const s = JSON.stringify(d);
+    try{ if(window.storage && window.storage.set){ await window.storage.set(KEY, s); return; } }catch(e){}
+    try{ localStorage.setItem(KEY, s); }catch(e){}
+  }
+};
+
+let DB = {orgs:[], current:null};
+let view = "dash";
+let F = {fw:"", sec:"", st:"", app:"", q:"", solo:false};
+
+const uid = () => "O" + Math.random().toString(36).slice(2,8).toUpperCase();
+const newOrg = nome => ({
+  id:uid(), nome:nome || "Nuova organizzazione",
+  profilo:{piva:"", sede:"", scope:"", esclusioni:"", ver:"1.0", data:new Date().toISOString().slice(0,10),
+           redatto:"", approvato:"", ruolo:"Titolare del trattamento", cloud:"Cliente di servizi cloud", soglia:80},
+  mods:{"27017":false, "27018":false, "27701A":false, "27701B":false},
+  ctl:{}, act:{}, created:new Date().toISOString()
+});
+const org = () => DB.orgs.find(o => o.id === DB.current);
+
+/* ============================================================
+   AMBITO E CALCOLI
+   ============================================================ */
+const inScope = o => C.filter(x => x.fw === "27001" || o.mods[x.fw]);
+const rec = (o, k) => o.ctl[k] || {};
+const isApp = (o, k) => rec(o, k).app !== "no";
+const stOf = (o, k) => rec(o, k).st;
+
+function compute(o){
+  const list = inScope(o);
+  const app = list.filter(x => isApp(o, x.k));
+  let sum = 0, valued = 0;
+  app.forEach(x => { const s = stOf(o, x.k); if(s){ valued++; sum += ST[s].v; } });
+  const idx = app.length ? Math.round(sum / app.length) : 0;
+
+  const perFw = {};
+  Object.keys(FW).forEach(f => {
+    if(f !== "27001" && !o.mods[f]) return;
+    const L = list.filter(x => x.fw === f), A = L.filter(x => isApp(o, x.k));
+    let s2 = 0; A.forEach(x => { const s = stOf(o, x.k); if(s) s2 += ST[s].v; });
+    perFw[f] = {tot:L.length, app:A.length, esc:L.length - A.length, score:A.length ? Math.round(s2 / A.length) : 0};
+  });
+
+  const perSec = {};
+  Object.keys(SEC).forEach(s => {
+    if(SEC[s].fw !== "27001" && !o.mods[SEC[s].fw]) return;
+    const L = list.filter(x => x.s === s), A = L.filter(x => isApp(o, x.k));
+    let s2 = 0; A.forEach(x => { const st = stOf(o, x.k); if(st) s2 += ST[st].v; });
+    perSec[s] = {tot:L.length, app:A.length, score:A.length ? Math.round(s2 / A.length) : 0};
+  });
+
+  const done = app.filter(x => ["at","av"].includes(stOf(o, x.k))).length;
+  return {list, app:app.length, esc:list.length - app.length, tot:list.length,
+          idx, valued, done, perFw, perSec, pct:app.length ? Math.round(valued / app.length * 100) : 0};
+}
+
+/* punti di indice recuperabili portando il controllo ad "attuato e verificato" */
+function upside(o, x, calc){
+  if(!calc.app) return 0;
+  const s = stOf(o, x.k);
+  const v = s ? ST[s].v : 0;
+  return Math.round((100 - v) / calc.app * 10) / 10;
+}
+
+function gaps(o, calc){
+  return calc.list
+    .filter(x => isApp(o, x.k) && !["av","at"].includes(stOf(o, x.k)))
+    .map(x => {
+      const s = stOf(o, x.k), a = o.act[x.k] || {};
+      return {x, st:s, pt:upside(o, x, calc), prio:(x.c || !s || s === "nd") ? "Alta" : "Media",
+              resp:rec(o, x.k).resp || "", due:a.due || "", stato:a.stato || "Da avviare"};
+    })
+    .sort((a, b) => (a.prio === b.prio ? b.pt - a.pt || a.x.id.localeCompare(b.x.id) : a.prio === "Alta" ? -1 : 1));
+}
+
+/* verifiche di coerenza */
+function checks(o, calc){
+  const out = [];
+  const add = (t, l, ids) => { if(ids.length) out.push({t, l, ids}); };
+  add("Esclusioni prive di giustificazione",
+      "La SoA deve motivare ogni controllo escluso. Senza motivazione l'organismo di certificazione rileva una non conformità.",
+      calc.list.filter(x => !isApp(o, x.k) && !(rec(o, x.k).giust || "").trim()).map(x => x.id));
+  add("Controlli applicabili senza motivazione di inclusione",
+      "Indica perché il controllo è stato selezionato: rischio, obbligo legale, contratto, business o buona prassi.",
+      calc.list.filter(x => isApp(o, x.k) && !Object.values(rec(o, x.k).m || {}).some(Boolean)).map(x => x.id));
+  add("Controlli dichiarati attuati senza riferimento documentale",
+      "Lo stato di attuazione va sostenuto da un documento o da una registrazione reperibile.",
+      calc.list.filter(x => isApp(o, x.k) && ["at","av"].includes(stOf(o, x.k)) && !(rec(o, x.k).doc || "").trim()).map(x => x.id));
+  add("Controlli applicabili senza stato di attuazione",
+      "Assegna lo stato: finché resta vuoto il controllo pesa zero sull'indice.",
+      calc.list.filter(x => isApp(o, x.k) && !stOf(o, x.k)).map(x => x.id));
+  add("Controlli applicabili senza responsabile",
+      "Ogni controllo selezionato ha bisogno di un presidio nominato.",
+      calc.list.filter(x => isApp(o, x.k) && !(rec(o, x.k).resp || "").trim()).map(x => x.id));
+
+  const p = o.profilo, mods = [];
+  if(/cloud/i.test(p.cloud) && !o.mods["27017"]) mods.push("Il profilo dichiara uso di servizi cloud ma il modulo ISO/IEC 27017 non è attivo.");
+  if(/Fornitore/i.test(p.cloud) && !o.mods["27018"]) mods.push("Il profilo dichiara il ruolo di fornitore cloud: valuta ISO/IEC 27018 se tratti dati personali per conto dei clienti.");
+  if(/Titolare|Entrambi/i.test(p.ruolo) && !o.mods["27701A"]) mods.push("Il profilo indica il ruolo di titolare ma l'Allegato A della ISO/IEC 27701 non è attivo.");
+  if(/Responsabile|Entrambi/i.test(p.ruolo) && !o.mods["27701B"]) mods.push("Il profilo indica il ruolo di responsabile ma l'Allegato B della ISO/IEC 27701 non è attivo.");
+  if(!(p.scope || "").trim()) mods.push("Il campo di applicazione del SGSI non è compilato: è la prima cosa che l'auditor legge.");
+  if(!(p.approvato || "").trim()) mods.push("Manca il nominativo di chi approva la Dichiarazione di Applicabilità.");
+  return {out, mods};
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const dIT = s => s ? new Date(s).toLocaleDateString("it-IT") : "—";
+function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1800); }
+
+function render(){
+  const o = org();
+  if(!o){ $("#view").innerHTML = '<div class="empty">Nessuna organizzazione in archivio. Usa <b>Aggiungi organizzazione</b> per iniziare.</div>'; return; }
+  const calc = compute(o), gl = gaps(o, calc), ck = checks(o, calc);
+  $("#pillC").textContent = calc.valued + "/" + calc.app;
+  $("#pillA").textContent = gl.filter(g => g.stato !== "Completata").length;
+  $("#pillV").textContent = ck.out.reduce((s, x) => s + x.ids.length, 0) + ck.mods.length;
+  document.querySelectorAll(".nav").forEach(n => n.classList.toggle("on", n.dataset.v === view));
+  $("#view").innerHTML = ({dash:vDash, ctx:vCtx, soa:vSoa, check:vCheck, piano:vPiano, doc:vDoc, dati:vDati})[view](o, calc, gl, ck);
+  bind(o, calc);
+  window.scrollTo(0, 0);
+}
+
+const rackCls = (o, x) => !isApp(o, x.k) ? "r-ex" : (stOf(o, x.k) ? ST[stOf(o, x.k)].r : "r-nv");
+
+function rack(o, calc){
+  return Object.keys(calc.perSec).map(s => {
+    const L = calc.list.filter(x => x.s === s), p = calc.perSec[s];
+    return `<div class="rackrow">
+      <div class="lb"><span>${esc(SEC[s].n)}</span><b>${p.score}</b></div>
+      <div class="rack">${L.map(x => `<i class="${rackCls(o, x)}" title="${esc(x.id + " — " + x.t)}"></i>`).join("")}</div>
+    </div>`;
+  }).join("");
+}
+
+/* ---- quadro di sintesi ---- */
+function vDash(o, calc, gl, ck){
+  const b = band(calc.idx), thr = +o.profilo.soglia || 80, diff = calc.idx - thr;
+  const top = gl.slice(0, 6);
+  const nCk = ck.out.reduce((s, x) => s + x.ids.length, 0) + ck.mods.length;
+  return `
+  <h1>${esc(o.nome)}</h1>
+  <p class="sub">${calc.tot} controlli in ambito · ${calc.app} applicabili · ${calc.esc} esclusi · stato assegnato al ${calc.pct}%</p>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="secthead"><p class="eyebrow">Indice di attuazione dei controlli</p><span class="tag ${b.c}">${b.l}</span></div>
+    <div style="margin-top:22px">
+      <div class="meter">
+        <div class="fill" style="width:${calc.idx}%"></div>
+        <div class="val">${calc.idx}</div>
+        <div class="thr" style="left:${thr}%"></div>
+        <div class="thrlab" style="left:${thr}%">obiettivo ${thr}</div>
+      </div>
+      <div class="bands"><span>0 · non presidiato</span><span style="text-align:center">55 · in consolidamento</span><span>100</span></div>
+    </div>
+    <p style="margin:16px 0 0;font-size:13px;color:var(--ink-2)">
+      ${diff >= 0
+        ? `Sei <b>${diff} punti sopra</b> l'obiettivo. ${gl.length ? "Restano " + gl.length + " controlli da portare ad attuato." : "Tutti i controlli applicabili risultano attuati."}`
+        : `Mancano <b>${Math.abs(diff)} punti</b> all'obiettivo. Le prime ${Math.min(5, top.length)} azioni del piano ne recuperano ${top.slice(0,5).reduce((s, g) => s + g.pt, 0).toFixed(1)}.`}
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <p class="eyebrow">Rack dei controlli — una casella per controllo, colore per stato</p>
+    ${rack(o, calc)}
+    <div class="legend">
+      <span><em class="r-nv"></em>non valutato</span>
+      <span><em class="r-nd"></em>non attuato</span>
+      <span><em class="r-pl"></em>pianificato</span>
+      <span><em class="r-pa"></em>parziale</span>
+      <span><em class="r-at"></em>attuato</span>
+      <span><em class="r-av"></em>attuato e verificato</span>
+      <span><em class="r-ex"></em>escluso</span>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card">
+      <p class="eyebrow">Attuazione per quadro normativo</p>
+      ${Object.keys(calc.perFw).map(f => {
+        const p = calc.perFw[f];
+        return `<div class="pb">
+          <div class="r"><span>${esc(FW[f].n)} <span class="code">· ${p.app}/${p.tot} applicabili</span></span><b>${p.score}</b></div>
+          <div class="track"><i style="width:${p.score}%;background:${FW[f].c}"></i></div>
+        </div>`;
+      }).join("")}
+      ${Object.keys(calc.perFw).length === 1 ? '<p style="font-size:12.5px;color:var(--ink-3);margin:10px 0 0">Attiva i moduli 27017, 27018 o 27701 da <b>Contesto e ambito</b> se rientrano nel campo di applicazione.</p>' : ""}
+    </div>
+    <div class="card">
+      <p class="eyebrow">Priorità — punti di indice recuperabili</p>
+      ${top.length ? `<table><tbody>${top.map(g => `
+        <tr><td style="width:78px" class="code">${esc(g.x.id)}</td>
+        <td>${esc(g.x.t)}<div class="code" style="margin-top:2px">${g.st ? ST[g.st].n : "stato non assegnato"}</div></td>
+        <td style="text-align:right;white-space:nowrap"><b class="code">+${g.pt}</b><div class="code">${g.prio}</div></td></tr>`).join("")}</tbody></table>`
+       : '<div class="empty">Nessun controllo aperto.</div>'}
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Controlli applicabili</div><div class="n">${calc.app}</div><div class="h">su ${calc.tot} in ambito</div></div>
+    <div class="card kpi"><div class="l">Attuati</div><div class="n">${calc.done}</div><div class="h">stato attuato o verificato</div></div>
+    <div class="card kpi"><div class="l">Esclusi</div><div class="n">${calc.esc}</div><div class="h">con giustificazione richiesta</div></div>
+    <div class="card kpi"><div class="l">Rilievi di coerenza</div><div class="n">${nCk}</div><div class="h">da sanare prima dell'audit</div></div>
+  </div>`;
+}
+
+/* ---- contesto e ambito ---- */
+function vCtx(o, calc){
+  const p = o.profilo;
+  const f = (k, l, t = "text") => `<label class="f"><span>${l}</span><input type="${t}" data-p="${k}" value="${esc(p[k])}"></label>`;
+  const sel = (k, l, opts) => `<label class="f"><span>${l}</span><select data-p="${k}">${opts.map(v => `<option ${p[k] === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>`;
+  return `
+  <h1>Contesto e ambito</h1>
+  <p class="sub">Identificazione dell'organizzazione, campo di applicazione del SGSI e moduli normativi attivi.</p>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card">
+      <p class="eyebrow">Organizzazione</p>
+      <label class="f"><span>Ragione sociale</span><input type="text" data-n="nome" value="${esc(o.nome)}"></label>
+      ${f("piva", "Partita IVA")}${f("sede", "Sede legale e sedi operative in ambito")}
+      <label class="f"><span>Campo di applicazione del SGSI</span><textarea data-p="scope" placeholder="Servizi, processi, sedi e tecnologie coperti dal sistema di gestione">${esc(p.scope)}</textarea></label>
+      <label class="f"><span>Esclusioni dal campo di applicazione</span><textarea data-p="esclusioni" placeholder="Attività, sedi o servizi non coperti e relativa motivazione">${esc(p.esclusioni)}</textarea></label>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Ruoli e documento</p>
+      ${sel("ruolo", "Ruolo nel trattamento dei dati personali", ["Titolare del trattamento", "Responsabile del trattamento", "Entrambi", "Nessun trattamento di dati personali"])}
+      ${sel("cloud", "Posizione rispetto ai servizi cloud", ["Cliente di servizi cloud", "Fornitore di servizi cloud", "Cliente e fornitore di servizi cloud", "Nessun servizio cloud"])}
+      <div class="grid g2">${f("ver", "Revisione della SoA")}${f("data", "Data di emissione", "date")}</div>
+      <div class="grid g2">${f("redatto", "Redatta da")}${f("approvato", "Approvata da")}</div>
+      <label class="f"><span>Indice di attuazione obiettivo</span><input type="number" min="0" max="100" data-p="soglia" value="${esc(p.soglia)}"></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="secthead"><p class="eyebrow">Moduli normativi</p><span class="code">${calc.tot} controlli in ambito</span></div>
+    <p style="font-size:12.5px;color:var(--ink-2);margin:0 0 14px">
+      I 93 controlli dell'Allegato A della ISO/IEC 27001 sono sempre in ambito. Gli altri quadri si attivano quando il contesto lo richiede
+      e i loro controlli entrano nella Dichiarazione insieme a quelli della norma principale.
+    </p>
+    <table><tbody>
+      ${Object.keys(FW).map(k => {
+        const n = C.filter(x => x.fw === k).length, on = k === "27001" || !!o.mods[k];
+        return `<tr>
+          <td><b style="font-weight:600">${esc(FW[k].n)}</b><div style="font-size:12px;color:var(--ink-3);margin-top:2px">${esc(FW[k].d)}</div></td>
+          <td style="width:90px" class="code">${n} controlli</td>
+          <td style="width:130px;text-align:right">${FW[k].fix
+            ? '<span class="tag t-nav">sempre attivo</span>'
+            : `<button class="btn ${on ? "" : "ghost"} sm" data-mod="${k}">${on ? "Attivo" : "Attiva"}</button>`}</td>
+        </tr>`;
+      }).join("")}
+    </tbody></table>
+  </div>`;
+}
+
+/* ---- dichiarazione: controlli ---- */
+function vSoa(o, calc){
+  let L = calc.list;
+  if(F.fw) L = L.filter(x => x.fw === F.fw);
+  if(F.sec) L = L.filter(x => x.s === F.sec);
+  if(F.app) L = L.filter(x => F.app === "si" ? isApp(o, x.k) : !isApp(o, x.k));
+  if(F.st) L = L.filter(x => (F.st === "none" ? !stOf(o, x.k) : stOf(o, x.k) === F.st));
+  if(F.solo) L = L.filter(x => isApp(o, x.k) && !["at","av"].includes(stOf(o, x.k)));
+  if(F.q){ const q = F.q.toLowerCase(); L = L.filter(x => (x.id + " " + x.t + " " + x.d).toLowerCase().includes(q)); }
+
+  const secs = Object.keys(calc.perSec).filter(s => L.some(x => x.s === s));
+  return `
+  <h1>Controlli</h1>
+  <p class="sub">Per ogni controllo: applicabilità, motivazione della scelta, stato di attuazione e riferimento all'evidenza.</p>
+
+  <div class="flt">
+    <select data-f="fw"><option value="">Tutti i quadri</option>${Object.keys(calc.perFw).map(k => `<option value="${k}" ${F.fw === k ? "selected" : ""}>${FW[k].ab}</option>`).join("")}</select>
+    <select data-f="sec"><option value="">Tutte le sezioni</option>${Object.keys(calc.perSec).map(s => `<option value="${s}" ${F.sec === s ? "selected" : ""}>${esc(SEC[s].n)}</option>`).join("")}</select>
+    <select data-f="app"><option value="">Applicabili ed esclusi</option><option value="si" ${F.app === "si" ? "selected" : ""}>Solo applicabili</option><option value="no" ${F.app === "no" ? "selected" : ""}>Solo esclusi</option></select>
+    <select data-f="st"><option value="">Ogni stato</option><option value="none" ${F.st === "none" ? "selected" : ""}>Senza stato</option>${ST_ORD.map(s => `<option value="${s}" ${F.st === s ? "selected" : ""}>${ST[s].n}</option>`).join("")}</select>
+    <input type="text" data-f="q" value="${esc(F.q)}" placeholder="Cerca e premi Invio">
+    <button class="btn ${F.solo ? "" : "ghost"} sm" data-solo="1">Solo da completare</button>
+    <button class="btn ghost sm" data-reset="1">Azzera filtri</button>
+    <span class="code" style="margin-left:auto">${L.length} controlli mostrati</span>
+  </div>
+
+  ${secs.length ? secs.map(s => `
+    <div class="card" style="margin-bottom:14px">
+      <div class="secthead">
+        <div><h2 style="margin:0">${esc(SEC[s].n)}</h2><span class="code">${calc.perSec[s].app} applicabili su ${calc.perSec[s].tot}</span></div>
+        <span class="tag ${band(calc.perSec[s].score).c}">${calc.perSec[s].score}/100</span>
+      </div>
+      <div style="margin-top:8px">${L.filter(x => x.s === s).map(x => ctlRow(o, x)).join("")}</div>
+    </div>`).join("")
+   : '<div class="card"><div class="empty">Nessun controllo corrisponde ai filtri impostati. Azzera i filtri per vedere l\'elenco completo.</div></div>'}`;
+}
+
+function ctlRow(o, x){
+  const r = rec(o, x.k), a = isApp(o, x.k), m = r.m || {};
+  return `<div class="ctl ${a ? "" : "off"}">
+    <div class="head">
+      <div class="txt">
+        <p><span class="code">${esc(x.id)}</span> ${esc(x.t)}${x.c ? ' <span class="tag t-nav">cardine</span>' : ""}</p>
+        <div class="meta">
+          <span>evidenza attesa: ${esc(x.d)}</span>
+          ${x.x ? `<span>·</span><span>guida aggiuntiva: ${esc(x.x)}</span>` : ""}
+        </div>
+      </div>
+      <div class="opts">
+        <button class="opt ${a ? "on" : ""}" data-k="${x.k}" data-app="si">Applicabile</button>
+        <button class="opt ${a ? "" : "on ex"}" data-k="${x.k}" data-app="no">Escluso</button>
+        ${a ? `<select data-k="${x.k}" data-st="1" style="width:auto;min-width:180px">
+          <option value="">Stato non assegnato</option>
+          ${ST_ORD.map(s => `<option value="${s}" ${r.st === s ? "selected" : ""}>${ST[s].n}</option>`).join("")}
+        </select>` : ""}
+      </div>
+    </div>
+    ${a ? `<div class="det">
+      <div>
+        <div class="eyebrow" style="margin-bottom:5px">Motivazione della selezione</div>
+        <div class="chips">${Object.keys(MOT).map(c => `<button class="chip ${m[c] ? "on" : ""}" data-k="${x.k}" data-mot="${c}">${MOT[c].n}</button>`).join("")}</div>
+        <div style="margin-top:10px"><input type="text" data-k="${x.k}" data-fld="note" value="${esc(r.note || "")}" placeholder="Nota interna sull'attuazione"></div>
+      </div>
+      <div>
+        <div class="grid g2" style="gap:10px">
+          <label class="f" style="margin:0"><span>Riferimento documentale</span><input type="text" data-k="${x.k}" data-fld="doc" value="${esc(r.doc || "")}" placeholder="Codice o titolo del documento"></label>
+          <label class="f" style="margin:0"><span>Responsabile</span><input type="text" data-k="${x.k}" data-fld="resp" value="${esc(r.resp || "")}" placeholder="Funzione o nominativo"></label>
+        </div>
+      </div>
+    </div>`
+    : `<div class="det" style="grid-template-columns:1fr">
+        <label class="f" style="margin:0"><span>Giustificazione dell'esclusione — obbligatoria</span><textarea data-k="${x.k}" data-fld="giust" placeholder="Perché il controllo non è applicabile: assenza dell'asset, del processo o del rischio corrispondente">${esc(r.giust || "")}</textarea></label>
+      </div>`}
+  </div>`;
+}
+
+/* ---- verifiche ---- */
+function vCheck(o, calc, gl, ck){
+  const n = ck.out.reduce((s, x) => s + x.ids.length, 0) + ck.mods.length;
+  return `
+  <h1>Verifiche di coerenza</h1>
+  <p class="sub">Controlli formali sulla Dichiarazione, gli stessi che un auditor esegue in apertura.</p>
+  ${n === 0 ? '<div class="card"><div class="empty">Nessun rilievo aperto. La Dichiarazione è formalmente completa.</div></div>' : ""}
+  ${ck.mods.length ? `<div class="card" style="margin-bottom:14px">
+    <p class="eyebrow">Coerenza fra profilo e moduli attivi</p>
+    ${ck.mods.map(m => `<div class="warn" style="margin-bottom:8px">${esc(m)}</div>`).join("")}
+  </div>` : ""}
+  ${ck.out.map(c => `<div class="card" style="margin-bottom:14px">
+    <div class="secthead"><h2 style="margin:0">${esc(c.t)}</h2><span class="tag t-amb">${c.ids.length}</span></div>
+    <p style="font-size:12.5px;color:var(--ink-2);margin:2px 0 10px">${esc(c.l)}</p>
+    <div class="code" style="line-height:1.9">${c.ids.map(i => `<span class="tag t-gry" style="margin-right:4px">${esc(i)}</span>`).join("")}</div>
+  </div>`).join("")}`;
+}
+
+/* ---- piano ---- */
+function vPiano(o, calc, gl){
+  if(!gl.length) return `<h1>Piano di attuazione</h1><p class="sub">Generato dai controlli applicabili non ancora attuati.</p><div class="card"><div class="empty">Nessun controllo aperto. Tutti gli applicabili risultano attuati.</div></div>`;
+  return `
+  <h1>Piano di attuazione</h1>
+  <p class="sub">${gl.length} controlli aperti, ordinati per priorità e punti di indice recuperabili. <button class="btn ghost sm" id="csvPiano">Esporta CSV</button></p>
+  <div class="card" style="padding:6px 0">
+  <table>
+    <thead><tr><th style="width:40px">#</th><th style="width:86px">Controllo</th><th>Azione</th><th style="width:74px">Impatto</th><th style="width:70px">Priorità</th><th style="width:150px">Responsabile</th><th style="width:140px">Scadenza</th><th style="width:135px">Stato</th></tr></thead>
+    <tbody>${gl.map((g, i) => `<tr>
+      <td class="code">${String(i + 1).padStart(2, "0")}</td>
+      <td class="code">${esc(g.x.id)}</td>
+      <td>
+        <div style="font-weight:500">${g.st === "pa" ? "Completare e verificare" : g.st === "pl" ? "Attuare quanto pianificato"  : "Predisporre e formalizzare"} — ${esc(g.x.d)}</div>
+        <div class="code" style="margin-top:3px">${esc(g.x.t)} · ${esc(FW[g.x.fw].ab)}</div>
+        ${rec(o, g.x.k).note ? `<div style="font-size:11.5px;color:var(--ink-3);margin-top:3px">Nota: ${esc(rec(o, g.x.k).note)}</div>` : ""}
+      </td>
+      <td><b class="code">+${g.pt}</b><div class="code">punti</div></td>
+      <td><span class="tag ${g.prio === "Alta" ? "t-red" : "t-amb"}">${g.prio}</span></td>
+      <td><input type="text" data-k="${g.x.k}" data-fld="resp" value="${esc(g.resp)}" placeholder="—"></td>
+      <td><input type="date" data-k="${g.x.k}" data-actf="due" value="${esc(g.due)}"></td>
+      <td><select data-k="${g.x.k}" data-actf="stato">${["Da avviare", "In corso", "Completata"].map(s => `<option ${g.stato === s ? "selected" : ""}>${s}</option>`).join("")}</select></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+/* ---- documento SoA ---- */
+function vDoc(o, calc){
+  const p = o.profilo, b = band(calc.idx);
+  return `
+  <h1 class="noprint">Documento SoA</h1>
+  <p class="sub noprint">Versione stampabile della Dichiarazione. Usa <b>Stampa SoA</b> per il PDF. <button class="btn ghost sm" id="csvSoa">Esporta CSV</button></p>
+  <div class="doc">
+    <div class="band">
+      <div class="k">Dichiarazione di Applicabilità — Statement of Applicability</div>
+      <h3>${esc(o.nome)}</h3>
+    </div>
+    <div class="body">
+      <div class="rows">
+        <div><span>Norma di riferimento</span><b>ISO/IEC 27001:2022 — Allegato A</b></div>
+        ${Object.keys(calc.perFw).filter(k => k !== "27001").map(k => `<div><span>Linee guida applicate</span><b>${esc(FW[k].n)}</b></div>`).join("")}
+        <div><span>Campo di applicazione del SGSI</span><b style="max-width:60%;text-align:right;font-weight:500">${esc(p.scope) || "—"}</b></div>
+        ${p.esclusioni ? `<div><span>Esclusioni dal campo di applicazione</span><b style="max-width:60%;text-align:right;font-weight:500">${esc(p.esclusioni)}</b></div>` : ""}
+        ${p.piva ? `<div><span>Partita IVA</span><b class="code">${esc(p.piva)}</b></div>` : ""}
+        ${p.sede ? `<div><span>Sedi in ambito</span><b style="max-width:60%;text-align:right;font-weight:500">${esc(p.sede)}</b></div>` : ""}
+        <div><span>Revisione</span><b class="code">${esc(p.ver)} del ${dIT(p.data)}</b></div>
+        <div><span>Controlli in ambito</span><b class="code">${calc.tot} — ${calc.app} applicabili, ${calc.esc} esclusi</b></div>
+        <div><span>Indice di attuazione</span><b class="code">${calc.idx}/100 · ${b.l}</b></div>
+      </div>
+
+      <h4>Sintesi per quadro normativo</h4>
+      <table>
+        <thead><tr><th>Quadro</th><th style="width:80px">Controlli</th><th style="width:80px">Applicabili</th><th style="width:70px">Esclusi</th><th style="width:80px">Attuazione</th></tr></thead>
+        <tbody>${Object.keys(calc.perFw).map(k => {
+          const f = calc.perFw[k];
+          return `<tr><td>${esc(FW[k].n)}</td><td class="code">${f.tot}</td><td class="code">${f.app}</td><td class="code">${f.esc}</td><td class="code">${f.score}/100</td></tr>`;
+        }).join("")}</tbody>
+      </table>
+
+      ${Object.keys(calc.perSec).map(s => `
+        <h4>${esc(SEC[s].n)}</h4>
+        <table>
+          <thead><tr><th style="width:74px">Rif.</th><th>Controllo</th><th style="width:64px">Applic.</th><th style="width:78px">Motivaz.</th><th style="width:104px">Stato</th><th style="width:130px">Riferimento documentale</th></tr></thead>
+          <tbody>${calc.list.filter(x => x.s === s).map(x => {
+            const r = rec(o, x.k), a = isApp(o, x.k), m = r.m || {};
+            const mot = Object.keys(MOT).filter(c => m[c]).map(c => MOT[c].ab).join(" ");
+            return `<tr>
+              <td class="code">${esc(x.id)}</td>
+              <td>${esc(x.t)}${!a && r.giust ? `<div style="font-size:10.5px;color:var(--ink-3);margin-top:2px">Giustificazione: ${esc(r.giust)}</div>` : ""}</td>
+              <td>${a ? "Sì" : "No"}</td>
+              <td class="code">${a ? (mot || "—") : "—"}</td>
+              <td>${a ? (r.st ? ST[r.st].n : "non assegnato") : "—"}</td>
+              <td class="code">${esc(r.doc || (a ? "—" : ""))}</td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table>`).join("")}
+
+      <div class="disc">
+        <b>Legenda delle motivazioni.</b> VR valutazione del rischio · OL obbligo legale o regolamentare · OC obbligo contrattuale · RB requisito di business · BP buona prassi di settore.<br>
+        <b>Natura del documento.</b> La presente Dichiarazione di Applicabilità elenca i controlli selezionati con la relativa motivazione, i controlli esclusi con la relativa giustificazione e lo stato di attuazione alla data di emissione, in conformità al punto 6.1.3 lettera d) della ISO/IEC 27001:2022. Il documento è redatto dall'organizzazione e non costituisce di per sé attestazione di conformità da parte di un organismo di certificazione.
+      </div>
+
+      <div class="sign">
+        <div>Redatta da — ${esc(p.redatto) || "…………………………"}</div>
+        <div>Approvata da — ${esc(p.approvato) || "…………………………"}</div>
+        <div>Data — ${dIT(p.data)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- dati ---- */
+function vDati(o){
+  return `
+  <h1>Organizzazioni e dati</h1>
+  <p class="sub">Le dichiarazioni restano su questo dispositivo. Esportale per conservarle o trasferirle.</p>
+  <div class="grid g2">
+    <div class="card">
+      <p class="eyebrow">Archivio</p>
+      <table><tbody>${DB.orgs.map(x => {
+        const k = compute(x);
+        return `<tr>
+          <td><b style="font-weight:600">${esc(x.nome)}</b><div class="code">${x.id} · creata il ${dIT(x.created)} · ${k.app} controlli applicabili</div></td>
+          <td style="width:70px"><span class="tag ${band(k.idx).c}">${k.idx}</span></td>
+          <td style="width:150px;text-align:right">
+            <button class="btn ghost sm" data-open="${x.id}">Apri</button>
+            <button class="btn ghost sm" data-del="${x.id}">Elimina</button>
+          </td></tr>`;
+      }).join("")}</tbody></table>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Trasferimento</p>
+      <p style="font-size:13px;color:var(--ink-2);margin-top:0">Il file JSON contiene tutte le organizzazioni, le scelte di applicabilità e i piani.</p>
+      <button class="btn" id="expBtn">Esporta archivio</button>
+      <button class="btn ghost" id="impBtn">Importa archivio</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+      <div class="hr"></div>
+      <p class="eyebrow">Metodo di calcolo</p>
+      <p style="font-size:12.5px;color:var(--ink-2);margin:0">
+        A ogni stato corrisponde un valore: non attuato 0, pianificato 20, parzialmente attuato 55, attuato 90, attuato e verificato 100.
+        L'indice è la media di questi valori sui soli controlli applicabili; i controlli senza stato pesano 0.
+        L'impatto di un'azione è il guadagno sull'indice se il controllo passasse a «attuato e verificato».
+      </p>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   EVENTI
+   ============================================================ */
+function persist(){ Store.save(DB); }
+const touch = (o, k) => (o.ctl[k] = o.ctl[k] || {});
+
+function bind(o, calc){
+  document.querySelectorAll("[data-app]").forEach(b => b.onclick = () => {
+    const r = touch(o, b.dataset.k);
+    r.app = b.dataset.app === "no" ? "no" : "si";
+    persist(); render();
+  });
+  document.querySelectorAll("[data-st]").forEach(s => s.onchange = () => { touch(o, s.dataset.k).st = s.value || undefined; persist(); render(); });
+  document.querySelectorAll("[data-mot]").forEach(b => b.onclick = () => {
+    const r = touch(o, b.dataset.k); r.m = r.m || {};
+    r.m[b.dataset.mot] = !r.m[b.dataset.mot];
+    persist(); b.classList.toggle("on");
+  });
+  document.querySelectorAll("[data-fld]").forEach(i => i.onchange = () => { touch(o, i.dataset.k)[i.dataset.fld] = i.value; persist(); });
+  document.querySelectorAll("[data-actf]").forEach(i => i.onchange = () => {
+    o.act[i.dataset.k] = o.act[i.dataset.k] || {};
+    o.act[i.dataset.k][i.dataset.actf] = i.value;
+    persist(); if(i.dataset.actf === "stato") render();
+  });
+  document.querySelectorAll("[data-p]").forEach(i => i.onchange = () => { o.profilo[i.dataset.p] = i.value; persist(); render(); });
+  document.querySelectorAll("[data-n]").forEach(i => i.onchange = () => { o.nome = i.value.trim() || "Senza nome"; persist(); fillSel(); render(); });
+  document.querySelectorAll("[data-mod]").forEach(b => b.onclick = () => {
+    const k = b.dataset.mod;
+    if(o.mods[k] && !confirm("Disattivare " + FW[k].n + "? I suoi controlli escono dalla Dichiarazione ma le risposte già inserite restano salvate.")) return;
+    o.mods[k] = !o.mods[k]; persist(); render(); toast(o.mods[k] ? FW[k].ab + " attivato" : FW[k].ab + " disattivato");
+  });
+  document.querySelectorAll("[data-f]").forEach(i => i.onchange = () => { F[i.dataset.f] = i.value; render(); });
+  const solo = document.querySelector("[data-solo]");
+  if(solo) solo.onclick = () => { F.solo = !F.solo; render(); };
+  const rst = document.querySelector("[data-reset]");
+  if(rst) rst.onclick = () => { F = {fw:"", sec:"", st:"", app:"", q:"", solo:false}; render(); };
+
+  document.querySelectorAll("[data-open]").forEach(b => b.onclick = () => { DB.current = b.dataset.open; persist(); fillSel(); view = "dash"; render(); });
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    const x = DB.orgs.find(y => y.id === b.dataset.del);
+    if(!confirm("Eliminare «" + x.nome + "» e la sua Dichiarazione?")) return;
+    DB.orgs = DB.orgs.filter(y => y.id !== b.dataset.del);
+    if(DB.current === b.dataset.del) DB.current = DB.orgs[0] ? DB.orgs[0].id : null;
+    persist(); fillSel(); render(); toast("Organizzazione eliminata");
+  });
+
+  const cp = $("#csvPiano");
+  if(cp) cp.onclick = () => {
+    const g = gaps(o, calc);
+    const rows = [["#", "Controllo", "Quadro", "Titolo", "Stato attuale", "Impatto (pt)", "Priorità", "Responsabile", "Scadenza", "Stato azione"]]
+      .concat(g.map((x, i) => [i + 1, x.x.id, FW[x.x.fw].ab, x.x.t, x.st ? ST[x.st].n : "non assegnato", x.pt, x.prio, x.resp, x.due, x.stato]));
+    csv("piano-attuazione-" + slug(o.nome) + ".csv", rows); toast("Piano esportato");
+  };
+  const cs = $("#csvSoa");
+  if(cs) cs.onclick = () => {
+    const rows = [["Sezione", "Controllo", "Quadro", "Titolo", "Applicabile", "Motivazione", "Giustificazione esclusione", "Stato attuazione", "Riferimento documentale", "Responsabile", "Nota"]]
+      .concat(calc.list.map(x => {
+        const r = rec(o, x.k), a = isApp(o, x.k), m = r.m || {};
+        return [SEC[x.s].n, x.id, FW[x.fw].ab, x.t, a ? "Sì" : "No",
+                a ? Object.keys(MOT).filter(c => m[c]).map(c => MOT[c].n).join(" / ") : "",
+                a ? "" : (r.giust || ""), a ? (r.st ? ST[r.st].n : "non assegnato") : "",
+                r.doc || "", r.resp || "", r.note || ""];
+      }));
+    csv("soa-" + slug(o.nome) + ".csv", rows); toast("Dichiarazione esportata");
+  };
+  const exp = $("#expBtn");
+  if(exp) exp.onclick = () => { download("soa-archivio.json", JSON.stringify(DB, null, 2), "application/json"); toast("Archivio esportato"); };
+  const imp = $("#impBtn");
+  if(imp) imp.onclick = () => $("#impFile").click();
+  const impf = $("#impFile");
+  if(impf) impf.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const d = JSON.parse(r.result);
+        if(!d.orgs) throw 0;
+        DB = d; DB.current = DB.current || (DB.orgs[0] && DB.orgs[0].id);
+        persist(); fillSel(); render(); toast("Archivio importato");
+      }catch(err){ toast("File non valido — serve un archivio esportato da qui"); }
+    };
+    r.readAsText(f);
+  };
+}
+
+const slug = s => s.replace(/\W+/g, "-").toLowerCase().replace(/^-|-$/g, "");
+function csv(name, rows){
+  download(name, "\uFEFF" + rows.map(r => r.map(v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"').join(";")).join("\n"), "text/csv");
+}
+function download(name, content, type){
+  const b = new Blob([content], {type:type + ";charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+function fillSel(){
+  $("#orgSel").innerHTML = DB.orgs.map(o => `<option value="${o.id}" ${o.id === DB.current ? "selected" : ""}>${esc(o.nome)}</option>`).join("");
+}
+
+document.querySelectorAll(".nav").forEach(n => n.onclick = () => { view = n.dataset.v; $("#side").classList.remove("open"); render(); });
+$("#orgSel").onchange = e => { DB.current = e.target.value; persist(); view = "dash"; render(); };
+$("#addOrg").onclick = () => {
+  const n = prompt("Ragione sociale dell'organizzazione");
+  if(n === null) return;
+  const o = newOrg(n.trim());
+  DB.orgs.push(o); DB.current = o.id;
+  persist(); fillSel(); view = "ctx"; render(); toast("Organizzazione aggiunta");
+};
+$("#printBtn").onclick = () => { view = "doc"; render(); setTimeout(() => window.print(), 150); };
+$("#menuBtn").onclick = () => $("#side").classList.toggle("open");
+function responsive(){ $("#menuBtn").style.display = window.innerWidth <= 1080 ? "block" : "none"; }
+window.addEventListener("resize", responsive); responsive();
+
+/* ---- avvio ---- */
+function demo(){
+  const o = newOrg("Organizzazione di esempio S.r.l.");
+  o.profilo = {...o.profilo,
+    piva:"01234567890",
+    sede:"Sede legale e centro servizi di Aversa (CE)",
+    scope:"Progettazione, erogazione e assistenza dei servizi applicativi in cloud per la clientela business, inclusi i processi di sviluppo, esercizio e supporto svolti presso la sede di Aversa (CE).",
+    esclusioni:"Nessuna esclusione di processo o di sede.",
+    ruolo:"Responsabile del trattamento", cloud:"Cliente e fornitore di servizi cloud",
+    redatto:"Responsabile del SGSI", approvato:"Direzione generale", soglia:80};
+  o.mods = {"27017":true, "27018":true, "27701A":false, "27701B":true};
+  const seq = ["av", "at", "pa", "pl", "nd", "", "at", "pa"];
+  inScope(o).forEach((x, i) => {
+    const s = seq[i % seq.length], r = {app:"si"};
+    if(s) r.st = s;
+    if(i % 7 !== 3) r.m = {rv:true, ol:i % 3 === 0, oc:i % 4 === 0};
+    if(i % 5 !== 4) r.resp = "Responsabile del SGSI";
+    if(["av","at"].includes(s) && i % 11 !== 5) r.doc = "DOC-" + x.id.replace(/\./g, "");
+    o.ctl[x.k] = r;
+  });
+  o.ctl["27001|8.4"] = {app:"no", giust:"L'organizzazione non sviluppa software: non esiste codice sorgente proprietario da proteggere."};
+  o.ctl["27001|8.30"] = {app:"no"};
+  return o;
+}
+
+(async function init(){
+  const d = await Store.load();
+  if(d && d.orgs && d.orgs.length) DB = d;
+  else { const o = demo(); DB = {orgs:[o], current:o.id}; }
+  if(!DB.current && DB.orgs[0]) DB.current = DB.orgs[0].id;
+  fillSel(); render();
+})();
+
+</script>
+</body>
+</html>

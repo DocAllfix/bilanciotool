@@ -27,6 +27,12 @@ await page.fill("#password", "PasswordSicura123!");
 await page.click('button[type="submit"]');
 await page.waitForURL("**/dashboard", { timeout: 30000 });
 
+// Il tour guidato parte da solo al primo accesso e copre la pagina: i suoi
+// popover intercettano i clic dello script. Va silenziato prima di procedere.
+await page.evaluate(() => {
+  for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+});
+
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 const [org] = await sql`select m.organization_id as id, m.user_id as uid from member m join "user" u on u.id=m.user_id where u.email=${email}`;
 await sql`update org_entitlement set status='active' where organization_id=${org.id}`;

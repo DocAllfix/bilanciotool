@@ -12,6 +12,7 @@ import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { etichettaDocumento } from "@/features/documents/tipi";
 import { fmtNum, fmtRelativa } from "@/lib/format";
 import { BookOpen, ExternalLink, Factory, FileText, Leaf } from "lucide-react";
 
@@ -211,7 +212,7 @@ export default async function DashboardPage() {
                       <FileText className="size-4 shrink-0 text-muted-foreground group-hover:text-accent-foreground" strokeWidth={1.75} />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[13px] font-medium">
-                          {d.tipo === "ghg" ? "Rapporto GHG" : "Bilancio"} {d.anno}
+                          {etichettaDocumento(d.tipo, d.anno, true)}
                           <span className="text-muted-foreground"> · v{d.versione}</span>
                         </span>
                         <span className="block truncate text-[11px] text-muted-foreground">{d.companyNome}</span>

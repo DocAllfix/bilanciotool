@@ -3,6 +3,7 @@
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import type { ActionEsito } from "@/features/companies/actions";
+import type { TipoDocumento } from "./tipi";
 import { listSnapshots, publishBilancioSnapshot, publishGhgSnapshot } from "./snapshot";
 
 function daErrore(e: unknown): ActionEsito<never> {
@@ -12,15 +13,25 @@ function daErrore(e: unknown): ActionEsito<never> {
 
 export async function publishDocumentAction(
   companyId: string,
-  tipo: "ghg" | "bilancio",
+  tipo: TipoDocumento,
   anno: number,
 ): Promise<ActionEsito<{ snapshotId: string }>> {
   try {
     const s = await requireConsultant();
-    const snapshotId =
-      tipo === "ghg"
-        ? await publishGhgSnapshot(s.userId, s.orgId, companyId, anno)
-        : await publishBilancioSnapshot(s.userId, s.orgId, companyId, anno);
+    // Switch esaustivo: un tipo nuovo senza funzione di pubblicazione non compila.
+    const pubblica = (() => {
+      switch (tipo) {
+        case "ghg":
+          return publishGhgSnapshot;
+        case "bilancio":
+          return publishBilancioSnapshot;
+        default: {
+          const mai: never = tipo;
+          throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);
+        }
+      }
+    })();
+    const snapshotId = await pubblica(s.userId, s.orgId, companyId, anno);
     return { ok: true, dati: { snapshotId } };
   } catch (e) {
     return daErrore(e);
@@ -29,7 +40,7 @@ export async function publishDocumentAction(
 
 export type SnapshotRiga = {
   id: string;
-  tipo: "ghg" | "bilancio";
+  tipo: TipoDocumento;
   anno: number;
   versione: number;
   pdfStorageKey: string | null;
