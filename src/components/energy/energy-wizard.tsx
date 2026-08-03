@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WizardNav } from "@/components/wizard-nav";
+import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
 import { PassoSito } from "./passo-sito";
 import { PassoVettori } from "./passo-vettori";
 import { PassoUsi } from "./passo-usi";
@@ -123,15 +123,7 @@ export function EnergyWizard(props: {
         {passo === 6 && <PassoRaccontoEnergia {...propsPasso} />}
         {passo === 7 && <PassoVerificaEnergia {...propsPasso} vai={vai} />}
         {passo === 8 && (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <h2 className="text-[15px] font-semibold tracking-tight">Documento di diagnosi energetica</h2>
-              <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-                Il generatore del documento arriva con la fase successiva: congelerà i dati in uno snapshot
-                immutabile e produrrà il PDF impaginato, come già accade per il rapporto GHG e per il bilancio.
-              </p>
-            </CardContent>
-          </Card>
+          <PannelloPubblicazione companyId={companyId} tipo="energetico" anno={bilancio.anno} readyPct={a.totPct} />
         )}
         <WizardNav passo={passo} totale={8} nomi={PASSI.map((p) => p.nome)} vai={vai} />
       </div>

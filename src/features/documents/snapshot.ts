@@ -13,6 +13,8 @@ import { getMateriality } from "@/features/report/materiality";
 import { listTopicManagement } from "@/features/report/policies";
 import { listChapters } from "@/features/report/chapters";
 import { getEmissionsBridge } from "@/features/report/ghg-bridge";
+import { getWizardData as getEnergyWizardData } from "@/features/energy/queries";
+import { listChapters as listEnergyChapters } from "@/features/energy/narrative";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
@@ -156,6 +158,71 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
   };
 
   return salvaSnapshot(userId, orgId, companyId, "bilancio", anno, dati);
+}
+
+// ------------------------------------------------------------------ Energetico
+export async function publishEnergySnapshot(userId: string, orgId: string, companyId: string, anno: number): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const wiz = await getEnergyWizardData(userId, orgId, companyId, anno);
+  if (!wiz || !wiz.bilancio || !wiz.catalogo || !wiz.stato || !wiz.risultati) {
+    throw new Error("Nessun bilancio energetico da pubblicare per questo esercizio");
+  }
+
+  // Nello snapshot vanno SOLO i fattori effettivamente usati, già risolti con le
+  // eventuali personalizzazioni: il documento deve poter dichiarare i valori con
+  // cui i suoi numeri sono stati ottenuti, anche se la libreria cambia dopo.
+  const capitoli = await listEnergyChapters(userId, orgId, wiz.bilancio.id);
+  const usati = new Set([
+    ...wiz.stato.inputs.map((i) => i.vettoreKey),
+    ...wiz.stato.celle.map((c) => c.vettoreKey),
+    ...wiz.stato.misure.map((m) => m.vettoreKey),
+  ]);
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: { nome: wiz.azienda.nome, settore: wiz.azienda.settore, sede: wiz.azienda.sede },
+    bilancio: {
+      anno: wiz.bilancio.anno,
+      annoBase: wiz.bilancio.annoBase,
+      profilo: wiz.bilancio.profilo,
+    },
+    catalogo: {
+      vettori: wiz.catalogo.vettori.filter((v) => usati.has(v.key)),
+      aree: wiz.catalogo.aree,
+      usi: wiz.catalogo.usi.map((u) => ({
+        key: u.key, nome: u.nome, areaKey: u.areaKey, attivo: u.attivo, metodo: u.metodo, nota: u.nota,
+      })),
+      driver: wiz.catalogo.driver,
+      indicatori: wiz.catalogo.indicatori,
+      capitoli: wiz.catalogo.capitoli,
+      metodi: wiz.catalogo.metodi,
+    },
+    stato: {
+      inputs: wiz.stato.inputs,
+      celle: wiz.stato.celle,
+      driver: wiz.stato.driver,
+      misure: wiz.stato.misure,
+    },
+    // Le fotografie: nello snapshot vanno le CHIAVI di archiviazione, stabili nel
+    // tempo, non gli URL firmati che scadono. Si rileggono dal capitolo, non
+    // dalla vista del percorso, che porta già gli indirizzi temporanei.
+    capitoli: capitoli.map((c) => ({
+      templateKey: c.templateKey,
+      contenuto: c.contenuto,
+      media: c.media.map((m) => ({
+        tipo: m.tipo,
+        storageKey: m.storageKey,
+        chartKey: m.chartKey,
+        didascalia: m.didascalia,
+        credito: m.credito,
+        larghezza: m.larghezza,
+        posizione: m.posizione,
+      })),
+    })),
+    risultati: wiz.risultati, // derivati congelati QUI
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "energetico", anno, dati);
 }
 
 async function salvaSnapshot(

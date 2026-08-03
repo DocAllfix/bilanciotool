@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -38,6 +38,13 @@ export const DOCUMENTI = {
     nome: "Bilancio di sostenibilità",
     breve: "Bilancio",
     file: "bilancio-sostenibilita",
+    mostraAnno: true,
+    haMedia: true,
+  },
+  energetico: {
+    nome: "Diagnosi energetica (UNI CEI EN 16247)",
+    breve: "Diagnosi energetica",
+    file: "diagnosi-energetica",
     mostraAnno: true,
     haMedia: true,
   },

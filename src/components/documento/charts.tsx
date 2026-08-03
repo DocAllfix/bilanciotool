@@ -14,6 +14,17 @@ export const DOC = {
   muted: "#5f6f7c",
   line: "#d9dfe4",
   accentBg: "#e9f1ef",
+  // Aree funzionali della diagnosi energetica (UNI CEI EN 16247).
+  areaP: "#175e54",
+  areaA: "#3b6e97",
+  areaG: "#b07c22",
+  areaT: "#6b5ca8",
+  positivo: "#2c7a4b",
+  negativo: "#a5442f",
+};
+
+export const COLORE_AREA_DOC: Record<string, string> = {
+  P: DOC.areaP, A: DOC.areaA, G: DOC.areaG, T: DOC.areaT,
 };
 
 const fmtIt = (v: number, d = 0) =>

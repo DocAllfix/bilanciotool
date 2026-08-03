@@ -5,6 +5,7 @@ import { getSnapshot, resolveSnapshotImages } from "@/features/documents/snapsho
 import { DOCUMENTI } from "@/features/documents/tipi";
 import { DocumentoGhg } from "@/components/documento/documento-ghg";
 import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
+import { DocumentoEnergetico } from "@/components/documento/documento-energetico";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,8 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         return <DocumentoGhg dati={dati} />;
       case "bilancio":
         return <DocumentoBilancio dati={dati} imageUrls={imageUrls} />;
+      case "energetico":
+        return <DocumentoEnergetico dati={dati} imageUrls={imageUrls} />;
       default: {
         const mai: never = snap.tipo;
         throw new Error(`Tipo di documento senza template: ${String(mai)}`);
