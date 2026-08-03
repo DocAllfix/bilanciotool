@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ricalcolaAction, setAnswerFieldAction } from "@/features/supplier/actions";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,17 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
   const [inCorso, setInCorso] = useState(false);
   const [areaAperta, setAreaAperta] = useState<string | null>(catalogo.aree[0]?.key ?? null);
 
+  // I salvataggi si accodano: compilando in fretta si possono avere più
+  // scritture in volo, e chiedere il ricalcolo mentre l'ultima non è ancora
+  // arrivata mostrerebbe un punteggio vecchio. La coda garantisce l'ordine e
+  // dà al ricalcolo qualcosa da attendere.
+  const coda = useRef<Promise<unknown>>(Promise.resolve());
+  const accoda = <T,>(f: () => Promise<T>): Promise<T> => {
+    const next = coda.current.then(f, f);
+    coda.current = next.catch(() => undefined);
+    return next;
+  };
+
   const [risposte, setRisposte] = useState<Record<string, string>>(() =>
     Object.fromEntries(stato.risposte.filter((r) => r.risposta).map((r) => [r.questionKey, r.risposta!])),
   );
@@ -44,7 +55,9 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
     // un clic sbagliato senza cercare un pulsante "cancella".
     const nuovo = risposte[questionKey] === valore ? "" : valore;
     setRisposte((s) => ({ ...s, [questionKey]: nuovo }));
-    const esito = await setAnswerFieldAction(valutazione.id, { questionKey, campo: "risposta", valore: nuovo });
+    const esito = await accoda(() =>
+      setAnswerFieldAction(valutazione.id, { questionKey, campo: "risposta", valore: nuovo }),
+    );
     if (!esito.ok) {
       setRisposte((s) => ({ ...s, [questionKey]: risposte[questionKey] ?? "" }));
       setErrore(esito.errore);
@@ -53,12 +66,17 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
 
   async function annota(questionKey: string, valore: string) {
     setErrore(null);
-    const esito = await setAnswerFieldAction(valutazione.id, { questionKey, campo: "nota", valore });
+    const esito = await accoda(() =>
+      setAnswerFieldAction(valutazione.id, { questionKey, campo: "nota", valore }),
+    );
     if (!esito.ok) setErrore(esito.errore);
   }
 
   async function ricalcola() {
     setInCorso(true);
+    // Prima si aspetta che la coda dei salvataggi sia vuota: ricalcolare su
+    // scritture non ancora arrivate mostrerebbe un punteggio che non esiste.
+    await coda.current;
     await ricalcolaAction(companyId);
     router.refresh();
     setInCorso(false);

@@ -146,7 +146,18 @@ Gate locale: 125 test verdi (immutabilità trigger provata: update respinto e ri
 Gate 12 verde: typecheck · build · **197 test** anche con `RLS_FORCE_ROLE=app_rls` · e2e `energetico.spec.ts` · **collaudo di 40 comandi** con `scripts/visual-check-energetico.mjs` (zero errori di console) · documento reale pubblicato e PDF verificato (`scripts/visual-check-documento-energetico.mjs`).
 Difetti trovati dal collaudo e corretti: 6 (vedi commit 12.E e 12.F).
 
-**Prossima: Fase 13** — ESG Supplier Ready (attestato di autovalutazione). Poi Fase 14 (SoA ISO 27001), quindi il rientro su **Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
+**Fase 13 completata (ESG Supplier Ready)** — quarto modulo, dal prototipo `esg-supplier-ready.html`.
+- **Schema**: cataloghi `supplier_area` (5, pesi 10/25/25/25/15) e `supplier_question` (37: 5+9+9+8+6), tenant `supplier_assessment` (unique su `companyId`: non è un esercizio ma la fotografia corrente) e `supplier_answer`. Le quattro mappe parallele del prototipo (risposte/note/azioni/documenti) diventano **una tabella sola**: hanno tutte la grana della domanda. Migrazioni `0006`+`0007` (RLS) e `0008` (CHECK sui domini, che Drizzle non genera per `text(enum)`).
+- **Due punti di merito tenuti fedeli al prototipo**, perchè è lì che una reimplementazione "ragionevole" diverge: `NULL` non è `'na'` (non applicabile conta come valutata ma esce dal punteggio; nessuna risposta esce anche dal conteggio), e l'indice si **rinormalizza sulle sole aree valutate** (chi ha compilato una sola area non deve risultare bocciato sulle altre quattro).
+- **Motore** in TDD (`src/lib/calc/supplier/`, 17 test): `scoring`, `plan` (recuperi marginali ordinati per punti al giorno), `attestation` (FNV-1a puro, niente `node:crypto`: gira anche nel browser). **Golden estratto eseguendo `compute()` e `upside()` del prototipo** sul suo dataset di esempio: indice 58, aree 83/58/59/50/50, 13 lacune per 42,7 punti.
+- **Interfaccia**: sei viste e non uno stepper (l'autovalutazione è un fascicolo che si consulta, non un percorso a passi); quadro con la **tacca della soglia** sulla barra; questionario a quattro scelte con ripremere-per-annullare; piano con responsabile, scadenza e stato sulla riga della domanda; vista evidenze.
+- **Attestato**: esito, punteggi per area con barre, risposte con note, piano, scala delle fasce, riferimenti. Il **disclaimer sulla natura del documento sta in chiaro nel corpo**, riquadrato, con le parole concordate col committente.
+
+**Regola nuova nata qui**: quando un'interfaccia accetta molti input in rapida successione, i salvataggi vanno **accodati** e il ricalcolo deve **attendere la coda**. Senza, si chiede il punteggio mentre le ultime scritture sono in volo e si vede un numero che non esiste (i dati erano corretti: era la vista a mostrare il passato).
+
+Gate 13 verde: typecheck · build · **226 test** anche con `RLS_FORCE_ROLE=app_rls` · e2e `fornitore.spec.ts` · **collaudo di 28 comandi** con `scripts/visual-check-fornitore.mjs` (zero errori di console) · attestato reale pubblicato e PDF verificato (`scripts/visual-check-attestato.mjs`).
+
+**Prossima: Fase 14** — SoA ISO 27001. Poi il rientro su **Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
 
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
