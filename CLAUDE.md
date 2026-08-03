@@ -177,6 +177,27 @@ Gate 14 verde: typecheck · build · **262 test** anche con `RLS_FORCE_ROLE=app_
 
 **Prossima: rientro su Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
 
+**Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
+
+- **`src/features/companies/moduli.ts`** — registro unico dei cinque moduli (rotta, etichette, norma, icona, documento prodotto, per-esercizio si/no). Erano ricopiati a mano ovunque.
+- **Fascicolo azienda `/aziende/[id]`** — non esisteva: c'erano solo `/aziende/[id]/<modulo>`, quindi dalla SoA non si raggiungeva il Bilancio della stessa azienda senza ripassare dal portafoglio. Mostra i cinque percorsi con stato, esercizio, riempimento contato dal DB e ultima versione pubblicata. La card del portafoglio ora punta qui.
+- **Sidebar contestuale** — dentro un'azienda mostra il nome e i suoi cinque moduli. Il menu mobile rende lo **stesso** componente invece di un secondo elenco copiato a mano (che infatti si era gia fermato a tre voci).
+- **Archivio `/documenti`** — filtrabile per tipo e azienda, con i filtri **nell'indirizzo** (condivisibili, sopravvivono al tasto indietro).
+- **Scadenzario** al posto della somma delle tCO2e di tutto il portafoglio, che era un numero senza domanda. Soglia dell'esercizio arretrato: **l'anno scorso**, non quello in corso (la rendicontazione dell'esercizio N si redige durante l'anno N+1).
+- **Storico per azienda** (`storico.ts`) — quattro serie lette **dagli snapshot pubblicati**, non dai dati vivi: e quello che il cliente ha in mano, e non richiede di rieseguire il motore. **Niente colonna `sintesi`**, che pure era stata proposta: il trigger 0002 elenca le colonne bloccate una per una, quindi una colonna nuova sarebbe un campo **mutabile dentro un record immutabile**, e i documenti gia pubblicati resterebbero comunque vuoti. Estrazione JSONB mirata in SQL.
+- **Pacchetto legale reale** — privacy (11 sezioni), cookie (6), termini (16). Il punto centrale e la **distinzione titolare/responsabile**: Evalis e titolare dei dati dell'account, **responsabile ex art. 28** per i dati che lo studio carica sulle aziende clienti. Cookie **misurati col browser**: zero sul sito pubblico e sul login, uno solo dopo l'accesso. Sezione **rimborsi** agganciata alla pubblicazione del primo documento (criterio verificabile, pronto per Stripe). L'informativa al primo accesso **non e un banner di consenso**: con soli cookie tecnici serve l'informativa, non il consenso.
+- **Landing sui cinque documenti** — tre per esercizio, due fotografie con revisioni. Verificato prima di scrivere: **non esiste un ponte energetico -> GHG**, l'unico e GHG -> bilancio.
+
+**Regole nate qui:**
+- **Ogni select che parte dall'organizzazione porta il proprio filtro esplicito**, in aggiunta a RLS. In sviluppo la connessione e privilegiata e le policy non scattano: lo scadenzario senza filtro mostrava le aziende di **tutti** gli studi, e in produzione RLS avrebbe coperto il difetto lasciandolo li. La difesa sta in tutti e due gli strati.
+- **`prettier` non fa parte del flusso** di questo progetto: riformattando reintroduce lo spazio mangiato dal JSX. Non va lanciato.
+- **Lo spazio mangiato dal JSX si cerca sull'HTML reso**, non sul sorgente: in pagine di prosa e endemico (11 occorrenze nei soli testi legali) e a occhio non si vede.
+- **La codifica dei caratteri va verificata** dopo ogni modifica automatica al sorgente: il mojibake non rompe niente e passa in produzione. Il gate della landing lo tratta come errore.
+- **Ogni serie di dati dichiara il proprio verso di miglioramento**: per le emissioni scendere e un risultato, per un indice di maturita e il contrario.
+- **Fluidita**: zero `loading.tsx` con tutte le pagine `force-dynamic` e cache del router disattivata significa che fra il clic e la pagina non succede niente. I segnaposto sono la leva piu grossa e non costano nulla in freschezza dei dati.
+
+Gate: **280 test** (verdi anche con `RLS_FORCE_ROLE=app_rls`) · build · `visual-check-legale.mjs` 25 controlli · `visual-check-landing.mjs` con rilevatori di mojibake e dei cinque percorsi · verifica in produzione delle nuove pagine, zero errori di console.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

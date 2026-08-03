@@ -29,6 +29,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } })
 const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(`[${sezione}] ${m.text().slice(0, 200)}`); });
 page.on("pageerror", (e) => consoleErrors.push(`[${sezione}] pageerror: ${e.message.slice(0, 200)}`));
+// Un solo gestore dei dialoghi, per tutta la sessione. Con `page.once` per ogni
+// conferma bastava un dialogo in più (o uno già chiuso in automatico da
+// Playwright, che scarta i dialoghi senza gestore) per far morire l'intera QA
+// con «Cannot accept dialog which is already handled».
+page.on("dialog", (d) => { d.accept().catch(() => {}); });
 
 const chiudiTour = async () => {
   for (let i = 0; i < 3; i++) {
@@ -153,7 +158,6 @@ await check("creazione azienda dopo attivazione", async () => {
   await page.getByText("QA Test S.p.A.").waitFor({ timeout: 25000 });
 });
 await check("archiviazione azienda", async () => {
-  page.once("dialog", (d) => d.accept());
   const card = page.locator(".group", { hasText: "QA Test S.p.A." });
   await card.getByRole("button", { name: "Altre azioni" }).click();
   await page.getByRole("menuitem", { name: /Archivia/ }).click();
@@ -172,7 +176,7 @@ await check("ripristino azienda archiviata", async () => {
 set("Percorso GHG (azienda demo)");
 await check("apertura inventario GHG della demo", async () => {
   const demo = page.locator('[data-tour="azienda-demo"]');
-  await demo.getByRole("link", { name: /Inventario GHG/ }).click();
+  await demo.locator('a[href$="/ghg"]').first().click();
   await page.waitForURL("**/ghg/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
   await silenziaTour();
@@ -231,7 +235,6 @@ await check("passo 3: modifica voce", async () => {
   await page.getByText("Voce modificata da QA").waitFor({ timeout: 25000 });
 });
 await check("passo 3: elimina voce", async () => {
-  page.once("dialog", (d) => d.accept());
   await page.locator('button[aria-label="Elimina"]').first().click();
   await page.waitForTimeout(3000);
 });
@@ -269,7 +272,6 @@ await check("passo 6: aggiunta obiettivo", async () => {
   await page.getByText("Obiettivo QA").waitFor({ timeout: 25000 });
 });
 await check("passo 6: eliminazione obiettivo", async () => {
-  page.once("dialog", (d) => d.accept());
   await page.locator('button[aria-label="Elimina obiettivo"]').first().click();
   await page.waitForTimeout(3000);
 });
@@ -298,7 +300,7 @@ await check("apertura bilancio della demo", async () => {
   await silenziaTour();
   await chiudiTour();
   const demo = page.locator('[data-tour="azienda-demo"]');
-  await demo.getByRole("link", { name: "Bilancio", exact: true }).click();
+  await demo.locator('a[href$="/bilancio"]').first().click();
   await page.waitForURL("**/bilancio/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
   await silenziaTour();
@@ -358,7 +360,6 @@ await check("passo 5: aggiunta diagramma dai dati", async () => {
   await page.waitForTimeout(3500);
 });
 await check("passo 5: rimozione elemento visivo", async () => {
-  page.once("dialog", (d) => d.accept());
   await page.locator('button[aria-label="Elimina elemento"]').first().click();
   await page.waitForTimeout(3000);
 });
@@ -389,9 +390,9 @@ await check("apertura del modulo energetico dal portafoglio", async () => {
   await silenziaTour();
   await chiudiTour();
   const card = page.locator('[data-slot="card"]').filter({ hasText: "(demo)" }).first();
-  await card.getByRole("link", { name: "Energetico", exact: true }).click();
+  await card.locator('a[href$="/energetico"]').first().click();
   await page.waitForURL("**/energetico**", { timeout: 40000 });
-  companyDemo = page.url().match(/aziende\/([^/]+)\//)?.[1] ?? null;
+  companyDemo = page.url().match(/aziende\/([^/]+)/)?.[1] ?? null;
 });
 await check("creazione del bilancio energetico", async () => {
   await page.fill("#ce-anno", "2025");
