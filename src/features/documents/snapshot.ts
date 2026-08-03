@@ -15,6 +15,8 @@ import { listChapters } from "@/features/report/chapters";
 import { getEmissionsBridge } from "@/features/report/ghg-bridge";
 import { getWizardData as getEnergyWizardData } from "@/features/energy/queries";
 import { listChapters as listEnergyChapters } from "@/features/energy/narrative";
+import { getSupplierData } from "@/features/supplier/queries";
+import { SENZA_ESERCIZIO } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
@@ -223,6 +225,32 @@ export async function publishEnergySnapshot(userId: string, orgId: string, compa
   };
 
   return salvaSnapshot(userId, orgId, companyId, "energetico", anno, dati);
+}
+
+// ------------------------------------------------------------------ Attestato
+export async function publishSupplierSnapshot(userId: string, orgId: string, companyId: string): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSupplierData(userId, orgId, companyId);
+  if (!d || !d.valutazione || !d.catalogo || !d.stato || !d.esito) {
+    throw new Error("Nessuna autovalutazione da pubblicare per questa azienda");
+  }
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    valutazione: {
+      sogliaRichiesta: d.valutazione.sogliaRichiesta,
+      profilo: d.valutazione.profilo,
+    },
+    catalogo: d.catalogo,
+    // Le sole domande con una risposta: l'attestato dichiara ciò che è stato
+    // valutato, non l'intera banca domande.
+    risposte: d.stato.risposte.filter((r) => r.risposta !== null),
+    piano: d.stato.piano,
+    esito: d.esito, // derivati congelati QUI
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "attestato", SENZA_ESERCIZIO, dati);
 }
 
 async function salvaSnapshot(

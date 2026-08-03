@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -47,6 +47,14 @@ export const DOCUMENTI = {
     file: "diagnosi-energetica",
     mostraAnno: true,
     haMedia: true,
+  },
+  attestato: {
+    nome: "Attestato di autovalutazione ESG",
+    breve: "Attestato ESG",
+    file: "attestato-esg",
+    // Non si riferisce a un esercizio: le revisioni formano una serie unica.
+    mostraAnno: false,
+    haMedia: false,
   },
 } as const satisfies Record<TipoDocumento, VoceDocumento>;
 

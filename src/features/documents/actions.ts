@@ -4,7 +4,9 @@ import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import type { ActionEsito } from "@/features/companies/actions";
 import type { TipoDocumento } from "./tipi";
-import { listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot } from "./snapshot";
+import {
+  listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot, publishSupplierSnapshot,
+} from "./snapshot";
 
 function daErrore(e: unknown): ActionEsito<never> {
   if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
@@ -27,6 +29,9 @@ export async function publishDocumentAction(
           return publishBilancioSnapshot;
         case "energetico":
           return publishEnergySnapshot;
+        case "attestato":
+          // Non ha esercizio: l'anno ricevuto è SENZA_ESERCIZIO e va scartato.
+          return (u: string, o: string, c: string) => publishSupplierSnapshot(u, o, c);
         default: {
           const mai: never = tipo;
           throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);

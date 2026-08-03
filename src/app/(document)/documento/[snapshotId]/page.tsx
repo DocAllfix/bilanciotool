@@ -6,6 +6,7 @@ import { DOCUMENTI } from "@/features/documents/tipi";
 import { DocumentoGhg } from "@/components/documento/documento-ghg";
 import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
 import { DocumentoEnergetico } from "@/components/documento/documento-energetico";
+import { DocumentoAttestato } from "@/components/documento/documento-attestato";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +35,10 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         return <DocumentoBilancio dati={dati} imageUrls={imageUrls} />;
       case "energetico":
         return <DocumentoEnergetico dati={dati} imageUrls={imageUrls} />;
+      case "attestato":
+        // Il codice di verifica si ricava dall'identità dello snapshot: è
+        // stabile per la revisione pubblicata e non va conservato nei dati.
+        return <DocumentoAttestato dati={dati} snapshotId={snap.id} versione={snap.versione} />;
       default: {
         const mai: never = snap.tipo;
         throw new Error(`Tipo di documento senza template: ${String(mai)}`);
