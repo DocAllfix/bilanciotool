@@ -36,7 +36,7 @@ export type DocumentoRecente = {
 
 export type VoceAttivita = { etichetta: string; companyNome: string | null; quando: Date };
 
-const ETICHETTE_AUDIT: Record<string, string> = {
+export const ETICHETTE_AUDIT: Record<string, string> = {
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",
@@ -89,8 +89,21 @@ const ETICHETTE_AUDIT: Record<string, string> = {
   "soa.ruoli.set": "Ruoli privacy e cloud dichiarati",
   "soa.modulo.set": "Modulo esteso attivato o disattivato",
   "soa.controllo.set": "Decisione su un controllo aggiornata",
+  // Le azioni sui documenti si compongono a runtime (`documento.${tipo}.publish`
+  // e `.pdf`), quindi aggiungendo un tipo di documento NON compare nessun errore:
+  // l'etichetta manca e in interfaccia si legge il nome macchina. E successo con
+  // i tre moduli nuovi. Il test `etichette-audit` confronta questo elenco con i
+  // tipi realmente pubblicabili e fallisce se restano indietro.
   "documento.ghg.publish": "Rapporto GHG pubblicato",
+  "documento.ghg.pdf": "Rapporto GHG scaricato in PDF",
   "documento.bilancio.publish": "Bilancio pubblicato",
+  "documento.bilancio.pdf": "Bilancio scaricato in PDF",
+  "documento.energetico.publish": "Diagnosi energetica pubblicata",
+  "documento.energetico.pdf": "Diagnosi energetica scaricata in PDF",
+  "documento.attestato.publish": "Attestato del fornitore pubblicato",
+  "documento.attestato.pdf": "Attestato scaricato in PDF",
+  "documento.soa.publish": "Dichiarazione di Applicabilità pubblicata",
+  "documento.soa.pdf": "Dichiarazione scaricata in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };

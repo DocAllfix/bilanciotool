@@ -24,6 +24,19 @@ export type VoceModulo = {
   /** Norma di riferimento, mostrata dove c'è spazio. */
   norma: string;
   icona: LucideIcon;
+  /** Classi Tailwind del colore del modulo, nei tre stati in cui compare.
+   *  Stanno qui e non sparse nei componenti perche il colore di un modulo deve
+   *  essere lo stesso ovunque: card, fascicolo, banda dei servizi, archivio.
+   *  I token sono definiti in globals.css (`--modulo-*`) e documentati in
+   *  DESIGN.md; il contrasto e stato verificato su entrambi i temi. */
+  colore: {
+    /** Fondo pieno + icona in negativo: il percorso ha prodotto un documento. */
+    pieno: string;
+    /** Contorno e fondo tenue: il percorso e avviato ma non consegnato. */
+    tenue: string;
+    /** Solo il colore del tratto, per barre e segni. */
+    tratto: string;
+  };
   /** Documento che il modulo pubblica. */
   documento: TipoDocumento;
   /** true se il lavoro è per esercizio (rotta `/[anno]`), false se è una
@@ -38,6 +51,11 @@ export const MODULI_AZIENDA = [
     nome: "Inventario GHG",
     norma: "ISO 14064-1",
     icona: Factory,
+    colore: {
+      pieno: "bg-modulo-ghg text-white",
+      tenue: "border-modulo-ghg/35 bg-modulo-ghg/10 text-modulo-ghg",
+      tratto: "bg-modulo-ghg",
+    },
     documento: "ghg",
     perEsercizio: true,
   },
@@ -47,6 +65,11 @@ export const MODULI_AZIENDA = [
     nome: "Bilancio di sostenibilità",
     norma: "GRI · ESRS VSME",
     icona: BookOpen,
+    colore: {
+      pieno: "bg-modulo-bilancio text-white",
+      tenue: "border-modulo-bilancio/35 bg-modulo-bilancio/10 text-modulo-bilancio",
+      tratto: "bg-modulo-bilancio",
+    },
     documento: "bilancio",
     perEsercizio: true,
   },
@@ -56,6 +79,11 @@ export const MODULI_AZIENDA = [
     nome: "Diagnosi energetica",
     norma: "UNI CEI EN 16247",
     icona: Zap,
+    colore: {
+      pieno: "bg-modulo-energetico text-white",
+      tenue: "border-modulo-energetico/35 bg-modulo-energetico/10 text-modulo-energetico",
+      tratto: "bg-modulo-energetico",
+    },
     documento: "energetico",
     perEsercizio: true,
   },
@@ -65,6 +93,11 @@ export const MODULI_AZIENDA = [
     nome: "Autovalutazione fornitore",
     norma: "ESRS · ISO 20400",
     icona: BadgeCheck,
+    colore: {
+      pieno: "bg-modulo-fornitore text-white",
+      tenue: "border-modulo-fornitore/35 bg-modulo-fornitore/10 text-modulo-fornitore",
+      tratto: "bg-modulo-fornitore",
+    },
     documento: "attestato",
     perEsercizio: false,
   },
@@ -74,6 +107,11 @@ export const MODULI_AZIENDA = [
     nome: "Dichiarazione di Applicabilità",
     norma: "ISO/IEC 27001",
     icona: ShieldCheck,
+    colore: {
+      pieno: "bg-modulo-soa text-white",
+      tenue: "border-modulo-soa/35 bg-modulo-soa/10 text-modulo-soa",
+      tratto: "bg-modulo-soa",
+    },
     documento: "soa",
     perEsercizio: false,
   },

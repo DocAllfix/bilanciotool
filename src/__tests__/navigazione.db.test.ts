@@ -7,6 +7,7 @@ import {
 } from "@/lib/db/schema";
 import { getFascicolo, listCompanyNames, listDocumentiAzienda } from "@/features/companies/fascicolo";
 import { getScadenzario } from "@/features/companies/scadenzario";
+import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { listArchivioDocumenti } from "@/features/documents/archivio";
 import { getStorico } from "@/features/companies/storico";
 import { SENZA_ESERCIZIO } from "@/features/documents/tipi";
@@ -224,6 +225,71 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
 
   it("lo storico di un'azienda non pesca dagli snapshot di un altro studio", async () => {
     expect(await getStorico(userA, orgA, companyB)).toEqual([]);
+  });
+
+  it("gli stati dei moduli distinguono avviato, pubblicato e mai toccato", async () => {
+    const st = await getStatiPortafoglio(userA, orgA);
+    const azienda = st.aziende.find((a) => a.id === companyA)!;
+    const per = (m: string) => azienda.moduli.find((x) => x.modulo === m)!;
+    expect(per("ghg").stato).toBe("in-corso");
+    expect(per("bilancio").stato).toBe("in-corso");
+    expect(per("energetico").stato).toBe("non-avviato");
+    expect(per("soa").stato).toBe("non-avviato");
+    // L'esercizio piu recente segue la radice, non il documento.
+    expect(per("ghg").anno).toBe(ANNO_VECCHIO);
+    // I moduli non annuali non hanno un esercizio, e non devono inventarselo.
+    expect(per("fornitore").anno).toBeNull();
+  });
+
+  it("un documento pubblicato accende il modulo, anche di un esercizio vecchio", async () => {
+    const id = randomUUID();
+    await db.insert(documentSnapshot).values({
+      id, organizationId: orgA, companyId: companyA, tipo: "ghg", anno: ANNO_VECCHIO, versione: 1,
+      dati: { risultati: { totL: "10" } }, publishedBy: userA,
+    });
+    try {
+      const st = await getStatiPortafoglio(userA, orgA);
+      const ghg = st.aziende.find((a) => a.id === companyA)!.moduli.find((x) => x.modulo === "ghg")!;
+      // «Pubblicato» risponde a «il servizio e stato erogato almeno una volta»,
+      // non a «e aggiornato»: il ritardo lo dice lo scadenzario, non la casella.
+      expect(ghg.stato).toBe("pubblicato");
+      expect(ghg.annoPubblicato).toBe(ANNO_VECCHIO);
+    } finally {
+      await db.delete(documentSnapshot).where(eq(documentSnapshot.id, id));
+    }
+  });
+
+  it("i servizi dello studio contano aziende, non somme, ed escludono la demo", async () => {
+    const demoId = randomUUID();
+    await db.insert(company).values({
+      id: demoId, organizationId: orgA, nome: "Azienda dimostrativa", isDemo: true,
+    });
+    await db.insert(ghgInventory).values({
+      id: randomUUID(), organizationId: orgA, companyId: demoId, anno: ANNO_VECCHIO,
+      annoBase: ANNO_VECCHIO, contentSetId: "v1",
+    });
+    try {
+      const st = await getStatiPortafoglio(userA, orgA);
+      // La demo compare fra le aziende (serve alle card) ma non nei servizi.
+      expect(st.aziende.length).toBe(2);
+      const ghg = st.servizi.find((x) => x.modulo === "ghg")!;
+      expect(ghg.totale).toBe(1);
+      expect(ghg.avviati).toBe(1);
+      expect(ghg.pubblicati).toBe(0);
+      const ene = st.servizi.find((x) => x.modulo === "energetico")!;
+      expect(ene.avviati).toBe(0);
+      // Cinque servizi sempre, anche quelli mai proposti: la riga a zero e
+      // un'informazione, non un buco.
+      expect(st.servizi.length).toBe(5);
+    } finally {
+      await db.delete(ghgInventory).where(eq(ghgInventory.companyId, demoId));
+      await db.delete(company).where(eq(company.id, demoId));
+    }
+  });
+
+  it("gli stati non attraversano gli studi", async () => {
+    const st = await getStatiPortafoglio(userA, orgA);
+    expect(st.aziende.every((a) => a.id === companyA)).toBe(true);
   });
 
   it("i nomi per la navigazione sono solo quelli del proprio studio", async () => {

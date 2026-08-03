@@ -47,3 +47,24 @@ Sobrio: transizioni colore 150ms, hover shadow; progress animate; **niente** bou
 - Stringhe UI in italiano; numeri/date formattati `it-IT` (centralizzare in `src/lib/format.ts` quando serve).
 - Attributi `data-tour="…"` sugli elementi che i tour guidati indicheranno (Fase 9).
 - Grafici: seguire la skill `dataviz` (etichette leggibili, niente legende ridondanti, dark mode verificata).
+
+## Colori dei moduli
+
+Cinque token dedicati, uno per percorso, definiti in `globals.css` come `--modulo-*` ed esposti come utility Tailwind (`bg-modulo-ghg`, `text-modulo-soa`, ...). Le classi pronte per i tre stati stanno nel registro `src/features/companies/moduli.ts`, non sparse nei componenti: **un modulo, un colore, in tutto il prodotto** (card del portafoglio, fascicolo, banda dei servizi, navigazione).
+
+| Modulo | Tinta | Chiaro | Scuro |
+|---|---|---|---|
+| Inventario GHG | petrolio | `oklch(0.45 0.075 190)` | `oklch(0.72 0.085 185)` |
+| Bilancio di sostenibilita | verde | `oklch(0.48 0.12 155)` | `oklch(0.74 0.12 155)` |
+| Diagnosi energetica | ambra | `oklch(0.55 0.115 68)` | `oklch(0.78 0.11 72)` |
+| Autovalutazione fornitore | violetto | `oklch(0.49 0.115 300)` | `oklch(0.73 0.11 300)` |
+| Dichiarazione SoA | blu | `oklch(0.49 0.09 250)` | `oklch(0.72 0.095 250)` |
+
+**Perche token propri e non riuso di `--scope-*` / `--esg-*`**: quelli hanno gia un significato dentro i grafici (Scope 2, pilastro sociale). La stessa tinta non puo voler dire due cose diverse nello stesso prodotto. Stessa famiglia di tinte per coerenza visiva, valori separati per poter divergere senza rompere la dataviz.
+
+**I tre stati** in cui il colore compare, sempre gli stessi:
+- **pubblicato** — fondo pieno nel colore del modulo, icona in negativo (`colore.pieno`);
+- **in corso** — contorno e fondo tenui, icona a colore (`colore.tenue`);
+- **da avviare** — contorno tratteggiato grigio, icona spenta: **nessun colore di modulo**, perche il colore significa «questo percorso esiste».
+
+**Contrasto verificato** su entrambi i temi: bianco su fondo pieno da 4,97 a 7,19 nel tema chiaro; colore su fondo scuro da 7,44 a 9,06. Tutti sopra AA.

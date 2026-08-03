@@ -11,7 +11,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 
-export function NuovaAziendaDialog({ atLimit, limite }: { atLimit: boolean; limite: number }) {
+export function NuovaAziendaDialog({
+  atLimit,
+  limite,
+  variante = "bottone",
+  usate,
+}: {
+  atLimit: boolean;
+  limite: number;
+  /** "cella" rende l'ultima casella della griglia del portafoglio: è l'azione
+   *  principale della pagina, che stava solo in alto a destra, e dice il limite
+   *  del piano nel punto in cui serve saperlo. */
+  variante?: "bottone" | "cella";
+  usate?: number;
+}) {
   const router = useRouter();
   const [aperto, setAperto] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
@@ -46,13 +59,31 @@ export function NuovaAziendaDialog({ atLimit, limite }: { atLimit: boolean; limi
     );
   }
 
+  const innesco =
+    variante === "cella" ? (
+      <button
+        type="button"
+        className="flex min-h-[190px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed text-muted-foreground transition-colors hover:border-primary/45 hover:bg-accent hover:text-foreground"
+      >
+        <span className="flex size-9 items-center justify-center rounded-full border border-dashed">
+          <Plus className="size-4" />
+        </span>
+        <span className="text-[13px] font-medium">Nuova azienda</span>
+        {usate !== undefined && (
+          <span className="text-[11px]" data-slot="kpi">
+            {usate} di {limite}
+          </span>
+        )}
+      </button>
+    ) : (
+      <Button data-tour="nuova-azienda">
+        <Plus className="size-4" /> Nuova azienda
+      </Button>
+    );
+
   return (
     <Dialog open={aperto} onOpenChange={setAperto}>
-      <DialogTrigger asChild>
-        <Button data-tour="nuova-azienda">
-          <Plus className="size-4" /> Nuova azienda
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{innesco}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Nuova azienda</DialogTitle>
