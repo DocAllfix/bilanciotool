@@ -43,11 +43,15 @@ const chiudiTour = async () => {
 // vanno disattivati alla radice, non chiusi a mano (altrimenti ripartono).
 const silenziaTour = () =>
   page.evaluate(() => {
-    for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+    for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+      localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+    }
   });
 const riattivaTour = () =>
   page.evaluate(() => {
-    for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.removeItem(`evalisdeck-tour:${k}`);
+    for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+      localStorage.removeItem(`evalisdeck-tour:${k}`);
+    }
   });
 const vaiPasso = async (prefisso, n, atteso) => {
   await page.click(`[data-tour="${prefisso}-passo-${n}"]`);
@@ -377,7 +381,154 @@ await check("passo 7: pubblicazione bilancio + PDF", async () => {
   await popup.close();
 });
 
-// ================================================================ 6. MOBILE
+// ====================================================== 6. DIAGNOSI ENERGETICA
+set("Diagnosi energetica");
+let companyDemo = null;
+await check("apertura del modulo energetico dal portafoglio", async () => {
+  await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
+  await silenziaTour();
+  await chiudiTour();
+  const card = page.locator('[data-slot="card"]').filter({ hasText: "(demo)" }).first();
+  await card.getByRole("link", { name: "Energetico", exact: true }).click();
+  await page.waitForURL("**/energetico**", { timeout: 40000 });
+  companyDemo = page.url().match(/aziende\/([^/]+)\//)?.[1] ?? null;
+});
+await check("creazione del bilancio energetico", async () => {
+  await page.fill("#ce-anno", "2025");
+  await page.fill("#ce-base", "2024");
+  await page.click('button:has-text("Crea")');
+  await page.waitForURL("**/energetico/2025**", { timeout: 60000 });
+});
+await check("passo 2: consumo e costo di un vettore", async () => {
+  await vaiPasso("ene", 2, "Consumi annui");
+  await page.getByLabel("Energia elettrica prelevata dalla rete: quantità in kWh", { exact: true }).fill("2280000");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(1500);
+  await page.getByLabel("Gas naturale: quantità in Smc", { exact: true }).fill("186000");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(1500);
+  await page.reload();
+  await page.getByText("4.087.920").first().waitFor({ timeout: 40000 });
+});
+await check("passo 3: matrice di ripartizione e quadratura", async () => {
+  await vaiPasso("ene", 3, "Uso finale");
+  await page.getByLabel("Forni fusori e processi termici primari — Energia elettrica prelevata dalla rete in kWh", { exact: true }).fill("2280000");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(1200);
+  await page.getByLabel("Riscaldamento degli ambienti — Gas naturale in Smc", { exact: true }).fill("186000");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(1500);
+  await page.getByText("2 su 2").first().waitFor({ timeout: 20000 });
+});
+await check("passo 4: indicatori dai denominatori", async () => {
+  await vaiPasso("ene", 4, "Variabili di riferimento");
+  await page.getByLabel("Produzione dell'esercizio 2025", { exact: true }).fill("1200");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(1200);
+  await page.click('button:has-text("Ricalcola")');
+  await page.getByText("3406,6").first().waitFor({ timeout: 60000 });
+});
+await check("pubblicazione della diagnosi e PDF serverless", async () => {
+  await vaiPasso("ene", 8, "Versioni pubblicate");
+  const [popup] = await Promise.all([
+    page.waitForEvent("popup", { timeout: 120000 }),
+    page.click('[data-tour="pubblica-documento"]'),
+  ]);
+  await popup.waitForLoadState("networkidle");
+  await popup.getByText("4.087.920").first().waitFor({ timeout: 30000 });
+  const id = popup.url().split("/documento/")[1];
+  const res = await popup.request.get(`${BASE}/api/documenti/${id}/pdf`, { timeout: 180000 });
+  if (!res.ok()) throw new Error(`PDF HTTP ${res.status()}`);
+  await popup.close();
+});
+await page.screenshot({ path: `${OUT}/qa-06-energetico.png` });
+
+// ==================================================== 7. ATTESTATO FORNITORE
+set("Autovalutazione fornitore");
+await check("apertura del modulo fornitore e creazione", async () => {
+  await page.goto(`${BASE}/aziende/${companyDemo}/fornitore`, { waitUntil: "networkidle", timeout: 90000 });
+  await silenziaTour();
+  await chiudiTour();
+  await page.click('button:has-text("Avvia")');
+  await page.getByText("Indice di prontezza").first().waitFor({ timeout: 60000 });
+});
+await check("questionario: la risposta si accende e ripremendo si annulla", async () => {
+  await page.click('[data-tour="sup-vista-questionario"]');
+  await page.waitForURL("**vista=questionario", { timeout: 40000 });
+  await page.getByLabel("B1: Sì", { exact: true }).click();
+  await page.waitForTimeout(1500);
+  if ((await page.getByLabel("B1: Sì", { exact: true }).getAttribute("aria-pressed")) !== "true") {
+    throw new Error("la risposta non si accende");
+  }
+  await page.getByLabel("B1: Sì", { exact: true }).click();
+  await page.waitForTimeout(1500);
+  if ((await page.getByLabel("B1: Sì", { exact: true }).getAttribute("aria-pressed")) !== "false") {
+    throw new Error("ripremere non annulla la scelta");
+  }
+  await page.getByLabel("B1: Sì", { exact: true }).click();
+  await page.waitForTimeout(1500);
+});
+await check("pubblicazione dell'attestato, disclaimer e PDF", async () => {
+  await page.click('[data-tour="sup-vista-attestato"]');
+  await page.waitForURL("**vista=attestato", { timeout: 40000 });
+  const [popup] = await Promise.all([
+    page.waitForEvent("popup", { timeout: 120000 }),
+    page.click('[data-tour="pubblica-documento"]'),
+  ]);
+  await popup.waitForLoadState("networkidle");
+  await popup.getByText("Non costituisce certificazione").first().waitFor({ timeout: 30000 });
+  const id = popup.url().split("/documento/")[1];
+  const res = await popup.request.get(`${BASE}/api/documenti/${id}/pdf`, { timeout: 180000 });
+  if (!res.ok()) throw new Error(`PDF HTTP ${res.status()}`);
+  await popup.close();
+});
+await page.screenshot({ path: `${OUT}/qa-07-fornitore.png` });
+
+// ============================================================ 8. SOA ISO 27001
+set("Dichiarazione di Applicabilità");
+await check("apertura del modulo SoA e creazione", async () => {
+  await page.goto(`${BASE}/aziende/${companyDemo}/soa`, { waitUntil: "networkidle", timeout: 120000 });
+  await silenziaTour();
+  await chiudiTour();
+  await page.click('button:has-text("Avvia la Dichiarazione")');
+  await page.getByText("93 controlli in ambito").first().waitFor({ timeout: 120000 });
+});
+await check("attivare un modulo esteso allarga l'ambito", async () => {
+  await page.click('[data-tour="soa-vista-contesto"]');
+  await page.waitForURL("**vista=contesto", { timeout: 40000 });
+  await page.getByLabel("Attiva il quadro 27017").check();
+  await page.getByText("100 controlli in ambito").first().waitFor({ timeout: 90000 });
+});
+await check("registro: ricerca, stato di attuazione e motivazione", async () => {
+  await page.click('[data-tour="soa-vista-controlli"]');
+  await page.waitForURL("**vista=controlli", { timeout: 60000 });
+  await page.getByLabel("Cerca fra i controlli").fill("5.1");
+  await page.waitForTimeout(1200);
+  await page.getByLabel("Stato di attuazione di 5.1").first().click();
+  await page.getByRole("option", { name: "Attuato e verificato" }).click();
+  await page.waitForTimeout(1800);
+  await page.getByLabel("Apri il controllo 5.1").first().click();
+  await page.waitForTimeout(700);
+  await page.getByLabel("5.1: Valutazione del rischio").click();
+  await page.waitForTimeout(1800);
+});
+await check("pubblicazione della Dichiarazione, nota 6.1.3 d) e PDF", async () => {
+  await page.click('[data-tour="soa-vista-documento"]');
+  await page.waitForURL("**vista=documento", { timeout: 60000 });
+  const [popup] = await Promise.all([
+    page.waitForEvent("popup", { timeout: 180000 }),
+    page.click('[data-tour="pubblica-documento"]'),
+  ]);
+  await popup.waitForLoadState("networkidle");
+  await popup.getByText("6.1.3 lettera d)").first().waitFor({ timeout: 60000 });
+  const id = popup.url().split("/documento/")[1];
+  const res = await popup.request.get(`${BASE}/api/documenti/${id}/pdf`, { timeout: 240000 });
+  if (!res.ok()) throw new Error(`PDF HTTP ${res.status()}`);
+  await popup.close();
+});
+await page.screenshot({ path: `${OUT}/qa-08-soa.png` });
+
+// ================================================================ 9. MOBILE
 set("Mobile");
 await check("dashboard mobile con menu a scomparsa", async () => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -394,7 +545,7 @@ await check("landing mobile", async () => {
   await page.getByRole("link", { name: /Prova la demo/ }).first().waitFor({ timeout: 15000 });
 });
 
-// ================================================================ 7. USCITA
+// ================================================================ 10. USCITA
 set("Uscita e pagine pubbliche");
 await page.setViewportSize({ width: 1440, height: 950 });
 await check("logout dal menu utente", async () => {
