@@ -36,6 +36,12 @@ export function PassoInterventi({ companyId, bilancio, catalogo, stato, risultat
   const vettori = catalogo.vettori.filter((v) => !v.sub);
   const usiAttivi = catalogo.usi.filter((u) => u.attivo);
 
+  // Le tendine rispondono subito: senza, scegliere un vettore non cambierebbe
+  // l'unita' di misura mostrata accanto al risparmio fino al ricalcolo, e il
+  // consulente scriverebbe litri dove il sistema si aspetta metri cubi.
+  const [vettoreLocale, setVettoreLocale] = useState<Record<string, string>>({});
+  const [statoLocale, setStatoLocale] = useState<Record<string, InterventoEnergia["stato"]>>({});
+
   async function aggiungi() {
     setErrore(null);
     setInCorso(true);
@@ -104,7 +110,7 @@ export function PassoInterventi({ companyId, bilancio, catalogo, stato, risultat
       ) : (
         stato.misure.map((m, i) => {
           const calc = risultati.misure.righe[i];
-          const vettore = vettori.find((v) => v.key === m.vettoreKey);
+          const vettore = vettori.find((v) => v.key === (vettoreLocale[m.id] ?? m.vettoreKey));
           return (
             <Card key={m.id}>
               <CardHeader className="flex-row items-start justify-between gap-4 pb-3">
@@ -120,7 +126,7 @@ export function PassoInterventi({ companyId, bilancio, catalogo, stato, risultat
                   />
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  <Badge variant="outline">{STATI.find((s) => s.id === m.stato)?.nome}</Badge>
+                  <Badge variant="outline">{STATI.find((s) => s.id === (statoLocale[m.id] ?? m.stato))?.nome}</Badge>
                   <Button variant="ghost" size="sm" onClick={() => elimina(m.id)} aria-label="Elimina l'intervento">
                     <Trash2 className="size-3.5" />
                   </Button>
@@ -130,7 +136,10 @@ export function PassoInterventi({ companyId, bilancio, catalogo, stato, risultat
                 <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
                   <div>
                     <Label htmlFor={`int-v-${m.id}`}>Vettore risparmiato</Label>
-                    <Select defaultValue={m.vettoreKey} onValueChange={(v) => aggiorna(m.id, { vettoreKey: v })}>
+                    <Select
+                      value={vettoreLocale[m.id] ?? m.vettoreKey}
+                      onValueChange={(v) => { setVettoreLocale((s2) => ({ ...s2, [m.id]: v })); aggiorna(m.id, { vettoreKey: v }); }}
+                    >
                       <SelectTrigger id={`int-v-${m.id}`} className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {vettori.map((v) => <SelectItem key={v.key} value={v.key}>{v.nome}</SelectItem>)}
@@ -178,7 +187,13 @@ export function PassoInterventi({ companyId, bilancio, catalogo, stato, risultat
                   </div>
                   <div>
                     <Label htmlFor={`int-s-${m.id}`}>Stato</Label>
-                    <Select defaultValue={m.stato} onValueChange={(v) => aggiorna(m.id, { stato: v as InterventoEnergia["stato"] })}>
+                    <Select
+                      value={statoLocale[m.id] ?? m.stato}
+                      onValueChange={(v) => {
+                        setStatoLocale((s2) => ({ ...s2, [m.id]: v as InterventoEnergia["stato"] }));
+                        aggiorna(m.id, { stato: v as InterventoEnergia["stato"] });
+                      }}
+                    >
                       <SelectTrigger id={`int-s-${m.id}`} className="mt-1.5 w-full"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {STATI.map((s) => <SelectItem key={s.id} value={s.id}>{s.nome}</SelectItem>)}

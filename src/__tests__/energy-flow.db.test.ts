@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
-  user, organization, member, orgEntitlement, company, auditLog,
+  user, organization, member, orgEntitlement, company, auditLog, documentSnapshot,
   energyVectorInput, energyAllocation, energyEndUseState,
 } from "@/lib/db/schema";
 import { createBalance, updateProfilo, setAnnoBase, latestEnergySetId } from "@/features/energy/balances";
@@ -16,6 +16,7 @@ import { setDriverValue } from "@/features/energy/drivers";
 import { addMeasure, updateMeasure, listMeasures } from "@/features/energy/measures";
 import { saveChapter, listChapters } from "@/features/energy/narrative";
 import { getWizardData } from "@/features/energy/queries";
+import { publishEnergySnapshot, getSnapshot } from "@/features/documents/snapshot";
 
 // Ciclo completo del bilancio energetico sui fatti del database: quello che il
 // motore calcola sui dati in memoria deve risultare identico partendo dalle
@@ -40,6 +41,7 @@ describe.skipIf(!url)("modulo energetico — ciclo completo", () => {
 
   afterAll(async () => {
     await db.delete(auditLog).where(eq(auditLog.organizationId, orgId));
+    await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
     await db.delete(company).where(eq(company.organizationId, orgId));
     await db.delete(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     await db.delete(member).where(eq(member.organizationId, orgId));
@@ -224,6 +226,38 @@ describe.skipIf(!url)("modulo energetico — ciclo completo", () => {
     expect(a.s3).toBeGreaterThan(0);
     expect(a.totPct).toBeGreaterThan(0);
     expect(a.totPct).toBeLessThanOrEqual(100);
+  });
+
+  it("pubblicazione: lo snapshot congela i derivati e nessuno può più toccarlo", async () => {
+    const snapId = await publishEnergySnapshot(userId, orgId, companyId, 2025);
+    const snap = (await getSnapshot(userId, orgId, snapId))!;
+    expect(snap.tipo).toBe("energetico");
+    expect(snap.versione).toBe(1);
+
+    const dati = snap.dati as { risultati: { totali: { kwh: string } }; capitoli: { templateKey: string }[] };
+    const kwhCongelato = Number(dati.risultati.totali.kwh);
+    expect(kwhCongelato).toBeGreaterThan(0);
+    expect(dati.capitoli.some((c) => c.templateKey === "sintesi")).toBe(true);
+
+    // Il trigger di immutabilità respinge QUALUNQUE aggiornamento dei dati,
+    // anche con la connessione privilegiata usata dai test.
+    await expect(
+      db.update(documentSnapshot).set({ dati: { manomesso: true } }).where(eq(documentSnapshot.id, snapId)),
+    ).rejects.toThrow();
+    const intatto = (await getSnapshot(userId, orgId, snapId))!;
+    expect(Number((intatto.dati as typeof dati).risultati.totali.kwh)).toBe(kwhCongelato);
+
+    // Cambiare i dati vivi non cambia il documento già consegnato.
+    await setVectorField(userId, orgId, balanceId, { vettoreKey: "ele", campo: "quantita", valore: "9999999" });
+    const dopo = (await getSnapshot(userId, orgId, snapId))!;
+    expect(Number((dopo.dati as typeof dati).risultati.totali.kwh)).toBe(kwhCongelato);
+
+    // Ripubblicare produce la versione 2, e la prima resta.
+    const snapId2 = await publishEnergySnapshot(userId, orgId, companyId, 2025);
+    expect((await getSnapshot(userId, orgId, snapId2))!.versione).toBe(2);
+    expect(await getSnapshot(userId, orgId, snapId)).not.toBeNull();
+
+    await setVectorField(userId, orgId, balanceId, { vettoreKey: "ele", campo: "quantita", valore: "2280000" });
   });
 
   it("account expired: scrittura bloccata, lettura consentita", async () => {

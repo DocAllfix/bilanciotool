@@ -43,8 +43,25 @@ export function PassoRaccontoEnergia({ companyId, bilancio, catalogo, stato }: P
   const [salvataggio, setSalvataggio] = useState<string | null>(null);
 
   const capitoloPer = new Map(stato.capitoli.map((c) => [c.templateKey, c]));
+  // Il salvataggio del capitolo non rivalida la pagina (si scrive, non si naviga):
+  // il conteggio delle parole va quindi tenuto anche in locale, altrimenti resta
+  // fermo a zero mentre il testo cresce.
+  const [paroleLocali, setParoleLocali] = useState<Record<string, number>>({});
+
+  function contaParole(doc: unknown): number {
+    const testo: string[] = [];
+    const cammina = (n: unknown) => {
+      if (!n || typeof n !== "object") return;
+      const nodo = n as { text?: string; content?: unknown[] };
+      if (typeof nodo.text === "string") testo.push(nodo.text);
+      for (const f of nodo.content ?? []) cammina(f);
+    };
+    cammina(doc);
+    return testo.join(" ").split(/\s+/).filter(Boolean).length;
+  }
 
   async function salvaCapitolo(templateKey: string, doc: unknown) {
+    setParoleLocali((s2) => ({ ...s2, [templateKey]: contaParole(doc) }));
     setSalvataggio(templateKey);
     const esito = await saveChapterAction(bilancio.id, templateKey, doc);
     setSalvataggio(null);
@@ -97,7 +114,7 @@ export function PassoRaccontoEnergia({ companyId, bilancio, catalogo, stato }: P
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 {salvataggio === cap.key && <span className="text-[11px] text-muted-foreground">salvataggio…</span>}
-                <Badge variant="outline">{c?.parole ?? 0} parole</Badge>
+                <Badge variant="outline">{paroleLocali[cap.key] ?? c?.parole ?? 0} parole</Badge>
               </div>
             </CardHeader>
             <CardContent className="grid gap-4">

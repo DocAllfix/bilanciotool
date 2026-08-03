@@ -125,5 +125,29 @@ Gate locale: 125 test verdi (immutabilità trigger provata: update respinto e ri
 
 **Identità e shell (2026-07-30)** — loghi reali del committente integrati: originali intoccabili in `public/brand/`, derivati tecnici (solo trasparenza+ritaglio viewBox, via `scripts/prepara-brand.mjs`) in `public/brand/derivati/`, favicon/icon/apple-icon generati dal tile originale (`scripts/genera-favicon.mjs`); componente unico `src/components/brand/logo.tsx`. Shell con sidebar collassabile persistita (`collapsible-shell.tsx`), dashboard = quadro dello studio (banda numeri derivati al volo + documenti pubblicati + attività recente compattata dall'audit log, `getPortfolioOverview`) sopra il portafoglio con card interamente cliccabili; `WizardNav` (indietro/avanti) in fondo a entrambi i percorsi; Bricolage Grotesque come `--font-display` a livello root (titoli app + landing; il documento resta serif). QA prod: 57 controlli — i 7 falliti erano un difetto dello script (match non esatto su "≥ 3" lasciava il dropdown aperto), corretto.
 
-**Prossima: Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
+**Fase 12 completata (bilancio energetico)** — terzo modulo, dai prototipi in `aggiunte moduli/`.
+- **12.0** registro dei tipi di documento (`src/features/documents/tipi.ts`) al posto del ternario che rendeva il bilancio per qualunque tipo sconosciuto; `extractConst` con regex tollerante agli spazi; migrazione `0003` con i CHECK che Drizzle non genera per `text(enum)`.
+- **12.A** schema: 5 cataloghi + 9 tabelle tenant (`src/lib/db/schema/energy.ts`), migrazioni `0004`+`0005` con le policy RLS. Tre scelte motivate nel codice: ripartizione **a righe** (una per cella valorizzata, non colonne né jsonb — evita il read-modify-write già corretto in F7); celle **nell'unità del vettore**, mai in kWh (la quadratura resta valida se un fattore cambia); fattori a sovrapposizione **per azienda** (`companyId`, non `organizationId`: il PCI del cippato è una proprietà dell'impianto).
+- **12.B** motore puro in `src/lib/calc/energy/` (7 file, 53 test): vettori, emissioni, ripartizione+quadratura+flussi, mensile, indicatori, interventi, avanzamento. Scostamenti voluti dal prototipo in `docs/politica-arrotondamento.md`: teleriscaldamento e vapore da Scope 1 → Scope 2; indicatore senza denominatore `null` e non `0`; ritorno senza risparmio `null` e non `0`.
+- **12.C** seed `energy-v1` (12 vettori, 4 aree, 20 usi con guida, 8 variabili, 10 indicatori, 3 metodi, 7 capitoli), con la convenzione `id = ${dominio}-v1:${key}` per i nuovi domini.
+- **12.D** feature `src/features/energy/`, `energy-flow.db.test.ts` (13 prove).
+- **12.E** percorso in 8 passi, matrice fino a 20×11, guida per uso finale col calcolatore di stima.
+- **12.F** documento in 13 sezioni + `charts-energia.tsx` (Sankey, Pareto con cumulata, barre mensili, barre divergenti), snapshot immutabile, PDF reale 506 KB.
+
+**Regole nate in questa fase** (valgono per F13 e F14):
+- **Mai rimandare la riga intera da props**: ogni aggiornamento è per singolo campo, e il valore precedente si rilegge dal DB dentro la transazione. Salvare il costo azzerava la quantità: stesso difetto della materialità in F7, terza occorrenza.
+- **Comandi ottimistici**: interruttori, tendine e campi che il server non rivalida devono rispondere subito con stato locale (e ripristinare in caso di rifiuto), altrimenti si leggono come rotti.
+- **Campi controllati** dove un altro comando può scrivere nel medesimo stato (il calcolatore di stima scrive nella cella).
+- **`revalidatePath` deve puntare alla pagina dell'esercizio**, non al percorso padre: `/aziende/X/energetico` non invalida `/aziende/X/energetico/2025`.
+- **Anteprime nel browser con le funzioni pure del server** (quadratura e copertura), mai con aritmetica riscritta: non possono divergere dal salvato.
+- **Le chiavi di archiviazione le costruisce il server**, sempre prefissate con l'organizzazione; il client manda solo il dataURL.
+- JSX **mangia lo spazio** dopo un'espressione a fine riga: serve `{" "}`.
+
+Gate 12 verde: typecheck · build · **197 test** anche con `RLS_FORCE_ROLE=app_rls` · e2e `energetico.spec.ts` · **collaudo di 40 comandi** con `scripts/visual-check-energetico.mjs` (zero errori di console) · documento reale pubblicato e PDF verificato (`scripts/visual-check-documento-energetico.mjs`).
+Difetti trovati dal collaudo e corretti: 6 (vedi commit 12.E e 12.F).
+
+**Prossima: Fase 13** — ESG Supplier Ready (attestato di autovalutazione). Poi Fase 14 (SoA ISO 27001), quindi il rientro su **Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
+
+### Consegne al committente
+I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
