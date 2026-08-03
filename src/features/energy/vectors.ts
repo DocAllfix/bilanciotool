@@ -5,7 +5,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { energyBalance, energyCompanyFactor, energyVector, energyVectorInput } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
-import { mensileSchema, perNumeric, vettoreInputSchema } from "./validation";
+import { mensileSchema, perNumeric, vettoreCampoSchema } from "./validation";
 import type { z } from "zod";
 
 // Energia in ingresso e fattori di conversione.
@@ -79,18 +79,23 @@ export async function listVectorInputs(userId: string, orgId: string, balanceId:
   );
 }
 
-/** Quantità e costo di un vettore. Svuotare entrambi i campi rimuove la riga:
- *  un vettore non usato non deve comparire come zero nel documento. */
-export async function setVectorInput(
+/** Quantità o costo di un vettore, UN CAMPO PER VOLTA.
+ *
+ *  L'aggiornamento non tocca mai l'altro campo: il client manda solo quello che
+ *  l'utente ha cambiato, e il valore precedente si legge dal database dentro la
+ *  transazione, non dalle props del browser che potrebbero essere stantie.
+ *
+ *  La riga sparisce solo quando quantità, costo e tutti i mesi sono vuoti: un
+ *  vettore non usato non deve comparire come zero nel documento. */
+export async function setVectorField(
   userId: string,
   orgId: string,
   balanceId: string,
-  input: z.input<typeof vettoreInputSchema>,
+  input: z.input<typeof vettoreCampoSchema>,
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
-  const v = vettoreInputSchema.parse(input);
-  const quantita = perNumeric(v.quantita);
-  const costo = perNumeric(v.costo);
+  const v = vettoreCampoSchema.parse(input);
+  const valore = perNumeric(v.valore);
 
   await withTenant({ userId, orgId }, async (tx) => {
     const [b] = await tx.select({ id: energyBalance.id }).from(energyBalance).where(eq(energyBalance.id, balanceId));
@@ -101,23 +106,26 @@ export async function setVectorInput(
       .from(energyVectorInput)
       .where(and(eq(energyVectorInput.balanceId, balanceId), eq(energyVectorInput.vettoreKey, v.vettoreKey)));
 
-    const mensiliVuoti = (esistente?.mensili as string[] | undefined)?.some((m) => m !== "") ?? false;
-    if (quantita === null && costo === null && !mensiliVuoti) {
-      if (esistente) await tx.delete(energyVectorInput).where(eq(energyVectorInput.id, esistente.id));
-    } else if (esistente) {
-      await tx
-        .update(energyVectorInput)
-        .set({ quantita, costo })
-        .where(eq(energyVectorInput.id, esistente.id));
-    } else {
+    if (!esistente) {
+      if (valore === null) return;
       await tx.insert(energyVectorInput).values({
         id: randomUUID(),
         organizationId: orgId,
         balanceId,
         vettoreKey: v.vettoreKey,
-        quantita,
-        costo,
+        [v.campo]: valore,
       });
+    } else {
+      const altro = v.campo === "quantita" ? esistente.costo : esistente.quantita;
+      const mensiliPieni = (esistente.mensili as string[] | null)?.some((m) => m !== "") ?? false;
+      if (valore === null && altro === null && !mensiliPieni) {
+        await tx.delete(energyVectorInput).where(eq(energyVectorInput.id, esistente.id));
+      } else {
+        await tx
+          .update(energyVectorInput)
+          .set({ [v.campo]: valore })
+          .where(eq(energyVectorInput.id, esistente.id));
+      }
     }
 
     await logAudit(tx, {
@@ -126,7 +134,7 @@ export async function setVectorInput(
       azione: "energy.vettore.set",
       entita: "energy_vector_input",
       entitaId: balanceId,
-      dettagli: { vettore: v.vettoreKey },
+      dettagli: { vettore: v.vettoreKey, campo: v.campo },
     });
   });
 }

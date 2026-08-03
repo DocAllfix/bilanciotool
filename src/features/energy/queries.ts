@@ -171,7 +171,9 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
       driver: driverDef.map((d) => ({ key: d.key, nome: d.nome, um: d.um, hint: d.hint })),
       indicatori: indicatoriDef.map((i) => ({ key: i.key, nome: i.nome, um: i.um, decimali: i.decimali, hint: i.hint })),
       capitoli: capitoliDef.map((c) => ({ key: c.key, nome: c.nome, hint: c.hint })),
-      metodi: (scale[0]?.livelli ?? []) as { id: string; n: string; d: string }[],
+      // Le scale di valutazione usano la chiave `v` (valore), come le altre
+      // già in casa: `id` non esiste e produrrebbe chiavi React indefinite.
+      metodi: (scale[0]?.livelli ?? []) as { v: string; n: string; d: string }[],
     },
     stato: {
       inputs: inputs.map((i) => ({

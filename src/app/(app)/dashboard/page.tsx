@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { etichettaDocumento } from "@/features/documents/tipi";
 import { fmtNum, fmtRelativa } from "@/lib/format";
-import { BookOpen, ExternalLink, Factory, FileText, Leaf } from "lucide-react";
+import { BookOpen, ExternalLink, Factory, FileText, Leaf, Zap } from "lucide-react";
 
 export const metadata: Metadata = { title: "Portafoglio" };
 export const dynamic = "force-dynamic";
@@ -158,6 +158,11 @@ export default async function DashboardPage() {
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/aziende/${a.id}/bilancio`}>
                         <BookOpen className="size-3.5" /> Bilancio
+                      </Link>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/aziende/${a.id}/energetico`}>
+                        <Zap className="size-3.5" /> Energetico
                       </Link>
                     </Button>
                   </CardFooter>

@@ -5,17 +5,19 @@ import { energyBalance, energyMedia, energyNarrative } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { conteggioParole, sanificaTiptap } from "@/features/report/validation";
-import { deleteObject, signedUrl } from "@/lib/storage";
+import { deleteObject, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
 import { z } from "zod";
 
 // Capitoli discorsivi del bilancio energetico. La sanificazione Tiptap è la
 // stessa già usata dal bilancio di sostenibilità: quello che entra nel database
 // è già la whitelist che il documento renderizzerà.
 
+/** I sette diagrammi che il documento sa disegnare dai dati dello snapshot. */
+export const GRAFICI_ENERGIA = ["ingresso", "usi", "pareto", "flussi", "mensile", "indicatori", "interventi"] as const;
+
 const mediaSchema = z.object({
   tipo: z.enum(["img", "chart"]),
-  storageKey: z.string().nullable().optional(),
-  chartKey: z.string().nullable().optional(),
+  chartKey: z.enum(GRAFICI_ENERGIA).optional(),
   didascalia: z.string().nullable().optional(),
   credito: z.string().nullable().optional(),
   larghezza: z.enum(["piena", "meta"]).default("piena"),
@@ -90,14 +92,24 @@ export async function addMedia(
   orgId: string,
   balanceId: string,
   templateKey: string,
-  input: z.input<typeof mediaSchema>,
+  input: z.input<typeof mediaSchema> & { dataUrl?: string },
 ): Promise<string> {
   await requireEntitlement(userId, orgId, "write_data");
   const v = mediaSchema.parse(input);
-  // Perimetro di tenant: una chiave che non parte dall'organizzazione non può
-  // essere accettata, altrimenti si leggerebbero file di un altro studio.
-  if (v.tipo === "img" && (!v.storageKey || !v.storageKey.startsWith(`${orgId}/`))) {
-    throw new Error("Chiave di archiviazione fuori dal perimetro dell'organizzazione");
+  if (v.tipo === "chart" && !v.chartKey) throw new Error("Indica quale diagramma inserire");
+
+  // La chiave di archiviazione la costruisce SEMPRE il server, prefissata con
+  // l'organizzazione: se arrivasse dal browser, un client modificato potrebbe
+  // puntare ai file di un altro studio.
+  let storageKey: string | null = null;
+  if (v.tipo === "img") {
+    const parsed = input.dataUrl ? parseDataUrl(input.dataUrl) : null;
+    if (!parsed) throw new Error("Fotografia non valida: atteso un dataURL base64");
+    if (!parsed.contentType.startsWith("image/")) throw new Error("Solo immagini");
+    if (parsed.buffer.length > 5_000_000) throw new Error("Immagine oltre 5 MB: ridimensionala");
+    const ext = parsed.contentType.split("/")[1]?.replace("jpeg", "jpg") ?? "png";
+    storageKey = `${orgId}/energetico/${balanceId}/${templateKey}-${Date.now()}.${ext}`;
+    await uploadObject(orgId, storageKey, parsed.buffer, parsed.contentType);
   }
 
   const id = randomUUID();
@@ -129,7 +141,7 @@ export async function addMedia(
       organizationId: orgId,
       narrativeId: capitolo.id,
       tipo: v.tipo,
-      storageKey: v.storageKey ?? null,
+      storageKey,
       chartKey: v.chartKey ?? null,
       didascalia: v.didascalia ?? null,
       credito: v.credito ?? null,
@@ -145,6 +157,11 @@ export async function addMedia(
       entitaId: id,
       dettagli: { capitolo: templateKey, tipo: v.tipo },
     });
+  }).catch(async (e) => {
+    // Se la transazione fallisce il file è già in archivio: va tolto, altrimenti
+    // resta un orfano che nessuna riga referenzia più.
+    if (storageKey) await deleteObject(orgId, storageKey).catch(() => undefined);
+    throw e;
   });
   return id;
 }

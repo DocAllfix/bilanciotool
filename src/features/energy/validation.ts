@@ -46,10 +46,13 @@ export type ProfiloEnergetico = z.infer<typeof profiloSchema>;
 /** I sette campi che contano per l'avanzamento del passo 1. */
 export const PROFILO_RICHIESTI = ["forma", "sede", "settore", "ateco", "sito", "attivita", "referente"] as const;
 
-export const vettoreInputSchema = z.object({
+/** Un campo per volta: il client non rimanda mai la riga intera, così salvare il
+ *  costo non può cancellare la quantità appena inserita (difetto già visto in
+ *  Fase 7 sulla materialità: read-modify-write da props stantie). */
+export const vettoreCampoSchema = z.object({
   vettoreKey: z.string().min(1),
-  quantita: numeroDecimale.optional(),
-  costo: numeroDecimale.optional(),
+  campo: z.enum(["quantita", "costo"]),
+  valore: numeroDecimale,
 });
 
 export const mensileSchema = z.object({

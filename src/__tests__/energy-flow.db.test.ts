@@ -8,7 +8,7 @@ import {
 } from "@/lib/db/schema";
 import { createBalance, updateProfilo, setAnnoBase, latestEnergySetId } from "@/features/energy/balances";
 import {
-  listVectors, listVectorInputs, setVectorInput, setMonthlyValue,
+  listVectors, listVectorInputs, setVectorField, setMonthlyValue,
   upsertCompanyFactor, deleteCompanyFactor,
 } from "@/features/energy/vectors";
 import { setAllocation, setEndUseState, listAllocations, listEndUseStates } from "@/features/energy/allocation";
@@ -62,13 +62,28 @@ describe.skipIf(!url)("modulo energetico — ciclo completo", () => {
     await expect(createBalance(userId, orgId, { companyId, anno: 2025 })).rejects.toThrow();
   });
 
-  it("vettori: quantità e costo, e la riga sparisce se si svuota tutto", async () => {
-    await setVectorInput(userId, orgId, balanceId, { vettoreKey: "ele", quantita: "2280000", costo: "410400" });
-    await setVectorInput(userId, orgId, balanceId, { vettoreKey: "gas", quantita: "186000", costo: "111600" });
-    await setVectorInput(userId, orgId, balanceId, { vettoreKey: "gpl", quantita: "500", costo: "700" });
-    expect((await listVectorInputs(userId, orgId, balanceId)).length).toBe(3);
+  it("vettori: un campo per volta, e salvare il costo non cancella la quantità", async () => {
+    const set = (vettoreKey: string, campo: "quantita" | "costo", valore: string) =>
+      setVectorField(userId, orgId, balanceId, { vettoreKey, campo, valore });
 
-    await setVectorInput(userId, orgId, balanceId, { vettoreKey: "gpl", quantita: "", costo: "" });
+    await set("ele", "quantita", "2280000");
+    await set("ele", "costo", "410400");
+    await set("gas", "quantita", "186000");
+    await set("gas", "costo", "111600");
+    await set("gpl", "quantita", "500");
+    await set("gpl", "costo", "700");
+
+    const righe = await listVectorInputs(userId, orgId, balanceId);
+    expect(righe.length).toBe(3);
+    // La regressione da cui nasce l'aggiornamento per campo: scrivere il costo
+    // dopo la quantità non deve azzerare la quantità.
+    const ele = righe.find((r) => r.vettoreKey === "ele")!;
+    expect(ele.quantita).toBe("2280000");
+    expect(ele.costo).toBe("410400");
+
+    await set("gpl", "quantita", "");
+    expect((await listVectorInputs(userId, orgId, balanceId)).find((r) => r.vettoreKey === "gpl")?.costo).toBe("700");
+    await set("gpl", "costo", "");
     const dopo = await listVectorInputs(userId, orgId, balanceId);
     expect(dopo.length).toBe(2);
     expect(dopo.some((r) => r.vettoreKey === "gpl")).toBe(false);

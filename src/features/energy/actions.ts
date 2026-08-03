@@ -6,7 +6,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import type { ActionEsito } from "@/features/companies/actions";
 import { createBalance, setAnnoBase, updateProfilo } from "./balances";
-import { deleteCompanyFactor, setMonthlyValue, setVectorInput, upsertCompanyFactor } from "./vectors";
+import { deleteCompanyFactor, setMonthlyValue, setVectorField, upsertCompanyFactor } from "./vectors";
 import { setAllocation, setEndUseState, setStima } from "./allocation";
 import { setDriverValue } from "./drivers";
 import { addMeasure, deleteMeasure, updateMeasure } from "./measures";
@@ -28,7 +28,10 @@ function daErrore(e: unknown): ActionEsito<never> {
   return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
 }
 
-const percorso = (companyId: string) => `/aziende/${companyId}/energetico`;
+// La pagina del percorso è quella dell'esercizio: rivalidare solo il percorso
+// padre non la tocca, e il consulente vedrebbe numeri fermi dopo il ricalcolo.
+const percorso = (companyId: string, anno?: number) =>
+  anno === undefined ? `/aziende/${companyId}/energetico` : `/aziende/${companyId}/energetico/${anno}`;
 
 export async function createBalanceAction(input: {
   companyId: string;
@@ -61,26 +64,29 @@ export async function updateProfiloAction(
 
 export async function setAnnoBaseAction(
   companyId: string,
+  anno: number,
   balanceId: string,
   annoBase: number,
 ): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     await setAnnoBase(s.userId, s.orgId, balanceId, annoBase);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
   }
 }
 
-export async function setVectorInputAction(
+/** Un campo per volta: mai la riga intera, altrimenti salvare il costo
+ *  cancellerebbe la quantità se le props del client fossero stantie. */
+export async function setVectorFieldAction(
   balanceId: string,
-  input: { vettoreKey: string; quantita?: string; costo?: string },
+  input: { vettoreKey: string; campo: "quantita" | "costo"; valore: string },
 ): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
-    await setVectorInput(s.userId, s.orgId, balanceId, input);
+    await setVectorField(s.userId, s.orgId, balanceId, input);
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -102,24 +108,25 @@ export async function setMonthlyValueAction(
 
 export async function upsertCompanyFactorAction(
   companyId: string,
+  anno: number,
   input: z.input<typeof fattoreCompanySchema>,
 ): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     const v = fattoreCompanySchema.parse(input);
     await upsertCompanyFactor(s.userId, s.orgId, companyId, v);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
   }
 }
 
-export async function deleteCompanyFactorAction(companyId: string, key: string): Promise<ActionEsito> {
+export async function deleteCompanyFactorAction(companyId: string, anno: number, key: string): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     await deleteCompanyFactor(s.userId, s.orgId, companyId, key);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -142,6 +149,7 @@ export async function setAllocationAction(
 
 export async function setEndUseStateAction(
   companyId: string,
+  anno: number,
   balanceId: string,
   input: { usoKey: string; attivo?: boolean; metodo?: "mis" | "cal" | "sti" | null; nota?: string },
 ): Promise<ActionEsito> {
@@ -150,7 +158,7 @@ export async function setEndUseStateAction(
     await setEndUseState(s.userId, s.orgId, balanceId, input);
     // Accendere o spegnere un uso cambia le righe della matrice: qui la
     // rivalidazione serve, ed è un'azione rara.
-    if (input.attivo !== undefined) revalidatePath(percorso(companyId));
+    if (input.attivo !== undefined) revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -191,13 +199,14 @@ export async function setDriverValueAction(
 
 export async function addMeasureAction(
   companyId: string,
+  anno: number,
   balanceId: string,
   input: { descrizione?: string; vettoreKey: string },
 ): Promise<ActionEsito<{ id: string }>> {
   try {
     const s = await requireConsultant();
     const id = await addMeasure(s.userId, s.orgId, balanceId, input);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true, dati: { id } };
   } catch (e) {
     return daErrore(e);
@@ -227,11 +236,11 @@ export async function updateMeasureAction(
   }
 }
 
-export async function deleteMeasureAction(companyId: string, measureId: string): Promise<ActionEsito> {
+export async function deleteMeasureAction(companyId: string, anno: number, measureId: string): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     await deleteMeasure(s.userId, s.orgId, measureId);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -254,31 +263,33 @@ export async function saveChapterAction(
 
 export async function addMediaAction(
   companyId: string,
+  anno: number,
   balanceId: string,
   templateKey: string,
   input: {
     tipo: "img" | "chart";
-    storageKey?: string | null;
-    chartKey?: string | null;
+    /** Fotografia in base64: l'upload e la chiave di archiviazione li fa il server. */
+    dataUrl?: string;
+    chartKey?: string;
     didascalia?: string | null;
     larghezza?: "piena" | "meta";
   },
 ): Promise<ActionEsito<{ id: string }>> {
   try {
     const s = await requireConsultant();
-    const id = await addMedia(s.userId, s.orgId, balanceId, templateKey, input);
-    revalidatePath(percorso(companyId));
+    const id = await addMedia(s.userId, s.orgId, balanceId, templateKey, input as Parameters<typeof addMedia>[4]);
+    revalidatePath(percorso(companyId, anno));
     return { ok: true, dati: { id } };
   } catch (e) {
     return daErrore(e);
   }
 }
 
-export async function removeMediaAction(companyId: string, mediaId: string): Promise<ActionEsito> {
+export async function removeMediaAction(companyId: string, anno: number, mediaId: string): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     await removeMedia(s.userId, s.orgId, mediaId);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -287,13 +298,14 @@ export async function removeMediaAction(companyId: string, mediaId: string): Pro
 
 export async function updateMediaAction(
   companyId: string,
+  anno: number,
   mediaId: string,
   patch: { didascalia?: string | null; credito?: string | null; larghezza?: "piena" | "meta"; posizione?: number },
 ): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
     await updateMedia(s.userId, s.orgId, mediaId, patch);
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
@@ -302,10 +314,10 @@ export async function updateMediaAction(
 
 /** Ricalcolo esplicito: è l'unica azione che rilegge tutto il percorso, ed è
  *  quella che le azioni ad alta frequenza deliberatamente non fanno. */
-export async function ricalcolaAction(companyId: string): Promise<ActionEsito> {
+export async function ricalcolaAction(companyId: string, anno: number): Promise<ActionEsito> {
   try {
     await requireConsultant();
-    revalidatePath(percorso(companyId));
+    revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {
     return daErrore(e);
