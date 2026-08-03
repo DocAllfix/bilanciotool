@@ -8,6 +8,7 @@ import {
 import { getFascicolo, listCompanyNames, listDocumentiAzienda } from "@/features/companies/fascicolo";
 import { getScadenzario } from "@/features/companies/scadenzario";
 import { listArchivioDocumenti } from "@/features/documents/archivio";
+import { getStorico } from "@/features/companies/storico";
 import { SENZA_ESERCIZIO } from "@/features/documents/tipi";
 
 // Fascicolo, scadenzario e archivio: le tre viste che ATTRAVERSANO il portafoglio.
@@ -156,6 +157,73 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
   it("i documenti di un'azienda non trapassano allo studio sbagliato", async () => {
     expect(await listDocumentiAzienda(userA, orgA, companyB)).toEqual([]);
     expect((await listDocumentiAzienda(userB, orgB, companyB)).length).toBe(1);
+  });
+
+  it("lo storico legge dagli snapshot e salta le serie con un punto solo", async () => {
+    const fatti = [
+      // Due esercizi di GHG, ognuno con due versioni: dell'esercizio deve
+      // restare l'ULTIMA versione, non la prima.
+      { anno: 2024, versione: 1, tot: "100.5" },
+      { anno: 2024, versione: 2, tot: "120.5" },
+      { anno: 2025, versione: 1, tot: "90.25" },
+    ];
+    const ids: string[] = [];
+    for (const f of fatti) {
+      const id = randomUUID();
+      ids.push(id);
+      await db.insert(documentSnapshot).values({
+        id, organizationId: orgA, companyId: companyA, tipo: "ghg", anno: f.anno, versione: f.versione,
+        dati: { risultati: { totL: f.tot } }, publishedBy: userA,
+      });
+    }
+    // Una sola revisione di SoA: non fa un andamento, non deve comparire.
+    const soloUno = randomUUID();
+    ids.push(soloUno);
+    await db.insert(documentSnapshot).values({
+      id: soloUno, organizationId: orgA, companyId: companyA, tipo: "soa", anno: SENZA_ESERCIZIO, versione: 1,
+      dati: { esito: { indice: 51 } }, publishedBy: userA,
+    });
+
+    try {
+      const serie = await getStorico(userA, orgA, companyA);
+      expect(serie.map((s) => s.tipo)).toEqual(["ghg"]);
+      const ghg = serie[0];
+      expect(ghg.perEsercizio).toBe(true);
+      expect(ghg.punti.map((p) => p.x)).toEqual([2024, 2025]);
+      // 120,5 e non 100,5: dell'esercizio conta l'ultima versione pubblicata.
+      expect(ghg.punti.map((p) => p.valore)).toEqual([120.5, 90.25]);
+      expect(ghg.punti[0].versione).toBe(2);
+      // Il verso del miglioramento non e uguale per tutti: per le emissioni
+      // scendere e un risultato, per un indice di maturita e il contrario.
+      expect(ghg.meglioSe).toBe("scende");
+    } finally {
+      for (const id of ids) await db.delete(documentSnapshot).where(eq(documentSnapshot.id, id));
+    }
+  });
+
+  it("per gli indici il miglioramento è verso l'alto, e le revisioni sono l'asse", async () => {
+    const ids: string[] = [];
+    for (const [versione, indice] of [[1, 44], [2, 58], [3, 71]] as const) {
+      const id = randomUUID();
+      ids.push(id);
+      await db.insert(documentSnapshot).values({
+        id, organizationId: orgA, companyId: companyA, tipo: "attestato", anno: SENZA_ESERCIZIO, versione,
+        dati: { esito: { indice } }, publishedBy: userA,
+      });
+    }
+    try {
+      const serie = (await getStorico(userA, orgA, companyA)).find((s) => s.tipo === "attestato")!;
+      expect(serie.meglioSe).toBe("sale");
+      expect(serie.perEsercizio).toBe(false);
+      expect(serie.punti.map((p) => p.x)).toEqual([1, 2, 3]);
+      expect(serie.punti.map((p) => p.valore)).toEqual([44, 58, 71]);
+    } finally {
+      for (const id of ids) await db.delete(documentSnapshot).where(eq(documentSnapshot.id, id));
+    }
+  });
+
+  it("lo storico di un'azienda non pesca dagli snapshot di un altro studio", async () => {
+    expect(await getStorico(userA, orgA, companyB)).toEqual([]);
   });
 
   it("i nomi per la navigazione sono solo quelli del proprio studio", async () => {
