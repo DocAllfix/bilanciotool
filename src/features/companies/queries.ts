@@ -123,8 +123,26 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
 
     const invIds = [...ultimoPerAzienda.values()].map((i) => i.id);
     const [righe, snapshots, bilanci] = await Promise.all([
+      // Solo le colonne che il motore usa: `select *` qui tirava su ogni riga di
+      // attività con tutti i campi (descrizione, note, fonte del fattore…) per
+      // calcolare un totale che ne usa nove.
       invIds.length
-        ? tx.select().from(ghgActivityRow).where(inArray(ghgActivityRow.inventoryId, invIds))
+        ? tx
+            .select({
+              id: ghgActivityRow.id,
+              inventoryId: ghgActivityRow.inventoryId,
+              categoryKey: ghgActivityRow.categoryKey,
+              sourceTypeKey: ghgActivityRow.sourceTypeKey,
+              quantita: ghgActivityRow.quantita,
+              fe: ghgActivityRow.fe,
+              feMarket: ghgActivityRow.feMarket,
+              quotaGo: ghgActivityRow.quotaGo,
+              feBiogenic: ghgActivityRow.feBiogenic,
+              dq: ghgActivityRow.dq,
+              incertezza: ghgActivityRow.incertezza,
+            })
+            .from(ghgActivityRow)
+            .where(inArray(ghgActivityRow.inventoryId, invIds))
         : Promise.resolve([]),
       tx
         .select({ companyId: documentSnapshot.companyId })

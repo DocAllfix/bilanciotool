@@ -3,22 +3,26 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Monogramma } from "@/components/brand/logo";
-import { Briefcase, HelpCircle, Menu, Settings2, X } from "lucide-react";
+import { SidebarNav } from "./sidebar-nav";
+import { Menu, X } from "lucide-react";
 
-// Navigazione mobile (sotto md la sidebar è nascosta): barra superiore con
-// menu a scomparsa. Stesse voci della sidebar, stesso registro scuro.
-const VOCI = [
-  { href: "/dashboard", label: "Portafoglio", icon: Briefcase },
-  { href: "/impostazioni", label: "Impostazioni", icon: Settings2 },
-  { href: "/guida", label: "Guida", icon: HelpCircle },
-] as const;
-
-export function MobileNav() {
+// Navigazione mobile (sotto md la sidebar è nascosta): barra superiore con menu
+// a scomparsa. Le voci sono le STESSE della sidebar, rese dallo stesso
+// componente: prima erano un secondo elenco copiato a mano, che infatti si era
+// già fermato a tre voci mentre la sidebar ne aveva altre.
+export function MobileNav({ aziende = [] }: { aziende?: { id: string; nome: string }[] }) {
   const [aperto, setAperto] = useState(false);
   const pathname = usePathname();
+
+  // Il menu si chiude quando la rotta cambia: senza, restava aperto sopra la
+  // pagina appena aperta.
+  const [ultimaRotta, setUltimaRotta] = useState(pathname);
+  if (pathname !== ultimaRotta) {
+    setUltimaRotta(pathname);
+    if (aperto) setAperto(false);
+  }
 
   return (
     <div className="sticky top-0 z-40 md:hidden">
@@ -39,28 +43,9 @@ export function MobileNav() {
         </Link>
       </div>
       {aperto && (
-        <nav className="border-b border-sidebar-border bg-sidebar px-3 pb-3" aria-label="Navigazione principale">
-          {VOCI.map((v) => {
-            const attiva = pathname === v.href || pathname.startsWith(v.href + "/");
-            return (
-              <Link
-                key={v.href}
-                href={v.href}
-                onClick={() => setAperto(false)}
-                aria-current={attiva ? "page" : undefined}
-                className={cn(
-                  "mt-1 flex items-center gap-2.5 rounded-md px-3 py-2.5 text-[14px] font-medium",
-                  attiva
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                )}
-              >
-                <v.icon className="size-4" strokeWidth={1.75} />
-                {v.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="border-b border-sidebar-border bg-sidebar pb-3 pt-1">
+          <SidebarNav aziende={aziende} />
+        </div>
       )}
     </div>
   );

@@ -2,18 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireConsultant } from "@/features/auth/guards";
 import { getCompanyUsage } from "@/features/entitlement";
-import {
-  getPortfolioOverview,
-  listCompaniesWithStats,
-  sommaPortafoglio,
-} from "@/features/companies/queries";
+import { getPortfolioOverview, listCompaniesWithStats } from "@/features/companies/queries";
+import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
+import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { etichettaDocumento } from "@/features/documents/tipi";
-import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { fmtNum, fmtRelativa } from "@/lib/format";
 import { ExternalLink, FileText, Leaf } from "lucide-react";
 
@@ -22,14 +18,18 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const s = await requireConsultant();
-  const [aziende, usage, quadro] = await Promise.all([
+  const [aziende, usage, quadro, scadenzario] = await Promise.all([
     listCompaniesWithStats(s.userId, s.orgId),
     getCompanyUsage(s.userId, s.orgId),
     getPortfolioOverview(s.userId, s.orgId),
+    getScadenzario(s.userId, s.orgId),
   ]);
   const attive = aziende.filter((a) => a.stato === "active");
   const archiviate = aziende.filter((a) => a.stato === "archived");
-  const totPortafoglio = sommaPortafoglio(aziende);
+  // Solo le voci che chiedono un'azione, e non l'elenco completo dei
+  // «mai avviato»: un promemoria per ogni modulo mai toccato di ogni azienda
+  // sarebbe rumore, non lavoro.
+  const daFare = scadenzario.filter((v) => v.motivo !== "mai-avviato");
 
   return (
     <div className="mx-auto w-full max-w-6xl">
@@ -54,9 +54,11 @@ export default async function DashboardPage() {
         </div>
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi">
-            {totPortafoglio ? fmtNum(totPortafoglio, 1) : "—"}
+            {daFare.length}
           </dd>
-          <dt className="text-[13px] text-muted-foreground">tCO₂e nell&apos;ultimo esercizio</dt>
+          <dt className="text-[13px] text-muted-foreground">
+            {daFare.length === 1 ? "percorso da riprendere" : "percorsi da riprendere"}
+          </dt>
         </div>
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi">{quadro.documentiTotali}</dd>
@@ -108,9 +110,10 @@ export default async function DashboardPage() {
                   className="group relative transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md"
                   {...(a.isDemo ? { "data-tour": "azienda-demo" } : {})}
                 >
-                  {/* L'intera card apre l'inventario; le azioni esplicite stanno sopra il layer */}
+                  {/* L'intera card apre il FASCICOLO, non un modulo: con cinque
+                      percorsi mandare dritti al GHG era una scelta arbitraria. */}
                   <Link
-                    href={`/aziende/${a.id}/ghg`}
+                    href={`/aziende/${a.id}`}
                     aria-label={`Apri ${a.nome}`}
                     className="absolute inset-0 z-0 rounded-xl"
                   />
@@ -196,6 +199,48 @@ export default async function DashboardPage() {
 
         {/* Colonna dello studio: documenti pubblicati e flusso di attività */}
         <aside className="min-w-0 space-y-8 lg:border-l lg:pl-8">
+          {/* Da riprendere: righe, non grafici. La domanda del mattino è
+              «cosa ho lasciato a metà», e a quella si risponde con un elenco. */}
+          <section aria-label="Da riprendere">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Da riprendere</h2>
+            {daFare.length === 0 ? (
+              <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+                Niente in sospeso: ogni percorso avviato è stato pubblicato.
+              </p>
+            ) : (
+              <ul className="mt-3 space-y-1">
+                {daFare.slice(0, 6).map((v) => {
+                  const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
+                  return (
+                    <li key={`${v.companyId}-${v.modulo}`}>
+                      <Link
+                        href={v.href}
+                        className="group -mx-2 flex items-start gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-accent"
+                      >
+                        <m.icona
+                          className="mt-0.5 size-4 shrink-0 text-muted-foreground group-hover:text-accent-foreground"
+                          strokeWidth={1.75}
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[13px] font-medium">
+                            {m.etichetta}
+                            {v.anno !== null && <span className="text-muted-foreground"> · {v.anno}</span>}
+                          </span>
+                          <span className="block truncate text-[11px] text-muted-foreground">
+                            {v.companyNome} · {testoMotivo(v.motivo)}
+                          </span>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            {daFare.length > 6 && (
+              <p className="mt-2 text-[11px] text-muted-foreground">e altri {daFare.length - 6}</p>
+            )}
+          </section>
+
           <section aria-label="Documenti pubblicati">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Documenti pubblicati

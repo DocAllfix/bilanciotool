@@ -4,6 +4,7 @@ import { TITOLARE } from "@/lib/legale";
 import { getSessionOrNull } from "@/features/auth/guards";
 import { firstMembershipOrgId } from "@/features/auth/orgs";
 import { getAccountStatus } from "@/features/entitlement";
+import { listCompanyNames } from "@/features/companies/fascicolo";
 import { CollapsibleShell } from "@/components/app-shell/collapsible-shell";
 import { DemoBanner } from "@/components/app-shell/demo-banner";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
@@ -15,12 +16,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const session = await getSessionOrNull();
   if (!session) redirect("/login");
   const orgId = session.activeOrganizationId ?? (await firstMembershipOrgId(session.userId));
-  const status = orgId ? await getAccountStatus(session.userId, orgId) : "demo";
+  // Stato e nomi in parallelo: la navigazione contestuale vive sopra la rotta
+  // dell'azienda, quindi i nomi non possono arrivarle da un contesto sottostante.
+  const [status, aziende] = await Promise.all([
+    orgId ? getAccountStatus(session.userId, orgId) : Promise.resolve("demo" as const),
+    orgId ? listCompanyNames(session.userId, orgId) : Promise.resolve([]),
+  ]);
 
   return (
     <>
-      <CollapsibleShell nome={session.name} email={session.email}>
-        <MobileNav />
+      <CollapsibleShell nome={session.name} email={session.email} aziende={aziende}>
+        <MobileNav aziende={aziende} />
         {status === "demo" && <DemoBanner />}
         {status === "past_due" && (
           <div className="border-b border-warning/40 bg-warning-subtle px-5 py-2.5 text-sm">

@@ -1,0 +1,165 @@
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { randomUUID } from "node:crypto";
+import { eq, inArray } from "drizzle-orm";
+import { db } from "@/lib/db";
+import {
+  user, organization, member, orgEntitlement, company, auditLog, documentSnapshot, ghgInventory, reportProject,
+} from "@/lib/db/schema";
+import { getFascicolo, listCompanyNames, listDocumentiAzienda } from "@/features/companies/fascicolo";
+import { getScadenzario } from "@/features/companies/scadenzario";
+import { listArchivioDocumenti } from "@/features/documents/archivio";
+import { SENZA_ESERCIZIO } from "@/features/documents/tipi";
+
+// Fascicolo, scadenzario e archivio: le tre viste che ATTRAVERSANO il portafoglio.
+//
+// Esistono perché sono le uniche query che partono dall'organizzazione invece
+// che da una radice già verificata, e sono quindi il punto naturale in cui una
+// vista può mostrare i dati di un altro studio. È successo davvero: la prima
+// versione dello scadenzario non filtrava per organizzazione, e in sviluppo (dove
+// la connessione è privilegiata e le policy non scattano) mostrava le aziende di
+// tutti. In produzione RLS avrebbe coperto il difetto, che sarebbe rimasto lì.
+//
+// Con `RLS_FORCE_ROLE=app_rls` questi test provano lo strato del database; senza,
+// provano il filtro applicativo. Servono verdi in entrambi i modi.
+
+const url = process.env.DATABASE_URL;
+const RUN = Date.now();
+const orgA = `org-nav-a-${RUN}`;
+const orgB = `org-nav-b-${RUN}`;
+const userA = `user-nav-a-${RUN}`;
+const userB = `user-nav-b-${RUN}`;
+const ANNO_VECCHIO = new Date().getFullYear() - 5;
+let companyA = "";
+let companyB = "";
+
+async function creaStudio(orgId: string, userId: string, nomeAzienda: string, suffisso: string) {
+  await db.insert(user).values({ id: userId, name: "Consulente", email: `nav-${suffisso}-${RUN}@example.com` });
+  await db.insert(organization).values({ id: orgId, name: `Studio ${suffisso}`, slug: `nav-${suffisso}-${RUN}` });
+  await db.insert(member).values({ id: randomUUID(), organizationId: orgId, userId, role: "owner" });
+  await db.insert(orgEntitlement).values({ organizationId: orgId, status: "active" });
+  const companyId = randomUUID();
+  await db.insert(company).values({ id: companyId, organizationId: orgId, nome: nomeAzienda });
+  return companyId;
+}
+
+async function pulisciStudio(orgId: string, userId: string) {
+  await db.delete(auditLog).where(eq(auditLog.organizationId, orgId));
+  await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
+  await db.delete(reportProject).where(eq(reportProject.organizationId, orgId));
+  await db.delete(ghgInventory).where(eq(ghgInventory.organizationId, orgId));
+  await db.delete(company).where(eq(company.organizationId, orgId));
+  await db.delete(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
+  await db.delete(member).where(eq(member.organizationId, orgId));
+  await db.delete(organization).where(eq(organization.id, orgId));
+  await db.delete(user).where(inArray(user.id, [userId]));
+}
+
+describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
+  beforeAll(async () => {
+    companyA = await creaStudio(orgA, userA, "Azienda dello studio A", "a");
+    companyB = await creaStudio(orgB, userB, "Azienda dello studio B", "b");
+
+    // Studio A: un inventario fermo a cinque anni fa (deve finire in scadenzario)
+    // e un bilancio dell'anno scorso mai pubblicato.
+    await db.insert(ghgInventory).values({
+      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: "v1",
+    });
+    await db.insert(reportProject).values({
+      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: new Date().getFullYear() - 1, contentSetId: "v1",
+    });
+
+    // Studio B: le stesse cose, che NON devono comparire allo studio A.
+    await db.insert(ghgInventory).values({
+      id: randomUUID(), organizationId: orgB, companyId: companyB, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: "v1",
+    });
+    await db.insert(documentSnapshot).values({
+      id: randomUUID(), organizationId: orgB, companyId: companyB, tipo: "soa", anno: SENZA_ESERCIZIO,
+      versione: 1, dati: { prova: true }, publishedBy: userB,
+    });
+  });
+
+  afterAll(async () => {
+    await pulisciStudio(orgA, userA);
+    await pulisciStudio(orgB, userB);
+  });
+
+  it("il fascicolo elenca i cinque moduli, con lo stato di ciascuno", async () => {
+    const f = (await getFascicolo(userA, orgA, companyA))!;
+    expect(f.azienda.nome).toBe("Azienda dello studio A");
+    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "bilancio", "energetico", "fornitore", "soa"]);
+    expect(f.voci.find((v) => v.modulo === "ghg")!.stato).toBe("in-corso");
+    expect(f.voci.find((v) => v.modulo === "ghg")!.anno).toBe(ANNO_VECCHIO);
+    expect(f.voci.find((v) => v.modulo === "energetico")!.stato).toBe("non-avviato");
+    // Un modulo annuale già avviato porta dritto all'esercizio, senza redirect.
+    expect(f.voci.find((v) => v.modulo === "ghg")!.href).toContain(`/ghg/${ANNO_VECCHIO}`);
+    expect(f.voci.find((v) => v.modulo === "fornitore")!.href).toMatch(/\/fornitore$/);
+  });
+
+  it("il fascicolo di un'azienda di un altro studio non si apre", async () => {
+    expect(await getFascicolo(userA, orgA, companyB)).toBeNull();
+    expect(await getFascicolo(userB, orgB, companyA)).toBeNull();
+  });
+
+  it("lo scadenzario segnala l'esercizio arretrato e il lavoro non pubblicato", async () => {
+    const voci = await getScadenzario(userA, orgA);
+    const ghg = voci.find((v) => v.modulo === "ghg")!;
+    expect(ghg.motivo).toBe("esercizio-mancante");
+    expect(ghg.anno).toBe(new Date().getFullYear() - 1);
+    const bil = voci.find((v) => v.modulo === "bilancio")!;
+    expect(bil.motivo).toBe("da-pubblicare");
+    // I moduli mai toccati restano nell'elenco come promemoria, in fondo.
+    expect(voci.find((v) => v.modulo === "soa")!.motivo).toBe("mai-avviato");
+    expect(voci.filter((v) => v.motivo === "mai-avviato").every((v) => v.priorita >= 30)).toBe(true);
+  });
+
+  it("lo scadenzario NON mostra le aziende di un altro studio", async () => {
+    const voci = await getScadenzario(userA, orgA);
+    expect(voci.every((v) => v.companyId === companyA)).toBe(true);
+    expect(voci.some((v) => v.companyNome.includes("studio B"))).toBe(false);
+
+    const altre = await getScadenzario(userB, orgB);
+    expect(altre.every((v) => v.companyId === companyB)).toBe(true);
+  });
+
+  it("un esercizio dell'anno scorso non è un ritardo: si rendiconta adesso", async () => {
+    const anno = new Date().getFullYear() - 1;
+    const invId = randomUUID();
+    await db.insert(ghgInventory).values({
+      id: invId, organizationId: orgA, companyId: companyA, anno, annoBase: anno, contentSetId: "v1",
+    });
+    try {
+      const ghg = (await getScadenzario(userA, orgA)).find((v) => v.modulo === "ghg")!;
+      expect(ghg.motivo).toBe("da-pubblicare");
+      expect(ghg.anno).toBe(anno);
+    } finally {
+      await db.delete(ghgInventory).where(eq(ghgInventory.id, invId));
+    }
+  });
+
+  it("l'archivio conta e filtra soltanto i documenti del proprio studio", async () => {
+    const dellaB = await listArchivioDocumenti(userB, orgB, { tipo: null, companyId: null });
+    expect(dellaB.totale).toBe(1);
+    expect(dellaB.conteggiPerTipo.soa).toBe(1);
+    expect(dellaB.aziende.map((a) => a.nome)).toEqual(["Azienda dello studio B"]);
+
+    const dellaA = await listArchivioDocumenti(userA, orgA, { tipo: null, companyId: null });
+    expect(dellaA.totale).toBe(0);
+    expect(dellaA.documenti).toEqual([]);
+
+    // Il filtro per tipo restringe l'elenco ma non il totale, che serve a dire
+    // «ne hai 12, ne stai vedendo 3».
+    const soloGhg = await listArchivioDocumenti(userB, orgB, { tipo: "ghg", companyId: null });
+    expect(soloGhg.totale).toBe(1);
+    expect(soloGhg.documenti.length).toBe(0);
+  });
+
+  it("i documenti di un'azienda non trapassano allo studio sbagliato", async () => {
+    expect(await listDocumentiAzienda(userA, orgA, companyB)).toEqual([]);
+    expect((await listDocumentiAzienda(userB, orgB, companyB)).length).toBe(1);
+  });
+
+  it("i nomi per la navigazione sono solo quelli del proprio studio", async () => {
+    const nomi = await listCompanyNames(userA, orgA);
+    expect(nomi.map((n) => n.nome)).toEqual(["Azienda dello studio A"]);
+  });
+});

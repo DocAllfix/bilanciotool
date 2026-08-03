@@ -17,10 +17,14 @@ const CHIAVE = "evalisdeck-sidebar";
 export function CollapsibleShell({
   nome,
   email,
+  aziende,
   children,
 }: {
   nome: string;
   email: string;
+  /** Nomi delle aziende dello studio: servono alla navigazione contestuale, che
+   *  vive sopra la rotta dell'azienda e non può riceverli da un contesto sotto. */
+  aziende: { id: string; nome: string }[];
   children: React.ReactNode;
 }) {
   const [compatta, setCompatta] = useState(false);
@@ -59,7 +63,7 @@ export function CollapsibleShell({
             )}
           </Link>
         </div>
-        <SidebarNav compatta={compatta} />
+        <SidebarNav compatta={compatta} aziende={aziende} />
         <button
           type="button"
           onClick={commuta}
