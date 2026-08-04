@@ -41,6 +41,29 @@ export function contieneRiferimentiAlCms(testo: string, cms: string): boolean {
 }
 
 /**
+ * Toglie il nome del sito accodato al titolo.
+ *
+ * Yoast lo mette in fondo a ogni titolo, e il nostro layout ne accoda un altro: il risultato
+ * e' «Titolo - EvalisDeck · EvalisDeck», che oltre a leggersi male occupa il posto delle
+ * parole vere nei 60 caratteri che Google mostra.
+ *
+ * Si potrebbe spegnere dal pannello di Yoast, ma un'impostazione si riattiva con un
+ * aggiornamento o con una distrazione, e nessuno se ne accorge. Qui il suffisso da togliere
+ * non e' scritto a mano: e' `og_site_name`, cioe' lo dichiara lo stesso CMS che lo ha messo.
+ */
+export function senzaMarchioInCoda(titolo: string, nomeSito: string | undefined): string {
+  if (!nomeSito) return titolo;
+  const separatori = "-–—|·»:";
+  const re = new RegExp(
+    `\\s*[${separatori}]\\s*${nomeSito.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`,
+    "i",
+  );
+  const ripulito = titolo.replace(re, "").trim();
+  // Un titolo che era SOLO il marchio resta com'era: meglio ridondante che vuoto.
+  return ripulito || titolo;
+}
+
+/**
  * Traduce `yoast_head_json` nei metadati della pagina, con TUTTI gli URL riportati sul dominio
  * pubblico. Il canonical viene comunque FORZATO su `/blog/<slug>`: anche se Yoast fornisse un
  * valore strano, l'indirizzo canonico dei nostri articoli lo decidiamo noi.
@@ -57,12 +80,15 @@ export function seoDaYoast(
     return typeof v === "string" && v.trim() ? v.trim() : undefined;
   };
 
+  const nomeSito = stringa("og_site_name");
+  const pulisci = (v: string | undefined) => (v ? senzaMarchioInCoda(v, nomeSito) : undefined);
+
   return {
-    title: stringa("title"),
+    title: pulisci(stringa("title")),
     description: stringa("description") ?? stringa("og_description"),
     // canonical SEMPRE nostro, mai quello di Yoast
     canonical: `${opts.pubblico.replace(/\/+$/, "")}/blog/${opts.slug}`,
-    ogTitle: stringa("og_title") ?? stringa("title"),
+    ogTitle: pulisci(stringa("og_title") ?? stringa("title")),
     ogDescription: stringa("og_description") ?? stringa("description"),
     ogImage: riportaSuPubblico(og, opts.cms, opts.pubblico),
   };
