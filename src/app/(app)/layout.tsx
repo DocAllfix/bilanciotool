@@ -46,13 +46,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <span>
               {TITOLARE.ragioneSociale} · P.IVA {TITOLARE.partitaIva}
             </span>
-            <Link href="/privacy" className="transition-colors hover:text-foreground">
+            <Link href="/privacy" className="tocco-comodo transition-colors hover:text-foreground">
               Privacy
             </Link>
-            <Link href="/cookie" className="transition-colors hover:text-foreground">
+            <Link href="/cookie" className="tocco-comodo transition-colors hover:text-foreground">
               Cookie
             </Link>
-            <Link href="/termini" className="transition-colors hover:text-foreground">
+            <Link href="/termini" className="tocco-comodo transition-colors hover:text-foreground">
               Termini
             </Link>
             <span className="ml-auto">Dati ospitati nell&apos;Unione Europea</span>

@@ -59,11 +59,11 @@ export function PaginaLegale({
           className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-6 text-sm"
           aria-label="Documenti legali"
         >
-          <Link href="/" className="font-medium text-primary hover:underline">
+          <Link href="/" className="tocco-comodo font-medium text-primary hover:underline">
             ← Torna alla home
           </Link>
           {PAGINE.map((p) => (
-            <Link key={p.href} href={p.href} className="text-muted-foreground transition-colors hover:text-foreground">
+            <Link key={p.href} href={p.href} className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">
               {p.titolo}
             </Link>
           ))}

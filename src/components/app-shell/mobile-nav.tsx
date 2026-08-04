@@ -37,7 +37,7 @@ export function MobileNav({ aziende = [] }: { aziende?: { id: string; nome: stri
         >
           {aperto ? <X className="size-5" /> : <Menu className="size-5" />}
         </Button>
-        <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setAperto(false)}>
+        <Link href="/dashboard" className="tocco-comodo flex items-center gap-2" onClick={() => setAperto(false)}>
           <Monogramma suScuro className="size-7" />
           <span className="text-[14px] font-semibold tracking-tight text-white">EvalisDeck</span>
         </Link>

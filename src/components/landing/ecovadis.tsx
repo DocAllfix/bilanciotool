@@ -24,6 +24,32 @@ export function BadgeEcoVadis({ dimensione = 120, className }: { dimensione?: nu
   );
 }
 
+/** La medaglia dentro l'hero, sopra la piega.
+ *
+ *  Due righe soltanto: il punteggio e chi è valutato. La spiegazione completa,
+ *  con il limite di che cosa il rating copre e che cosa no, resta nella fascia
+ *  più in basso: qui non c'è lo spazio per dirla bene, e detta male sarebbe
+ *  peggio che non dirla. */
+export function FirmaEcoVadis() {
+  if (!ecovadisValido()) return null;
+  return (
+    <div className="mt-5 flex items-center gap-3.5 border-t pt-4">
+      <BadgeEcoVadis dimensione={64} className="size-16 shrink-0" />
+      <p className="text-[13px] leading-relaxed text-muted-foreground">
+        Sviluppato per {ECOVADIS.azienda}, valutata{" "}
+        <a href="#metodo" className="font-semibold text-primary hover:underline">
+          EcoVadis {ECOVADIS.medaglia}
+        </a>{" "}
+        <span data-slot="kpi">
+          {ECOVADIS.punteggio}/100
+        </span>
+        , {ECOVADIS.percentile}° percentile.
+        <span className="block">Il primo 1% delle aziende valutate nel mondo.</span>
+      </p>
+    </div>
+  );
+}
+
 /** Fascia "Chi ha costruito lo strumento": sta fra la sezione del metodo e le
  *  FAQ, cioè nel punto in cui il lettore ha appena finito di leggere sei prove
  *  che il prodotto dà di sé stesso e si chiede chi ci sia dietro. */
@@ -34,7 +60,7 @@ export function FasciaEcoVadis() {
       <div className="mx-auto w-full max-w-6xl px-5 py-16">
         <Reveal>
           <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:gap-12">
-            <BadgeEcoVadis dimensione={120} className="h-[88px] w-[88px] shrink-0 sm:h-[120px] sm:w-[120px]" />
+            <BadgeEcoVadis dimensione={120} className="h-22 w-22 shrink-0 sm:h-30 sm:w-30" />
             <div className="min-w-0">
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                 <span className="h-px w-8 bg-primary" aria-hidden />

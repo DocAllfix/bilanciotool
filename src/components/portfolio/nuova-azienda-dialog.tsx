@@ -63,7 +63,7 @@ export function NuovaAziendaDialog({
     variante === "cella" ? (
       <button
         type="button"
-        className="flex min-h-[190px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed text-muted-foreground transition-colors hover:border-primary/45 hover:bg-accent hover:text-foreground"
+        className="hidden min-h-[190px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed text-muted-foreground transition-colors hover:border-primary/45 hover:bg-accent hover:text-foreground sm:flex"
       >
         <span className="flex size-9 items-center justify-center rounded-full border border-dashed">
           <Plus className="size-4" />

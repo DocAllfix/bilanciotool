@@ -41,7 +41,7 @@ export function UserMenu({ nome, email, compatto = false }: { nome: string; emai
         {!compatto && (
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[13px] font-medium text-sidebar-accent-foreground">{nome}</span>
-            <span className="block truncate text-[11px] text-sidebar-foreground/70">{email}</span>
+            <span className="block truncate text-[12px] text-sidebar-foreground/70">{email}</span>
           </span>
         )}
       </DropdownMenuTrigger>

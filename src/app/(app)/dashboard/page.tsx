@@ -272,7 +272,7 @@ export default async function DashboardPage() {
                           {m.etichetta}
                           {v.anno !== null && <span className="text-muted-foreground"> · {v.anno}</span>}
                         </span>
-                        <span className="block truncate text-[11px] text-muted-foreground">
+                        <span className="block truncate text-[12px] text-muted-foreground">
                           {v.companyNome} · {testoMotivo(v.motivo)}
                         </span>
                       </span>
@@ -289,7 +289,7 @@ export default async function DashboardPage() {
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Documenti pubblicati</h2>
             {quadro.documentiTotali > 0 && (
-              <Link href="/documenti" className="text-[12px] font-medium text-primary hover:underline">
+              <Link href="/documenti" className="tocco-comodo text-[12px] font-medium text-primary hover:underline">
                 Archivio
               </Link>
             )}
@@ -318,7 +318,7 @@ export default async function DashboardPage() {
                         {etichettaDocumento(d.tipo, d.anno, true)}
                         <span className="text-muted-foreground"> · v{d.versione}</span>
                       </span>
-                      <span className="block truncate text-[11px] text-muted-foreground">{d.companyNome}</span>
+                      <span className="block truncate text-[12px] text-muted-foreground">{d.companyNome}</span>
                     </span>
                     <ExternalLink className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                   </a>
@@ -341,7 +341,7 @@ export default async function DashboardPage() {
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/50" aria-hidden />
                   <span className="min-w-0">
                     <span className="block leading-snug">{v.etichetta}</span>
-                    <span className="block text-[11px] text-muted-foreground">
+                    <span className="block text-[12px] text-muted-foreground">
                       {[v.companyNome, fmtRelativa(v.quando)].filter(Boolean).join(" · ")}
                     </span>
                   </span>

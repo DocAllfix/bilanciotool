@@ -199,6 +199,26 @@
 }
 
 /* Font display della landing (Bricolage Grotesque, fallback Geist) */
+/* Bersaglio comodo al dito, senza cambiare il disegno.
+   Le linee guida chiedono 44x44 px per un'area toccabile, ma alzare l'altezza
+   reale dei comandi renderebbe l'intera interfaccia meno densa anche su
+   desktop, dove il puntatore e preciso. Qui si allarga soltanto l'area
+   SENSIBILE, con uno pseudo-elemento invisibile, e solo dove il puntatore e
+   grossolano (dito). Il testo resta esattamente dov'e. */
+@utility tocco-comodo {
+  @media (pointer: coarse) {
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -0.75rem -0.375rem;
+      /* Su una riga di 18px l'allargamento arriverebbe a 42: il minimo esplicito
+         chiude i due pixel che mancano, senza dover accordare ogni chiamante. */
+      min-height: 44px;
+    }
+  }
+}
+
 @utility font-display {
   font-family: var(--font-display, var(--font-geist-sans));
 }

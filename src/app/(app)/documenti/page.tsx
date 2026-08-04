@@ -162,7 +162,7 @@ function Filtro({ href, attivo, etichetta }: { href: string; attivo: boolean; et
       href={href}
       aria-current={attivo ? "true" : undefined}
       className={
-        "rounded-full border px-3 py-1 text-[12.5px] font-medium transition-colors " +
+        "tocco-comodo rounded-full border px-3 py-1 text-[12.5px] font-medium transition-colors " +
         (attivo
           ? "border-primary bg-primary text-primary-foreground"
           : "text-muted-foreground hover:border-foreground/25 hover:text-foreground")

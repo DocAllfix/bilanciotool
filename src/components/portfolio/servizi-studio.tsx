@@ -53,7 +53,7 @@ export function ServiziStudio({ servizi }: { servizi: ContoServizio[] }) {
                   <div className={`h-full ${m.colore.tratto} opacity-100`} style={{ width: `${pctAvviati > 0 ? (pctPubblicati / pctAvviati) * 100 : 0}%` }} />
                 </div>
               </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
+              <p className="mt-1 text-[12px] text-muted-foreground">
                 {s.avviati === 0
                   ? "mai proposto a un cliente"
                   : s.pubblicati === 0

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LogoOrizzontale } from "@/components/brand/logo";
 import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
-import { BadgeEcoVadis, FasciaEcoVadis } from "@/components/landing/ecovadis";
+import { BadgeEcoVadis, FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 
@@ -72,16 +72,16 @@ export default function LandingPage() {
         {/* ============================================================ HERO */}
         <section className="relative overflow-hidden border-b">
           <div className="pointer-events-none absolute -top-40 left-[62%] h-[560px] w-[560px] rounded-full bg-primary/8 blur-3xl" aria-hidden />
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-14 px-5 py-20 md:grid-cols-[1.1fr_1fr] md:py-28">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-10 md:grid-cols-[1.1fr_1fr] md:py-24">
             <div>
-              <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-                <span className="h-px w-8 bg-primary" aria-hidden />
-                Rendicontazione · studi di consulenza e PMI
+              <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary sm:tracking-[0.22em]">
+                <span className="h-px w-8 shrink-0 bg-primary" aria-hidden />
+                Rendicontazione · studi e PMI
               </p>
-              <h1 className="font-display mt-5 text-[44px] font-bold leading-[1.02] tracking-[-0.03em] md:text-[64px]">
+              <h1 className="font-display mt-5 text-[36px] font-bold leading-[1.05] tracking-[-0.03em] sm:text-[44px] md:text-[64px]">
                 Dalla raccolta dati al documento firmato.
               </h1>
-              <p className="font-display mt-3 text-[22px] font-semibold tracking-[-0.01em] text-primary md:text-[26px]">
+              <p className="font-display mt-3 text-[20px] font-semibold tracking-[-0.01em] text-primary sm:text-[22px] md:text-[26px]">
                 Un solo strumento.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
@@ -101,9 +101,14 @@ export default function LandingPage() {
                   </a>
                 </Button>
               </div>
-              <p className="mt-5 text-xs text-muted-foreground">
+              <p className="mt-4 text-xs text-muted-foreground">
                 Un&apos;azienda d&apos;esempio già compilata ti aspetta. Nessuna carta richiesta.
               </p>
+              {/* La medaglia sopra la piega, richiesta del committente. Sta qui e
+                  non in una striscia in cima perché non deve spingere giù il
+                  titolo né rubare il colpo d'occhio al Deck: è una prova di
+                  serietà accanto alla promessa, non un'insegna. */}
+              <FirmaEcoVadis />
             </div>
             <HeroDeck />
           </div>
@@ -460,7 +465,7 @@ function Percorso({ indice, titolo, norma, passi, punto }: { indice: string; tit
     <div className="flex h-full flex-col border-t-2 border-foreground pt-6">
       <div className="flex items-baseline justify-between gap-3">
         <p className="font-display text-[13px] font-bold uppercase tracking-[0.18em] text-primary">Percorso {indice}</p>
-        <span className="font-mono text-[10px] text-muted-foreground">{norma}</span>
+        <span className="font-mono text-[12px] text-muted-foreground">{norma}</span>
       </div>
       <h3 className="font-display mt-2 text-[26px] font-bold tracking-[-0.01em]">{titolo}</h3>
       <ol className="mt-6 grid grid-cols-1 gap-y-1.5">
@@ -482,7 +487,11 @@ function PassoScuro({ n, titolo, testo, children }: { n: string; titolo: string;
       <p className="font-display text-[40px] font-bold leading-none tracking-tight text-sidebar-primary/50" data-slot="kpi">{n}</p>
       <h3 className="font-display mt-3 text-[20px] font-semibold tracking-[-0.01em] text-white">{titolo}</h3>
       <p className="mt-2 text-[13px] leading-relaxed text-sidebar-foreground/75">{testo}</p>
-      <div className="mt-auto pt-5">{children}</div>
+      {/* Illustrazione, non contenuto: il lettore di schermo la salta e il
+          testo minuscolo qui dentro e una scelta di disegno. */}
+      <div className="mt-auto pt-5" aria-hidden>
+        {children}
+      </div>
     </div>
   );
 }
