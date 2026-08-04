@@ -4,7 +4,7 @@ import { mkdirSync } from "node:fs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-landing";
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://localhost:3000";
+const BASE = process.env.BASE ?? "http://localhost:3000";
 const errors = [];
 
 const browser = await chromium.launch({ headless: true });
