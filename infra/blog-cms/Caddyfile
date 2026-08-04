@@ -1,0 +1,83 @@
+# Caddy davanti a WordPress. TLS automatico (Let's Encrypt), niente configurazione a mano.
+#
+# ⚠️ IL BLOCCO PIU' IMPORTANTE E' `X-Robots-Tag: noindex`. Senza, Google indicizza il CMS e si
+# ritrova DUE copie di ogni articolo: la nostra e quella del sottodominio. Sceglierebbe una
+# delle due, spesso non la nostra, e il lavoro sul dominio principale andrebbe sprecato.
+# E' il primo dei due strati: il secondo e' l'impostazione dentro WordPress.
+
+cms.evalisacademy.it {
+	# ogni risposta, senza eccezioni: anche le immagini e i JSON
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# La dashboard e il login chiedono una password PRIMA di WordPress. Serve perche' il
+	# tentativo automatico su /wp-login.php e' il rumore di fondo di internet: cosi' i bot
+	# sbattono su Caddy e non arrivano nemmeno a provare le password di WordPress.
+	#
+	# Non un filtro per indirizzo IP: le connessioni italiane di casa e ufficio cambiano
+	# indirizzo da sole, e chi ci lavora si troverebbe chiuso fuori dal proprio pannello senza
+	# capire perche'. Una password funziona da qualsiasi rete.
+	#
+	# Utente e hash arrivano dall'ambiente (li genera installa.sh): in chiaro qui dentro
+	# finirebbero in un repository.
+	@amministrazione path /wp-admin* /wp-login.php
+	basic_auth @amministrazione {
+		{$ADMIN_UTENTE} {$ADMIN_HASH}
+	}
+
+	# XML-RPC non serve a un CMS headless ed e' il bersaglio piu' battuto di WordPress
+	respond /xmlrpc.php 403
+
+	# nessuno deve poter leggere la configurazione o i file di log
+	@vietati path /wp-config.php /.env /debug.log /readme.html /license.txt
+	respond @vietati 403
+
+	reverse_proxy wp-evalis:80
+
+	encode zstd gzip
+	log {
+		output file /data/access.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}
+
+# --- SECONDO SITO: EvalisDeck ---------------------------------------------------------------
+# Stesse condizioni del primo: noindex su ogni risposta, dashboard dietro password, xmlrpc
+# chiuso. Credenziali e hash PROPRI: due siti che condividono una password sono un sito solo
+# dal punto di vista di chi attacca.
+cms.evalisdeck.it {
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	@amministrazione path /wp-admin* /wp-login.php
+	basic_auth @amministrazione {
+		{$ADMIN_UTENTE_EVALISDECK} {$ADMIN_HASH_EVALISDECK}
+	}
+
+	respond /xmlrpc.php 403
+
+	@vietati path /wp-config.php /.env /debug.log /readme.html /license.txt
+	respond @vietati 403
+
+	reverse_proxy wp-evalisdeck:80
+
+	encode zstd gzip
+	log {
+		output file /data/access-evalisdeck.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}
