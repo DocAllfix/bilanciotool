@@ -30,6 +30,27 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  // Un solo indirizzo canonico: evalisdeck.it.
+  //
+  // Ogni altro host che serve le stesse pagine è contenuto duplicato, e Google
+  // sceglie da solo quale ignorare. Il reindirizzamento si può impostare anche
+  // dal pannello Vercel, ma qui è VERSIONATO e collaudabile: un'impostazione di
+  // pannello non lascia traccia nel repository e si perde al primo progetto
+  // ricreato. `permanent: true` emette un 308, che consolida il valore sul
+  // dominio di destinazione; un 307 direbbe ai motori di tenersi il vecchio.
+  //
+  // Gli indirizzi di anteprima (`evalisdeck-<hash>.vercel.app`) non combaciano
+  // con questi valori esatti e restano raggiungibili.
+  async redirects() {
+    const CANONICO = "evalisdeck.it";
+    const ALTRI_HOST = ["www.evalisdeck.it", "evalisdeck.vercel.app", "bilanciotool.vercel.app"];
+    return ALTRI_HOST.map((host) => ({
+      source: "/:percorso*",
+      has: [{ type: "host" as const, value: host }],
+      destination: `https://${CANONICO}/:percorso*`,
+      permanent: true,
+    }));
+  },
 };
 
 export default nextConfig;
