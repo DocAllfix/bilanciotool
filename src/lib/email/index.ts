@@ -77,3 +77,30 @@ export async function sendOrgInvitationEmail(to: string, orgName: string, url: s
     button: { label: "Accetta l'invito", url },
   }));
 }
+
+/**
+ * Allarme sui controlli del blog.
+ *
+ * Va a chi puo' rimediare, non al consulente: se un canonical e' finito sul CMS o la
+ * sitemap si e' svuotata, il rimedio e' tecnico.
+ *
+ * Senza RESEND_API_KEY resta un no-op e il guasto si vede solo nei log di Vercel — dove
+ * nessuno guarda finche' non e' tardi. E' il motivo per cui la chiave va messa prima di
+ * accendere il blog per i motori.
+ */
+export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean }> {
+  const destinatario = process.env.BLOG_ALLARME_A;
+  if (!destinatario) return { sent: false };
+  return send(
+    destinatario,
+    "[EvalisDeck] Controlli del blog: qualcosa non torna",
+    renderEmail({
+      previewText: "Uno o piu controlli automatici sul blog sono rossi.",
+      heading: "Controlli del blog",
+      body: [
+        "Uno o più controlli automatici sul blog sono rossi. Finché non si risolvono, il posizionamento degli articoli è a rischio.",
+        righe.map(esc).join("<br>"),
+      ],
+    }),
+  );
+}

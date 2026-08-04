@@ -1,31 +1,29 @@
-// Gli articoli della vecchia fonte, eliminati con il passaggio a WordPress.
+// Gli slug di articoli eliminati per sempre, che devono rispondere 410.
 //
-// PERCHE' 410 E NON 404. Erano indicizzati. Un 404 dice a Google "non lo trovo adesso", e
-// l'URL resta nell'indice per mesi mentre il crawler continua a ripassare. Il 410 dice
-// "rimosso, definitivamente": Google lo toglie in fretta e smette di chiedere. Per contenuto
-// eliminato e senza sostituto e' il trattamento corretto.
+// **Oggi è vuoto, ed è giusto così**: il blog nasce con questo impianto, non c'è stata
+// nessuna migrazione da una fonte precedente, e quindi non c'è nessun indirizzo indicizzato
+// da ritirare. Il modulo esiste comunque, perché il primo articolo cancellato ne avrà
+// bisogno e serve un posto solo dove dichiararlo.
 //
-// Nessuno di questi aveva traffico — export Search Console del 04/08/2026, tre mesi:
-// l'intera sezione /blog aveva ZERO clic e 8 impressioni. Non c'era nulla da preservare con
-// un 301, e mandare tutti a /blog sarebbe stato un reindirizzamento fasullo verso una pagina
-// che non risponde alla domanda di chi arrivava.
+// PERCHÉ 410 E NON 404, quando servirà. Un 404 dice a Google «non lo trovo adesso», e
+// l'indirizzo resta nell'indice per mesi mentre il crawler continua a ripassare. Il 410
+// dice «rimosso, definitivamente»: Google lo toglie in fretta e smette di chiedere. Per
+// contenuto eliminato e senza sostituto è il trattamento corretto.
 //
-// ⚠️ Se un giorno il redattore ripubblicasse un articolo con uno di questi slug, il 410
-// coprirebbe l'articolo vero. Per questo `_verifica-blog.ts` controlla che nessuno di questi
-// compaia in sitemap: il conflitto si scopre da solo invece che dopo settimane.
+// Un articolo SOSTITUITO va invece reindirizzato con un 301 verso il nuovo, non messo qui:
+// il 301 conserva il posizionamento accumulato, il 410 lo butta via. E per i soli cambi di
+// slug non serve nemmeno quello: ci pensa `slugSostitutivo()`, che li scopre dal CMS.
+//
+// ⚠️ Uno slug che esiste ancora nel CMS **non va messo in elenco**: il 410 coprirebbe
+// l'articolo vero, e nessuno se ne accorgerebbe — la pagina esiste, la sitemap la elenca,
+// ma chi la apre legge «rimosso». Per questo `verifica.ts` confronta questo elenco con la
+// sitemap e diventa rosso al primo conflitto.
 
 export const SLUG_RIMOSSI: readonly string[] = [
-  "auditor-iso-opportunita-2026",
-  "competenze-tecniche-certificate",
-  "formazione-bancaria-2026",
-  "esame-online-evalis",
-  "certificato-qr-verificabile",
-  "mestieri-specialistici-certificazione",
-  // NB: "guida-esame-iso-9001" NON e' in elenco. Esisteva prima ed esiste ancora su WordPress:
-  // metterlo qui coprirebbe un articolo pubblicato.
+  // vuoto: nessun articolo è ancora stato pubblicato e poi eliminato
 ];
 
-/** L'articolo a questo percorso e' stato rimosso per sempre? */
+/** L'articolo a questo percorso è stato rimosso per sempre? */
 export function eRimosso(percorso: string): boolean {
   const m = percorso.match(/^\/blog\/([a-z0-9-]+)\/?$/i);
   return m ? SLUG_RIMOSSI.includes(m[1].toLowerCase()) : false;
