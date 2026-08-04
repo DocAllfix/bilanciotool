@@ -175,3 +175,50 @@ sono reali e non si risolvono con l'infrastruttura:
 - **link incrociati** senza una ragione redazionale vera.
 
 Serve una regola editoriale scritta, non una configurazione.
+
+## 12. Quello che abbiamo scoperto montandolo (04/08/2026)
+
+Cose che il documento di riferimento non dice, trovate provando la catena dal vivo.
+
+### Il webhook non parte da riga di comando
+
+`wp post update` da `wp-cli` **non fa partire il webhook**, anche se l'aggancio
+(`transition_post_status`) scatta regolarmente. Il motivo: la chiamata è `blocking => false`,
+e sotto CLI il processo finisce prima che la richiesta esca. Da una richiesta web (la
+dashboard, o le API REST) parte e funziona: l'articolo si aggiorna in produzione in una
+quindicina di secondi.
+
+Conseguenza pratica: **le prove della catena vanno fatte via dashboard o via REST, mai con
+`wp-cli`**, altrimenti si conclude che il webhook è rotto quando non lo è. Per lo stesso
+motivo, se un giorno servisse una pubblicazione in blocco da riga di comando, andrà seguita
+da una chiamata esplicita al webhook.
+
+### `wp post create` non assegna un autore
+
+Un articolo creato da riga di comando resta con `post_author = 0`. Le conseguenze sono
+invisibili nella dashboard e visibili a Google: lo schema JSON-LD dichiara un autore con nome
+vuoto, e `/wp-json/wp/v2/users` non elenca **nessun** utente (WordPress mostra pubblicamente
+solo gli autori con articoli pubblicati). Anche qui: gli articoli veri nascono dalla
+dashboard, quindi il problema riguarda solo le prove — ma il controllo automatico ora se ne
+accorge da solo.
+
+### Il marchio in coda al titolo, due volte
+
+Yoast accoda il nome del sito a ogni titolo, e il nostro layout ne accoda un altro. Il
+suffisso lo toglie il frontend leggendo `og_site_name` dallo stesso payload, non
+un'impostazione nel pannello: le impostazioni si riattivano con un aggiornamento e nessuno
+se ne accorge. Stessa regola degli indirizzi, estesa alla presentazione: **il CMS fornisce i
+valori, il sito decide come si vedono.**
+
+### Il redirect sullo slug rinominato è un 308, non un 301
+
+Next risponde con `permanentRedirect()`, cioè 308. Google lo tratta come un permanente
+equivalente al 301; la differenza (il 308 conserva il metodo HTTP) qui non ha effetto.
+
+### L'interruttore di visibilità va passato ai controlli
+
+A blog spento la sitemap non elenca gli articoli **per scelta**. Se i controlli non lo
+sapessero, il conteggio sarebbe rosso ogni mattina fino all'apertura: un allarme quotidiano
+che si impara a ignorare, cioè il modo migliore per non vedere quello vero. I controlli
+ricevono lo stato dichiarato e difendono **entrambe** le configurazioni — restare `noindex`
+dopo l'apertura è il guasto che si scopre dopo mesi di zero visite.
