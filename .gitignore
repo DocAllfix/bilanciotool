@@ -55,3 +55,6 @@ shots-attestato/
 shots-fornitore/
 shots-soa/
 shots-soa-percorso/
+
+.vercel
+.env*
