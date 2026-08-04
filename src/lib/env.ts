@@ -19,6 +19,16 @@ const REQUIRED_IN_PROD = [
   "SUPABASE_SERVICE_ROLE_KEY",
 ] as const;
 
+// Una variabile impostata a stringa VUOTA deve valere come assente.
+//
+// Non e' pedanteria: `z.string().url().optional()` rifiuta "" e fa fallire il parse,
+// cioe' la build intera. E "" e' esattamente cio' che si ottiene svuotando un campo
+// nel pannello di Vercel o passando `BLOG_CMS_URL=` da riga di comando. Per le
+// variabili del blog, che NON devono mai poter bloccare un rilascio, il vuoto si
+// normalizza ad assente prima di validare.
+const vuotaComeAssente = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((v) => (v === "" ? undefined : v), schema);
+
 const schema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -36,6 +46,23 @@ const schema = z
     // Email (no-op se assente fuori produzione)
     RESEND_API_KEY: z.string().optional(),
     RESEND_FROM: z.string().optional(),
+    // Blog headless (WordPress su cms.evalisdeck.it).
+    //
+    // NESSUNA di queste sta in REQUIRED_IN_PROD, ed e' una scelta: il blog non deve
+    // poter bloccare il rilascio dell'applicazione. Se mancano, `blogConfigurato()`
+    // e' falso e /blog mostra lo stato vuoto mentre tutto il resto del prodotto
+    // continua a compilare e a funzionare.
+    BLOG_CMS_URL: vuotaComeAssente(z.string().url().optional()),
+    BLOG_CMS_USER: z.string().optional(),
+    BLOG_CMS_APP_PASSWORD: z.string().optional(),
+    /** Viaggia negli indirizzi delle anteprime: separato da quello del webhook. */
+    BLOG_PREVIEW_TOKEN: vuotaComeAssente(z.string().min(16).optional()),
+    /** Resta fra WordPress e il server: non finisce mai in un URL. */
+    BLOG_WEBHOOK_TOKEN: vuotaComeAssente(z.string().min(16).optional()),
+    /** Impostata da Vercel, autentica il giro di controllo quotidiano. */
+    CRON_SECRET: z.string().optional(),
+    /** "1" accende il blog per i motori: fuori dal noindex, dentro la sitemap, nel menu. */
+    BLOG_VISIBILE_AI_MOTORI: vuotaComeAssente(z.enum(["0", "1"]).optional()),
     // Test seam RLS (mai impostata in produzione)
     RLS_FORCE_ROLE: z.string().regex(/^[a-z_][a-z0-9_]*$/).optional(),
   })

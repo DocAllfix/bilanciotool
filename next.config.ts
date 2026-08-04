@@ -30,6 +30,26 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  // Le immagini degli articoli restano ospitate dal CMS, ma il visitatore non gliele
+  // chiede MAI: `seo.ts` riscrive gli indirizzi sul nostro dominio e questa riscrittura
+  // li rende indirizzi veri. Vercel prende il file dal CMS e lo tiene sulla propria rete.
+  //
+  // Due effetti voluti: il nome del CMS non compare nel sorgente della pagina, e un CMS
+  // spento per qualche minuto non rompe le immagini a chi sta leggendo.
+  //
+  // NB: le riscritture girano DOPO i reindirizzamenti qui sotto, che pero' scattano solo
+  // su host diversi da quello canonico: una richiesta a evalisdeck.it/wp-content/... non
+  // viene mai reindirizzata, e arriva qui.
+  async rewrites() {
+    const cms = (process.env.BLOG_CMS_URL ?? "").replace(/\/+$/, "");
+    if (!cms) return [];
+    return [
+      {
+        source: "/wp-content/uploads/:percorso*",
+        destination: `${cms}/wp-content/uploads/:percorso*`,
+      },
+    ];
+  },
   // Un solo indirizzo canonico: evalisdeck.it.
   //
   // Ogni altro host che serve le stesse pagine è contenuto duplicato, e Google

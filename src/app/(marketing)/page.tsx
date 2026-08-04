@@ -4,12 +4,11 @@ import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
 import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
 import { Button } from "@/components/ui/button";
-import { LogoOrizzontale } from "@/components/brand/logo";
 import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
-import { BadgeEcoVadis, FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
+import { PiedeMarketing } from "@/components/landing/piede";
+import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
-import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 
 export const metadata: Metadata = {
   title: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
@@ -408,53 +407,7 @@ Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
         </section>
       </main>
 
-      {/* =========================================================== FOOTER */}
-      <footer className="border-t bg-background">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 sm:grid-cols-2 md:grid-cols-4">
-          <div>
-            <LogoOrizzontale className="h-10" />
-            <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
-Cinque documenti di rendicontazione per le PMI, con il metodo incorporato.
-            </p>
-            {/* 68 px: sotto questa misura "Sustainability Rating" e la data non si leggono più. */}
-            <BadgeEcoVadis dimensione={68} className="mt-5" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prodotto</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><a href="#percorsi" className="text-muted-foreground transition-colors hover:text-foreground">I cinque documenti</a></li>
-              <li><a href="#metodo" className="text-muted-foreground transition-colors hover:text-foreground">Il metodo</a></li>
-              <li><a href="/esempi/esempio-bilancio-2025.pdf" target="_blank" rel="noopener" className="text-muted-foreground transition-colors hover:text-foreground">Bilancio d&apos;esempio</a></li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Piattaforma</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><Link href="/login" className="text-muted-foreground transition-colors hover:text-foreground">Accedi</Link></li>
-              <li><Link href="/registrati" className="text-muted-foreground transition-colors hover:text-foreground">Prova la demo</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Legale</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><Link href="/privacy" className="text-muted-foreground transition-colors hover:text-foreground">Privacy</Link></li>
-              <li><Link href="/termini" className="text-muted-foreground transition-colors hover:text-foreground">Termini e condizioni</Link></li>
-              <li><Link href="/cookie" className="text-muted-foreground transition-colors hover:text-foreground">Cookie</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t">
-          {/* Identificazione del prestatore: art. 7 del D.Lgs. 70/2003. Deve stare
-              nel piede di ogni pagina, non solo dentro i documenti legali. */}
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4 text-xs text-muted-foreground">
-            <span>
-              © {new Date().getFullYear()} EvalisDeck · {TITOLARE.ragioneSociale} · {SEDE_COMPLETA} · P.IVA{" "}
-              {TITOLARE.partitaIva}
-            </span>
-            <span>Dati ospitati nell&apos;Unione Europea</span>
-          </div>
-        </div>
-      </footer>
+      <PiedeMarketing />
     </div>
   );
 }
