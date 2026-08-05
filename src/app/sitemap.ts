@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
 import { elencoBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
+import { AGGIORNATO_AL } from "@/lib/legale";
 
 // La sitemap.
 //
@@ -16,11 +17,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const ora = new Date();
 
+  // `lastModified` si dichiara solo dove la data la sappiamo davvero.
+  //
+  // Le pagine legali hanno una data di aggiornamento vera, la stessa stampata in fondo al
+  // testo: se cambia il documento cambia il campo, ed è esattamente quello che il campo
+  // deve dire. La home non ce l'ha, e metterci l'istante della compilazione significherebbe
+  // dichiararla modificata a ogni rilascio, anche a quelli che non la toccano. Il campo è
+  // facoltativo: meglio tacere che affermare una cosa che non sappiamo. Google usa la
+  // propria scansione quando manca, e impara a ignorarlo quando lo trova sempre diverso.
+  const legali = new Date(AGGIORNATO_AL);
+
   const prodotto: MetadataRoute.Sitemap = [
-    { url: `${base}/`, lastModified: ora, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/privacy`, lastModified: ora, changeFrequency: "yearly", priority: 0.2 },
-    { url: `${base}/termini`, lastModified: ora, changeFrequency: "yearly", priority: 0.2 },
-    { url: `${base}/cookie`, lastModified: ora, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/privacy`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${base}/termini`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${base}/cookie`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
   ];
 
   if (!blogVisibileAiMotori()) return prodotto;
