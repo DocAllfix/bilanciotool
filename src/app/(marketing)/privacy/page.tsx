@@ -107,13 +107,24 @@ export default function PrivacyPage() {
               "Assistenza e risposta alle richieste inviate ai nostri contatti",
               "Esecuzione del contratto o legittimo interesse a rispondere (art. 6.1.b / 6.1.f)",
             ],
+            [
+              "Statistiche di visita del sito pubblico, per capire quali contenuti sono utili",
+              "Consenso (art. 6.1.a), prestato con l'apposito riquadro e revocabile in ogni momento",
+            ],
           ]}
         />
         <p>
-          <strong>Non svolgiamo attività di profilazione</strong>{" "}né processi decisionali automatizzati che producano
+          <strong>Non svolgiamo profilazione pubblicitaria</strong>{" "}né processi decisionali automatizzati che producano
           effetti giuridici. Non inviamo comunicazioni commerciali non richieste e non cediamo né vendiamo dati a terzi.
           I contenuti che carichi <strong>non vengono usati per addestrare sistemi di intelligenza artificiale</strong>:
           la piattaforma non ne impiega.
+        </p>
+        <p>
+          Le statistiche di visita riguardano <strong>soltanto il sito pubblico</strong>{" "}e sono attivate solo se
+          acconsenti. Non seguono ciò che fai dentro l&apos;area riservata, non vedono i dati delle aziende che
+          rendiconti e non entrano nei documenti che generi. Nella configurazione del servizio di misurazione abbiamo
+          disattivato i <em>Segnali Google</em> e ogni uso pubblicitario dei dati. Il dettaglio è nella{" "}
+          <Link href="/cookie">cookie policy</Link>.
         </p>
       </Sezione>
 
@@ -166,11 +177,20 @@ export default function PrivacyPage() {
       <Sezione n={7} titolo="Dove stanno i dati e trasferimenti fuori dall'Unione Europea">
         <p>
           La banca dati, i file caricati e l&apos;applicazione sono ospitati su infrastrutture situate{" "}
-          <strong>nell&apos;Unione Europea, nella regione di Francoforte</strong>. Non è previsto il trasferimento
-          ordinario dei dati verso paesi terzi.
+          <strong>nell&apos;Unione Europea, nella regione di Francoforte</strong>. I dati del tuo account e quelli delle
+          aziende che rendiconti <strong>non escono dall&apos;Unione Europea</strong>.
         </p>
         <p>
-          Qualora un fornitore debba accedere a dati da un paese terzo per finalità di assistenza tecnica, il
+          Fa eccezione un solo trattamento, e solo se lo autorizzi: le{" "}
+          <strong>statistiche di visita del sito pubblico</strong>. Il servizio è fornito da Google Ireland Limited, ma
+          l&apos;infrastruttura di Google comporta trattamenti anche negli <strong>Stati Uniti</strong>. Il trasferimento
+          si fonda sulla decisione di adeguatezza della Commissione europea del 10 luglio 2023 relativa all&apos;
+          <em>EU-US Data Privacy Framework</em>, a cui Google LLC aderisce, integrata dalle clausole contrattuali tipo.
+          Se non presti il consenso, o lo revochi, <strong>questo trasferimento non avviene affatto</strong>: lo script
+          di misurazione non viene nemmeno scaricato.
+        </p>
+        <p>
+          Qualora un altro fornitore debba accedere a dati da un paese terzo per finalità di assistenza tecnica, il
           trasferimento avviene sulla base delle clausole contrattuali tipo approvate dalla Commissione europea, con le
           misure supplementari applicabili.
         </p>

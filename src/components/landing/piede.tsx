@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoOrizzontale } from "@/components/brand/logo";
 import { BadgeEcoVadis } from "./ecovadis";
+import { PreferenzeCookie } from "@/components/legal/preferenze-cookie";
 import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
 
@@ -89,6 +90,11 @@ export function PiedeMarketing() {
               <Link href="/cookie" className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">
                 Cookie
               </Link>
+            </li>
+            <li>
+              {/* La revoca dev'essere facile quanto il consenso: sta qui, non solo dentro
+                  la cookie policy come istruzione da eseguire nel browser. */}
+              <PreferenzeCookie className="tocco-comodo cursor-pointer text-left text-muted-foreground transition-colors hover:text-foreground" />
             </li>
           </ul>
         </div>

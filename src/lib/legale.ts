@@ -26,7 +26,7 @@ export const SEDE_COMPLETA = `${TITOLARE.indirizzo}, ${TITOLARE.cap} ${TITOLARE.
 /** Data di ultima revisione dei testi legali, in ISO. Una sola per tutti e tre:
  *  si rivedono insieme, e tre date diverse in fondo a tre pagine sorelle sono
  *  solo un modo per far sembrare vecchia quella che non è cambiata. */
-export const AGGIORNATO_AL = "2026-08-03";
+export const AGGIORNATO_AL = "2026-08-05";
 
 export const AGGIORNATO_AL_ESTESO = new Date(AGGIORNATO_AL).toLocaleDateString("it-IT", {
   day: "numeric",
@@ -62,11 +62,20 @@ export const FORNITORI = [
     dove: "Unione Europea — Irlanda",
     attivo: false,
   },
+  {
+    nome: "Google Ireland Limited",
+    ruolo: "Statistiche di visita del sito pubblico (Google Analytics 4), solo previo consenso",
+    // Il contratto è con la società irlandese, ma l'infrastruttura di Google comporta
+    // trattamenti anche negli Stati Uniti: si dichiara, non si nasconde dietro «Irlanda».
+    dove: "Irlanda, con possibili trasferimenti negli Stati Uniti (EU-US Data Privacy Framework)",
+    attivo: true,
+  },
 ] as const;
 
 /** Cookie realmente impostati dal servizio. Misurati con il browser, non dedotti:
- *  sul sito pubblico e sulla pagina di accesso non ne viene impostato nessuno,
- *  il solo cookie compare dopo l'autenticazione. */
+ *  senza consenso il sito pubblico non ne imposta nessuno, e nemmeno la pagina di
+ *  accesso; il cookie tecnico compare dopo l'autenticazione, quelli di misurazione
+ *  solo dopo un consenso esplicito. */
 export const COOKIE = [
   {
     nome: "better-auth.session_token",
@@ -74,6 +83,24 @@ export const COOKIE = [
     scopo: "Mantiene l'accesso all'area riservata dopo l'autenticazione e protegge la sessione.",
     durata: "7 giorni",
     note: "httpOnly, SameSite=Lax, Secure su HTTPS: non è leggibile dal codice della pagina.",
+    consenso: false,
+  },
+  {
+    nome: "_ga",
+    tipo: "Statistico — Google Analytics 4",
+    scopo:
+      "Distingue una visita dall'altra per contare quanti visitatori arrivano e quali pagine leggono.",
+    durata: "2 anni",
+    note: "Impostato da Google. Nessuna pubblicità e nessuna profilazione: gli usi pubblicitari sono disattivati nella configurazione della proprietà.",
+    consenso: true,
+  },
+  {
+    nome: "_ga_0YYSRQL9FL",
+    tipo: "Statistico — Google Analytics 4",
+    scopo: "Conserva lo stato della sessione di misurazione per questa specifica proprietà.",
+    durata: "2 anni",
+    note: "Impostato da Google. Il suffisso è l'identificativo della nostra proprietà di misurazione.",
+    consenso: true,
   },
 ] as const;
 
@@ -90,8 +117,9 @@ export const ARCHIVIAZIONE_LOCALE = [
     durata: "Finché non si svuotano i dati del browser",
   },
   {
-    nome: "evalisdeck-cookie-informativa",
-    scopo: "Ricorda che l'informativa breve è già stata letta, per non ripresentarla.",
+    nome: "evalisdeck-consenso-v1",
+    scopo:
+      "Ricorda se hai accettato o rifiutato i cookie di misurazione, per non richiedertelo a ogni pagina.",
     durata: "Finché non si svuotano i dati del browser",
   },
   {

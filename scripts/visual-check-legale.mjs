@@ -19,33 +19,50 @@ const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
-// ------------------------------------------------ 1. l'informativa breve
-await check("l'informativa compare al primo accesso e non chiede un consenso", async () => {
+// ------------------------------------------------ 1. il banner di consenso
+// Era una informativa a un pulsante finché il sito usava solo cookie tecnici. Con Google
+// Analytics il consenso va chiesto prima, e questi controlli seguono il cambiamento.
+// Quello che il consenso FA (nessuna richiesta a Google prima della scelta) si misura
+// invece in scripts/verifica-consenso.mjs, sulle richieste di rete vere.
+const BANNER = { name: "Consenso ai cookie di misurazione" };
+
+await check("il banner compare al primo accesso e chiede una scelta vera", async () => {
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
-  const nota = page.getByRole("region", { name: "Informativa sui cookie" });
+  const nota = page.getByRole("dialog", BANNER);
   await nota.waitFor({ timeout: 15000 });
   const testo = await nota.innerText();
-  if (!/soltanto cookie tecnici/i.test(testo)) throw new Error("non dice che sono solo tecnici");
-  if (/rifiut|accetta tutt|preferenze/i.test(testo)) throw new Error("promette una scelta che non esiste: " + testo);
-  const bottoni = await nota.getByRole("button").count();
-  if (bottoni !== 1) throw new Error("bottoni nella nota: " + bottoni + " (deve essere solo «Ho capito»)");
+  if (!/google analytics/i.test(testo)) throw new Error("non nomina lo strumento di misurazione");
+  if (!/cookie tecnici/i.test(testo)) throw new Error("non distingue i cookie tecnici");
+  const bottoni = await nota.getByRole("button").allInnerTexts();
+  if (bottoni.length !== 2) throw new Error("bottoni: " + bottoni.join(", ") + " (attesi Rifiuta e Accetta)");
+  // Il rifiuto viene per primo: nessun dubbio su quale delle due strade sia privilegiata.
+  if (bottoni[0] !== "Rifiuta" || bottoni[1] !== "Accetta") throw new Error("ordine: " + bottoni.join(", "));
 });
 
-await check("i due collegamenti della nota portano alle pagine giuste", async () => {
-  const nota = page.getByRole("region", { name: "Informativa sui cookie" });
+await check("il collegamento del banner porta alla cookie policy", async () => {
+  const nota = page.getByRole("dialog", BANNER);
   const href = await nota.locator("a").evaluateAll((a) => a.map((x) => new URL(x.href).pathname));
-  if (href.join(",") !== "/cookie,/privacy") throw new Error("collegamenti: " + href.join(","));
+  if (href.join(",") !== "/cookie") throw new Error("collegamenti: " + href.join(","));
 });
 
-await check("«Ho capito» la chiude e non ritorna cambiando pagina", async () => {
-  await page.getByRole("button", { name: "Ho capito" }).click();
+await check("«Rifiuta» chiude, viene ricordato, e non riapre cambiando pagina", async () => {
+  await page.getByRole("button", { name: "Rifiuta", exact: true }).click();
   await page.waitForTimeout(400);
-  if (await page.getByRole("region", { name: "Informativa sui cookie" }).count()) throw new Error("non si chiude");
+  if (await page.getByRole("dialog", BANNER).count()) throw new Error("non si chiude");
   await page.goto(BASE + "/privacy", { waitUntil: "networkidle" });
   await page.waitForTimeout(800);
-  if (await page.getByRole("region", { name: "Informativa sui cookie" }).count()) throw new Error("ritorna dopo la navigazione");
-  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-cookie-informativa"));
-  if (v !== "1") throw new Error("non l'ha ricordato: " + v);
+  if (await page.getByRole("dialog", BANNER).count()) throw new Error("ritorna dopo la navigazione");
+  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v1"));
+  if (v !== "rifiutato") throw new Error("non l'ha ricordato: " + v);
+});
+
+await check("«Preferenze cookie» nel piede riapre la scelta", async () => {
+  await page.goto(BASE + "/cookie", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: /preferenze cookie/i }).first().click();
+  await page.waitForTimeout(400);
+  if (!(await page.getByRole("dialog", BANNER).count())) throw new Error("la revoca non riapre il riquadro");
+  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v1"));
+  if (v !== null) throw new Error("la scelta precedente non e' stata cancellata: " + v);
 });
 
 // ------------------------------------------------------- 2. le tre pagine
@@ -57,7 +74,7 @@ const ATTESI = {
   },
   "/cookie": {
     titolo: "Cookie policy",
-    sezioni: 6,
+    sezioni: 7,
     frasi: ["better-auth.session_token", "7 giorni", "articolo 122", "10 giugno 2021", "localStorage"],
   },
   "/termini": {
@@ -156,9 +173,15 @@ await check("security.txt è servito e ha una scadenza futura", async () => {
 
 // ------------------------------- 4. l'app porta ai testi legali, il PDF no
 await check("dentro l'app i legali sono raggiungibili dal piede", async () => {
+  // Senza credenziali il controllo non puo' girare, e un rosso che dipende dall'ambiente
+  // invece che dal prodotto insegna a ignorare i rossi.
+  if (!process.env.QA_EMAIL || !process.env.QA_PASSWORD) {
+    console.log("       (QA_EMAIL/QA_PASSWORD non impostate: controllo saltato)");
+    return;
+  }
   await page.goto(BASE + "/login", { waitUntil: "networkidle" });
-  await page.fill("#email", process.env.QA_EMAIL ?? "");
-  await page.fill("#password", process.env.QA_PASSWORD ?? "");
+  await page.fill("#email", process.env.QA_EMAIL);
+  await page.fill("#password", process.env.QA_PASSWORD);
   await page.click('button[type="submit"]');
   await page.waitForURL("**/dashboard", { timeout: 60000 });
   const href = await page.locator("footer a").evaluateAll((a) => a.map((x) => new URL(x.href).pathname));
@@ -174,14 +197,14 @@ await check("l'informativa NON compare dentro un documento pubblicato", async ()
   });
   if (!doc) { console.log("       (nessun documento pubblicato: controllo saltato)"); return; }
   const p2 = await ctx.newPage();
-  await p2.evaluate(() => localStorage.removeItem("evalisdeck-cookie-informativa")).catch(() => {});
+  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1")).catch(() => {});
   await p2.goto(BASE + doc, { waitUntil: "networkidle" });
-  await p2.evaluate(() => localStorage.removeItem("evalisdeck-cookie-informativa"));
+  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1"));
   await p2.reload({ waitUntil: "networkidle" });
   await p2.waitForTimeout(1200);
-  const n = await p2.getByRole("region", { name: "Informativa sui cookie" }).count();
+  const n = await p2.getByRole("dialog", BANNER).count();
   await p2.close();
-  if (n) throw new Error("la nota finirebbe stampata nel PDF consegnato al cliente");
+  if (n) throw new Error("il banner finirebbe stampato nel PDF consegnato al cliente");
 });
 
 // ------------------------------------------------------- 5. viste e temi
@@ -199,9 +222,9 @@ const dark = await ctxDark.newPage();
 dark.on("console", (m) => { if (m.type() === "error") errors.push(`[dark] ${m.text()}`); });
 dark.on("pageerror", (e) => errors.push(`[dark pageerror] ${e.message}`));
 await dark.goto(BASE + "/cookie", { waitUntil: "networkidle" });
-await check("tema scuro applicato e nota leggibile", async () => {
+await check("tema scuro applicato e banner leggibile", async () => {
   if (!(await dark.evaluate(() => document.documentElement.classList.contains("dark")))) throw new Error("tema scuro non applicato");
-  await dark.getByRole("region", { name: "Informativa sui cookie" }).waitFor({ timeout: 10000 });
+  await dark.getByRole("dialog", BANNER).waitFor({ timeout: 10000 });
 });
 await dark.screenshot({ path: `${OUT}/04-cookie-scuro.png` });
 await ctxDark.close();
@@ -217,15 +240,19 @@ await check("su mobile le pagine legali non sbordano e le tabelle scorrono da so
     if (sborda) throw new Error(rotta + " scorre in orizzontale");
   }
 });
-await check("su mobile la nota resta leggibile e il pulsante è raggiungibile", async () => {
+await check("su mobile i due pulsanti sono raggiungibili e di pari misura", async () => {
   await m.goto(BASE + "/", { waitUntil: "networkidle" });
-  const b = m.getByRole("button", { name: "Ho capito" });
-  await b.waitFor({ timeout: 10000 });
-  const box = await b.boundingBox();
-  if (!box || box.height < 28) throw new Error("pulsante troppo piccolo: " + JSON.stringify(box));
-  await b.click();
+  const rifiuta = m.getByRole("button", { name: "Rifiuta", exact: true });
+  const accetta = m.getByRole("button", { name: "Accetta", exact: true });
+  await rifiuta.waitFor({ timeout: 10000 });
+  const [br, ba] = [await rifiuta.boundingBox(), await accetta.boundingBox()];
+  if (!br || !ba) throw new Error("uno dei due pulsanti non e' visibile");
+  // Su schermo stretto e' il posto dove il rifiuto tende a rimpicciolirsi o ad andare a capo.
+  if (Math.abs(br.width - ba.width) > 2) throw new Error(`larghezze diverse: ${br.width} vs ${ba.width}`);
+  if (br.height < 28) throw new Error("pulsante troppo basso: " + br.height);
+  await rifiuta.click();
   await m.waitForTimeout(300);
-  if (await m.getByRole("region", { name: "Informativa sui cookie" }).count()) throw new Error("non si chiude");
+  if (await m.getByRole("dialog", BANNER).count()) throw new Error("non si chiude");
 });
 await m.goto(BASE + "/termini", { waitUntil: "networkidle" });
 await m.screenshot({ path: `${OUT}/05-termini-mobile.png`, fullPage: false });

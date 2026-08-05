@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegale, Sezione, TabellaLegale } from "@/components/landing/pagina-legale";
+import { PreferenzeCookie } from "@/components/legal/preferenze-cookie";
 import { TITOLARE, COOKIE, ARCHIVIAZIONE_LOCALE } from "@/lib/legale";
 
 export const metadata: Metadata = {
   title: "Cookie policy",
   description:
-    "Quali cookie usa EvalisDeck: soltanto tecnici, nessuna profilazione. Nomi, durate e finalità, e come gestirli dal browser.",
+    "Quali cookie usa EvalisDeck: tecnici sempre, statistici solo con il tuo consenso. Nomi, durate, finalità e come revocare.",
 };
 
 export default function CookiePage() {
@@ -17,35 +18,44 @@ export default function CookiePage() {
     >
       <Sezione n={1} titolo="In breve">
         <p>
-          EvalisDeck utilizza <strong>soltanto cookie tecnici</strong>, necessari a farlo funzionare. Non usiamo cookie
-          di profilazione, non facciamo pubblicità comportamentale, non abbiamo strumenti di analisi statistica di terze
-          parti e non condividiamo dati di navigazione con nessuno.
+          EvalisDeck usa <strong>cookie tecnici</strong>, necessari a farlo funzionare, e{" "}
+          <strong>cookie statistici di Google Analytics</strong> che vengono attivati <strong>solo se acconsenti</strong>
+          . Non usiamo cookie di profilazione pubblicitaria, non facciamo pubblicità comportamentale e non vendiamo dati
+          di navigazione a nessuno.
         </p>
         <p>
-          Sul sito pubblico e sulla pagina di accesso <strong>non viene impostato alcun cookie</strong>. L&apos;unico
-          cookie compare dopo che ti sei autenticato, e serve a tenerti dentro.
+          Finché non esprimi una scelta, <strong>non viene impostato alcun cookie statistico e non viene inviata alcuna
+          richiesta ai server di Google</strong>: lo script di misurazione non viene proprio scaricato. Il cookie tecnico
+          di sessione compare invece dopo che ti sei autenticato, e serve a tenerti dentro.
+        </p>
+        <p>
+          Se rifiuti, il sito e la piattaforma funzionano esattamente allo stesso modo: non perdi nessuna funzione.
         </p>
       </Sezione>
 
-      <Sezione n={2} titolo="Perché non ti chiediamo un consenso">
+      <Sezione n={2} titolo="Perché per alcuni ti chiediamo il consenso e per altri no">
         <p>
-          I cookie tecnici, cioè quelli strettamente necessari a erogare un servizio richiesto dall&apos;utente, sono
-          esclusi dall&apos;obbligo di consenso preventivo: lo prevedono l&apos;articolo 122 del Codice privacy (D.Lgs.
-          196/2003) e le Linee guida cookie del Garante del 10 giugno 2021. Per questi è dovuta{" "}
-          <strong>l&apos;informativa, non il consenso</strong>.
+          I <strong>cookie tecnici</strong>, cioè quelli strettamente necessari a erogare un servizio che hai richiesto,
+          sono esclusi dall&apos;obbligo di consenso preventivo: lo prevedono l&apos;articolo 122 del Codice privacy
+          (D.Lgs. 196/2003) e le Linee guida cookie del Garante del 10 giugno 2021. Per questi è dovuta{" "}
+          <strong>l&apos;informativa, non il consenso</strong>: sono quelli che tengono aperta la tua sessione.
         </p>
         <p>
-          Per questo al primo accesso trovi una nota informativa breve con un solo pulsante di presa visione, e non un
-          riquadro con «accetta» e «rifiuta»: proporti una scelta che non esiste sarebbe fuorviante. Se un domani
-          introdurremo strumenti di analisi o di altra natura, questa pagina verrà aggiornata e il consenso ti verrà
-          chiesto <strong>prima</strong>{" "}dell&apos;attivazione, con possibilità di scelta per singola categoria e di
-          revoca in ogni momento.
+          I <strong>cookie statistici di Google Analytics</strong> stanno invece fuori da quella esclusione, perché
+          comportano un servizio di misurazione fornito da un soggetto terzo. Per questi il consenso è{" "}
+          <strong>preventivo, libero e revocabile</strong>: te lo chiediamo prima di attivarli, con «Accetta» e «Rifiuta»
+          nello stesso riquadro, alla stessa portata e con lo stesso numero di clic. Nessuna casella è preselezionata, e
+          chiudere il riquadro senza scegliere non vale come consenso.
+        </p>
+        <p>
+          Puoi cambiare idea in qualunque momento con <strong>«Preferenze cookie»</strong>, in fondo a ogni pagina: la
+          scelta precedente viene cancellata, la misurazione si spegne subito e il riquadro torna a chiedertelo.
         </p>
       </Sezione>
 
       <Sezione n={3} titolo="Cookie utilizzati">
         <TabellaLegale
-          intestazioni={["Nome", "Tipo", "Finalità", "Durata"]}
+          intestazioni={["Nome", "Tipo", "Finalità", "Durata", "Consenso"]}
           righe={COOKIE.map((c) => [
             <span key="nome" className="font-mono text-[12.5px]">
               {c.nome}
@@ -56,11 +66,18 @@ export default function CookiePage() {
               <span className="block text-[12px] text-muted-foreground">{c.note}</span>
             </span>,
             c.durata,
+            c.consenso ? "Richiesto" : "Non richiesto",
           ])}
         />
         <p>
-          Sono cookie di prima parte: li imposta il nostro dominio, non soggetti terzi. Alla disconnessione il cookie
-          viene rimosso.
+          Il cookie di sessione è di prima parte: lo imposta il nostro dominio, e alla disconnessione viene rimosso. I
+          due cookie di Google Analytics sono di terza parte, li imposta Google, e compaiono{" "}
+          <strong>soltanto dopo che hai accettato</strong>.
+        </p>
+        <p>
+          Nella proprietà di misurazione abbiamo disattivato i <em>Segnali Google</em>, la personalizzazione degli
+          annunci e la condivisione dei dati con gli altri servizi di Google: le statistiche restano statistiche e non
+          alimentano profili pubblicitari. La conservazione dei dati è impostata a 14 mesi.
         </p>
       </Sezione>
 
@@ -83,7 +100,24 @@ export default function CookiePage() {
         />
       </Sezione>
 
-      <Sezione n={5} titolo="Come gestirli o eliminarli">
+      <Sezione n={5} titolo="Revocare il consenso o cambiare idea">
+        <p>
+          Il modo più diretto è il comando <strong>«Preferenze cookie»</strong> in fondo a ogni pagina pubblica: azzera
+          la scelta registrata, spegne immediatamente la misurazione e ti ripropone il riquadro. Non devi cercare nulla
+          nelle impostazioni del browser, e non serve scriverci.
+        </p>
+        <p className="not-prose">
+          <PreferenzeCookie className="cursor-pointer font-medium text-primary underline underline-offset-4 hover:no-underline" />{" "}
+          <span className="text-muted-foreground">— apre il riquadro di scelta qui, adesso.</span>
+        </p>
+        <p>
+          La revoca vale per il futuro: i dati statistici già raccolti restano nei rapporti aggregati di Google fino alla
+          scadenza dei 14 mesi di conservazione. Se vuoi che i cookie già presenti spariscano subito dal tuo dispositivo,
+          cancellali dal browser come descritto qui sotto.
+        </p>
+      </Sezione>
+
+      <Sezione n={6} titolo="Come gestirli o eliminarli dal browser">
         <p>
           Puoi bloccare o cancellare cookie e archiviazione locale in qualunque momento dalle impostazioni del tuo
           browser, alla voce dedicata alla privacy o ai dati dei siti. Le istruzioni sono nella documentazione ufficiale
@@ -125,7 +159,7 @@ export default function CookiePage() {
         </p>
       </Sezione>
 
-      <Sezione n={6} titolo="Riferimenti e contatti">
+      <Sezione n={7} titolo="Riferimenti e contatti">
         <p>
           Titolare del trattamento e finalità sono descritti nell&apos;
           <Link href="/privacy">informativa sulla privacy</Link>. Per domande su questa pagina:{" "}

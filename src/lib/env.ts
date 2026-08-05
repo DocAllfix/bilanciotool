@@ -63,6 +63,12 @@ const schema = z
     CRON_SECRET: z.string().optional(),
     /** "1" accende il blog per i motori: fuori dal noindex, dentro la sitemap, nel menu. */
     BLOG_VISIBILE_AI_MOTORI: vuotaComeAssente(z.enum(["0", "1"]).optional()),
+    /**
+     * Google Analytics 4. Facoltativa di proposito, e MAI in `REQUIRED_IN_PROD`: senza,
+     * il componente non rende niente e il sito funziona identico. La misurazione non deve
+     * poter far fallire un rilascio del prodotto.
+     */
+    NEXT_PUBLIC_GA4_ID: vuotaComeAssente(z.string().regex(/^G-[A-Z0-9]{6,}$/).optional()),
     // Test seam RLS (mai impostata in produzione)
     RLS_FORCE_ROLE: z.string().regex(/^[a-z_][a-z0-9_]*$/).optional(),
   })

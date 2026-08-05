@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { InformativaCookie } from "@/components/landing/informativa-cookie";
+import { BannerCookie } from "@/components/legal/banner-cookie";
+import { Analytics } from "@/components/legal/analytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,9 +45,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
           {/* Alla radice e non nel solo gruppo marketing: il cookie di sessione
-              nasce dentro l'app, quindi l'informativa deve raggiungere anche chi
-              arriva direttamente su /login o su un documento condiviso. */}
-          <InformativaCookie />
+              nasce dentro l'app, quindi la richiesta di consenso deve raggiungere
+              anche chi arriva direttamente su /login o su un documento condiviso. */}
+          <BannerCookie />
+          {/* Non rende niente finché il consenso non è esplicito: nessuno script,
+              nessuna richiesta verso Google. */}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
