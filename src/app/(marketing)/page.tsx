@@ -11,7 +11,13 @@ import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 
 export const metadata: Metadata = {
-  title: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
+  // `absolute` perché il layout radice accoda «· EvalisDeck» a ogni titolo, e qui il
+  // marchio sta già in testa: senza, la home usciva «EvalisDeck · … · EvalisDeck». È il
+  // titolo che Google mostra per il nome del prodotto, quindi il marchio ripetuto si
+  // mangiava i sessanta caratteri utili proprio nel posto che conta di più.
+  title: {
+    absolute: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
+  },
   description:
     "Inventario GHG ISO 14064-1, bilancio di sostenibilità GRI/VSME, diagnosi energetica UNI CEI EN 16247, autovalutazione ESG dei fornitori e Dichiarazione di Applicabilità ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
 };
