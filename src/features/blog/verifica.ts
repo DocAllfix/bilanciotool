@@ -203,15 +203,27 @@ export function difettiDellaPagina(
 export function giudizioInterruttore(args: {
   visibile: boolean;
   indiceNoindex: boolean;
+  articoliInIndice: number;
   articoliInSitemap: number;
 }): { ok: boolean; dettaglio: string } {
-  const { visibile, indiceNoindex, articoliInSitemap } = args;
+  const { visibile, indiceNoindex, articoliInIndice, articoliInSitemap } = args;
   if (visibile) {
     if (indiceNoindex)
       return { ok: false, dettaglio: "blog aperto ai motori ma /blog risponde ancora noindex" };
-    if (articoliInSitemap === 0)
-      return { ok: false, dettaglio: "blog aperto ai motori ma la sitemap non elenca articoli" };
-    return { ok: true, dettaglio: `blog pubblico: indicizzabile, ${articoliInSitemap} articoli in sitemap` };
+    // L'invariante non e' «devono esserci articoli» ma «quelli pubblicati devono esserci
+    // tutti»: a blog appena aperto e ancora vuoto i due conti fanno zero, ed e' corretto.
+    if (articoliInSitemap < articoliInIndice)
+      return {
+        ok: false,
+        dettaglio: `${articoliInIndice} articoli pubblicati ma solo ${articoliInSitemap} in sitemap: Google non sa che esistono`,
+      };
+    return {
+      ok: true,
+      dettaglio:
+        articoliInIndice === 0
+          ? "blog pubblico e ancora vuoto: indicizzabile, in attesa del primo articolo"
+          : `blog pubblico: indicizzabile, ${articoliInSitemap} articoli in sitemap`,
+    };
   }
   if (!indiceNoindex)
     return { ok: false, dettaglio: "blog non ancora pubblico ma /blog non dichiara noindex" };
@@ -252,16 +264,23 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
   const noindex =
     /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(indice?.testo ?? "") ||
     /noindex/i.test(indice?.header.get("x-robots-tag") ?? "");
+  // La pagina indice e' la fonte di verita' su cosa e' pubblicato: la sitemap va confrontata
+  // con lei, non creduta sulla parola.
+  const inIndice = urlArticoliDaIndice(indice?.testo ?? "", sito);
+
   if (!indice || indice.stato !== 200) {
     aggiungi("interruttore", false, `/blog non raggiungibile (${indice?.stato ?? "nessuna risposta"})`);
   } else {
-    const g = giudizioInterruttore({ visibile, indiceNoindex: noindex, articoliInSitemap: inSitemap.length });
+    const g = giudizioInterruttore({
+      visibile,
+      indiceNoindex: noindex,
+      articoliInIndice: inIndice.length,
+      articoliInSitemap: inSitemap.length,
+    });
     aggiungi("interruttore", g.ok, g.dettaglio);
   }
 
-  // Finche' il blog non e' aperto ai motori gli articoli si prendono dalla pagina indice:
-  // la sitemap non li elenca per scelta, non per guasto.
-  const urlArticoli = visibile ? inSitemap : urlArticoliDaIndice(indice?.testo ?? "", sito);
+  const urlArticoli = visibile ? inSitemap : inIndice;
 
   // Un articolo pubblicato con uno slug che sta nell'elenco dei rimossi verrebbe COPERTO dal
   // 410, e nessuno se ne accorgerebbe: la pagina esiste, l'elenco la mostra, ma chi la apre
@@ -274,13 +293,9 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
       ? "nessun articolo pubblicato e' coperto da un 410"
       : `questi articoli sono pubblicati MA rispondono 410: ${coperti.join(", ")} — togliere lo slug da rimossi.ts`,
   );
-  // A blog spento zero articoli e' la normalita': si sta ancora preparando. Ad aperto e'
-  // un guasto, e lo dice gia' il controllo sull'interruttore.
-  aggiungi(
-    "conteggio",
-    urlArticoli.length > 0 || !visibile,
-    `${urlArticoli.length} articoli ${visibile ? "in sitemap" : "sull'indice (blog non ancora pubblico)"}`,
-  );
+  // Nessun controllo separato sul numero di articoli: un blog vuoto e' uno stato legittimo
+  // (i primi giorni), e un controllo che non puo' mai diventare rosso non e' un controllo.
+  // Quanti ce ne sono lo dice gia' il dettaglio dell'interruttore.
 
   // --- i vecchi URL devono rispondere 410, mai 404 ---------------------------------------
   const sbagliati: string[] = [];

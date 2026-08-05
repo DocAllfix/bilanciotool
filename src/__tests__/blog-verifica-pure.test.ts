@@ -166,39 +166,55 @@ describe("slugCopertiDaRimossi — un articolo vivo non deve rispondere 410", ()
   });
 });
 
+// L'invariante NON e' «devono esserci articoli»: e' «tutto quello che e' pubblicato deve
+// stare in sitemap». La differenza conta, perche' un blog acceso e ancora vuoto e' uno stato
+// legittimo — e' quello dei primi giorni — mentre un blog con articoli fuori dalla sitemap e'
+// un guasto in qualunque momento.
 describe("giudizioInterruttore — lo stato dichiarato e quello reale devono coincidere", () => {
   it("spento: il blog e' noindex e fuori dalla sitemap, come deve", () => {
     expect(
-      giudizioInterruttore({ visibile: false, indiceNoindex: true, articoliInSitemap: 0 }).ok,
+      giudizioInterruttore({ visibile: false, indiceNoindex: true, articoliInIndice: 1, articoliInSitemap: 0 }).ok,
     ).toBe(true);
   });
 
   it("spento ma indicizzabile: e' il guasto che pubblica il blog per sbaglio", () => {
-    const g = giudizioInterruttore({ visibile: false, indiceNoindex: false, articoliInSitemap: 0 });
+    const g = giudizioInterruttore({ visibile: false, indiceNoindex: false, articoliInIndice: 0, articoliInSitemap: 0 });
     expect(g.ok).toBe(false);
     expect(g.dettaglio).toMatch(/noindex/);
   });
 
   it("spento ma gia' in sitemap: la sitemap invita Google dove il noindex lo respinge", () => {
-    const g = giudizioInterruttore({ visibile: false, indiceNoindex: true, articoliInSitemap: 3 });
+    const g = giudizioInterruttore({ visibile: false, indiceNoindex: true, articoliInIndice: 3, articoliInSitemap: 3 });
     expect(g.ok).toBe(false);
     expect(g.dettaglio).toMatch(/sitemap/);
   });
 
-  it("acceso: indicizzabile e in sitemap", () => {
+  it("acceso: indicizzabile, e in sitemap c'e' tutto il pubblicato", () => {
     expect(
-      giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInSitemap: 4 }).ok,
+      giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInIndice: 4, articoliInSitemap: 4 }).ok,
+    ).toBe(true);
+  });
+
+  it("acceso e ancora vuoto: e' lo stato dei primi giorni, non un guasto", () => {
+    expect(
+      giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInIndice: 0, articoliInSitemap: 0 }).ok,
     ).toBe(true);
   });
 
   it("acceso ma rimasto noindex: il caso che si scopre dopo mesi di zero visite", () => {
-    const g = giudizioInterruttore({ visibile: true, indiceNoindex: true, articoliInSitemap: 4 });
+    const g = giudizioInterruttore({ visibile: true, indiceNoindex: true, articoliInIndice: 4, articoliInSitemap: 4 });
     expect(g.ok).toBe(false);
     expect(g.dettaglio).toMatch(/noindex/);
   });
 
-  it("acceso ma sitemap vuota: gli articoli esistono e Google non lo sa", () => {
-    const g = giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInSitemap: 0 });
+  it("acceso, articoli pubblicati, sitemap vuota: esistono e Google non lo sa", () => {
+    const g = giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInIndice: 2, articoliInSitemap: 0 });
+    expect(g.ok).toBe(false);
+    expect(g.dettaglio).toMatch(/sitemap/);
+  });
+
+  it("acceso, ma la sitemap ne elenca meno di quanti ne sono pubblicati", () => {
+    const g = giudizioInterruttore({ visibile: true, indiceNoindex: false, articoliInIndice: 5, articoliInSitemap: 3 });
     expect(g.ok).toBe(false);
     expect(g.dettaglio).toMatch(/sitemap/);
   });

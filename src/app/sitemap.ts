@@ -36,8 +36,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   if (!blogVisibileAiMotori()) return prodotto;
 
+  // A blog acceso `/blog` c'è sempre, anche senza articoli: è una pagina indicizzabile e
+  // collegata dal menu, e una pagina così che manca dalla sitemap è un buco — lo stesso che
+  // `verifica-sitemap.mjs` va a cercare. Gli articoli si aggiungono se ci sono.
   const articoli = await elencoBlog();
-  if (articoli.length === 0) return prodotto;
 
   return [
     ...prodotto,
