@@ -41,9 +41,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // `verifica-sitemap.mjs` va a cercare. Gli articoli si aggiungono se ci sono.
   const articoli = await elencoBlog();
 
+  // L'elenco è «modificato» quando esce o cambia un articolo, non quando qualcuno lo apre:
+  // la sua data è quella dell'articolo più recente. Senza articoli non si dichiara niente,
+  // per la stessa ragione della home.
+  const piuRecente = articoli
+    .map((a) => a.dateModified ?? a.date)
+    .filter((d): d is string => Boolean(d))
+    .sort()
+    .at(-1);
+
   return [
     ...prodotto,
-    { url: `${base}/blog`, lastModified: ora, changeFrequency: "weekly", priority: 0.8 },
+    {
+      url: `${base}/blog`,
+      ...(piuRecente ? { lastModified: new Date(piuRecente) } : {}),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     ...articoli.map((a) => ({
       url: `${base}/blog/${a.slug}`,
       // La data di modifica è quella vera dell'articolo: dichiararne una falsa (oggi, a
