@@ -83,6 +83,24 @@ describe.skipIf(!url)("entitlement: limiti e paywall", () => {
     expect(can("expired", "export")).toBe(true);
   });
 
+  // Archiviare è una MUTAZIONE, e `expired` significa sola lettura. Le due funzioni
+  // sorelle — createCompany e restoreCompany — il controllo ce l'hanno; questa no, e la
+  // differenza non si vede: l'archiviazione riesce, la riga cambia, nessuno protesta.
+  it("stato expired: archiviare è una scrittura, e va negata", async () => {
+    await db.update(orgEntitlement).set({ status: "active" }).where(eq(orgEntitlement.organizationId, orgId));
+    const id = await createCompany(userId, orgId, { nome: "Da archiviare a scadenza" });
+
+    await db.update(orgEntitlement).set({ status: "expired" }).where(eq(orgEntitlement.organizationId, orgId));
+    await expect(archiveCompany(userId, orgId, id)).rejects.toMatchObject({ code: "read_only" });
+
+    // E soprattutto: la riga NON deve essere stata toccata.
+    const dopo = await db.select({ stato: company.stato }).from(company).where(eq(company.id, id));
+    expect(dopo[0].stato).toBe("active");
+
+    await db.update(orgEntitlement).set({ status: "active" }).where(eq(orgEntitlement.organizationId, orgId));
+    await archiveCompany(userId, orgId, id); // con l'abbonamento attivo passa
+  });
+
   it("limite membri: il posto oltre il massimo è negato", async () => {
     await db.insert(member).values({ id: randomUUID(), organizationId: orgId, userId: `${userId}-b`, role: "member" });
     await expect(assertSeatAvailable(orgId)).rejects.toMatchObject({ code: "limit_members" });

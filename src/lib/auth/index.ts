@@ -1,7 +1,9 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
+import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { verificaAccessiDisponibili } from "@/features/auth/limite-accessi";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail } from "@/lib/email";
@@ -64,11 +66,20 @@ export const auth = betterAuth({
       },
     },
   },
+  // Il limite di accessi si applica qui, prima che il plugin faccia il suo lavoro: le rotte
+  // degli inviti sono sue e non passano da nessuna nostra server action.
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      await verificaAccessiDisponibili(ctx as never);
+    }),
+  },
   plugins: [
     organization({
-      // Backstop statico del limite membri; il limite dinamico da platform_config
-      // è enforce-ato dalle nostre server action (features/entitlement).
-      membershipLimit: 5,
+      // Rete di sicurezza statica, tenuta ALTA di proposito: il limite che conta è quello
+      // del piano acquistato (2, 5 o 10 accessi), applicato dall'aggancio qui sopra. Se
+      // questo numero fosse più basso del piano più capiente, taglierebbe fuori chi ha
+      // pagato per averne di più — ed era esattamente il difetto di prima, con 5 fisso.
+      membershipLimit: 100,
       sendInvitationEmail: async (data) => {
         const url = `${env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/accept-invitation/${data.id}`;
         await sendOrgInvitationEmail(data.email, data.organization.name, url);

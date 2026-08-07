@@ -1,7 +1,7 @@
 import { withTenant } from "@/lib/db/tenant";
 import { company } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
-import { assertCompanyCreatable } from "@/features/entitlement";
+import { assertCompanyCreatable, requireEntitlement } from "@/features/entitlement";
 import { and, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
@@ -28,7 +28,13 @@ export async function createCompany(userId: string, orgId: string, data: NewComp
 }
 
 // Archiviare = sola lettura, esce dai limiti, non si cancella mai.
+//
+// Serve `write_data` e non `create_company`: archiviare libera capacità invece di
+// consumarla, quindi il limite non c'entra. Ma resta una SCRITTURA, e un account scaduto è
+// in sola lettura: senza questo controllo l'archiviazione riusciva, la riga cambiava e
+// nessuno protestava. Le due funzioni sorelle qui sotto il controllo l'hanno sempre avuto.
 export async function archiveCompany(userId: string, orgId: string, companyId: string): Promise<void> {
+  await requireEntitlement(userId, orgId, "write_data");
   await withTenant({ userId, orgId }, async (tx) => {
     const updated = await tx
       .update(company)

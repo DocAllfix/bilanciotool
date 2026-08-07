@@ -121,6 +121,10 @@ export const invitation = pgTable(
     role: text("role"),
     status: text("status").default("pending").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
+    // Better Auth la pretende su ogni sua tabella: senza, l'adattatore Drizzle rifiuta
+    // l'inserimento e **nessun invito parte**. Era l'unica delle sette tabelle di auth a
+    // non averla, e il guasto non si vedeva perché nessun test passava dalle API di invito.
+    createdAt: timestamp("created_at").defaultNow().notNull(),
     inviterId: text("inviter_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
