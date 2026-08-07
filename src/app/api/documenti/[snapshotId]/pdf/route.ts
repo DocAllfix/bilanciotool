@@ -22,6 +22,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ snap
     const snap = await getSnapshot(s.userId, s.orgId, snapshotId);
     if (!snap) return NextResponse.json({ errore: "Documento inesistente" }, { status: 404 });
 
+    // Se il PDF di questa versione esiste già, si serve quello e Chromium non parte.
+    //
+    // Non è una cache: lo snapshot è immutabile per costruzione (il trigger della
+    // migrazione 0002 blocca l'update dei dati per chiunque), quindi il PDF di una data
+    // versione non può cambiare. Rigenerarlo a ogni richiesta era lavoro sprecato — e
+    // l'unica difesa seria contro un pulsante «scarica» premuto venti volte: meglio
+    // togliere il costo che limitare la frequenza con cui lo si paga.
+    //
+    // Conseguenza accettata: se cambiamo l'impaginazione, i PDF già archiviati restano
+    // come sono. È coerente con la natura del documento — quello consegnato al cliente è
+    // quello, e chi vuole il nuovo aspetto ripubblica, ottenendo una nuova versione.
+    if (snap.pdfStorageKey) {
+      const { signedUrl } = await import("@/lib/storage");
+      return NextResponse.redirect(await signedUrl(s.orgId, snap.pdfStorageKey, 300), { status: 302 });
+    }
+
     // Il browser headless naviga la stessa pagina con la sessione dell'utente.
     const pdf = await renderPdf(`/documento/${snapshotId}`, req.headers.get("cookie") ?? "");
 

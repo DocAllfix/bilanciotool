@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, bigint, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 // Tabelle Better Auth (core + organization plugin). I nomi delle proprietà devono
 // combaciare con i model di better-auth; le colonne sono snake_case.
@@ -131,3 +131,22 @@ export const invitation = pgTable(
   },
   (t) => [index("invitation_email_idx").on(t.email), index("invitation_org_idx").on(t.organizationId)],
 );
+
+/**
+ * Contatore del rate limiting di Better Auth.
+ *
+ * Su database e non in memoria: su Vercel ogni funzione ha la propria memoria, e un
+ * contatore per istanza si azzera a ogni avvio a freddo. Chi prova mille password non
+ * incontrerebbe mai il limite — basta che le richieste cadano su istanze diverse.
+ *
+ * Non è una tabella tenant: non ha `organization_id` e la chiave è l'indirizzo di rete,
+ * che precede qualunque sessione. Sta col passthrough delle altre tabelle di Better Auth.
+ */
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  /** Better Auth compone qui indirizzo e rotta. */
+  key: text("key").notNull(),
+  count: integer("count").notNull(),
+  /** Millisecondi epoch: lo scrive Better Auth, non è un timestamp Postgres. */
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
+});

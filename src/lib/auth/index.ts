@@ -32,6 +32,33 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
   },
+  // Limite di frequenza sulle rotte di autenticazione.
+  //
+  // `storage: "database"` e non la memoria: su Vercel ogni istanza ha la propria, e un
+  // contatore che si azzera a ogni avvio a freddo non ferma nessuno — basta che i
+  // tentativi cadano su istanze diverse. Il costo e' una scrittura per richiesta, che a
+  // questi volumi non si vede.
+  //
+  // I numeri sono tarati su una persona vera, non su un attaccante: dieci accessi
+  // sbagliati in cinque minuti non capitano a chi ricorda male la password, capitano a
+  // chi le prova. La registrazione e il recupero sono piu' stretti perche' ognuno di
+  // essi manda un'email: senza freno diventano un mezzo per molestare terzi.
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    modelName: "rateLimit",
+    window: 60,
+    max: 60,
+    customRules: {
+      "/sign-in/email": { window: 300, max: 10 },
+      // Dieci e non cinque: uno studio che iscrive i colleghi da un solo ufficio esce
+      // verso Internet con un indirizzo solo, e i nostri stessi collaudi registrano un
+      // utente ciascuno. Il freno serve contro le migliaia, non contro la decina.
+      "/sign-up/email": { window: 3600, max: 10 },
+      "/forget-password": { window: 3600, max: 5 },
+      "/reset-password": { window: 3600, max: 10 },
+    },
+  },
   user: {
     additionalFields: {
       // Ruolo di piattaforma (staff vendor): input:false = non auto-assegnabile dal client.

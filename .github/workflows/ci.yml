@@ -1,0 +1,46 @@
+name: CI
+
+# Cancello automatico su ogni push e su ogni pull request verso main.
+#
+# Che cosa NON c'è qui, e perché: `npm run build`.
+# `src/lib/env.ts` pretende sei variabili quando NODE_ENV vale "production" —
+# database, segreto di sessione, Storage — e il build di Next gira sempre in quel
+# modo. Farlo passare in CI vorrebbe dire o mettere le credenziali vere nei segreti
+# di GitHub (esporre il database a ogni workflow, decisione del committente e non
+# nostra) oppure inventare valori finti, che darebbero un rosso o un verde entrambi
+# privi di significato. Il build ha già un cancello vero: Vercel, che le variabili
+# le ha davvero e blocca la distribuzione se fallisce.
+#
+# I test `*.db` si saltano da soli senza DATABASE_URL: qui gira la parte pura della
+# suite. È una copertura parziale ed è dichiarata, non nascosta.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  controlli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tipi
+        run: npm run typecheck
+
+      # `npm run lint` NON è qui: segnala 26 errori preesistenti (19 componenti
+      # definiti dentro il render nei template documento, 5 setState dentro effetti,
+      # 2 riassegnazioni dopo il render). Sono debiti reali, ma metterli in un
+      # cancello che nasce rosso lo renderebbe rumore da ignorare al primo giro.
+      # Vanno ripuliti in un lavoro dedicato, e allora il lint entra qui.
+      - name: Test (i *.db si saltano senza DATABASE_URL)
+        run: npm run test

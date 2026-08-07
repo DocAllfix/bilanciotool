@@ -21,9 +21,12 @@ export async function SiteHeader() {
           <LogoOrizzontale className="h-10" />
         </Link>
         <nav className="hidden items-center gap-5 text-[13px] font-medium text-muted-foreground md:flex" aria-label="Sezioni">
-          <a href="/#percorsi" className="transition-colors hover:text-foreground">Percorsi</a>
-          <a href="/#metodo" className="transition-colors hover:text-foreground">Metodo</a>
-          <a href="/#faq" className="transition-colors hover:text-foreground">Domande</a>
+          {/* `<Link>` e non `<a>`: le àncore portano il percorso perché la stessa
+              intestazione compare su pagine che quelle sezioni non le hanno, ma con
+              un anchor grezzo ogni voce ricarica il sito da capo. */}
+          <Link href="/#percorsi" className="transition-colors hover:text-foreground">Percorsi</Link>
+          <Link href="/#metodo" className="transition-colors hover:text-foreground">Metodo</Link>
+          <Link href="/#faq" className="transition-colors hover:text-foreground">Domande</Link>
           {conBlog && (
             <Link href="/blog" className="transition-colors hover:text-foreground">
               Blog
