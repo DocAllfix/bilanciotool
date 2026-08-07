@@ -1,4 +1,5 @@
 import { fmtData } from "@/lib/format";
+import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
 // Dichiarazione di Applicabilità (ISO/IEC 27001:2022 §6.1.3 d).
@@ -385,7 +386,7 @@ export function DocumentoSoa({ dati }: { dati: Snapshot }) {
         </ul>
 
         <p className="doc-meta">
-          Documento generato il {fmtData(dati.generatoIl)} da EvalisDeck. I valori riportati sono congelati alla
+          Documento generato il {fmtData(dati.generatoIl)} da {marchioDelloSnapshot(dati).nome}. I valori riportati sono congelati alla
           data di emissione: modifiche successive alla Dichiarazione non alterano questa revisione, che resta la
           versione consegnata.
         </p>

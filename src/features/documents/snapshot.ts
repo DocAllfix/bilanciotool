@@ -2,8 +2,10 @@ import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
 import {
   checklistRequirement, company, documentSnapshot, ghgCategory, ghgSourceType, ghgTarget,
-  kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, reportProject,
+  kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
+  orgEntitlement, reportProject,
 } from "@/lib/db/schema";
+import { marchioDaCongelare } from "./marchio";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { getResults } from "@/features/ghg/results";
@@ -293,16 +295,36 @@ export async function publishSoaSnapshot(userId: string, orgId: string, companyI
   return salvaSnapshot(userId, orgId, companyId, "soa", SENZA_ESERCIZIO, dati);
 }
 
+/** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo
+ *  alla visualizzazione farebbe cambiare intestazione a un PDF già consegnato. */
+async function marchioCorrente(orgId: string) {
+  const [ent, org] = await Promise.all([
+    db
+      .select({ whiteLabel: orgEntitlement.whiteLabel })
+      .from(orgEntitlement)
+      .where(eq(orgEntitlement.organizationId, orgId))
+      .limit(1),
+    db.select({ nome: organization.name }).from(organization).where(eq(organization.id, orgId)).limit(1),
+  ]);
+  return marchioDaCongelare({
+    whiteLabel: ent[0]?.whiteLabel ?? false,
+    nomeStudio: org[0]?.nome,
+  });
+}
+
 async function salvaSnapshot(
   userId: string,
   orgId: string,
   companyId: string,
   tipo: TipoDocumento,
   anno: number,
-  dati: unknown,
+  dati: Record<string, unknown>,
 ): Promise<string> {
   const versione = await prossimaVersione(companyId, tipo, anno);
   const id = randomUUID();
+  // Il marchio si aggiunge QUI, nella strozzatura comune ai cinque documenti: metterlo
+  // in ciascuna funzione di pubblicazione significherebbe dimenticarlo nella sesta.
+  const marchio = await marchioCorrente(orgId);
   await withTenant({ userId, orgId }, async (tx) => {
     await tx.insert(documentSnapshot).values({
       id,
@@ -311,7 +333,7 @@ async function salvaSnapshot(
       tipo,
       anno,
       versione,
-      dati,
+      dati: { ...dati, marchio },
       publishedBy: userId,
     });
     await logAudit(tx, {

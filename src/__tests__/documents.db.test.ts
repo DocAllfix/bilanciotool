@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { db } from "@/lib/db";
 import { user, organization, member, orgEntitlement, company, auditLog, documentSnapshot } from "@/lib/db/schema";
 import { publishGhgSnapshot, publishBilancioSnapshot, getSnapshot } from "@/features/documents/snapshot";
+import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { createInventory } from "@/features/ghg/inventories";
 import { addActivityRow, updateActivityRow, listActivityRows } from "@/features/ghg/activity-data";
 import { createReportProject } from "@/features/report/projects";
@@ -107,6 +108,34 @@ describe.skipIf(!url)("documenti: snapshot e immutabilità", () => {
     const snap2 = await getSnapshot(userId, orgId, snapId2);
     expect(snap2!.versione).toBe(2);
     expect((snap2!.dati as typeof dati).kpi.derivati.scope2Loc).toBe("51.3");
+  });
+
+  it("white-label: il marchio si congela alla pubblicazione, e spegnere l'estensione non lo riscrive", async () => {
+    // Senza estensione, il documento porta il nostro marchio.
+    const nostro = await publishGhgSnapshot(userId, orgId, companyId, 2025);
+    expect(marchioDelloSnapshot((await getSnapshot(userId, orgId, nostro))!.dati)).toEqual({
+      nome: "EvalisDeck",
+      nostro: true,
+    });
+
+    // Lo studio compra il white-label: da qui in poi i documenti portano il suo nome.
+    await db.update(orgEntitlement).set({ whiteLabel: true }).where(eq(orgEntitlement.organizationId, orgId));
+    const suo = await publishGhgSnapshot(userId, orgId, companyId, 2025);
+    expect(marchioDelloSnapshot((await getSnapshot(userId, orgId, suo))!.dati)).toEqual({
+      nome: "Studio Doc",
+      nostro: false,
+    });
+
+    // L'estensione scade. Il PDF già consegnato al cliente NON cambia intestazione:
+    // è la ragione per cui il marchio sta nello snapshot e non si rilegge a ogni vista.
+    await db.update(orgEntitlement).set({ whiteLabel: false }).where(eq(orgEntitlement.organizationId, orgId));
+    expect(marchioDelloSnapshot((await getSnapshot(userId, orgId, suo))!.dati)).toEqual({
+      nome: "Studio Doc",
+      nostro: false,
+    });
+    // Mentre quello che si pubblica DOPO la scadenza torna al nostro.
+    const dopo = await publishGhgSnapshot(userId, orgId, companyId, 2025);
+    expect(marchioDelloSnapshot((await getSnapshot(userId, orgId, dopo))!.dati).nostro).toBe(true);
   });
 
   it("demo: la pubblicazione è dietro paywall (generate_pdf)", async () => {

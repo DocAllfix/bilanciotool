@@ -1,4 +1,5 @@
 import { fmtNum, fmtData } from "@/lib/format";
+import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 import { codiceVerifica, validoFino } from "@/lib/calc/supplier/attestation";
 
@@ -307,7 +308,7 @@ export function DocumentoAttestato({ dati, snapshotId, versione }: { dati: Snaps
         </ul>
 
         <p className="doc-meta">
-          Documento generato il {fmtData(dati.generatoIl)} da EvalisDeck · revisione {versione} · codice di
+          Documento generato il {fmtData(dati.generatoIl)} da {marchioDelloSnapshot(dati).nome} · revisione {versione} · codice di
           verifica {codice}. I valori riportati sono congelati alla data di emissione: modifiche successive
           all&apos;autovalutazione non alterano questo attestato, che resta la versione consegnata.
         </p>

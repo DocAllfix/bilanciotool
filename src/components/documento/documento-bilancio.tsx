@@ -1,4 +1,5 @@
 import { fmtNum, fmtData } from "@/lib/format";
+import { FirmaDocumento } from "./firma";
 import { DOC, Donut, GroupBars, HBars, MatriceMaterialita } from "./charts";
 import { TiptapRender, tiptapVuoto } from "./tiptap-render";
 import { DEFAULT_CONVERSION_FACTORS } from "@/lib/calc/report/derived-kpi";
@@ -332,11 +333,7 @@ export function DocumentoBilancio({ dati, imageUrls }: { dati: Snapshot; imageUr
         <p className="doc-meta" style={{ marginTop: 18 }}>
           Documento generato il {fmtData(dati.generatoIl)}{p.profilo.contatto ? ` · ${p.profilo.contatto}` : ""}
         </p>
-        <p className="doc-meta" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/derivati/monogramma.svg" alt="" style={{ height: "14px", width: "auto" }} />
-          Redatto con EvalisDeck
-        </p>
+        <FirmaDocumento dati={dati} />
       </div>
     </>
   );

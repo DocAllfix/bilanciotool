@@ -197,7 +197,24 @@ Gate: **343 test** · `verifica-sitemap.mjs` 9 · `verifica-blog.mjs` 10 · `ver
 
 ⚠️ **Debito aperto: nessun canale di allarme funziona.** Da WordPress non esce posta (`sendmail` assente nel contenitore) e `RESEND_API_KEY` manca sia sul server sia su Vercel. Conseguenze: il recupero password di WordPress è muto, l'allarme sul fallimento dei backup è muto, il giro quotidiano sul blog parla al vuoto. I backup girano e il restore-test settimanale passa, ma **se smettessero nessuno lo saprebbe**. Rimedi proposti: interruttore dell'uomo morto (healthchecks.io) per gli allarmi — migliore dell'email perché intercetta anche «lo script non è mai partito» — e SMTP di una casella su `evalis.it` (unico dominio del cliente con MX) per WordPress. Resend resta la strada per il prodotto in Fase 9.
 
-**Prossima: rientro su Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente.
+**Verso il lancio (2026-08-07) — piani, impostazioni, portale cliente, white-label**
+
+Nuovo modello commerciale del committente: quattro livelli con capacità diverse più estensioni a quantità. Non è un cambio di listino, è un cambio di architettura: i limiti erano globali per tutti gli studi, ora sono una proprietà dell'abbonamento. **Nessun prezzo sulla landing**: il listino si vede solo dopo l'accesso.
+
+- **F9.0 — tre difetti già in produzione.** `archiveCompany` non aveva `requireEntitlement` (un account in sola lettura poteva archiviare). `assertSeatAvailable` esisteva senza chiamanti: il limite di accessi non era applicato da nessuna parte, restava il `membershipLimit: 5` fisso di Better Auth. E **gli inviti erano rotti**: alla tabella `invitation` mancava `created_at` (migrazione `0011`) — scoperto perché un test passò al primo colpo per il motivo sbagliato.
+- **F9 — piani ed estensioni.** `src/lib/prezzi.ts` è la fonte unica (importi in **centesimi**, mai importata dalla landing); `org_entitlement` guadagna `piano`, `aziendeExtra`, `accessiExtra`, `whiteLabel` (migrazione `0012` con tre CHECK, incluso «un piano implica una data di attivazione»); `getLimitiEffettivi` somma capacità del piano ed estensioni, con `platform_config` come sola riserva.
+- **F11 — Impostazioni** (`/impostazioni`, tre schede): studio, membri col limite del piano, abbonamento con capacità usata su totale e riquadro rimborso. Chiude il vicolo cieco: il CTA del banner demo finiva su un guscio di 14 righe.
+- **F12 — portale cliente.** `/documenti-cliente/[token]`: l'azienda scarica i propri documenti **senza account e senza password**. Nel database c'è solo l'impronta SHA-256 del token, mostrato in chiaro una volta sola; revoca immediata, scadenza a 7/30/90 giorni, contatore aperture. La rotta serve **solo PDF già archiviati**, non li genera mai: Chromium dietro un indirizzo pubblico è un costo che si invita da solo. Pagina `noindex`.
+- **F12c — white-label** (600 €/anno): i cinque documenti portano il nome dello studio. Il marchio si sceglie **una volta sola alla pubblicazione** e si congela nello snapshot (`src/features/documents/marchio.ts`, aggiunto in `salvaSnapshot` — la strozzatura comune ai cinque, per non dimenticarlo nel sesto). Il monogramma compare solo col marchio nostro: del logo dello studio non abbiamo nulla, e il nostro simbolo accanto al nome di un altro sarebbe il contrario di ciò che l'estensione vende.
+
+**Regole nate qui:**
+- **Un `next start` non rilegge il sorgente.** Carica il build all'avvio: un server acceso prima delle modifiche serve il codice di ieri per sempre, senza dirlo. Tre collaudi rossi di fila e una caccia alla cache inesistente, mentre il difetto era che stavo interrogando un binario vecchio. **Prima di dare per rotto il codice, guardare da quando gira il processo che si sta collaudando.**
+- **La domanda giusta a Postgres distingue «chiave assente» da «valore null»**: `dati ? 'marchio'` dice ciò che `dati->'marchio'` nasconde, e indirizza la diagnosi in un colpo.
+- **Un collaudo va provato rompendolo.** Il test del white-label è stato messo in rosso di proposito togliendo il campo dallo snapshot, per vedere che fallisse sull'asserzione giusta.
+
+Gate: typecheck · build · **418 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `visual-check-impostazioni.mjs` 14 · `visual-check-condivisione.mjs` 9 · `visual-check-marchio.mjs` 7 (pubblica, spegne l'estensione, ricarica **lo stesso** documento) · console pulita.
+
+**Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, F14 hardening, F15 pre-lancio. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
 

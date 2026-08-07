@@ -1,4 +1,5 @@
 import { fmtNum, fmtData } from "@/lib/format";
+import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC, COLORE_AREA_DOC } from "./charts";
 import { BarreDivergenti, BarreMensili, Pareto, Sankey } from "./charts-energia";
 import { TiptapRender, tiptapVuoto } from "./tiptap-render";
@@ -666,7 +667,7 @@ export function DocumentoEnergetico({ dati, imageUrls }: { dati: Snapshot; image
           <li>UNI EN ISO 14064-1:2018 — per l&apos;attribuzione delle emissioni ai consumi energetici.</li>
         </ul>
         <p className="doc-meta">
-          Documento generato il {fmtData(dati.generatoIl)} da EvalisDeck. I valori riportati sono congelati alla
+          Documento generato il {fmtData(dati.generatoIl)} da {marchioDelloSnapshot(dati).nome}. I valori riportati sono congelati alla
           data di pubblicazione: modifiche successive ai dati di origine non alterano questo documento, che
           resta la versione consegnata.
         </p>
