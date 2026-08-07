@@ -5,6 +5,8 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getFascicolo, listDocumentiAzienda } from "@/features/companies/fascicolo";
 import { getStorico } from "@/features/companies/storico";
 import { Storico } from "@/components/portfolio/storico";
+import { PannelloCondivisione } from "@/components/condivisione/pannello";
+import { elencaCollegamenti } from "@/features/condivisione";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { etichettaDocumento } from "@/features/documents/tipi";
 import { Badge } from "@/components/ui/badge";
@@ -29,10 +31,11 @@ const ETICHETTA_STATO = {
 export default async function FascicoloPage({ params }: { params: Promise<{ companyId: string }> }) {
   const { companyId } = await params;
   const s = await requireConsultant();
-  const [f, documenti, storico] = await Promise.all([
+  const [f, documenti, storico, collegamenti] = await Promise.all([
     getFascicolo(s.userId, s.orgId, companyId),
     listDocumentiAzienda(s.userId, s.orgId, companyId),
     getStorico(s.userId, s.orgId, companyId),
+    elencaCollegamenti(s.userId, s.orgId, companyId),
   ]);
   if (!f) notFound();
 
@@ -157,6 +160,10 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
       {/* Compare da solo quando c'è qualcosa da mostrare: con una sola versione
           pubblicata non esiste un andamento, e un grafico a un punto è rumore. */}
       <Storico serie={storico} />
+
+      {/* Sta qui e non nelle impostazioni: il collegamento riguarda UNA azienda, e si
+          genera guardando i documenti che si sta per condividere. */}
+      <PannelloCondivisione companyId={companyId} collegamenti={collegamenti} />
 
       <div className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Documenti pubblicati</h2>
