@@ -4,7 +4,7 @@
 
 import { sanificaHtml, soloTesto } from "./sanitize";
 import { riscriviLinkInterni } from "./seo";
-import type { Articolo, Autore, PostWP } from "./tipi";
+import type { Articolo, Autore, PostWP, Termine } from "./tipi";
 
 // Entita' nominali che compaiono davvero in un blog italiano. Le accentate NON sono un
 // dettaglio: WordPress salva "perch&eacute;" e senza questa mappa il titolo arriverebbe in
@@ -57,26 +57,49 @@ export function autoreDaPost(post: PostWP): Autore | undefined {
   };
 }
 
+/** WordPress assegna d'ufficio questa categoria a chi non ne sceglie una: non è una scelta,
+ *  e non deve diventare un archivio. */
+const NON_CATEGORIE = new Set(["uncategorized", "senza-categoria"]);
+
 /** Prima categoria vera (WordPress mette anche i tag dentro wp:term). */
-export function categoriaDaPost(post: PostWP): string {
+export function categoriaDaPost(post: PostWP): Termine | undefined {
   const gruppi = post._embedded?.["wp:term"] ?? [];
   for (const gruppo of gruppi) {
-    const cat = gruppo?.find((t) => t?.taxonomy === "category" && t?.name);
-    if (cat?.name) return decodificaEntita(cat.name);
+    const cat = gruppo?.find(
+      (t) => t?.taxonomy === "category" && t?.name && t?.slug && !NON_CATEGORIE.has(t.slug.toLowerCase()),
+    );
+    if (cat?.name && cat?.slug) return { nome: decodificaEntita(cat.name), slug: cat.slug };
   }
-  return "";
+  return undefined;
+}
+
+/** Tutti i tag dell'articolo. Un termine senza slug si scarta: non sarebbe raggiungibile. */
+export function tagDaPost(post: PostWP): Termine[] {
+  const gruppi = post._embedded?.["wp:term"] ?? [];
+  const trovati: Termine[] = [];
+  for (const gruppo of gruppi) {
+    for (const t of gruppo ?? []) {
+      if (t?.taxonomy === "post_tag" && t?.name && t?.slug) {
+        trovati.push({ nome: decodificaEntita(t.name), slug: t.slug });
+      }
+    }
+  }
+  return trovati;
 }
 
 /** Post WordPress → Articolo pronto per la presentazione. */
 export function mappaPost(post: PostWP, opts: { cms: string; pubblico: string }): Articolo {
   const contenutoRiscritto = riscriviLinkInterni(post.content?.rendered ?? "", opts.cms, opts.pubblico);
   const autore = autoreDaPost(post);
+  const categoria = categoriaDaPost(post);
 
   return {
     slug: post.slug,
     title: decodificaEntita(post.title?.rendered),
     excerpt: soloTesto(post.excerpt?.rendered),
-    category: categoriaDaPost(post),
+    category: categoria?.nome ?? "",
+    categoria,
+    tag: tagDaPost(post),
     author: autore?.nome ?? "",
     autore,
     date: post.date_gmt ? `${post.date_gmt}Z`.replace(/Z+$/, "Z") : "",

@@ -321,6 +321,23 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
       radice ? `x-robots-tag: ${robots || "(assente)"}` : "CMS non raggiungibile",
     );
 
+    // I campi SEO arrivano da `yoast_head_json`. Sostituire Yoast con un altro estensione
+    // (RankMath, SEOPress) fa sparire quel blocco dalle API: il sito continua a funzionare,
+    // gli articoli si vedono, ma titoli e descrizioni scritti a mano vengono persi e al loro
+    // posto compaiono quelli ricavati dal titolo. È una perdita che non produce nessun
+    // errore, e senza questo controllo si scoprirebbe leggendo i risultati in Google.
+    const conPost = await prendi(`${cms}/wp-json/wp/v2/posts?per_page=1`);
+    if (conPost?.stato === 200 && conPost.testo.trim().startsWith("[") && conPost.testo.length > 5) {
+      const haYoast = conPost.testo.includes('"yoast_head_json"');
+      aggiungi(
+        "campi-seo",
+        haYoast,
+        haYoast
+          ? "il CMS espone ancora yoast_head_json"
+          : "yoast_head_json SPARITO dalle API: estensione SEO cambiata o disattivata, i titoli scritti a mano non arrivano più",
+      );
+    }
+
     // la sitemap di Yoast manderebbe a Google una lista di URL del CMS in conflitto con la nostra
     for (const percorso of ["/wp-sitemap.xml", "/sitemap_index.xml"]) {
       const r = await prendi(`${cms}${percorso}`);

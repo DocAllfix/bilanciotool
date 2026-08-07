@@ -1,4 +1,4 @@
-import type { Articolo, Autore, SeoArticolo } from "./tipi";
+import type { Articolo, Autore, SeoArticolo, Termine } from "./tipi";
 import { blogConfigurato } from "./config";
 import * as wp from "./wp";
 
@@ -106,6 +106,50 @@ export async function slugAutoriBlog(): Promise<string[]> {
   } catch (e) {
     return ripiego("lettura degli autori", e, []);
   }
+}
+
+/**
+ * Gli archivi: articoli di una categoria o di un tag.
+ *
+ * Si filtra sull'elenco già in cache invece di interrogare il CMS per termine. Gli articoli
+ * sono decine, non decine di migliaia, e una sola lettura etichettata «blog» significa che
+ * il webhook di una pubblicazione aggiorna in un colpo l'articolo, l'elenco e **tutti** gli
+ * archivi che lo contengono. Con una chiamata per archivio resterebbero indietro.
+ */
+export async function articoliPerTermine(
+  tipo: "categoria" | "tag",
+  slug: string,
+): Promise<{ termine: Termine; articoli: Articolo[] } | null> {
+  const tutti = await elencoBlog();
+  const chiave = slug.toLowerCase();
+  const articoli = tutti.filter((a) =>
+    tipo === "categoria"
+      ? a.categoria?.slug.toLowerCase() === chiave
+      : a.tag.some((t) => t.slug.toLowerCase() === chiave),
+  );
+  if (articoli.length === 0) return null;
+  const termine =
+    tipo === "categoria"
+      ? articoli[0].categoria!
+      : articoli[0].tag.find((t) => t.slug.toLowerCase() === chiave)!;
+  return { termine, articoli };
+}
+
+/** Tutti i termini usati da almeno un articolo, col numero di articoli che li usano. */
+export async function terminiBlog(
+  tipo: "categoria" | "tag",
+): Promise<Array<{ termine: Termine; quanti: number }>> {
+  const tutti = await elencoBlog();
+  const conteggio = new Map<string, { termine: Termine; quanti: number }>();
+  for (const a of tutti) {
+    for (const t of tipo === "categoria" ? (a.categoria ? [a.categoria] : []) : a.tag) {
+      const k = t.slug.toLowerCase();
+      const voce = conteggio.get(k);
+      if (voce) voce.quanti++;
+      else conteggio.set(k, { termine: t, quanti: 1 });
+    }
+  }
+  return [...conteggio.values()].sort((x, y) => y.quanti - x.quanti);
 }
 
 /**

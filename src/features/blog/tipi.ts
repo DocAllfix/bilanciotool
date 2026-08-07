@@ -11,12 +11,18 @@ export type Autore = {
   avatar?: string;
 };
 
+/** Una voce di tassonomia: categoria o tag. Lo slug serve a costruirne l'archivio. */
+export type Termine = { nome: string; slug: string };
+
 /** Un articolo pronto per la presentazione. `content` e' HTML GIA' SANIFICATO. */
 export type Articolo = {
   slug: string;
   title: string;
   excerpt: string;
+  /** Nome della categoria, per la sola presentazione. Per collegarla serve `categoria`. */
   category: string;
+  categoria?: Termine;
+  tag: Termine[];
   author: string;
   autore?: Autore;
   /** ISO 8601 (da WordPress). La vecchia fonte usava "12 Giu 2026": ora si formatta a display. */

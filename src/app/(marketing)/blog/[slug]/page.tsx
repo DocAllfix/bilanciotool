@@ -10,6 +10,8 @@ import { articoloBlog, slugBlog, slugSostitutivo, blogVisibileAiMotori } from "@
 import { dataItaliana, soloGiorno } from "@/features/blog/data";
 import { soloTesto } from "@/features/blog/sanitize";
 import { ArrowLeft } from "lucide-react";
+import { Briciole } from "@/components/blog/briciole";
+import { bricioleArticolo } from "@/features/blog/tassonomia";
 
 const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
 
@@ -108,6 +110,10 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
       )}
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-14">
+        {/* Le briciole PRIMA di tutto: chi arriva da una ricerca deve capire dov'e' finito
+            prima ancora di leggere il titolo. Non si emettono per una bozza. */}
+        {!bozza && <Briciole briciole={bricioleArticolo(APP, { title: a.title, slug: a.slug, categoria: a.categoria })} />}
+
         <Link
           href="/blog"
           className="tocco-comodo inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -116,7 +122,13 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
         </Link>
 
         <p className="mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-          {a.category}
+          {a.categoria ? (
+            <Link href={`/blog/categoria/${a.categoria.slug}`} className="hover:underline">
+              {a.categoria.nome}
+            </Link>
+          ) : (
+            a.category
+          )}
           <span className="font-normal normal-case tracking-normal text-muted-foreground">
             {dataItaliana(a.date)} · {a.readTime}
           </span>
@@ -158,6 +170,23 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
 
         <div className="mt-10">
           <ContenutoArticolo html={a.content} />
+
+        {/* Gli argomenti stanno DOPO il testo, non prima: sono un modo per continuare a
+            leggere, non un'etichetta da guardare mentre si decide se leggere. */}
+        {a.tag.length > 0 && (
+          <nav aria-label="Argomenti" className="mt-10 flex flex-wrap items-center gap-2 border-t pt-6">
+            <span className="text-[12.5px] text-muted-foreground">Argomenti:</span>
+            {a.tag.map((t) => (
+              <Link
+                key={t.slug}
+                href={`/blog/tag/${t.slug}`}
+                className="rounded-full border px-3 py-1 text-[12.5px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              >
+                {t.nome}
+              </Link>
+            ))}
+          </nav>
+        )}
         </div>
 
         {correlati.length > 0 && (

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
-import { elencoBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
+import { elencoBlog, terminiBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
+import { archivioIndicizzabile } from "@/features/blog/tassonomia";
 import { AGGIORNATO_AL } from "@/lib/legale";
 
 // La sitemap.
@@ -50,8 +51,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .sort()
     .at(-1);
 
+  // Gli archivi entrano SOLO se hanno abbastanza articoli: sotto soglia sono `noindex`, e
+  // un indirizzo noindex dentro la sitemap è una contraddizione che Search Console segnala.
+  // La stessa soglia governa le due cose, così non possono discordare.
+  const archivi: MetadataRoute.Sitemap = [];
+  for (const tipo of ["categoria", "tag"] as const) {
+    for (const { termine, quanti } of await terminiBlog(tipo)) {
+      if (!archivioIndicizzabile(quanti)) continue;
+      archivi.push({
+        url: `${base}/blog/${tipo}/${termine.slug}`,
+        changeFrequency: "weekly",
+        priority: 0.4,
+      });
+    }
+  }
+
   return [
     ...prodotto,
+    ...archivi,
     {
       url: `${base}/blog`,
       ...(piuRecente ? { lastModified: new Date(piuRecente) } : {}),
