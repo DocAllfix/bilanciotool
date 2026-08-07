@@ -175,7 +175,29 @@ Gate 14 verde: typecheck · build · **262 test** anche con `RLS_FORCE_ROLE=app_
 ### I cinque documenti del prodotto
 `document_snapshot.tipo`: `ghg` · `bilancio` · `energetico` · `attestato` · `soa`. I primi tre sono annuali, gli ultimi due usano `SENZA_ESERCIZIO` (0) e formano una serie unica di revisioni. Tutti e cinque renderizzano SOLO dallo snapshot immutabile.
 
-**Prossima: rientro su Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente + collegamento Vercel (per F8-verifica PDF e deploy landing).
+**Fase B completata (2026-08-07) — blog headless, dominio, Search Console, GA4**
+
+Dominio **`evalisdeck.it`** su Vercel (nameserver Vercel, funzioni a `fra1`; il build gira a Washington ma non tocca dati). 308 da `www`, da `evalisdeck.vercel.app` e da `bilanciotool.vercel.app`. `evalisdeck.com` è ancora parcheggiato su Register.
+
+- **Blog headless**: secondo WordPress su `cms.evalisdeck.it` (stessa macchina di Evalis Academy, isolamento provato in entrambe le direzioni), reso da noi su `/blog`. Interruttore `BLOG_VISIBILE_AI_MOTORI` **acceso**: indicizzabile, in sitemap, voce nel menu e nel piede. Editor `bruno.santini` per il consulente SEO.
+- **Infrastruttura versionata** in `infra/blog-cms/` — fotografia, non sorgente: il server resta la verità, si aggiornano insieme.
+- **GA4** `G-0YYSRQL9FL` dietro consenso esplicito: senza scelta **nessuna richiesta** parte verso Google, nemmeno lo script. Banner con Rifiuta/Accetta di pari misura (96×28) e revoca dal piede di ogni pagina.
+- **Testi legali riallineati prima dell'accensione**: la cookie policy dichiarava di non avere strumenti di analisi di terze parti, la privacy che non c'erano trasferimenti extra-UE. Entrambe sarebbero diventate documenti pubblicati e falsi.
+
+**Regole nate qui:**
+- **I collaudi misurano le richieste di rete, non le intenzioni.** Fra il codice e il browser ci sono prerendering, cache e strategie di script: l'unica prova che regge è la lista di ciò che è uscito. È così che si è scoperto che GA4 partiva prima del consenso.
+- **`useSyncExternalStore` vuole un'istantanea lato server, e componenti diversi ne vogliono di opposte.** Chi presenta può fingere che l'utente abbia scelto (per non lampeggiare); chi raccoglie dati deve fingere il contrario. Una sola funzione per entrambi = raccolta senza consenso, in silenzio.
+- **`lastmod` si dichiara solo se la si conosce.** Il valore generato a ogni richiesta dice «modificata adesso» per sempre, e Google impara a ignorare il campo — anche quando poi diciamo il vero.
+- **Il marchio in coda al titolo lo mette il sito, una volta sola.** Valeva per gli articoli (Yoast) e per la home (`title.absolute`).
+- **Le àncore del menu portano il percorso** (`/#percorsi`): la stessa intestazione compare su pagine che quelle sezioni non le hanno.
+- **Da `wp-cli` il webhook non parte** (`blocking => false` e il processo finisce prima): le prove della catena si fanno dalla dashboard o via REST, e le operazioni da riga di comando vanno seguite da una chiamata esplicita.
+- **Un controllo che non può mai diventare rosso non è un controllo**, e un allarme che arriva ogni mattina si smette di leggerlo: gli stati legittimi vanno insegnati al collaudo, non tollerati.
+
+Gate: **343 test** · `verifica-sitemap.mjs` 9 · `verifica-blog.mjs` 10 · `verifica-consenso.mjs` 17 (su richieste reali) · `visual-check-legale.mjs` 26 · tutti verdi su `https://evalisdeck.it`.
+
+⚠️ **Debito aperto: nessun canale di allarme funziona.** Da WordPress non esce posta (`sendmail` assente nel contenitore) e `RESEND_API_KEY` manca sia sul server sia su Vercel. Conseguenze: il recupero password di WordPress è muto, l'allarme sul fallimento dei backup è muto, il giro quotidiano sul blog parla al vuoto. I backup girano e il restore-test settimanale passa, ma **se smettessero nessuno lo saprebbe**. Rimedi proposti: interruttore dell'uomo morto (healthchecks.io) per gli allarmi — migliore dell'email perché intercetta anche «lo script non è mai partito» — e SMTP di una casella su `evalis.it` (unico dominio del cliente con MX) per WordPress. Resend resta la strada per il prodotto in Fase 9.
+
+**Prossima: rientro su Fase 9** — Stripe (Subscription Schedules 2 fasi, webhook idempotente), org demo pre-compilata al signup, tour driver.js, paywall reale. ⚠️ Servono: chiavi Stripe TEST dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
 
