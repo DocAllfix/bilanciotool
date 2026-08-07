@@ -1,0 +1,169 @@
+import Link from "next/link";
+import { requireActiveOrg } from "@/features/auth/guards";
+import { getQuadroAbbonamento } from "@/features/studio/queries";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { PIANI, ESTENSIONI, CHIAVI_PIANO, euro } from "@/lib/prezzi";
+import { TITOLARE } from "@/lib/legale";
+
+export const dynamic = "force-dynamic";
+
+const data = (d: Date | null) =>
+  d ? d.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" }) : "—";
+
+const ETICHETTA_STATO = {
+  demo: { testo: "Demo", variante: "secondary" as const },
+  active: { testo: "Attivo", variante: "default" as const },
+  past_due: { testo: "Pagamento sospeso", variante: "destructive" as const },
+  expired: { testo: "Scaduto", variante: "destructive" as const },
+};
+
+function Capacita({ etichetta, usati, totali }: { etichetta: string; usati: number; totali: number }) {
+  const pct = totali > 0 ? Math.min(100, Math.round((usati / totali) * 100)) : 0;
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-sm">
+        <span className="text-muted-foreground">{etichetta}</span>
+        <span className="tabular-nums">
+          <span className="font-medium text-foreground">{usati}</span> di {totali}
+        </span>
+      </div>
+      <Progress value={pct} className="mt-2 h-1.5" />
+    </div>
+  );
+}
+
+export default async function AbbonamentoPage() {
+  const s = await requireActiveOrg();
+  const a = await getQuadroAbbonamento(s.userId, s.orgId);
+  const stato = ETICHETTA_STATO[a.status];
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="font-medium">{a.nomePiano ?? "Nessun piano attivo"}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {a.piano
+                  ? `Attivo dal ${data(a.attivatoIl)}${a.rinnovoIl ? ` · si rinnova il ${data(a.rinnovoIl)}` : ""}`
+                  : "Stai usando la demo: puoi lavorare sull'azienda d'esempio, ma non creare le tue né pubblicare documenti."}
+              </p>
+            </div>
+            <Badge variant={stato.variante} className="shrink-0">
+              {stato.testo}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <Capacita etichetta="Aziende attive" usati={a.aziendeUsate} totali={a.aziendeTotali} />
+          <Capacita etichetta="Accessi" usati={a.accessiUsati} totali={a.accessiTotali} />
+
+          {(a.aziendeExtra > 0 || a.accessiExtra > 0 || a.whiteLabel) && (
+            <ul className="border-t pt-4 text-sm text-muted-foreground">
+              {a.aziendeExtra > 0 && <li>+{a.aziendeExtra} aziende oltre il piano</li>}
+              {a.accessiExtra > 0 && <li>+{a.accessiExtra} accessi oltre il piano</li>}
+              {a.whiteLabel && <li>Documenti col marchio del tuo studio</li>}
+            </ul>
+          )}
+
+          {a.rimborsabile && (
+            <p className="rounded-lg border border-border bg-muted/40 p-3 text-[13px] leading-relaxed">
+              <b>Puoi ancora ripensarci.</b> Non hai pubblicato nessun documento e non sono passati quattordici
+              giorni dall&apos;attivazione: hai diritto al rimborso integrale. Scrivi a{" "}
+              <a href={`mailto:${TITOLARE.email}`} className="font-medium text-primary hover:underline">
+                {TITOLARE.email}
+              </a>
+              .
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Il listino si vede SOLO qui dentro, mai sul sito pubblico: decisione del
+          committente. Chi non ha ancora un piano deve capire cosa comprerebbe. */}
+      {!a.piano && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-medium">I piani</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Il primo anno comprende l&apos;avviamento. Dal secondo si rinnova da solo, a prezzo ridotto.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <ul className="grid gap-3 sm:grid-cols-3">
+              {CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa).map((k) => {
+                const p = PIANI[k];
+                return (
+                  <li key={k} className="rounded-lg border p-4">
+                    <p className="font-medium">{p.nome}</p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
+                    <p className="mt-3 text-lg font-semibold tabular-nums">{euro(p.primoAnno)}</p>
+                    <p className="text-[12.5px] text-muted-foreground">
+                      primo anno, poi {euro(p.rinnovo)}{" "}l&apos;anno
+                    </p>
+                    <ul className="mt-3 space-y-1 text-[13px] text-muted-foreground">
+                      <li>{p.aziende} aziende</li>
+                      <li>{p.accessi} accessi</li>
+                    </ul>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-5 space-y-1 border-t pt-4 text-[13px] text-muted-foreground">
+              <p>
+                Servono più aziende? Blocchi da {ESTENSIONI.bloccoAziende.aziende} a{" "}
+                {euro(ESTENSIONI.bloccoAziende.prezzo)}{" "}l&apos;anno. Accessi in più:{" "}
+                {euro(ESTENSIONI.accesso.prezzo)} ciascuno.
+              </p>
+              <p>
+                Documenti col marchio del tuo studio: {euro(ESTENSIONI.whiteLabel.prezzo)}{" "}l&apos;anno.
+              </p>
+              <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
+            </div>
+
+            {/*
+              Il pagamento con carta arriva col collegamento a Stripe. Finché non c'è, questa
+              è la strada vera e non un segnaposto: si scrive e si attiva. Meglio un canale
+              che funziona di un pulsante che finge.
+            */}
+            <div className="mt-6 rounded-lg border border-primary/30 bg-accent p-4">
+              <p className="text-sm font-medium text-accent-foreground">Vuoi attivare lo studio?</p>
+              <p className="mt-1 text-[13px] leading-relaxed text-accent-foreground/90">
+                Scrivici a{" "}
+                <a href={`mailto:${TITOLARE.email}?subject=Attivazione%20EvalisDeck`} className="font-medium underline">
+                  {TITOLARE.email}
+                </a>{" "}
+                indicando il piano: ti mandiamo il preventivo e attiviamo l&apos;account. Il pagamento con carta
+                direttamente da qui arriva a breve.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {a.status === "past_due" && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-medium">Il rinnovo non è andato a buon fine</h2>
+          </CardHeader>
+          <CardContent className="text-sm leading-relaxed text-muted-foreground">
+            Il servizio resta attivo, ma va sistemato il metodo di pagamento. Scrivici a{" "}
+            <a href={`mailto:${TITOLARE.email}`} className="font-medium text-primary hover:underline">
+              {TITOLARE.email}
+            </a>{" "}
+            e lo risolviamo insieme.
+          </CardContent>
+        </Card>
+      )}
+
+      <p className="text-[13px] text-muted-foreground">
+        Condizioni, rinnovo e rimborsi sono nei <Link href="/termini" className="text-primary hover:underline">termini
+        e condizioni</Link>.
+      </p>
+    </div>
+  );
+}

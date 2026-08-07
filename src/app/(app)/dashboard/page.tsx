@@ -94,10 +94,12 @@ export default async function DashboardPage() {
       )}
       {usage.atLimit && (
         <div className="mt-4 rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3 text-sm">
+          {/* Prima mandava a una email, che è un vicolo cieco travestito da aiuto: con i
+              piani, la strada per allargare la capacità è una pagina del prodotto. */}
           Hai raggiunto il limite di {usage.limit} aziende attive. Archivia un&apos;azienda oppure{" "}
-          <a className="font-medium underline" href="mailto:info@evalisdeck.it">
-            contattaci per il piano Studio
-          </a>
+          <Link className="font-medium underline" href="/impostazioni/abbonamento">
+            aggiungi capacità al tuo piano
+          </Link>
           .
         </div>
       )}

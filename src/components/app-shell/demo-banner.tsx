@@ -11,7 +11,7 @@ export function DemoBanner() {
         <p className="min-w-0">
           <b>Stai esplorando la demo</b>: l&apos;azienda Meccanica Adriatica è un esempio già compilato, modificala liberamente.
         </p>
-        <Link href="/impostazioni" className="ml-auto inline-flex shrink-0 items-center gap-1 font-semibold text-primary hover:underline">
+        <Link href="/impostazioni/abbonamento" className="ml-auto inline-flex shrink-0 items-center gap-1 font-semibold text-primary hover:underline">
           Sblocca per le tue aziende <ArrowRight className="size-3.5" />
         </Link>
       </div>
