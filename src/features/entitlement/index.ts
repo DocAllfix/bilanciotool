@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
 import { platformConfig, orgEntitlement, company, member } from "@/lib/db/schema";
 import { and, eq, count } from "drizzle-orm";
+import { limitiEffettivi, type Limiti } from "@/lib/prezzi";
 
 // Layer di entitlement: fonte di verità del paywall e dei limiti anti-abuso.
 // Nasce PRIMA di Stripe (Fase 9 muterà solo lo stato che questo layer legge).
@@ -20,14 +21,49 @@ export class EntitlementError extends Error {
   }
 }
 
-export type Limits = { maxActiveCompanies: number; warnAtCompanies: number; maxMembers: number };
+export type Limits = Limiti;
 const DEFAULT_LIMITS: Limits = { maxActiveCompanies: 10, warnAtCompanies: 8, maxMembers: 5 };
 
-// Limiti da config di piattaforma (modificabili senza deploy), con default sicuri.
+/**
+ * I limiti di RISERVA della piattaforma: valgono per chi un piano non ce l'ha (demo), e
+ * restano modificabili senza rilascio. Non sono più «i limiti»: quelli veri li detta
+ * l'abbonamento, e si leggono con `getLimitiEffettivi`.
+ */
 export async function getLimits(): Promise<Limits> {
   const rows = await db.select().from(platformConfig).where(eq(platformConfig.key, "limits")).limit(1);
   const v = (rows[0]?.value ?? {}) as Partial<Limits>;
   return { ...DEFAULT_LIMITS, ...v };
+}
+
+/**
+ * I limiti che valgono davvero per uno studio: capacità del piano più le estensioni comprate.
+ *
+ * ⚠️ `org_entitlement` è una tabella TENANT, quindi la lettura deve portare le GUC. Senza
+ * sessione — è il caso dell'aggancio sugli inviti, che gira dentro Better Auth — serve la
+ * valvola `platformAdmin`, altrimenti in produzione la select torna **zero righe in
+ * silenzio** e lo studio si ritrova la capacità di riserva invece di quella pagata. In
+ * sviluppo non si vedrebbe: lì la connessione è privilegiata e le policy non scattano.
+ */
+export async function getLimitiEffettivi(orgId: string, userId?: string): Promise<Limits> {
+  const riserva = await getLimits();
+  const abbonamento = await withTenant(
+    userId ? { userId, orgId } : { orgId, platformAdmin: true },
+    async (tx) => {
+      const r = await tx
+        .select({
+          piano: orgEntitlement.piano,
+          aziendeExtra: orgEntitlement.aziendeExtra,
+          accessiExtra: orgEntitlement.accessiExtra,
+        })
+        .from(orgEntitlement)
+        // Filtro esplicito oltre a RLS: i due strati si difendono a vicenda.
+        .where(eq(orgEntitlement.organizationId, orgId))
+        .limit(1);
+      return r[0] ?? null;
+    },
+  );
+  if (!abbonamento) return riserva;
+  return limitiEffettivi(abbonamento, riserva);
 }
 
 export async function getAccountStatus(userId: string, orgId: string): Promise<AccountStatus> {
@@ -71,7 +107,7 @@ export type CompanyUsage = { active: number; limit: number; warnAt: number; near
 
 // Le aziende demo e quelle archiviate NON contano nei limiti.
 export async function getCompanyUsage(userId: string, orgId: string): Promise<CompanyUsage> {
-  const limits = await getLimits();
+  const limits = await getLimitiEffettivi(orgId, userId);
   const active = await withTenant({ userId, orgId }, async (tx) => {
     const r = await tx
       .select({ n: count() })
@@ -102,7 +138,8 @@ export async function assertCompanyCreatable(userId: string, orgId: string): Pro
 
 // Blocco server-side al 6° membro (invito E accettazione).
 export async function assertSeatAvailable(orgId: string): Promise<void> {
-  const limits = await getLimits();
+  // Senza userId: questa gira dentro l'aggancio di Better Auth, dove sessione non c'e'.
+  const limits = await getLimitiEffettivi(orgId);
   const r = await db.select({ n: count() }).from(member).where(eq(member.organizationId, orgId));
   if (r[0].n >= limits.maxMembers) {
     throw new EntitlementError("limit_members", `Limite di ${limits.maxMembers} membri per studio raggiunto`);
