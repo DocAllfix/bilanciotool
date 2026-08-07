@@ -21,6 +21,15 @@ const check = async (nome, fn) => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+// Il tour guidato parte da solo alla prima visita e stende un velo (driver-overlay,
+// z-index 10000) che intercetta i clic: e' il suo mestiere, non un difetto. Chi arriva
+// davvero lo guarda o lo chiude; il collaudo lo segna come gia' visto, come farebbe chi
+// torna il giorno dopo, altrimenti misura il tour invece della funzione.
+await ctx.addInitScript(() => {
+  for (const p of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+    try { localStorage.setItem(`evalisdeck-tour:${p}`, "1"); } catch {}
+  }
+});
 const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error") errori.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errori.push(`[pageerror] ${e.message}`));
@@ -45,17 +54,34 @@ await check("registrazione e attivazione dello studio", async () => {
   const [m] = await sql`select organization_id from member where user_id = ${u.id}`;
   await sql`update org_entitlement set status='active', piano='studio', activated_at=now()
             where organization_id = ${m.organization_id}`;
+  // Cambiare lo stato nel database NON basta: la sessione porta avanti quello vecchio, e il
+  // server continua a rispondere paywall. Serve un accesso nuovo, come fa ghg.spec.ts.
+  await page.goto(`${BASE}/login`, { waitUntil: "networkidle" });
+  await page.fill("#email", email);
+  await page.fill("#password", "PasswordSicura123!");
+  await page.click('button[type="submit"]');
+  await page.waitForURL("**/dashboard", { timeout: 40_000 });
 });
 
 await check("si crea un'azienda e si apre il suo fascicolo", async () => {
   await page.goto(`${BASE}/dashboard`, { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: /nuova azienda/i }).first().click();
+  // «Nuova azienda» esiste in DUE forme (la scheda del portafoglio e il bottone in testa):
+  // `.first()` pescava quella non visibile e il clic aspettava per sempre. Si prende quella
+  // che si vede davvero, che e' anche quella che premerebbe una persona.
+  // Il selettore per ruolo ne trova DUE (la scheda della griglia e il bottone in testa) e
+  // `.first()` pescava quello sbagliato. `data-tour` ne identifica uno solo, ed e' lo stesso
+  // che usa la spec e2e: quando due strade portano allo stesso comando, il collaudo prende
+  // quella senza ambiguita'.
+  await page.locator('[data-tour="nuova-azienda"]').click();
   await page.fill("#na-nome", "Cliente Condiviso S.r.l.");
   await page.click('button[type="submit"]:has-text("Crea azienda")');
   await page.waitForTimeout(3000);
-  await page.getByRole("link", { name: /Cliente Condiviso/i }).first().click();
-  await page.waitForURL(/\/aziende\/[^/]+$/, { timeout: 20_000 });
-  await page.waitForLoadState("networkidle");
+  // Al fascicolo si va per indirizzo, non cercando un collegamento per nome: la scheda del
+  // portafoglio e' cliccabile tutta, e il suo nome accessibile non e' la denominazione.
+  // Era QUESTO il clic che andava in timeout — non il primo, come ho creduto per cinque giri.
+  const [az] = await sql`select id from company where nome = 'Cliente Condiviso S.r.l.' order by created_at desc limit 1`;
+  if (!az) throw new Error("l'azienda non e' stata creata");
+  await page.goto(`${BASE}/aziende/${az.id}`, { waitUntil: "networkidle" });
 });
 
 await check("il pannello genera un collegamento e lo mostra una volta sola", async () => {
@@ -74,6 +100,9 @@ await check("il pannello genera un collegamento e lo mostra una volta sola", asy
 });
 
 await check("il collegamento compare nell'elenco come attivo, e mai aperto", async () => {
+  // L'elenco lo rende il server: `router.refresh()` non e' istantaneo, e leggerlo subito
+  // significa leggere la pagina di prima. Si ricarica, come farebbe chi torna a guardare.
+  await page.reload({ waitUntil: "networkidle" });
   const t = await page.locator("main").innerText();
   if (!t.includes("amministrazione")) throw new Error("la nota non compare");
   if (!/mai aperto/i.test(t)) throw new Error("il contatore non parte da zero");
