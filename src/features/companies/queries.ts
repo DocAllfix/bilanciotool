@@ -103,6 +103,8 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.attestato.publish": "Attestato del fornitore pubblicato",
   "documento.attestato.pdf": "Attestato scaricato in PDF",
   "documento.soa.publish": "Dichiarazione di Applicabilità pubblicata",
+  "condivisione.create": "Collegamento per il cliente generato",
+  "condivisione.revoke": "Collegamento per il cliente disattivato",
   "documento.soa.pdf": "Dichiarazione scaricata in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",

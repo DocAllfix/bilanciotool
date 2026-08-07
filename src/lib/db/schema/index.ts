@@ -10,3 +10,4 @@ export * from "./soa";
 export * from "./documents";
 export * from "./billing";
 export * from "./security";
+export * from "./condivisione";
