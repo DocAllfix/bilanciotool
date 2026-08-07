@@ -214,7 +214,20 @@ Nuovo modello commerciale del committente: quattro livelli con capacità diverse
 
 Gate: typecheck · build · **418 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `visual-check-impostazioni.mjs` 14 · `visual-check-condivisione.mjs` 9 · `visual-check-marchio.mjs` 7 (pubblica, spegne l'estensione, ricarica **lo stesso** documento) · console pulita.
 
-**Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, F14 hardening, F15 pre-lancio. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
+**F14 parziale + F15 parziale (2026-08-07) — freno, archivio, CI, Guida, PRE-LAUNCH**
+
+- **Limite di frequenza** sulle rotte di autenticazione, contatore **su database** (tabella `rate_limit`, migrazione `0014`, passthrough come le altre tabelle di Better Auth). Su Vercel ogni istanza ha la propria memoria: un contatore che si azzera a ogni avvio a freddo non ferma nessuno, basta che i tentativi cadano su istanze diverse. Dieci accessi sbagliati in cinque minuti, dieci registrazioni all'ora — il freno serve contro le migliaia, non contro la decina, e i nostri stessi collaudi registrano un utente ciascuno dallo stesso indirizzo.
+- **La rotta PDF non riavvia Chromium** se il file di quella versione esiste già. Non è una cache: lo snapshot è immutabile per costruzione, quindi il PDF non può cambiare. **Meglio togliere il costo che limitare la frequenza con cui lo si paga.** Conseguenza accettata: cambiando l'impaginazione i PDF archiviati restano come sono, ed è coerente — quello consegnato al cliente è quello.
+- **CI** (`.github/workflows/ci.yml`): typecheck e test. **Non** il build (pretende sei variabili di produzione: o si espone il database a ogni workflow, decisione del committente, o si inventano valori finti e il verde non significa niente; il build ha già Vercel come cancello). **Non** il lint (26 errori preesistenti: un cancello che nasce rosso diventa rumore da ignorare).
+- **`npm run qa`** elenca e lancia i collaudi leggendo la cartella — un controllo nuovo si presenta da solo. Solo i collaudi: `seed.mjs` scrive davvero.
+- **Pagina Guida** vera, generata dai registri dei moduli e dei documenti (un modulo nuovo compare da solo e non può dichiarare una norma diversa da quella che il prodotto usa), più il comando che rimette i tour da rivedere.
+- **`PRE-LAUNCH.md`**: ogni voce ha un **modo di verificarla**, e i debiti aperti sono elencati in fondo invece di essere taciuti.
+
+**Regola nata qui:** **un `next start` non rilegge il sorgente.** Carica il build all'avvio: un server acceso prima delle modifiche serve il codice di ieri per sempre, senza dirlo. Tre collaudi rossi e una caccia alla cache inesistente. E `pkill` non esiste in questa shell: fermare il processo va **verificato**, non presunto. Prima di dare per rotto il codice, guardare da quando gira ciò che si sta collaudando.
+
+Gate: typecheck · build · **418 test** anche con `RLS_FORCE_ROLE=app_rls` · `qa -- limiti` 6 (su risposte vere) · `qa -- pdf-archivio` 5 · `qa -- guida` 7 · `qa -- marchio` 7 · console pulita.
+
+**Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, poi **CSP per ultima** — va fatta dopo Stripe, altrimenti la si riapre subito per `js.stripe.com`. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
 
