@@ -227,6 +227,21 @@ Gate: typecheck · build · **418 test** verdi anche con `RLS_FORCE_ROLE=app_rls
 
 Gate: typecheck · build · **418 test** anche con `RLS_FORCE_ROLE=app_rls` · `qa -- limiti` 6 (su risposte vere) · `qa -- pdf-archivio` 5 · `qa -- guida` 7 · `qa -- marchio` 7 · console pulita.
 
+**Guasto in produzione e correzione (2026-08-10) — il primo articolo del blog dava 500**
+
+Il consulente SEO pubblica il primo articolo: la sua pagina risponde **500** a chiunque la apra, mentre l'indice `/blog` la mostra senza problemi. La causa non era nel blog: **`SiteHeader` chiamava `getSessionOrNull()`**, cioè `headers()`, per scegliere fra «Accedi» e «Vai al portafoglio». Quella lettura impediva a Next di generare come **statica** ogni pagina che monta l'intestazione. Finché il blog era vuoto nessuno se n'è accorto; il giorno del primo articolo la sua pagina — che nessun build conosceva — andava generata su richiesta, e in quel contesto leggere gli header è vietato (`DYNAMIC_SERVER_USAGE`).
+
+Effetto collaterale scoperto strada facendo: **nemmeno la home era statica**. Veniva ricostruita a ogni visita solo per decidere l'etichetta di un pulsante. Ora la sessione la chiede il browser (`src/components/landing/azioni-accesso.tsx`) e sono statiche home, indice, articoli, autori e categorie.
+
+**Regole nate qui:**
+- **La prima spiegazione plausibile va messa alla prova, non applicata.** Avevo incolpato `draftMode()`: le prove l'hanno smentita in due colpi — uno slug inesistente rispondeva 404, e la pagina autore, che `draftMode` non lo usa, falliva lo stesso. `draftMode()` durante il prerender è innocuo, verificato sul campo.
+- **La diagnosi si chiude con un esperimento a variabile singola.** Build senza l'articolo nei parametri e con l'intestazione → 500; stesso build, tolta solo l'intestazione → 200. Nient'altro dimostra la causa.
+- **Un elenco non prova che le pagine si aprano.** Sitemap e indice leggono i metadati dal CMS: l'articolo si vedeva benissimo mentre la sua pagina era rotta, e tutti i controlli erano verdi. Il giro quotidiano ora **bussa a ogni porta** (`pagine-articoli`, `pagine-collegate`).
+- **Nessuna pagina pubblica deve leggere la richiesta.** `pagine-statiche-pure.test.ts` **segue gli import** a partire da ogni pagina marketing: il difetto stava tre livelli sotto, in un componente condiviso, e un controllo sui soli file delle pagine non l'avrebbe mai visto.
+- **Un redeploy avrebbe fatto sparire il sintomo senza risolvere niente**: l'articolo sarebbe entrato nel build, e il guasto sarebbe tornato al primo articolo pubblicato dopo il rilascio successivo — cioè sempre.
+
+Gate: **424 test** · verifica-blog **13 su 13 in produzione** (con i due controlli nuovi) · intestazione provata anonima e autenticata, zero errori di console.
+
 **Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, poi **CSP per ultima** — va fatta dopo Stripe, altrimenti la si riapre subito per `js.stripe.com`. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
