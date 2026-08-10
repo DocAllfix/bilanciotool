@@ -1,7 +1,7 @@
 import type Stripe from "stripe";
 import { db } from "@/lib/db";
-import { orgEntitlement, stripeCustomer, stripeSubscription } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { orgEntitlement, stripeCustomer, stripeSubscription, member, user } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
 import { PIANI, ESTENSIONI, CHIAVI_PIANO, type PianoKey } from "@/lib/prezzi";
@@ -96,6 +96,15 @@ export async function organizzazioneDelCliente(customerId: string): Promise<stri
 export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string): Promise<void> {
   const capacita = capacitaDaAbbonamento(sub);
   const stato = statoDaStripe(sub.status);
+  // Lo stato PRIMA di scrivere: le email si mandano al CAMBIO, non a ogni evento.
+  // Stripe ne manda diversi per lo stesso abbonamento — creato, aggiornato, fattura
+  // pagata — e un benvenuto per ciascuno diventa posta da filtrare.
+  const [prima] = await db
+    .select({ status: orgEntitlement.status })
+    .from(orgEntitlement)
+    .where(eq(orgEntitlement.organizationId, orgId))
+    .limit(1);
+  const statoPrecedente = prima?.status ?? null;
   const fineperiodo = sub.items.data[0]?.current_period_end;
   const rinnovoIl = fineperiodo ? new Date(fineperiodo * 1000) : null;
 
@@ -142,4 +151,55 @@ export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string
       dettagli: { stato, statoStripe: sub.status, ...capacita },
     });
   });
+
+  await avvisaSeCambiato(orgId, statoPrecedente, stato, capacita.piano);
+}
+
+/**
+ * Le email che dipendono dal cambio di stato.
+ *
+ * Fuori dalla transazione e con gli errori ingoiati: un guasto della posta non deve
+ * mai far fallire il provisioning: fra un cliente senza email di benvenuto e un
+ * cliente senza abbonamento non c'è partita.
+ */
+async function avvisaSeCambiato(
+  orgId: string,
+  prima: string | null,
+  adesso: string,
+  piano: PianoKey | null,
+): Promise<void> {
+  if (prima === adesso) return;
+  try {
+    const destinatario = await titolareDelloStudio(orgId);
+    if (!destinatario) return;
+    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const email = await import("@/lib/email");
+
+    if (adesso === "active" && piano) {
+      const p = PIANI[piano];
+      await email.sendBenvenutoEmail(destinatario, {
+        piano: p.nome,
+        aziende: p.aziende,
+        accessi: p.accessi,
+        url: `${base}/dashboard`,
+      });
+    } else if (adesso === "past_due") {
+      await email.sendPagamentoFallitoEmail(destinatario, {
+        url: `${base}/impostazioni/abbonamento`,
+      });
+    }
+  } catch (e) {
+    console.error("[billing] avviso non inviato per", orgId, e);
+  }
+}
+
+/** L'email di chi ha sottoscritto: il titolare dello studio, non l'ultimo che ha scritto. */
+export async function titolareDelloStudio(orgId: string): Promise<string | null> {
+  const r = await db
+    .select({ email: user.email })
+    .from(member)
+    .innerJoin(user, eq(user.id, member.userId))
+    .where(and(eq(member.organizationId, orgId), eq(member.role, "owner")))
+    .limit(1);
+  return r[0]?.email ?? null;
 }

@@ -135,3 +135,77 @@ export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean
     }),
   );
 }
+
+/**
+ * Benvenuto, subito dopo che l'account si è sbloccato.
+ *
+ * Il momento in cui nasce il rimpianto: si è appena speso qualche migliaio di euro e
+ * si vorrebbe sapere cosa è cambiato. Dice quello, e indica un primo passo solo.
+ */
+export async function sendBenvenutoEmail(
+  to: string,
+  d: { piano: string; aziende: number; accessi: number; url: string },
+) {
+  return send(
+    to,
+    `Il tuo abbonamento è attivo — piano ${d.piano}`,
+    renderEmail({
+      previewText: `Piano ${d.piano} attivo: ${d.aziende} aziende, ${d.accessi} accessi.`,
+      heading: "Il tuo abbonamento è attivo",
+      body: [
+        `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire fino a <b>${d.aziende} aziende</b> e invitare <b>${d.accessi} persone</b> nello studio.`,
+        "Pubblicare documenti, generare i PDF e creare aziende non è più bloccato.",
+        "La ricevuta del pagamento ti arriva separatamente da Stripe.",
+      ],
+      button: { label: "Crea la prima azienda", url: d.url },
+    }),
+  );
+}
+
+/**
+ * Pagamento non riuscito.
+ *
+ * È l'email che salva l'abbonamento: senza, la carta scade, l'account si blocca, e il
+ * cliente lo scopre il giorno che gli serve — di solito con una scadenza addosso.
+ */
+export async function sendPagamentoFallitoEmail(to: string, d: { url: string }) {
+  return send(
+    to,
+    "Non siamo riusciti a rinnovare il tuo abbonamento",
+    renderEmail({
+      previewText: "Il pagamento non è andato a buon fine: aggiorna il metodo di pagamento.",
+      heading: "Il pagamento non è andato a buon fine",
+      body: [
+        "Non siamo riusciti ad addebitare il rinnovo. Succede spesso per una carta scaduta o per un massimale.",
+        "Il tuo account continua a funzionare, ma se il pagamento non va a buon fine nei prossimi giorni passerà in sola lettura: i dati restano tutti, e i documenti pubblicati restano scaricabili.",
+      ],
+      button: { label: "Aggiorna il metodo di pagamento", url: d.url },
+    }),
+  );
+}
+
+/**
+ * Preavviso di rinnovo, una settimana prima.
+ *
+ * Ricordare a qualcuno che sta per pagare sembra controintuitivo. È invece ciò che
+ * evita la contestazione dell'addebito e il «non me l'aspettavo»: su un rinnovo
+ * annuale di quattro cifre, la differenza è sostanziale.
+ */
+export async function sendPreavvisoRinnovoEmail(
+  to: string,
+  d: { importo: string; quando: string; url: string },
+) {
+  return send(
+    to,
+    `Il tuo abbonamento si rinnova il ${d.quando}`,
+    renderEmail({
+      previewText: `Rinnovo automatico di ${d.importo} il ${d.quando}.`,
+      heading: "Il tuo abbonamento si rinnova fra una settimana",
+      body: [
+        `Il <b>${esc(d.quando)}</b> rinnoveremo automaticamente il tuo abbonamento, con un addebito di <b>${esc(d.importo)}</b>.`,
+        "Non devi fare niente. Se vuoi cambiare piano, aggiornare la carta o non rinnovare, puoi farlo da qui fino al giorno prima.",
+      ],
+      button: { label: "Vedi il tuo abbonamento", url: d.url },
+    }),
+  );
+}

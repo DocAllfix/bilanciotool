@@ -6,6 +6,10 @@
     {
       "path": "/api/cron/verifica-blog",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/rinnovi",
+      "schedule": "0 7 * * *"
     }
   ]
 }
