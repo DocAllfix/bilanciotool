@@ -56,7 +56,9 @@ await check("si arriva alla pagina di pagamento", async () => {
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Attiva/ }).first().click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60_000 });
-  await page.waitForLoadState("networkidle");
+  // Niente `networkidle`: la pagina di Stripe tiene connessioni aperte e quel silenzio
+  // non arriva mai. Basta che ci si sia arrivati.
+  await page.waitForTimeout(2000);
 });
 
 await check("si paga davvero, con una carta di prova", async () => {
