@@ -3,7 +3,7 @@ import { withTenant } from "@/lib/db/tenant";
 import {
   checklistRequirement, company, documentSnapshot, ghgCategory, ghgSourceType, ghgTarget,
   kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
-  orgEntitlement, reportProject,
+  orgEntitlement, reportProject, user,
 } from "@/lib/db/schema";
 import { marchioDaCongelare } from "./marchio";
 import { logAudit } from "@/lib/audit";
@@ -19,11 +19,11 @@ import { getWizardData as getEnergyWizardData } from "@/features/energy/queries"
 import { listChapters as listEnergyChapters } from "@/features/energy/narrative";
 import { getSupplierData } from "@/features/supplier/queries";
 import { getSoaData } from "@/features/soa/queries";
-import { SENZA_ESERCIZIO } from "./tipi";
+import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 // PUBBLICAZIONE: l'unico punto del sistema in cui i valori derivati vengono
@@ -345,7 +345,56 @@ async function salvaSnapshot(
       dettagli: { anno, versione },
     });
   });
+
+  await festeggiaIlPrimoDocumento(userId, orgId, companyId, tipo, id);
   return id;
+}
+
+/**
+ * Avvisa lo studio quando pubblica il suo PRIMO documento.
+ *
+ * Non tiene stato: se subito dopo l'inserimento i documenti dell'organizzazione sono
+ * esattamente uno, quello era il primo — una condizione che non potrà mai ripresentarsi.
+ * Una tabella di supporto per ricordare «email già mandata» sarebbe un dato in più da
+ * mantenere per sapere ciò che i dati dicono già.
+ *
+ * **Non può far fallire una pubblicazione.** Sta fuori dalla transazione e ingoia i
+ * propri errori: un guasto della posta non deve mai togliere a un consulente il
+ * documento che ha appena prodotto.
+ */
+async function festeggiaIlPrimoDocumento(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: TipoDocumento,
+  snapshotId: string,
+): Promise<void> {
+  try {
+    const [{ n } = { n: 0 }] = await withTenant({ userId, orgId }, (tx) =>
+      tx
+        .select({ n: sql<number>`count(*)::int` })
+        .from(documentSnapshot)
+        .where(eq(documentSnapshot.organizationId, orgId)),
+    );
+    if (n !== 1) return;
+
+    const [persona] = await db.select({ email: user.email }).from(user).where(eq(user.id, userId));
+    if (!persona?.email) return;
+    const az = await withTenant({ userId, orgId }, (tx) =>
+      tx.select({ nome: company.nome }).from(company).where(eq(company.id, companyId)),
+    );
+
+    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const { sendPrimoDocumentoEmail } = await import("@/lib/email");
+    await sendPrimoDocumentoEmail(persona.email, {
+      nomeDocumento: DOCUMENTI[tipo].nome,
+      azienda: az[0]?.nome ?? "la tua azienda",
+      url: `${base}/documento/${snapshotId}`,
+      urlAzienda: `${base}/aziende/${companyId}`,
+    });
+  } catch (e) {
+    console.error("[email] primo documento non inviata per", orgId, e);
+  }
 }
 
 export async function getSnapshot(userId: string, orgId: string, snapshotId: string) {

@@ -79,6 +79,37 @@ export async function sendOrgInvitationEmail(to: string, orgName: string, url: s
 }
 
 /**
+ * Il primo documento pubblicato dallo studio.
+ *
+ * È il momento in cui il prodotto ha mantenuto la promessa: prima di allora si è
+ * compilato, da qui in poi si consegna. L'occasione serve a far scoprire la funzione
+ * che nessuno cerca da solo — il collegamento a scadenza con cui l'azienda scarica i
+ * propri documenti senza account.
+ *
+ * Si manda UNA volta per studio, non a ogni pubblicazione: un applauso ripetuto smette
+ * di essere un applauso e diventa posta da filtrare.
+ */
+export async function sendPrimoDocumentoEmail(
+  to: string,
+  dati: { nomeDocumento: string; azienda: string; url: string; urlAzienda: string },
+) {
+  return send(
+    to,
+    `Il tuo primo documento è pronto — ${dati.azienda}`,
+    renderEmail({
+      previewText: `${dati.nomeDocumento} di ${dati.azienda} è pubblicato.`,
+      heading: "Il primo documento è pubblicato",
+      body: [
+        `Hai pubblicato <b>${esc(dati.nomeDocumento)}</b> per <b>${esc(dati.azienda)}</b>.`,
+        "I dati e i calcoli di questa versione sono congelati: le modifiche successive al percorso non la toccano più, e resta la copia che hai consegnato.",
+        `Se vuoi che l'azienda lo scarichi da sé, dal suo fascicolo puoi generare un <b>collegamento a scadenza</b>: si apre senza registrarsi e senza password, e puoi disattivarlo quando vuoi. <a href="${esc(dati.urlAzienda)}">Vai al fascicolo di ${esc(dati.azienda)}</a>`,
+      ],
+      button: { label: "Apri il documento", url: dati.url },
+    }),
+  );
+}
+
+/**
  * Allarme sui controlli del blog.
  *
  * Va a chi puo' rimediare, non al consulente: se un canonical e' finito sul CMS o la
