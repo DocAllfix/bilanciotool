@@ -114,7 +114,21 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
       return esito;
     }
 
-    case "customer.subscription.created":
+    case "customer.subscription.created": {
+      const esito = await riallinea(evento.data.object.id, "abbonamento creato");
+      // Le due fasi si impostano su OGNI abbonamento nuovo, non solo su quelli nati dal
+      // checkout: un abbonamento creato a mano — per un Enterprise, o per rimediare a un
+      // pagamento fuori flusso — resterebbe altrimenti al prezzo del primo anno per
+      // sempre, e il cliente pagherebbe il rinnovo piu' caro del dovuto. Trovato dal
+      // collaudo, che paga via API e non dal modulo.
+      if (esito.fatto) {
+        const sub = await stripe().subscriptions.retrieve(evento.data.object.id);
+        const piano = sub.metadata?.piano as PianoKey | undefined;
+        if (piano && PIANI[piano]) await creaPianoDueFasi(sub, piano);
+      }
+      return esito;
+    }
+
     case "customer.subscription.updated":
     case "customer.subscription.deleted":
       return riallinea(evento.data.object.id, `abbonamento ${evento.type.split(".").pop()}`);
