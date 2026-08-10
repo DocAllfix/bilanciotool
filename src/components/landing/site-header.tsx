@@ -1,18 +1,21 @@
 import Link from "next/link";
-import { getSessionOrNull } from "@/features/auth/guards";
-import { Button } from "@/components/ui/button";
 import { LogoOrizzontale } from "@/components/brand/logo";
+import { AzioniAccesso } from "./azioni-accesso";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
 
-// Header sottile e sticky. Auth-aware: chi è già dentro va alla dashboard.
+// Header sottile e sticky. Auth-aware, ma la sessione la chiede il BROWSER: vedi
+// `azioni-accesso.tsx`. Questo componente non deve MAI leggere la richiesta — niente
+// `headers()`, niente `cookies()`, niente sessione lato server — perché compare su tutte
+// le pagine pubbliche, e basta una lettura qui per impedirne la generazione statica.
+// È già costato un 500 su ogni articolo del blog; `pagine-statiche-pure.test.ts` ora lo
+// impedisce.
 //
 // LE ÀNCORE PORTANO IL PERCORSO, non solo il frammento. Questa intestazione compare anche
 // sul blog e sulle pagine legali, dove le sezioni `percorsi`, `metodo` e `faq` non esistono:
 // con il solo `#percorsi` quelle tre voci erano collegamenti morti fuori dalla landing, e un
 // menu che non fa niente si legge come un sito rotto. Con `/#percorsi` funzionano ovunque, e
 // sulla landing il browser continua a limitarsi a scorrere, senza ricaricare.
-export async function SiteHeader() {
-  const session = await getSessionOrNull();
+export function SiteHeader() {
   const conBlog = blogVisibileAiMotori();
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
@@ -34,20 +37,7 @@ export async function SiteHeader() {
           )}
         </nav>
         <div className="ml-auto flex items-center gap-2">
-          {session ? (
-            <Button size="sm" asChild>
-              <Link href="/dashboard">Vai al portafoglio</Link>
-            </Button>
-          ) : (
-            <>
-              <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
-                <Link href="/login">Accedi</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/registrati">Prova la demo guidata</Link>
-              </Button>
-            </>
-          )}
+          <AzioniAccesso />
         </div>
       </div>
     </header>

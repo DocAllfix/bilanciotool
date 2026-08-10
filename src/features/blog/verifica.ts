@@ -200,6 +200,27 @@ export function difettiDellaPagina(
  * mesi di lavoro editoriale che nessuno trova; comparire in sitemap prima dell'apertura
  * significa mandare Google esattamente dove il `noindex` lo respinge.
  */
+/**
+ * Il giudizio su un gruppo di pagine che si sono provate ad aprire.
+ *
+ * Funzione pura e separata dalla rete perché è la parte che deve poter essere messa in
+ * rosso a comando: il resto del controllo è una manciata di `fetch`, e un giudizio che
+ * non si può provare è un giudizio di cui non ci si può fidare.
+ */
+export function esitoPagine(args: {
+  rotte: string[];
+  provate: number;
+  totale: number;
+  cosa: string;
+  seVuoto: string;
+}): { ok: boolean; dettaglio: string } {
+  const { rotte, provate, totale, cosa, seVuoto } = args;
+  if (provate === 0) return { ok: true, dettaglio: seVuoto };
+  if (rotte.length) return { ok: false, dettaglio: `${cosa} che NON si aprono: ${rotte.join("; ")}` };
+  const parziale = totale > provate ? ` (provate le prime ${provate} di ${totale})` : "";
+  return { ok: true, dettaglio: `${provate} ${cosa} si aprono${parziale}` };
+}
+
 export function giudizioInterruttore(args: {
   visibile: boolean;
   indiceNoindex: boolean;
@@ -296,6 +317,56 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
   // Nessun controllo separato sul numero di articoli: un blog vuoto e' uno stato legittimo
   // (i primi giorni), e un controllo che non puo' mai diventare rosso non e' un controllo.
   // Quanti ce ne sono lo dice gia' il dettaglio dell'interruttore.
+
+  // --- le pagine degli articoli devono APRIRSI -------------------------------------------
+  //
+  // Nato da un guasto vero. L'indice e la sitemap si accontentano dei metadati letti dal
+  // CMS, e li' un articolo si vede benissimo anche quando la sua pagina risponde 500 a
+  // chiunque la apra: e' esattamente quello che e' successo il giorno del primo articolo
+  // pubblicato, e i controlli erano tutti verdi mentre il lettore vedeva una pagina rotta.
+  // Da qui in poi si bussa a ogni porta invece di fidarsi dell'elenco.
+  const TETTO = 25;
+  const daProvare = urlArticoli.slice(0, TETTO);
+  const rotte: string[] = [];
+  for (const url of daProvare) {
+    const r = await prendi(url);
+    if (r?.stato !== 200) rotte.push(`${url} -> ${r?.stato ?? "nessuna risposta"}`);
+  }
+  const gArt = esitoPagine({
+    rotte,
+    provate: daProvare.length,
+    totale: urlArticoli.length,
+    cosa: "pagine di articolo",
+    seVuoto: "nessun articolo pubblicato da provare",
+  });
+  aggiungi("pagine-articoli", gArt.ok, gArt.dettaglio);
+
+  // --- e cosi' le pagine collegate dall'articolo (categoria, tag, autore) ----------------
+  // Sono generate dallo stesso meccanismo delle pagine articolo: quando si rompe quello,
+  // si rompono insieme. Provarne una per tipo basta a scoprirlo.
+  if (daProvare[0]) {
+    const primo = await prendi(daProvare[0]);
+    const collegate = [
+      ...new Set(
+        [...(primo?.testo ?? "").matchAll(/href="([^"]*\/blog\/(?:categoria|tag|autore)\/[^"]+)"/g)].map((m) =>
+          m[1].startsWith("http") ? m[1] : `${sito}${m[1]}`,
+        ),
+      ),
+    ].slice(0, 6);
+    const rotteColl: string[] = [];
+    for (const url of collegate) {
+      const r = await prendi(url);
+      if (r?.stato !== 200) rotteColl.push(`${url} -> ${r?.stato ?? "nessuna risposta"}`);
+    }
+    const gColl = esitoPagine({
+      rotte: rotteColl,
+      provate: collegate.length,
+      totale: collegate.length,
+      cosa: "pagine collegate (categoria, tag, autore)",
+      seVuoto: "l'articolo non rimanda a categorie, tag o pagine autore",
+    });
+    aggiungi("pagine-collegate", gColl.ok, gColl.dettaglio);
+  }
 
   // --- i vecchi URL devono rispondere 410, mai 404 ---------------------------------------
   const sbagliati: string[] = [];

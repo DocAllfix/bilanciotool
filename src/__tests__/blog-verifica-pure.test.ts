@@ -21,6 +21,7 @@ import {
   immaginiDellaPagina,
   autoriCitati,
   riepilogo,
+  esitoPagine,
 } from "@/features/blog/verifica";
 
 const SITO = "https://evalisdeck.it";
@@ -282,5 +283,42 @@ describe("riepilogo", () => {
   it("scrive una riga per controllo, leggibile in una mail", () => {
     const { righe } = riepilogo([{ nome: "sitemap", ok: false, dettaglio: "non risponde" }]);
     expect(righe).toEqual(["ROSSO sitemap: non risponde"]);
+  });
+});
+
+describe("esitoPagine — bussare a ogni porta", () => {
+  const base = { cosa: "pagine di articolo", seVuoto: "nessun articolo da provare" };
+
+  it("e' rosso quando una pagina non si apre, e dice quale", () => {
+    // E' il caso vero del 2026-08-10: l'articolo era nell'indice e nella sitemap, e
+    // rispondeva 500 a chiunque lo aprisse. Tutti gli altri controlli erano verdi.
+    const g = esitoPagine({
+      ...base,
+      rotte: ["https://evalisdeck.it/blog/rendicontazione-sostenibilita-pmi -> 500"],
+      provate: 1,
+      totale: 1,
+    });
+    expect(g.ok).toBe(false);
+    expect(g.dettaglio).toContain("500");
+    expect(g.dettaglio).toContain("rendicontazione-sostenibilita-pmi");
+  });
+
+  it("e' verde quando si aprono tutte", () => {
+    const g = esitoPagine({ ...base, rotte: [], provate: 3, totale: 3 });
+    expect(g.ok).toBe(true);
+    expect(g.dettaglio).toBe("3 pagine di articolo si aprono");
+  });
+
+  it("dichiara quando ne ha provate solo una parte", () => {
+    const g = esitoPagine({ ...base, rotte: [], provate: 25, totale: 80 });
+    expect(g.dettaglio).toContain("le prime 25 di 80");
+  });
+
+  it("un blog ancora vuoto non e' un guasto", () => {
+    // Stato legittimo dei primi giorni: un controllo che qui diventasse rosso
+    // manderebbe un allarme ogni mattina, e si smetterebbe di leggerlo.
+    const g = esitoPagine({ ...base, rotte: [], provate: 0, totale: 0 });
+    expect(g.ok).toBe(true);
+    expect(g.dettaglio).toBe("nessun articolo da provare");
   });
 });
