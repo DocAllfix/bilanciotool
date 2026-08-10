@@ -37,6 +37,7 @@ export type DocumentoRecente = {
 export type VoceAttivita = { etichetta: string; companyNome: string | null; quando: Date };
 
 export const ETICHETTE_AUDIT: Record<string, string> = {
+  "billing.checkout.apri": "Pagamento avviato",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",

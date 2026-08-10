@@ -4,6 +4,7 @@ import { getQuadroAbbonamento } from "@/features/studio/queries";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { PulsanteAcquisto } from "@/components/impostazioni/pulsante-acquisto";
 import {
   PIANI, ESTENSIONI, CHIAVI_PIANO, euro,
   prezzoDiVendita, prezzoEstensione, lancioAttivo, FINE_LANCIO,
@@ -135,6 +136,19 @@ export default async function AbbonamentoPage() {
                       <li>{p.aziende} aziende</li>
                       <li>{p.accessi} accessi</li>
                     </ul>
+                    {/* Il piano gia' attivo non si ricompra: mostrarlo acquistabile
+                        invita a pagare due volte la stessa cosa. */}
+                    <div className="mt-4">
+                      {a.piano === p.key ? (
+                        <p className="text-center text-[12.5px] font-medium text-primary">Il tuo piano</p>
+                      ) : (
+                        <PulsanteAcquisto
+                          piano={p.key}
+                          etichetta={a.piano ? "Passa a questo" : "Attiva"}
+                          variante={a.piano ? "outline" : "default"}
+                        />
+                      )}
+                    </div>
                   </li>
                 );
               })}
