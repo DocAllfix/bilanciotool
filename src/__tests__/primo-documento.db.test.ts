@@ -67,7 +67,7 @@ describe.skipIf(!url)("email del primo documento", () => {
 
     // Il destinatario e il contenuto: l'email deve dire quale documento e quale azienda,
     // altrimenti chi segue dieci clienti non sa a cosa si riferisce.
-    const [destinatario, dati] = inviata.mock.calls[0] as [string, Record<string, string>];
+    const [destinatario, dati] = inviata.mock.calls[0] as unknown as [string, Record<string, string>];
     expect(destinatario).toBe(`primo-${RUN}@example.com`);
     expect(dati.azienda).toBe("Prima S.r.l.");
     expect(dati.nomeDocumento).toContain("GHG");

@@ -18,7 +18,7 @@
 
 import Stripe from "stripe";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, euro } from "../src/lib/prezzi.ts";
+import { PIANI, ESTENSIONI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
 
 const APPLICA = process.argv.includes("--applica");
 const chiave = process.env.STRIPE_SECRET_KEY;
@@ -91,8 +91,13 @@ for (const piano of Object.values(PIANI)) {
     continue;
   }
   const prod = await prodotto(`piano_${piano.key}`, `EvalisDeck — ${piano.nome}`, piano.descrizione);
+  // Il LISTINO resta creato anche durante la promozione: e' il prezzo che si mostra
+  // barrato e quello che si pratichera' alla scadenza. Un barrato che non corrisponde a
+  // nessun prezzo reale sarebbe un numero inventato per fare scena.
   await prezzo(prod.id, piano.lookupAnno1, piano.primoAnno, true);
   await prezzo(prod.id, piano.lookupRinnovo, piano.rinnovo, true);
+  await prezzo(prod.id, piano.lookupAnno1Lancio, piano.primoAnnoLancio, true);
+  await prezzo(prod.id, piano.lookupRinnovoLancio, piano.rinnovoLancio, true);
 }
 
 console.log("\nEstensioni");
@@ -100,7 +105,9 @@ for (const [nome, e] of Object.entries(ESTENSIONI)) {
   const importo = e.prezzo ?? e.min;
   const prod = await prodotto(`estensione_${nome}`, `EvalisDeck — ${etichetta(nome)}`, descrizione(nome));
   // L'avvio assistito è una tantum: tutto il resto è annuale come l'abbonamento.
-  await prezzo(prod.id, e.lookup, importo, nome !== "avvioAssistito");
+  const ricorrente = nome !== "avvioAssistito";
+  await prezzo(prod.id, e.lookup, importo, ricorrente);
+  await prezzo(prod.id, e.lookupLancio, e.prezzoLancio ?? e.minLancio, ricorrente);
 }
 
 function etichetta(k) {

@@ -31,9 +31,15 @@ export type Piano = {
   rinnovo: number;
   /** Vero solo per Enterprise: non si vende da solo, si tratta. */
   trattativa?: boolean;
+  /** Centesimi. Prezzo di lancio: quello che si paga davvero finché la promozione dura.
+   *  Il campo `primoAnno` resta il LISTINO, ed è il numero che si mostra barrato. */
+  primoAnnoLancio?: number;
+  rinnovoLancio?: number;
   /** Chiavi Stripe. I prezzi si risolvono per queste, mai per id in variabile d'ambiente. */
   lookupAnno1?: string;
   lookupRinnovo?: string;
+  lookupAnno1Lancio?: string;
+  lookupRinnovoLancio?: string;
 };
 
 export const PIANI: Record<PianoKey, Piano> = {
@@ -45,8 +51,12 @@ export const PIANI: Record<PianoKey, Piano> = {
     accessi: 2,
     primoAnno: 120000,
     rinnovo: 90000,
+    primoAnnoLancio: 60000,
+    rinnovoLancio: 45000,
     lookupAnno1: "evalisdeck_professional_anno1_v1",
     lookupRinnovo: "evalisdeck_professional_rinnovo_v1",
+    lookupAnno1Lancio: "evalisdeck_professional_anno1_lancio_v1",
+    lookupRinnovoLancio: "evalisdeck_professional_rinnovo_lancio_v1",
   },
   studio: {
     key: "studio",
@@ -56,8 +66,12 @@ export const PIANI: Record<PianoKey, Piano> = {
     accessi: 5,
     primoAnno: 290000,
     rinnovo: 220000,
+    primoAnnoLancio: 145000,
+    rinnovoLancio: 110000,
     lookupAnno1: "evalisdeck_studio_anno1_v1",
     lookupRinnovo: "evalisdeck_studio_rinnovo_v1",
+    lookupAnno1Lancio: "evalisdeck_studio_anno1_lancio_v1",
+    lookupRinnovoLancio: "evalisdeck_studio_rinnovo_lancio_v1",
   },
   studio_plus: {
     key: "studio_plus",
@@ -67,8 +81,12 @@ export const PIANI: Record<PianoKey, Piano> = {
     accessi: 10,
     primoAnno: 540000,
     rinnovo: 420000,
+    primoAnnoLancio: 270000,
+    rinnovoLancio: 210000,
     lookupAnno1: "evalisdeck_studio_plus_anno1_v1",
     lookupRinnovo: "evalisdeck_studio_plus_rinnovo_v1",
+    lookupAnno1Lancio: "evalisdeck_studio_plus_anno1_lancio_v1",
+    lookupRinnovoLancio: "evalisdeck_studio_plus_rinnovo_lancio_v1",
   },
   enterprise: {
     key: "enterprise",
@@ -88,13 +106,13 @@ export const PIANI: Record<PianoKey, Piano> = {
 export const ESTENSIONI = {
   /** Unità di VENDITA: un blocco vale cinque aziende. In `aziendeExtra` finiscono le
    *  aziende (cinque per blocco), non i blocchi. */
-  bloccoAziende: { aziende: 5, prezzo: 90000, lookup: "evalisdeck_blocco_aziende_v1" },
+  bloccoAziende: { aziende: 5, prezzo: 90000, prezzoLancio: 45000, lookup: "evalisdeck_blocco_aziende_v1", lookupLancio: "evalisdeck_blocco_aziende_lancio_v1" },
   /** Un accesso in più per lo studio. */
-  accesso: { prezzo: 15000, lookup: "evalisdeck_accesso_v1" },
+  accesso: { prezzo: 15000, prezzoLancio: 7500, lookup: "evalisdeck_accesso_v1", lookupLancio: "evalisdeck_accesso_lancio_v1" },
   /** I documenti escono col marchio dello studio invece del nostro. */
-  whiteLabel: { prezzo: 60000, lookup: "evalisdeck_white_label_v1" },
+  whiteLabel: { prezzo: 60000, prezzoLancio: 30000, lookup: "evalisdeck_white_label_v1", lookupLancio: "evalisdeck_white_label_lancio_v1" },
   /** Formazione e configurazione iniziale: una tantum, importo concordato entro la forbice. */
-  avvioAssistito: { min: 50000, max: 80000, lookup: "evalisdeck_avvio_assistito_v1" },
+  avvioAssistito: { min: 50000, max: 80000, minLancio: 25000, maxLancio: 40000, lookup: "evalisdeck_avvio_assistito_v1", lookupLancio: "evalisdeck_avvio_assistito_lancio_v1" },
 } as const;
 
 export type Limiti = { maxActiveCompanies: number; warnAtCompanies: number; maxMembers: number };
@@ -152,4 +170,69 @@ export function euro(centesimi: number): string {
     useGrouping: true,
     maximumFractionDigits: Number.isInteger(v) ? 0 : 2,
   })} €`;
+}
+
+/* ────────────────────────────── promozione di lancio ──────────────────────────────
+ *
+ * Un listino solo, più basso, col prezzo pieno mostrato barrato accanto. Non è un
+ * doppio listino: il pieno esiste davvero su Stripe ed è quello che si praticherà
+ * quando la promozione finisce — è la ragione per cui il barrato regge anche se
+ * qualcuno lo contesta, perché la pubblicità ingannevole è vietata anche fra
+ * professionisti.
+ *
+ * La promozione ha una SCADENZA, e alla scadenza il barrato sparisce da solo: nessuno
+ * deve ricordarsi di togliere un numero, e il sistema non può diventare bugiardo per
+ * inerzia. L'invariante è uno: si mostra ciò che si addebita. Mai il pieno addebitando
+ * il ridotto, mai il ridotto addebitando il pieno.
+ */
+
+/** Un anno esatto dall'apertura commerciale, decisa dal committente il 2026-08-10. */
+export const FINE_LANCIO = new Date("2027-08-10T23:59:59.000Z");
+
+export function lancioAttivo(quando: Date = new Date()): boolean {
+  return quando.getTime() <= FINE_LANCIO.getTime();
+}
+
+export type PrezzoDiVendita = {
+  /** Centesimi effettivamente addebitati. */
+  importo: number;
+  /** La chiave Stripe che corrisponde a QUELL'importo. */
+  lookup: string;
+  /** Il listino da mostrare barrato. Assente quando non c'è promozione in corso. */
+  listino?: number;
+};
+
+/**
+ * Che cosa si vende, adesso, per un piano e una fase.
+ *
+ * Importo e chiave Stripe escono da qui INSIEME. Se il prezzo esposto lo calcolasse un
+ * componente e la chiave la scegliesse il checkout, il giorno della scadenza uno dei
+ * due cambierebbe prima dell'altro — e il cliente vedrebbe un numero pagandone un altro.
+ */
+export function prezzoDiVendita(
+  piano: Piano,
+  fase: "anno1" | "rinnovo",
+  quando: Date = new Date(),
+): PrezzoDiVendita | null {
+  if (piano.trattativa) return null;
+  const pieno = fase === "anno1" ? piano.primoAnno : piano.rinnovo;
+  const lookupPieno = fase === "anno1" ? piano.lookupAnno1 : piano.lookupRinnovo;
+  const scontato = fase === "anno1" ? piano.primoAnnoLancio : piano.rinnovoLancio;
+  const lookupScontato = fase === "anno1" ? piano.lookupAnno1Lancio : piano.lookupRinnovoLancio;
+  if (!lookupPieno) return null;
+
+  if (lancioAttivo(quando) && scontato && lookupScontato) {
+    return { importo: scontato, lookup: lookupScontato, listino: pieno };
+  }
+  return { importo: pieno, lookup: lookupPieno };
+}
+
+/** Come sopra, per le estensioni: stessa regola, stessa scadenza. */
+export function prezzoEstensione(
+  e: { prezzo: number; prezzoLancio: number; lookup: string; lookupLancio: string },
+  quando: Date = new Date(),
+): PrezzoDiVendita {
+  return lancioAttivo(quando)
+    ? { importo: e.prezzoLancio, lookup: e.lookupLancio, listino: e.prezzo }
+    : { importo: e.prezzo, lookup: e.lookup };
 }

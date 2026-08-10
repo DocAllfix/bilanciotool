@@ -4,7 +4,10 @@ import { getQuadroAbbonamento } from "@/features/studio/queries";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PIANI, ESTENSIONI, CHIAVI_PIANO, euro } from "@/lib/prezzi";
+import {
+  PIANI, ESTENSIONI, CHIAVI_PIANO, euro,
+  prezzoDiVendita, prezzoEstensione, lancioAttivo, FINE_LANCIO,
+} from "@/lib/prezzi";
 import { TITOLARE } from "@/lib/legale";
 
 export const dynamic = "force-dynamic";
@@ -91,18 +94,42 @@ export default async function AbbonamentoPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Il primo anno comprende l&apos;avviamento. Dal secondo si rinnova da solo, a prezzo ridotto.
             </p>
+            {/* La scadenza sta scritta accanto al prezzo, non in fondo in piccolo: uno
+                sconto senza termine dichiarato e' un barrato che dopo sei mesi nessuno
+                crede piu', e la pubblicita' ingannevole e' vietata anche fra imprese. */}
+            {lancioAttivo() && (
+              <p className="mt-2 inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12.5px] font-medium text-primary">
+                Prezzi di lancio, validi fino al{" "}
+                {FINE_LANCIO.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+              </p>
+            )}
           </CardHeader>
           <CardContent>
             <ul className="grid gap-3 sm:grid-cols-3">
               {CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa).map((k) => {
                 const p = PIANI[k];
+                // Prezzo mostrato e prezzo addebitato escono dalla STESSA funzione:
+                // e' l'unico modo perche' non possano divergere il giorno della scadenza.
+                const anno1 = prezzoDiVendita(p, "anno1")!;
+                const rinnovo = prezzoDiVendita(p, "rinnovo")!;
                 return (
                   <li key={k} className="rounded-lg border p-4">
                     <p className="font-medium">{p.nome}</p>
                     <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
-                    <p className="mt-3 text-lg font-semibold tabular-nums">{euro(p.primoAnno)}</p>
+                    <p className="mt-3 flex flex-wrap items-baseline gap-2">
+                      {anno1.listino !== undefined && (
+                        <span className="text-[13px] text-muted-foreground line-through tabular-nums">
+                          {euro(anno1.listino)}
+                        </span>
+                      )}
+                      <span className="text-lg font-semibold tabular-nums">{euro(anno1.importo)}</span>
+                    </p>
                     <p className="text-[12.5px] text-muted-foreground">
-                      primo anno, poi {euro(p.rinnovo)}{" "}l&apos;anno
+                      primo anno, poi{" "}
+                      {rinnovo.listino !== undefined && (
+                        <span className="line-through">{euro(rinnovo.listino)}</span>
+                      )}{" "}
+                      {euro(rinnovo.importo)}{" "}l&apos;anno
                     </p>
                     <ul className="mt-3 space-y-1 text-[13px] text-muted-foreground">
                       <li>{p.aziende} aziende</li>
@@ -116,11 +143,12 @@ export default async function AbbonamentoPage() {
             <div className="mt-5 space-y-1 border-t pt-4 text-[13px] text-muted-foreground">
               <p>
                 Servono più aziende? Blocchi da {ESTENSIONI.bloccoAziende.aziende} a{" "}
-                {euro(ESTENSIONI.bloccoAziende.prezzo)}{" "}l&apos;anno. Accessi in più:{" "}
-                {euro(ESTENSIONI.accesso.prezzo)} ciascuno.
+                {euro(prezzoEstensione(ESTENSIONI.bloccoAziende).importo)}{" "}l&apos;anno. Accessi in più:{" "}
+                {euro(prezzoEstensione(ESTENSIONI.accesso).importo)} ciascuno.
               </p>
               <p>
-                Documenti col marchio del tuo studio: {euro(ESTENSIONI.whiteLabel.prezzo)}{" "}l&apos;anno.
+                Documenti col marchio del tuo studio:{" "}
+                {euro(prezzoEstensione(ESTENSIONI.whiteLabel).importo)}{" "}l&apos;anno.
               </p>
               <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
             </div>
