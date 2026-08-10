@@ -38,6 +38,7 @@ export type VoceAttivita = { etichetta: string; companyNome: string | null; quan
 
 export const ETICHETTE_AUDIT: Record<string, string> = {
   "billing.checkout.apri": "Pagamento avviato",
+  "billing.abbonamento.aggiorna": "Abbonamento aggiornato",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",

@@ -8,7 +8,10 @@ export async function logAudit(
   tx: Tx,
   entry: {
     organizationId: string;
-    userId: string;
+    /** `null` per le azioni di sistema: il webhook di Stripe non lo preme nessuno, e
+     *  attribuirlo a un utente qualsiasi renderebbe la cronologia una bugia. La colonna
+     *  lo ammetteva già; era il tipo a non ammetterlo. */
+    userId: string | null;
     azione: string;
     entita?: string;
     entitaId?: string;
