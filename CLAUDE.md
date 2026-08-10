@@ -242,6 +242,13 @@ Effetto collaterale scoperto strada facendo: **nemmeno la home era statica**. Ve
 
 Gate: **424 test** · verifica-blog **13 su 13 in produzione** (con i due controlli nuovi) · intestazione provata anonima e autenticata, zero errori di console.
 
+**Blog, richieste del consulente SEO (2026-08-10)** — tre interventi, stesso scopo: dire a un motore di ricerca che dietro l'articolo c'è una persona e una struttura.
+- **Indice dei contenuti** in apertura (`src/features/blog/indice.ts`, H2+H3 gerarchici). WordPress non mette gli `id` sui titoli: le ancore **nascono nello stesso passaggio** che produce l'indice, mai separatamente — due elenchi calcolati in due posti divergono, e quando divergono l'indice sembra funzionare mentre porta nel vuoto. `scroll-mt` sui titoli, altrimenti il salto li nasconde dietro l'intestazione fissa; **il collaudo misura la posizione del titolo dopo il clic**, non si accontenta dell'ancora esistente. Soglia: sotto le 3 voci non compare.
+- **La firma porta al profilo**, nell'articolo e nelle schede. La scheda ha un collegamento che la copre tutta: senza `z-index` il link sarebbe presente nel markup e **inerte al clic**. Nella pagina dell'autore si spegne.
+- **Identità dell'autore**: il campo «Sito web» di WordPress finisce in `sameAs` dello schema `Person`. Nessun segnaposto in pagina quando la biografia manca — è pubblica e indicizzata, e una scusa scritta lì la legge Google prima di chiunque; lo dice il controllo `autori-identita`.
+
+⚠️ **Dato mancante, non codice**: su WordPress `description` (bio), `evalis_ruolo` e `url` dell'utente `bruno.santini` sono **vuoti**. Il collaudo è rosso finché non li compila (Utenti → Profilo). Non li scrive Claude: sono l'identità di una persona reale.
+
 **Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, poi **CSP per ultima** — va fatta dopo Stripe, altrimenti la si riapre subito per `js.stripe.com`. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
