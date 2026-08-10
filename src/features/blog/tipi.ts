@@ -9,6 +9,11 @@ export type Autore = {
   ruolo?: string;
   bio?: string;
   avatar?: string;
+  /** Profilo pubblico dell'autore fuori dal sito (LinkedIn, sito personale, albo).
+   *  Arriva dal campo «Sito web» del profilo WordPress ed e' il segnale che lega la
+   *  firma a una persona verificabile: senza, per un motore di ricerca il nome in
+   *  fondo a un articolo e' una stringa come un'altra. */
+  sito?: string;
 };
 
 /** Una voce di tassonomia: categoria o tag. Lo slug serve a costruirne l'archivio. */
@@ -61,6 +66,8 @@ export type PostWP = {
       slug?: string;
       name?: string;
       description?: string;
+      /** Campo «Sito web» del profilo WordPress: lo usiamo come profilo pubblico. */
+      url?: string;
       avatar_urls?: Record<string, string>;
       /** WordPress non ha un campo "ruolo": lo aggiunge il nostro mu-plugin, a livello
        * principale (dentro `meta` il controller degli utenti non lo espone al pubblico). */

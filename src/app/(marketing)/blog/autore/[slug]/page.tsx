@@ -48,6 +48,11 @@ export default async function AutorePage({ params }: { params: Promise<{ slug: s
     ...(autore.ruolo ? { jobTitle: autore.ruolo } : {}),
     ...(autore.bio ? { description: autore.bio } : {}),
     url: `${APP}/blog/autore/${autore.slug}`,
+    // `sameAs` è ciò che lega questa pagina a una persona verificabile altrove. Senza,
+    // il nome resta un'affermazione che facciamo su noi stessi: chiunque può scrivere
+    // «esperto di» in fondo a un articolo. Con un profilo esterno diventa un'identità
+    // che qualcun altro conferma.
+    ...(autore.sito ? { sameAs: [autore.sito] } : {}),
     worksFor: { "@type": "Organization", name: "Evalis Srl", url: APP },
   };
 
@@ -68,7 +73,22 @@ export default async function AutorePage({ params }: { params: Promise<{ slug: s
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">Autore</p>
           <h1 className="font-display mt-3 text-[34px] font-bold leading-[1.1] tracking-[-0.02em]">{autore.nome}</h1>
           {autore.ruolo && <p className="mt-2 text-[15px] font-medium text-muted-foreground">{autore.ruolo}</p>}
+          {/* Niente segnaposto quando la biografia manca: questa pagina è pubblica e
+              indicizzata, e una scusa scritta qui la leggerebbe Google prima di chiunque
+              altro. Che manchi lo dice il controllo automatico, a chi può rimediare. */}
           {autore.bio && <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">{autore.bio}</p>}
+          {autore.sito && (
+            <p className="mt-3 text-[14px]">
+              <a
+                href={autore.sito}
+                rel="me noopener"
+                target="_blank"
+                className="font-medium text-primary hover:underline"
+              >
+                Profilo pubblico
+              </a>
+            </p>
+          )}
         </div>
 
         <div className="mt-12">
@@ -80,7 +100,7 @@ export default async function AutorePage({ params }: { params: Promise<{ slug: s
           ) : (
             <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {articoli.map((a) => (
-                <SchedaArticolo key={a.slug} articolo={a} />
+                <SchedaArticolo key={a.slug} articolo={a} conLinkAutore={false} />
               ))}
             </div>
           )}

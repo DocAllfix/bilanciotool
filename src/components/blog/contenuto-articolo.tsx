@@ -16,6 +16,10 @@ export function ContenutoArticolo({ html }: { html: string }) {
       className={[
         "text-[16.5px] leading-[1.75] text-foreground/85",
         // titoli
+        // `scroll-mt`: l'intestazione e' fissa in alto, e senza questo margine il titolo
+        // raggiunto da un'ancora finisce NASCOSTO dietro di essa. L'indice sembrerebbe
+        // rotto pur funzionando.
+        "[&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24",
         "[&_h2]:font-display [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-[26px] [&_h2]:font-semibold [&_h2]:leading-[1.2] [&_h2]:tracking-[-0.01em] [&_h2]:text-foreground",
         "[&_h3]:font-display [&_h3]:mt-9 [&_h3]:mb-3 [&_h3]:text-[20px] [&_h3]:font-semibold [&_h3]:tracking-[-0.01em] [&_h3]:text-foreground",
         "[&_h4]:mt-7 [&_h4]:mb-2 [&_h4]:text-[17px] [&_h4]:font-semibold [&_h4]:text-foreground",

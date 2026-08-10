@@ -140,6 +140,27 @@ export function immaginiDellaPagina(html: string, sito: string): string[] {
   ];
 }
 
+/**
+ * Che cosa manca a una pagina autore per descrivere una persona invece di un nome.
+ *
+ * Si legge dallo schema `Person` e non dal testo visibile: è quello che guarda un motore
+ * di ricerca, ed è l'unico posto dove biografia e profili esterni hanno un significato
+ * dichiarato invece di essere paragrafi qualunque.
+ *
+ * Elenco vuoto = la firma porta a una persona verificabile.
+ */
+export function identitaMancante(html: string): string[] {
+  const blocchi = [...html.matchAll(/<script[^>]+ld\+json[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]);
+  const person = blocchi.find((b) => /"@type"\s*:\s*"Person"/.test(b));
+  if (!person) return ["lo schema Person"];
+  const manca: string[] = [];
+  // Venti caratteri: sotto non è una biografia, è un segnaposto messo per far tacere il
+  // controllo — e un controllo aggirabile con «ok» non serve a niente.
+  if (!/"description"\s*:\s*"[^"]{20,}/.test(person)) manca.push("la biografia");
+  if (!/"sameAs"\s*:\s*\[\s*"https?:/.test(person)) manca.push("un profilo pubblico esterno");
+  return manca;
+}
+
 /** I link alle pagine autore presenti nella pagina. */
 export function autoriCitati(html: string, sito: string): string[] {
   const pubblico = senzaBarra(sito);
@@ -473,9 +494,14 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
 
   // --- nessun collegamento morto verso una pagina autore ---------------------------------
   const autoriRotti: string[] = [];
+  const senzaIdentita: string[] = [];
   for (const a of pagineAutore) {
     const r = await prendi(a);
-    if (!r || r.stato !== 200) autoriRotti.push(`${a} → ${r?.stato ?? "nessuna risposta"}`);
+    if (!r || r.stato !== 200) {
+      autoriRotti.push(`${a} → ${r?.stato ?? "nessuna risposta"}`);
+      continue;
+    }
+    if (identitaMancante(r.testo).length) senzaIdentita.push(`${a}: manca ${identitaMancante(r.testo).join(" e ")}`);
   }
   aggiungi(
     "autori",
@@ -483,6 +509,22 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
     autoriRotti.length === 0
       ? `${pagineAutore.size} pagine autore raggiungibili`
       : autoriRotti.join("; "),
+  );
+
+  // --- e una firma deve portare a una persona, non a un nome ----------------------------
+  //
+  // È il requisito che regge l'E-E-A-T: per un motore di ricerca «Bruno Santini» in fondo
+  // a un articolo è una stringa finché la sua pagina non dice chi è e non rimanda a un
+  // profilo che qualcun altro conferma. Una pagina autore vuota è raggiungibile, valida e
+  // inutile: tutti gli altri controlli restano verdi mentre il segnale non arriva.
+  aggiungi(
+    "autori-identita",
+    senzaIdentita.length === 0,
+    pagineAutore.size === 0
+      ? "nessuna pagina autore da controllare"
+      : senzaIdentita.length === 0
+        ? `${pagineAutore.size} pagine autore con biografia e profilo pubblico`
+        : senzaIdentita.join("; "),
   );
 
   return esiti;

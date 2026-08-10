@@ -11,7 +11,16 @@ import type { Articolo } from "@/features/blog/tipi";
 // WebP e sotto i 150 KB (lo pretende il controllo automatico), quindi
 // l'ottimizzazione di Vercel aggiungerebbe poco e consumerebbe quota.
 
-export function SchedaArticolo({ articolo: a, evidenza = false }: { articolo: Articolo; evidenza?: boolean }) {
+export function SchedaArticolo({
+  articolo: a,
+  evidenza = false,
+  conLinkAutore = true,
+}: {
+  articolo: Articolo;
+  evidenza?: boolean;
+  /** Spento nella pagina dell'autore: il collegamento rimanderebbe a se stessa. */
+  conLinkAutore?: boolean;
+}) {
   return (
     <article
       className={
@@ -58,7 +67,22 @@ export function SchedaArticolo({ articolo: a, evidenza = false }: { articolo: Ar
         )}
         {a.autore?.nome && (
           <p className="mt-auto pt-4 text-[12.5px] text-muted-foreground">
-            di <span className="font-medium text-foreground">{a.autore.nome}</span>
+            {/* La firma porta al profilo. Non è un dettaglio di comodità: è il collegamento
+                che permette a chi legge — e a un motore di ricerca — di verificare che
+                dietro l'articolo ci sia una persona, invece di un nome scritto in fondo.
+                Nella pagina dell'autore stesso il collegamento si spegne: rimanderebbe
+                alla pagina che si sta già guardando. */}
+            di{" "}
+            {a.autore.slug && conLinkAutore ? (
+              <Link
+                href={`/blog/autore/${a.autore.slug}`}
+                className="relative z-10 font-medium text-foreground hover:text-primary hover:underline"
+              >
+                {a.autore.nome}
+              </Link>
+            ) : (
+              <span className="font-medium text-foreground">{a.autore.nome}</span>
+            )}
             {a.autore.ruolo && <span> · {a.autore.ruolo}</span>}
           </p>
         )}

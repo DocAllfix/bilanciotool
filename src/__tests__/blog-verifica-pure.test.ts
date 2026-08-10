@@ -22,6 +22,7 @@ import {
   autoriCitati,
   riepilogo,
   esitoPagine,
+  identitaMancante,
 } from "@/features/blog/verifica";
 
 const SITO = "https://evalisdeck.it";
@@ -320,5 +321,35 @@ describe("esitoPagine — bussare a ogni porta", () => {
     const g = esitoPagine({ ...base, rotte: [], provate: 0, totale: 0 });
     expect(g.ok).toBe(true);
     expect(g.dettaglio).toBe("nessun articolo da provare");
+  });
+});
+
+describe("identitaMancante — una firma deve portare a una persona", () => {
+  const person = (extra: string) =>
+    `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Bruno Santini"${extra}}</script>`;
+
+  it("segnala la biografia assente", () => {
+    expect(identitaMancante(person(""))).toContain("la biografia");
+  });
+
+  it("non si accontenta di un segnaposto", () => {
+    // Un controllo che si zittisce con «ok» non e' un controllo.
+    expect(identitaMancante(person(',"description":"ok"'))).toContain("la biografia");
+  });
+
+  it("segnala l'assenza di un profilo esterno", () => {
+    const html = person(',"description":"Consulente SEO con dieci anni di esperienza nel settore."');
+    expect(identitaMancante(html)).toEqual(["un profilo pubblico esterno"]);
+  });
+
+  it("tace quando la persona e' descritta e verificabile altrove", () => {
+    const html = person(
+      ',"description":"Consulente SEO con dieci anni di esperienza nel settore.","sameAs":["https://www.linkedin.com/in/tizio"]',
+    );
+    expect(identitaMancante(html)).toEqual([]);
+  });
+
+  it("se lo schema Person non c'e', lo dice invece di fingere che vada bene", () => {
+    expect(identitaMancante("<html><body>Bruno Santini</body></html>")).toEqual(["lo schema Person"]);
   });
 });

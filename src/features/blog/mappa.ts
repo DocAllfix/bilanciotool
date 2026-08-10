@@ -53,6 +53,7 @@ export function autoreDaPost(post: PostWP): Autore | undefined {
     nome: decodificaEntita(a.name),
     ruolo: ruolo ? decodificaEntita(ruolo) : undefined,
     bio: a.description ? decodificaEntita(a.description) : undefined,
+    sito: a.url?.startsWith("http") ? a.url : undefined,
     avatar: avatar && !/gravatar\.com|\.wp\.com/i.test(avatar) ? avatar : undefined,
   };
 }

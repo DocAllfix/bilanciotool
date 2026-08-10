@@ -6,6 +6,8 @@ import { SiteHeader } from "@/components/landing/site-header";
 import { PiedeMarketing } from "@/components/landing/piede";
 import { SchedaArticolo } from "@/components/blog/scheda-articolo";
 import { ContenutoArticolo } from "@/components/blog/contenuto-articolo";
+import { IndiceContenuti } from "@/components/blog/indice-contenuti";
+import { indiceDaHtml, SOGLIA_INDICE } from "@/features/blog/indice";
 import { articoloBlog, slugBlog, slugSostitutivo, blogVisibileAiMotori } from "@/features/blog/fonte";
 import { dataItaliana, soloGiorno } from "@/features/blog/data";
 import { soloTesto } from "@/features/blog/sanitize";
@@ -79,6 +81,10 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
   }
 
   const { articolo: a, correlati } = trovato;
+
+  // L'indice e le ancore nascono dallo stesso passaggio: il testo che si rende è quello
+  // con gli `id` dentro, non l'originale, altrimenti l'indice punterebbe nel vuoto.
+  const { html: contenuto, voci } = indiceDaHtml(a.content);
 
   const datiStrutturati = {
     "@context": "https://schema.org",
@@ -169,7 +175,11 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
         )}
 
         <div className="mt-10">
-          <ContenutoArticolo html={a.content} />
+          {/* Prima dell'introduzione, come si legge un manuale: chi cerca una cosa sola
+              deve poterci saltare senza scorrere l'articolo intero. Sotto le tre voci non
+              compare: due righe non sono una mappa. */}
+          {voci.length >= SOGLIA_INDICE && <IndiceContenuti voci={voci} />}
+          <ContenutoArticolo html={contenuto} />
 
         {/* Gli argomenti stanno DOPO il testo, non prima: sono un modo per continuare a
             leggere, non un'etichetta da guardare mentre si decide se leggere. */}
