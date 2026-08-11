@@ -63,6 +63,16 @@ export const FORNITORI = [
     attivo: false,
   },
   {
+    nome: "Sentry (Functional Software, Inc.)",
+    ruolo:
+      "Registrazione degli errori tecnici dell'applicazione, per accorgersi dei guasti prima che li segnalino gli utenti",
+    // Regione europea scelta in fase di attivazione: i dati restano su infrastruttura UE.
+    // I contenuti sensibili — credenziali, token, dati delle aziende — sono rimossi prima
+    // dell'invio, non dopo: vedi `src/lib/sentry-comune.ts`.
+    dove: "Unione Europea — Germania",
+    attivo: true,
+  },
+  {
     nome: "Google Ireland Limited",
     ruolo: "Statistiche di visita del sito pubblico (Google Analytics 4), solo previo consenso",
     // Il contratto è con la società irlandese, ma l'infrastruttura di Google comporta

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 // CSP volutamente assente per ora (inline script Next + servizi terzi): step dedicato in Fase 11.
 const securityHeaders = [
@@ -73,4 +74,21 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry avvolge la configurazione: aggiunge il caricamento del client e la mappatura
+// del codice compilato, senza la quale gli stack trace sono illeggibili.
+//
+// `tunnelRoute`: le segnalazioni passano dal NOSTRO dominio invece che da quello di
+// Sentry. I blocchi pubblicitari fermano le richieste verso i domini di telemetria, e
+// un sistema di allarme che si zittisce proprio sui browser piu' protetti e' peggio di
+// nessun sistema di allarme.
+export default withSentryConfig(nextConfig, {
+  org: "evalis",
+  project: "evalisdeck",
+  silent: true,
+  tunnelRoute: "/monitoraggio",
+  // Le mappe del codice si caricano su Sentry e NON restano pubbliche: servono a noi
+  // per leggere gli stack, non ai visitatori per leggere il nostro sorgente.
+  widenClientFileUpload: true,
+  sourcemaps: { deleteSourcemapsAfterUpload: true },
+  disableLogger: true,
+});

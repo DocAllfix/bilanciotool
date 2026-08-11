@@ -19,6 +19,7 @@
     "db:extract-seed": "node scripts/extract-seed.mjs"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.70.0",
     "@sparticuz/chromium": "^149.0.0",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
