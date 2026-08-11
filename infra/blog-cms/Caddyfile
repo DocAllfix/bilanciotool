@@ -37,6 +37,14 @@ cms.evalisacademy.it {
 	@vietati path /wp-config.php /.env /debug.log /readme.html /license.txt
 	respond @vietati 403
 
+	# Le sitemap del CMS non devono esistere: elencano gli articoli sul dominio
+	# SBAGLIATO, e un motore che le trovasse imparerebbe indirizzi che poi dovremmo
+	# fargli dimenticare. I filtri di WordPress e Yoast stanno gia' nel mu-plugin, ma
+	# un aggiornamento del plugin li ha scavalcati: qui la porta e' chiusa a monte, e
+	# nessun aggiornamento la riapre.
+	@sitemap path /wp-sitemap*.xml /sitemap*.xml /sitemap_index.xml /*-sitemap.xml /sitemap.xsl
+	respond @sitemap 404
+
 	reverse_proxy wp-evalis:80
 
 	encode zstd gzip
@@ -70,6 +78,14 @@ cms.evalisdeck.it {
 
 	@vietati path /wp-config.php /.env /debug.log /readme.html /license.txt
 	respond @vietati 403
+
+	# Le sitemap del CMS non devono esistere: elencano gli articoli sul dominio
+	# SBAGLIATO, e un motore che le trovasse imparerebbe indirizzi che poi dovremmo
+	# fargli dimenticare. I filtri di WordPress e Yoast stanno gia' nel mu-plugin, ma
+	# un aggiornamento del plugin li ha scavalcati: qui la porta e' chiusa a monte, e
+	# nessun aggiornamento la riapre.
+	@sitemap path /wp-sitemap*.xml /sitemap*.xml /sitemap_index.xml /*-sitemap.xml /sitemap.xsl
+	respond @sitemap 404
 
 	reverse_proxy wp-evalisdeck:80
 
