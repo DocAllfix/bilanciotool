@@ -3,11 +3,32 @@
 // Il filtro sui dati NON è un di più: uno stack trace si porta dietro l'ambiente in cui
 // è nato, e nel nostro ambiente ci sono chiavi di Stripe, token di sessione e indirizzi
 // email di clienti. Mandarli a un fornitore terzo sarebbe una comunicazione di dati che
-// la nostra informativa non prevede — e sarebbe anche il modo più stupido di perdere una
-// chiave segreta.
+// la nostra informativa non prevede — e il modo più stupido di perdere una chiave.
+//
+// ⚠️ La pulizia avviene SUL POSTO, e solo sui rami dove i segreti finiscono davvero.
+// La prima versione ricostruiva l'intero evento proprietà per proprietà: il risultato
+// somigliava a un evento ma non lo era più, e Sentry lo scartava prima di spedirlo. Il
+// sintomo era il peggiore possibile — nessun errore, nessun avviso, solo un cruscotto
+// vuoto mentre il server rispondeva 500. Un filtro che rompe ciò che filtra è peggio di
+// nessun filtro, perché toglie anche la possibilità di accorgersene.
 
 /** Le chiavi il cui VALORE non deve mai uscire da qui. */
-const SEGRETI = /(secret|token|password|authorization|cookie|api[-_]?key|whsec|sk_live|sk_test)/i;
+const SEGRETI = /(secret|token|password|authorization|cookie|api[-_]?key|whsec|^sk_|bearer)/i;
+
+/** Sostituisce i valori sensibili dentro un dizionario piatto, senza ricrearlo. */
+function mascheraQui(obj: Record<string, unknown> | undefined): void {
+  if (!obj || typeof obj !== "object") return;
+  for (const chiave of Object.keys(obj)) {
+    if (SEGRETI.test(chiave)) obj[chiave] = "[rimosso]";
+  }
+}
+
+type EventoSentry = {
+  request?: { headers?: Record<string, unknown>; cookies?: unknown; data?: unknown };
+  extra?: Record<string, unknown>;
+  tags?: Record<string, unknown>;
+  contexts?: Record<string, Record<string, unknown> | undefined>;
+};
 
 export const configurazioneComune = {
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -17,19 +38,21 @@ export const configurazioneComune = {
   // In sviluppo gli errori si vedono nel terminale: mandarli a Sentry riempirebbe la
   // quota di problemi che stiamo già guardando.
   enabled: process.env.NODE_ENV === "production",
+  // I dati personali non si mandano di default: nessun indirizzo IP, nessuna
+  // intestazione, nessun corpo di richiesta, salvo ciò che serve a capire il guasto.
   sendDefaultPii: false,
+
   beforeSend<T>(evento: T): T {
-    return ripulisci(evento) as T;
+    const e = evento as EventoSentry;
+    mascheraQui(e.request?.headers);
+    mascheraQui(e.extra);
+    mascheraQui(e.tags);
+    // I cookie interi si buttano: contengono la sessione, e nessun guasto si diagnostica
+    // leggendoli.
+    if (e.request && "cookies" in e.request) e.request.cookies = "[rimosso]";
+    for (const contesto of Object.values(e.contexts ?? {})) mascheraQui(contesto);
+    // Si restituisce l'evento ORIGINALE, modificato: ricostruirlo lo renderebbe
+    // irriconoscibile a chi lo deve spedire.
+    return evento;
   },
 };
-
-/** Sostituisce i valori sensibili ovunque compaiano, per quanto in profondità. */
-function ripulisci(v: unknown, profondita = 0): unknown {
-  if (profondita > 8 || v === null || typeof v !== "object") return v;
-  if (Array.isArray(v)) return v.map((x) => ripulisci(x, profondita + 1));
-  const out: Record<string, unknown> = {};
-  for (const [k, valore] of Object.entries(v as Record<string, unknown>)) {
-    out[k] = SEGRETI.test(k) ? "[rimosso]" : ripulisci(valore, profondita + 1);
-  }
-  return out;
-}
