@@ -4,6 +4,7 @@ import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots";
 mkdirSync(OUT, { recursive: true });
@@ -44,11 +45,7 @@ await tema("chiaro");
 // --- Account attivo + percorso GHG con dati reali
 const email = `visual-${Date.now()}@example.com`;
 await go("/registrati");
-await page.fill("#nome", "Franca Verdi");
-await page.fill("#email", email);
-await page.fill("#password", "PasswordSicura123!");
-await page.click('button[type="submit"]');
-await page.waitForURL("**/dashboard", { timeout: 30000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Franca Verdi", email: email, pwd: "PasswordSicura123!" });
 
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`

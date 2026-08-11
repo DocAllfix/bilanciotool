@@ -5,6 +5,7 @@ import { chromium } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa";
 mkdirSync(OUT, { recursive: true });
@@ -20,11 +21,7 @@ page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 const email = `visual-soa-${Date.now()}@example.com`;
 await page.goto(BASE + "/registrati");
 await page.waitForLoadState("networkidle");
-await page.fill("#nome", "Davide Ricci");
-await page.fill("#email", email);
-await page.fill("#password", "PasswordSicura123!");
-await page.click('button[type="submit"]');
-await page.waitForURL("**/dashboard", { timeout: 30000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Davide Ricci", email: email, pwd: "PasswordSicura123!" });
 await page.evaluate(() => {
   for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
     localStorage.setItem(`evalisdeck-tour:${k}`, "1");

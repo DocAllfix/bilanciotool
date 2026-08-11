@@ -6,6 +6,7 @@ import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = process.argv[2] ?? "https://evalisdeck.vercel.app";
 const OUT = process.env.SHOT_DIR ?? "./shots-qa";
@@ -87,11 +88,7 @@ await check("login con credenziali errate mostra errore", async () => {
 });
 await check("registrazione nuovo studio", async () => {
   await page.goto(BASE + "/registrati", { waitUntil: "networkidle" });
-  await page.fill("#nome", "QA Automatica");
-  await page.fill("#email", email);
-  await page.fill("#password", PW);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 45000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "QA Automatica", email: email, pwd: PW });
 });
 await page.waitForLoadState("networkidle");
 

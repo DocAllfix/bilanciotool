@@ -2,8 +2,12 @@
 // arricchita, navigazione dei passi. Richiede `npm run dev` attivo e le
 // credenziali QA (env QA_EMAIL/QA_PASSWORD o default della org di sviluppo).
 import { chromium } from "@playwright/test";
+import postgres from "postgres";
 import { mkdirSync } from "node:fs";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
+
+const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
 const OUT = process.env.SHOT_DIR ?? "./shots-shell";
 mkdirSync(OUT, { recursive: true });
@@ -48,11 +52,7 @@ const esito = await page
 if (esito !== "ok") {
   await go("/registrati");
   const suffisso = Date.now();
-  await page.fill("#nome", "QA Shell");
-  await page.fill("#email", `qa-shell-${suffisso}@example.com`);
-  await page.fill("#password", PW);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 60000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "QA Shell", email: `qa-shell-${suffisso}@example.com`, pwd: PW });
 }
 await silenziaTour();
 await page.reload({ waitUntil: "networkidle" });

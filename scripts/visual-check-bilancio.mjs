@@ -3,6 +3,7 @@ import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-bilancio";
 mkdirSync(OUT, { recursive: true });
@@ -34,11 +35,7 @@ const vaiPasso = async (n, atteso) => {
 const email = `visual-bil-${Date.now()}@example.com`;
 await page.goto(BASE + "/registrati");
 await page.waitForLoadState("networkidle");
-await page.fill("#nome", "Giulia Riva");
-await page.fill("#email", email);
-await page.fill("#password", "PasswordSicura123!");
-await page.click('button[type="submit"]');
-await page.waitForURL("**/dashboard", { timeout: 30000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Giulia Riva", email: email, pwd: "PasswordSicura123!" });
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`update org_entitlement set status='active' where organization_id = (select m.organization_id from member m join "user" u on u.id=m.user_id where u.email=${email})`;
 await sql.end();

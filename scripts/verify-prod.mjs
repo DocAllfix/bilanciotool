@@ -6,6 +6,7 @@ import { chromium } from "@playwright/test";
 import { writeFileSync, mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = process.argv[2] ?? "https://evalisdeck.vercel.app";
 const OUT = process.env.SHOT_DIR ?? "./shots-prod";
@@ -32,11 +33,7 @@ ok("landing online", (await page.title()).includes("EvalisDeck"));
 const email = `prod-${Date.now()}@example.com`;
 await page.getByRole("link", { name: "Prova la demo guidata" }).first().click();
 await page.waitForURL("**/registrati", { timeout: 20000 });
-await page.fill("#nome", "Verifica Prod");
-await page.fill("#email", email);
-await page.fill("#password", "PasswordSicura123!");
-await page.click('button[type="submit"]');
-await page.waitForURL("**/dashboard", { timeout: 45000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Verifica Prod", email: email, pwd: "PasswordSicura123!" });
 await page.waitForLoadState("networkidle");
 ok("registrazione → dashboard", true, email);
 
