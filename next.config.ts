@@ -90,5 +90,4 @@ export default withSentryConfig(nextConfig, {
   // per leggere gli stack, non ai visitatori per leggere il nostro sorgente.
   widenClientFileUpload: true,
   sourcemaps: { deleteSourcemapsAfterUpload: true },
-  disableLogger: true,
 });
