@@ -1,8 +1,47 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
-// CSP volutamente assente per ora (inline script Next + servizi terzi): step dedicato in Fase 11.
+// La regola che dice al browser da dove può caricare le cose. È la seconda serratura
+// dopo la sanificazione dell'HTML: nel prodotto ci sono tre punti in cui testo scritto
+// da altri finisce in pagina — gli articoli dal CMS, i capitoli dell'editor, i documenti
+// pubblicati — e sono esattamente i posti dove un difetto di sanificazione diventerebbe
+// furto di sessione.
+//
+// Gli indirizzi non sono dedotti dal codice: sono stati MISURATI aprendo le pagine vere
+// e guardando che cosa il browser contatta davvero. Da lì si è scoperto che Stripe non
+// carica niente da noi — il pagamento avviene su una pagina loro — e quindi non compare.
+//
+// ⚠️ COMPROMESSO DICHIARATO su `script-src`: c'è `'unsafe-inline'`. Toglierlo richiede un
+// «nonce» generato a ogni richiesta, e il nonce rende DINAMICHE tutte le pagine che lo
+// usano — cioè butterebbe via la staticità di home, blog e articoli, riconquistata ieri
+// correggendo il 500. Finché quel compromesso resta, `script-src` protegge poco: tutto il
+// resto qui sotto protegge parecchio, e non costa niente.
+const CSP = [
+  "default-src 'self'",
+  // Nessuno può incorniciare le nostre pagine: difesa dal clickjacking, più forte di
+  // X-Frame-Options perché nessun browser moderno la ignora.
+  "frame-ancestors 'none'",
+  // Niente plugin e nessun <base> iniettato che dirotti tutti i collegamenti relativi.
+  "object-src 'none'",
+  "base-uri 'self'",
+  // Un modulo non può spedire i suoi dati a un dominio che non sia il nostro: è la
+  // difesa che regge anche se qualcosa di malevolo finisse comunque in pagina.
+  "form-action 'self'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
+  // `blob:` serve alle anteprime dei loghi ridimensionati nel browser prima del caricamento.
+  // `googletagmanager` anche fra le IMMAGINI: Analytics manda una parte delle
+  // misure come pixel, non come richiesta di rete. Previsto solo fra gli script,
+  // il browser lo bloccava — e il collaudo l'ha visto, la lettura della regola no.
+  "img-src 'self' data: blob: https://cms.evalisdeck.it https://hahtljrexrngtfsplbsz.supabase.co https://www.googletagmanager.com https://*.google-analytics.com",
+  "connect-src 'self' https://hahtljrexrngtfsplbsz.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "frame-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: CSP },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
