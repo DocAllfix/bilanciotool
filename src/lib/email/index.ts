@@ -36,10 +36,21 @@ export function renderEmail(opts: {
 
 async function send(to: string, subject: string, html: string): Promise<{ sent: boolean }> {
   if (!env.RESEND_API_KEY) return { sent: false };
+  // `reply_to` separato dal mittente: `evalisdeck.it` NON riceve posta, quindi senza
+  // questo chi risponde a un'email automatica — e la gente risponde — scrive nel vuoto.
+  // È una variabile perché cambierà: oggi è una casella qualsiasi che leggiamo, domani
+  // sarà l'assistenza vera, e sostituirla non deve richiedere un rilascio di codice.
+  const replyTo = process.env.RESEND_REPLY_TO;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: env.RESEND_FROM ?? "onboarding@resend.dev", to, subject, html }),
+    body: JSON.stringify({
+      from: env.RESEND_FROM ?? "onboarding@resend.dev",
+      to,
+      subject,
+      html,
+      ...(replyTo ? { reply_to: replyTo } : {}),
+    }),
   });
   return { sent: res.ok };
 }
