@@ -10,6 +10,7 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const STUDIO = "Bianchi e Associati";
@@ -59,12 +60,7 @@ const piedeDelDocumento = async (url) => {
 };
 
 await check("registrazione, white-label acceso, nome dello studio impostato", async () => {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", "Chiara Bianchi");
-  await page.fill("#email", email);
-  await page.fill("#password", PWD);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 40_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Chiara Bianchi", email: email, pwd: PWD });
   const rifiuta = page.getByRole("button", { name: "Rifiuta", exact: true });
   if (await rifiuta.count()) { await rifiuta.click(); await page.waitForTimeout(400); }
 

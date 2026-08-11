@@ -32,12 +32,7 @@ const email = `imp-${RUN}@example.com`;
 
 // ---------------------------------------------------------------- registrazione
 await check("un utente nuovo arriva al portafoglio", async () => {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", "Chiara Bianchi");
-  await page.fill("#email", email);
-  await page.fill("#password", "PasswordSicura123!");
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 40_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Chiara Bianchi", email: email, pwd: "PasswordSicura123!" });
 });
 
 // ------------------------------------------------- il vicolo cieco e' chiuso

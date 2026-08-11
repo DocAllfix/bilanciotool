@@ -9,6 +9,7 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 // Le credenziali arrivano dall'ambiente e NON stanno qui: uno script committato che
@@ -44,12 +45,7 @@ page.on("pageerror", (e) => errori.push(e.message));
 
 const [gia] = await sql`select id from "user" where email = ${EMAIL}`;
 if (!gia) {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", NOME);
-  await page.fill("#email", EMAIL);
-  await page.fill("#password", PWD);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 60_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: NOME, email: EMAIL, pwd: PWD });
   const rifiuta = page.getByRole("button", { name: "Rifiuta", exact: true });
   if (await rifiuta.count()) { await rifiuta.click(); await page.waitForTimeout(400); }
   console.log("registrazione: fatta");

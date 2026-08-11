@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import Stripe from "stripe";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -35,12 +36,7 @@ const page = await ctx.newPage();
 let orgId = "";
 
 await check("uno studio si registra e resta in prova", async () => {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", "Compratore Vero");
-  await page.fill("#email", EMAIL);
-  await page.fill("#password", PWD);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 60_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Compratore Vero", email: EMAIL, pwd: PWD });
   const rifiuta = page.getByRole("button", { name: "Rifiuta", exact: true });
   if (await rifiuta.count()) { await rifiuta.click(); await page.waitForTimeout(400); }
 

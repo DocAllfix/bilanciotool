@@ -9,6 +9,7 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const errori = [];
@@ -39,12 +40,7 @@ const email = `cond-ui-${RUN}@example.com`;
 let collegamento = "";
 
 await check("registrazione e attivazione dello studio", async () => {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", "Marco Verdi");
-  await page.fill("#email", email);
-  await page.fill("#password", "PasswordSicura123!");
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 40_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Marco Verdi", email: email, pwd: "PasswordSicura123!" });
   // Il banner del consenso sta in basso e in primo piano: finche' c'e', intercetta i clic
   // sui comandi in fondo alla pagina. Una persona lo chiude, e cosi' fa il collaudo.
   const rifiuta = page.getByRole("button", { name: "Rifiuta", exact: true });

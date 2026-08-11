@@ -7,7 +7,9 @@
 //   ACCESSO_EMAIL=... ACCESSO_PWD=... node scripts/verifica-checkout.mjs
 
 import { chromium } from "@playwright/test";
+import postgres from "postgres";
 import "dotenv/config";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 // Si registra uno studio NUOVO, che e' in prova e non ha ancora un piano: e' l'unico
@@ -18,6 +20,7 @@ const RUN = Date.now();
 const EMAIL = `checkout-${RUN}@example.com`;
 const PWD = "PasswordSicura123!";
 
+const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const errori = [];
 let ok = 0, ko = 0;
 const check = async (nome, fn) => {
@@ -34,12 +37,7 @@ const page = await ctx.newPage();
 page.on("pageerror", (e) => errori.push(e.message));
 
 await check("uno studio in prova arriva alla pagina dell'abbonamento", async () => {
-  await page.goto(`${BASE}/registrati`, { waitUntil: "networkidle" });
-  await page.fill("#nome", "Chi Compra");
-  await page.fill("#email", EMAIL);
-  await page.fill("#password", PWD);
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 60_000 });
+  await registraEEntra(page, sql, { base: BASE, nome: "Chi Compra", email: EMAIL, pwd: PWD });
   const rifiuta = page.getByRole("button", { name: "Rifiuta", exact: true });
   if (await rifiuta.count()) { await rifiuta.click(); await page.waitForTimeout(400); }
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
@@ -63,7 +61,9 @@ await check("il comando porta alla pagina di pagamento di Stripe", async () => {
 });
 
 await check("Stripe chiede l'importo giusto, in euro", async () => {
-  await page.waitForLoadState("networkidle");
+  // Niente `networkidle`: la pagina di Stripe tiene connessioni aperte e quel silenzio
+  // non arriva mai. Si aspetta che compaia il prezzo, che e' cio' che interessa.
+  await page.waitForTimeout(2500);
   const t = await page.locator("body").innerText();
   // Il prezzo sulla pagina di Stripe è quello che verrà addebitato davvero: se non
   // coincide con quello mostrato da noi, è il difetto peggiore possibile.
@@ -88,6 +88,7 @@ await check("la pagina è in italiano", async () => {
   }
 });
 
+await sql.end();
 await browser.close();
 console.log(`\nControlli: ${ok} ok, ${ko} falliti`);
 console.log(errori.length ? "ERRORI: " + errori.join(" | ") : "Nessun errore di pagina.");
