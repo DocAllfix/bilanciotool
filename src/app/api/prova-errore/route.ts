@@ -1,5 +1,8 @@
 // Rotta di prova per il monitoraggio degli errori.
 //
+// NB: la cartella non puo iniziare con `_`: in Next quelle sono cartelle PRIVATE,
+// escluse dal routing. La rotta esisteva nel sorgente e rispondeva 404 a tutti.
+//
 // Esiste per una ragione sola: un sistema di allarme che non si è mai visto scattare
 // non è un sistema di allarme, è una speranza. Serve a provarlo dopo ogni cambiamento
 // che lo tocchi.
