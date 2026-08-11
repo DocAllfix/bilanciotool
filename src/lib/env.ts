@@ -38,7 +38,10 @@ const schema = z
     BETTER_AUTH_SECRET: z.string().min(32).optional(),
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
     // Billing (Fase 9)
-    STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional(),
+    // `sk_` oppure `rk_`: le chiavi con restrizioni — quelle che concedono solo i
+    // permessi che servono e negano rimborsi e trasferimenti — cominciano con `rk_`,
+    // e pretendere il solo `sk_` significava rifiutare proprio la chiave piu' prudente.
+    STRIPE_SECRET_KEY: z.string().regex(/^(sk|rk)_/, "deve cominciare con sk_ o rk_").optional(),
     STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
     // Supabase Storage (loghi, copertine, foto, PDF) — API separata dalla Data API (disattivata)
     SUPABASE_URL: z.string().url().optional(),

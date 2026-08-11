@@ -26,7 +26,10 @@ if (!chiave) {
   console.error("STRIPE_SECRET_KEY assente in .env");
   process.exit(1);
 }
-if (chiave.startsWith("sk_live") && !process.argv.includes("--sono-sicuro-che-e-produzione")) {
+// QUALSIASI chiave di produzione, non solo `sk_live`: le chiavi con restrizioni
+// cominciano con `rk_`, e il controllo scritto sul solo prefisso `sk_` le avrebbe
+// lasciate passare in silenzio — proprio nel caso in cui una conferma serve di piu'.
+if (/_live_/.test(chiave) && !process.argv.includes("--sono-sicuro-che-e-produzione")) {
   console.error("Chiave di PRODUZIONE. Se è voluto, aggiungi --sono-sicuro-che-e-produzione.");
   process.exit(1);
 }
