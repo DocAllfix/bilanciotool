@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 export default function RegistratiPage() {
   const router = useRouter();
   const [errore, setErrore] = useState<string | null>(null);
+  const [inviata, setInviata] = useState(false);
   const [inCorso, setInCorso] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -29,8 +30,43 @@ export default function RegistratiPage() {
       setErrore(error.message ?? "Registrazione non riuscita. Riprova.");
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    // Con la verifica dell'indirizzo accesa NON si entra subito: Better Auth non crea
+    // la sessione finché l'email non è confermata. Mandare a /dashboard significherebbe
+    // sbattere la persona sul login due secondi dopo essersi iscritta, senza spiegazione.
+    setInviata(true);
+  }
+
+  // Schermata di attesa: la registrazione è riuscita, manca la conferma dell'indirizzo.
+  // Dice cosa fare, dove guardare, e che la posta indesiderata è il posto più probabile
+  // dove trovarla — che è la ragione numero uno per cui un'iscrizione si ferma qui.
+  if (inviata) {
+    return (
+      <Card>
+        <CardHeader>
+          <h1 className="text-lg font-semibold tracking-tight">Controlla la tua posta</h1>
+          <p className="text-sm text-muted-foreground">
+            Ti abbiamo mandato un messaggio per confermare l&apos;indirizzo. Apri il collegamento che
+            trovi dentro e il tuo studio è pronto.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          <p>
+            Se non lo vedi entro qualche minuto, guarda tra la <b>posta indesiderata</b>: è lì che
+            finisce quasi sempre il primo messaggio di un mittente nuovo.
+          </p>
+          <p>
+            Sbagliato indirizzo?{" "}
+            <button
+              type="button"
+              onClick={() => setInviata(false)}
+              className="font-medium text-foreground underline underline-offset-4"
+            >
+              Torna indietro e correggilo
+            </button>
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

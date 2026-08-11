@@ -9,15 +9,19 @@ import { env } from "@/lib/env";
 import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail } from "@/lib/email";
 import { createStudioOrg, firstMembershipOrgId, hasPendingInvitation } from "@/features/auth/orgs";
 
-// requireEmailVerification si attiva in produzione col dominio Resend verificato
-// (PRE-LAUNCH Fase 11); il sender è già cablato e in dev logga il link.
+// La verifica dell'indirizzo è ACCESA dal 2026-08-11, con il dominio Resend verificato.
+// Gli account creati prima sono stati marcati come verificati: una regola introdotta
+// dopo non può chiudere fuori chi si era iscritto quando non esisteva.
 export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg" }),
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false,
+    // Senza, chiunque si registra con un indirizzo che non esiste: gli si apre uno
+    // studio, si semina l'azienda dimostrativa, e non gli arriverà mai niente — né la
+    // reimpostazione della password, né la ricevuta di un pagamento.
+    requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
       await sendResetPasswordEmail(user.email, url);
     },

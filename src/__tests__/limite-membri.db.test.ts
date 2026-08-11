@@ -52,12 +52,16 @@ describe.skipIf(!url)("limite accessi: applicato dove si invita davvero", () => 
 
     // 1. uno studio vero, nato dalla registrazione reale
     const email = `titolare-${RUN}@example.com`;
-    const risposta = await auth.api.signUpEmail({
-      body: { email, password: `Pw-molto-sicura-${RUN}!`, name: "Titolare Studio" },
-      asResponse: true,
-    });
-    const cookie = risposta.headers.get("set-cookie") ?? "";
-    expect(cookie, "la registrazione deve restituire un cookie di sessione").not.toBe("");
+    const password = `Pw-molto-sicura-${RUN}!`;
+    await auth.api.signUpEmail({ body: { email, password, name: "Titolare Studio" }, asResponse: true });
+
+    // Da quando la verifica dell'indirizzo è accesa, la registrazione NON crea la
+    // sessione: la crea la conferma. Qui si marca l'indirizzo come verificato — che è
+    // ciò che fa il clic sul collegamento nell'email — e poi si accede.
+    await db.update(user).set({ emailVerified: true }).where(eq(user.email, email));
+    const accesso = await auth.api.signInEmail({ body: { email, password }, asResponse: true });
+    const cookie = accesso.headers.get("set-cookie") ?? "";
+    expect(cookie, "dopo la verifica l'accesso deve restituire una sessione").not.toBe("");
 
     const [nato] = await db.select().from(user).where(eq(user.email, email));
     utenti.push(nato.id);
