@@ -249,6 +249,28 @@ Gate: **424 test** · verifica-blog **13 su 13 in produzione** (con i due contro
 
 ⚠️ **Dato mancante, non codice**: su WordPress `description` (bio), `evalis_ruolo` e `url` dell'utente `bruno.santini` sono **vuoti**. Il collaudo è rosso finché non li compila (Utenti → Profilo). Non li scrive Claude: sono l'identità di una persona reale.
 
+**F10 + F13 + F14c completate (2026-08-10/11) — si incassa, si scrive, ci si accorge dei guasti**
+
+- **Stripe** (account `EvalisDeck` separato da Academy, sandbox). Prezzi creati **dal listino** con `scripts/stripe-bootstrap.mjs`, ripetibile: riconosce i prodotti dai metadata e non dal nome, e se un importo diverge **si ferma** invece di tentare una modifica che Stripe rifiuterebbe (i prezzi sono immutabili). Venti prezzi: dieci di listino, dieci di lancio.
+- **Prezzi di lancio dimezzati** col listino barrato accanto, scadenza **10 agosto 2027**. Il prezzo mostrato e quello addebitato escono dalla **stessa funzione** (`prezzoDiVendita`), che restituisce importo e chiave Stripe insieme: separarli significherebbe, il giorno della scadenza, mostrare 1.450 e addebitare 2.900. Alla scadenza il barrato **sparisce da solo**: il sistema non deve poter diventare bugiardo per inerzia.
+- **Checkout** con partita IVA e **codice destinatario** raccolti subito (senza, la fattura elettronica non si emette e si rincorre un cliente che ha già pagato). Il checkout **non attiva niente**: lo fa il webhook.
+- **Webhook**: non si crede al payload (si rilegge da Stripe), il claim di idempotenza **si rilascia** se il lavoro fallisce, e ciò che non si riconosce riceve un «va bene» — un 500 su un evento inutile fa disabilitare l'endpoint, e con l'endpoint spento si fermano anche gli eventi che pagano.
+- **Piano a due fasi** su ogni abbonamento nuovo, non solo dal checkout: uno creato a mano sarebbe rimasto al prezzo del primo anno per sempre. Verificato: 1.450 € → 1.100 €.
+- **Quattro email post-acquisto** (benvenuto, pagamento fallito, preavviso rinnovo a 7 giorni via cron, primo documento pubblicato), agganciate al **cambio di stato** e non all'evento: Stripe ne manda diversi per lo stesso abbonamento.
+- **Resend** acceso: dominio verificato (Irlanda, come dichiara la privacy), template col marchio in `src/lib/email/modello.ts` — separato dall'invio perché chi importa `env` non gira in uno script. **Verifica dell'indirizzo ACCESA**; i 133 account preesistenti marcati verificati.
+- **Sentry** attivo (regione UE), con i segreti rimossi prima dell'invio e `tunnelRoute` contro i blocchi pubblicitari.
+
+**Regole nate qui:**
+- **Un filtro che rompe ciò che filtra è peggio di nessun filtro**: il primo `beforeSend` ricostruiva l'evento e Sentry lo scartava. Nessun errore, nessun avviso, solo un cruscotto vuoto mentre il server rispondeva 500.
+- **`instrumentation.ts` va in `src/`** quando il progetto usa `src`: nella radice è ignorato **in silenzio**. Erano due guasti sovrapposti, e il secondo nascondeva il primo.
+- **Le cartelle che iniziano con `_` non generano rotte**: la rotta di prova non è mai esistita e rispondeva 404 a tutti.
+- **Le variabili «Sensitive» di Vercel non si rileggono**: `env pull` restituisce un riempimento. Il `CRON_SECRET` è stato rigenerato.
+- **Accendere la verifica dell'email cambia il flusso di registrazione**: non si crea più la sessione. Otto collaudi si aspettavano di entrare subito; la sequenza sta ora in `scripts/comune-registrazione.mjs`.
+
+Gate: **462 test** · `verifica-pagamento` 9 su 9 in produzione · `verifica-checkout` 6 su 6 · `qa -- guida` 7 su 7 · errore reale visto in Sentry.
+
+⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
+
 **Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, poi **CSP per ultima** — va fatta dopo Stripe, altrimenti la si riapre subito per `js.stripe.com`. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
