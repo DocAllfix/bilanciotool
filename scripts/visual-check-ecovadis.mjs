@@ -31,7 +31,12 @@ await check("il file del badge risponde 200 ed è un SVG", async () => {
 await check("la fascia sta fra 'Il metodo' e le FAQ", async () => {
   const pos = await page.evaluate(() => {
     const y = (s) => { const el = document.querySelector(s); return el ? el.getBoundingClientRect().top + window.scrollY : null; };
-    const img = [...document.querySelectorAll("img")].find((i) => i.src.includes("ecovadis"));
+    // Il badge GRANDE, quello della fascia: da quando l'hero ne porta uno piccolo
+      // da 64px, prendere il primo della pagina misura la cosa sbagliata — ed e'
+      // esattamente cio' che faceva sembrare rotto un badge sano.
+      const img = [...document.querySelectorAll("img")]
+        .filter((i) => i.src.includes("ecovadis"))
+        .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
     return { metodo: y("#metodo"), faq: y("#faq"), badge: img ? img.getBoundingClientRect().top + window.scrollY : null };
   });
   if (pos.badge === null) throw new Error("badge assente");
@@ -42,7 +47,9 @@ await check("il badge si carica davvero (non è un'immagine rotta)", async () =>
   await page.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
   await page.waitForTimeout(900);
   const dim = await page.evaluate(() => {
-    const i = [...document.querySelectorAll("img")].find((x) => x.src.includes("ecovadis"));
+    const i = [...document.querySelectorAll("img")]
+      .filter((x) => x.src.includes("ecovadis"))
+      .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
     return i ? { w: i.naturalWidth, h: i.naturalHeight, alt: i.alt, box: i.getBoundingClientRect().width } : null;
   });
   if (!dim || dim.w === 0) throw new Error("naturalWidth 0: immagine rotta " + JSON.stringify(dim));
@@ -127,7 +134,9 @@ await dark.waitForTimeout(800);
 await dark.screenshot({ path: `${OUT}/03-fascia-scura.png` });
 await check("nel tema scuro il badge resta visibile e leggibile", async () => {
   const v = await dark.evaluate(() => {
-    const i = [...document.querySelectorAll("img")].find((x) => x.src.includes("ecovadis"));
+    const i = [...document.querySelectorAll("img")]
+      .filter((x) => x.src.includes("ecovadis"))
+      .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
     if (!i) return null;
     const r = i.getBoundingClientRect();
     return { w: r.width, visibile: r.top < window.innerHeight && r.bottom > 0, opacity: getComputedStyle(i).opacity, filter: getComputedStyle(i).filter };
@@ -151,7 +160,9 @@ await check("su mobile la fascia impila e non sborda", async () => {
   await m.evaluate(() => window.scrollBy(0, -700));
   await m.waitForTimeout(900);
   const r = await m.evaluate(() => {
-    const i = [...document.querySelectorAll("img")].find((x) => x.src.includes("ecovadis"));
+    const i = [...document.querySelectorAll("img")]
+      .filter((x) => x.src.includes("ecovadis"))
+      .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
     return { larghezza: i ? i.getBoundingClientRect().width : null, sborda: document.documentElement.scrollWidth > window.innerWidth + 1 };
   });
   if (r.sborda) throw new Error("la pagina sborda in orizzontale");
