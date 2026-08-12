@@ -90,7 +90,7 @@ export const MODULI_AZIENDA = [
   {
     href: "fornitore",
     etichetta: "Fornitore",
-    nome: "Autovalutazione fornitore",
+    nome: "Autovalutazione ESG",
     norma: "ESRS · ISO 20400",
     icona: BadgeCheck,
     colore: {

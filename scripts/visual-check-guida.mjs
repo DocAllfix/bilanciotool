@@ -49,7 +49,7 @@ await check("ci sono tutti e cinque i percorsi, con norma e documento prodotto",
     ["Inventario GHG", "ISO 14064-1", "Rapporto GHG"],
     ["Bilancio di sostenibilità", "GRI", "Bilancio di sostenibilità"],
     ["Diagnosi energetica", "UNI CEI EN 16247", "Diagnosi energetica"],
-    ["Autovalutazione fornitore", "ISO 20400", "Attestato"],
+    ["Autovalutazione ESG", "ISO 20400", "Attestato"],
     ["Dichiarazione di Applicabilità", "ISO/IEC 27001", "Dichiarazione di Applicabilità"],
   ];
   for (const [nome, norma, doc] of attesi) {
