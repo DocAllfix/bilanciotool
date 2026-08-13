@@ -325,10 +325,23 @@ await agisci("l'invito a un collega parte", async () => {
   await page.waitForTimeout(2000);
 });
 
-await agisci("il comando di acquisto porta a Stripe", async () => {
+// Qui il collaudo si FERMA prima di uscire verso Stripe, e non è pigrizia: in
+// produzione le chiavi sono vive, e ogni clic su «Paga» creerebbe un cliente e una
+// sessione veri nell'account che incassa. A ogni esecuzione. Che il pulsante porti
+// davvero al pagamento lo prova `qa -- estensioni`, che gira contro le chiavi di prova.
+await agisci("il dialogo d'acquisto è pronto a mandare al pagamento", async () => {
   await vai("/impostazioni/abbonamento");
   await page.getByRole("button", { name: /^(Attiva|Passa a questo)/ }).first().click();
-  await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60_000 });
+  await page.waitForTimeout(900);
+  const d = page.getByRole("dialog");
+  if (!(await d.count())) throw new Error("il dialogo d'acquisto non si apre");
+  const t = await d.innerText();
+  if (!/Blocchi da \d+ aziende/.test(t)) throw new Error("non offre le estensioni");
+  if (!/Primo anno/.test(t)) throw new Error("non mostra il totale del primo anno");
+  const paga = d.getByRole("button", { name: /^Paga / });
+  if (!(await paga.count())) throw new Error("nessun comando per pagare");
+  if (await paga.isDisabled()) throw new Error("il comando per pagare è spento");
+  await page.keyboard.press("Escape");
 });
 
 await agisci("il menu utente si apre e fa uscire", async () => {

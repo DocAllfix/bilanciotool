@@ -18,6 +18,16 @@ const RUN = Date.now();
 const EMAIL = `pago-${RUN}@example.com`;
 const PWD = "PasswordSicura123!";
 
+// ⚠️ Questo collaudo arriva alla pagina di pagamento VERA: contro la produzione, dove le
+// chiavi sono vive, crea un cliente e una sessione nell'account che incassa — a ogni
+// esecuzione. Va lanciato contro un ambiente in modalita' di prova.
+if (!/localhost|127\.0\.0\.1/.test(BASE) && !process.env.SO_CHE_E_VIVO) {
+  console.error(`BASE e' ${BASE}: se le chiavi Stripe di quell'ambiente sono vive, questo`);
+  console.error("collaudo crea clienti e sessioni reali. Lancialo su http://localhost:3000,");
+  console.error("oppure, se sai quello che fai: SO_CHE_E_VIVO=1 node <script>");
+  process.exit(1);
+}
+
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 let ok = 0, ko = 0;
