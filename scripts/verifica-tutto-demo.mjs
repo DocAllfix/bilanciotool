@@ -140,7 +140,7 @@ await agisci("la card porta al fascicolo", async () => {
 
 await agisci("il fascicolo elenca i cinque percorsi", async () => {
   const t = await page.locator("main").innerText();
-  for (const n of ["Inventario GHG", "Bilancio di sostenibilità", "Diagnosi energetica", "Autovalutazione ESG", "Dichiarazione di Applicabilità"]) {
+  for (const n of ["Inventario GHG", "Bilancio di sostenibilità e conformità ESG", "Bilancio energetico", "Autovalutazione ESG", "Statement of Applicability"]) {
     if (!t.includes(n)) throw new Error(`manca ${n}`);
   }
 });
@@ -245,7 +245,7 @@ const nessunoSnapshot = async () => {
 for (const [nome, rotta] of [
   ["il Rapporto GHG", `${A}/ghg/2025?passo=8`],
   ["il Bilancio", `${A}/bilancio/2025?passo=7`],
-  ["la Diagnosi energetica", `${A}/energetico/2025?passo=8`],
+  ["il Bilancio energetico", `${A}/energetico/2025?passo=8`],
 ]) {
   await respinto(`in prova non si pubblica ${nome}`, async () => {
     await vai(rotta);

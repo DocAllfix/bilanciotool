@@ -123,7 +123,7 @@ await check("le esclusioni della SoA sono tutte motivate", async () => {
 await check("il fascicolo dell'azienda mostra tutti e cinque i percorsi avviati", async () => {
   await page.goto(`${BASE}/aziende/${az}`, { waitUntil: "networkidle" });
   const t = await page.locator("body").innerText();
-  for (const n of ["Inventario GHG", "Bilancio di sostenibilità", "Diagnosi energetica", "Autovalutazione ESG", "Dichiarazione di Applicabilità"]) {
+  for (const n of ["Inventario GHG", "Bilancio di sostenibilità e conformità ESG", "Bilancio energetico", "Autovalutazione ESG", "Statement of Applicability"]) {
     if (!t.includes(n)) throw new Error(`manca ${n}`);
   }
   if (/Non avviato/i.test(t)) throw new Error("un percorso risulta ancora non avviato");

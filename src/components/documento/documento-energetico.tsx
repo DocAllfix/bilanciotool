@@ -237,13 +237,13 @@ export function DocumentoEnergetico({ dati, imageUrls }: { dati: Snapshot; image
     <>
       <div className="doc-cover">
         <div className="testo">
-          <p className="kicker">Diagnosi energetica · esercizio {anno}</p>
+          <p className="kicker">Bilancio energetico · esercizio {anno}</p>
           <h1>{azienda.nome}</h1>
           <p className="sotto">
             {[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
           </p>
           <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Redatta secondo UNI CEI EN 16247-1 e 16247-3
+            Diagnosi energetica redatta secondo UNI CEI EN 16247-1 e 16247-3
           </p>
         </div>
         <div className="filo" />

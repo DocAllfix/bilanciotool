@@ -80,13 +80,13 @@ export function DocumentoSoa({ dati }: { dati: Snapshot }) {
     <>
       <div className="doc-cover">
         <div className="testo">
-          <p className="kicker">Dichiarazione di Applicabilità</p>
+          <p className="kicker">Statement of Applicability (SoA)</p>
           <h1>{azienda.nome}</h1>
           <p className="sotto">
             {[p.sede || azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
           </p>
           <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            ISO/IEC 27001:2022 · revisione {p.versione || "1.0"}
+            Dichiarazione di Applicabilità · ISO/IEC 27001:2022 · revisione {p.versione || "1.0"}
             {p.data ? ` del ${fmtData(p.data)}` : ""}
           </p>
         </div>

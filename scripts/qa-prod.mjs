@@ -380,7 +380,7 @@ await check("passo 7: pubblicazione bilancio + PDF", async () => {
 });
 
 // ====================================================== 6. DIAGNOSI ENERGETICA
-set("Diagnosi energetica");
+set("Bilancio energetico");
 let companyDemo = null;
 await check("apertura del modulo energetico dal portafoglio", async () => {
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
@@ -483,7 +483,7 @@ await check("pubblicazione dell'attestato, disclaimer e PDF", async () => {
 await page.screenshot({ path: `${OUT}/qa-07-fornitore.png` });
 
 // ============================================================ 8. SOA ISO 27001
-set("Dichiarazione di Applicabilità");
+set("Statement of Applicability");
 await check("apertura del modulo SoA e creazione", async () => {
   await page.goto(`${BASE}/aziende/${companyDemo}/soa`, { waitUntil: "networkidle", timeout: 120000 });
   await silenziaTour();

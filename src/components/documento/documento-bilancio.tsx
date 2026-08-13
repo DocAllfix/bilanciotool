@@ -150,7 +150,7 @@ export function DocumentoBilancio({ dati, imageUrls }: { dati: Snapshot; imageUr
           </div>
         )}
         <div className="testo">
-          <p className="kicker">Bilancio di sostenibilità · esercizio {anno}</p>
+          <p className="kicker">Bilancio di sostenibilità e conformità ESG · esercizio {anno}</p>
           <h1>{azienda.nome}</h1>
           <p className="sotto">
             {[p.profilo.settore || azienda.settore, p.profilo.sede || azienda.sede].filter(Boolean).join(" · ")}

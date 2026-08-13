@@ -111,7 +111,7 @@ console.log("\n— pubblicazione dei cinque documenti —");
 const PUBBLICAZIONI = [
   ["Rapporto GHG", `${A}/ghg/2025?passo=8`, "ghg"],
   ["Bilancio", `${A}/bilancio/2025?passo=7`, "bilancio"],
-  ["Diagnosi energetica", `${A}/energetico/2025?passo=8`, "energetico"],
+  ["Bilancio energetico", `${A}/energetico/2025?passo=8`, "energetico"],
 ];
 for (const [nome, rotta, tipo] of PUBBLICAZIONI) {
   await agisci(`si pubblica il ${nome}`, async () => {

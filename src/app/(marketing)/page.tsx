@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     absolute: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
   },
   description:
-    "Inventario GHG ISO 14064-1, bilancio di sostenibilità GRI/VSME, diagnosi energetica UNI CEI EN 16247, autovalutazione ESG dei fornitori e Dichiarazione di Applicabilità ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
+    "Inventario GHG ISO 14064-1, bilancio di sostenibilità e conformità ESG, bilancio energetico UNI CEI EN 16247, autovalutazione ESG dei fornitori e Statement of Applicability ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
 };
 
 const NORME = [
@@ -62,7 +62,7 @@ const DATI_STRUTTURATI = {
       name: "EvalisDeck",
       applicationCategory: "BusinessApplication",
       description:
-        "Percorsi guidati ISO 14064-1 e GRI/ESRS-VSME per studi di consulenza e PMI: inventario GHG, bilancio di sostenibilità, diagnosi energetica, autovalutazione fornitori, Dichiarazione di Applicabilità ISO 27001.",
+        "Percorsi guidati ISO 14064-1 e GRI/ESRS-VSME per studi di consulenza e PMI: inventario GHG, bilancio di sostenibilità e conformità ESG, bilancio energetico, autovalutazione fornitori, Statement of Applicability ISO 27001.",
     },
   },
 };
@@ -111,7 +111,7 @@ export default function LandingPage() {
                 Un solo strumento.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Cinque percorsi guidati, dall&apos;inventario GHG alla Dichiarazione di Applicabilità: ogni passo sa
+                Cinque percorsi guidati, dall&apos;inventario GHG allo Statement of Applicability: ogni passo sa
                 cosa chiede la norma, i calcoli si fanno da soli, e quello che ne esce è un documento impaginato che
                 regge la verifica.
               </p>
@@ -121,18 +121,29 @@ export default function LandingPage() {
                     Prova la demo guidata <ArrowRight className="size-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="ghost" asChild className="text-foreground">
-                  <a href="/esempi/esempio-bilancio-2025.pdf" target="_blank" rel="noopener">
-                    <FileText className="size-4" /> Guarda un bilancio d&apos;esempio
-                  </a>
+                {/* Il secondo pulsante e' «Attiva», non l'esempio in PDF: chi ha gia'
+                    deciso deve trovare un COMANDO, non una riga di testo sottolineata
+                    sotto ai bottoni. L'esempio resta, come collegamento. */}
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/attiva">Attiva il servizio</Link>
                 </Button>
               </div>
+              <p className="mt-4 text-sm">
+                <a
+                  href="/esempi/esempio-bilancio-2025.pdf"
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  <FileText className="size-4" /> Guarda un bilancio d&apos;esempio
+                </a>
+              </p>
               {/* Chi ha gia' deciso non deve passare per la demo: la seconda frase
                   gli apre una porta, senza rubare il primo piano a chi vuole guardare. */}
-              <p className="mt-4 text-xs text-muted-foreground">
+              <p className="mt-3 text-xs text-muted-foreground">
                 Un&apos;azienda d&apos;esempio già compilata ti aspetta. Nessuna carta richiesta.{" "}
-                <Link href="/#acquisto" className="font-medium text-foreground underline underline-offset-2 hover:text-primary">
-                  Preferisci attivarlo subito?
+                <Link href="/#acquisto" className="underline underline-offset-2 hover:text-foreground">
+                  Come si acquista
                 </Link>
               </p>
               {/* La medaglia sopra la piega, richiesta del committente. Sta qui e
@@ -218,7 +229,7 @@ export default function LandingPage() {
               <Reveal delay={100}>
                 <Percorso
                   indice="B"
-                  titolo="Bilancio di sostenibilità"
+                  titolo="Bilancio di sostenibilità e conformità ESG"
                   norma="GRI 2021 · ESRS VSME"
                   passi={["Organizzazione", "Doppia materialità guidata", "49 indicatori su due anni", "Politiche e obiettivi", "Racconto e fotografie", "Verifica delle lacune", "Documento impaginato"]}
                   punto="La sezione emissioni legge direttamente dall'inventario GHG della stessa azienda: una modifica lì, aggiornata qui."
@@ -227,7 +238,7 @@ export default function LandingPage() {
               <Reveal delay={200}>
                 <Percorso
                   indice="C"
-                  titolo="Diagnosi energetica"
+                  titolo="Bilancio energetico"
                   norma="UNI CEI EN 16247 · ISO 50001"
                   passi={["Sito e perimetro", "12 vettori energetici", "Ripartizione sui 20 usi finali", "Indicatori di prestazione", "Interventi e ritorno", "Racconto", "Verifica", "Diagnosi impaginata"]}
                   punto="La ripartizione si quadra da sola: le celle restano nell'unità del vettore, quindi correggere un potere calorifico non invalida un esercizio già chiuso."
@@ -254,7 +265,7 @@ export default function LandingPage() {
               <Reveal delay={120}>
                 <Percorso
                   indice="E"
-                  titolo="Dichiarazione di Applicabilità"
+                  titolo="Statement of Applicability (SoA)"
                   norma="ISO/IEC 27001:2022 §6.1.3 d)"
                   passi={["Contesto e ambito", "174 controlli su 5 quadri", "Applicabilità e motivazioni", "Verifiche di coerenza", "Piano di attuazione", "Dichiarazione firmata"]}
                   punto="Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice."

@@ -6,7 +6,7 @@ import { SoaShell } from "@/components/soa/soa-shell";
 import { CreaDichiarazione } from "@/components/soa/crea-dichiarazione";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Dichiarazione di Applicabilità" };
+export const metadata: Metadata = { title: "Statement of Applicability" };
 
 export default async function SoaPage({
   params,
@@ -27,7 +27,7 @@ export default async function SoaPage({
       <div className="mx-auto w-full max-w-3xl">
         <h1 className="font-display text-2xl font-semibold tracking-tight">{dati.azienda.nome}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Dichiarazione di Applicabilità · ISO/IEC 27001:2022 §6.1.3 d) · 27017 · 27018 · 27701
+          Statement of Applicability · ISO/IEC 27001:2022 §6.1.3 d) · 27017 · 27018 · 27701
         </p>
         <CreaDichiarazione companyId={companyId} />
       </div>

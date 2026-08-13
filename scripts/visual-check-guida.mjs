@@ -48,9 +48,9 @@ await check("ci sono tutti e cinque i percorsi, con norma e documento prodotto",
   const attesi = [
     ["Inventario GHG", "ISO 14064-1", "Rapporto GHG"],
     ["Bilancio di sostenibilità", "GRI", "Bilancio di sostenibilità"],
-    ["Diagnosi energetica", "UNI CEI EN 16247", "Diagnosi energetica"],
+    ["Bilancio energetico", "UNI CEI EN 16247", "Bilancio energetico"],
     ["Autovalutazione ESG", "ISO 20400", "Attestato"],
-    ["Dichiarazione di Applicabilità", "ISO/IEC 27001", "Dichiarazione di Applicabilità"],
+    ["Statement of Applicability (SoA)", "ISO/IEC 27001", "Statement of Applicability"],
   ];
   for (const [nome, norma, doc] of attesi) {
     for (const pezzo of [nome, norma, doc]) {

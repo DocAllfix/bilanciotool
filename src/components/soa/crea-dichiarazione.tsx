@@ -39,7 +39,7 @@ export function CreaDichiarazione({ companyId }: { companyId: string }) {
     <div className="mt-6">
       <Card>
         <CardHeader>
-          <h2 className="text-[15px] font-semibold tracking-tight">Nuova Dichiarazione di Applicabilità</h2>
+          <h2 className="text-[15px] font-semibold tracking-tight">Nuovo Statement of Applicability</h2>
           <p className="text-sm text-muted-foreground">
             I 93 controlli dell&apos;Allegato A della ISO/IEC 27001 sono sempre in ambito. I moduli estesi
             (27017 cloud, 27018 dati personali in cloud, 27701 privacy) si attivano dopo, in base al profilo

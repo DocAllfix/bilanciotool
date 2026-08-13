@@ -350,7 +350,7 @@ const doc = await page.waitForEvent("popup", { timeout: 90000 });
 await doc.waitForLoadState("networkidle");
 await doc.waitForTimeout(600);
 verifica("Il pulsante pubblica apre il documento appena congelato",
-  (await doc.getByText("Diagnosi energetica").first().isVisible().catch(() => false)) &&
+  (await doc.getByText("Bilancio energetico").first().isVisible().catch(() => false)) &&
   doc.url().includes("/documento/"));
 verifica("Il documento riporta i numeri del percorso",
   (await doc.getByText("4.087.920").first().isVisible().catch(() => false)));

@@ -54,7 +54,7 @@ export function SoaShell(props: {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">
-            <Link href="/dashboard" className="hover:underline">Portafoglio</Link> · Dichiarazione di Applicabilità
+            <Link href="/dashboard" className="hover:underline">Portafoglio</Link> · Statement of Applicability
           </p>
           <h1 className="truncate font-display text-2xl font-semibold tracking-tight">{azienda.nome}</h1>
           <p className="mt-1 text-sm text-muted-foreground">

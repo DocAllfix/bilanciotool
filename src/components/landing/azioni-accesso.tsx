@@ -33,6 +33,12 @@ export function AzioniAccesso() {
       <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
         <Link href="/login">Accedi</Link>
       </Button>
+      {/* Solo da schermo largo: tre pulsanti in una barra alta quattordici unita' si
+          accavallano su un telefono. Li' l'attivazione la offre il secondo pulsante
+          dell'hero, che e' sopra la piega. */}
+      <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
+        <Link href="/attiva">Attiva il servizio</Link>
+      </Button>
       <Button size="sm" asChild>
         <Link href="/registrati">Prova la demo guidata</Link>
       </Button>

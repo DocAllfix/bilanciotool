@@ -130,6 +130,57 @@ await agisci("i dati strutturati dichiarano il dominio vero e le domande", async
 });
 
 
+// Il telefono e' uno dei modi principali con cui questa pagina verra' vista, e il Deck
+// dell'hero e' una composizione a posizioni assolute: con misure fisse funziona a una
+// larghezza sola e sotto quella non si stringe, si TAGLIA. E' successo: la copertina
+// finiva novantacinque pixel fuori dallo schermo e il nome dell'azienda si leggeva
+// «…anica …tica S.r.l.». Qui si misura, non si guarda.
+for (const [nome, largh, alt] of [["iPhone SE", 375, 667], ["Android comune", 360, 800], ["iPhone 14", 390, 844]]) {
+  await agisci(`da ${nome} (${largh}px) niente esce dallo schermo`, async () => {
+    const tel = await browser.newContext({ viewport: { width: largh, height: alt }, isMobile: true, hasTouch: true });
+    const p2 = await tel.newPage();
+    await p2.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    await p2.waitForTimeout(2200);
+    const esito = await p2.evaluate(() => {
+      const de = document.documentElement;
+      const fuori = [];
+      for (const e of document.querySelectorAll("main *")) {
+        const b = e.getBoundingClientRect();
+        if (b.width === 0 || b.height === 0) continue;
+        // Le velature sfocate escono apposta: sono decorazione, non contenuto.
+        if (/blur-|pointer-events-none/.test((e.className || "").toString())) continue;
+        if (b.left < -1 || b.right > de.clientWidth + 1) {
+          fuori.push(`${e.tagName}.${(e.className || "").toString().slice(0, 40)}`);
+        }
+      }
+      return { scorre: de.scrollWidth - de.clientWidth, fuori: fuori.slice(0, 4), quanti: fuori.length };
+    });
+    await tel.close();
+    if (esito.scorre > 0) throw new Error(`la pagina scorre in orizzontale di ${esito.scorre}px`);
+    if (esito.quanti) throw new Error(`${esito.quanti} elementi fuori dai bordi: ${esito.fuori.join(" | ")}`);
+  });
+}
+
+await agisci("da telefono l'attivazione e' raggiungibile sopra la piega", async () => {
+  const tel = await browser.newContext({ viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true });
+  const p2 = await tel.newPage();
+  await p2.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  await p2.waitForTimeout(2000);
+  // Il PRIMO VISIBILE, non il primo nel documento: quello dell'intestazione esiste nel
+  // markup ma e' nascosto sotto una certa larghezza, e misurarlo direbbe «non c'e'».
+  const tutti = p2.locator('a[href="/attiva"]');
+  let b = null;
+  for (let i = 0; i < (await tutti.count()); i++) {
+    const r = await tutti.nth(i).boundingBox();
+    if (r) { b = r; break; }
+  }
+  await tel.close();
+  if (!b) throw new Error("nessun comando di attivazione visibile");
+  // Entro due schermate: piu' in basso e' come non esserci.
+  if (b.y > 667 * 2) throw new Error(`il comando sta a ${Math.round(b.y)}px, troppo in basso`);
+});
+
+
 console.log("\n— consenso e misurazione —");
 await agisci("senza scelta non parte nessuna richiesta a Google", async () => {
   const pulito = await browser.newContext();

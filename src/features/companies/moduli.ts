@@ -62,7 +62,7 @@ export const MODULI_AZIENDA = [
   {
     href: "bilancio",
     etichetta: "Bilancio",
-    nome: "Bilancio di sostenibilità",
+    nome: "Bilancio di sostenibilità e conformità ESG",
     norma: "GRI · ESRS VSME",
     icona: BookOpen,
     colore: {
@@ -76,7 +76,7 @@ export const MODULI_AZIENDA = [
   {
     href: "energetico",
     etichetta: "Energia",
-    nome: "Diagnosi energetica",
+    nome: "Bilancio energetico",
     norma: "UNI CEI EN 16247",
     icona: Zap,
     colore: {
@@ -104,7 +104,7 @@ export const MODULI_AZIENDA = [
   {
     href: "soa",
     etichetta: "SoA",
-    nome: "Dichiarazione di Applicabilità",
+    nome: "Statement of Applicability (SoA)",
     norma: "ISO/IEC 27001",
     icona: ShieldCheck,
     colore: {
