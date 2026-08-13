@@ -24,7 +24,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Link href="/" className="mb-7" aria-label="EvalisDeck">
         <LogoVerticale className="h-24" />
       </Link>
-      <div className="w-full max-w-sm">{children}</div>
+      {/* `main` e non `div`: e' il punto di riferimento con cui una tecnologia
+          assistiva salta direttamente al contenuto. Il resto del prodotto ce l'ha,
+          queste pagine no — e sono le prime che si incontrano. */}
+      <main className="w-full max-w-sm">{children}</main>
       <p className="mt-10 max-w-sm text-center text-xs leading-relaxed text-muted-foreground">
         Bilanci di sostenibilità e inventari GHG per le PMI, con il metodo incorporato.
       </p>
