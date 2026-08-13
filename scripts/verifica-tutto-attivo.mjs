@@ -75,10 +75,19 @@ await agisci("si crea un'azienda propria", async () => {
   mia = r.id;
 });
 
+// I conteggi si leggono dal DATABASE, non si scrivono a mano: un conto riusato porta
+// le aziende e i documenti delle esecuzioni precedenti, e un numero fisso fa fallire
+// il collaudo alla seconda passata per un motivo che col prodotto non c'entra.
+const aziendeAttive = async () => {
+  const [r] = await sql`select count(*)::int n from company
+    where organization_id=${orgId} and is_demo=false and stato='active'`;
+  return r.n;
+};
 await agisci("il conteggio della capacita' si aggiorna", async () => {
   await vai("/dashboard");
   const t = await page.locator("body").innerText();
-  if (!/1 di 10/.test(t)) throw new Error("il contatore non segna 1 di 10");
+  const atteso = `${await aziendeAttive()} di 10`;
+  if (!t.includes(atteso)) throw new Error(`il contatore non segna «${atteso}»`);
 });
 
 await agisci("l'azienda nuova apre il proprio fascicolo", async () => {
@@ -160,15 +169,18 @@ await agisci("il documento porta il marchio dello studio (white-label)", async (
 });
 
 console.log("\n— archivio e consegna al cliente —");
-await agisci("l'archivio elenca i documenti pubblicati", async () => {
+await agisci("l'archivio elenca tutte le versioni pubblicate", async () => {
+  const [tot] = await sql`select count(*)::int n from document_snapshot where organization_id=${orgId}`;
   await vai("/documenti");
   const t = await page.locator("main").innerText();
-  if (!/Tutti \(5\)/.test(t)) throw new Error(`il conteggio dice: ${t.slice(0, 120).replace(/\n/g, " ")}`);
+  if (!t.includes(`Tutti (${tot.n})`)) throw new Error(`il conteggio non dice «Tutti (${tot.n})»`);
 });
 await agisci("il filtro per tipo restringe l'elenco", async () => {
+  const [ghg] = await sql`select count(*)::int n from document_snapshot
+    where organization_id=${orgId} and tipo='ghg'`;
   await vai("/documenti?tipo=ghg");
   const righe = await page.locator("main a[href^='/documento/']").count();
-  if (righe !== 1) throw new Error(`${righe} documenti invece di 1`);
+  if (righe !== ghg.n) throw new Error(`${righe} documenti invece di ${ghg.n}`);
 });
 
 let url = null;
@@ -260,27 +272,95 @@ await agisci("l'abbonamento mostra il piano e la capacita' usata", async () => {
   const t = await page.locator("main").innerText();
   if (!/Studio/.test(t)) throw new Error("il piano non compare");
   if (!/Attivo/.test(t)) throw new Error("lo stato non compare");
-  if (!/1 di 10/.test(t)) throw new Error("la capacita' usata non compare");
+  const atteso = `${await aziendeAttive()} di 10`;
+  if (!t.includes(atteso)) throw new Error(`la capacita' usata non dice «${atteso}»`);
 });
 
-await agisci("chi ha un piano puo' comunque gestirlo da qui", async () => {
+// Chi ha gia' un piano non vedeva NIENTE: la pagina si fermava alla capacita' usata.
+// Non deve per forza esserci un pulsante — comprare un'estensione a meta' anno tocca
+// l'abbonamento gia' in corso, e quel flusso non c'e' — ma deve esserci una STRADA:
+// quali estensioni esistono, quanto costano, e a chi scrivere per averle.
+await agisci("chi ha un piano vede le estensioni e come ottenerle", async () => {
   await vai("/impostazioni/abbonamento");
-  const comandi = await page.locator("main button, main a[href^='/api'], main a[href*='stripe']").count();
-  if (!comandi) throw new Error("un cliente che paga non ha nessun comando: ne' estensioni, ne' fatture, ne' disdetta");
+  const t = await page.locator("main").innerText();
+  if (!/Aggiungere capacità/i.test(t)) throw new Error("nessuna sezione per aggiungere capacita'");
+  for (const atteso of ["+5 aziende", "+1 accesso", "Documenti col tuo marchio"]) {
+    if (!t.includes(atteso)) throw new Error(`manca l'estensione «${atteso}»`);
+  }
+  if (!/fattur/i.test(t)) throw new Error("non dice come avere le fatture");
+  if (!/disdi/i.test(t)) throw new Error("non dice come disdire");
+  if (!(await page.locator("main a[href^='mailto:']").count())) throw new Error("nessun recapito su cui agire");
 });
 
-await agisci("si archivia e si ripristina un'azienda", async () => {
+await agisci("chi ha un piano non se lo vede riproposto in vendita", async () => {
+  const t = await page.locator("main").innerText();
+  if (/Prezzi di lancio, validi fino al/.test(t)) throw new Error("il listino compare a chi ha gia' comprato");
+});
+
+await agisci("archiviare chiede conferma, e «Annulla» non archivia", async () => {
   await vai("/dashboard");
   await page.getByRole("button", { name: /Altre azioni/i }).first().click();
   await page.waitForTimeout(500);
   const arch = page.getByRole("menuitem", { name: /Archivia/i }).first();
   if (!(await arch.count())) throw new Error("nessuna voce «Archivia»");
   await arch.click();
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(800);
+  const dialogo = page.getByRole("dialog");
+  if (!(await dialogo.count())) throw new Error("nessuna conferma prima di archiviare");
+  if (!/Archiviare/i.test(await dialogo.innerText())) throw new Error("la conferma non dice cosa sta per fare");
+  await page.getByRole("button", { name: /^Annulla$/ }).click();
+  await page.waitForTimeout(1200);
   const [r] = await sql`select stato from company where id=${mia}`;
-  if (r.stato !== "archived") throw new Error(`stato «${r.stato}»`);
-  await sql`update company set stato='active' where id=${mia}`;
+  if (r.stato !== "active") throw new Error("ha archiviato dopo «Annulla»");
 });
+
+await agisci("si archivia e si ripristina un'azienda", async () => {
+  await page.getByRole("button", { name: /Altre azioni/i }).first().click();
+  await page.waitForTimeout(500);
+  await page.getByRole("menuitem", { name: /Archivia/i }).first().click();
+  await page.waitForTimeout(800);
+  await page.getByRole("dialog").getByRole("button", { name: /^Archivia$/ }).click();
+  await page.waitForTimeout(3000);
+  let [r] = await sql`select stato from company where id=${mia}`;
+  if (r.stato !== "archived") throw new Error(`dopo l'archiviazione lo stato e' «${r.stato}»`);
+
+  // E si ripristina dall'interfaccia, non a mano nel database. Il menu va cercato
+  // sulla card di QUESTA azienda: le esecuzioni precedenti ne lasciano altre in
+  // archivio, e «la prima che trovo» ne ripristinava una a caso — poi il collaudo
+  // guardava la nostra, la trovava ancora archiviata, e accusava il prodotto.
+  await vai("/dashboard");
+  // Si cerca il contenitore PIÙ PICCOLO che porti insieme il nome e il menu: risalire
+  // fino a trovare il nome pesca il primo antenato comune, che avvolge tutte le card e
+  // fa scegliere quella sbagliata.
+  const indice = await page.evaluate((nome) => {
+    const bottoni = [...document.querySelectorAll('button[aria-label="Altre azioni"]')];
+    let migliore = -1;
+    let piuStretto = Infinity;
+    for (const e of document.querySelectorAll("main *")) {
+      const t = e.innerText || "";
+      if (!t.includes(nome) || t.length >= piuStretto) continue;
+      const b = e.querySelector('button[aria-label="Altre azioni"]');
+      if (!b) continue;
+      piuStretto = t.length;
+      migliore = bottoni.indexOf(b);
+    }
+    return migliore;
+  }, NOME_AZIENDA);
+  if (indice < 0) throw new Error("la card dell'azienda archiviata non si trova");
+  await page.getByRole("button", { name: /Altre azioni/i }).nth(indice).click();
+  await page.waitForTimeout(700);
+  const rip = page.getByRole("menuitem", { name: /Ripristina/i });
+  if (!(await rip.count())) throw new Error("la card archiviata non offre «Ripristina»");
+  await rip.first().click();
+  await page.waitForTimeout(3500);
+  [r] = await sql`select stato from company where id=${mia}`;
+  if (r.stato !== "active") throw new Error(`dopo il ripristino lo stato e' «${r.stato}»`);
+});
+
+// Pulizia: l'azienda creata da questa esecuzione si archivia. Le archiviate non
+// contano nei limiti, altrimenti dopo dieci esecuzioni il collaudo fallirebbe per
+// capacita' esaurita — e sarebbe il collaudo a essersi rotto, non il prodotto.
+if (mia) await sql`update company set stato='archived' where id=${mia}`;
 
 const ko = riepilogo("Conto attivo");
 await sql.end();

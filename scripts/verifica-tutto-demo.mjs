@@ -30,7 +30,7 @@ async function entra(page, sql, base, email) {
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const EMAIL = `tutto-demo-${Date.now()}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = process.env.PWD_CONTO ?? "PasswordSicura123!";
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
 const browser = await chromium.launch({ headless: true });
@@ -148,15 +148,17 @@ await agisci("il fascicolo elenca i cinque percorsi", async () => {
 // Il collegamento consegna al cliente i documenti pubblicati: e' un ESPORTO, ed e'
 // esattamente la capacita' che la prova non ha. La prova sta nel database, perche' qui
 // il prodotto non mostrava nessun rifiuto e riusciva.
+// Il conteggio dev'essere DIFFERENZIALE: un conto riusato porta i collegamenti creati
+// dalle esecuzioni precedenti, e un totale assoluto li attribuirebbe a questo gesto.
+const collegamenti = async () => {
+  const [r] = await sql`select count(*)::int n from company_share_link where company_id=${az.id}`;
+  return r.n;
+};
+const primaDelTentativo = await collegamenti();
 await respinto("in prova non si genera il collegamento per il cliente", async () => {
   await page.locator("#cond-nota").fill("Prova vietata");
   await page.getByRole("button", { name: /Genera collegamento/i }).click();
-}, {
-  prova: async () => {
-    const [r] = await sql`select count(*)::int n from company_share_link where company_id=${az.id}`;
-    return r.n === 0;
-  },
-});
+}, { prova: async () => (await collegamenti()) === primaDelTentativo });
 
 console.log("\n— i cinque percorsi, passo per passo —");
 const PERCORSI = [

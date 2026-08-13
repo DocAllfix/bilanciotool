@@ -294,6 +294,28 @@ Chi si registra atterra sulla dashboard e in tre momenti vede cosa ha comprato p
 
 Gate: typecheck · build · **462 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- benvenuto` **11 su 11 in produzione** (catena intera: video → 6 tappe → offerta → Stripe, e la prova che non riparte) · `qa -- demo-completa` **9 su 9 in produzione** (i cinque percorsi mostrano numeri veri: quadratura, indice fornitore 70, indice SoA 61) · console pulita.
 
+**Collaudo di ogni comando in produzione (2026-08-13) — quattro difetti veri**
+
+Ricognizione dei comandi reali di ogni pagina (invece di indovinarli), poi tre collaudi che dopo **ogni gesto** misurano console, richieste fallite e messaggi di rifiuto: `qa -- tutto-demo` (68), `qa -- tutto-attivo` (55), `qa -- tutto-pubblico` (27), più `qa -- recupero-password` (8). Tutti verdi su `https://evalisdeck.it`.
+
+1. **Il recupero della password non esisteva.** Il server lo sapeva già fare dalla Fase 13 — `sendResetPassword` configurato, modello dell'email pronto, freno sulla frequenza tarato — ma non c'era modo di chiederlo, e la privacy policy dichiarava che quell'email la mandiamo. Un cliente che dimenticava la password non entrava più. Aggiunte `/password-dimenticata` e `/reimposta-password` (entrambe statiche) e il collegamento **accanto al campo**, dove lo si cerca. Il freno copriva solo `/forget-password`: `authClient.requestPasswordReset` chiama `/request-password-reset`, che restava col limite generico — cioè l'endpoint che manda posta a indirizzi altrui.
+2. **Un conto in PROVA generava il collegamento pubblico ai documenti.** Il controllo c'era ma chiedeva `write_data`, che la prova possiede. Ora servono `write_data` **ed** `export`. La revoca invece non chiede nulla, per iscritto: può solo ridurre l'esposizione, e legarla all'abbonamento lascerebbe uno studio scaduto con un indirizzo pubblico che non può spegnere.
+3. **Chi paga non aveva un solo comando sull'abbonamento.** E la scheda mostrata a chi non ha piano diceva ancora che il pagamento con carta «arriva a breve», sopra il pulsante che porta a Stripe e funziona.
+4. **`confirm()` e `alert()` nativi** nell'unico gesto distruttivo: unico punto del prodotto, e `alert()` su alcuni browser viene soppresso — un errore riferito così può non arrivare mai.
+
+Più il landmark `main` mancante sulle pagine di accesso, che sono le prime che si incontrano.
+
+**Regole nate qui:**
+- **La prova di un divieto è la riga che non compare nel database**, non il messaggio. Il collegamento cliente riusciva *in silenzio*: nessun avviso rosso, nessun 4xx, nessun errore di console. Un collaudo che guarda solo l'interfaccia legge «bloccato in silenzio» dove c'è «riuscito in silenzio», e sono l'opposto.
+- **Il prodotto dice «no» in due modi**: l'avviso che scompare e il messaggio che resta accanto al comando. Il paywall usa il secondo.
+- **Ogni conteggio di un collaudo si legge dal database**, mai scritto a mano: un conto riusato porta le aziende, i documenti e i collegamenti delle esecuzioni precedenti, e un numero fisso fallisce alla seconda passata per un motivo che col prodotto non c'entra.
+- **Il nome accessibile non è l'etichetta visibile.** «Sì» è `B1: Sì`; lo stato di un controllo SoA è un `combobox` che si chiama «Stato di attuazione di 5.3» e ha il valore dentro. Cercare per il testo che si vede non trova niente.
+- **Playwright scarta da solo i dialoghi nativi**: senza `page.on("dialog")` un `confirm()` risponde sempre «no», e il collaudo legge «non ha funzionato» dove non è stato nemmeno chiesto.
+- **Per agire sulla card giusta serve il contenitore più piccolo** che porti insieme il nome e il comando: risalire fino al nome pesca il primo antenato comune, che avvolge tutte le card.
+- **Un `.first()` su un elenco che cresce agisce su un elemento a caso.** Il ripristino ripristinava un'azienda archiviata da un'esecuzione precedente, e il collaudo accusava il prodotto.
+
+**Rimasto aperto, da decidere col committente:** comprare un'estensione a metà anno tocca l'abbonamento già in corso, e quel flusso non esiste (il checkout include sempre il piano: si creerebbe un secondo abbonamento). Oggi la pagina elenca le estensioni coi prezzi e dice a chi scrivere. Il portale clienti di Stripe (fatture, metodo di pagamento) non è stato acceso di mia iniziativa: cambia ciò che un cliente può fare al proprio abbonamento, e il cambio piano dal portale romperebbe lo Schedule a due fasi.
+
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
