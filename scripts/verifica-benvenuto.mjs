@@ -60,7 +60,9 @@ await check("il video e' un file vero e arriva (non un 404 travestito)", async (
   // guarda il tipo e la dimensione. Un riquadro col video rotto sembra identico a uno
   // che funziona finche' non si preme play.
   const r = await page.request.get(`${BASE}/api/onboarding/video`);
-  if (r.status() !== 200) throw new Error(`stato ${r.status()}`);
+  // 503 = l'archivio non risponde (guasto nostro); 404 = la sessione non è arrivata.
+  // Distinguerli qui evita di cercare il difetto dalla parte sbagliata del sistema.
+  if (r.status() !== 200) throw new Error(`stato ${r.status()}${r.status() === 503 ? " (archivio non raggiungibile)" : ""}`);
   const tipo = r.headers()["content-type"] ?? "";
   if (!/video/.test(tipo)) throw new Error(`tipo inatteso: ${tipo}`);
   const corpo = await r.body();
