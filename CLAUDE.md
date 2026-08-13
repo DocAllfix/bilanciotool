@@ -337,6 +337,23 @@ Conseguenza sui collaudi: `verifica-checkout` e `verifica-pagamento` si **rifiut
 
 Gate: typecheck · build · **472 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- estensioni` **10 su 10** contro Stripe di prova, con la fase 2 letta da Stripe: `studio_rinnovo_lancio×1 + blocco_aziende_lancio×2 + accesso_lancio×3 + white_label_lancio×1 = 2.525 €`. Il collaudo è stato messo in rosso di proposito rimettendo il difetto: fallisce sull'asserzione giusta.
 
+**La strada d'acquisto sulla vetrina (2026-08-13)** — nata da una domanda vera di un potenziale cliente: «se voglio acquistare il servizio direttamente senza demo non è previsto? Non vedo le modalità di acquisto». Aveva ragione: ogni richiamo diceva «prova la demo», e chi aveva già deciso non trovava una strada.
+
+- **Sezione `#acquisto`**, senza prezzi ma con il **come**: abbonamento annuale per studio, carta o bonifico, fattura elettronica, rimborso a quattordici giorni, disdetta. E dove si vedono gli importi — perché tacere il come, oltre al quanto, fa sembrare che non si venda affatto. Voce nel menu, nel piede e nel richiamo finale.
+- **`/attiva`**: stessa iscrizione, ma il collegamento che arriva per posta fa entrare sulla **pagina dei piani** invece che sul portafoglio col video. È una **rotta** e non un parametro d'indirizzo: queste pagine sono statiche, e `useSearchParams` su una pagina statica arriva solo dopo l'idratazione — il titolo comparirebbe sbagliato e poi cambierebbe sotto gli occhi.
+
+**Trovato analizzando il resto della vetrina:**
+- I dati strutturati dichiaravano ancora `evalisdeck.vercel.app`.
+- **Mancavano del tutto i metadati di condivisione**: chi incollava il link in chat vedeva un riquadro spoglio — ed è esattamente così che questo prodotto si passa. Aggiunti `metadataBase`, `openGraph`, scheda Twitter e un'immagine 1200×630 **generata dal codice** (`src/app/opengraph-image.tsx`): un file statico andrebbe rifatto a ogni cambio di promessa, e la prima volta che diverge dal sito non se ne accorge nessuno, perché chi la vede non è chi la controlla.
+- Le domande frequenti sono anche **dati strutturati**, lette dallo **stesso elenco** che rende la pagina.
+
+**Regole nate qui:**
+- **I dati non si importano da un modulo `"use client"`**: il build restituisce un riferimento al componente, non l'array, e si ferma con «DOMANDE.map is not a function». Quelli condivisi fra server e client stanno in un file proprio (`src/components/landing/domande.ts`).
+- **`networkidle` non arriva mai** su una navigazione che il browser considera interna (stessa pagina, ancora diversa): serve `domcontentloaded`.
+- **L'immagine sociale si scarica dall'ambiente che si sta collaudando**, non dall'indirizzo assoluto che dichiara: in locale quello punta alla produzione, e un 404 direbbe «rotto» su una cosa che lì non è ancora arrivata.
+
+Gate: typecheck · build · **472 test** · `qa -- tutto-pubblico` **32 su 32 in produzione**.
+
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
