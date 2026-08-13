@@ -269,7 +269,7 @@ Gate: **424 test** · verifica-blog **13 su 13 in produzione** (con i due contro
 
 Gate: **462 test** · `verifica-pagamento` 9 su 9 in produzione · `verifica-checkout` 6 su 6 · `qa -- guida` 7 su 7 · errore reale visto in Sentry.
 
-⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
+⚠️ **Superato: in produzione ci sono le chiavi Stripe VIVE** (vedi la sezione del 2026-08-13). Questa riga diceva il contrario e ha rischiato di far girare un collaudo che compra contro l'ambiente che incassa.
 
 **Accoglienza del primo accesso (2026-08-13) — video, giro guidato, offerta**
 
@@ -290,7 +290,7 @@ Chi si registra atterra sulla dashboard e in tre momenti vede cosa ha comprato p
 - **Il 404 che sembrava dell'archivio era di Next.** Un `catch` unico attorno a sessione e archivio rendeva indistinguibili «non sei autorizzato» e «l'archivio non risponde», e la diagnosi è partita dalla parte opposta del sistema. Ora l'anonimo prende 404 e il guasto nostro prende **503** col motivo nei log. La prova decisiva è stata il `content-type: text/html` del 404: il nostro ha corpo vuoto, quello di Next è una pagina.
 - **Un collaudo che segue i rinvii non dice dove si è rotto**: la sonda va rifatta con `maxRedirects: 0`.
 
-⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
+⚠️ **Superato: in produzione ci sono le chiavi Stripe VIVE** (vedi la sezione del 2026-08-13). Questa riga diceva il contrario e ha rischiato di far girare un collaudo che compra contro l'ambiente che incassa.
 
 Gate: typecheck · build · **462 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- benvenuto` **11 su 11 in produzione** (catena intera: video → 6 tappe → offerta → Stripe, e la prova che non riparte) · `qa -- demo-completa` **9 su 9 in produzione** (i cinque percorsi mostrano numeri veri: quadratura, indice fornitore 70, indice SoA 61) · console pulita.
 
@@ -315,6 +315,25 @@ Più il landmark `main` mancante sulle pagine di accesso, che sono le prime che 
 - **Un `.first()` su un elenco che cresce agisce su un elemento a caso.** Il ripristino ripristinava un'azienda archiviata da un'esecuzione precedente, e il collaudo accusava il prodotto.
 
 **Rimasto aperto, da decidere col committente:** comprare un'estensione a metà anno tocca l'abbonamento già in corso, e quel flusso non esiste (il checkout include sempre il piano: si creerebbe un secondo abbonamento). Oggi la pagina elenca le estensioni coi prezzi e dice a chi scrivere. Il portale clienti di Stripe (fatture, metodo di pagamento) non è stato acceso di mia iniziativa: cambia ciò che un cliente può fare al proprio abbonamento, e il cambio piano dal portale romperebbe lo Schedule a due fasi.
+
+**Le estensioni (2026-08-13) — si vendono, e sopravvivono al rinnovo**
+
+Tre cose, in ordine di gravità.
+
+1. **La seconda fase dello Schedule conteneva il solo piano: le estensioni sparivano al primo rinnovo.** Chi avesse comprato Studio più cinque aziende si sarebbe visto, dodici mesi dopo, il limite riportato a dieci senza un avviso, mentre Stripe smetteva di addebitargliele. Latente perché nessuno ha ancora rinnovato: sarebbe uscito fra un anno, su abbonamenti in corso. Ora la fase di rinnovo la costruisce `vociDelRinnovo` (`src/features/billing/fasi.ts`), pura e con otto prove: il piano si sostituisce col prezzo ridotto, le estensioni **si portano dietro col prezzo a cui sono state comprate** (come il piano tiene il suo ridotto), gli addebiti una tantum no, e una riga ricorrente sconosciuta si porta dietro invece di sparire.
+2. **Le estensioni erano costruite dappertutto tranne dove si comprano**: prezzi su Stripe, righe nel checkout, lettura nel webhook, somma nei limiti, marchio congelato nello snapshot — e nessuna schermata che le passasse. Il white-label da 300 €/anno si attivava solo scrivendo `white_label = true` a mano nel database. Ora si scelgono nel dialogo d'acquisto, col totale mostrato **prima** di uscire verso Stripe.
+3. **Portale clienti** per fatture, ricevute, carta e dati fiscali. Cambio piano e disdetta **spenti**, e sta scritto nel codice perché non sembri una mancanza: ogni abbonamento porta uno Schedule a due fasi, e cambiarlo dal portale lo scavalca in modi non prevedibili. La configurazione si riconosce dai metadata e si riusa, come i prezzi.
+
+⚠️ **In produzione ci sono le chiavi Stripe VIVE.** Scoperto proprio da questo collaudo: la sessione creata dal sito era `cs_live_`, mentre la chiave locale è di prova. `CLAUDE.md` diceva ancora il contrario, ed è la ragione per cui un collaudo che **compra** stava per girare contro l'ambiente che incassa. Ora `verifica-estensioni.mjs` si ferma da solo se la chiave è viva.
+
+**Regole nate qui:**
+- **Un collaudo che compra dichiara contro cosa sta comprando, e si rifiuta di girare su un ambiente vivo.** La guardia costa tre righe; scoprirlo a metà da un «No such customer» costa la fiducia in tutto il resto del referto.
+- **La documentazione che dice il falso su un ambiente è peggio dell'assenza di documentazione**: quella riga sulle chiavi di test è stata creduta.
+- **Lo Schedule si chiede a Stripe, non al nostro database**: da noi l'identificativo lo scrive un evento successivo, e in locale quell'evento non arriva. La verità su cosa pagherà il cliente sta di là.
+- **Un evento si può consegnare a mano al proprio webhook**, firmandolo col segreto di prova: l'evento resta vero, si rifà solo la firma. È così che si prova la catena intera senza il CLI di Stripe.
+- **Un controllo che legge la pagina precedente passa sempre.** Due controlli sul portale erano verdi mentre il portale non si era mai aperto.
+
+Gate: typecheck · build · **472 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- estensioni` **10 su 10** contro Stripe di prova, con la fase 2 letta da Stripe: `studio_rinnovo_lancio×1 + blocco_aziende_lancio×2 + accesso_lancio×3 + white_label_lancio×1 = 2.525 €`. Il collaudo è stato messo in rosso di proposito rimettendo il difetto: fallisce sull'asserzione giusta.
 
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 

@@ -30,6 +30,39 @@ const MARCHIO = true;
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// ⚠️ Guardia: questo collaudo COMPRA. Contro un ambiente in modalità viva
+// addebiterebbe denaro vero, e la chiave locale non vedrebbe nemmeno gli oggetti creati
+// dal sito. Ci si ferma prima, invece di scoprirlo a metà da un «No such customer».
+const CHIAVE_VIVA = /_live_/.test(process.env.STRIPE_SECRET_KEY ?? "");
+if (CHIAVE_VIVA && !process.env.SO_CHE_E_VIVO) {
+  console.error("La chiave Stripe locale è in modalità VIVA: questo collaudo compra davvero.");
+  console.error("Se è voluto: SO_CHE_E_VIVO=1 node scripts/verifica-estensioni.mjs");
+  process.exit(1);
+}
+
+/**
+ * Consegna a mano un evento al nostro webhook, firmandolo col segreto di prova.
+ *
+ * Serve quando il collaudo gira su localhost: Stripe non sa raggiungere una macchina
+ * di sviluppo, e senza l'evento non parte niente — né l'attivazione né lo Schedule.
+ * L'evento è VERO, ripreso da Stripe: si rifà solo la firma, che è l'unica cosa che
+ * cambia fra un mittente e l'altro.
+ */
+async function consegnaEvento(evento) {
+  const segreto = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!segreto) throw new Error("STRIPE_WEBHOOK_SECRET assente: non posso firmare l'evento");
+  const corpo = JSON.stringify(evento);
+  const t = Math.floor(Date.now() / 1000);
+  const { createHmac } = await import("node:crypto");
+  const firma = createHmac("sha256", segreto).update(`${t}.${corpo}`).digest("hex");
+  const r = await fetch(`${BASE}/api/stripe/webhook`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "stripe-signature": `t=${t},v1=${firma}` },
+    body: corpo,
+  });
+  if (!r.ok) throw new Error(`il webhook ha risposto ${r.status}: ${(await r.text()).slice(0, 160)}`);
+}
 let ok = 0, ko = 0;
 const check = async (nome, fn) => {
   try { await fn(); ok++; console.log("  ok   " + nome); }
@@ -152,6 +185,21 @@ await check("si paga davvero e l'account si sblocca con le estensioni", async ()
   });
   if (sub.status !== "active") throw new Error("abbonamento in stato " + sub.status);
 
+  // In locale Stripe non ci arriva: l'evento glielo si porta a mano, firmato.
+  // Gli eventi compaiono con qualche istante di ritardo rispetto all'oggetto che li
+  // ha generati: chiederli subito e una volta sola non li trova.
+  if (/localhost|127\.0\.0\.1/.test(BASE)) {
+    let nostro = null;
+    for (let i = 0; i < 10 && !nostro; i++) {
+      const eventi = await stripe.events.list({ types: ["customer.subscription.created"], limit: 20 });
+      nostro = eventi.data.find((ev) => ev.data?.object?.id === sub.id) ?? null;
+      if (!nostro) await new Promise((r) => setTimeout(r, 2000));
+    }
+    if (!nostro) throw new Error("l'evento dell'abbonamento non si trova su Stripe");
+    await consegnaEvento(nostro);
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+
   let e;
   for (let i = 0; i < 20; i++) {
     [e] = await sql`select status, piano, aziende_extra, accessi_extra, white_label
@@ -178,11 +226,20 @@ await check("la capacità sulla pagina rispecchia quello che è stato comprato",
 await check("IL RINNOVO PORTA ANCORA LE ESTENSIONI", async () => {
   // Il motivo per cui esiste questo collaudo. Prima la seconda fase conteneva il solo
   // piano: fra dodici mesi il cliente avrebbe perso dieci aziende e tre accessi.
+  // Lo Schedule si chiede a STRIPE, non al nostro database: da noi l'identificativo lo
+  // scrive un evento successivo (`subscription.updated`, che parte quando lo Schedule
+  // si aggancia), e in locale quell'evento non lo consegna nessuno. La verità su cosa
+  // pagherà il cliente sta comunque di là.
   let schedule = null;
-  for (let i = 0; i < 12; i++) {
-    const [s] = await sql`select stripe_schedule_id from stripe_subscription where organization_id = ${orgId}`;
+  for (let i = 0; i < 12 && !schedule; i++) {
+    const [s] = await sql`select stripe_subscription_id, stripe_schedule_id from stripe_subscription
+      where organization_id = ${orgId}`;
     if (s?.stripe_schedule_id) { schedule = s.stripe_schedule_id; break; }
-    await new Promise((r) => setTimeout(r, 3000));
+    if (s?.stripe_subscription_id) {
+      const sub = await stripe.subscriptions.retrieve(s.stripe_subscription_id);
+      if (sub.schedule) schedule = typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id;
+    }
+    if (!schedule) await new Promise((r) => setTimeout(r, 3000));
   }
   if (!schedule) throw new Error("nessun piano a due fasi creato");
   const sch = await stripe.subscriptionSchedules.retrieve(schedule);
@@ -221,9 +278,13 @@ await check("il portale clienti si apre", async () => {
 });
 
 await check("il portale offre fatture e carta, e NON il cambio piano", async () => {
+  // Senza questa riga il controllo leggerebbe la pagina precedente e passerebbe anche
+  // quando il portale non si è mai aperto: un verde falso è peggio di un rosso.
+  if (!urlPortale) throw new Error("il portale non si è aperto: niente da verificare");
   const t = await page.locator("body").innerText();
-  if (!/(fattur|Fattur|ricevut|Ricevut|Storico)/.test(t)) throw new Error("non mostra le fatture");
-  if (!/(metodo di pagamento|Metodo di pagamento|carta)/i.test(t)) throw new Error("non mostra il metodo di pagamento");
+  console.log("       portale dice: " + t.replace(/\s+/g, " ").slice(0, 200));
+  if (!/(fattur|ricevut|storico|invoice|billing history)/i.test(t)) throw new Error("non mostra le fatture");
+  if (!/(metodo di pagamento|payment method|carta|card)/i.test(t)) throw new Error("non mostra il metodo di pagamento");
   // Le due cose che romperebbero lo Schedule a due fasi.
   if (/(Aggiorna piano|Cambia piano|Update plan)/i.test(t)) throw new Error("offre il cambio piano");
   if (/(Annulla piano|Annulla abbonamento|Cancel plan|Disdici)/i.test(t)) throw new Error("offre la disdetta");
@@ -237,6 +298,7 @@ await check("un collaboratore non apre il portale dello studio", async () => {
   await sql`update member set role='member' where user_id=${u.id} and organization_id=${orgId}`;
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
   const b = page.getByRole("button", { name: /Fatture e metodo di pagamento/i });
+  if (!(await b.count())) throw new Error("il comando non c'è nemmeno per il titolare: prova inconcludente");
   let respinto = true;
   if (await b.count()) {
     await b.click();
