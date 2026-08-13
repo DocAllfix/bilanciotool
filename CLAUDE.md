@@ -286,10 +286,13 @@ Chi si registra atterra sulla dashboard e in tre momenti vede cosa ha comprato p
 - **Il benvenuto si segna visto quando si ARRIVA all'offerta**, non quando la si chiude: chi va al pagamento e torna indietro senza pagare ha già visto tutto, e rimettergli il video da capo sarebbe la seconda cosa che gli succede dopo un ripensamento.
 - **Un componente montato nella shell sopravvive alle navigazioni, il suo stato in memoria no.** Un `useRef` acceso una volta come «in corso» bloccava tutte le tappe successive: deve ricordare *quale* tappa, non *se*.
 - **Le quantità stanno nei campi, non nel testo**: un collaudo che legge `innerText` dice «manca» anche quando c'è.
+- **Un pattern del `.gitignore` senza barra iniziale vale a QUALSIASI livello.** `video/`, scritto per la cartella del materiale girato, si è portato via `src/app/api/onboarding/video/route.ts`: il codice compilava, i collaudi locali passavano, e in produzione la rotta non esisteva. Le cartelle di lavoro vanno ancorate (`/video/`). Controllo utile dopo ogni aggiunta: `git ls-files --others --ignored --exclude-standard -- 'src/**' 'scripts/**'` deve essere vuoto.
+- **Il 404 che sembrava dell'archivio era di Next.** Un `catch` unico attorno a sessione e archivio rendeva indistinguibili «non sei autorizzato» e «l'archivio non risponde», e la diagnosi è partita dalla parte opposta del sistema. Ora l'anonimo prende 404 e il guasto nostro prende **503** col motivo nei log. La prova decisiva è stata il `content-type: text/html` del 404: il nostro ha corpo vuoto, quello di Next è una pagina.
+- **Un collaudo che segue i rinvii non dice dove si è rotto**: la sonda va rifatta con `maxRedirects: 0`.
 
 ⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
 
-Gate: typecheck · build · **462 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- benvenuto` 11 su 11 (catena intera: video → 6 tappe → offerta → Stripe, e la prova che non riparte) · `qa -- demo-completa` 9 su 9 (i cinque percorsi mostrano numeri veri: quadratura, indice fornitore 70, indice SoA 61) · console pulita.
+Gate: typecheck · build · **462 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- benvenuto` **11 su 11 in produzione** (catena intera: video → 6 tappe → offerta → Stripe, e la prova che non riparte) · `qa -- demo-completa` **9 su 9 in produzione** (i cinque percorsi mostrano numeri veri: quadratura, indice fornitore 70, indice SoA 61) · console pulita.
 
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
