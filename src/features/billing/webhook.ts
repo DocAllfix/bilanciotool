@@ -5,6 +5,7 @@ import { stripeSubscription } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
 import { applicaAbbonamento, organizzazioneDelCliente } from "./provisioning";
+import { vociDelRinnovo } from "./fasi";
 
 // Il dispatch degli eventi Stripe.
 //
@@ -51,6 +52,17 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
   const fase = schedule.phases[0];
   if (!fase) return;
 
+  // Le righe si leggono dall'ABBONAMENTO e non dalla fase appena creata: qui c'è la
+  // chiave del listino e c'è `recurring`, cioè le due cose che servono a distinguere
+  // il piano dalle estensioni e le estensioni dagli addebiti una tantum. Nella fase
+  // ci sono solo id di prezzo, che non dicono che cosa siano.
+  const righe = sub.items.data.map((i) => ({
+    priceId: i.price.id,
+    lookupKey: i.price.lookup_key ?? null,
+    quantita: i.quantity ?? 1,
+    ricorrente: Boolean(i.price.recurring),
+  }));
+
   await stripe().subscriptionSchedules.update(schedule.id, {
     end_behavior: "release",
     phases: [
@@ -65,7 +77,9 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
         end_date: fase.end_date,
       },
       {
-        items: [{ price: await idPrezzo(rinnovo.lookup), quantity: 1 }],
+        // Piano al prezzo di rinnovo PIÙ le estensioni comprate: prima c'era la sola
+        // riga del piano, e le estensioni sparivano al primo rinnovo.
+        items: vociDelRinnovo(righe, await idPrezzo(rinnovo.lookup)),
         // `duration` e non `iterations`: quest'ultimo non esiste più nella versione
         // corrente dell'API, e il compilatore l'ha intercettato prima che diventasse
         // un errore in produzione su un rinnovo fra dodici mesi.

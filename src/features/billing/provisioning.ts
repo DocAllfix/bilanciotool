@@ -4,7 +4,7 @@ import { orgEntitlement, stripeCustomer, stripeSubscription, member, user } from
 import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
-import { PIANI, ESTENSIONI, CHIAVI_PIANO, type PianoKey } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI, chiavePiano, type PianoKey } from "@/lib/prezzi";
 
 // Da un abbonamento Stripe allo stato dell'account.
 //
@@ -42,15 +42,7 @@ export function capacitaDaAbbonamento(sub: Stripe.Subscription): Capacita {
     const lookup = riga.price.lookup_key ?? "";
     const quantita = riga.quantity ?? 1;
 
-    const trovato = CHIAVI_PIANO.find((k) => {
-      const p = PIANI[k];
-      return (
-        lookup === p.lookupAnno1 ||
-        lookup === p.lookupRinnovo ||
-        lookup === p.lookupAnno1Lancio ||
-        lookup === p.lookupRinnovoLancio
-      );
-    });
+    const trovato = chiavePiano(lookup);
     if (trovato) {
       piano = trovato;
       continue;

@@ -6,6 +6,7 @@ import { EntitlementError } from "@/features/entitlement";
 import { CHIAVI_PIANO, PIANI } from "@/lib/prezzi";
 import { stripeConfigurato } from "@/lib/stripe/client";
 import { creaSessioneCheckout } from "./checkout";
+import { urlPortale } from "./portale";
 import type { ActionEsito } from "@/features/companies/actions";
 
 // Il pagamento lo avvia solo chi può impegnare lo studio: `requireStudioAdmin`, non
@@ -51,5 +52,31 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
       ok: false,
       errore: e instanceof Error && e.message.includes("Enterprise") ? e.message : "Pagamento non disponibile in questo momento. Riprova fra poco.",
     };
+  }
+}
+
+/**
+ * Apre il portale clienti di Stripe: fatture, ricevute, metodo di pagamento.
+ *
+ * Anche qui `requireStudioAdmin`: la cronologia dei pagamenti dello studio e la carta
+ * con cui si paga non sono cose da collaboratore invitato.
+ */
+export async function apriPortaleAction(): Promise<ActionEsito<{ url: string }>> {
+  if (!stripeConfigurato()) {
+    return { ok: false, errore: "La gestione del pagamento non è attiva su questo ambiente." };
+  }
+  try {
+    const s = await requireStudioAdmin();
+    const url = await urlPortale(s.orgId);
+    if (!url) {
+      // Studio attivato a mano, senza mai passare da Stripe: non c'è niente da mostrare
+      // e mandarlo su una pagina che non lo conosce sarebbe un vicolo cieco.
+      return { ok: false, errore: "Non risultano pagamenti con carta su questo studio. Scrivici e ti mandiamo le fatture." };
+    }
+    return { ok: true, dati: { url } };
+  } catch (e) {
+    if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
+    console.error("[billing] portale non aperto:", e);
+    return { ok: false, errore: "Non riesco ad aprire la gestione dell'abbonamento. Riprova fra poco." };
   }
 }

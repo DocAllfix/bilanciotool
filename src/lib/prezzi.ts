@@ -115,6 +115,29 @@ export const ESTENSIONI = {
   avvioAssistito: { min: 50000, max: 80000, minLancio: 25000, maxLancio: 40000, lookup: "evalisdeck_avvio_assistito_v1", lookupLancio: "evalisdeck_avvio_assistito_lancio_v1" },
 } as const;
 
+/**
+ * Il piano a cui appartiene una chiave del listino, o `null` se non è un piano.
+ *
+ * Le quattro varianti — listino/lancio × primo anno/rinnovo — sono lo stesso piano a
+ * prezzi diversi. Sta qui perché la stessa domanda serve a chi legge le capacità da un
+ * abbonamento e a chi costruisce le fasi del rinnovo: due copie divergerebbero al
+ * primo listino nuovo, e la copia che diverge decide quanto paga qualcuno.
+ */
+export function chiavePiano(lookup: string | null | undefined): PianoKey | null {
+  if (!lookup) return null;
+  return (
+    CHIAVI_PIANO.find((k) => {
+      const p = PIANI[k];
+      return (
+        lookup === p.lookupAnno1 ||
+        lookup === p.lookupRinnovo ||
+        lookup === p.lookupAnno1Lancio ||
+        lookup === p.lookupRinnovoLancio
+      );
+    }) ?? null
+  );
+}
+
 export type Limiti = { maxActiveCompanies: number; warnAtCompanies: number; maxMembers: number };
 
 /**

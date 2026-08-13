@@ -4,7 +4,8 @@ import { getQuadroAbbonamento } from "@/features/studio/queries";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PulsanteAcquisto } from "@/components/impostazioni/pulsante-acquisto";
+import { DialogoAcquisto } from "@/components/impostazioni/dialogo-acquisto";
+import { PulsantePortale } from "@/components/impostazioni/pulsante-portale";
 import {
   PIANI, ESTENSIONI, CHIAVI_PIANO, euro,
   prezzoDiVendita, prezzoEstensione, lancioAttivo, FINE_LANCIO,
@@ -142,7 +143,7 @@ export default async function AbbonamentoPage() {
                       {a.piano === p.key ? (
                         <p className="text-center text-[12.5px] font-medium text-primary">Il tuo piano</p>
                       ) : (
-                        <PulsanteAcquisto
+                        <DialogoAcquisto
                           piano={p.key}
                           etichetta={a.piano ? "Passa a questo" : "Attiva"}
                           variante={a.piano ? "outline" : "default"}
@@ -155,14 +156,13 @@ export default async function AbbonamentoPage() {
             </ul>
 
             <div className="mt-5 space-y-1 border-t pt-4 text-[13px] text-muted-foreground">
+              {/* Le estensioni si scelgono dentro il dialogo, insieme al piano: qui
+                  basta dire che ci sono, con quanto costano. Ripetere il listino in
+                  due posti significa aggiornarne uno solo, prima o poi. */}
               <p>
-                Servono più aziende? Blocchi da {ESTENSIONI.bloccoAziende.aziende} a{" "}
-                {euro(prezzoEstensione(ESTENSIONI.bloccoAziende).importo)}{" "}l&apos;anno. Accessi in più:{" "}
-                {euro(prezzoEstensione(ESTENSIONI.accesso).importo)} ciascuno.
-              </p>
-              <p>
-                Documenti col marchio del tuo studio:{" "}
-                {euro(prezzoEstensione(ESTENSIONI.whiteLabel).importo)}{" "}l&apos;anno.
+                Servono più aziende, più accessi o i documenti col tuo marchio? Si aggiungono al piano
+                nella stessa schermata di pagamento, da{" "}
+                {euro(prezzoEstensione(ESTENSIONI.accesso).importo)}{" "}l&apos;anno.
               </p>
               <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
             </div>
@@ -222,9 +222,19 @@ export default async function AbbonamentoPage() {
                 </li>
               ))}
             </ul>
+            {/* Fatture e carta se le prende da solo. Il cambio piano e la disdetta no,
+                e sta scritto perché non sembri una mancanza: ogni abbonamento porta uno
+                Schedule a due fasi, e cambiarlo dal portale lo scavalca. */}
+            <div className="flex flex-wrap items-center gap-3 border-t pt-4">
+              <PulsantePortale />
+              <p className="text-[12.5px] text-muted-foreground">
+                Ricevute, fatture, carta e dati fiscali.
+              </p>
+            </div>
+
             <div className="rounded-lg border border-primary/30 bg-accent p-4 text-[13px] leading-relaxed text-accent-foreground">
               <p>
-                Per aggiungere un&apos;estensione, avere le fatture o disdire il rinnovo, scrivi a{" "}
+                Per aggiungere un&apos;estensione a metà anno, cambiare piano o disdire il rinnovo, scrivi a{" "}
                 <a
                   href={`mailto:${TITOLARE.email}?subject=Abbonamento%20EvalisDeck%20-%20${encodeURIComponent(a.nomePiano ?? "")}`}
                   className="font-medium underline"
