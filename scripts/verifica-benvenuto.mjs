@@ -55,6 +55,47 @@ await check("un nuovo studio entra e trova il video di benvenuto", async () => {
   if (!(await page.locator("video").count())) throw new Error("nessun elemento video nel riquadro");
 });
 
+// LA PROVA CHE CONTA: il video deve CARICARSI DENTRO LA PAGINA.
+//
+// Scaricarlo con una richiesta di rete non dimostra niente sul `<video>`: una fetch non
+// passa dalla Content-Security-Policy della pagina. E' successo davvero — `media-src`
+// non era dichiarato, ricadeva su `default-src 'self'`, e il browser bloccava il video
+// che sta su Supabase. Il collaudo era verde e il video non partiva, ne' da telefono
+// ne' da computer.
+await check("il video si carica DAVVERO nel riquadro (non solo via rete)", async () => {
+  const violazioni = [];
+  await page.evaluate(() => {
+    window.__csp = [];
+    document.addEventListener("securitypolicyviolation", (e) => {
+      window.__csp.push(`${e.violatedDirective} ← ${String(e.blockedURI).slice(0, 60)}`);
+    });
+  });
+  const video = page.locator("video");
+  await video.waitFor({ timeout: 15_000 });
+  // `readyState >= 2` (HAVE_CURRENT_DATA) vuol dire che i primi fotogrammi ci sono:
+  // e' la differenza fra «l'elemento esiste» e «il video si vede».
+  const pronto = await video
+    .evaluate(
+      (v) =>
+        new Promise((risolvi) => {
+          if (v.readyState >= 2) return risolvi({ ok: true, stato: v.readyState });
+          const fine = setTimeout(
+            () => risolvi({ ok: false, stato: v.readyState, errore: v.error?.message ?? null }),
+            20_000,
+          );
+          v.addEventListener("loadeddata", () => { clearTimeout(fine); risolvi({ ok: true, stato: v.readyState }); });
+          v.addEventListener("error", () => { clearTimeout(fine); risolvi({ ok: false, stato: v.readyState, errore: v.error?.message ?? "error" }); });
+        }),
+    )
+    .catch((e) => ({ ok: false, errore: e.message }));
+  violazioni.push(...(await page.evaluate(() => window.__csp ?? [])));
+  if (violazioni.length) throw new Error(`la CSP blocca: ${violazioni.join(" | ")}`);
+  if (!pronto.ok) throw new Error(`il video non si carica (readyState ${pronto.stato}${pronto.errore ? ", " + pronto.errore : ""})`);
+  const durata = await video.evaluate((v) => Math.round(v.duration));
+  if (!(durata > 5)) throw new Error(`durata ${durata}s: sospetta`);
+  console.log(`       si carica: ${durata}s di video`);
+});
+
 await check("il video e' un file vero e arriva (non un 404 travestito)", async () => {
   // La rotta risponde con un rinvio a un indirizzo firmato: si segue fino in fondo e si
   // guarda il tipo e la dimensione. Un riquadro col video rotto sembra identico a uno

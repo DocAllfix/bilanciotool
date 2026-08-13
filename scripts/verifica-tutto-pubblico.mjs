@@ -161,6 +161,24 @@ for (const [nome, largh, alt] of [["iPhone SE", 375, 667], ["Android comune", 36
   });
 }
 
+await agisci("il marchio non si comprime a nessuna larghezza", async () => {
+  // Quando la barra si stringe, la prima cosa che cede e' il logo, e cede in silenzio:
+  // a 768px era diventato una scaglia di quattordici pixel, illeggibile. Si misura la
+  // sua larghezza a tutte le soglie invece di fidarsi dell'occhio su una sola.
+  const stretti = [];
+  for (const w of [360, 390, 768, 1024, 1280]) {
+    const c = await browser.newContext({ viewport: { width: w, height: 700 }, isMobile: w < 700, hasTouch: w < 700 });
+    const p2 = await c.newPage();
+    await p2.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    await p2.waitForTimeout(1500);
+    const largh = await p2.locator('header a[aria-label="EvalisDeck"]').first()
+      .evaluate((e) => Math.round(e.getBoundingClientRect().width));
+    await c.close();
+    if (largh < 90) stretti.push(`${w}px → logo ${largh}px`);
+  }
+  if (stretti.length) throw new Error(`marchio compresso: ${stretti.join(", ")}`);
+});
+
 await agisci("da telefono l'attivazione e' raggiungibile sopra la piega", async () => {
   const tel = await browser.newContext({ viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true });
   const p2 = await tel.newPage();

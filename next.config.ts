@@ -36,6 +36,14 @@ const CSP = [
   // il browser lo bloccava — e il collaudo l'ha visto, la lettura della regola no.
   "img-src 'self' data: blob: https://cms.evalisdeck.it https://hahtljrexrngtfsplbsz.supabase.co https://www.googletagmanager.com https://*.google-analytics.com",
   "connect-src 'self' https://hahtljrexrngtfsplbsz.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  // Il video di benvenuto sta nell'archivio e la rotta rinvia a un indirizzo firmato di
+  // Supabase: un'altra origine. Senza questa riga `media-src` ricadeva su `default-src
+  // 'self'` e il browser lo BLOCCAVA — da telefono come da computer.
+  //
+  // Il collaudo diceva verde perché scaricava il file con una richiesta di rete, che
+  // della CSP della pagina non sa niente. Un `<video>` non è una fetch: va provato
+  // facendolo caricare davvero, ed è quello che ora fa `verifica-benvenuto`.
+  "media-src 'self' blob: https://hahtljrexrngtfsplbsz.supabase.co",
   "frame-src 'none'",
   "upgrade-insecure-requests",
 ].join("; ");

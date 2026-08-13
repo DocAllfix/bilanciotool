@@ -33,14 +33,17 @@ export function AzioniAccesso() {
       <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
         <Link href="/login">Accedi</Link>
       </Button>
-      {/* Solo da schermo largo: tre pulsanti in una barra alta quattordici unita' si
-          accavallano su un telefono. Li' l'attivazione la offre il secondo pulsante
-          dell'hero, che e' sopra la piega. */}
-      <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
+      {/* Da `lg` e non da `md`: a 768px compaiono anche le cinque voci del menu, e
+          insieme ai tre pulsanti non ci stanno — quello che cedeva era il marchio.
+          Sotto quella soglia l'attivazione la offre il pulsante nell'hero, che sta
+          sopra la piega ed e' stato messo li' apposta. */}
+      <Button variant="outline" size="sm" asChild className="hidden lg:inline-flex">
         <Link href="/attiva">Attiva il servizio</Link>
       </Button>
+      {/* Etichetta corta: nella barra il pulsante deve entrare, non convincere. La
+          promessa per intero sta nell'hero e nel richiamo finale, dove c'e' spazio. */}
       <Button size="sm" asChild>
-        <Link href="/registrati">Prova la demo guidata</Link>
+        <Link href="/registrati">Prova la demo</Link>
       </Button>
     </>
   );
