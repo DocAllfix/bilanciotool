@@ -48,7 +48,6 @@ test-results/
 playwright-report/
 shots*/
 
-video/
 shots-energetico/
 shots-doc-energetico/
 shots-attestato/
@@ -59,6 +58,9 @@ shots-soa-percorso/
 .vercel
 .env*
 
-# Materiale video di lavoro: pesa decine di MB e la storia di git non dimentica
-videodemo/
-video/
+# Materiale video di lavoro: pesa decine di MB e la storia di git non dimentica.
+# ANCORATI alla radice: `video/` senza la barra iniziale vale a QUALSIASI livello, e
+# si e' portato via `src/app/api/onboarding/video/route.ts`. Il codice compilava, i
+# collaudi locali passavano, e in produzione la rotta non esisteva.
+/videodemo/
+/video/
