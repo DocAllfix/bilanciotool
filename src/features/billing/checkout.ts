@@ -105,6 +105,17 @@ export async function creaSessioneCheckout(opts: {
     // ha già pagato per farsi dare un dato è il modo peggiore di iniziare un rapporto.
     billing_address_collection: "required",
     tax_id_collection: { enabled: true },
+    // Il campo per il codice sconto. Serve a due cose, e la seconda vale più della prima:
+    //  · vendere — una promozione si fa creando un codice su Stripe, senza toccare il
+    //    codice e senza aspettare una distribuzione;
+    //  · **collaudare l'incasso vero senza spendere una cifra vera**: un codice al 99%
+    //    fa pagare quindici euro invece di millecinquecento, passando dagli STESSI
+    //    prezzi, dallo stesso webhook e dallo stesso Schedule a due fasi. Un prodotto
+    //    finto da dieci euro proverebbe un prezzo che non vendiamo, e per essere
+    //    riconosciuto come piano richiederebbe di alterare il listino.
+    // L'importo scontato si vede sulla pagina di Stripe PRIMA di pagare: se il codice
+    // non attecchisse, si vedrebbe il prezzo pieno e non si andrebbe avanti.
+    allow_promotion_codes: true,
     // Obbligatorio quando il cliente Stripe esiste già: senza, Stripe rifiuta la
     // sessione perché non saprebbe dove scrivere la ragione sociale e l'indirizzo che
     // sta per chiedere. Sono anche i dati che serviranno alla fattura elettronica,

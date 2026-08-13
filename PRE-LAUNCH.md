@@ -117,9 +117,14 @@ Aggiornato al **2026-08-13**.
       → *verifica:* fatto **in modalità di prova**: registrazione → pagamento → azienda →
         cinque percorsi → pubblicazione → PDF → collegamento → il cliente scarica.
         In modalità **viva** non l'ha mai fatto nessuno
-- [ ] **Un acquisto vero, poi rimborsato**
-      → *verifica:* è l'unica prova che i prezzi vivi, la fattura e il webhook vivo
-        funzionino. I prezzi vivi sono oggetti diversi da quelli di prova
+- [ ] **Un acquisto vero, poi rimborsato** — pronto da eseguire, serve solo il via
+      → *come:* `STRIPE_SECRET_KEY=<chiave viva> node scripts/crea-buono-collaudo.mjs --applica`
+        crea un buono al **99%, una volta sola, scadenza 7 giorni**. Alla cassa si scrive
+        il codice e si paga **6 € invece di 600** — dagli stessi prezzi, dallo stesso
+        webhook, dallo stesso Schedule. Provato in modalità di prova: `qa -- buono` 5 su 5
+      → *verifica:* l'account passa ad `active` da solo, la fattura esce, arriva l'email di
+        benvenuto, la fase 2 dello Schedule è a **prezzo pieno** (il buono vale una volta
+        sola). Poi si rimborsa e si disattiva il codice
 - [x] **Collaudi contro la produzione** verdi
       → *verifica:* `tutto-demo` 68, `tutto-attivo` 55, `tutto-pubblico` 27, `benvenuto` 11,
         `demo-completa` 9, `recupero-password` 8
@@ -139,7 +144,8 @@ Aggiornato al **2026-08-13**.
 
 1. **Un acquisto vero, poi rimborsato.** Tutto il pagamento è provato in modalità di prova.
    I prezzi vivi sono oggetti diversi: finché nessuno paga davvero, la catena viva non è
-   mai stata percorsa da capo a fondo.
+   mai stata percorsa da capo a fondo. **Costa 6 €**, non 600: il buono di collaudo al 99%
+   è pronto (`scripts/crea-buono-collaudo.mjs`), e passa dagli stessi prezzi che venderai.
 2. **Il database di produzione separato, con un restore provato.** Oggi i dati di un
    cliente starebbero accanto a centotrenta organizzazioni di collaudo, e il ripristino di
    un backup non è mai stato tentato.
