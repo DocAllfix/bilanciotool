@@ -29,6 +29,7 @@ export function SiteHeader() {
               un anchor grezzo ogni voce ricarica il sito da capo. */}
           <Link href="/#percorsi" className="transition-colors hover:text-foreground">Percorsi</Link>
           <Link href="/#metodo" className="transition-colors hover:text-foreground">Metodo</Link>
+          <Link href="/#acquisto" className="transition-colors hover:text-foreground">Acquisto</Link>
           <Link href="/#faq" className="transition-colors hover:text-foreground">Domande</Link>
           {conBlog && (
             <Link href="/blog" className="transition-colors hover:text-foreground">

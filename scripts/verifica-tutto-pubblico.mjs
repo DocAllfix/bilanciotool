@@ -47,11 +47,88 @@ await agisci("tutti i collegamenti interni della home rispondono", async () => {
   if (rotti.length) throw new Error(rotti.join(" | "));
 });
 
+// Nato da una domanda di un potenziale cliente: «non vedo le modalità di acquisto».
+// Ogni richiamo diceva «prova la demo», e chi aveva già deciso non trovava una strada.
+await agisci("la vetrina dice COME si acquista", async () => {
+  await vai("/");
+  const t = await page.locator("body").innerText();
+  if (!/Come si acquista/i.test(t)) throw new Error("nessuna sezione sull'acquisto");
+  for (const atteso of [/abbonamento/i, /annuale/i, /bonifico|preventivo/i, /rimborso/i, /disdice/i]) {
+    if (!atteso.test(t)) throw new Error(`la sezione non parla di ${atteso}`);
+  }
+  // Deve dire ANCHE perché gli importi non sono qui: tacere il come, oltre al quanto,
+  // fa sembrare che non si venda affatto.
+  if (!/si vedono appena entri/i.test(t)) throw new Error("non spiega dove si vedono gli importi");
+});
+
+await agisci("il menu e il piede portano alla sezione acquisto", async () => {
+  // `domcontentloaded`: si arriva da una pagina con l'ancora, e attendere il silenzio
+  // di rete su una navigazione che il browser considera interna non finisce mai.
+  await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(600);
+  if (!(await page.locator('header a[href="/#acquisto"]').count())) throw new Error("manca dal menu");
+  if (!(await page.locator('footer a[href="/#acquisto"]').count())) throw new Error("manca dal piede");
+  // La voce dev'essere raggiungibile davvero, non solo presente: il salto deve portare
+  // la sezione sotto l'intestazione fissa, non nasconderla dietro.
+  await page.locator('header a[href="/#acquisto"]').first().click();
+  await page.waitForTimeout(900);
+  const y = await page.locator("#acquisto").evaluate((e) => e.getBoundingClientRect().top);
+  if (y < 0 || y > 260) throw new Error(`la sezione finisce a ${Math.round(y)}px dal bordo`);
+});
+
+await agisci("dalla vetrina si arriva all'attivazione senza passare dalla demo", async () => {
+  // `domcontentloaded` e non `networkidle`: si arriva qui dalla stessa pagina con
+  // l'ancora, e l'attesa del silenzio di rete su una navigazione che il browser
+  // considera interna non finisce mai.
+  await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(600);
+  const diretti = await page.locator('a[href="/attiva"]').count();
+  if (diretti < 2) throw new Error(`solo ${diretti} richiami all'attivazione`);
+  await page.locator('a[href="/attiva"]').first().click();
+  await page.waitForURL("**/attiva", { timeout: 20_000 });
+  const t = await page.locator("main").innerText();
+  if (!/Attiva il tuo studio/i.test(t)) throw new Error("la pagina non riconosce l'intento d'acquisto");
+  if (!/gratuita/i.test(t)) throw new Error("non dice che la registrazione è gratuita");
+});
+
 await agisci("le àncore del menu portano il percorso", async () => {
   const anc = await page.locator("header a[href*='#']").evaluateAll((a) => a.map((x) => x.getAttribute("href")));
   const nude = anc.filter((h) => h.startsWith("#"));
   if (nude.length) throw new Error(`àncore senza percorso: ${nude.join(", ")}`);
 });
+
+await agisci("il link condiviso porta anteprima, titolo e immagine", async () => {
+  // Il prodotto si passa per messaggio: un'anteprima muta fa sembrare provvisorio
+  // qualcosa che si vende a quattro cifre.
+  await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  const og = async (prop) =>
+    page.locator(`meta[property="og:${prop}"]`).first().getAttribute("content").catch(() => null);
+  for (const p of ["title", "description", "image", "url", "site_name"]) {
+    if (!(await og(p))) throw new Error(`manca og:${p}`);
+  }
+  const img = await og("image");
+  // L'indirizzo dichiarato dev'essere ASSOLUTO — un percorso relativo non significa
+  // niente dentro WhatsApp — ma l'immagine si scarica dall'ambiente che si sta
+  // collaudando: in locale il dominio vero servirebbe la versione gia' pubblicata,
+  // e un 404 direbbe «rotto» su una cosa che non e' ancora arrivata li'.
+  if (!/^https?:\/\//.test(img)) throw new Error(`og:image non assoluto: ${img}`);
+  const r = await page.request.get(`${BASE}${new URL(img).pathname}`);
+  if (r.status() !== 200) throw new Error(`l'immagine risponde ${r.status()}`);
+  const corpo = await r.body();
+  if (corpo.length < 5000) throw new Error(`immagine di ${corpo.length} byte: sospetta`);
+});
+
+await agisci("i dati strutturati dichiarano il dominio vero e le domande", async () => {
+  const blocchi = await page.locator('script[type="application/ld+json"]').allTextContents();
+  if (blocchi.length < 2) throw new Error(`solo ${blocchi.length} blocchi di dati strutturati`);
+  if (/vercel\.app/.test(blocchi.join(" "))) throw new Error("dichiara ancora un indirizzo di Vercel");
+  const faq = blocchi.map((b) => JSON.parse(b)).find((x) => x["@type"] === "FAQPage");
+  if (!faq) throw new Error("nessun blocco FAQPage");
+  // Le risposte devono essere le STESSE che stanno in pagina, non una copia a parte.
+  const testo = await page.locator("body").innerText();
+  if (!testo.includes(faq.mainEntity[0].name)) throw new Error("una domanda dichiarata non compare in pagina");
+});
+
 
 console.log("\n— consenso e misurazione —");
 await agisci("senza scelta non parte nessuna richiesta a Google", async () => {

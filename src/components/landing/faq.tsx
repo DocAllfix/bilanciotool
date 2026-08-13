@@ -3,42 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { DOMANDE } from "./domande";
 
-// FAQ con risposte VERE (niente riempitivi): funnel demo, norme, dati, prezzi.
-const DOMANDE: [string, string][] = [
-  [
-    "Come funziona la demo guidata?",
-    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti e cinque i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
-  ],
-  [
-    "Serve essere consulenti per usarlo?",
-    "No, ma è pensato per chi la rendicontazione la fa di mestiere: studi, consulenti HSE/ESG, responsabili qualità. Una PMI può usarlo in autonomia, perché le guide di valutazione tema per tema spiegano cosa guardare e dove trovare i dati in azienda.",
-  ],
-  [
-    "Devo comprarli tutti e cinque?",
-    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono la diagnosi energetica o la Dichiarazione ISO 27001 quando arriva il cliente che le chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
-  ],
-  [
-    "A quali norme sono conformi i documenti?",
-    "Il rapporto GHG segue i contenuti minimi del §9.3.1 della UNI EN ISO 14064-1:2018, con doppia rendicontazione Scope 2 e CO₂ biogenica separata. Il bilancio è redatto con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, con analisi di doppia rilevanza e indice dei contenuti. La diagnosi energetica segue la UNI CEI EN 16247 e la struttura richiesta dall'articolo 8 del D.Lgs. 102/2014. La Dichiarazione di Applicabilità copre i 174 controlli di ISO/IEC 27001:2022 e dei quadri 27017, 27018 e 27701, con la nota di conformità al punto 6.1.3 lettera d). L'autovalutazione del fornitore si appoggia a ESRS, GRI e ISO 20400.",
-  ],
-  [
-    "I fattori di emissione sono aggiornati?",
-    "La libreria di partenza usa fonti pubbliche (ISPRA, DEFRA, IPCC) versionate per edizione: gli aggiornamenti annuali arrivano con l'abbonamento e non riscrivono mai gli inventari già pubblicati. Ogni fattore può essere personalizzato dallo studio, con fonte documentata.",
-  ],
-  [
-    "Dove stanno i dati? E se non rinnovo?",
-    "Su database europei (Francoforte), isolati per studio a livello di database. Se non rinnovi, l'account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili. Non cancelliamo il lavoro di nessuno.",
-  ],
-  [
-    "Chi c'è dietro EvalisDeck?",
-    "Il prodotto è sviluppato per Evalis Srl, studio di consulenza e certificazione con sede ad Aversa. Nel giugno 2026 Evalis ha ottenuto da EcoVadis la medaglia Platinum con 89/100 e 99° percentile: il primo 1% delle aziende valutate. EcoVadis è una piattaforma internazionale che valuta le organizzazioni su ambiente, pratiche lavorative e diritti umani, etica e acquisti sostenibili. Una precisazione doverosa: quella valutazione riguarda Evalis come azienda, non certifica EvalisDeck né i documenti che il software produce. La conformità dei tuoi documenti dipende dai dati che inserisci e dalle norme che segui, non dal nostro punteggio.",
-  ],
-  [
-    "Cosa succede quando pubblico un documento?",
-    "La pubblicazione congela dati e calcoli in una versione numerata e immutabile: un vincolo a livello di database, non una promessa. Puoi sempre ripubblicare una nuova versione; quelle consegnate restano identiche per sempre. È la garanzia che porti in verifica.",
-  ],
-];
 
 export function Faq() {
   const [aperta, setAperta] = useState<number | null>(0);

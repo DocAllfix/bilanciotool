@@ -71,6 +71,11 @@ export function PiedeMarketing() {
                 Prova la demo
               </Link>
             </li>
+            <li>
+              <Link href="/#acquisto" className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">
+                Come si acquista
+              </Link>
+            </li>
           </ul>
         </div>
         <div>

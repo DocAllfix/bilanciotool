@@ -22,11 +22,29 @@ const display = Bricolage_Grotesque({
   variable: "--font-display",
 });
 
+const SITO = "https://evalisdeck.it";
+const DESCRIZIONE =
+  "La piattaforma per bilanci di sostenibilità e inventari GHG delle PMI: percorso guidato GRI/ESRS-VSME e ISO 14064-1.";
+
 export const metadata: Metadata = {
   // Nome scelto dal committente (2026-07-30): famiglia di prodotto Evalis.
   title: { default: "EvalisDeck", template: "%s · EvalisDeck" },
-  description:
-    "La piattaforma per bilanci di sostenibilità e inventari GHG delle PMI: percorso guidato GRI/ESRS-VSME e ISO 14064-1.",
+  description: DESCRIZIONE,
+  // `metadataBase` serve a Next per rendere assoluti gli indirizzi delle immagini
+  // sociali: senza, l'anteprima di WhatsApp e LinkedIn resta vuota perché il percorso
+  // relativo non significa niente fuori dal sito.
+  metadataBase: new URL(SITO),
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    siteName: "EvalisDeck",
+    title: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
+    description: DESCRIZIONE,
+    url: SITO,
+  },
+  // Il prodotto si passa per messaggio, non per social: la scheda grande serve
+  // soprattutto a chi apre il link da WhatsApp e da LinkedIn.
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

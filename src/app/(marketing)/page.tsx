@@ -6,6 +6,7 @@ import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText } from "lucide-react";
 import { Faq } from "@/components/landing/faq";
+import { DOMANDE } from "@/components/landing/domande";
 import { PiedeMarketing } from "@/components/landing/piede";
 import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
@@ -38,7 +39,9 @@ const DATI_STRUTTURATI = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Evalis Srl",
-  url: "https://evalisdeck.vercel.app",
+  // Il dominio vero: l'indirizzo di Vercel era rimasto dal primo rilascio, e ai motori
+  // di ricerca diceva che l'organizzazione sta da un'altra parte.
+  url: "https://evalisdeck.it",
   ...(ecovadisValido()
     ? {
         award: `Medaglia EcoVadis ${ECOVADIS.medaglia} (${ECOVADIS.punteggio}/100, ${ECOVADIS.percentile}° percentile), ${ECOVADIS.mese}`,
@@ -64,6 +67,20 @@ const DATI_STRUTTURATI = {
   },
 };
 
+// Le domande frequenti dette anche ai motori di ricerca, con le STESSE risposte che
+// stanno in pagina: si leggono dallo stesso elenco, non si ricopiano. Due copie
+// divergono alla prima correzione, e quella che diverge e' sempre quella che nessuno
+// rilegge — mentre e' proprio quella che finisce nei risultati.
+const DOMANDE_STRUTTURATE = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: DOMANDE.map(([q, a]) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
+
 export default function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
@@ -71,6 +88,10 @@ export default function LandingPage() {
         type="application/ld+json"
         // Contenuto nostro, costante e serializzato: nessun input esterno.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(DATI_STRUTTURATI) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(DOMANDE_STRUTTURATE) }}
       />
       <SiteHeader />
       <main className="flex-1">
@@ -106,8 +127,13 @@ export default function LandingPage() {
                   </a>
                 </Button>
               </div>
+              {/* Chi ha gia' deciso non deve passare per la demo: la seconda frase
+                  gli apre una porta, senza rubare il primo piano a chi vuole guardare. */}
               <p className="mt-4 text-xs text-muted-foreground">
-                Un&apos;azienda d&apos;esempio già compilata ti aspetta. Nessuna carta richiesta.
+                Un&apos;azienda d&apos;esempio già compilata ti aspetta. Nessuna carta richiesta.{" "}
+                <Link href="/#acquisto" className="font-medium text-foreground underline underline-offset-2 hover:text-primary">
+                  Preferisci attivarlo subito?
+                </Link>
               </p>
               {/* La medaglia sopra la piega, richiesta del committente. Sta qui e
                   non in una striscia in cima perché non deve spingere giù il
@@ -362,6 +388,89 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ===================================================== COME SI ACQUISTA */}
+        {/*
+          Nata da una domanda vera di un potenziale cliente: «se voglio acquistare il
+          servizio direttamente senza demo non e' previsto? Non vedo le modalita' di
+          acquisto». Aveva ragione: ogni richiamo della pagina diceva «prova la demo», e
+          chi aveva gia' deciso non trovava una strada.
+
+          I PREZZI RESTANO FUORI, decisione del committente. Ma «niente prezzi» non
+          significa «niente informazioni»: qui si dice che cosa si compra, come si paga e
+          perche' gli importi si vedono solo entrando. Tacere il come, oltre al quanto, fa
+          sembrare che non si venda affatto.
+        */}
+        <section id="acquisto" className="scroll-mt-20 border-b bg-muted/30">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-24 md:grid-cols-[1fr_1.15fr]">
+            <Reveal>
+              <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                <span className="h-px w-8 bg-primary" aria-hidden />
+                Come si acquista
+              </p>
+              <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[40px]">
+                Un abbonamento solo, annuale, tutto incluso.
+              </h2>
+              <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
+                Si sottoscrive per studio, non per documento e non per utente. Comprende i cinque percorsi,
+                i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori di emissione
+                e gli accessi per chi lavora con te.
+              </p>
+              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted-foreground">
+                Gli importi si vedono appena entri, nella pagina Abbonamento: dipendono da quante aziende
+                segui e da quante persone accedono. La registrazione &egrave; gratuita e non chiede la carta.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button size="lg" asChild data-tour="cta-acquisto">
+                  <Link href="/attiva">
+                    Attiva il servizio <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="ghost" asChild className="text-foreground">
+                  <a href="mailto:info@evalisdeck.it?subject=Preventivo%20EvalisDeck">Chiedi un preventivo</a>
+                </Button>
+              </div>
+            </Reveal>
+
+            <Reveal delay={100}>
+              <ul className="space-y-3">
+                {(
+                  [
+                    [
+                      "Attivi subito, con carta",
+                      "Crei l'account, scegli il piano e paghi con carta, Satispay, Klarna o Amazon Pay. Lo studio si sblocca in pochi secondi, senza aspettare nessuno.",
+                    ],
+                    [
+                      "Oppure guardi prima, e attivi dopo",
+                      "Se preferisci vedere com'è fatto, l'azienda d'esempio è già compilata e i cinque percorsi sono percorribili per intero. Attivi da dentro quando hai deciso, senza rifare niente.",
+                    ],
+                    [
+                      "Ti serve una fattura da pagare a bonifico?",
+                      "Per chi ha bisogno dell'ordine d'acquisto o del pagamento differito: scrivici indicando il piano e ti mandiamo il preventivo. All'attivazione pensiamo noi.",
+                    ],
+                    [
+                      "Fattura elettronica e partita IVA",
+                      "Al pagamento raccogliamo partita IVA e codice destinatario, così la fattura parte senza doverti rincorrere dopo.",
+                    ],
+                    [
+                      "Quattordici giorni per ripensarci",
+                      "Finché non hai pubblicato il primo documento e non sono passati quattordici giorni dall'attivazione, il rimborso è integrale.",
+                    ],
+                    [
+                      "Il rinnovo è annuale e si disdice",
+                      "Dal secondo anno l'abbonamento si rinnova da solo a un prezzo ridotto. Si disdice fino al giorno prima della scadenza, e i dati restano tuoi e consultabili.",
+                    ],
+                  ] as [string, string][]
+                ).map(([t, d]) => (
+                  <li key={t} className="rounded-xl border bg-card p-5">
+                    <h3 className="font-display text-[17px] font-semibold tracking-[-0.01em]">{t}</h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{d}</p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ================================================ CHI C'È DIETRO */}
         <FasciaEcoVadis />
 
@@ -394,7 +503,8 @@ export default function LandingPage() {
 Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
               </h2>
               <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-sidebar-foreground/80">
-                Registrati, apri la demo guidata, guarda come lavora. Se convince, sblocchi e porti dentro i tuoi clienti.
+                Registrati, apri la demo guidata, guarda come lavora. Se convince, sblocchi e porti dentro i tuoi
+                clienti. Se hai già deciso, attivi subito e salti il giro.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button size="lg" asChild>
@@ -403,6 +513,9 @@ Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white" asChild>
+                  <Link href="/attiva">Attiva il servizio</Link>
+                </Button>
+                <Button size="lg" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" asChild>
                   <a href="/esempi/esempio-rapporto-ghg-2025.pdf" target="_blank" rel="noopener">
                     <FileText className="size-4" /> Rapporto GHG d&apos;esempio
                   </a>
