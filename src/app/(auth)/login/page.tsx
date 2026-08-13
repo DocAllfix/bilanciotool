@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AvvisoReimpostata } from "./avviso-reimpostata";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -39,13 +40,26 @@ export default function LoginPage() {
         <p className="text-sm text-muted-foreground">Entra nel tuo studio.</p>
       </CardHeader>
       <CardContent>
+        <Suspense fallback={null}>
+          <AvvisoReimpostata />
+        </Suspense>
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" autoComplete="email" required />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex items-baseline justify-between gap-3">
+              <Label htmlFor="password">Password</Label>
+              {/* Sta accanto al campo, non in fondo alla pagina: si cerca nel momento
+                  esatto in cui non ci si ricorda che cosa scrivere qui. */}
+              <Link
+                href="/password-dimenticata"
+                className="text-[13px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                Non la ricordi?
+              </Link>
+            </div>
             <Input id="password" name="password" type="password" autoComplete="current-password" required />
           </div>
           {errore && (

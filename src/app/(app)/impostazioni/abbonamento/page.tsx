@@ -168,19 +168,74 @@ export default async function AbbonamentoPage() {
             </div>
 
             {/*
-              Il pagamento con carta arriva col collegamento a Stripe. Finché non c'è, questa
-              è la strada vera e non un segnaposto: si scrive e si attiva. Meglio un canale
-              che funziona di un pulsante che finge.
+              Qui c'era «il pagamento con carta direttamente da qui arriva a breve»: un
+              residuo di prima che Stripe fosse in piedi. Diceva a chi stava per comprare
+              che il pulsante sopra non funzionava — mentre funziona e porta al pagamento.
+              Il canale scritto resta per chi preferisce il bonifico o deve concordare.
             */}
             <div className="mt-6 rounded-lg border border-primary/30 bg-accent p-4">
-              <p className="text-sm font-medium text-accent-foreground">Vuoi attivare lo studio?</p>
+              <p className="text-sm font-medium text-accent-foreground">Preferisci il bonifico?</p>
               <p className="mt-1 text-[13px] leading-relaxed text-accent-foreground/90">
-                Scrivici a{" "}
+                Il pulsante qui sopra porta al pagamento con carta e attiva lo studio subito. Se ti serve
+                invece una fattura da pagare a bonifico, o condizioni particolari, scrivi a{" "}
                 <a href={`mailto:${TITOLARE.email}?subject=Attivazione%20EvalisDeck`} className="font-medium underline">
                   {TITOLARE.email}
                 </a>{" "}
-                indicando il piano: ti mandiamo il preventivo e attiviamo l&apos;account. Il pagamento con carta
-                direttamente da qui arriva a breve.
+                indicando il piano.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Chi ha già un piano non vedeva NIENTE: né come aggiungere capacità, né come
+          avere le fatture, né come disdire. Trovato dal collaudo in produzione, dove la
+          pagina di un cliente attivo risultava senza un solo comando. */}
+      {a.piano && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-medium">Aggiungere capacità</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Le estensioni si sommano al piano e seguono la stessa scadenza.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ul className="grid gap-2 sm:grid-cols-3">
+              {[
+                [`+${ESTENSIONI.bloccoAziende.aziende} aziende`, prezzoEstensione(ESTENSIONI.bloccoAziende)],
+                ["+1 accesso", prezzoEstensione(ESTENSIONI.accesso)],
+                ["Documenti col tuo marchio", prezzoEstensione(ESTENSIONI.whiteLabel)],
+              ].map(([etichetta, p]) => (
+                <li key={etichetta as string} className="rounded-lg border p-3">
+                  <p className="text-sm font-medium">{etichetta as string}</p>
+                  <p className="mt-1 flex flex-wrap items-baseline gap-1.5">
+                    {(p as { listino?: number }).listino !== undefined && (
+                      <span className="text-[12px] text-muted-foreground line-through tabular-nums">
+                        {euro((p as { listino: number }).listino)}
+                      </span>
+                    )}
+                    <span className="text-sm font-semibold tabular-nums">
+                      {euro((p as { importo: number }).importo)}
+                    </span>
+                    <span className="text-[12px] text-muted-foreground">l&apos;anno</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <div className="rounded-lg border border-primary/30 bg-accent p-4 text-[13px] leading-relaxed text-accent-foreground">
+              <p>
+                Per aggiungere un&apos;estensione, avere le fatture o disdire il rinnovo, scrivi a{" "}
+                <a
+                  href={`mailto:${TITOLARE.email}?subject=Abbonamento%20EvalisDeck%20-%20${encodeURIComponent(a.nomePiano ?? "")}`}
+                  className="font-medium underline"
+                >
+                  {TITOLARE.email}
+                </a>
+                . Rispondiamo entro un giorno lavorativo.
+              </p>
+              <p className="mt-2 text-accent-foreground/80">
+                Il rinnovo è annuale e si disdice fino al giorno prima della scadenza
+                {a.rinnovoIl ? ` (${data(a.rinnovoIl)})` : ""}.
               </p>
             </div>
           </CardContent>

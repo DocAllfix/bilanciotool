@@ -59,7 +59,12 @@ export const auth = betterAuth({
       // verso Internet con un indirizzo solo, e i nostri stessi collaudi registrano un
       // utente ciascuno. Il freno serve contro le migliaia, non contro la decina.
       "/sign-up/email": { window: 3600, max: 10 },
+      // Due nomi per la stessa cosa: `/forget-password` e' quello storico,
+      // `/request-password-reset` quello che chiama `authClient.requestPasswordReset`.
+      // Tararne uno solo lascia l'altro col limite generico, e quello e' l'endpoint che
+      // manda un'email a un indirizzo altrui: senza freno diventa un mezzo per molestare.
       "/forget-password": { window: 3600, max: 5 },
+      "/request-password-reset": { window: 3600, max: 5 },
       "/reset-password": { window: 3600, max: 10 },
     },
   },

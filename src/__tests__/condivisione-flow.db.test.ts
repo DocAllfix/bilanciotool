@@ -163,4 +163,29 @@ describe.skipIf(!url)("portale cliente: collegamenti a scadenza", () => {
     });
     await db.update(orgEntitlement).set({ status: "active" }).where(eq(orgEntitlement.organizationId, orgId));
   });
+
+  // Trovato dal collaudo in produzione: un conto in PROVA generava davvero il
+  // collegamento, e senza mostrare nessun rifiuto. Il controllo c'era ma chiedeva
+  // `write_data`, che la prova possiede — serve anche `export`, che non possiede.
+  it("un account in prova non può creare collegamenti per il cliente", async () => {
+    const prima = (await db.select().from(companyShareLink).where(eq(companyShareLink.organizationId, orgId))).length;
+    await db.update(orgEntitlement).set({ status: "demo" }).where(eq(orgEntitlement.organizationId, orgId));
+    await expect(creaCollegamento(userId, orgId, aziendaA, { giorni: 30 })).rejects.toMatchObject({
+      code: "paywall",
+    });
+    // La prova che conta non è l'eccezione: è la riga che non è stata scritta. In
+    // produzione il difetto si presentava proprio così — nessun messaggio, e una riga in più.
+    const dopo = (await db.select().from(companyShareLink).where(eq(companyShareLink.organizationId, orgId))).length;
+    expect(dopo).toBe(prima);
+    await db.update(orgEntitlement).set({ status: "active" }).where(eq(orgEntitlement.organizationId, orgId));
+  });
+
+  // La revoca resta possibile SEMPRE: chiuderla dietro l'abbonamento lascerebbe uno
+  // studio scaduto con un indirizzo pubblico che non può spegnere.
+  it("un account scaduto può comunque revocare un collegamento", async () => {
+    const { id } = await creaCollegamento(userId, orgId, aziendaA, { giorni: 30 });
+    await db.update(orgEntitlement).set({ status: "expired" }).where(eq(orgEntitlement.organizationId, orgId));
+    await expect(revocaCollegamento(userId, orgId, id)).resolves.toBeUndefined();
+    await db.update(orgEntitlement).set({ status: "active" }).where(eq(orgEntitlement.organizationId, orgId));
+  });
 });

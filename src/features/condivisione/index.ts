@@ -41,7 +41,20 @@ export async function creaCollegamento(
   companyId: string,
   opts: { giorni: number; nota?: string },
 ): Promise<{ token: string; id: string; scadeIl: Date }> {
+  // DUE capacita', perche' generare un collegamento e' due cose insieme: si scrive una
+  // credenziale nuova (`write_data`) e si consegnano documenti fuori dal prodotto
+  // (`export`).
+  //
+  // Con il solo `write_data` — com'era — il collaudo in produzione ha visto un conto in
+  // PROVA creare un indirizzo pubblico ai documenti di un'azienda: la prova sta nel
+  // database, non nell'interfaccia, perche' il prodotto non mostrava nessun rifiuto.
+  //
+  // Con il solo `export` passerebbe anche il conto SCADUTO, che oggi non deve: per lui
+  // l'esporto resta aperto (i dati sono suoi) ma un collegamento nuovo vivrebbe fino a
+  // novanta giorni oltre l'abbonamento. Quella scelta e' gia' presa e difesa da un test:
+  // qui si corregge il difetto provato, non si ribalta di nascosto una decisione.
   await requireEntitlement(userId, orgId, "write_data");
+  await requireEntitlement(userId, orgId, "export");
 
   const token = generaToken();
   const id = randomUUID();
@@ -106,8 +119,13 @@ export async function elencaCollegamenti(
   }));
 }
 
+// La revoca NON chiede nessuna capacita', ed e' voluto: e' l'unica eccezione alla regola
+// «nessuna mutazione senza entitlement», e la ragione va scritta perche' non sembri una
+// dimenticanza. Spegnere un collegamento puo' solo RIDURRE l'esposizione. Legarla
+// all'abbonamento significherebbe che uno studio scaduto si ritrova un indirizzo pubblico
+// ai documenti di un cliente e non ha modo di chiuderlo — cioe' un freno sulla sicurezza
+// che va nel verso sbagliato.
 export async function revocaCollegamento(userId: string, orgId: string, id: string): Promise<void> {
-  await requireEntitlement(userId, orgId, "write_data");
   await withTenant({ userId, orgId }, async (tx) => {
     const agg = await tx
       .update(companyShareLink)

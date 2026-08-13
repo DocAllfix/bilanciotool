@@ -149,7 +149,7 @@ export default async function DashboardPage() {
                     </div>
                     <div className="relative z-10 flex shrink-0 items-center gap-1">
                       {a.isDemo && <Badge variant="outline">Demo</Badge>}
-                      <AziendaAzioni companyId={a.id} archiviata={false} />
+                      <AziendaAzioni companyId={a.id} nome={a.nome} archiviata={false} />
                     </div>
                   </div>
                 </CardHeader>
@@ -366,7 +366,7 @@ export default async function DashboardPage() {
                       <h3 className="truncate text-sm font-semibold">{a.nome}</h3>
                       <p className="text-xs text-muted-foreground">sola lettura · non conta nel limite</p>
                     </div>
-                    <AziendaAzioni companyId={a.id} archiviata />
+                    <AziendaAzioni companyId={a.id} nome={a.nome} archiviata />
                   </div>
                 </CardHeader>
               </Card>
