@@ -271,7 +271,27 @@ Gate: **462 test** · `verifica-pagamento` 9 su 9 in produzione · `verifica-che
 
 ⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
 
-**Prossima: F10 — Stripe** (Subscription Schedules 2 fasi, webhook idempotente), poi F13 Resend, poi **CSP per ultima** — va fatta dopo Stripe, altrimenti la si riapre subito per `js.stripe.com`. ⚠️ Servono: chiavi Stripe TEST e account Resend dall'utente.
+**Accoglienza del primo accesso (2026-08-13) — video, giro guidato, offerta**
+
+Chi si registra atterra sulla dashboard e in tre momenti vede cosa ha comprato prima di comprarlo: il **video** di 40 secondi (`videodemo/EvalisDeck-FINAL.mp4`), il **giro guidato** che attraversa le sei pagine, l'**offerta** coi prezzi di lancio. L'ordine non è casuale: il video dice cosa fa il prodotto mentre la persona non sa dove guardare, il giro glielo fa toccare, l'offerta arriva quando ha capito cosa comprerebbe.
+
+- Il video sta su **Supabase Storage** (`_piattaforma/onboarding/benvenuto-v1.mp4`), non in `public/`: la repo pesa 13 MB e ogni ricarica ne aggiungerebbe 15 alla storia di git per sempre. La rotta `/api/onboarding/video` pretende la sessione e rinvia a un indirizzo firmato di un'ora.
+- L'**itinerario lo calcola il server** (`/api/onboarding/percorso`): dipende da quale azienda è la dimostrativa e da quale esercizio ha ciascun modulo. Scritto nel client sarebbe una lista di indirizzi indovinati, e la prima tappa su un esercizio inesistente porterebbe il nuovo cliente su una pagina vuota, dopo un video che gli ha appena promesso il contrario.
+- Lo stato del giro sta in `sessionStorage` (`src/lib/tour/presentazione.ts`) perché **attraversa le pagine**; il fatto compiuto in `localStorage`.
+- **Interrompere porta dritti all'offerta.** Chi chiude un tour dice «basta spiegazioni», non «basta prodotto»: l'offerta è il terminale di ogni strada e si vede una volta sola. Serve sapere *come* si è chiuso un tour: `avviaTour` legge `hasNextStep()` **prima** di distruggere, e passa `completato` al seguito.
+- **L'azienda dimostrativa ha ora tutti e cinque i percorsi** (`seed-demo-moduli.ts`): erano due su cinque, e gli altri tre sembravano non funzionare. Stessi numeri dell'inventario GHG — 612.000 kWh e 42.500 Smc sono gli stessi in tutti i moduli, perché un consulente che apre due percorsi della stessa azienda e trova consumi diversi smette di fidarsi di entrambi.
+
+**Regole nate qui:**
+- **Due tour non possono partire sulla stessa pagina.** Il velo del tour automatico si apriva **sopra** il video e rendeva incliccabile il pulsante per proseguire. Non basta chiedere «giro in corso?»: fra il video e la prima tappa il giro non è ancora cominciato, ed è lì che si sovrapponevano. Il fatto discriminante è il benvenuto ancora da vedere, e **lo sa il server** — niente gara fra due effetti montati insieme.
+- **Il benvenuto si segna visto quando si ARRIVA all'offerta**, non quando la si chiude: chi va al pagamento e torna indietro senza pagare ha già visto tutto, e rimettergli il video da capo sarebbe la seconda cosa che gli succede dopo un ripensamento.
+- **Un componente montato nella shell sopravvive alle navigazioni, il suo stato in memoria no.** Un `useRef` acceso una volta come «in corso» bloccava tutte le tappe successive: deve ricordare *quale* tappa, non *se*.
+- **Le quantità stanno nei campi, non nel testo**: un collaudo che legge `innerText` dice «manca» anche quando c'è.
+
+⚠️ **In produzione ci sono le chiavi Stripe di TEST**: oggi il sito non incassa denaro vero. Vanno sostituite quando l'attivazione business è approvata.
+
+Gate: typecheck · build · **462 test** verdi anche con `RLS_FORCE_ROLE=app_rls` · `qa -- benvenuto` 11 su 11 (catena intera: video → 6 tappe → offerta → Stripe, e la prova che non riparte) · `qa -- demo-completa` 9 su 9 (i cinque percorsi mostrano numeri veri: quadratura, indice fornitore 70, indice SoA 61) · console pulita.
+
+**Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
 

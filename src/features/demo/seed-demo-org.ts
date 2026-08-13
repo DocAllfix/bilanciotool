@@ -5,6 +5,7 @@ import {
 } from "@/lib/db/schema";
 import { latestContentSetId } from "@/features/ghg/inventories";
 import { logAudit } from "@/lib/audit";
+import { seedDemoModuli } from "./seed-demo-moduli";
 import { randomUUID } from "node:crypto";
 
 // AZIENDA DEMO: creata alla registrazione per ogni nuovo studio. È il cuore del
@@ -171,6 +172,10 @@ export async function seedDemoCompany(userId: string, orgId: string): Promise<st
         id: randomUUID(), organizationId: orgId, projectId: projId, templateKey: k, contenuto: testoATiptap(testo),
       })),
     );
+
+    // Gli altri tre percorsi, nella stessa transazione: un'azienda dimostrativa
+    // con due moduli su cinque farebbe credere che gli altri tre non funzionino.
+    await seedDemoModuli(tx, orgId, companyId);
 
     await logAudit(tx, { organizationId: orgId, userId, azione: "demo.seed", entita: "company", entitaId: companyId });
   });

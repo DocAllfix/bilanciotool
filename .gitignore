@@ -58,3 +58,7 @@ shots-soa-percorso/
 
 .vercel
 .env*
+
+# Materiale video di lavoro: pesa decine di MB e la storia di git non dimentica
+videodemo/
+video/

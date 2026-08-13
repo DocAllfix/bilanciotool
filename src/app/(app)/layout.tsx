@@ -9,6 +9,7 @@ import { CollapsibleShell } from "@/components/app-shell/collapsible-shell";
 import { DemoBanner } from "@/components/app-shell/demo-banner";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
 import { HelpButton } from "@/components/app-shell/help-button";
+import { BenvenutoDemo } from "@/components/onboarding/benvenuto-demo";
 
 // Shell dell'app: sidebar scura collassabile + area di lavoro chiara e densa.
 // Gate server-side: senza sessione si torna al login (il server è la verità).
@@ -67,7 +68,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </footer>
       </CollapsibleShell>
-      <HelpButton />
+      <HelpButton inProva={status === "demo"} />
+      {/* La sequenza di benvenuto sta nella shell perché attraversa le pagine: montata
+          in una sola di esse, si spegnerebbe alla prima navigazione. */}
+      <BenvenutoDemo inProva={status === "demo"} />
     </>
   );
 }
