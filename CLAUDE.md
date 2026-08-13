@@ -370,6 +370,19 @@ Gate: typecheck · build · **472 test** · `qa -- tutto-pubblico` **32 su 32 in
 
 Gate: typecheck · build · **472 test** · `qa -- tutto-pubblico` **36 su 36 in produzione** (comprese le tre misure da telefono) · `qa -- tutto-demo` 68 · `qa -- tutto-attivo` 60.
 
+**Il video bloccato dalla CSP, e il marchio schiacciato (2026-08-13)**
+
+- **La CSP non dichiarava `media-src`**, quindi ricadeva su `default-src 'self'` e il browser **bloccava il video di benvenuto**, che sta su Supabase: non si apriva né da telefono né da computer. Segnalato dall'utente, non dai controlli.
+- **L'intestazione a 768px**: comparivano insieme le cinque voci del menu e tre pulsanti, non ci stavano, e a cedere era il **marchio, ridotto a 14 pixel**. Corretto con `shrink-0` sul logo (strutturale), «Attiva il servizio» da `lg` invece che da `md`, ed etichetta corta nella barra («Prova la demo»): lì il pulsante deve entrare, non convincere.
+
+**Regole nate qui:**
+- **Un `<video>` non è una `fetch`.** Il collaudo scaricava il file con una richiesta di rete — che della CSP della pagina non sa niente — e diceva verde mentre il video non partiva. Ora il controllo lo fa **caricare davvero** (`readyState >= 2`, durata letta dall'elemento) e raccoglie gli eventi `securitypolicyviolation`. Provato rompendolo: senza `media-src` il controllo nuovo diventa rosso **mentre quello vecchio resta verde**, ed è esattamente il motivo per cui il difetto era passato.
+- **Aggiungere una risorsa da un'altra origine significa aggiungere una direttiva**: `img-src` e `connect-src` c'erano perché quelle risorse erano state misurate; il video è arrivato dopo, e nessuno ha rimisurato.
+- **Quando una barra si stringe, la prima cosa che cede è il marchio, e cede in silenzio.** `shrink-0` è la difesa strutturale: da lì in poi a cedere sono gli spazi, e se non bastano il difetto si vede.
+- **«Accedi» nell'intestazione non è un richiamo commerciale**: è la porta di chi è già cliente e ha la sessione scaduta. Va tenuta, e va tenuta in secondo piano.
+
+Gate: `qa -- benvenuto` **12 su 12 in produzione** · `qa -- tutto-pubblico` **37 su 37** (comprese le tre misure da telefono e quella del marchio a cinque larghezze).
+
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.
