@@ -354,6 +354,22 @@ Gate: typecheck · build · **472 test** verdi anche con `RLS_FORCE_ROLE=app_rls
 
 Gate: typecheck · build · **472 test** · `qa -- tutto-pubblico` **32 su 32 in produzione**.
 
+**Vetrina da telefono, nomi dei documenti, attivazione visibile (2026-08-13)**
+
+- **Da telefono la vetrina era tagliata.** Il Deck dell'hero è una composizione a posizioni assolute in pixel: con misure fisse funziona a una larghezza sola, e sotto quella non si stringe, si **taglia**. La copertina finiva 95px fuori dallo schermo e il nome dell'azienda si leggeva «…anica …tica S.r.l.». Ora il contenitore dichiara `@container`, la radice prende `font-size: min(10px, 1.887cqw)` e **ogni misura interna è in `em`**: la composizione si rimpicciolisce identica a sé stessa, senza JavaScript e senza punti di rottura da indovinare.
+  Alla radice c'era anche un difetto vero: la copertina portava `-translate-x-1/2` (proprietà `translate`) **e** `[transform:translateX(-50%)]` (proprietà `transform`). Sono due proprietà distinte, si sommavano, e lo spostamento era del doppio. **Da desktop quell'errore sembrava il disegno giusto** — spostava la copertina a sinistra e liberava la card dei numeri — mentre da telefono la buttava fuori schermo.
+- **Nomi dei documenti**, come li chiama il committente: **Bilancio di sostenibilità e conformità ESG** · **Bilancio energetico** · **Statement of Applicability (SoA)**. Sulle copertine stampate il riferimento normativo resta visibile subito sotto («diagnosi energetica redatta secondo UNI CEI EN 16247», «Dichiarazione di Applicabilità · ISO/IEC 27001:2022»): il titolo è commerciale, la norma è ciò che il verificatore cerca. La chiave d'archivio dei PDF usa il **tipo** e non il nome del file: nessun documento già archiviato si perde.
+- **«Attiva il servizio»** è ora un pulsante vero nell'hero accanto alla demo (l'esempio in PDF è passato a collegamento), più intestazione da schermo largo, menu, piede, sezione dedicata e richiamo finale.
+
+**Regole nate qui:**
+- **`translate` e `transform` sono due proprietà**: usarle insieme per la stessa centratura la applica due volte. In Tailwind v4 `-translate-x-1/2` scrive `translate`, non `transform`.
+- **Una composizione a posizioni assolute va espressa in `em` con una radice proporzionale**, altrimenti esiste a una sola larghezza. `@container` + `min(px, cqw)` scala senza JavaScript.
+- **Un difetto può reggere per caso su una misura sola.** Correggendolo «bene» si rompe la composizione che quel difetto teneva in piedi: le posizioni vanno ricalcolate, non solo depurate.
+- **Il collaudo mobile misura, non guarda**: `scrollWidth - clientWidth` e il rettangolo di ogni elemento su tre telefoni veri. Le velature sfocate si escludono, perché escono apposta.
+- **`.first()` prende il primo del documento, non il primo visibile**: il richiamo nell'intestazione esiste nel markup ma è nascosto sotto una certa larghezza, e misurarlo diceva «non c'è».
+
+Gate: typecheck · build · **472 test** · `qa -- tutto-pubblico` **36 su 36 in produzione** (comprese le tre misure da telefono) · `qa -- tutto-demo` 68 · `qa -- tutto-attivo` 60.
+
 **Prossima: CSP per ultima** — va fatta ora che Stripe è in piedi, altrimenti la si riapre subito per `js.stripe.com`.
 
 **Struttura, legale e landing (2026-08-03)** — lavoro nato da un difetto visibile: la card del portafoglio aveva cinque bottoni in un `CardFooter` senza `flex-wrap`, e Fornitore e SoA finivano oltre il bordo, irraggiungibili anche col tab. Il sintomo veniva da piu lontano: l'app era ancora strutturata per due moduli.

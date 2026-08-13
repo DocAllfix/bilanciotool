@@ -129,7 +129,7 @@ export function HeroDeck() {
             </div>
             <div className="mt-auto">
               <p className="text-[0.8em] uppercase tracking-[0.22em] text-white/70">
-                Bilancio di sostenibilità · 2025
+                Bilancio di sostenibilità e conformità ESG · 2025
               </p>
               <p className="mt-[0.8em] text-[2.2em] leading-tight" style={{ fontFamily: "Georgia, serif" }}>
                 Meccanica

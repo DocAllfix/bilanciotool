@@ -21,7 +21,7 @@ export const DOMANDE: [string, string][] = [
   ],
   [
     "Devo comprarli tutti e cinque?",
-    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono la diagnosi energetica o la Dichiarazione ISO 27001 quando arriva il cliente che le chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
+    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono il bilancio energetico o lo Statement of Applicability quando arriva il cliente che le chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
   ],
   [
     "A quali norme sono conformi i documenti?",

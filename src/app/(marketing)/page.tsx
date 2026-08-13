@@ -162,7 +162,7 @@ export default function LandingPage() {
             <div className="grid gap-x-0 gap-y-10 md:grid-cols-[1fr_1fr_1fr_1.2fr]">
               {(
                 [
-                  [5, "", "documenti pubblicabili", "dall'inventario GHG alla Dichiarazione ISO 27001"],
+                  [5, "", "documenti pubblicabili", "dall'inventario GHG allo Statement of Applicability"],
                   [174, "", "controlli ISO 27001", "61 dei quali cardine, con verifiche di coerenza"],
                   [49, "", "indicatori di bilancio", "30 dei quali calcolati in automatico"],
                 ] as [number, string, string, string][]
@@ -240,7 +240,7 @@ export default function LandingPage() {
                   indice="C"
                   titolo="Bilancio energetico"
                   norma="UNI CEI EN 16247 · ISO 50001"
-                  passi={["Sito e perimetro", "12 vettori energetici", "Ripartizione sui 20 usi finali", "Indicatori di prestazione", "Interventi e ritorno", "Racconto", "Verifica", "Diagnosi impaginata"]}
+                  passi={["Sito e perimetro", "12 vettori energetici", "Ripartizione sui 20 usi finali", "Indicatori di prestazione", "Interventi e ritorno", "Racconto", "Verifica", "Bilancio impaginato"]}
                   punto="La ripartizione si quadra da sola: le celle restano nell'unità del vettore, quindi correggere un potere calorifico non invalida un esercizio già chiuso."
                 />
               </Reveal>
@@ -267,7 +267,7 @@ export default function LandingPage() {
                   indice="E"
                   titolo="Statement of Applicability (SoA)"
                   norma="ISO/IEC 27001:2022 §6.1.3 d)"
-                  passi={["Contesto e ambito", "174 controlli su 5 quadri", "Applicabilità e motivazioni", "Verifiche di coerenza", "Piano di attuazione", "Dichiarazione firmata"]}
+                  passi={["Contesto e ambito", "174 controlli su 5 quadri", "Applicabilità e motivazioni", "Verifiche di coerenza", "Piano di attuazione", "Statement firmato"]}
                   punto="Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice."
                 />
               </Reveal>
