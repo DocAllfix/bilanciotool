@@ -472,6 +472,30 @@ Codice morto vero: **17 funzioni e 18 import**, ognuno verificato a una sola occ
 
 Gate: typecheck · build da `.next` cancellata · **531 test** in entrambi i modi · `npm ci --omit=dev` che installa shadcn · tutto-attivo 30/30 · tutto-demo 68/68 · tutto-pubblico 37/37 · benvenuto 12/12 · invito 14/14 — tutti **con la spia rossa finalmente viva**, e nessun difetto nascosto è emerso.
 
+**Passata DRY (2026-08-14)** — la ripetizione faceva da conservante ai difetti.
+
+Misurate ~2.400 righe di ripetizione su ~28.000. La cosa utile però non è stata la ripetizione: è che **dove una correzione era stata applicata a una copia e non alle altre, la duplicazione l'ha conservata**. Tre difetti veri, tutti della stessa forma.
+
+`condivisione/actions.ts` rimandava ancora al browser il messaggio di qualunque eccezione — il difetto chiuso il giorno prima negli altri nove file di azione, saltato perché quel file aveva una gestione propria e quindi non aveva `daErrore` da correggere.
+
+`energy/narrative.ts` aveva **due** punti a strato singolo, e il secondo l'ha trovato il collaudo mentre lo scrivevo per il primo: `addMedia` verificava il proprietario solo dentro il ramo «il capitolo non esiste», e `saveChapter` verificava il bilancio **senza filtrare per organizzazione** — la verifica c'era e non verificava niente. Nessuno dei due sfruttabile (RLS copre la lettura), ma erano gli ultimi punti con un solo strato.
+
+`giro-completo.mjs` cercava `Controlli: N ok`, mentre `contatore().riepilogo()` stampa il titolo che riceve: **sei collaudi su quaranta, fra cui i tre più completi**, comparivano come «(nessun riepilogo)».
+
+**Accorpato** (comportamento invariato): `fileADataUrl` (3 copie identiche), `accoda()` (2), gli schemi `companyId` e `anno` (16 occorrenze), `latest*SetId` (4 cloni), i cinque `percorso()` derivati dal registro dei moduli, e `src/__tests__/comune.ts` — dove `creaStudio`/`pulisciStudio` erano **già state scritte due volte, con lo stesso nome, da due autori diversi**.
+
+**Non accorpato, e messo per iscritto**: la famiglia `set*Field` (nove risposte diverse alla stessa domanda, nate da tre difetti reali), la sequenza di mutazione (il default diventerebbe «rivalida sempre» cancellando tre eccezioni deliberate), i comandi ottimistici (quattro casi su sette cambierebbero comportamento al rifiuto), la fusione `narrative`/`chapters` (`piena/meta` contro `full/half` è dato persistito negli snapshot congelati).
+
+**Regole nate qui:**
+- **Una ripetizione è anche un archivio di versioni.** Se cinque copie divergono, una di loro è la più recente: cercare la duplicazione è un modo di trovare le correzioni non propagate. Tre su tre dei difetti di oggi si sono presentati così.
+- **Quando la stessa astrazione nasce due volte da sola**, con lo stesso nome, da due persone diverse, è il momento di darle una casa. Non serve altra giustificazione.
+- **Non tutto ciò che si ripete va accorpato, e la domanda giusta non è «sono uguali?» ma «rispondono alla stessa domanda?».** Le nove `set*Field` si somigliano e rispondono a nove domande diverse: una cancella la riga se sei campi si svuotano, un'altra se si svuotano anche i dodici mesi, un'altra usa `array_append` per non fare read-modify-write.
+- **Accorpare può cancellare una decisione.** Il rischio non è il difetto: è che il valore predefinito del nuovo aiutante seppellisca un'eccezione che qualcuno aveva pagato con un guasto.
+- **Un aiutante condiviso può togliere la spiegazione insieme alla ripetizione.** L'entitlement nei test resta scritto in ogni file perché in tre casi su diciotto quella riga **è** il test.
+- **Quando l'accorpamento non è meccanico, il valore si salva alla fonte.** Dodici script ricalcolano un dato che `registraEEntra` restituisce già: unificarli costa dodici collaudi da minuti per venti righe, ma una nota dove nasce impedisce al prossimo di copiare l'abitudine.
+
+Gate: typecheck · build · **534 test** in entrambi i modi, compreso `RLS_FORCE_ROLE=app_rls` · i due confini di tenant provati **rompendoli** · in produzione `tutto-attivo` 30/30 e `tutto-demo` 68/68 · `energetico` 40/40 con console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
