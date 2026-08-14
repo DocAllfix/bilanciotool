@@ -139,6 +139,11 @@ await agisci("la card porta al fascicolo", async () => {
 });
 
 await agisci("il fascicolo elenca i cinque percorsi", async () => {
+  // `waitForURL` si risolve quando la navigazione e' iniziata, non quando la pagina e'
+  // resa: leggere `main` subito dopo restituisce un contenuto parziale, e il controllo
+  // accusa il prodotto di una mancanza che e' solo un'attesa saltata. Si aspetta un
+  // ancoraggio del contenuto vero.
+  await page.getByText("I CINQUE PERCORSI", { exact: false }).first().waitFor({ timeout: 20_000 });
   const t = await page.locator("main").innerText();
   for (const n of ["Inventario GHG", "Bilancio di sostenibilità e conformità ESG", "Bilancio energetico", "Autovalutazione ESG", "Statement of Applicability"]) {
     if (!t.includes(n)) throw new Error(`manca ${n}`);
