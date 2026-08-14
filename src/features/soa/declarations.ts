@@ -17,6 +17,31 @@ import type { z } from "zod";
 // aggiorna nel tempo, e le revisioni consegnate all'organismo di certificazione
 // restano congelate negli snapshot pubblicati.
 
+/**
+ * La Dichiarazione indicata, **se e' di questa organizzazione**. Altrimenti errore.
+ *
+ * `declarationId` arriva dal client: una server action e' un endpoint HTTP, e nessun
+ * tipo TypeScript sopravvive a runtime. Filtrare per il solo `id` significava affidare
+ * il confine fra due studi alle sole policy RLS -- che qui non era un secondo strato,
+ * era l'unico. Il messaggio d'errore diceva gia' "o di un altro tenant": la fiducia
+ * era consapevole, e sbagliata.
+ *
+ * Un solo posto e non un `and(...)` ripetuto in dieci query: un filtro copiato dieci
+ * volte e' un filtro che l'undicesima volta si dimentica.
+ */
+async function nostra(
+  tx: Parameters<Parameters<typeof withTenant>[1]>[0],
+  orgId: string,
+  declarationId: string,
+) {
+  const [d] = await tx
+    .select({ id: soaDeclaration.id, profilo: soaDeclaration.profilo })
+    .from(soaDeclaration)
+    .where(and(eq(soaDeclaration.id, declarationId), eq(soaDeclaration.organizationId, orgId)));
+  if (!d) throw new Error("Dichiarazione inesistente o di un altro tenant");
+  return d;
+}
+
 export async function latestSoaSetId(): Promise<string> {
   const rows = await db
     .select({ id: contentSet.id })
@@ -39,7 +64,10 @@ export async function createDeclaration(
   const id = randomUUID();
 
   await withTenant({ userId, orgId }, async (tx) => {
-    const [co] = await tx.select({ id: company.id }).from(company).where(eq(company.id, v.companyId));
+    const [co] = await tx
+      .select({ id: company.id })
+      .from(company)
+      .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
     await tx.insert(soaDeclaration).values({
@@ -66,7 +94,10 @@ export async function createDeclaration(
 
 export async function getDeclaration(userId: string, orgId: string, companyId: string) {
   return withTenant({ userId, orgId }, async (tx) => {
-    const [row] = await tx.select().from(soaDeclaration).where(eq(soaDeclaration.companyId, companyId));
+    const [row] = await tx
+      .select()
+      .from(soaDeclaration)
+      .where(and(eq(soaDeclaration.companyId, companyId), eq(soaDeclaration.organizationId, orgId)));
     return row ?? null;
   });
 }
@@ -80,15 +111,11 @@ export async function updateProfilo(
   await requireEntitlement(userId, orgId, "write_data");
   const v = profiloSchema.parse(patch);
   await withTenant({ userId, orgId }, async (tx) => {
-    const [row] = await tx
-      .select({ profilo: soaDeclaration.profilo })
-      .from(soaDeclaration)
-      .where(eq(soaDeclaration.id, declarationId));
-    if (!row) throw new Error("Dichiarazione inesistente o di un altro tenant");
+    const row = await nostra(tx, orgId, declarationId);
     await tx
       .update(soaDeclaration)
       .set({ profilo: { ...(row.profilo as ProfiloSoa), ...v } })
-      .where(eq(soaDeclaration.id, declarationId));
+      .where(and(eq(soaDeclaration.id, declarationId), eq(soaDeclaration.organizationId, orgId)));
     await logAudit(tx, {
       organizationId: orgId,
       userId,
@@ -115,7 +142,7 @@ export async function setRuoli(
     const agg = await tx
       .update(soaDeclaration)
       .set(v)
-      .where(eq(soaDeclaration.id, declarationId))
+      .where(and(eq(soaDeclaration.id, declarationId), eq(soaDeclaration.organizationId, orgId)))
       .returning({ id: soaDeclaration.id });
     if (!agg.length) throw new Error("Dichiarazione inesistente o di un altro tenant");
     await logAudit(tx, {
@@ -130,9 +157,13 @@ export async function setRuoli(
 }
 
 export async function listModules(userId: string, orgId: string, declarationId: string) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx.select().from(soaModule).where(eq(soaModule.declarationId, declarationId)),
-  );
+  return withTenant({ userId, orgId }, async (tx) => {
+    await nostra(tx, orgId, declarationId);
+    return tx
+      .select()
+      .from(soaModule)
+      .where(and(eq(soaModule.declarationId, declarationId), eq(soaModule.organizationId, orgId)));
+  });
 }
 
 /** Attivazione di un modulo esteso. La 27001 non passa di qui: è sempre in
@@ -147,13 +178,13 @@ export async function setModule(
   const v = moduloSchema.parse(input);
 
   await withTenant({ userId, orgId }, async (tx) => {
-    const [d] = await tx
-      .select({ id: soaDeclaration.id })
-      .from(soaDeclaration)
-      .where(eq(soaDeclaration.id, declarationId));
-    if (!d) throw new Error("Dichiarazione inesistente o di un altro tenant");
+    await nostra(tx, orgId, declarationId);
 
-    const dove = and(eq(soaModule.declarationId, declarationId), eq(soaModule.frameworkKey, v.frameworkKey));
+    const dove = and(
+      eq(soaModule.declarationId, declarationId),
+      eq(soaModule.organizationId, orgId),
+      eq(soaModule.frameworkKey, v.frameworkKey),
+    );
     const [esistente] = await tx.select({ id: soaModule.id }).from(soaModule).where(dove);
     if (esistente) {
       await tx.update(soaModule).set({ attivo: v.attivo }).where(eq(soaModule.id, esistente.id));
@@ -179,9 +210,18 @@ export async function setModule(
 }
 
 export async function listDecisions(userId: string, orgId: string, declarationId: string) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx.select().from(soaControlDecision).where(eq(soaControlDecision.declarationId, declarationId)),
-  );
+  return withTenant({ userId, orgId }, async (tx) => {
+    await nostra(tx, orgId, declarationId);
+    return tx
+      .select()
+      .from(soaControlDecision)
+      .where(
+        and(
+          eq(soaControlDecision.declarationId, declarationId),
+          eq(soaControlDecision.organizationId, orgId),
+        ),
+      );
+  });
 }
 
 const DOMINI: Record<string, readonly string[]> = {
@@ -217,14 +257,11 @@ export async function setDecisionField(
     campo === "applicabile" ? { applicabile: valore === "si" } : { [campo]: valore };
 
   await withTenant({ userId, orgId }, async (tx) => {
-    const [d] = await tx
-      .select({ id: soaDeclaration.id })
-      .from(soaDeclaration)
-      .where(eq(soaDeclaration.id, declarationId));
-    if (!d) throw new Error("Dichiarazione inesistente o di un altro tenant");
+    await nostra(tx, orgId, declarationId);
 
     const dove = and(
       eq(soaControlDecision.declarationId, declarationId),
+      eq(soaControlDecision.organizationId, orgId),
       eq(soaControlDecision.frameworkKey, frameworkKey),
       eq(soaControlDecision.controlloId, controlloId),
     );
@@ -272,19 +309,21 @@ export async function toggleMotivazione(
   }
 
   await withTenant({ userId, orgId }, async (tx) => {
+    // La verifica sta PRIMA, e fuori dai rami. Stava solo dentro il ramo "la riga
+    // non c'e'": bastava che la decisione esistesse gia' -- cioe' il caso normale --
+    // perche' l'aggiornamento partisse senza che nessuno avesse guardato a chi
+    // appartenesse la Dichiarazione.
+    await nostra(tx, orgId, declarationId);
+
     const dove = and(
       eq(soaControlDecision.declarationId, declarationId),
+      eq(soaControlDecision.organizationId, orgId),
       eq(soaControlDecision.frameworkKey, v.frameworkKey),
       eq(soaControlDecision.controlloId, v.controlloId),
     );
     const [esistente] = await tx.select({ id: soaControlDecision.id }).from(soaControlDecision).where(dove);
 
     if (!esistente) {
-      const [d] = await tx
-        .select({ id: soaDeclaration.id })
-        .from(soaDeclaration)
-        .where(eq(soaDeclaration.id, declarationId));
-      if (!d) throw new Error("Dichiarazione inesistente o di un altro tenant");
       if (!v.attiva) return;
       await tx.insert(soaControlDecision).values({
         id: randomUUID(),

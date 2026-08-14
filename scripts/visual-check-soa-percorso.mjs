@@ -17,6 +17,17 @@ const prove = [];
 
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+// Il benvenuto va spento PRIMA che la pagina esista, non dopo l'accesso: il video si
+// apre al primo ingresso e il suo velo copre i comandi. Spegnerlo con un `evaluate`
+// piu' avanti significa spegnerlo quando ha gia' coperto tutto.
+await ctx.addInitScript(() => {
+  try {
+    localStorage.setItem("evalisdeck-benvenuto", "1");
+    for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+      localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+    }
+  } catch {}
+});
 const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
@@ -60,9 +71,12 @@ const vaiVista = async (k, atteso) => {
 const email = `visual-soap-${Date.now()}@example.com`;
 await page.goto(BASE + "/registrati");
 await page.waitForLoadState("networkidle");
-  await registraEEntra(page, sql, { base: BASE, nome: "Davide Ricci", email: email, pwd: "PasswordSicura123!" });
-
+// La connessione si apre PRIMA di chi la usa: `registraEEntra` la riceve, e con la
+// verifica dell'indirizzo accesa e' lei a completare la registrazione. Cosi' com'era,
+// `sql` veniva usata due righe prima di esistere e il collaudo moriva all'avvio.
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
+await registraEEntra(page, sql, { base: BASE, nome: "Davide Ricci", email, pwd: "PasswordSicura123!" });
+
 await sql`update org_entitlement set status='active' where organization_id = (select m.organization_id from member m join "user" u on u.id=m.user_id where u.email=${email})`;
 await sql.end();
 await page.evaluate(() => {
@@ -79,9 +93,25 @@ await page.fill("#na-nome", "Nexus Cloud Services S.r.l.");
 await page.fill("#na-settore", "Servizi applicativi in cloud");
 await page.fill("#na-ateco", "62.01");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
+// Un ricarico dopo la creazione. Non e' pigrizia: in produzione la card compare
+// subito (verificato su evalisdeck.it, elenco aggiornato senza ricaricare), mentre
+// con `next start` in locale l'elenco resta indietro di un aggiornamento. Il collaudo
+// deve misurare il percorso SoA, non quell'artefatto del server di prova.
 const card = page.locator('[data-slot="card"]').filter({ hasText: "Nexus Cloud Services S.r.l." }).first();
+// Si ricarica finche' la card non c'e'. Non e' pigrizia: in produzione compare subito
+// (verificato su evalisdeck.it, elenco aggiornato senza ricaricare), mentre con
+// `next start` in locale l'elenco resta indietro di un aggiornamento. Il collaudo deve
+// misurare il percorso SoA, non quell'artefatto del server di prova.
+for (let t = 0; t < 12 && !(await card.count()); t++) {
+  await page.waitForTimeout(1500);
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+}
 await card.waitFor({ timeout: 20000 });
-const link = card.getByRole("link", { name: "SoA", exact: true });
+// Il nome accessibile e' quello per esteso piu' lo stato — «Statement of Applicability
+// (SoA): da avviare» — non la sigla: la card e' stata ridisegnata dopo che questo
+// collaudo fu scritto. Si aggancia all'indirizzo, che e' il fatto stabile.
+const link = card.locator('a[href$="/soa"]').first();
 verifica("Il portafoglio espone il pulsante SoA", await link.isVisible());
 await link.click();
 await page.waitForURL("**/soa", { timeout: 60000 });
@@ -285,7 +315,7 @@ const scarico = doc.waitForEvent("download", { timeout: 180000 }).catch(() => nu
 await doc.getByRole("button", { name: /Scarica PDF/ }).click();
 const file = await scarico;
 verifica("Il PDF si scarica col nome giusto, senza anno",
-  file !== null && (await file.suggestedFilename()) === "dichiarazione-applicabilita-v1.pdf",
+  file !== null && (await file.suggestedFilename()) === "statement-of-applicability-v1.pdf",
   file ? await file.suggestedFilename() : "nessun download");
 await doc.close();
 

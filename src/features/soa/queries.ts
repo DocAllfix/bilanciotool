@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
 import { company, ratingScale, soaControl, soaFramework, soaSection } from "@/lib/db/schema";
@@ -19,7 +19,10 @@ export type SoaData = NonNullable<Awaited<ReturnType<typeof getSoaData>>>;
 
 export async function getSoaData(userId: string, orgId: string, companyId: string) {
   const az = await withTenant({ userId, orgId }, async (tx) => {
-    const [row] = await tx.select().from(company).where(eq(company.id, companyId));
+    const [row] = await tx
+      .select()
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId)));
     return row ?? null;
   });
   if (!az) return null;
