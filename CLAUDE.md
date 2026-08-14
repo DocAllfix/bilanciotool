@@ -450,6 +450,28 @@ La pagina è costruita sui casi in cui va storto: quattro stati distinti dell'in
 
 Gate: **531 test** · `qa -- invito` **14 su 14 in produzione** · `qa -- rinnovo` 8 su 8 con l'orologio di prova, e messo in rosso di proposito rimettendo il difetto della fase 2 (che mostra il danno vero: accessi extra a **zero** e fattura di 1.100 € invece di 2.225 €).
 
+**Pulizia della codebase (2026-08-14)** — cercavo codice morto, ho trovato soprattutto roba che mancava.
+
+**Il contenitore dei messaggi non era montato.** `<Toaster />` non compariva in nessun layout, mentre sette componenti chiamano `toast(...)`: «collegamento copiato», «azienda archiviata», «nome dello studio aggiornato», gli errori del dialogo d'acquisto. **Nessuno li ha mai visti.**
+
+E il seguito è peggiore del difetto: `comune-collaudo.mjs` cerca `[data-sonner-toast][data-type="error"]`, ed è **una delle tre spie di guasto** di ogni gesto. Quel selettore non poteva trovare niente — la spia non è mai stata in grado di accendersi. Il commento in testa a quel file dice «il terzo è il più importante, un collaudo che non lo guarda dichiara verde una pagina in cui non funziona niente»: era quello che stava succedendo a noi.
+
+**`shadcn` era finita in `devDependencies` per un mio errore del giorno prima.** L'avevo spostata chiudendo un rilievo dell'audit, dandola per CLI di scaffolding. È anche quello, ma `globals.css` fa `@import "shadcn/tailwind.css"`: 629 righe di `@theme inline` nel CSS di produzione. Reggeva solo perché Vercel installa le devDependencies durante il build.
+
+**Due variabili d'ambiente fuori dalla validazione**: senza `NEXT_PUBLIC_SENTRY_DSN` Sentry parte e non riporta niente, senza `BLOG_ALLARME_A` il giro quotidiano trova il guasto e non lo dice a nessuno. E `.env.example` elencava quattro delle sei obbligatorie in produzione: chi lo copiava otteneva un build che si rifiutava di partire.
+
+Codice morto vero: **17 funzioni e 18 import**, ognuno verificato a una sola occorrenza subito prima di toglierlo.
+
+**Regole nate qui:**
+- **Una scansione di codice morto è anche una scansione di cablaggi mancanti.** Un componente che nessuno importa può essere spazzatura o può essere il pezzo che non è mai stato collegato: la differenza non si vede da un grep, si vede chiedendosi *chi lo userebbe*.
+- **Uno strumento di misura che non può mai segnare rosso non lo si scopre guardandolo**: lo si scopre quando qualcos'altro comincia a funzionare. Vale la pena chiedersi, per ogni spia, quando è stata l'ultima volta che si è accesa.
+- **Correggere un difetto può romperne uno strumento**: `pulisciAvvisi` strappava nodi dal DOM, innocuo finché non c'era niente da strappare. Un attributo in più React lo ignora, un figlio in meno no.
+- **`shots*/` con la barra copre le cartelle, non i file.** Tre screenshot alla radice erano finiti versionati.
+- **Non tutto ciò che non ha chiamanti va tolto.** `improntaCoincide` andava tolta perché lasciava credere protetto un confronto che non lo era; `requirePlatformAdmin` resta, perché non lascia credere niente — un'area staff non esiste — ed è una gamba di un terzetto in uso. La domanda non è «qualcuno la chiama?», è «la sua presenza fa credere qualcosa di falso?».
+- **I tre `eslint-disable react-hooks/exhaustive-deps` non si toccano**: uno salva allo smontaggio dell'editor, un altro creerebbe un giro infinito di richieste. Il debito lì era il commento mancante, non la direttiva.
+
+Gate: typecheck · build da `.next` cancellata · **531 test** in entrambi i modi · `npm ci --omit=dev` che installa shadcn · tutto-attivo 30/30 · tutto-demo 68/68 · tutto-pubblico 37/37 · benvenuto 12/12 · invito 14/14 — tutti **con la spia rossa finalmente viva**, e nessun difetto nascosto è emerso.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

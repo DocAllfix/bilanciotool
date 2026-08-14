@@ -117,6 +117,22 @@ un elenco piatto di caselle non dice quando una casella diventa urgente.
       → *verifica:* ripristinare su un progetto vuoto e contare le righe. Un backup mai
         ripristinato non è un backup, è una speranza
 
+### Pulizia della codebase del 2026-08-14
+
+Scansione per codice morto. La codebase e' risultata pulita (zero `TODO`, zero
+`@ts-ignore`, zero `any` applicativo, nessuna dipendenza inutile), ma la ricerca ha
+trovato **tre cose che mancavano**, tutte gia' chiuse:
+
+- [x] **Il contenitore dei messaggi non era montato.** Sette componenti mostravano
+      conferme ed errori che nessuno vedeva, e la spia rossa dei collaudi — una delle tre
+      di ogni gesto — non poteva accendersi.
+      → *verifica:* provato nei due versi (un salvataggio riuscito mostra il messaggio,
+        uno fatto fallire accende la spia) e riconfermato **in produzione**.
+- [x] **`shadcn` era in `devDependencies`** ma il CSS di produzione la importa.
+      → *verifica:* `npm ci --omit=dev` la installa.
+- [x] **`NEXT_PUBLIC_SENTRY_DSN` e `BLOG_ALLARME_A`** fuori dalla validazione, e
+      `.env.example` con quattro delle sei obbligatorie in produzione.
+
 ## 4. Sicurezza
 
 ### Audit di sicurezza del 2026-08-14 — chiuso
