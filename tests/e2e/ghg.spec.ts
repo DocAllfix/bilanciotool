@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { PWD_COLLAUDO } from "./credenziali";
 
 // E2E del modulo GHG: utente NUOVO via form reale → verifica del paywall demo
 // (blocco server-side) → attivazione account via DB (come i test .db) → percorso
@@ -20,7 +21,7 @@ test("percorso GHG completo: paywall demo, attivazione, inventario e risultati",
   await page.goto("/registrati");
   await page.fill("#nome", "Elena Bruno");
   await page.fill("#email", email);
-  await page.fill("#password", "PasswordSicura123!");
+  await page.fill("#password", PWD_COLLAUDO);
   await page.click('button[type="submit"]');
   await page.waitForURL("**/dashboard", { timeout: 30_000 });
 

@@ -10,6 +10,7 @@ import { DOMANDE } from "@/components/landing/domande";
 import { PiedeMarketing } from "@/components/landing/piede";
 import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
+import { jsonLd } from "@/features/blog/seo";
 
 export const metadata: Metadata = {
   // `absolute` perché il layout radice accoda «· EvalisDeck» a ogni titolo, e qui il
@@ -87,11 +88,11 @@ export default function LandingPage() {
       <script
         type="application/ld+json"
         // Contenuto nostro, costante e serializzato: nessun input esterno.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(DATI_STRUTTURATI) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(DATI_STRUTTURATI) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(DOMANDE_STRUTTURATE) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(DOMANDE_STRUTTURATE) }}
       />
       <SiteHeader />
       <main className="flex-1">

@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-attestato";
 mkdirSync(OUT, { recursive: true });
@@ -27,7 +28,7 @@ await page.waitForLoadState("networkidle");
 // database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
 // all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
-  await registraEEntra(page, sql, { base: BASE, nome: "Silvia Marino", email: email, pwd: "PasswordSicura123!" });
+  await registraEEntra(page, sql, { base: BASE, nome: "Silvia Marino", email: email, pwd: PWD_COLLAUDO });
 await page.evaluate(() => {
   for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore"]) {
     localStorage.setItem(`evalisdeck-tour:${k}`, "1");

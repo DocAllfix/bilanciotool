@@ -13,6 +13,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore } from "./comune-collaudo.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
 async function entra(page, sql, base, email) {
@@ -30,7 +31,7 @@ async function entra(page, sql, base, email) {
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const EMAIL = `tutto-demo-${Date.now()}@example.com`;
-const PWD = process.env.PWD_CONTO ?? "PasswordSicura123!";
+const PWD = process.env.PWD_CONTO ?? PWD_COLLAUDO;
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
 const browser = await chromium.launch({ headless: true });

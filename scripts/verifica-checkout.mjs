@@ -10,6 +10,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 // Si registra uno studio NUOVO, che e' in prova e non ha ancora un piano: e' l'unico
@@ -18,7 +19,7 @@ const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 // non vedra' mai.
 const RUN = Date.now();
 const EMAIL = `checkout-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 
 // ⚠️ Questo collaudo arriva alla pagina di pagamento VERA: contro la produzione, dove le
 // chiavi sono vive, crea un cliente e una sessione nell'account che incassa — a ogni

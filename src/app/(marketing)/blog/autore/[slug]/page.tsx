@@ -6,6 +6,7 @@ import { PiedeMarketing } from "@/components/landing/piede";
 import { SchedaArticolo } from "@/components/blog/scheda-articolo";
 import { autoreBlog, slugAutoriBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
 import { ArrowLeft } from "lucide-react";
+import { jsonLd } from "@/features/blog/seo";
 
 const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
 
@@ -59,7 +60,7 @@ export default async function AutorePage({ params }: { params: Promise<{ slug: s
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <SiteHeader />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datiStrutturati) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(datiStrutturati) }} />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-14">
         <Link

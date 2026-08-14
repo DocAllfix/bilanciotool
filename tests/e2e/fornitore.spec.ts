@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { PWD_COLLAUDO } from "./credenziali";
 
 // E2E del modulo fornitori: registrazione → attivazione via DB → azienda →
 // autovalutazione → questionario → piano → attestato pubblicato.
@@ -20,7 +21,7 @@ test("autovalutazione fornitore fino all'attestato", async ({ page }) => {
   await page.goto("/registrati");
   await page.fill("#nome", "Paolo Grimaldi");
   await page.fill("#email", email);
-  await page.fill("#password", "PasswordSicura123!");
+  await page.fill("#password", PWD_COLLAUDO);
   await page.click('button[type="submit"]');
   await page.waitForURL("**/dashboard", { timeout: 30_000 });
   const sql = postgres(process.env.DATABASE_URL!, { max: 1, prepare: false });

@@ -17,9 +17,10 @@ import Stripe from "stripe";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione } from "../src/lib/prezzi.ts";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
-const PWD = process.env.PWD_CONTO ?? "PasswordSicura123!";
+const PWD = process.env.PWD_CONTO ?? PWD_COLLAUDO;
 const EMAIL = process.env.CONTO ?? `estensioni-${Date.now()}@example.com`;
 
 // Che cosa si compra in questa prova. Numeri diversi fra loro: due quantità uguali

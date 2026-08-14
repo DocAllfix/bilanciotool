@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const STUDIO = "Bianchi e Associati";
@@ -37,7 +38,7 @@ page.on("pageerror", (e) => errori.push(`[pageerror] ${e.message}`));
 
 const RUN = Date.now();
 const email = `marchio-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 let orgId = "";
 let docWhiteLabel = "";
 

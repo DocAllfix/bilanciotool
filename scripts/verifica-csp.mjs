@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import postgres from "postgres";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
@@ -68,7 +69,7 @@ await check("nemmeno col consenso accettato (Analytics carica davvero)", async (
 const RUN = Date.now();
 await check("l'applicazione, dopo l'accesso, non produce violazioni", async () => {
   await registraEEntra(page, sql, {
-    base: BASE, nome: "Prova CSP", email: `csp-${RUN}@example.com`, pwd: "PasswordSicura123!",
+    base: BASE, nome: "Prova CSP", email: `csp-${RUN}@example.com`, pwd: PWD_COLLAUDO,
   });
   for (const p of ["/dashboard", "/documenti", "/guida", "/impostazioni", "/impostazioni/abbonamento"]) {
     await apri(p);

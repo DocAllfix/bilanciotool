@@ -14,6 +14,7 @@ import { soloTesto } from "@/features/blog/sanitize";
 import { ArrowLeft } from "lucide-react";
 import { Briciole } from "@/components/blog/briciole";
 import { bricioleArticolo } from "@/features/blog/tassonomia";
+import { jsonLd } from "@/features/blog/seo";
 
 const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
 
@@ -111,7 +112,7 @@ export default async function ArticoloPage({ params }: { params: Promise<{ slug:
       {!bozza && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(datiStrutturati) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(datiStrutturati) }}
         />
       )}
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Briciola } from "@/features/blog/tassonomia";
 import { schemaBriciole } from "@/features/blog/tassonomia";
+import { jsonLd } from "@/features/blog/seo";
 
 // Le briciole di pane: dove sono, e come torno indietro.
 //
@@ -21,7 +22,7 @@ export function Briciole({ briciole }: { briciole: Briciola[] }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBriciole(briciole)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(schemaBriciole(briciole)) }}
       />
       <nav aria-label="Percorso" className="mb-6">
         <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12.5px] text-muted-foreground">

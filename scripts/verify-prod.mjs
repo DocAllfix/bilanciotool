@@ -7,6 +7,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = process.argv[2] ?? "https://evalisdeck.vercel.app";
 const OUT = process.env.SHOT_DIR ?? "./shots-prod";
@@ -38,7 +39,7 @@ await page.waitForURL("**/registrati", { timeout: 20000 });
 // database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
 // all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
-  await registraEEntra(page, sql, { base: BASE, nome: "Verifica Prod", email: email, pwd: "PasswordSicura123!" });
+  await registraEEntra(page, sql, { base: BASE, nome: "Verifica Prod", email: email, pwd: PWD_COLLAUDO });
 await page.waitForLoadState("networkidle");
 ok("registrazione → dashboard", true, email);
 

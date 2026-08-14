@@ -12,11 +12,12 @@ import postgres from "postgres";
 import Stripe from "stripe";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
 const EMAIL = `pago-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 
 // ⚠️ Questo collaudo arriva alla pagina di pagamento VERA: contro la produzione, dove le
 // chiavi sono vive, crea un cliente e una sessione nell'account che incassa — a ogni

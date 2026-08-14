@@ -12,11 +12,12 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
 const EMAIL = `demo-completa-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const errori = [];

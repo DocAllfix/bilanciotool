@@ -8,6 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa-percorso";
 mkdirSync(OUT, { recursive: true });
@@ -75,7 +76,7 @@ await page.waitForLoadState("networkidle");
 // verifica dell'indirizzo accesa e' lei a completare la registrazione. Cosi' com'era,
 // `sql` veniva usata due righe prima di esistere e il collaudo moriva all'avvio.
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
-await registraEEntra(page, sql, { base: BASE, nome: "Davide Ricci", email, pwd: "PasswordSicura123!" });
+await registraEEntra(page, sql, { base: BASE, nome: "Davide Ricci", email, pwd: PWD_COLLAUDO });
 
 await sql`update org_entitlement set status='active' where organization_id = (select m.organization_id from member m join "user" u on u.id=m.user_id where u.email=${email})`;
 await sql.end();

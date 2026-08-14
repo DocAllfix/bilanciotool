@@ -11,10 +11,11 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const EMAIL = process.env.CONTO;
-const VECCHIA = "PasswordSicura123!";
+const VECCHIA = PWD_COLLAUDO;
 const NUOVA = `Rinnovata${Date.now().toString().slice(-6)}!`;
 if (!EMAIL) { console.error("serve CONTO=<email>"); process.exit(1); }
 

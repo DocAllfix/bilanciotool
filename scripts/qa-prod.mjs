@@ -7,6 +7,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = process.argv[2] ?? "https://evalisdeck.vercel.app";
 const OUT = process.env.SHOT_DIR ?? "./shots-qa";
@@ -67,7 +68,7 @@ const vaiPasso = async (prefisso, n, atteso) => {
 };
 
 const email = `qa-${Date.now()}@example.com`;
-const PW = "PasswordSicura123!";
+const PW = PWD_COLLAUDO;
 
 // ============================================================ 1. AUTENTICAZIONE
 set("Autenticazione");

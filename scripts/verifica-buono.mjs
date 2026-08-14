@@ -10,10 +10,11 @@ import { chromium } from "@playwright/test";
 import Stripe from "stripe";
 import "dotenv/config";
 import { PIANI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const EMAIL = process.env.CONTO;
-const PWD = process.env.PWD_CONTO ?? "PasswordSicura123!";
+const PWD = process.env.PWD_CONTO ?? PWD_COLLAUDO;
 const CODICE = process.env.CODICE ?? "COLLAUDO99";
 if (!EMAIL) { console.error("serve CONTO=<email>"); process.exit(1); }
 

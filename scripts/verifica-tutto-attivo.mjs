@@ -12,9 +12,10 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi } from "./comune-collaudo.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 const EMAIL = process.env.CONTO ?? `tutto-attivo-${Date.now()}@example.com`;
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 

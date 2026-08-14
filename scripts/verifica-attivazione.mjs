@@ -10,11 +10,12 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
 const EMAIL = `attiva-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 let ok = 0, ko = 0;

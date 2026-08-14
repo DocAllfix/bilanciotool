@@ -8,6 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-energetico";
 mkdirSync(OUT, { recursive: true });
@@ -76,7 +77,7 @@ await page.waitForLoadState("networkidle");
 // database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
 // all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
 const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
-  await registraEEntra(page, sql, { base: BASE, nome: "Marco Vitale", email: email, pwd: "PasswordSicura123!" });
+  await registraEEntra(page, sql, { base: BASE, nome: "Marco Vitale", email: email, pwd: PWD_COLLAUDO });
 
 await sql`update org_entitlement set status='active' where organization_id = (select m.organization_id from member m join "user" u on u.id=m.user_id where u.email=${email})`;
 await sql.end();

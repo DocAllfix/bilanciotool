@@ -9,6 +9,7 @@
 
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-impostazioni";
@@ -32,7 +33,7 @@ const email = `imp-${RUN}@example.com`;
 
 // ---------------------------------------------------------------- registrazione
 await check("un utente nuovo arriva al portafoglio", async () => {
-  await registraEEntra(page, sql, { base: BASE, nome: "Chiara Bianchi", email: email, pwd: "PasswordSicura123!" });
+  await registraEEntra(page, sql, { base: BASE, nome: "Chiara Bianchi", email: email, pwd: PWD_COLLAUDO });
 });
 
 // ------------------------------------------------- il vicolo cieco e' chiuso
@@ -152,7 +153,7 @@ pd.on("console", (m) => { if (m.type() === "error") errori.push(`[scuro] ${m.tex
 await check("tema scuro: si accede e le impostazioni si leggono", async () => {
   await pd.goto(`${BASE}/login`, { waitUntil: "networkidle" });
   await pd.fill("#email", email);
-  await pd.fill("#password", "PasswordSicura123!");
+  await pd.fill("#password", PWD_COLLAUDO);
   await pd.click('button[type="submit"]');
   await pd.waitForURL("**/dashboard", { timeout: 40_000 });
   await pd.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
@@ -169,7 +170,7 @@ pm.on("console", (m) => { if (m.type() === "error") errori.push(`[mobile] ${m.te
 await check("su telefono nessuna scheda sborda in orizzontale", async () => {
   await pm.goto(`${BASE}/login`, { waitUntil: "networkidle" });
   await pm.fill("#email", email);
-  await pm.fill("#password", "PasswordSicura123!");
+  await pm.fill("#password", PWD_COLLAUDO);
   await pm.click('button[type="submit"]');
   await pm.waitForURL("**/dashboard", { timeout: 40_000 });
   for (const rotta of ["/impostazioni", "/impostazioni/membri", "/impostazioni/abbonamento"]) {

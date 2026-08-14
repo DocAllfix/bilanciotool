@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 let ok = 0, ko = 0;
@@ -31,7 +32,7 @@ const page = await ctx.newPage();
 
 const RUN = Date.now();
 const email = `pdf-${RUN}@example.com`;
-const PWD = "PasswordSicura123!";
+const PWD = PWD_COLLAUDO;
 let snapshotId = "";
 let orgId = "";
 let msPrima = 0;

@@ -93,3 +93,29 @@ export function seoDaYoast(
     ogImage: riportaSuPubblico(og, opts.cms, opts.pubblico),
   };
 }
+
+/**
+ * Serializza dati strutturati per un `<script type="application/ld+json">`.
+ *
+ * `JSON.stringify` **non** scappa il carattere `<`: un titolo che contenesse
+ * `</script><script>…` chiuderebbe il tag e il resto diventerebbe codice eseguibile
+ * nella pagina. Non e' un'ipotesi di scuola — questi valori (titolo, riassunto, nome
+ * dell'autore, biografia) li scrive chi ha accesso al CMS, e sul CMS c'e' un editor
+ * esterno: il consulente SEO.
+ *
+ * L'attenuante «gli autori sono fidati» qui non regge. Un editor esterno e' una persona
+ * in piu' che puo' sbagliare o farsi rubare le credenziali, e il costo di questa riga e'
+ * zero.
+ *
+ * Si scappa anche `>` e i separatori di riga U+2028/U+2029: non chiudono un tag, ma sono
+ * fine-riga per il parser JavaScript e spezzano lo script anche se il JSON e' valido.
+ * Le sequenze `\uXXXX` restano JSON legittimo, quindi Google legge esattamente lo stesso
+ * dato.
+ */
+export function jsonLd(dato: unknown): string {
+  return JSON.stringify(dato)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
