@@ -115,7 +115,14 @@ export async function uploadObject(
     headers: headers(key, { "Content-Type": contentType, "x-upsert": "true" }),
     body: body as BodyInit,
   });
-  if (!res.ok) throw new Error(`Upload fallito (${res.status}): ${await res.text()}`);
+  if (!res.ok) {
+    // Il corpo della risposta di Supabase resta nei LOG. Stava dentro il messaggio
+    // dell'eccezione, e il messaggio delle eccezioni «nostre» arriva fino al browser:
+    // era l'unica riga del prodotto che rimandava all'utente il testo grezzo di un
+    // servizio esterno, con dentro il nome del bucket e la ragione del rifiuto.
+    console.error("[storage] upload fallito", res.status, storageKey, await res.text());
+    throw new Error("Caricamento non riuscito. Riprova fra poco.");
+  }
 }
 
 export async function deleteObject(orgId: string, storageKey: string): Promise<void> {

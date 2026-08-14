@@ -45,9 +45,13 @@ await tema("chiaro");
 // --- Account attivo + percorso GHG con dati reali
 const email = `visual-${Date.now()}@example.com`;
 await go("/registrati");
+// La connessione si apre PRIMA di chi la usa. Con la verifica dell'indirizzo accesa
+// e' `registraEEntra` a completare la registrazione, e per farlo legge il token dal
+// database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
+// all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
   await registraEEntra(page, sql, { base: BASE, nome: "Franca Verdi", email: email, pwd: "PasswordSicura123!" });
 
-const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`
   update org_entitlement set status = 'active'
   where organization_id = (

@@ -7,7 +7,7 @@ import { CHIAVI_PIANO, PIANI } from "@/lib/prezzi";
 import { stripeConfigurato } from "@/lib/stripe/client";
 import { creaSessioneCheckout } from "./checkout";
 import { urlPortale } from "./portale";
-import type { ActionEsito } from "@/features/companies/actions";
+import type { ActionEsito } from "@/features/esito";
 
 // Il pagamento lo avvia solo chi può impegnare lo studio: `requireStudioAdmin`, non
 // `requireConsultant`. Un collaboratore invitato non deve poter sottoscrivere un

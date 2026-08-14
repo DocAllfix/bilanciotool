@@ -22,6 +22,11 @@ page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 const email = `visual-doc-${Date.now()}@example.com`;
 await page.goto(BASE + "/registrati");
 await page.waitForLoadState("networkidle");
+// La connessione si apre PRIMA di chi la usa. Con la verifica dell'indirizzo accesa
+// e' `registraEEntra` a completare la registrazione, e per farlo legge il token dal
+// database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
+// all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
   await registraEEntra(page, sql, { base: BASE, nome: "Anna Greco", email: email, pwd: "PasswordSicura123!" });
 
 // Il tour guidato parte da solo al primo accesso e copre la pagina: i suoi
@@ -30,7 +35,6 @@ await page.evaluate(() => {
   for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.setItem(`evalisdeck-tour:${k}`, "1");
 });
 
-const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 const [org] = await sql`select m.organization_id as id, m.user_id as uid from member m join "user" u on u.id=m.user_id where u.email=${email}`;
 await sql`update org_entitlement set status='active' where organization_id=${org.id}`;
 

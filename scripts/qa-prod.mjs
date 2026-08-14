@@ -88,6 +88,11 @@ await check("login con credenziali errate mostra errore", async () => {
 });
 await check("registrazione nuovo studio", async () => {
   await page.goto(BASE + "/registrati", { waitUntil: "networkidle" });
+// La connessione si apre PRIMA di chi la usa. Con la verifica dell'indirizzo accesa
+// e' `registraEEntra` a completare la registrazione, e per farlo legge il token dal
+// database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
+// all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
   await registraEEntra(page, sql, { base: BASE, nome: "QA Automatica", email: email, pwd: PW });
 });
 await page.waitForLoadState("networkidle");
@@ -136,7 +141,6 @@ await check("paywall demo: creazione azienda bloccata dal server", async () => {
 await page.screenshot({ path: `${OUT}/qa-01-dashboard-demo.png` });
 
 // Attivazione (fino a Stripe: flag su DB)
-const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`update org_entitlement set status='active' where organization_id = (
   select m.organization_id from member m join "user" u on u.id = m.user_id where u.email = ${email})`;
 await sql.end();

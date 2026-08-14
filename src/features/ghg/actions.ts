@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import { z } from "zod";
-import type { ActionEsito } from "@/features/companies/actions";
 import { createInventory, setBaseYear, updateBoundaries, updatePeriodMeta } from "./inventories";
 import { setSourceState } from "./sources";
 import { addActivityRow, copyRowsFromInventory, deleteActivityRow, duplicateActivityRow, updateActivityRow } from "./activity-data";
@@ -12,16 +11,11 @@ import { deleteOrgFactor, upsertOrgFactor } from "./factors";
 import { addTarget, deleteTarget } from "./targets";
 import { setChecklistState } from "./checklist";
 import { importGhgFromJson, type GhgImportEsito } from "./import";
+import { daErrore, type ActionEsito } from "@/features/esito";
 
 // Server actions del modulo GHG: sessione → funzioni F4. La revalidation è sul
 // percorso dell'inventario: la pagina ricarica i risultati dal server (mai
 // ricalcoli client: stessa fonte di verità).
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
 
 const percorso = (companyId: string) => `/aziende/${companyId}/ghg`;
 

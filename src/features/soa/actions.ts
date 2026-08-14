@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import type { ActionEsito } from "@/features/companies/actions";
 import {
   createDeclaration, setDecisionField, setModule, setRuoli, toggleMotivazione, updateProfilo,
 } from "./declarations";
 import { decisioneSchema, moduloSchema, motivazioneSchema, ruoliSchema, type ProfiloSoa } from "./validation";
+import { daErrore, type ActionEsito } from "@/features/esito";
 
 // Confine server↔client del modulo SoA.
 //
@@ -17,12 +17,6 @@ import { decisioneSchema, moduloSchema, motivazioneSchema, ruoliSchema, type Pro
 // registro, non si naviga. Il ricalcolo avviene al cambio vista o con
 // `ricalcolaAction`. L'attivazione di un modulo invece rivalida: cambia
 // l'ambito, cioè quali controlli esistono.
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
 
 const percorso = (companyId: string) => `/aziende/${companyId}/soa`;
 

@@ -2,17 +2,12 @@
 
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import type { ActionEsito } from "@/features/companies/actions";
+import { daErrore, type ActionEsito } from "@/features/esito";
 import type { TipoDocumento } from "./tipi";
 import {
   listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot,
   publishSoaSnapshot, publishSupplierSnapshot,
 } from "./snapshot";
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
 
 export async function publishDocumentAction(
   companyId: string,

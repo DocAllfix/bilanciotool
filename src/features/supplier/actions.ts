@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import type { ActionEsito } from "@/features/companies/actions";
 import { createAssessment, setAnswerField, setSoglia, updateProfilo } from "./assessments";
 import { perColonna, rispostaSchema, type ProfiloSupplier } from "./validation";
+import { daErrore, type ActionEsito } from "@/features/esito";
 
 // Confine server↔client del modulo fornitori. Nessuna eccezione nuda raggiunge
 // il browser: ogni azione restituisce un esito.
@@ -14,12 +14,6 @@ import { perColonna, rispostaSchema, type ProfiloSupplier } from "./validation";
 // La rivalidazione è assente dalle azioni ad alta frequenza (le 37 domande, le
 // note, il piano): si compila un questionario, non si naviga. Il ricalcolo
 // avviene al cambio vista o con `ricalcolaAction`.
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
 
 const percorso = (companyId: string) => `/aziende/${companyId}/fornitore`;
 

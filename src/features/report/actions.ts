@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import { z } from "zod";
-import type { ActionEsito } from "@/features/companies/actions";
 import { createReportProject, setCompanyImage, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
 import { setTopicScoreField, getAtecoSuggestions } from "./materiality";
 import { setKpiValue } from "./kpi";
@@ -12,12 +11,7 @@ import { setTopicManagement } from "./policies";
 import { addMedia, removeMedia, saveChapter, updateMedia } from "./chapters";
 import { importBilancioFromJson, type BilancioImportEsito } from "./import";
 import { latestContentSetId } from "@/features/ghg/inventories";
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
+import { daErrore, type ActionEsito } from "@/features/esito";
 
 const percorso = (companyId: string) => `/aziende/${companyId}/bilancio`;
 

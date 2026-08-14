@@ -6,7 +6,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import { creaCollegamento, revocaCollegamento } from "./index";
 import { DURATE, DURATA_PREDEFINITA } from "./token";
-import type { ActionEsito } from "@/features/companies/actions";
+import type { ActionEsito } from "@/features/esito";
 
 // Server action del portale cliente. Come tutte le altre: il client riceve
 // `{ok} | {ok:false, errore, codice?}`, mai un'eccezione nuda.

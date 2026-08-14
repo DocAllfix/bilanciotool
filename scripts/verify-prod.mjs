@@ -33,6 +33,11 @@ ok("landing online", (await page.title()).includes("EvalisDeck"));
 const email = `prod-${Date.now()}@example.com`;
 await page.getByRole("link", { name: "Prova la demo guidata" }).first().click();
 await page.waitForURL("**/registrati", { timeout: 20000 });
+// La connessione si apre PRIMA di chi la usa. Con la verifica dell'indirizzo accesa
+// e' `registraEEntra` a completare la registrazione, e per farlo legge il token dal
+// database: cosi' com'era, `sql` veniva usata prima di esistere e il collaudo moriva
+// all'avvio, sempre, senza mai poter diventare ne' verde ne' rosso.
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
   await registraEEntra(page, sql, { base: BASE, nome: "Verifica Prod", email: email, pwd: "PasswordSicura123!" });
 await page.waitForLoadState("networkidle");
 ok("registrazione → dashboard", true, email);
@@ -55,7 +60,6 @@ if (tourVisibile) {
 }
 
 // 4. Attivazione account (fino a Stripe: flag manuale, stesso DB dev)
-const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`update org_entitlement set status='active' where organization_id = (
   select m.organization_id from member m join "user" u on u.id = m.user_id where u.email = ${email})`;
 await sql.end();

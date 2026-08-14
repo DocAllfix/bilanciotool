@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import type { ActionEsito } from "@/features/companies/actions";
 import { createBalance, setAnnoBase, updateProfilo } from "./balances";
 import { deleteCompanyFactor, setMonthlyValue, setVectorField, upsertCompanyFactor } from "./vectors";
 import { setAllocation, setEndUseState, setStima } from "./allocation";
@@ -12,6 +11,7 @@ import { setDriverValue } from "./drivers";
 import { addMeasure, deleteMeasure, updateMeasure } from "./measures";
 import { addMedia, removeMedia, saveChapter, updateMedia } from "./narrative";
 import { fattoreCompanySchema, type ProfiloEnergetico } from "./validation";
+import { daErrore, type ActionEsito } from "@/features/esito";
 
 // Confine server↔client del modulo energetico. Nessuna eccezione nuda raggiunge
 // il browser: ogni azione restituisce un esito, e l'interfaccia decide come dirlo.
@@ -21,12 +21,6 @@ import { fattoreCompanySchema, type ProfiloEnergetico } from "./validation";
 // duecentoventi celle, un revalidatePath per ogni uscita dal campo produrrebbe
 // decine di ricalcoli mentre si compila. Il ricalcolo avviene al cambio passo o
 // su richiesta esplicita, con `ricalcolaAction`.
-
-function daErrore(e: unknown): ActionEsito<never> {
-  if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-  if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
-  return { ok: false, errore: e instanceof Error ? e.message : "Operazione non riuscita" };
-}
 
 // La pagina del percorso è quella dell'esercizio: rivalidare solo il percorso
 // padre non la tocca, e il consulente vedrebbe numeri fermi dopo il ricalcolo.
