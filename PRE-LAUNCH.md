@@ -42,9 +42,16 @@ Aggiornato al **2026-08-13**.
         estensioni. Rimettendo il difetto il collaudo torna rosso
 - [x] **Chiavi live** in produzione
       → *verifica:* la sessione creata dal sito è `cs_live_`
-- [ ] **Passaggio anno 1 → rinnovo con test clock**
-      → *verifica:* `subscription_schedule.released` **non** deve disattivare l'account.
-        È l'unico comportamento del pagamento che nessuno ha ancora visto accadere
+- [x] **Passaggio anno 1 → rinnovo con test clock** — fatto il 2026-08-14
+      → *verifica:* `qa -- rinnovo` — 8 su 8. Non e' una simulazione nostra: si crea
+        l'abbonamento su un **orologio di prova** di Stripe, si sposta il tempo di un anno
+        e un giorno, ed e' Stripe a far scattare il rinnovo. Il piano passa al prezzo
+        ridotto, le estensioni si portano dietro il proprio, lo Schedule si stacca
+        (`end_behavior: release`) e l'account resta **attivo**: `subscription_schedule.released`
+        non e' una disdetta, e ora si sa perche' invece di dedurlo.
+      → *provato rompendolo:* rimettendo il difetto della fase 2 il collaudo diventa rosso
+        su quattro asserzioni, e mostra il danno vero — gli accessi extra tornano a **zero**
+        e il cliente verrebbe fatturato 1.100 € invece di 2.225 €
 
 ## 2. Email
 
@@ -56,10 +63,16 @@ Aggiornato al **2026-08-13**.
 - [x] **Recupero password** end-to-end
       → *verifica:* `qa -- recupero-password` — 8 su 8: richiesta → gettone → nuova
         password → accesso → **la vecchia smette di funzionare** → il gettone non si riusa
-- [ ] **Invito a un collega** end-to-end
-      → *verifica:* l'invitato **riceve, accetta, entra nello studio che invita e occupa un
-        posto**. Oggi è provato solo che l'invito parte: la metà che conta — che si riesca
-        a entrare — non l'ha mai fatta nessuno
+- [x] **Invito a un collega** end-to-end — fatto il 2026-08-14
+      → *e non funzionava*: `/accept-invitation/<id>`, l'indirizzo scritto nell'email,
+        rispondeva **404 in produzione**. La pagina non esisteva. Il retro era pronto e
+        ben fatto; mancava la porta, e nessuno se n'era accorto perche' il collaudo si
+        fermava a «l'invito parte».
+      → *verifica:* `qa -- invito` — 14 su 14, in produzione. Invito, collegamento vero
+        preso dal database, iscrizione con l'indirizzo bloccato, conferma, accesso,
+        accettazione, **appartenenza letta nel database**, posto occupato. Piu' i modi di
+        sbagliare: invito inventato, riaperto due volte, estraneo con la sessione aperta,
+        scaduto. Ogni divieto e' provato sulla riga che non compare, non sul messaggio.
 
 ## 3. Dati e ambiente di produzione
 

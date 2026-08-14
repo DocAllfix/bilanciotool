@@ -433,6 +433,23 @@ Prova sul campo, non deduzione: `app_rls` senza contesto vede **0** aziende su 3
 
 Gate: typecheck · build · **531 test** verdi in entrambi i modi, e `RLS_FORCE_ROLE=app_rls` non è più una prova di laboratorio: è come gira la produzione · in produzione `tutto-attivo` 30/30, `tutto-demo` 68/68, `tutto-pubblico` 37/37, `benvenuto` 12/12, `demo-completa` 9/9 · migrazione `0015` provata sul database in quattro casi, compreso quello che deve riuscire (il webhook di Stripe, che senza fallirebbe **dopo** aver incassato).
 
+**Le due voci «nessuno l'ha mai visto funzionare» (2026-08-14)** — chiuse, e una delle due non funzionava.
+
+**L'invito a un collega portava a una pagina che non esisteva.** `/accept-invitation/<id>` — l'indirizzo scritto nell'email — rispondeva **404 in produzione**. Il retro era pronto e scritto bene (chi ha un invito pendente non riceve uno studio proprio, la sessione punta subito allo studio giusto, il limite di posti si applica sia a chi invita sia a chi accetta): mancava la porta. È passato inosservato per settimane perché il collaudo si fermava a «l'invito parte», ed era scritto in `PRE-LAUNCH.md` che la metà che conta non l'aveva mai fatta nessuno.
+
+La pagina è costruita sui casi in cui va storto: quattro stati distinti dell'invito (inesistente, scaduto, già accettato, annullato) perché i rimedi sono diversi; iscrizione **e** accesso sulla stessa pagina, perché un collegamento a `/login` riporterebbe al portafoglio lasciando l'invito in un'email già aperta; indirizzo bloccato su quello invitato; e nessuna accettazione silenziosa quando la sessione aperta è di un'altra persona.
+
+**Il rinnovo al secondo anno, visto davvero.** Con un **orologio di prova** di Stripe: si crea l'abbonamento, si sposta il tempo di un anno e un giorno, ed è Stripe a far scattare il rinnovo. Il piano passa al prezzo ridotto, le estensioni si portano dietro il proprio, lo Schedule si stacca e l'account resta attivo — `subscription_schedule.released` non è una disdetta, e ora si sa invece di dedurlo.
+
+**Regole nate qui:**
+- **Un collaudo che si ferma a metà catena certifica la metà che funziona.** «L'invito parte» era verde da settimane mentre la porta non esisteva. La domanda da farsi non è «il pulsante risponde?» ma «la persona arriva dove doveva?».
+- **Il tempo si può comprare.** Un comportamento che si manifesta fra dodici mesi non è «non verificabile»: `test_clock` lo fa accadere adesso, ed è l'unico modo di distinguere ciò che si è capito da ciò che si è dedotto.
+- **Due moduli sulla stessa pagina producono `id` duplicati**, e l'etichetta dell'uno finisce a puntare al campo dell'altro. Gli identificativi vanno prefissabili, col valore predefinito vuoto perché il resto non cambi.
+- **`getAttribute` su un attributo booleano restituisce la stringa vuota**, che è falsa: `readonly` presente sembrava assente. La domanda giusta si fa alla proprietà dell'elemento.
+- **La controprova può non costare niente**: l'asserzione sull'invito era rossa contro la produzione (non ancora corretta) e verde in locale, nello stesso minuto.
+
+Gate: **531 test** · `qa -- invito` **14 su 14 in produzione** · `qa -- rinnovo` 8 su 8 con l'orologio di prova, e messo in rosso di proposito rimettendo il difetto della fase 2 (che mostra il danno vero: accessi extra a **zero** e fattura di 1.100 € invece di 2.225 €).
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
