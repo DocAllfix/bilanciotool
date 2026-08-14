@@ -8,7 +8,23 @@ scattato).
 Legenda: `[x]` fatto **e verificato** · `[~]` fatto ma verificato solo in modalità di prova ·
 `[ ]` da fare · 🔒 dipende dal committente.
 
-Aggiornato al **2026-08-13**.
+Aggiornato al **2026-08-14**.
+
+## Che cosa blocca cosa
+
+Niente di quello che resta blocca lo sviluppo: si puo' continuare a costruire senza
+toccare nessuna di queste voci. Ma tre non hanno una data, hanno un **innesco**, e
+l'innesco e' sempre lo stesso: **la prima persona vera che paga**. Scritto qui perche'
+un elenco piatto di caselle non dice quando una casella diventa urgente.
+
+| Quando | Che cosa | Perche' proprio allora |
+|---|---|---|
+| **Prima che chiunque paghi** | Dati del titolare nei documenti legali (P. IVA, sede, PEC) | Vendere a un'azienda con l'identificazione incompleta in privacy e termini e' un'esposizione legale, non un dettaglio estetico. Sono cinque minuti, e sono **dati che solo il committente ha**. |
+| **Prima che chiunque paghi** | Un acquisto vero, poi rimborsato | La catena viva — chiavi vive, webhook vivo, fattura vera — non e' mai stata percorsa da capo a fondo. Se qualcosa e' configurato diversamente in modalita' viva, lo scopre il primo cliente. Costa **6 euro** e mezz'ora. |
+| **Prima che paghi il SECONDO** | Database di produzione separato | Rimandarlo dopo il primo cliente significa migrare dati di qualcuno mentre li usa. Finche' i clienti sono zero, il costo del cambio e' zero. |
+| **Dal primo cliente in poi** | Backup con restore provato · canali di allarme | Oggi non c'e' niente da perdere e niente da sorvegliare. Dal primo cliente ci sono entrambe le cose, e un backup mai ripristinato non e' un backup. |
+| **Quando si vuole** | Pulizia dei clienti Stripe di collaudo · HSTS preload · CSP senza `'unsafe-inline'` | Nessun rischio nel rimandarle. Le ultime due sono **decisioni**, non arretrati: `preload` e' quasi irreversibile, e il nonce costerebbe la staticita' di home e blog. |
+
 
 > **Risposta breve alla domanda «si può vendere?»**
 > Il sistema **incassa già**: Stripe è in modalità viva e la pagina di pagamento accetta
