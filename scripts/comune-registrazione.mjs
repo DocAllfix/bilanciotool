@@ -15,6 +15,17 @@
  * @param sql    connessione postgres del collaudo
  * @param opts   {base, nome, email, pwd}
  * @returns      {userId, orgId}
+ *
+ * ⚠️ IL VALORE DI RITORNO SERVE, e quasi nessuno lo usa: ventitre' script chiamano
+ * `await registraEEntra(...)` scartandolo, e dodici di questi rifanno subito dopo la
+ * stessa query — `select m.organization_id from member m join "user" u ...` — per
+ * risalire a un dato che avevano gia' in mano.
+ *
+ * Non e' stato accorpato perche' la forma non e' uniforme (alcuni leggono anche
+ * `user_id`, con nomi diversi, e lo usano piu' avanti): sarebbero dodici modifiche non
+ * meccaniche da verificare una per una. Ma per uno script NUOVO la strada e' una sola:
+ *
+ *     const { userId, orgId } = await registraEEntra(page, sql, { ... });
  */
 export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   await page.goto(`${base}/registrati`, { waitUntil: "networkidle" });

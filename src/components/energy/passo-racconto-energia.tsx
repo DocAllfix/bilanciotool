@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImagePlus, Trash2 } from "lucide-react";
 import { TiptapEditor } from "@/components/report/tiptap-editor";
 import type { PropsPasso } from "./types";
+import { fileADataUrl } from "@/lib/immagini-client";
 
 // Passo 6 — Lettura dei dati. I numeri dei passi precedenti non spiegano da soli
 // perché il sito consuma così: questi capitoli sono la parte consulenziale del
@@ -26,16 +27,6 @@ const NOMI_GRAFICI: Record<string, string> = {
   indicatori: "Confronto degli indicatori con l'anno di riferimento",
   interventi: "Interventi: risparmio e tempo di ritorno",
 };
-
-async function fileADataUrl(file: File, maxLato = 1600, qualita = 0.85): Promise<string> {
-  const bitmap = await createImageBitmap(file);
-  const scala = Math.min(1, maxLato / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scala);
-  canvas.height = Math.round(bitmap.height * scala);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", qualita);
-}
 
 export function PassoRaccontoEnergia({ companyId, bilancio, catalogo, stato }: PropsPasso) {
   const router = useRouter();

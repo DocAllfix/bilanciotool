@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { companyIdSchema } from "@/features/campi";
 
 // Validazioni del modulo ESG Supplier Ready: ogni input attraversa questi schemi
 // PRIMA di toccare il database.
@@ -8,7 +9,7 @@ export const STATI_DOCUMENTO = ["assente", "da_aggiornare", "disponibile"] as co
 export const STATI_AZIONE = ["da_avviare", "in_corso", "completata"] as const;
 
 export const valutazioneSchema = z.object({
-  companyId: z.string().min(1),
+  companyId: companyIdSchema,
   sogliaRichiesta: z.coerce.number().int().min(0).max(100).optional(),
 });
 

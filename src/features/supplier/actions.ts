@@ -6,6 +6,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { createAssessment, setAnswerField, setSoglia, updateProfilo } from "./assessments";
 import { perColonna, rispostaSchema, type ProfiloSupplier } from "./validation";
 import { daErrore, type ActionEsito } from "@/features/esito";
+import { percorsoModulo } from "@/features/companies/moduli";
 
 // Confine server↔client del modulo fornitori. Nessuna eccezione nuda raggiunge
 // il browser: ogni azione restituisce un esito.
@@ -14,7 +15,7 @@ import { daErrore, type ActionEsito } from "@/features/esito";
 // note, il piano): si compila un questionario, non si naviga. Il ricalcolo
 // avviene al cambio vista o con `ricalcolaAction`.
 
-const percorso = (companyId: string) => `/aziende/${companyId}/fornitore`;
+const percorso = (companyId: string) => percorsoModulo(companyId, "fornitore");
 
 export async function createAssessmentAction(input: {
   companyId: string;

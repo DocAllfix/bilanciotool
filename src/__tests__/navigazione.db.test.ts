@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { randomUUID } from "node:crypto";
 import { eq, inArray } from "drizzle-orm";
+import { creaStudio, pulisciStudio } from "./comune";
+import { latestContentSetId } from "@/features/ghg/inventories";
 import { db } from "@/lib/db";
 import {
   user, organization, member, orgEntitlement, company, auditLog, documentSnapshot, ghgInventory, reportProject,
@@ -33,46 +35,41 @@ const userB = `user-nav-b-${RUN}`;
 const ANNO_VECCHIO = new Date().getFullYear() - 5;
 let companyA = "";
 let companyB = "";
+let setGhg = "";
+let setReport = "";
 
-async function creaStudio(orgId: string, userId: string, nomeAzienda: string, suffisso: string) {
-  await db.insert(user).values({ id: userId, name: "Consulente", email: `nav-${suffisso}-${RUN}@example.com` });
-  await db.insert(organization).values({ id: orgId, name: `Studio ${suffisso}`, slug: `nav-${suffisso}-${RUN}` });
-  await db.insert(member).values({ id: randomUUID(), organizationId: orgId, userId, role: "owner" });
-  await db.insert(orgEntitlement).values({ organizationId: orgId, status: "active" });
-  const companyId = randomUUID();
-  await db.insert(company).values({ id: companyId, organizationId: orgId, nome: nomeAzienda });
-  return companyId;
-}
-
-async function pulisciStudio(orgId: string, userId: string) {
-  await db.delete(auditLog).where(eq(auditLog.organizationId, orgId));
-  await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
-  await db.delete(reportProject).where(eq(reportProject.organizationId, orgId));
-  await db.delete(ghgInventory).where(eq(ghgInventory.organizationId, orgId));
-  await db.delete(company).where(eq(company.organizationId, orgId));
-  await db.delete(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
-  await db.delete(member).where(eq(member.organizationId, orgId));
-  await db.delete(organization).where(eq(organization.id, orgId));
-  await db.delete(user).where(inArray(user.id, [userId]));
+/** Gli identificativi qui sono decisi fuori (servono nelle asserzioni), quindi si passano
+ *  invece di lasciarli comporre all'aiutante. L'entitlement resta esplicito. */
+async function creaStudioNav(suffisso: string, nomeAzienda: string) {
+  const s = await creaStudio({
+    prefisso: `nav-${suffisso}`, run: RUN, nomeStudio: `Studio ${suffisso}`, nomeAzienda,
+  });
+  await db.insert(orgEntitlement).values({ organizationId: s.orgId, status: "active" });
+  return s;
 }
 
 describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
   beforeAll(async () => {
-    companyA = await creaStudio(orgA, userA, "Azienda dello studio A", "a");
-    companyB = await creaStudio(orgB, userB, "Azienda dello studio B", "b");
+    // `contentSetId` RISOLTO, non il letterale "v1" che c'era prima: era l'unico test
+    // destinato a rompersi il giorno in cui il catalogo corrente cambia versione.
+    setGhg = await latestContentSetId("ghg");
+    setReport = await latestContentSetId("report");
+
+    companyA = (await creaStudioNav("a", "Azienda dello studio A")).companyId;
+    companyB = (await creaStudioNav("b", "Azienda dello studio B")).companyId;
 
     // Studio A: un inventario fermo a cinque anni fa (deve finire in scadenzario)
     // e un bilancio dell'anno scorso mai pubblicato.
     await db.insert(ghgInventory).values({
-      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: "v1",
+      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: setGhg,
     });
     await db.insert(reportProject).values({
-      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: new Date().getFullYear() - 1, contentSetId: "v1",
+      id: randomUUID(), organizationId: orgA, companyId: companyA, anno: new Date().getFullYear() - 1, contentSetId: setReport,
     });
 
     // Studio B: le stesse cose, che NON devono comparire allo studio A.
     await db.insert(ghgInventory).values({
-      id: randomUUID(), organizationId: orgB, companyId: companyB, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: "v1",
+      id: randomUUID(), organizationId: orgB, companyId: companyB, anno: ANNO_VECCHIO, annoBase: ANNO_VECCHIO, contentSetId: setGhg,
     });
     await db.insert(documentSnapshot).values({
       id: randomUUID(), organizationId: orgB, companyId: companyB, tipo: "soa", anno: SENZA_ESERCIZIO,
@@ -81,8 +78,14 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
   });
 
   afterAll(async () => {
-    await pulisciStudio(orgA, userA);
-    await pulisciStudio(orgB, userB);
+    for (const [orgId, userId] of [[orgA, userA], [orgB, userB]]) {
+      // Le tabelle di modulo PRIMA della coda comune: qui le aziende sono condivise fra
+      // piu' righe, quindi non basta la cascata su `company`.
+      await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
+      await db.delete(reportProject).where(eq(reportProject.organizationId, orgId));
+      await db.delete(ghgInventory).where(eq(ghgInventory.organizationId, orgId));
+      await pulisciStudio(orgId, userId);
+    }
   });
 
   it("il fascicolo elenca i cinque moduli, con lo stato di ciascuno", async () => {
@@ -127,7 +130,7 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     const anno = new Date().getFullYear() - 1;
     const invId = randomUUID();
     await db.insert(ghgInventory).values({
-      id: invId, organizationId: orgA, companyId: companyA, anno, annoBase: anno, contentSetId: "v1",
+      id: invId, organizationId: orgA, companyId: companyA, anno, annoBase: anno, contentSetId: setGhg,
     });
     try {
       const ghg = (await getScadenzario(userA, orgA)).find((v) => v.modulo === "ghg")!;
@@ -266,7 +269,7 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     });
     await db.insert(ghgInventory).values({
       id: randomUUID(), organizationId: orgA, companyId: demoId, anno: ANNO_VECCHIO,
-      annoBase: ANNO_VECCHIO, contentSetId: "v1",
+      annoBase: ANNO_VECCHIO, contentSetId: setGhg,
     });
     try {
       const st = await getStatiPortafoglio(userA, orgA);

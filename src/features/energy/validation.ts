@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { companyIdSchema, annoSchema } from "@/features/campi";
 
 // Validazioni zod del modulo energetico: ogni input attraversa questi schemi
 // PRIMA di toccare il DB. I numeri viaggiano come stringhe decimali (NUMERIC).
@@ -19,9 +20,9 @@ export const METODI_KEYS = ["mis", "cal", "sti"] as const;
 export const STATI_MISURA = ["proposto", "valutato", "approvato", "in_corso", "realizzato", "scartato"] as const;
 
 export const bilancioSchema = z.object({
-  companyId: z.string().min(1),
-  anno: z.coerce.number().int().min(1990).max(2100),
-  annoBase: z.coerce.number().int().min(1990).max(2100).optional(),
+  companyId: companyIdSchema,
+  anno: annoSchema,
+  annoBase: annoSchema.optional(),
 });
 
 // Sito e perimetro (passo 1): testo libero, chiavi chiuse.
@@ -83,7 +84,7 @@ export const stimaSchema = z.object({
 });
 
 export const driverSchema = z.object({
-  anno: z.coerce.number().int().min(1990).max(2100),
+  anno: annoSchema,
   driverKey: z.string().min(1),
   valore: numeroDecimale,
 });
@@ -96,7 +97,7 @@ export const misuraSchema = z.object({
   incentivo: numeroDecimale.optional(),
   usoKey: z.string().nullable().optional(),
   stato: z.enum(STATI_MISURA).optional(),
-  annoPrevisto: z.coerce.number().int().min(1990).max(2100).nullable().optional(),
+  annoPrevisto: annoSchema.nullable().optional(),
   note: z.string().nullable().optional(),
 });
 

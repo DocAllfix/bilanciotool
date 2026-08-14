@@ -98,8 +98,19 @@ await page.click('button[type="submit"]:has-text("Crea azienda")');
 // La card giusta è quella dell'azienda appena creata: la prima del portafoglio
 // è l'organizzazione dimostrativa seminata alla registrazione.
 const card = page.locator('[data-slot="card"]').filter({ hasText: "Fonderia Irno S.p.A." }).first();
+// Si ricarica finche' la card non c'e'. In produzione compare subito (verificato su
+// evalisdeck.it: elenco aggiornato senza ricaricare, e il server rende sempre il dato
+// giusto), mentre con `next start` in locale l'elenco resta indietro di un aggiornamento.
+// Il collaudo deve misurare il percorso energetico, non quell'artefatto.
+for (let t = 0; t < 12 && !(await card.count()); t++) {
+  await page.waitForTimeout(1500);
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+}
 await card.waitFor({ timeout: 20000 });
-const linkEnergetico = card.getByRole("link", { name: "Energetico", exact: true });
+// Il nome accessibile del pulsante porta anche lo stato («Bilancio energetico: da
+// avviare»): ci si aggancia all'INDIRIZZO, che e' il fatto stabile.
+const linkEnergetico = card.locator('a[href$="/energetico"]').first();
 verifica("Il portafoglio espone il pulsante Energetico", await linkEnergetico.isVisible());
 await linkEnergetico.click();
 await page.waitForURL("**/energetico", { timeout: 15000 });

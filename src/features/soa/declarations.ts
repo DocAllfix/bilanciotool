@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
-import { company, contentSet, soaControlDecision, soaDeclaration, soaModule } from "@/lib/db/schema";
+import { company, soaControlDecision, soaDeclaration, soaModule } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import {
@@ -10,6 +10,7 @@ import {
   MOTIVAZIONI, STATI, STATI_AZIONE, type ProfiloSoa,
 } from "./validation";
 import type { z } from "zod";
+import { latestSetId } from "@/features/content-set";
 
 // Dichiarazione di Applicabilità: UNA per azienda.
 //
@@ -43,14 +44,7 @@ async function nostra(
 }
 
 export async function latestSoaSetId(): Promise<string> {
-  const rows = await db
-    .select({ id: contentSet.id })
-    .from(contentSet)
-    .where(eq(contentSet.dominio, "soa"))
-    .orderBy(desc(contentSet.versione))
-    .limit(1);
-  if (!rows[0]) throw new Error("Catalogo dei controlli non disponibile");
-  return rows[0].id;
+  return latestSetId("soa", "Catalogo dei controlli non disponibile");
 }
 
 export async function createDeclaration(

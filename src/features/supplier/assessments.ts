@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
-import { company, contentSet, supplierAnswer, supplierAssessment } from "@/lib/db/schema";
+import { company, supplierAnswer, supplierAssessment } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import {
@@ -10,6 +10,7 @@ import {
   type ProfiloSupplier,
 } from "./validation";
 import type { z } from "zod";
+import { latestSetId } from "@/features/content-set";
 
 // Valutazioni fornitore: UNA per azienda.
 //
@@ -18,14 +19,7 @@ import type { z } from "zod";
 // negli attestati pubblicati, che formano una serie di versioni.
 
 export async function latestSupplierSetId(): Promise<string> {
-  const rows = await db
-    .select({ id: contentSet.id })
-    .from(contentSet)
-    .where(eq(contentSet.dominio, "supplier"))
-    .orderBy(desc(contentSet.versione))
-    .limit(1);
-  if (!rows[0]) throw new Error("Banca domande del modulo fornitori non disponibile");
-  return rows[0].id;
+  return latestSetId("supplier", "Banca domande del modulo fornitori non disponibile");
 }
 
 export async function createAssessment(

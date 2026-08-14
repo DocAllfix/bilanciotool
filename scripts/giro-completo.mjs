@@ -40,8 +40,17 @@ for (const file of collaudi) {
   });
   const durata = Math.round((Date.now() - t0) / 1000);
   const uscita = `${r.stdout ?? ""}${r.stderr ?? ""}`;
-  // Ogni collaudo stampa la stessa riga di riepilogo: la si legge invece di indovinare.
-  const riga = uscita.match(/Controlli: (\d+) ok, (\d+) falliti/) ?? uscita.match(/(\d+) controlli · (\d+) rossi/);
+  // Il riepilogo si legge invece di indovinarlo. L'etichetta pero' NON e' sempre
+  // «Controlli»: `contatore().riepilogo(titolo)` stampa il titolo che riceve, quindi
+  // «Conto attivo», «Conto in prova», «Parte pubblica», «Invito», «Rinnovo». Cercando la
+  // parola fissa, sei collaudi su quaranta finivano come «(nessun riepilogo)» — e fra
+  // questi i tre piu' completi. Il verde/rosso restava giusto (viene dal codice d'uscita):
+  // si perdevano i numeri, cioe' l'unica cosa per cui si legge un riepilogo.
+  //
+  // Ora l'etichetta e' libera: conta la forma «: N ok, M falliti».
+  const riga =
+    uscita.match(/:\s*(\d+) ok,\s*(\d+) falliti/) ??
+    uscita.match(/(\d+) controlli(?: superati)? ·\s*(\d+) (?:rossi|falliti)/);
   const ok = riga ? Number(riga[1]) : null;
   const ko = riga ? Number(riga[2]) : null;
   const verde = r.status === 0;

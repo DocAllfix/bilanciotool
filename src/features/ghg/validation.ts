@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { companyIdSchema, annoSchema } from "@/features/campi";
 
 // Validazioni zod del modulo GHG: ogni input attraversa questi schemi PRIMA di
 // toccare il DB. I numeri viaggiano come stringhe decimali (politica NUMERIC).
@@ -17,9 +18,9 @@ export const numeroDecimaleObbligatorio = numeroDecimale.refine((s) => s !== "",
 export const CATEGORY_KEYS = ["1", "2", "3", "4", "5", "6"] as const;
 
 export const inventarioSchema = z.object({
-  companyId: z.string().min(1),
-  anno: z.coerce.number().int().min(1990).max(2100),
-  annoBase: z.coerce.number().int().min(1990).max(2100).optional(),
+  companyId: companyIdSchema,
+  anno: annoSchema,
+  annoBase: annoSchema.optional(),
   gwpSetKey: z.enum(["AR4", "AR5", "AR6"]).default("AR6"),
 });
 
@@ -106,7 +107,7 @@ export const fattoreOrgSchema = z.object({
 });
 
 export const obiettivoSchema = z.object({
-  companyId: z.string().min(1),
+  companyId: companyIdSchema,
   nome: z.string().min(1),
   ambito: z.enum(["1", "2", "12", "3", "tot"]),
   riduzionePct: numeroDecimaleObbligatorio,

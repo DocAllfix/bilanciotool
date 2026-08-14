@@ -116,3 +116,27 @@ export const MODULI_AZIENDA = [
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];
+
+/**
+ * L'indirizzo della pagina di lavoro di un modulo.
+ *
+ * Sostituisce i cinque aiutanti `percorso(companyId)` che ogni `features/*\/actions.ts`
+ * si era scritto: quattro differivano per un solo letterale, e il quinto — energetico —
+ * era l'unico a includere l'esercizio.
+ *
+ * ⚠️ Quell'unicità era una divergenza, non una scelta. `CLAUDE.md` registra la regola
+ * nata in Fase 12: «`revalidatePath` deve puntare alla pagina dell'esercizio, non al
+ * percorso padre: `/aziende/X/energetico` non invalida `/aziende/X/energetico/2025`».
+ * La correzione fu applicata a energetico e non tornò indietro su GHG e Bilancio, che
+ * hanno la stessa sottopagina `[anno]`.
+ *
+ * Oggi non si vede, perché quelle pagine sono `force-dynamic` e non c'è cache da
+ * invalidare. Si vedrebbe il giorno in cui si togliesse `force-dynamic` per guadagnare
+ * in velocità: due moduli su tre mostrerebbero numeri fermi dopo un salvataggio, e il
+ * terzo no. Derivando l'indirizzo da `perEsercizio` la differenza non può più nascere.
+ */
+export function percorsoModulo(companyId: string, modulo: ModuloAzienda, anno?: number): string {
+  const base = `/aziende/${companyId}/${modulo}`;
+  const voce = MODULI_AZIENDA.find((m) => m.href === modulo);
+  return voce?.perEsercizio && anno !== undefined ? `${base}/${anno}` : base;
+}

@@ -3,16 +3,25 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
 import { creaCollegamento, revocaCollegamento } from "./index";
 import { DURATE, DURATA_PREDEFINITA } from "./token";
-import type { ActionEsito } from "@/features/esito";
+import { daErrore, type ActionEsito } from "@/features/esito";
+import { companyIdSchema } from "@/features/campi";
 
 // Server action del portale cliente. Come tutte le altre: il client riceve
 // `{ok} | {ok:false, errore, codice?}`, mai un'eccezione nuda.
+//
+// `daErrore` come gli altri nove file di azione. Qui c'era una gestione propria, scritta
+// prima che quella comune esistesse, e quando la comune e' stata corretta -- il catch-all
+// rimandava al browser il messaggio di QUALUNQUE eccezione, frammenti di query Postgres
+// compresi -- questo file non c'era, perche' non aveva `daErrore` da correggere.
+//
+// I messaggi di dominio non cambiano: `daErrore` lascia passare gli `Error` scritti da
+// noi. Cambia solo l'errore d'infrastruttura, che ora dice una frase invece di raccontare
+// l'interno.
 
 const schema = z.object({
-  companyId: z.string().min(1),
+  companyId: companyIdSchema,
   giorni: z.coerce
     .number()
     .refine((g) => DURATE.some((d) => d.giorni === g), "Durata non prevista")
@@ -38,8 +47,7 @@ export async function creaCollegamentoAction(
     const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
     return { ok: true, dati: { url: `${base}/documenti-cliente/${token}`, scadeIl: scadeIl.toISOString() } };
   } catch (e) {
-    if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-    return { ok: false, errore: e instanceof Error ? e.message : "Collegamento non creato" };
+    return daErrore(e);
   }
 }
 
@@ -53,7 +61,6 @@ export async function revocaCollegamentoAction(
     revalidatePath(`/aziende/${companyId}`);
     return { ok: true };
   } catch (e) {
-    if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
-    return { ok: false, errore: e instanceof Error ? e.message : "Revoca non riuscita" };
+    return daErrore(e);
   }
 }

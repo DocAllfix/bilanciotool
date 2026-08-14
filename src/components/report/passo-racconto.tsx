@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImagePlus, Sparkles, Trash2 } from "lucide-react";
 import { TiptapEditor } from "./tiptap-editor";
 import type { CatalogoReport, ProgettoReport, StatoReport } from "./types";
+import { fileADataUrl } from "@/lib/immagini-client";
 
 // Passo 5 — Racconto: capitoli con editor, bozze template-based (rule-based,
 // niente AI) e apparato visivo (fotografie + diagrammi generati dai dati).
@@ -24,16 +25,6 @@ const NOMI_GRAFICI: Record<string, string> = {
   fornitori: "Fornitori: provenienza e valutazione ESG",
   materialita: "Matrice di doppia rilevanza",
 };
-
-async function fileADataUrl(file: File, maxLato = 1600, qualita = 0.85): Promise<string> {
-  const bitmap = await createImageBitmap(file);
-  const scala = Math.min(1, maxLato / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scala);
-  canvas.height = Math.round(bitmap.height * scala);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", qualita);
-}
 
 export function PassoRacconto({
   companyId, progetto, catalogo, stato,

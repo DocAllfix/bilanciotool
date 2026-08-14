@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ricalcolaAction, setAnswerFieldAction } from "@/features/supplier/actions";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { RefreshCw } from "lucide-react";
 import { ETICHETTA_RISPOSTA, type PropsVista } from "./types";
+import { useCoda } from "@/lib/coda";
 
 // Vista 2 — Questionario, 37 domande su 5 aree.
 //
@@ -37,12 +38,7 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
   // scritture in volo, e chiedere il ricalcolo mentre l'ultima non è ancora
   // arrivata mostrerebbe un punteggio vecchio. La coda garantisce l'ordine e
   // dà al ricalcolo qualcosa da attendere.
-  const coda = useRef<Promise<unknown>>(Promise.resolve());
-  const accoda = <T,>(f: () => Promise<T>): Promise<T> => {
-    const next = coda.current.then(f, f);
-    coda.current = next.catch(() => undefined);
-    return next;
-  };
+  const { accoda, attesa } = useCoda();
 
   const [risposte, setRisposte] = useState<Record<string, string>>(() =>
     Object.fromEntries(stato.risposte.filter((r) => r.risposta).map((r) => [r.questionKey, r.risposta!])),
@@ -76,7 +72,7 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
     setInCorso(true);
     // Prima si aspetta che la coda dei salvataggi sia vuota: ricalcolare su
     // scritture non ancora arrivate mostrerebbe un punteggio che non esiste.
-    await coda.current;
+    await attesa();
     await ricalcolaAction(companyId);
     router.refresh();
     setInCorso(false);

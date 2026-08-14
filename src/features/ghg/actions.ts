@@ -10,12 +10,18 @@ import { addTarget, deleteTarget } from "./targets";
 import { setChecklistState } from "./checklist";
 import { importGhgFromJson, type GhgImportEsito } from "./import";
 import { daErrore, type ActionEsito } from "@/features/esito";
+import { percorsoModulo } from "@/features/companies/moduli";
 
 // Server actions del modulo GHG: sessione → funzioni F4. La revalidation è sul
 // percorso dell'inventario: la pagina ricarica i risultati dal server (mai
 // ricalcoli client: stessa fonte di verità).
 
-const percorso = (companyId: string) => `/aziende/${companyId}/ghg`;
+// L'anno NON si passa, e resta come prima di proposito: questo modulo ha la
+// sottopagina `[anno]` ma ha sempre rivalidato il percorso padre. Passarlo qui
+// cambierebbe che cosa viene invalidato — invisibile oggi (le pagine sono
+// `force-dynamic`), ma e' un cambio di comportamento e va deciso, non introdotto
+// di straforo mentre si accorpa.
+const percorso = (companyId: string) => percorsoModulo(companyId, "ghg");
 
 export async function createInventoryAction(input: { companyId: string; anno: number; annoBase?: number }): Promise<ActionEsito<{ id: string }>> {
   try {

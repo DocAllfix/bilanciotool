@@ -8,6 +8,7 @@ import {
 } from "./declarations";
 import { decisioneSchema, moduloSchema, motivazioneSchema, ruoliSchema, type ProfiloSoa } from "./validation";
 import { daErrore, type ActionEsito } from "@/features/esito";
+import { percorsoModulo } from "@/features/companies/moduli";
 
 // Confine server↔client del modulo SoA.
 //
@@ -17,7 +18,7 @@ import { daErrore, type ActionEsito } from "@/features/esito";
 // `ricalcolaAction`. L'attivazione di un modulo invece rivalida: cambia
 // l'ambito, cioè quali controlli esistono.
 
-const percorso = (companyId: string) => `/aziende/${companyId}/soa`;
+const percorso = (companyId: string) => percorsoModulo(companyId, "soa");
 
 export async function createDeclarationAction(input: {
   companyId: string;

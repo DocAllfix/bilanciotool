@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { companyIdSchema, annoSchema } from "@/features/campi";
 
 // Validazioni del modulo Bilancio. La sanificazione del rich text è QUI, server
 // side: il client manda JSON Tiptap, il server tiene solo la whitelist.
 
 export const progettoSchema = z.object({
-  companyId: z.string().min(1),
-  anno: z.coerce.number().int().min(1990).max(2100),
+  companyId: companyIdSchema,
+  anno: annoSchema,
   standard: z
     .enum([
       "GRI 2021 — opzione con riferimento",
@@ -40,7 +41,7 @@ export const punteggioMaterialitaSchema = z.object({
 
 export const kpiValoreSchema = z.object({
   kpiKey: z.string().regex(/^[a-z_]+$/),
-  anno: z.coerce.number().int().min(1990).max(2100),
+  anno: annoSchema,
   valore: z.union([z.string(), z.number(), z.null()]), // null/"" = cancella il valore
 });
 

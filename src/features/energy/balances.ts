@@ -2,25 +2,20 @@ import { randomUUID } from "node:crypto";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
-import { company, contentSet, energyBalance, energyEndUse, energyEndUseState } from "@/lib/db/schema";
+import { company, energyBalance, energyEndUse, energyEndUseState } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { bilancioSchema, profiloSchema, type ProfiloEnergetico } from "./validation";
 import { z } from "zod";
+import { annoSchema } from "@/features/campi";
+import { latestSetId } from "@/features/content-set";
 
 // Bilanci energetici: un esercizio per azienda e anno. La metodologia in vigore
 // si congela alla creazione (content_set), così l'aggiornamento annuale dei
 // fattori non altera i bilanci già avviati.
 
 export async function latestEnergySetId(): Promise<string> {
-  const rows = await db
-    .select({ id: contentSet.id })
-    .from(contentSet)
-    .where(eq(contentSet.dominio, "energy"))
-    .orderBy(desc(contentSet.versione))
-    .limit(1);
-  if (!rows[0]) throw new Error("Contenuti metodologici del modulo energetico non disponibili");
-  return rows[0].id;
+  return latestSetId("energy", "Contenuti metodologici del modulo energetico non disponibili");
 }
 
 export async function createBalance(
@@ -128,7 +123,7 @@ export async function updateProfilo(
 
 export async function setAnnoBase(userId: string, orgId: string, balanceId: string, annoBase: number): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
-  const v = z.coerce.number().int().min(1990).max(2100).parse(annoBase);
+  const v = annoSchema.parse(annoBase);
   await withTenant({ userId, orgId }, async (tx) => {
     const agg = await tx
       .update(energyBalance)

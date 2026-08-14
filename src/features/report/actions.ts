@@ -10,8 +10,14 @@ import { addMedia, removeMedia, saveChapter, updateMedia } from "./chapters";
 import { importBilancioFromJson, type BilancioImportEsito } from "./import";
 import { latestContentSetId } from "@/features/ghg/inventories";
 import { daErrore, type ActionEsito } from "@/features/esito";
+import { percorsoModulo } from "@/features/companies/moduli";
 
-const percorso = (companyId: string) => `/aziende/${companyId}/bilancio`;
+// L'anno NON si passa, e resta come prima di proposito: questo modulo ha la
+// sottopagina `[anno]` ma ha sempre rivalidato il percorso padre. Passarlo qui
+// cambierebbe che cosa viene invalidato — invisibile oggi (le pagine sono
+// `force-dynamic`), ma e' un cambio di comportamento e va deciso, non introdotto
+// di straforo mentre si accorpa.
+const percorso = (companyId: string) => percorsoModulo(companyId, "bilancio");
 
 export async function createReportProjectAction(input: { companyId: string; anno: number }): Promise<ActionEsito<{ id: string }>> {
   try {

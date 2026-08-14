@@ -62,10 +62,20 @@ export async function saveChapter(
   const pulito = sanificaTiptap(contenuto);
 
   await withTenant({ userId, orgId }, async (tx) => {
-    const [b] = await tx.select({ id: energyBalance.id }).from(energyBalance).where(eq(energyBalance.id, balanceId));
+    // Il filtro porta anche `organizationId`. Senza, la verifica esiste ma non verifica
+    // niente quando le policy non scattano: trova il bilancio di un altro studio e lo
+    // dichiara nostro. Due strati, come ovunque nel prodotto.
+    const [b] = await tx
+      .select({ id: energyBalance.id })
+      .from(energyBalance)
+      .where(and(eq(energyBalance.id, balanceId), eq(energyBalance.organizationId, orgId)));
     if (!b) throw new Error("Bilancio inesistente o di un altro tenant");
 
-    const dove = and(eq(energyNarrative.balanceId, balanceId), eq(energyNarrative.templateKey, templateKey));
+    const dove = and(
+      eq(energyNarrative.balanceId, balanceId),
+      eq(energyNarrative.organizationId, orgId),
+      eq(energyNarrative.templateKey, templateKey),
+    );
     const [esistente] = await tx.select({ id: energyNarrative.id }).from(energyNarrative).where(dove);
 
     if (esistente) {
@@ -125,11 +135,25 @@ export async function addMedia(
 
   const id = randomUUID();
   await withTenant({ userId, orgId }, async (tx) => {
-    const dove = and(eq(energyNarrative.balanceId, balanceId), eq(energyNarrative.templateKey, templateKey));
+    // La verifica sta PRIMA e fuori dai rami. Stava solo dentro «il capitolo non esiste»,
+    // quindi nel caso normale -- il capitolo c'e' gia' -- non veniva eseguita mai, e il
+    // confine restava affidato alle sole policy RLS. E' la stessa forma del difetto
+    // corretto in `soa/declarations.ts` (`toggleMotivazione`), che qui era rimasta.
+    //
+    // Il filtro porta anche `organizationId`: due strati, come ovunque nel prodotto.
+    const [bilancio] = await tx
+      .select({ id: energyBalance.id })
+      .from(energyBalance)
+      .where(and(eq(energyBalance.id, balanceId), eq(energyBalance.organizationId, orgId)));
+    if (!bilancio) throw new Error("Bilancio inesistente o di un altro tenant");
+
+    const dove = and(
+      eq(energyNarrative.balanceId, balanceId),
+      eq(energyNarrative.organizationId, orgId),
+      eq(energyNarrative.templateKey, templateKey),
+    );
     let [capitolo] = await tx.select({ id: energyNarrative.id }).from(energyNarrative).where(dove);
     if (!capitolo) {
-      const [b] = await tx.select({ id: energyBalance.id }).from(energyBalance).where(eq(energyBalance.id, balanceId));
-      if (!b) throw new Error("Bilancio inesistente o di un altro tenant");
       const nuovoId = randomUUID();
       await tx.insert(energyNarrative).values({
         id: nuovoId,

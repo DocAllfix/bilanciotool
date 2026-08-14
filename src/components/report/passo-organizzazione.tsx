@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, Trash2 } from "lucide-react";
 import type { AziendaReport, ProgettoReport } from "./types";
+import { fileADataUrl } from "@/lib/immagini-client";
 
 // Passo 1 — Organizzazione: profilo, standard, perimetro, logo e copertina
 // (compaiono sulla prima pagina del documento).
@@ -23,16 +24,6 @@ const STANDARDS = [
 ];
 
 // Ridimensiona lato client prima dell'upload (mai megafoto verso il server).
-async function fileADataUrl(file: File, maxLato: number, qualita = 0.85): Promise<string> {
-  const bitmap = await createImageBitmap(file);
-  const scala = Math.min(1, maxLato / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scala);
-  canvas.height = Math.round(bitmap.height * scala);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", qualita);
-}
-
 export function PassoOrganizzazione({
   companyId,
   azienda,

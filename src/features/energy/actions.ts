@@ -11,6 +11,7 @@ import { addMeasure, deleteMeasure, updateMeasure } from "./measures";
 import { addMedia, removeMedia, saveChapter, updateMedia } from "./narrative";
 import { fattoreCompanySchema, type ProfiloEnergetico } from "./validation";
 import { daErrore, type ActionEsito } from "@/features/esito";
+import { percorsoModulo } from "@/features/companies/moduli";
 
 // Confine server↔client del modulo energetico. Nessuna eccezione nuda raggiunge
 // il browser: ogni azione restituisce un esito, e l'interfaccia decide come dirlo.
@@ -23,8 +24,7 @@ import { daErrore, type ActionEsito } from "@/features/esito";
 
 // La pagina del percorso è quella dell'esercizio: rivalidare solo il percorso
 // padre non la tocca, e il consulente vedrebbe numeri fermi dopo il ricalcolo.
-const percorso = (companyId: string, anno?: number) =>
-  anno === undefined ? `/aziende/${companyId}/energetico` : `/aziende/${companyId}/energetico/${anno}`;
+const percorso = (companyId: string, anno?: number) => percorsoModulo(companyId, "energetico", anno);
 
 export async function createBalanceAction(input: {
   companyId: string;

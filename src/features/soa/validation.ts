@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { companyIdSchema } from "@/features/campi";
 
 // Validazioni del modulo Dichiarazione di Applicabilità: ogni input attraversa
 // questi schemi PRIMA di toccare il database, e i domini si ricontrollano anche
@@ -12,7 +13,7 @@ export const RUOLI_CLOUD = ["cliente", "fornitore", "entrambi", "nessuno"] as co
 export const MODULI = ["27017", "27018", "27701A", "27701B"] as const;
 
 export const dichiarazioneSchema = z.object({
-  companyId: z.string().min(1),
+  companyId: companyIdSchema,
   sogliaObiettivo: z.coerce.number().int().min(0).max(100).optional(),
   ruoloPrivacy: z.enum(RUOLI_PRIVACY).optional(),
   ruoloCloud: z.enum(RUOLI_CLOUD).optional(),

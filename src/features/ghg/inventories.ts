@@ -1,26 +1,20 @@
 import { withTenant } from "@/lib/db/tenant";
 import { db } from "@/lib/db";
-import { company, contentSet, ghgInventory } from "@/lib/db/schema";
+import { company, ghgInventory } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { and, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { inventarioSchema, boundariesSchema, metaPeriodoSchema } from "./validation";
 import type { z } from "zod";
+import { latestSetId } from "@/features/content-set";
 
 // Inventari GHG: uno per azienda+anno. La versione dei contenuti metodologici
 // (content_set) si congela alla creazione: gli aggiornamenti normativi futuri
 // non riscrivono gli inventari esistenti.
 
 export async function latestContentSetId(dominio: "ghg" | "report"): Promise<string> {
-  const rows = await db
-    .select({ id: contentSet.id })
-    .from(contentSet)
-    .where(eq(contentSet.dominio, dominio))
-    .orderBy(desc(contentSet.versione))
-    .limit(1);
-  if (!rows.length) throw new Error(`Nessun content_set per il dominio ${dominio}: eseguire npm run db:seed`);
-  return rows[0].id;
+  return latestSetId(dominio, `Nessun content_set per il dominio ${dominio}: eseguire npm run db:seed`);
 }
 
 export async function createInventory(

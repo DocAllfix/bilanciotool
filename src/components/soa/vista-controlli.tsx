@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ricalcolaAction, setDecisionFieldAction, toggleMotivazioneAction } from "@/features/soa/actions";
 import { ETICHETTA_MOTIVAZIONE, ETICHETTA_STATO, MOTIVAZIONI, STATI } from "@/features/soa/validation";
@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { RefreshCw, Search } from "lucide-react";
 import { chiave, COLORE_STATO, type PropsVista } from "./types";
+import { useCoda } from "@/lib/coda";
 
 // Vista 2 — Registro dei controlli. È la vista dove si passa il tempo: fino a
 // 174 righe, ciascuna con applicabilità, motivazioni, stato, documento e
@@ -27,12 +28,7 @@ export function VistaControlli({ companyId, dichiarazione, catalogo, stato }: Pr
   const [inCorso, setInCorso] = useState(false);
   const [apertoKey, setApertoKey] = useState<string | null>(null);
 
-  const coda = useRef<Promise<unknown>>(Promise.resolve());
-  const accoda = <T,>(f: () => Promise<T>): Promise<T> => {
-    const next = coda.current.then(f, f);
-    coda.current = next.catch(() => undefined);
-    return next;
-  };
+  const { accoda, attesa } = useCoda();
 
   // Stato locale: i comandi rispondono subito, il server segue.
   const [decisioni, setDecisioni] = useState<Record<string, { applicabile: boolean; stato: string; motivazioni: string[] }>>(
@@ -107,7 +103,7 @@ export function VistaControlli({ companyId, dichiarazione, catalogo, stato }: Pr
 
   async function ricalcola() {
     setInCorso(true);
-    await coda.current;
+    await attesa();
     await ricalcolaAction(companyId);
     router.refresh();
     setInCorso(false);
