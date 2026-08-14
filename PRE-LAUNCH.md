@@ -8,7 +8,7 @@ scattato).
 Legenda: `[x]` fatto **e verificato** · `[~]` fatto ma verificato solo in modalità di prova ·
 `[ ]` da fare · 🔒 dipende dal committente.
 
-Aggiornato al **2026-08-14**.
+Aggiornato al **2026-08-15**.
 
 ## Che cosa blocca cosa
 
@@ -24,6 +24,7 @@ un elenco piatto di caselle non dice quando una casella diventa urgente.
 | **Prima che paghi il SECONDO** | Database di produzione separato | Rimandarlo dopo il primo cliente significa migrare dati di qualcuno mentre li usa. Finche' i clienti sono zero, il costo del cambio e' zero. |
 | **Dal primo cliente in poi** | Backup con restore provato · canali di allarme | Oggi non c'e' niente da perdere e niente da sorvegliare. Dal primo cliente ci sono entrambe le cose, e un backup mai ripristinato non e' un backup. |
 | **Quando si vuole** | Pulizia dei clienti Stripe di collaudo · HSTS preload · CSP senza `'unsafe-inline'` | Nessun rischio nel rimandarle. Le ultime due sono **decisioni**, non arretrati: `preload` e' quasi irreversibile, e il nonce costerebbe la staticita' di home e blog. |
+| **Quando si vuole** | Gli otto miglioramenti rimandati, in fondo a questo documento | Nessuno blocca niente. Il primo — il secondo strato di tenant negli altri quattro moduli — e' l'unico che riguarda la sicurezza, ed e' anche il piu' prezioso. |
 
 
 > **Risposta breve alla domanda «si può vendere?»**
@@ -273,3 +274,108 @@ Non bloccano il lancio, ma vanno saputi.
    le source map e vive solo nel pannello Vercel. Se sparisce il build **riesce lo
    stesso**, e gli stack trace in produzione diventano illeggibili: il guasto silenzioso
    che tutto il resto del monitoraggio è costruito per evitare.
+
+---
+
+## Miglioramenti rimandati, con il vantaggio di ciascuno
+
+Dalla passata DRY del 2026-08-14. **Nessuno blocca niente**: si può continuare a costruire
+senza toccarne uno. Sono scritti qui perché la ragione per farli un giorno non è «codice
+più pulito» ma una cosa concreta che oggi non si può fare, e quella si dimentica.
+
+Ordinati per valore reale, che non coincide con le righe risparmiate.
+
+### 1. 🔒 Il secondo strato di tenant negli altri quattro moduli — **il più prezioso**
+*~60-90 righe · rischio medio*
+
+`soa/declarations.ts` è **l'unico** modulo con il doppio strato (filtro `organizationId`
+esplicito **e** RLS). Ghg, energy, report e supplier filtrano quasi solo per `id`. Il
+commento in `soa/declarations.ts:20-31` dice che è una correzione: non è mai stata
+propagata. La verifica esiste in quattro forme con dodici messaggi diversi, e questo rende
+impossibile leggere a colpo d'occhio chi ha due strati e chi uno.
+
+→ *Comprerebbe:* che una policy RLS dimenticata su una tabella nuova non diventi
+un'esposizione. È lo scenario del 14 agosto, quando si scoprì che le policy non
+scattavano affatto: l'unica difesa rimasta era il filtro applicativo, e in quattro moduli
+su cinque non c'era.
+
+### 2. Una sola strozzatura per le mutazioni
+*~250-320 righe · rischio medio-alto*
+
+`requireEntitlement → parse → withTenant → verifica → scrittura → logAudit` in ~55 funzioni.
+
+→ *Comprerebbe:* che una regola nuova si applichi **una volta invece di cinquantacinque**.
+È servito tre volte in due giorni — l'entitlement mancante su `archiveCompany`, `export`
+sul collegamento cliente, il filtro tenant sulla SoA — e ogni volta è stato un giro a mano
+su decine di punti, col rischio di saltarne uno.
+
+→ *Perché non ora:* le 88 etichette d'audit sono stringhe di dominio, e il rischio concreto
+è che il default diventi «rivalida sempre», cancellando le eccezioni deliberate di
+energy/soa/supplier.
+
+### 3. I 21 collaudi che si sono riscritti il contatore
+*~145 righe · rischio alto, ma è il rischio giusto*
+
+`contatore()` guarda **tre spie** (errori di console, HTTP ≥ 400, avvisi rossi); il `check`
+locale di quei 21 script considera riuscito tutto ciò che non lancia un'eccezione.
+
+→ *Comprerebbe:* ventuno collaudi che smettono di dire verde quando la pagina ha un errore
+di console o una richiesta fallita.
+
+→ *Perché non ora:* migrare **irrigidisce**, non accorpa. Alcuni verdi diventerebbero rossi
+e vanno guardati uno per uno: è lavoro di misura, non di refactoring.
+
+### 4. I valori golden in un posto solo
+*~0 righe · rischio nullo*
+
+`0.2565` compare in 13 file, `1.9755` in 15, `25.65` in 11. Solo `ghg-flow.db.test.ts:86`
+dichiara la catena; negli altri è un numero magico che nessun commento collega al seed.
+
+→ *Comprerebbe:* il giorno in cui ISPRA aggiorna un fattore — e succederà — si cambia **un
+numero invece di quindici file**, senza accorgersi dell'ultimo dal rosso.
+
+### 5. La barra dei passi e l'intestazione di modulo
+*~160 righe · rischio basso · il maggior risparmio di righe*
+
+Cinque copie; le tre dello stepper sono identiche carattere per carattere.
+
+→ *Comprerebbe:* un ritocco alla navigazione dei percorsi fatto una volta sola.
+→ *Attenzione:* i `data-tour` sono agganci del giro guidato (si passano come prefisso, non
+si deducono) e `pctPasso` di `report-wizard.tsx:44` è logica GRI, non presentazione.
+
+### 6. Il preambolo di test e collaudi
+*~85 righe negli e2e, ~135 nel boot dei collaudi · rischio basso-medio*
+
+Cinque spec e2e ripetono 22 righe; 24 script ripetono il boot del browser in **cinque
+varianti incompatibili** della stessa intenzione (chi spegne sei tour, chi tre, chi lo fa
+dopo il login con un commento che ammette di essere una corsa).
+
+→ *Comprerebbe:* che un collaudo nuovo nasca già con le impostazioni giuste. Oggi chi ne
+scrive uno copia quello accanto, **e copia anche la variante sbagliata**.
+→ *Da escludere:* `verifica-benvenuto`, che collauda proprio i tour.
+
+### 7. Le cose piccole
+- `updateProfilo` (4 cloni) e `profiloCompilati` (3 copie identiche): ~45 righe.
+- `ricalcola()` (8 copie) e i preamboli delle cinque `getXData`: ~60-80 righe.
+- **`confirm()` nativo** in `ghg/passo-dati.tsx:213`, `ghg/passo-obiettivi.tsx:155`,
+  `report/passo-racconto.tsx:167`. Non è duplicazione, è **incoerenza**:
+  `portfolio/azienda-azioni.tsx:18` porta un commento che dice di essere stato l'ultimo a
+  uscirne. Questi tre sono rimasti indietro, e su alcuni browser `confirm()`/`alert()`
+  vengono soppressi.
+- `postgres(...)` con due configurazioni arbitrarie; `viewport` con **dodici valori
+  distinti** fra i collaudi.
+- Dodici script ricalcolano `orgId` mentre `registraEEntra` lo restituisce già. Non è
+  meccanico (alcuni leggono anche `user_id`, con nomi diversi): la nota che impedisce al
+  prossimo di copiare l'abitudine è già in `comune-registrazione.mjs`.
+
+### 8. Difetti trovati misurando, che NON sono lavoro di DRY
+- **`report/chapters.ts:105`** calcola la posizione di un media come `esistenti.length`
+  invece di `max+1`: dopo una cancellazione in mezzo **genera posizioni duplicate**. Tocca
+  l'ordine dei media in documenti **già pubblicati**: va deciso, non corretto di slancio.
+- **La rivalidazione divergente**: `report` e `ghg` rivalidano a ogni azione, `energy`,
+  `soa` e `supplier` no, con commenti che quantificano il motivo. Non è una svista: è la
+  lezione dei moduli nuovi non tornata indietro sui due vecchi.
+- **Tre comandi ottimistici senza ripristino** (`soa/vista-piano.tsx`,
+  `supplier/vista-piano.tsx`, `energy/passo-interventi.tsx`) e uno che ripristina solo
+  metà dello stato (`energy/passo-usi.tsx`: ripristina `attivo`, non `metodo`). Sembrano
+  omissioni più che scelte: **da verificare come possibili difetti**.
