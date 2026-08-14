@@ -113,6 +113,13 @@
       "when": 1786714963676,
       "tag": "0015_audit_insert_scoped",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786749120601,
+      "tag": "0016_claim_webhook_stato",
+      "breakpoints": true
     }
   ]
 }

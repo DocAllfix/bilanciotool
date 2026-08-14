@@ -80,8 +80,18 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
   });
 }
 
-/** Rilegge l'abbonamento da Stripe e ne riporta lo stato nell'account. */
-async function riallinea(subscriptionId: string, nota: string): Promise<EsitoEvento> {
+/**
+ * Rilegge l'abbonamento da Stripe e ne riporta lo stato nell'account.
+ *
+ * Restituisce anche l'oggetto letto: chi deve creare lo Schedule lo riusa invece di
+ * chiedere a Stripe la stessa cosa una seconda volta. Non e' economia di chiamate — e'
+ * il budget della funzione: sei round trip sincroni dentro la risposta erano il modo in
+ * cui il webhook arrivava al timeout, e un webhook ucciso a meta' fa sparire un pagamento.
+ */
+async function riallinea(
+  subscriptionId: string,
+  nota: string,
+): Promise<EsitoEvento & { sub?: Stripe.Subscription }> {
   const sub = await stripe().subscriptions.retrieve(subscriptionId);
   const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
 
@@ -96,7 +106,7 @@ async function riallinea(subscriptionId: string, nota: string): Promise<EsitoEve
   }
 
   await applicaAbbonamento(sub, orgId);
-  return { fatto: true, nota };
+  return { fatto: true, nota, sub };
 }
 
 export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento> {
@@ -107,16 +117,15 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
       const subId =
         typeof sessione.subscription === "string" ? sessione.subscription : sessione.subscription.id;
 
-      const esito = await riallinea(subId, "attivato dal checkout");
-      // Le due fasi si impostano solo dopo che l'account è stato attivato: se questo
-      // fallisse, il cliente ha comunque quello per cui ha pagato, e il rinnovo si
-      // sistema a mano. L'ordine inverso lascerebbe un pagato senza servizio.
-      if (esito.fatto) {
-        const sub = await stripe().subscriptions.retrieve(subId);
-        const piano = sub.metadata?.piano as PianoKey | undefined;
-        if (piano && PIANI[piano]) await creaPianoDueFasi(sub, piano);
-      }
-      return esito;
+      // Lo Schedule NON si crea da questo ramo: lo crea `customer.subscription.created`,
+      // che arriva sempre. Facendolo da entrambi, due eventi con id diversi superavano
+      // entrambi il claim di idempotenza — che e' per evento, non per abbonamento — e
+      // chiamavano `subscriptionSchedules.create` sullo stesso abbonamento. La guardia
+      // `if (sub.schedule) return` legge un oggetto scaricato prima, quindi in corsa
+      // entrambe vedevano `null`: la seconda riceveva un errore da Stripe, e ogni
+      // pagamento produceva un 500 spurio che alimentava il contatore di fallimenti
+      // dell'endpoint.
+      return riallinea(subId, "attivato dal checkout");
     }
 
     case "customer.subscription.created": {
@@ -126,10 +135,10 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
       // pagamento fuori flusso — resterebbe altrimenti al prezzo del primo anno per
       // sempre, e il cliente pagherebbe il rinnovo piu' caro del dovuto. Trovato dal
       // collaudo, che paga via API e non dal modulo.
-      if (esito.fatto) {
-        const sub = await stripe().subscriptions.retrieve(evento.data.object.id);
-        const piano = sub.metadata?.piano as PianoKey | undefined;
-        if (piano && PIANI[piano]) await creaPianoDueFasi(sub, piano);
+      // L'abbonamento e' gia' stato letto da `riallinea`: si riusa, non si richiede.
+      if (esito.fatto && esito.sub) {
+        const piano = esito.sub.metadata?.piano as PianoKey | undefined;
+        if (piano && PIANI[piano]) await creaPianoDueFasi(esito.sub, piano);
       }
       return esito;
     }

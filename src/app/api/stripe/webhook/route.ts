@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/client";
 import { env } from "@/lib/env";
-import { prendiInCarico, rilascia } from "@/features/billing/idempotenza";
+import { prendiInCarico, rilascia, segnaCompletato } from "@/features/billing/idempotenza";
 import { gestisciEvento } from "@/features/billing/webhook";
 
 // L'orecchio che sente Stripe.
@@ -17,6 +17,11 @@ import { gestisciEvento } from "@/features/billing/webhook";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// L'unica rotta che NON puo' permettersi di essere uccisa era anche l'unica senza tetto
+// dichiarato: cron e PDF avevano `maxDuration`, il webhook no, e girava al default di
+// piattaforma. Una funzione uccisa a meta' lascia il claim preso, Stripe riceve «gia'
+// processato» al ritentativo, e il pagamento sparisce in silenzio.
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const firma = req.headers.get("stripe-signature");
@@ -45,6 +50,10 @@ export async function POST(req: Request) {
 
   try {
     const esito = await gestisciEvento(evento);
+    // Il claim si chiude SOLO adesso. Finche' resta `in_corso`, un processo morto a
+    // meta' viene ripescato al ritentativo di Stripe invece di essere scambiato per
+    // lavoro gia' fatto.
+    await segnaCompletato(evento.id);
     return NextResponse.json({ ok: true, ...esito });
   } catch (e) {
     // Il claim si RILASCIA: senza, l'evento resterebbe marcato come fatto mentre non

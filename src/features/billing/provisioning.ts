@@ -112,7 +112,7 @@ export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string
   const rinnovoIl = fineperiodo ? new Date(fineperiodo * 1000) : null;
 
   await withTenant({ platformAdmin: true }, async (tx) => {
-    await tx
+    const aggiornate = await tx
       .update(orgEntitlement)
       .set({
         status: stato,
@@ -124,7 +124,20 @@ export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string
         whiteLabel: capacita.whiteLabel,
         currentPeriodEnd: rinnovoIl,
       })
-      .where(eq(orgEntitlement.organizationId, orgId));
+      .where(eq(orgEntitlement.organizationId, orgId))
+      .returning({ id: orgEntitlement.organizationId });
+
+    // Un update a ZERO righe e' il caso peggiore, ed e' proprio quello che il commento
+    // qui sopra descrive: senza questo controllo l'audit avrebbe comunque scritto
+    // «abbonamento aggiornato», `riallinea` avrebbe restituito `{fatto:true}` e il
+    // webhook avrebbe risposto 200. Stripe smette di ritentare, e un cliente che ha
+    // pagato resta senza servizio mentre tutto dice che e' andato bene.
+    //
+    // L'eccezione arriva al `catch` della rotta, che rilascia il claim e risponde 500:
+    // Stripe ritenta, ed e' esattamente quello che deve fare.
+    if (!aggiornate.length) {
+      throw new Error(`Nessun entitlement per l'organizzazione ${orgId}: abbonamento non applicato`);
+    }
 
     await tx
       .insert(stripeSubscription)

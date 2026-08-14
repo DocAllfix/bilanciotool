@@ -33,7 +33,17 @@ export const stripeSubscription = pgTable(
 
 // Claim di idempotenza del webhook: insert onConflictDoNothing = replay già processato;
 // il claim si rilascia (delete) su failure così Stripe ritenta.
-export const stripeProcessedEvent = pgTable("stripe_processed_event", {
-  eventId: text("event_id").primaryKey(),
-  processedAt: timestamp("processed_at").defaultNow().notNull(),
-});
+export const stripeProcessedEvent = pgTable(
+  "stripe_processed_event",
+  {
+    eventId: text("event_id").primaryKey(),
+    /** `in_corso` finche' il lavoro non e' finito. Distingue «fatto» da «cominciato e
+     *  mai finito»: senza, un processo morto a meta' lasciava l'evento marcato come
+     *  fatto, Stripe smetteva di ritentare e un cliente pagante restava bloccato. */
+    stato: text("stato", { enum: ["in_corso", "completato"] }).default("completato").notNull(),
+    /** Quando il claim e' stato preso: e' l'eta' che permette di riconoscerlo morto. */
+    presoIl: timestamp("preso_il").defaultNow().notNull(),
+    processedAt: timestamp("processed_at").defaultNow().notNull(),
+  },
+  (t) => [index("stripe_evento_in_corso_idx").on(t.stato, t.presoIl)],
+);
