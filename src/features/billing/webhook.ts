@@ -1,12 +1,8 @@
 import type Stripe from "stripe";
 import { stripe, idPrezzo } from "@/lib/stripe/client";
-import { db } from "@/lib/db";
-import { stripeSubscription } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
 import { applicaAbbonamento, organizzazioneDelCliente } from "./provisioning";
 import { vociDelRinnovo } from "./fasi";
-import { withTenant } from "@/lib/db/tenant";
 
 // Il dispatch degli eventi Stripe.
 //
@@ -21,15 +17,9 @@ import { withTenant } from "@/lib/db/tenant";
 //    evento che non ci interessa fa accumulare tentativi a Stripe finché disabilita
 //    l'endpoint, e con l'endpoint disabilitato si fermano anche quelli che servono.
 
-/** Gli eventi che ci riguardano. Tutto il resto riceve un «va bene» e finisce lì. */
-export const EVENTI = [
-  "checkout.session.completed",
-  "customer.subscription.created",
-  "customer.subscription.updated",
-  "customer.subscription.deleted",
-  "invoice.paid",
-  "invoice.payment_failed",
-] as const;
+// Quali eventi ci riguardano lo dice lo `switch` di `gestisciEvento`, e basta lui.
+// Qui c'era anche un elenco `EVENTI` che nessuno leggeva: due verità sullo stesso fatto,
+// e quella che nessuno legge è quella che diverge.
 
 export type EsitoEvento = { fatto: boolean; nota: string };
 
@@ -159,16 +149,4 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
     default:
       return { fatto: false, nota: `evento ignorato: ${evento.type}` };
   }
-}
-
-/** Lo schedule collegato a un abbonamento, per i test e la diagnostica. */
-export async function scheduleDi(orgId: string): Promise<string | null> {
-  const r = await withTenant({ orgId }, (tx) =>
-    tx
-      .select({ id: stripeSubscription.stripeScheduleId })
-      .from(stripeSubscription)
-      .where(eq(stripeSubscription.organizationId, orgId))
-      .limit(1),
-  );
-  return r[0]?.id ?? null;
 }

@@ -103,16 +103,6 @@ export async function setBaseYear(userId: string, orgId: string, inventoryId: st
   });
 }
 
-export async function getInventory(userId: string, orgId: string, companyId: string, anno: number) {
-  return withTenant({ userId, orgId }, async (tx) => {
-    const rows = await tx
-      .select()
-      .from(ghgInventory)
-      .where(and(eq(ghgInventory.companyId, companyId), eq(ghgInventory.anno, anno)));
-    return rows[0] ?? null;
-  });
-}
-
 export async function listInventories(userId: string, orgId: string, companyId: string) {
   return withTenant({ userId, orgId }, (tx) =>
     tx

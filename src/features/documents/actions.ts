@@ -1,7 +1,6 @@
 "use server";
 
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import type { TipoDocumento } from "./tipi";
 import {

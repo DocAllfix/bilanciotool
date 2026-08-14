@@ -91,6 +91,24 @@ export const requireConsultant = () => requireRole("owner", "admin", "member");
 // Gestione studio (inviti, billing, archiviazioni) = owner o admin.
 export const requireStudioAdmin = () => requireRole("owner", "admin");
 
+/**
+ * ⚠️ Queste due non hanno ancora chiamanti, ed è deliberato: **un'area staff non esiste**.
+ *
+ * Restano perché fanno parte di un terzetto già in uso — `platformRole` sulla tabella
+ * utente (con `input: false`, quindi non auto-assegnabile), `withTenant({ platformAdmin })`
+ * come valvola sul database (la usano i webhook Stripe e il cron dei rinnovi), e questa
+ * guardia HTTP. Toglierne una gamba lascerebbe le altre due più confuse di adesso.
+ *
+ * Diversamente da `improntaCoincide` — una funzione di sicurezza senza chiamanti che
+ * abbiamo rimosso perché lasciava credere protetto un confronto che non lo era — qui non
+ * c'è niente da fraintendere: nessuna pagina staff esiste, quindi nessuno può pensare che
+ * sia protetta.
+ *
+ * A che cosa servirebbe, il giorno in cui si farà: ripescare da Stripe un pagamento
+ * rimasto orfano (`webhook.ts` lo registra già come «evento orfano», e oggi si rimedia
+ * solo con una UPDATE a mano sul database di produzione); attivare a mano un cliente che
+ * paga per bonifico; guardare lo stato di uno studio quando chiede assistenza.
+ */
 export function isPlatformAdmin(s: SessionInfo): boolean {
   return s.platformRole === "admin";
 }

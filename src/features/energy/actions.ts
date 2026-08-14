@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
 import { createBalance, setAnnoBase, updateProfilo } from "./balances";
 import { deleteCompanyFactor, setMonthlyValue, setVectorField, upsertCompanyFactor } from "./vectors";
 import { setAllocation, setEndUseState, setStima } from "./allocation";

@@ -180,12 +180,6 @@ export async function setMonthlyValue(
   });
 }
 
-export async function listCompanyFactors(userId: string, orgId: string, companyId: string) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx.select().from(energyCompanyFactor).where(eq(energyCompanyFactor.companyId, companyId)),
-  );
-}
-
 export async function upsertCompanyFactor(
   userId: string,
   orgId: string,

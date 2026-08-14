@@ -40,9 +40,3 @@ export async function deleteTarget(userId: string, orgId: string, targetId: stri
     await logAudit(tx, { organizationId: orgId, userId, azione: "ghg.target.delete", entita: "ghg_target", entitaId: targetId });
   });
 }
-
-export async function listTargets(userId: string, orgId: string, companyId: string) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx.select().from(ghgTarget).where(eq(ghgTarget.companyId, companyId)),
-  );
-}

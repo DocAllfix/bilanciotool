@@ -75,6 +75,3 @@ export function compareToBase(
   }
   return out;
 }
-
-export const ZERO_DRIVER: Driver = driversDa({});
-export { dec as decIndicatori };

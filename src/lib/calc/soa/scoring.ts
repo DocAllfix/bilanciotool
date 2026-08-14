@@ -21,8 +21,6 @@ export const VALORE_STATO: Record<StatoAttuazione, number> = {
   av: 100, // attuato e verificato
 };
 
-export const STATI_ORDINE: StatoAttuazione[] = ["nd", "pl", "pa", "at", "av"];
-
 export type Controllo = {
   frameworkKey: string;
   sectionKey: string;

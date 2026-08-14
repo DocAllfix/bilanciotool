@@ -6,7 +6,7 @@ Regole: la repo di riferimento è clonata **in sola lettura** in `C:\Users\user\
 
 Pattern: verifica firma → *claim* dell'`event.id` in una tabella dedicata via `insert().onConflictDoNothing().returning()` (zero righe = replay → 200) → provisioning → *release* del claim su qualunque failure (così Stripe ritenta) → 409 se il customer non è mappabile a un'organizzazione → per le subscription **mai fidarsi del payload**: re-read con `stripe.subscriptions.retrieve()`.
 
-**Adattamenti nostri**: la reference vende corsi one-off e seat subscription; noi abbiamo UN solo prodotto per account con **Subscription Schedules a 2 fasi** (anno 1 pieno → rinnovo ridotto) e dobbiamo gestire anche `invoice.paid` / `invoice.payment_failed` e `subscription_schedule.released` (assenti nella reference). Il provisioning non crea enrollment ma muta `account_state` (demo→active, past_due→sola lettura). Macchina a stati da documentare in `docs/billing-stati.md` (Fase 9).
+**Adattamenti nostri**: la reference vende corsi one-off e seat subscription; noi abbiamo UN solo prodotto per account con **Subscription Schedules a 2 fasi** (anno 1 pieno → rinnovo ridotto) e dobbiamo gestire anche `invoice.paid` / `invoice.payment_failed` e `subscription_schedule.released` (assenti nella reference). Il provisioning non crea enrollment ma muta `account_state` (demo→active, past_due→sola lettura). La macchina a stati vive nel codice, non in un documento a parte: `statoDaStripe` e `applicaAbbonamento` in `src/features/billing/provisioning.ts`, con `vociDelRinnovo` in `fasi.ts` per la seconda fase. Il passaggio anno 1 → rinnovo e' provato con un orologio di prova di Stripe (`npm run qa -- rinnovo`).
 
 ## 2. Multi-tenancy RLS — `src/lib/db/tenant.ts` + migrazioni 0007/0012–0015/0020/0023
 

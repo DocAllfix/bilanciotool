@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
 import {
-  checklistRequirement, company, documentSnapshot, ghgCategory, ghgSourceType, ghgTarget,
+  company, documentSnapshot,
   kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
   orgEntitlement, reportProject, user,
 } from "@/lib/db/schema";

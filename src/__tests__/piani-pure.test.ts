@@ -12,7 +12,6 @@ import {
   PIANI,
   ESTENSIONI,
   CHIAVI_PIANO,
-  capacitaDelPiano,
   sogliaAvviso,
   limitiEffettivi,
   euro,

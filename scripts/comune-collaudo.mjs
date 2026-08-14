@@ -39,7 +39,7 @@ export function strumenta(page, { ignora = [] } = {}) {
 /** Testo degli avvisi rossi presenti adesso. */
 export async function avvisiRossi(page) {
   return page
-    .locator('[data-sonner-toast][data-type="error"]')
+    .locator('[data-sonner-toast][data-type="error"]:not([data-gia-visto])')
     .allInnerTexts()
     .catch(() => []);
 }
@@ -51,17 +51,35 @@ export async function avvisiRossi(page) {
  */
 export async function messaggiDiRifiuto(page) {
   return page.evaluate(() =>
-    [...document.querySelectorAll('[data-sonner-toast], [role="alert"], .text-destructive')]
+    [
+      ...document.querySelectorAll(
+        '[data-sonner-toast]:not([data-gia-visto]), [role="alert"], .text-destructive',
+      ),
+    ]
       .map((e) => (e.innerText || "").trim().replace(/\s+/g, " "))
       .filter(Boolean),
   ).catch(() => []);
 }
 
-/** Chiude gli avvisi rimasti, per non attribuirli al gesto successivo. */
+/**
+ * Archivia gli avvisi rimasti, per non attribuirli al gesto successivo.
+ *
+ * Si MARCANO, non si rimuovono. Prima qui c'era `t.remove()`, ed era innocuo per il
+ * motivo peggiore: il contenitore dei messaggi non era montato da nessuna parte, quindi
+ * non c'era mai niente da rimuovere. Montandolo, quel `remove()` ha cominciato a strappare
+ * dal DOM nodi che React sta gestendo, e il gesto dopo moriva con «removeChild: the node
+ * to be removed is not a child of this node».
+ *
+ * Un attributo in piu' React lo ignora; un figlio in meno no.
+ */
 export async function pulisciAvvisi(page) {
-  await page.evaluate(() => {
-    document.querySelectorAll("[data-sonner-toast]").forEach((t) => t.remove());
-  }).catch(() => {});
+  await page
+    .evaluate(() => {
+      document
+        .querySelectorAll("[data-sonner-toast]")
+        .forEach((t) => t.setAttribute("data-gia-visto", "1"));
+    })
+    .catch(() => {});
 }
 
 /**

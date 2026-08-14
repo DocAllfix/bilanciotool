@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EvalisDeck
 
-## Getting Started
+Suite di rendicontazione ESG per studi di consulenza. Un tenant è uno **studio**, che
+segue un portafoglio di **aziende clienti**; per ciascuna produce cinque documenti:
 
-First, run the development server:
+| Documento | Norma | Cadenza |
+|---|---|---|
+| Rapporto GHG | ISO 14064-1 | annuale |
+| Bilancio di sostenibilità e conformità ESG | GRI · ESRS/VSME | annuale |
+| Bilancio energetico | UNI CEI EN 16247 | annuale |
+| Attestato ESG fornitore | autovalutazione | a revisioni |
+| Statement of Applicability (SoA) | ISO/IEC 27001:2022 | a revisioni |
+
+L'inventario GHG alimenta la sezione emissioni del bilancio: **la fonte è una sola**, le
+emissioni non si ricopiano.
+
+In produzione su **https://evalisdeck.it**.
+
+## Avvio
 
 ```bash
+cp .env.example .env     # poi riempi i valori (i sei marcati OBBLIGATORIA IN PROD)
+npm install
+npm run db:migrate       # migrazioni: usano DIRECT_URL, mai il pooler
+npm run db:seed          # cataloghi metodologici (idempotente)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Comandi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Comando | Cosa fa |
+|---|---|
+| `npm run dev` · `build` · `start` | Next.js |
+| `npm run typecheck` | `tsc --noEmit` — nessun errore ammesso |
+| `npm run test` | Vitest. I `*.db` si saltano da soli senza `DATABASE_URL` |
+| `RLS_FORCE_ROLE=app_rls npm run test` | La stessa suite col ruolo ristretto, **come gira la produzione** |
+| `npm run test:e2e` | Playwright (richiede `npm run dev` attivo) |
+| `npm run qa` | Elenca i collaudi. `npm run qa -- invito`, `-- rinnovo`, `… --prod` |
+| `npm run db:generate` · `db:migrate` · `db:studio` | Drizzle |
+| `npm run db:seed` | Semina i cataloghi |
+| `npm run db:extract-seed` | Rigenera i JSON di seed dai prototipi in `archivio/` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+⚠️ `npm start` **non rilegge il sorgente**: carica il build all'avvio. Un server acceso
+prima di una modifica serve il codice di prima, senza dirlo.
 
-## Learn More
+## Com'è fatto
 
-To learn more about Next.js, take a look at the following resources:
+Next.js App Router · TypeScript · Drizzle · PostgreSQL (Supabase) · Better Auth ·
+Stripe · Tailwind v4 · shadcn/ui · Resend · Sentry. Ospitato su Vercel.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `src/features/<dominio>/` — la logica: `ghg`, `report`, `energy`, `supplier`, `soa`,
+  più `billing`, `documents`, `condivisione`, `auth`, `entitlement`.
+- `src/lib/calc/` — i motori di calcolo, **funzioni pure e testate**: il browser mostra
+  le anteprime con le stesse funzioni che usa il server, così non possono divergere.
+- `src/lib/db/` — schema per dominio, migrazioni, seed.
+- `scripts/` — collaudi (`verifica-*`, `visual-check-*`, scoperti da `npm run qa`) e
+  utensili che si chiamano per nome (`seed`, `stripe-bootstrap`, `prepara-brand`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Isolamento fra studi a due strati**: ogni query passa da `withTenant`, che imposta le
+GUC lette dalle policy RLS; e ogni `select` porta comunque il proprio filtro
+`organization_id`. In produzione la connessione è `app_rls`, senza `BYPASSRLS`: se una
+query dimentica `withTenant`, in sviluppo funziona e in produzione non vede niente.
 
-## Deploy on Vercel
+## Dove sta il resto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **[CLAUDE.md](CLAUDE.md)** — direttive operative, storia delle fasi e le regole nate
+  dagli errori. È il documento più aggiornato del progetto.
+- **[PRE-LAUNCH.md](PRE-LAUNCH.md)** — lista di controllo per il primo cliente pagante:
+  ogni voce ha un **modo di verificarla**, e in testa c'è quale voce diventa urgente quando.
+- **[DESIGN.md](DESIGN.md)** — token, palette, direzione visiva.
+- **[docs/](docs/)** — politica di arrotondamento, formato d'export dei prototipi, note
+  sui pattern e sul blog headless.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Repository privata. © Evalis Srl.

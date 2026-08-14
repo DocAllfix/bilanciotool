@@ -77,22 +77,3 @@ export async function listArchivioDocumenti(
     };
   });
 }
-
-/** Documenti pubblicati di recente, per lo scadenzario e il quadro dello studio. */
-export async function listRecenti(userId: string, orgId: string, limite = 5) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx
-      .select({
-        id: documentSnapshot.id,
-        companyId: documentSnapshot.companyId,
-        tipo: documentSnapshot.tipo,
-        anno: documentSnapshot.anno,
-        versione: documentSnapshot.versione,
-        publishedAt: documentSnapshot.publishedAt,
-      })
-      .from(documentSnapshot)
-      .where(and(eq(documentSnapshot.organizationId, orgId)))
-      .orderBy(desc(documentSnapshot.publishedAt))
-      .limit(limite),
-  );
-}

@@ -2,8 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
-import { z } from "zod";
 import { createReportProject, setCompanyImage, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
 import { setTopicScoreField, getAtecoSuggestions } from "./materiality";
 import { setKpiValue } from "./kpi";

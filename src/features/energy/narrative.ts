@@ -213,21 +213,3 @@ export async function updateMedia(
     if (!agg.length) throw new Error("Elemento inesistente o di un altro tenant");
   });
 }
-
-/** URL firmati per le fotografie dei capitoli, generati alla lettura: i file non
- *  sono pubblici e un indirizzo copiato smette di funzionare alla scadenza. */
-export async function resolveMediaUrls(
-  orgId: string,
-  media: { id: string; tipo: string; storageKey: string | null }[],
-): Promise<Map<string, string>> {
-  const out = new Map<string, string>();
-  await Promise.all(
-    media
-      .filter((m) => m.tipo === "img" && m.storageKey)
-      .map(async (m) => {
-        const url = await signedUrl(orgId, m.storageKey!).catch(() => null);
-        if (url) out.set(m.id, url);
-      }),
-  );
-  return out;
-}

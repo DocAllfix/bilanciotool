@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { db } from "@/lib/db";
 import { organization, member, orgEntitlement, company, auditLog, platformConfig, user } from "@/lib/db/schema";
 import { createCompany, archiveCompany } from "@/features/companies";
-import { assertCompanyCreatable, assertSeatAvailable, can, getCompanyUsage, EntitlementError } from "@/features/entitlement";
+import { assertCompanyCreatable, assertSeatAvailable, can, getCompanyUsage } from "@/features/entitlement";
 import { eq, inArray } from "drizzle-orm";
 
 // Limiti anti-abuso e paywall a livello di logica server (connessione dev

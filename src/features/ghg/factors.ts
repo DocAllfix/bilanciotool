@@ -67,11 +67,6 @@ export async function listFactors(userId: string, orgId: string, contentSetId: s
   return [...byKey.values()];
 }
 
-export async function resolveFactor(userId: string, orgId: string, contentSetId: string, key: string): Promise<FactorView | null> {
-  const all = await listFactors(userId, orgId, contentSetId);
-  return all.find((f) => f.key === key) ?? null;
-}
-
 export async function upsertOrgFactor(
   userId: string,
   orgId: string,

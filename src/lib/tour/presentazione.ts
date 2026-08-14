@@ -36,10 +36,6 @@ export function chiudiPresentazione(): void {
   try { sessionStorage.removeItem(CHIAVE_GIRO); } catch {}
 }
 
-export function presentazioneInCorso(): boolean {
-  return leggiPresentazione() !== null;
-}
-
 export function benvenutoGiaVisto(): boolean {
   try { return localStorage.getItem(CHIAVE_FATTA) === "1"; } catch { return false; }
 }

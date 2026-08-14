@@ -163,12 +163,3 @@ export function serializzaRisultati(r: RisultatiEnergia) {
 }
 
 export type RisultatiSerializzati = ReturnType<typeof serializzaRisultati>;
-
-/** Cataloghi non-tenant: si leggono con la connessione applicativa, senza GUC. */
-export async function loadCatalogoUsi(contentSetId: string) {
-  const [aree, usi] = await Promise.all([
-    db.select().from(energyArea).where(eq(energyArea.setId, contentSetId)).orderBy(asc(energyArea.ordine)),
-    db.select().from(energyEndUse).where(eq(energyEndUse.setId, contentSetId)).orderBy(asc(energyEndUse.ordine)),
-  ]);
-  return { aree, usi };
-}

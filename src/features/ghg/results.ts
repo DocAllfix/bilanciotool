@@ -6,7 +6,7 @@ import { computeInventory, type InventoryRowInput } from "@/lib/calc/ghg/totals"
 import { computeIntensity } from "@/lib/calc/ghg/intensity";
 import { baseVariationPct, computeTargetProgress, scopeValue, type TargetScope } from "@/lib/calc/ghg/targets";
 import { computeProgress } from "@/lib/calc/ghg/status";
-import { toFixedStr, dec, type Decimal } from "@/lib/calc/shared/decimal";
+import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import { listSourceStates } from "./sources";
 import { listChecklistStates } from "./checklist";
 import { listFactors } from "./factors";

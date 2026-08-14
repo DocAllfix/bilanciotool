@@ -2,7 +2,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { ghgActivityRow, ghgInventory } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { rigaAttivitaSchema } from "./validation";
 import { nz, toFixedStr } from "@/lib/calc/shared/decimal";

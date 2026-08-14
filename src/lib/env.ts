@@ -72,6 +72,21 @@ const schema = z
      * poter far fallire un rilascio del prodotto.
      */
     NEXT_PUBLIC_GA4_ID: vuotaComeAssente(z.string().regex(/^G-[A-Z0-9]{6,}$/).optional()),
+    /**
+     * Sentry. Facoltativa, ma il modo in cui manca è il peggiore: senza DSN
+     * `Sentry.init` parte lo stesso e **non riporta niente**, in silenzio. Il cruscotto
+     * resta vuoto mentre il server risponde 500, ed è esattamente il guasto che
+     * `tunnelRoute` in `next.config.ts` dichiara di voler evitare.
+     *
+     * Dichiararla qui non la rende obbligatoria: la rende VISIBILE. Prima era letta con
+     * `process.env` diretto in `lib/sentry-comune.ts` e non compariva da nessuna parte.
+     */
+    NEXT_PUBLIC_SENTRY_DSN: vuotaComeAssente(z.string().url().optional()),
+    /**
+     * Destinatario degli allarmi del giro quotidiano sul blog. Senza, il controllo gira,
+     * trova il guasto e non lo dice a nessuno — la forma più inutile di sorveglianza.
+     */
+    BLOG_ALLARME_A: vuotaComeAssente(z.string().email().optional()),
     // Test seam RLS (mai impostata in produzione)
     RLS_FORCE_ROLE: z.string().regex(/^[a-z_][a-z0-9_]*$/).optional(),
   })

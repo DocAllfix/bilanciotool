@@ -104,7 +104,7 @@ export async function sendPrimoDocumentoEmail(
  * accendere il blog per i motori.
  */
 export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean }> {
-  const destinatario = process.env.BLOG_ALLARME_A;
+  const destinatario = env.BLOG_ALLARME_A;
   if (!destinatario) return { sent: false };
   return send(
     destinatario,

@@ -114,16 +114,6 @@ export async function setCompanyImage(
   });
 }
 
-export async function getReportProject(userId: string, orgId: string, companyId: string, anno: number) {
-  return withTenant({ userId, orgId }, async (tx) => {
-    const rows = await tx
-      .select()
-      .from(reportProject)
-      .where(and(eq(reportProject.companyId, companyId), eq(reportProject.anno, anno)));
-    return rows[0] ?? null;
-  });
-}
-
 export async function listReportProjects(userId: string, orgId: string, companyId: string) {
   return withTenant({ userId, orgId }, (tx) =>
     tx

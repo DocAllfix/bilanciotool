@@ -31,6 +31,10 @@ type EventoSentry = {
 };
 
 export const configurazioneComune = {
+  // `process.env` e NON `env` di `@/lib/env`: questo file gira anche nel browser
+  // (`instrumentation-client.ts`), e `env.ts` ha una trappola che esplode se arriva al
+  // client. La variabile e' comunque DICHIARATA la', cosi' esiste in un posto solo e
+  // qualcuno la vede: senza DSN Sentry parte e non riporta niente, in silenzio.
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   // Nessun campione delle prestazioni: costa quota e non risolve nessun problema che
   // abbiamo oggi. Si accende il giorno che una pagina sarà lenta e non si capirà perché.

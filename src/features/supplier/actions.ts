@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
 import { createAssessment, setAnswerField, setSoglia, updateProfilo } from "./assessments";
 import { perColonna, rispostaSchema, type ProfiloSupplier } from "./validation";
 import { daErrore, type ActionEsito } from "@/features/esito";

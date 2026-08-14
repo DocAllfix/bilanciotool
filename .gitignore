@@ -40,20 +40,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# test artifacts
+# Prodotti dei collaudi. `shots*` copre sia le cartelle (`shots-soa/`) sia i FILE
+# (`shot-hero.png`): con la sola barra finale tre screenshot alla radice erano finiti
+# versionati, 410 KB che nessuno referenziava.
+#
+# Le sei righe `shots-<modulo>/` che stavano qui erano gia' tutte coperte da `shots*`,
+# e `test-results/` con `playwright-report/` comparivano due volte: un elenco che si
+# allunga a ogni modulo nuovo e' un elenco che prima o poi dimentica una riga.
 coverage/
 test-results/
 playwright-report/
-test-results/
-playwright-report/
-shots*/
-
-shots-energetico/
-shots-doc-energetico/
-shots-attestato/
-shots-fornitore/
-shots-soa/
-shots-soa-percorso/
+shots*
+shot-*
 
 .vercel
 .env*

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
 import { BannerCookie } from "@/components/legal/banner-cookie";
 import { Analytics } from "@/components/legal/analytics";
 import "./globals.css";
@@ -69,6 +70,17 @@ export default function RootLayout({
           {/* Non rende niente finché il consenso non è esplicito: nessuno script,
               nessuna richiesta verso Google. */}
           <Analytics />
+          {/* Il contenitore dei messaggi. Senza, `toast(...)` non rende NIENTE: sette
+              componenti dicevano «collegamento copiato», «azienda archiviata», «nome
+              dello studio salvato» e gli errori del dialogo d'acquisto, e nessuno li ha
+              mai visti.
+
+              Sta dentro `ThemeProvider` perché legge il tema con `useTheme`.
+
+              Va alla radice e non nel gruppo `(app)`: i messaggi servono anche fuori
+              dall'area autenticata — il pannello di condivisione e l'offerta di lancio
+              vivono altrove. */}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

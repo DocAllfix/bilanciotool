@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError, getCompanyUsage } from "@/features/entitlement";
+import { getCompanyUsage } from "@/features/entitlement";
 import { archiveCompany, createCompany, restoreCompany } from "./index";
 import { z } from "zod";
 import { daErrore, type ActionEsito } from "@/features/esito";
@@ -47,15 +47,6 @@ export async function restoreCompanyAction(companyId: string): Promise<ActionEsi
     await restoreCompany(s.userId, s.orgId, companyId);
     revalidatePath("/dashboard");
     return { ok: true };
-  } catch (e) {
-    return daErrore(e);
-  }
-}
-
-export async function getUsageAction(): Promise<ActionEsito<Awaited<ReturnType<typeof getCompanyUsage>>>> {
-  try {
-    const s = await requireConsultant();
-    return { ok: true, dati: await getCompanyUsage(s.userId, s.orgId) };
   } catch (e) {
     return daErrore(e);
   }

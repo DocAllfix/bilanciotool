@@ -217,16 +217,6 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
   });
 }
 
-// Somma delle tCO₂e (location-based) sull'ultimo esercizio di ogni azienda attiva:
-// derivata al volo dalle card, mai persistita.
-export function sommaPortafoglio(stats: CompanyCardStats[]): string | null {
-  const attive = stats.filter((s) => s.stato === "active" && s.totL);
-  if (!attive.length) return null;
-  let tot = dec("0");
-  for (const s of attive) tot = tot.plus(dec(s.totL!));
-  return toFixedStr(tot, 1);
-}
-
 export async function getPortfolioOverview(userId: string, orgId: string): Promise<PortfolioOverview> {
   return withTenant({ userId, orgId }, async (tx) => {
     const [docs, audit] = await Promise.all([

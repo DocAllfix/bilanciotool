@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
-import { EntitlementError } from "@/features/entitlement";
 import {
   createDeclaration, setDecisionField, setModule, setRuoli, toggleMotivazione, updateProfilo,
 } from "./declarations";

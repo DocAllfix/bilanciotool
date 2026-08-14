@@ -33,13 +33,6 @@ export function riscriviLinkInterni(html: string, cms: string, pubblico: string)
   return riportaSuPubblico(html, cms, pubblico) ?? html;
 }
 
-/** Resta anche un solo riferimento al CMS? Usato dai controlli automatici come rete di sicurezza. */
-export function contieneRiferimentiAlCms(testo: string, cms: string): boolean {
-  if (!testo || !cms) return false;
-  const host = cms.replace(/^https?:\/\//, "").replace(/\/+$/, "");
-  return new RegExp(host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(testo);
-}
-
 /**
  * Toglie il nome del sito accodato al titolo.
  *
