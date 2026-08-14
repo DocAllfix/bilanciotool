@@ -11,6 +11,7 @@ import {
   prezzoDiVendita, prezzoEstensione, lancioAttivo, FINE_LANCIO,
 } from "@/lib/prezzi";
 import { TITOLARE } from "@/lib/legale";
+import { bloccoAlCheckout } from "@/features/billing/gia-abbonato";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,9 @@ export default async function AbbonamentoPage() {
   const s = await requireActiveOrg();
   const a = await getQuadroAbbonamento(s.userId, s.orgId);
   const stato = ETICHETTA_STATO[a.status];
+  // La stessa funzione che decide lato server se il checkout puo' partire: qui decide se
+  // ha senso mostrarlo. Una domanda, una risposta.
+  const blocco = await bloccoAlCheckout(s.userId, s.orgId);
 
   return (
     <div className="space-y-6">
@@ -88,8 +92,18 @@ export default async function AbbonamentoPage() {
       </Card>
 
       {/* Il listino si vede SOLO qui dentro, mai sul sito pubblico: decisione del
-          committente. Chi non ha ancora un piano deve capire cosa comprerebbe. */}
-      {!a.piano && (
+          committente. Chi non ha ancora un piano deve capire cosa comprerebbe.
+
+          La condizione e' la STESSA che applica il server (`bloccoAlCheckout`), non una
+          seconda regola scritta a mano. Prima era `!a.piano`, e sembrava equivalente:
+          non lo era. Alla disdetta `piano` resta valorizzato — `applicaAbbonamento` lo
+          riscrive solo quando l'abbonamento ne contiene uno, e non lo azzera mai — quindi
+          uno studio SCADUTO non vedeva piu' la scheda e non aveva alcun modo di
+          riabbonarsi. Una porta chiusa dalla parte sbagliata.
+
+          Interfaccia e server che rispondono alla stessa domanda con due condizioni
+          diverse e' il modo in cui nascono sia i doppi acquisti sia i vicoli ciechi. */}
+      {!blocco && (
         <Card>
           <CardHeader>
             <h2 className="font-medium">I piani</h2>
@@ -137,17 +151,23 @@ export default async function AbbonamentoPage() {
                       <li>{p.aziende} aziende</li>
                       <li>{p.accessi} accessi</li>
                     </ul>
-                    {/* Il piano gia' attivo non si ricompra: mostrarlo acquistabile
-                        invita a pagare due volte la stessa cosa. */}
-                    <div className="mt-4">
-                      {a.piano === p.key ? (
-                        <p className="text-center text-[12.5px] font-medium text-primary">Il tuo piano</p>
-                      ) : (
-                        <DialogoAcquisto
-                          piano={p.key}
-                          etichetta={a.piano ? "Passa a questo" : "Attiva"}
-                          variante={a.piano ? "outline" : "default"}
-                        />
+                    {/* Se questa scheda si rende, NIENTE e' attivo: il blocco esterno lo
+                        garantisce. Qui c'era un ramo «Il tuo piano» e uno «Passa a questo»,
+                        entrambi irraggiungibili — la scheda non si rendeva mai a chi aveva
+                        un piano. Codice morto che pero' RACCONTAVA una funzione che non
+                        esiste: il cambio piano da qui non e' mai stato possibile, e non
+                        deve esserlo (aprirebbe un secondo abbonamento invece di cambiare
+                        il primo, che e' esattamente la ragione per cui nel portale
+                        `subscription_update` e' spento).
+
+                        Resta la nota per chi si riabbona dopo una disdetta: sapere quale
+                        piano aveva prima gli evita di doverlo ricordare. */}
+                    <div className="mt-4 space-y-2">
+                      <DialogoAcquisto piano={p.key} etichetta="Attiva" variante="default" />
+                      {a.piano === p.key && (
+                        <p className="text-center text-[12px] text-muted-foreground">
+                          Il tuo piano precedente
+                        </p>
                       )}
                     </div>
                   </li>

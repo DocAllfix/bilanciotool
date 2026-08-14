@@ -8,6 +8,7 @@ import { stripeConfigurato } from "@/lib/stripe/client";
 import { creaSessioneCheckout } from "./checkout";
 import { urlPortale } from "./portale";
 import type { ActionEsito } from "@/features/esito";
+import { bloccoAlCheckout, messaggioBlocco } from "./gia-abbonato";
 
 // Il pagamento lo avvia solo chi può impegnare lo studio: `requireStudioAdmin`, non
 // `requireConsultant`. Un collaboratore invitato non deve poter sottoscrivere un
@@ -34,6 +35,14 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
 
   try {
     const s = await requireStudioAdmin();
+
+    // ⚠️ Il controllo che manca costa denaro vero: senza, «Passa a questo» apriva un
+    // SECONDO abbonamento parallelo, che continuava a fatturare e che il cliente non
+    // poteva disdire (il portale ha la disdetta spenta). Sta qui e non solo
+    // nell'interfaccia perche' una server action e' un endpoint HTTP.
+    const blocco = await bloccoAlCheckout(s.userId, s.orgId);
+    if (blocco) return { ok: false, errore: messaggioBlocco(blocco), codice: blocco };
+
     const { url } = await creaSessioneCheckout({
       userId: s.userId,
       orgId: s.orgId,
