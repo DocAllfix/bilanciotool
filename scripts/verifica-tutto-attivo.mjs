@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const PWD = "PasswordSicura123!";
@@ -117,10 +117,17 @@ for (const [nome, rotta, tipo] of PUBBLICAZIONI) {
   await agisci(`si pubblica il ${nome}`, async () => {
     await vai(rotta);
     await page.getByRole("button", { name: /^Pubblica/ }).first().click();
-    await page.waitForTimeout(6000);
-    const [r] = await sql`select count(*)::int n from document_snapshot
-      where organization_id=${orgId} and company_id=${demo.id} and tipo=${tipo}`;
-    if (!r.n) throw new Error("nessuno snapshot nel database");
+    // Si ASPETTA lo snapshot, non si contano i secondi: la pubblicazione del Rapporto
+    // GHG ricalcola l'intero inventario prima di congelarlo, e sei secondi bastavano
+    // «quasi» sempre.
+    await attendi(
+      async () => {
+        const [r] = await sql`select count(*)::int n from document_snapshot
+          where organization_id=${orgId} and company_id=${demo.id} and tipo=${tipo}`;
+        return r.n > 0;
+      },
+      { cosa: `snapshot ${tipo}` },
+    );
   }, { attesa: 500 });
 }
 for (const [nome, rotta, vista, tipo] of [
@@ -132,10 +139,17 @@ for (const [nome, rotta, vista, tipo] of [
     await page.getByRole("button", { name: vista }).first().click();
     await page.waitForTimeout(1200);
     await page.getByRole("button", { name: /^Pubblica/ }).first().click();
-    await page.waitForTimeout(6000);
-    const [r] = await sql`select count(*)::int n from document_snapshot
-      where organization_id=${orgId} and company_id=${demo.id} and tipo=${tipo}`;
-    if (!r.n) throw new Error("nessuno snapshot nel database");
+    // Si ASPETTA lo snapshot, non si contano i secondi: la pubblicazione del Rapporto
+    // GHG ricalcola l'intero inventario prima di congelarlo, e sei secondi bastavano
+    // «quasi» sempre.
+    await attendi(
+      async () => {
+        const [r] = await sql`select count(*)::int n from document_snapshot
+          where organization_id=${orgId} and company_id=${demo.id} and tipo=${tipo}`;
+        return r.n > 0;
+      },
+      { cosa: `snapshot ${tipo}` },
+    );
   }, { attesa: 500 });
 }
 

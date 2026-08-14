@@ -2,7 +2,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { mediaAsset, narrativeSection, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
-import { assertSegmentoChiave, deleteObject, parseDataUrl, uploadObject } from "@/lib/storage";
+import { assertSegmentoChiave, deleteObject, immagineValida, parseDataUrl, uploadObject } from "@/lib/storage";
 import { and, asc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { mediaSchema, sanificaTiptap } from "./validation";
@@ -70,11 +70,16 @@ export async function addMedia(
   if (v.tipo === "img") {
     const parsed = input.dataUrl ? parseDataUrl(input.dataUrl) : null;
     if (!parsed) throw new Error("Fotografia non valida: atteso un dataURL base64");
-    if (!parsed.contentType.startsWith("image/")) throw new Error("Solo immagini");
+    // Il tipo lo dichiara il client: si guardano i PRIMI BYTE. `image/svg+xml` passava
+    // il vecchio `startsWith("image/")`, e un SVG contiene `<script>`.
+    const immagine = immagineValida(parsed.buffer, parsed.contentType);
+    if (!immagine) throw new Error("Serve un'immagine PNG, JPEG, WebP o GIF");
     if (parsed.buffer.length > 5_000_000) throw new Error("Immagine oltre 5 MB: ridimensionala");
-    const ext = parsed.contentType.split("/")[1]?.replace("jpeg", "jpg") ?? "png";
+    const ext = immagine.ext;
     storageKey = `${orgId}/reports/${projectId}/${templateKey}-${Date.now()}.${ext}`;
-    await uploadObject(orgId, storageKey, parsed.buffer, parsed.contentType);
+    // Si archivia col tipo VERIFICATO, non con quello dichiarato: e' l'header che
+    // l'archivio restituira' al browser.
+    await uploadObject(orgId, storageKey, parsed.buffer, immagine.contentType);
   }
 
   const id = randomUUID();

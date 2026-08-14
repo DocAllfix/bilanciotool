@@ -4,7 +4,7 @@ import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { parseBilancioExport } from "@/features/import/parser";
 import { latestContentSetId } from "@/features/ghg/inventories";
-import { deleteObject, isStorageConfigured, parseDataUrl, uploadObject } from "@/lib/storage";
+import { deleteObject, isStorageConfigured, parseDataUrl, uploadObject, immagineValida } from "@/lib/storage";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { toFixedStr, nz } from "@/lib/calc/shared/decimal";
@@ -52,10 +52,20 @@ export async function importBilancioFromJson(
   const upload = async (dataUrl: string | null, nome: string): Promise<string | null> => {
     if (!dataUrl || !isStorageConfigured()) return null;
     const p = parseDataUrl(dataUrl);
-    if (!p || !p.contentType.startsWith("image/")) return null;
-    const ext = p.contentType.split("/")[1]?.replace("jpeg", "jpg") ?? "png";
+    // Qui si SALTA invece di fallire: un archivio del prototipo puo' contenere di
+    // tutto, e far naufragare l'intera migrazione per una figura sbagliata sarebbe
+    // sproporzionato. Per questo la whitelist comprende tutti i raster e non solo i
+    // due formati che il nostro browser produce: cosi' si salta quasi soltanto cio'
+    // che immagine non e'.
+    if (!p) return null;
+    const immagine = immagineValida(p.buffer, p.contentType);
+    if (!immagine) {
+      console.warn("[import] immagine scartata, tipo non ammesso:", p.contentType);
+      return null;
+    }
+    const ext = immagine.ext;
     const key = `${orgId}/companies/${companyId}/import-${nome}-${Date.now()}.${ext}`;
-    await uploadObject(orgId, key, p.buffer, p.contentType);
+    await uploadObject(orgId, key, p.buffer, immagine.contentType);
     caricate.push(key);
     return key;
   };

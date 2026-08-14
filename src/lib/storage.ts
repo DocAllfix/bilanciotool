@@ -144,4 +144,53 @@ export function parseDataUrl(dataUrl: string): { buffer: Buffer; contentType: st
   return { buffer: Buffer.from(m[2], "base64"), contentType: m[1] };
 }
 
+/**
+ * Le immagini che accettiamo, riconosciute dai PRIMI BYTE e non da quello che dice il
+ * client.
+ *
+ * Il tipo dichiarato in un dataURL lo scrive il browser, cioè chiunque: `parseDataUrl`
+ * lo legge dalla stringa, e il controllo era `startsWith("image/")`. Ci passava
+ * `image/svg+xml` — e un SVG **è un documento eseguibile**: contiene `<script>`. Quel
+ * tipo finiva poi nel `Content-Type` che l'archivio restituisce al browser, quindi
+ * l'indirizzo firmato serviva contenuto attivo sotto un dominio di cui il cliente si
+ * fida. Nessun cookie di sessione a rischio (origine diversa), ma è hosting di script
+ * per chiunque abbia `write_data` — cioè anche un conto di prova.
+ *
+ * Sono ammessi tutti i formati RASTER, non solo quelli che il nostro browser produce
+ * (`canvas.toDataURL` fa solo PNG e JPEG). Il motivo è l'import dagli archivi del
+ * prototipo: lì i dataURL li ha scritti un altro programma, e una whitelist più
+ * stretta farebbe **sparire in silenzio** le fotografie di chi migra. Un GIF o un WebP
+ * non eseguono niente: il confine giusto è «immagine vera», non «formato nostro».
+ */
+const IMMAGINI = {
+  "image/png": { ext: "png", firma: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] },
+  "image/jpeg": { ext: "jpg", firma: [0xff, 0xd8, 0xff] },
+  "image/gif": { ext: "gif", firma: [0x47, 0x49, 0x46, 0x38] },
+  // Il WebP si riconosce in DUE punti: «RIFF» all'inizio e «WEBP» all'ottavo byte.
+  // Il solo «RIFF» lo hanno anche WAV e AVI.
+  "image/webp": { ext: "webp", firma: [0x52, 0x49, 0x46, 0x46], firmaOtto: [0x57, 0x45, 0x42, 0x50] },
+} as const;
+
+/** `image/jpg` non è il nome ufficiale, ma qualche programma lo scrive lo stesso. */
+const ALIAS: Record<string, keyof typeof IMMAGINI> = { "image/jpg": "image/jpeg" };
+
+export type ImmagineAmmessa = { contentType: keyof typeof IMMAGINI; ext: string };
+
+/**
+ * Restituisce tipo ed estensione se il buffer È davvero quell'immagine, `null` altrimenti.
+ *
+ * L'estensione arriva da qui e mai dalla stringa del client: `contentType.split("/")[1]`
+ * su `image/svg+xml` produceva il nome di file `qualcosa.svg+xml`.
+ */
+export function immagineValida(buffer: Buffer, contentTypeDichiarato: string): ImmagineAmmessa | null {
+  const tipo = (ALIAS[contentTypeDichiarato] ?? contentTypeDichiarato) as keyof typeof IMMAGINI;
+  const v = IMMAGINI[tipo];
+  if (!v) return null;
+  const combacia = (firma: readonly number[], da: number) =>
+    buffer.length >= da + firma.length && firma.every((b, i) => buffer[da + i] === b);
+  if (!combacia(v.firma, 0)) return null;
+  if ("firmaOtto" in v && !combacia(v.firmaOtto, 8)) return null;
+  return { contentType: tipo, ext: v.ext };
+}
+
 export const isStorageConfigured = () => Boolean(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY);

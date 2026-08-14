@@ -142,3 +142,22 @@ export function contatore(page, sonda) {
 
   return { agisci, respinto, riepilogo, get ko() { return ko; } };
 }
+
+/**
+ * Attende che una condizione sul DATABASE diventi vera, invece di scommettere su
+ * quanti secondi ci metta.
+ *
+ * Un `waitForTimeout` fisso dopo un comando è un controllo che fallisce quando la
+ * macchina è lenta e passa quando è veloce: dice qualcosa sul carico, non sul prodotto.
+ * La pubblicazione del Rapporto GHG ricalcola l'intero inventario prima di congelarlo,
+ * e sei secondi bastavano quasi sempre — «quasi» è la parola che rende un collaudo
+ * rumore da ignorare.
+ */
+export async function attendi(condizione, { entro = 45000, ogni = 500, cosa = "condizione" } = {}) {
+  const scade = Date.now() + entro;
+  for (;;) {
+    if (await condizione()) return;
+    if (Date.now() > scade) throw new Error(`${cosa}: non si è avverata entro ${entro / 1000}s`);
+    await new Promise((r) => setTimeout(r, ogni));
+  }
+}

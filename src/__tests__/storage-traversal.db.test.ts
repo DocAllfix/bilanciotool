@@ -94,6 +94,34 @@ describe.skipIf(!url)("path traversal nella chiave d'archivio", () => {
     expect(media).toHaveLength(0);
   });
 
+  it("un SVG travestito da immagine viene respinto", async () => {
+    // Un SVG e' un documento eseguibile: `<script>` dentro, e l'archivio lo
+    // restituirebbe col `Content-Type` dichiarato dal client.
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>', "utf8");
+    const dataUrl = `data:image/svg+xml;base64,${svg.toString("base64")}`;
+    await expect(
+      addMedia(userId, orgId, projectId, "lettera", { tipo: "img", dataUrl }),
+    ).rejects.toThrow();
+    // E travestito da PNG: i byte non mentono.
+    await expect(
+      addMedia(userId, orgId, projectId, "lettera", {
+        tipo: "img",
+        dataUrl: `data:image/png;base64,${svg.toString("base64")}`,
+      }),
+    ).rejects.toThrow();
+    const media = await db.select().from(mediaAsset).where(eq(mediaAsset.organizationId, orgId));
+    expect(media).toHaveLength(0);
+  });
+
+  it("un PNG vero passa, e si archivia col tipo verificato", async () => {
+    const png =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+    const id = await addMedia(userId, orgId, projectId, "lettera", { tipo: "img", dataUrl: png });
+    expect(id).toBeTruthy();
+    const [m] = await db.select().from(mediaAsset).where(eq(mediaAsset.id, id));
+    expect(m.storageKey).toMatch(/\.png$/);
+  });
+
   it("un capitolo con una chiave legittima passa ancora", async () => {
     // La difesa non deve aver chiuso la porta anche a chi lavora.
     await expect(

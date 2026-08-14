@@ -3,7 +3,7 @@ import { company, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestContentSetId } from "@/features/ghg/inventories";
-import { deleteObject, parseDataUrl, uploadObject } from "@/lib/storage";
+import { deleteObject, parseDataUrl, uploadObject, immagineValida } from "@/lib/storage";
 import { and, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { progettoSchema, profiloSchema, sogliaSchema } from "./validation";
@@ -100,11 +100,13 @@ export async function setCompanyImage(
     } else {
       const parsed = parseDataUrl(dataUrl);
       if (!parsed) throw new Error("Immagine non valida: atteso un dataURL base64");
-      if (!parsed.contentType.startsWith("image/")) throw new Error("Solo immagini");
+      // I primi byte, non il tipo dichiarato dal client: un SVG contiene `<script>`.
+      const immagine = immagineValida(parsed.buffer, parsed.contentType);
+      if (!immagine) throw new Error("Serve un'immagine PNG, JPEG, WebP o GIF");
       if (parsed.buffer.length > 3_000_000) throw new Error("Immagine oltre 3 MB: ridimensionala");
-      const ext = parsed.contentType.split("/")[1]?.replace("jpeg", "jpg") ?? "png";
+      const ext = immagine.ext;
       const key = `${orgId}/companies/${companyId}/${tipo}-${Date.now()}.${ext}`;
-      await uploadObject(orgId, key, parsed.buffer, parsed.contentType);
+      await uploadObject(orgId, key, parsed.buffer, immagine.contentType);
       if (attuale) await deleteObject(orgId, attuale);
       await tx.update(company).set({ [colonna]: key }).where(eq(company.id, companyId));
     }

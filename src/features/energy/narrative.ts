@@ -5,7 +5,7 @@ import { energyBalance, energyMedia, energyNarrative } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { conteggioParole, sanificaTiptap } from "@/features/report/validation";
-import { assertSegmentoChiave, deleteObject, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
+import { assertSegmentoChiave, deleteObject, immagineValida, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
 import { z } from "zod";
 
 // Capitoli discorsivi del bilancio energetico. La sanificazione Tiptap è la
@@ -113,11 +113,14 @@ export async function addMedia(
   if (v.tipo === "img") {
     const parsed = input.dataUrl ? parseDataUrl(input.dataUrl) : null;
     if (!parsed) throw new Error("Fotografia non valida: atteso un dataURL base64");
-    if (!parsed.contentType.startsWith("image/")) throw new Error("Solo immagini");
+    // Il tipo lo dichiara il client: si guardano i PRIMI BYTE. `image/svg+xml` passava
+    // il vecchio `startsWith("image/")`, e un SVG contiene `<script>`.
+    const immagine = immagineValida(parsed.buffer, parsed.contentType);
+    if (!immagine) throw new Error("Serve un'immagine PNG, JPEG, WebP o GIF");
     if (parsed.buffer.length > 5_000_000) throw new Error("Immagine oltre 5 MB: ridimensionala");
-    const ext = parsed.contentType.split("/")[1]?.replace("jpeg", "jpg") ?? "png";
+    const ext = immagine.ext;
     storageKey = `${orgId}/energetico/${balanceId}/${templateKey}-${Date.now()}.${ext}`;
-    await uploadObject(orgId, storageKey, parsed.buffer, parsed.contentType);
+    await uploadObject(orgId, storageKey, parsed.buffer, immagine.contentType);
   }
 
   const id = randomUUID();
