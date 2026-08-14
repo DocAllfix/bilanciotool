@@ -234,9 +234,12 @@ i due sono decisioni, non dimenticanze.
 2. **Il database di produzione separato, con un restore provato.** Oggi i dati di un
    cliente starebbero accanto a centotrenta organizzazioni di collaudo, e il ripristino di
    un backup non è mai stato tentato.
-3. **L'invito a un collega, provato fino all'ingresso.** Si sa che l'email parte. Non si sa
-   che chi la riceve riesca a entrare — ed è il secondo giorno di lavoro di ogni studio con
-   più di una persona.
+3. **I dati del titolare nei documenti legali** (P. IVA, sede, PEC). Vendere a un'azienda
+   con l'identificazione incompleta in privacy e termini è un'esposizione legale, non un
+   dettaglio estetico. Sono cinque minuti, e sono **dati che ha solo il committente**.
+
+   *(L'invito a un collega era la terza voce di questo elenco. Chiuso il 14 agosto: la
+   pagina di accettazione non esisteva e rispondeva 404 — vedi §2.)*
 
 E una decisione, non un lavoro: **chi emette le fatture.** Stripe incassa e raccoglie i
 dati fiscali, ma nessuno le emette.
@@ -259,3 +262,14 @@ Non bloccano il lancio, ma vanno saputi.
 5. **`user_onboarding` e `company_referent`** sono tabelle create e mai usate.
 6. **Le estensioni non si comprano a metà anno**: si scelgono all'acquisto del piano, poi
    si aggiungono scrivendoci. Il flusso a rateo tocca l'abbonamento in corso e non esiste.
+7. **`@vitest/coverage-v8`** è l'unico pacchetto senza alcun riferimento versionato:
+   nessun blocco `coverage` in `vitest.config.ts`, nessuno script che passi `--coverage`.
+   La cartella `coverage/` dice che qualcuno l'ha lanciato a mano. O si aggiunge un
+   comando che lo usi, o si toglie: oggi è uno strumento che nessuno sa di avere.
+8. 🔒 **`.env.prima-del-cambio-password`** è fermo sul disco del committente dal 7 agosto.
+   Non è mai finito in git (`.env*` lo ignora) e **non è stato aperto**, ma è un file di
+   credenziali storiche: se quelle password non servono più, va cancellato.
+9. **`SENTRY_AUTH_TOKEN` non è documentato da nessuna parte.** Serve al build per caricare
+   le source map e vive solo nel pannello Vercel. Se sparisce il build **riesce lo
+   stesso**, e gli stack trace in produzione diventano illeggibili: il guasto silenzioso
+   che tutto il resto del monitoraggio è costruito per evitare.
