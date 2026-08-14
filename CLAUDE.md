@@ -90,6 +90,7 @@ SaaS su commissione: suite di rendicontazione ESG che unifica i due prototipi HT
 - **Entitlement**: nessuna server action nuova senza `requireEntitlement(...)`; capability `create_company | write_data | export | generate_pdf`; limiti da `platform_config` (10 aziende attive, warning a 8, 5 membri) con demo/archiviate escluse dal conteggio.
 - **Guards**: `requireActiveOrg` riverifica sempre la membership sul DB (le sessioni non sono autorevoli); `requireConsultant` per le operazioni, `requireStudioAdmin` per inviti/billing.
 - **Migrazioni**: sempre via `DIRECT_URL` (session pooler :5432 — l'host `db.<ref>.supabase.co` non risolve su questo progetto).
+- **La connessione dell'applicazione in produzione è `app_rls`** (dal 2026-08-14): le policy scattano davvero. Conseguenza operativa: **ogni query su dati tenant deve passare da `withTenant`**, altrimenti in produzione non vede niente e in sviluppo funziona. La stringa privilegiata resta solo in `DIRECT_URL`, per le migrazioni.
 
 ### Stato
 
@@ -405,6 +406,32 @@ Gate: `qa -- benvenuto` **12 su 12 in produzione** · `qa -- tutto-pubblico` **3
 - **Fluidita**: zero `loading.tsx` con tutte le pagine `force-dynamic` e cache del router disattivata significa che fra il clic e la pagina non succede niente. I segnaposto sono la leva piu grossa e non costano nulla in freschezza dei dati.
 
 Gate: **280 test** (verdi anche con `RLS_FORCE_ROLE=app_rls`) · build · `visual-check-legale.mjs` 25 controlli · `visual-check-landing.mjs` con rilevatori di mojibake e dei cinque percorsi · verifica in produzione delle nuove pagine, zero errori di console.
+
+**Audit di sicurezza e accensione di RLS (2026-08-14)** — il rilievo critico era vero, e taceva da tredici fasi.
+
+**C1 — le 127 policy RLS non sono mai scattate in produzione.** Il ruolo `app_rls` esisteva dalla Fase 1, con le policy addosso e i permessi in ordine: gli mancava **`LOGIN`**. Non potendo connettersi, la produzione girava come `postgres`, che bypassa RLS. Undici mesi di lavoro sull'isolamento multi-tenant erano decorativi: reggeva solo il filtro applicativo, che c'è quasi ovunque — e dove non c'era (la SoA) non c'era niente.
+
+Il passo era rimasto aperto perché **accenderlo rompeva il prodotto**: con `app_rls` `stripe_customer` respingeva l'inserimento e **nessuno riusciva più a pagare**. Undici punti interrogavano il database fuori da `withTenant`: pagamenti, provisioning, pagina dell'abbonamento, white-label, numerazione delle versioni dei documenti, cron dei rinnovi. Sistemati prima, poi acceso.
+
+Prova sul campo, non deduzione: `app_rls` senza contesto vede **0** aziende su 327; nel contesto di uno studio vede esattamente le sue e **zero** di altri.
+
+**Gli altri rilievi chiusi**: path traversal via `templateKey` (bastava un conto di prova per sovrascrivere il video di benvenuto di tutti); SVG accettati come immagini; SoA affidata alle sole policy in **dodici** punti, non i tre segnalati; messaggi d'errore che rimandavano al browser frammenti di query Postgres, il corpo delle risposte di Supabase e l'elenco di `/var/task/node_modules`; dati strutturati che un titolo del CMS poteva chiudere; password di collaudo pubblicata nel repository su conti creati in produzione; e il registro di audit che si poteva intestare a un altro studio (migrazione `0015`).
+
+**Regole nate qui:**
+- **Una difesa che nessuno ha mai visto scattare non è una difesa.** Le policy c'erano, i test le provavano, il documento le dava per attive: mancava la prova che in produzione *scattassero*, e nessuna di quelle tre cose poteva darla. Si chiede al database chi è connesso, e si prova a leggere le righe di un altro.
+- **Il passo che chiude una difesa è quello che rompe qualcosa**, ed è per questo che resta aperto. Prima di accenderlo si cerca cosa smetterà di funzionare: fu così che venne fuori che nessuno avrebbe più potuto pagare.
+- **Un messaggio fisso al posto di `e.message` sarebbe stato peggio del male**: nel prodotto ci sono 101 `throw new Error` scritti per il consulente. Si distingue **chi ha lanciato** (`e.constructor === Error` è vero solo per i nostri), non cosa c'è scritto — una proprietà strutturale, non un elenco di parole vietate da aggiornare a ogni libreria.
+- **Un controllo aggiunto a una funzione scoperta è un controllo che nessuno ha verificato.** Il controllo nuovo sul caricamento immagini ombreggiava un parametro chiamato `tipo` e avrebbe rotto il logo per tutti: è passato per typecheck e 498 test perché quella funzione non aveva un solo test.
+- **Un test che passa può passare per il motivo sbagliato.** Due casi del confine SoA erano fermati da un vincolo di unicità e da un'asserzione troppo stretta, non dal confine.
+- **Il collaudo va scritto sulla regola verificabile, non su quella che si vorrebbe.** Il controllo sulle policy è stato riscritto due volte: la 0001 non nomina le tabelle, le scorre in un ciclo, e cercare `CREATE POLICY ... ON <tabella>` dichiarava scoperte cinque tabelle protette.
+- **Google ruota gli indirizzi dei propri font.** Un build che li scarica dipende da un terzo nel momento peggiore; in locale la cache lo nasconde, e il guasto si vede solo dove la cache non c'è. Il carattere dei documenti che finiscono in mano ai clienti sta nel repository.
+- **Dieci collaudi erano morti all'avvio** da quando è accesa la verifica dell'indirizzo, `qa-prod` compreso. Un controllo che non parte non è né verde né rosso: è assente, e sembra presente.
+
+**Fuori perimetro per decisione, non per dimenticanza**: `'unsafe-inline'` nella CSP. Toglierlo richiede un nonce per richiesta, cioè rendere dinamiche home, blog e articoli — buttare via la staticità riconquistata correggendo il 500 sul primo articolo.
+
+**Un rilievo era un falso positivo**, ed è scritto perché non venga "corretto": il nostro ordine di risoluzione dell'organizzazione nel limite di accessi è identico a quello del plugin di Better Auth (`body.organizationId || session.activeOrganizationId`). Invertirlo introdurrebbe il difetto che il rilievo temeva.
+
+Gate: typecheck · build · **531 test** verdi in entrambi i modi, e `RLS_FORCE_ROLE=app_rls` non è più una prova di laboratorio: è come gira la produzione · in produzione `tutto-attivo` 30/30, `tutto-demo` 68/68, `tutto-pubblico` 37/37, `benvenuto` 12/12, `demo-completa` 9/9 · migrazione `0015` provata sul database in quattro casi, compreso quello che deve riuscire (il webhook di Stripe, che senza fallirebbe **dopo** aver incassato).
 
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.

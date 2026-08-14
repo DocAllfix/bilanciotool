@@ -67,22 +67,62 @@ Aggiornato al **2026-08-13**.
       → *verifica:* `DATABASE_URL` di produzione ≠ quello locale. **Oggi sono lo stesso**:
         i dati di un cliente vero starebbero accanto a ~130 organizzazioni di collaudo, e
         ogni script di pulizia diventa pericoloso
-- [ ] ⚠️ 🔒 **La connessione dell'app è `app_rls`, non privilegiata**
-      → *verifica:* guarda il valore di `DATABASE_URL` su Vercel: l'utente dev'essere
-        `app_rls.<ref>`, non `postgres.<ref>`. **Non è verificabile dall'esterno** e il
-        valore è nascosto. Se fosse privilegiata, le policy RLS non scatterebbero mai in
-        produzione: resterebbero i filtri applicativi, che ci sono, ma verrebbe a mancare
-        il secondo strato — quello che protegge dal difetto che nessuno ha visto
-- [x] **Migrazioni applicate** in produzione (fino alla `0014`)
+- [x] ⚠️ 🔒 **La connessione dell'app è `app_rls`, non privilegiata** — fatto il 2026-08-14
+      → *era il rilievo critico C1, ed era vero*: il ruolo `app_rls` esisteva dalla Fase 1
+        con 127 policy addosso, ma **non aveva il permesso di connettersi**, quindi la
+        produzione girava come `postgres` e le policy non sono mai scattate. Undici punti
+        del codice interrogavano il database fuori da `withTenant` e avrebbero smesso di
+        funzionare al cambio — fra questi `stripe_customer`: **nessuno avrebbe più potuto
+        pagare**. Sistemati prima, poi acceso.
+      → *verifica, e non si deduce dal valore nascosto su Vercel:* si chiede al database
+        chi è connesso (`pg_stat_activity`), e poi si prova l'isolamento sul campo —
+        `app_rls` senza contesto di tenant vede **0** aziende su 327; nel contesto di uno
+        studio vede esattamente le sue e **zero** di altri
+- [x] **Migrazioni applicate** in produzione (fino alla `0015`)
 - [x] **Seed dei cataloghi** eseguito
       → *verifica:* `seed-counts.db.test.ts` verde
 - [x] **Le policy reggono col ruolo ristretto**
-      → *verifica:* `RLS_FORCE_ROLE=app_rls npm run test` — 472 test verdi
+      → *verifica:* `RLS_FORCE_ROLE=app_rls npm run test` — 531 test verdi
+      → e ora non è più solo una prova di laboratorio: **è così che gira la produzione**
 - [ ] **Backup automatici attivi** e restore **provato davvero**
       → *verifica:* ripristinare su un progetto vuoto e contare le righe. Un backup mai
         ripristinato non è un backup, è una speranza
 
 ## 4. Sicurezza
+
+### Audit di sicurezza del 2026-08-14 — chiuso
+
+Ricognizione su tutta la codebase, con ogni rilievo grave riverificato a mano prima di
+finire nel referto: **2 critici, 2 alti, 4 medi, 12 bassi**. Tutti chiusi tranne due, e
+i due sono decisioni, non dimenticanze.
+
+- [x] **C1 — RLS inerte in produzione.** Vedi sopra: era vero, ed era il piu' grave.
+- [x] **C2 — path traversal nella chiave d'archivio.** `templateKey` arriva dal client e
+      finiva dentro il percorso: `../../_piattaforma/onboarding/benvenuto-v1` sovrascriveva
+      il video che vede ogni nuovo cliente, e bastava un conto di **prova**.
+      → *verifica:* `storage-perimetro-pure` e `storage-traversal.db` — quest'ultimo prova
+        la catena attraverso le funzioni vere e conta le righe nel database.
+- [x] **H1 — l'SVG passava per immagine.** Il tipo lo dichiarava il browser; ora si
+      guardano i primi byte, e l'estensione viene dalla whitelist.
+- [x] **H2 — la SoA si affidava alle sole policy.** Dodici punti, non i tre segnalati.
+      → *verifica:* `soa-confine-tenant.db` gira con la connessione **privilegiata**, cioe'
+        senza l'aiuto di RLS: e' l'unico modo di misurare lo strato applicativo da solo.
+- [x] **M1, M2 — errori che raccontavano l'interno.** Rotta PDF (messaggio grezzo ed
+      elenco del filesystem) e catch-all delle server action.
+- [x] **M3 — dati strutturati** che un titolo del CMS poteva chiudere.
+- [x] **M4 — password di collaudo** pubblicata nel repository, su conti creati in
+      produzione.
+- [x] **L1-L10, L12.** Fra questi L8, che stamattina ha cambiato gravita': il registro si
+      poteva intestare a un altro studio, e con RLS acceso quella policy e' l'unica cosa
+      che decide (migrazione `0015`).
+- [ ] **L11 — `'unsafe-inline'` nella CSP.** Fuori perimetro per **decisione**: toglierlo
+      richiede un nonce per richiesta, cioe' rendere dinamiche home, blog e articoli.
+      Sarebbe buttare via la staticita' riconquistata correggendo il 500 sul primo
+      articolo. Da decidere insieme, non da rimediare di nascosto.
+- [x] **L7 era un falso positivo**, ed e' scritto qui perche' non venga "corretto" in
+      futuro: il nostro ordine di risoluzione dell'organizzazione e' identico a quello del
+      plugin di Better Auth. Invertirlo introdurrebbe il difetto che il rilievo temeva.
+
 
 - [x] **RLS default-deny** su ogni tabella tenant, con test di enumerazione
 - [x] **Entitlement su ogni mutazione**
