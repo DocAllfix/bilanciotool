@@ -1,4 +1,4 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 // Il collegamento che l'azienda cliente riceve per scaricare i propri documenti.
 //
@@ -35,11 +35,20 @@ export function formaValida(token: string): boolean {
   return typeof token === "string" && /^[A-Za-z0-9_-]{40,64}$/.test(token);
 }
 
-/** Confronto a tempo costante fra due impronte. */
-export function improntaCoincide(a: string, b: string): boolean {
-  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
-  return timingSafeEqual(Buffer.from(a, "utf8"), Buffer.from(b, "utf8"));
-}
+// Qui NON c'e' un confronto a tempo costante, ed e' voluto.
+//
+// C'era `improntaCoincide`, scritta con `timingSafeEqual`, e non la chiamava nessuno: il
+// collegamento si CERCA per impronta (`where token_hash = ...`), e una riga non si puo'
+// trovare senza confrontarla. Il paragone avviene dentro Postgres, su un indice.
+//
+// Una funzione di sicurezza senza chiamanti e' peggio della sua assenza: aveva un test
+// verde che non provava niente, e chi leggeva il file concludeva che il confronto fosse
+// protetto. Aveva anche un difetto suo — due stringhe vuote risultavano uguali.
+//
+// Non c'e' niente da proteggere: il token e' 256 bit di casualita', e il tempo di una
+// ricerca su indice attraverso la rete non dice quale riga si stava cercando. Se un
+// giorno servisse confrontare due impronte gia' in memoria, si usa `segretoCoincide` di
+// `@/lib/segreti`.
 
 export type StatoCollegamento = "valido" | "scaduto" | "revocato";
 

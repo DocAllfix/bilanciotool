@@ -13,13 +13,14 @@
 import { verificaBlog, riepilogo } from "@/features/blog/verifica";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
 import { inviaAllarmeBlog } from "@/lib/email";
+import { bearerCoincide } from "@/lib/segreti";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function GET(req: Request) {
   const segreto = process.env.CRON_SECRET;
-  if (!segreto || req.headers.get("authorization") !== `Bearer ${segreto}`) {
+  if (!bearerCoincide(req.headers.get("authorization"), segreto)) {
     return new Response(null, { status: 404 });
   }
 

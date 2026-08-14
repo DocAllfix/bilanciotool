@@ -16,6 +16,8 @@ import { after } from "next/server";
 import { verificaBlog, riepilogo } from "@/features/blog/verifica";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
 import { inviaAllarmeBlog } from "@/lib/email";
+import { segretoCoincide } from "@/lib/segreti";
+import { verificaConsentita } from "@/features/blog/freno";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +26,7 @@ const SLUG_VALIDO = /^[a-z0-9][a-z0-9-]{0,199}$/;
 
 export async function POST(req: Request) {
   const token = process.env.BLOG_WEBHOOK_TOKEN;
-  if (!token || req.headers.get("x-blog-token") !== token) {
+  if (!segretoCoincide(req.headers.get("x-blog-token"), token)) {
     return new Response(null, { status: 404 });
   }
 
@@ -55,6 +57,10 @@ export async function POST(req: Request) {
   // ancora qualcuno davanti allo schermo.
   after(async () => {
     try {
+      // Al massimo una verifica al minuto: la revalidazione qui sopra avviene sempre,
+      // questo giro no. Venti salvataggi in un minuto non devono produrre venti giri di
+      // controlli e venti allarmi uguali.
+      if (!(await verificaConsentita())) return;
       const sito = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
       if (!sito) return;
       const esiti = await verificaBlog({

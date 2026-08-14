@@ -9,7 +9,6 @@ import { describe, it, expect } from "vitest";
 import {
   generaToken,
   improntaToken,
-  improntaCoincide,
   formaValida,
   statoCollegamento,
   scadenzaFraGiorni,
@@ -52,19 +51,6 @@ describe("improntaToken", () => {
     const i = improntaToken(t);
     expect(i).not.toContain(t);
     expect(i).toMatch(/^[0-9a-f]{64}$/);
-  });
-});
-
-describe("improntaCoincide", () => {
-  it("riconosce l'impronta giusta e rifiuta quella sbagliata", () => {
-    const a = improntaToken("uno");
-    expect(improntaCoincide(a, improntaToken("uno"))).toBe(true);
-    expect(improntaCoincide(a, improntaToken("due"))).toBe(false);
-  });
-
-  it("non esplode su valori storti", () => {
-    expect(improntaCoincide("corta", improntaToken("x"))).toBe(false);
-    expect(improntaCoincide("", "")).toBe(true);
   });
 });
 

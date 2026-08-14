@@ -48,7 +48,11 @@ export type SnapshotRiga = {
   tipo: TipoDocumento;
   anno: number;
   versione: number;
-  pdfStorageKey: string | null;
+  /** Solo il FATTO che esista, non dove sta. Il client se ne serviva come booleano per
+   *  un'etichetta «PDF generato», e intanto riceveva il percorso dentro l'archivio:
+   *  organizzazione, azienda, tipo e versione di ogni documento pubblicato, cioe' una
+   *  mappa del bucket regalata a chiunque apra gli strumenti del browser. */
+  haPdf: boolean;
   publishedAt: string;
 };
 
@@ -63,7 +67,7 @@ export async function listSnapshotsAction(companyId: string): Promise<ActionEsit
         tipo: r.tipo,
         anno: r.anno,
         versione: r.versione,
-        pdfStorageKey: r.pdfStorageKey,
+        haPdf: Boolean(r.pdfStorageKey),
         publishedAt: r.publishedAt.toISOString(),
       })),
     };

@@ -51,10 +51,28 @@ const CSP = [
 const securityHeaders = [
   { key: "Content-Security-Policy", value: CSP },
   { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  // DENY e non SAMEORIGIN: `frame-ancestors 'none'` due righe sopra dice «nessuno»,
+  // e questa diceva «i miei sì». Due intestazioni che si contraddicono lasciano la
+  // decisione al browser, e nel prodotto non c'è una sola pagina che si incornici
+  // da sola.
+  { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  // `payment=()` spegne l'API di pagamento del browser. Stripe NON la usa (il
+  // pagamento avviene su una pagina loro, un'altra origine), quindi non toglie
+  // niente a noi e toglie un appiglio a chi riuscisse a mettere qualcosa in pagina.
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()",
+  },
+  // Senza `preload` non si entra nella lista dei browser, e la PRIMA visita di ogni
+  // nuovo cliente resta intercettabile: e' l'unica che conta, perche' e' quella in
+  // cui digita la password. Il dominio serve gia' tutto in HTTPS e reindirizza
+  // `www` e i vecchi indirizzi, quindi la condizione e' soddisfatta.
+  //
+  // NB: la dichiarazione da sola non basta, va anche chiesto l'inserimento su
+  // hstspreload.org, ed e' un passo dell'utente. Ed e' quasi irreversibile: da
+  // quel momento nessun sottodominio di evalisdeck.it puo' piu' rispondere in HTTP.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 ];
 
 const nextConfig: NextConfig = {

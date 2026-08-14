@@ -10,11 +10,13 @@
 // Protetta dallo stesso segreto dei giri automatici: senza, sarebbe un modo per
 // chiunque di riempirci la quota di errori.
 
+import { bearerCoincide } from "@/lib/segreti";
+
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const segreto = process.env.CRON_SECRET;
-  if (!segreto || req.headers.get("authorization") !== `Bearer ${segreto}`) {
+  if (!bearerCoincide(req.headers.get("authorization"), segreto)) {
     return new Response(null, { status: 404 });
   }
   throw new Error("Prova del monitoraggio: se leggi questo in Sentry, gli allarmi funzionano.");

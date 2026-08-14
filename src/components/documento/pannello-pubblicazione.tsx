@@ -84,7 +84,7 @@ export function PannelloPubblicazione({
                 <li key={v.id} className="flex items-center gap-3 py-2.5">
                   <Badge variant="outline" data-slot="kpi">v{v.versione}</Badge>
                   <span className="text-sm">{fmtData(v.publishedAt)}</span>
-                  {v.pdfStorageKey && <Badge variant="secondary">PDF generato</Badge>}
+                  {v.haPdf && <Badge variant="secondary">PDF generato</Badge>}
                   <Button variant="outline" size="sm" className="ml-auto" asChild>
                     <Link href={`/documento/${v.id}`} target="_blank">
                       <ExternalLink className="size-3.5" /> Apri

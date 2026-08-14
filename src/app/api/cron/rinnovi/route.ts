@@ -5,6 +5,7 @@ import { PIANI, prezzoDiVendita, euro, type PianoKey } from "@/lib/prezzi";
 import { titolareDelloStudio } from "@/features/billing/provisioning";
 import { sendPreavvisoRinnovoEmail } from "@/lib/email";
 import { withTenant } from "@/lib/db/tenant";
+import { bearerCoincide } from "@/lib/segreti";
 
 // Il preavviso di rinnovo, sette giorni prima dell'addebito.
 //
@@ -24,7 +25,7 @@ const GIORNO = 86_400_000;
 
 export async function GET(req: Request) {
   const segreto = process.env.CRON_SECRET;
-  if (!segreto || req.headers.get("authorization") !== `Bearer ${segreto}`) {
+  if (!bearerCoincide(req.headers.get("authorization"), segreto)) {
     return new Response(null, { status: 404 });
   }
 
