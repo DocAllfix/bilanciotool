@@ -22,9 +22,18 @@ import { Label } from "@/components/ui/label";
 export function ModuloIscrizione({
   destinazione,
   perAcquisto = false,
+  emailFissa,
+  senzaGuscio = false,
 }: {
   destinazione: string;
   perAcquisto?: boolean;
+  /** L'indirizzo e' gia' deciso: lo impone un invito, e cambiarlo lo renderebbe inutile.
+   *  Chi si iscrivesse con un'altra email si vedrebbe poi rifiutare l'accettazione, e
+   *  senza capire perche' — il posto giusto per dirglielo e' prima, non dopo. */
+  emailFissa?: string;
+  /** Senza la propria `Card`: serve quando il modulo vive dentro un'altra scheda, e due
+   *  schede annidate si leggono come un errore di impaginazione. */
+  senzaGuscio?: boolean;
 }) {
   const [errore, setErrore] = useState<string | null>(null);
   const [inviata, setInviata] = useState(false);
@@ -55,17 +64,22 @@ export function ModuloIscrizione({
   // Schermata di attesa: la registrazione è riuscita, manca la conferma dell'indirizzo.
   // Dice cosa fare, dove guardare, e che la posta indesiderata è il posto più probabile
   // dove trovarla — che è la ragione numero uno per cui un'iscrizione si ferma qui.
+  // `Guscio` e' la `Card` di questo modulo, oppure niente: quando vive dentro un'altra
+  // scheda — la pagina di accettazione di un invito — due schede annidate si leggono
+  // come un errore di impaginazione.
+  const Guscio = senzaGuscio ? "div" : Card;
+
   if (inviata) {
     return (
-      <Card>
-        <CardHeader>
+      <Guscio>
+        <CardHeader className={senzaGuscio ? "px-0 pt-0" : undefined}>
           <h1 className="text-lg font-semibold tracking-tight">Controlla la tua posta</h1>
           <p className="text-sm text-muted-foreground">
             Ti abbiamo mandato un messaggio per confermare l&apos;indirizzo. Apri il collegamento che
             trovi dentro e il tuo studio è pronto.
           </p>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
+        <CardContent className={`space-y-3 text-sm text-muted-foreground${senzaGuscio ? " px-0 pb-0" : ""}`}>
           <p>
             Se non lo vedi entro qualche minuto, guarda tra la <b>posta indesiderata</b>: è lì che
             finisce quasi sempre il primo messaggio di un mittente nuovo.
@@ -81,13 +95,13 @@ export function ModuloIscrizione({
             </button>
           </p>
         </CardContent>
-      </Card>
+      </Guscio>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Guscio>
+      <CardHeader className={senzaGuscio ? "px-0 pt-0" : undefined}>
         <h1 className="text-lg font-semibold tracking-tight">
           {perAcquisto ? "Attiva il tuo studio" : "Crea il tuo account"}
         </h1>
@@ -97,7 +111,7 @@ export function ModuloIscrizione({
             : "Registrandoti apri il tuo studio in modalità demo: esplori tutto con un’azienda di esempio, senza impegno."}
         </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className={senzaGuscio ? "px-0 pb-0" : undefined}>
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="nome">Nome e cognome</Label>
@@ -105,7 +119,18 @@ export function ModuloIscrizione({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email di lavoro</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              defaultValue={emailFissa}
+              readOnly={Boolean(emailFissa)}
+              // `readOnly` e non `disabled`: un campo disabilitato non viene inviato col
+              // modulo, e l'iscrizione partirebbe senza indirizzo.
+              className={emailFissa ? "bg-muted text-muted-foreground" : undefined}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
@@ -128,7 +153,7 @@ export function ModuloIscrizione({
           </Link>
         </p>
       </CardContent>
-    </Card>
+    </Guscio>
   );
 }
 
