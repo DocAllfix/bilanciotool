@@ -5,7 +5,7 @@ import { energyBalance, energyMedia, energyNarrative } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { conteggioParole, sanificaTiptap } from "@/features/report/validation";
-import { deleteObject, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
+import { assertSegmentoChiave, deleteObject, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
 import { z } from "zod";
 
 // Capitoli discorsivi del bilancio energetico. La sanificazione Tiptap è la
@@ -55,6 +55,10 @@ export async function saveChapter(
   contenuto: unknown,
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
+  // `templateKey` e `balanceId` finiscono DENTRO la chiave d'archivio, e arrivano dal
+  // client: una server action e' un endpoint HTTP, il tipo `string` non esiste a runtime.
+  assertSegmentoChiave(templateKey, "Capitolo");
+  assertSegmentoChiave(balanceId, "Esercizio");
   const pulito = sanificaTiptap(contenuto);
 
   await withTenant({ userId, orgId }, async (tx) => {
@@ -95,6 +99,10 @@ export async function addMedia(
   input: z.input<typeof mediaSchema> & { dataUrl?: string },
 ): Promise<string> {
   await requireEntitlement(userId, orgId, "write_data");
+  // `templateKey` e `balanceId` finiscono DENTRO la chiave d'archivio, e arrivano dal
+  // client: una server action e' un endpoint HTTP, il tipo `string` non esiste a runtime.
+  assertSegmentoChiave(templateKey, "Capitolo");
+  assertSegmentoChiave(balanceId, "Esercizio");
   const v = mediaSchema.parse(input);
   if (v.tipo === "chart" && !v.chartKey) throw new Error("Indica quale diagramma inserire");
 

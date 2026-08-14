@@ -2,7 +2,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { mediaAsset, narrativeSection, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
-import { deleteObject, parseDataUrl, uploadObject } from "@/lib/storage";
+import { assertSegmentoChiave, deleteObject, parseDataUrl, uploadObject } from "@/lib/storage";
 import { and, asc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { mediaSchema, sanificaTiptap } from "./validation";
@@ -35,6 +35,11 @@ export async function saveChapter(
   contenuto: unknown,
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
+  // `templateKey` e `projectId` finiscono DENTRO la chiave d'archivio, e arrivano dal
+  // client: una server action e' un endpoint HTTP, il tipo `string` non esiste a runtime.
+  // Si respingono qui, prima che entrino nella stringa.
+  assertSegmentoChiave(templateKey, "Capitolo");
+  assertSegmentoChiave(projectId, "Progetto");
   const pulito = sanificaTiptap(contenuto);
   await withTenant({ userId, orgId }, async (tx) => {
     const [p] = await tx.select({ id: reportProject.id }).from(reportProject).where(eq(reportProject.id, projectId));
@@ -53,6 +58,11 @@ export async function addMedia(
   input: z.input<typeof mediaSchema> & { dataUrl?: string },
 ): Promise<string> {
   await requireEntitlement(userId, orgId, "write_data");
+  // `templateKey` e `projectId` finiscono DENTRO la chiave d'archivio, e arrivano dal
+  // client: una server action e' un endpoint HTTP, il tipo `string` non esiste a runtime.
+  // Si respingono qui, prima che entrino nella stringa.
+  assertSegmentoChiave(templateKey, "Capitolo");
+  assertSegmentoChiave(projectId, "Progetto");
   const v = mediaSchema.parse(input);
   if (v.tipo === "chart" && !v.chartKey) throw new Error("Indica quale diagramma inserire");
 
