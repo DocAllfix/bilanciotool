@@ -19,15 +19,28 @@ import { withTenant } from "@/lib/db/tenant";
 // significherebbe fidarsi di chi sta pagando: basta chiudere la pagina di Stripe e
 // tornare a mano sull'indirizzo di successo.
 
-/** Il cliente Stripe dello STUDIO, non della persona: l'abbonamento è dell'organizzazione. */
+/**
+ * Il cliente Stripe dello STUDIO, non della persona: l'abbonamento è dell'organizzazione.
+ *
+ * Le due operazioni su `stripe_customer` girano dentro `withTenant`, e non è una
+ * formalità: quella tabella ha una policy RLS, e la policy legge `app.org_id` — che
+ * esiste solo dentro la transazione di `withTenant`. Con la connessione grezza funziona
+ * finché la connessione è privilegiata, e il giorno in cui diventa `app_rls` l'inserimento
+ * viene rifiutato: «new row violates row-level security policy». Cioè **nessuno riesce
+ * più a pagare**. Provato dal vivo, non dedotto.
+ */
 async function clienteDelloStudio(orgId: string, email: string): Promise<string> {
-  const esistente = await db
-    .select({ id: stripeCustomer.stripeCustomerId })
-    .from(stripeCustomer)
-    .where(eq(stripeCustomer.organizationId, orgId))
-    .limit(1);
+  const esistente = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ id: stripeCustomer.stripeCustomerId })
+      .from(stripeCustomer)
+      .where(eq(stripeCustomer.organizationId, orgId))
+      .limit(1),
+  );
   if (esistente[0]) return esistente[0].id;
 
+  // `organization` è una tabella di Better Auth senza policy: resta sulla connessione
+  // normale, come tutto il resto del suo mondo.
   const [org] = await db
     .select({ nome: organization.name })
     .from(organization)
@@ -42,10 +55,12 @@ async function clienteDelloStudio(orgId: string, email: string): Promise<string>
     metadata: { organizationId: orgId },
   });
 
-  await db
-    .insert(stripeCustomer)
-    .values({ organizationId: orgId, stripeCustomerId: cliente.id })
-    .onConflictDoNothing();
+  await withTenant({ orgId }, (tx) =>
+    tx
+      .insert(stripeCustomer)
+      .values({ organizationId: orgId, stripeCustomerId: cliente.id })
+      .onConflictDoNothing(),
+  );
   return cliente.id;
 }
 

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
 import { applicaAbbonamento, organizzazioneDelCliente } from "./provisioning";
 import { vociDelRinnovo } from "./fasi";
+import { withTenant } from "@/lib/db/tenant";
 
 // Il dispatch degli eventi Stripe.
 //
@@ -162,10 +163,12 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
 
 /** Lo schedule collegato a un abbonamento, per i test e la diagnostica. */
 export async function scheduleDi(orgId: string): Promise<string | null> {
-  const r = await db
-    .select({ id: stripeSubscription.stripeScheduleId })
-    .from(stripeSubscription)
-    .where(eq(stripeSubscription.organizationId, orgId))
-    .limit(1);
+  const r = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ id: stripeSubscription.stripeScheduleId })
+      .from(stripeSubscription)
+      .where(eq(stripeSubscription.organizationId, orgId))
+      .limit(1),
+  );
   return r[0]?.id ?? null;
 }

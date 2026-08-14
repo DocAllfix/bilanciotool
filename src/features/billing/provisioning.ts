@@ -68,13 +68,22 @@ export function statoDaStripe(statoStripe: string): "active" | "past_due" | "exp
   return "expired";
 }
 
-/** L'organizzazione a cui appartiene un cliente Stripe. `null` se non è nostra. */
+/**
+ * L'organizzazione a cui appartiene un cliente Stripe. `null` se non è nostra.
+ *
+ * `platformAdmin`: la domanda è «di CHI è questo cliente», quindi l'organizzazione non
+ * si conosce ancora — è il risultato, non il presupposto. Ed è un webhook: nessuna
+ * sessione. Senza la valvola la ricerca tornerebbe vuota e ogni pagamento diventerebbe
+ * un evento orfano.
+ */
 export async function organizzazioneDelCliente(customerId: string): Promise<string | null> {
-  const r = await db
-    .select({ orgId: stripeCustomer.organizationId })
-    .from(stripeCustomer)
-    .where(eq(stripeCustomer.stripeCustomerId, customerId))
-    .limit(1);
+  const r = await withTenant({ platformAdmin: true }, (tx) =>
+    tx
+      .select({ orgId: stripeCustomer.organizationId })
+      .from(stripeCustomer)
+      .where(eq(stripeCustomer.stripeCustomerId, customerId))
+      .limit(1),
+  );
   return r[0]?.orgId ?? null;
 }
 
@@ -91,11 +100,13 @@ export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string
   // Lo stato PRIMA di scrivere: le email si mandano al CAMBIO, non a ogni evento.
   // Stripe ne manda diversi per lo stesso abbonamento — creato, aggiornato, fattura
   // pagata — e un benvenuto per ciascuno diventa posta da filtrare.
-  const [prima] = await db
-    .select({ status: orgEntitlement.status })
-    .from(orgEntitlement)
-    .where(eq(orgEntitlement.organizationId, orgId))
-    .limit(1);
+  const [prima] = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ status: orgEntitlement.status })
+      .from(orgEntitlement)
+      .where(eq(orgEntitlement.organizationId, orgId))
+      .limit(1),
+  );
   const statoPrecedente = prima?.status ?? null;
   const fineperiodo = sub.items.data[0]?.current_period_end;
   const rinnovoIl = fineperiodo ? new Date(fineperiodo * 1000) : null;

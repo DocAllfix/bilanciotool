@@ -3,6 +3,7 @@ import { stripeCustomer } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { stripe } from "@/lib/stripe/client";
 import { env } from "@/lib/env";
+import { withTenant } from "@/lib/db/tenant";
 
 // Il portale clienti di Stripe: fatture, ricevute e metodo di pagamento.
 //
@@ -60,11 +61,15 @@ const base = () => (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(
 
 /** L'indirizzo del portale per lo studio, o `null` se non ha mai pagato niente. */
 export async function urlPortale(orgId: string): Promise<string | null> {
-  const [cliente] = await db
-    .select({ id: stripeCustomer.stripeCustomerId })
-    .from(stripeCustomer)
-    .where(eq(stripeCustomer.organizationId, orgId))
-    .limit(1);
+  // `stripe_customer` ha una policy RLS che legge `app.org_id`: fuori da `withTenant`
+  // quella variabile non esiste, e con la connessione ristretta la riga non si vede.
+  const [cliente] = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ id: stripeCustomer.stripeCustomerId })
+      .from(stripeCustomer)
+      .where(eq(stripeCustomer.organizationId, orgId))
+      .limit(1),
+  );
   // Nessun cliente Stripe: lo studio è stato attivato a mano, o non ha mai pagato.
   // Mandarlo su una pagina di Stripe che non lo conosce sarebbe un vicolo cieco.
   if (!cliente) return null;

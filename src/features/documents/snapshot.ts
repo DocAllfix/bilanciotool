@@ -33,13 +33,24 @@ import { randomUUID } from "node:crypto";
 
 // Per i documenti non annuali `anno` è SENZA_ESERCIZIO (0): il filtro degenera
 // in (companyId, tipo) e le revisioni formano una serie unica e monotona.
-async function prossimaVersione(companyId: string, tipo: TipoDocumento, anno: number): Promise<number> {
-  const rows = await db
-    .select({ versione: documentSnapshot.versione })
-    .from(documentSnapshot)
-    .where(and(eq(documentSnapshot.companyId, companyId), eq(documentSnapshot.tipo, tipo), eq(documentSnapshot.anno, anno)))
-    .orderBy(desc(documentSnapshot.versione))
-    .limit(1);
+async function prossimaVersione(
+  orgId: string,
+  companyId: string,
+  tipo: TipoDocumento,
+  anno: number,
+): Promise<number> {
+  // Dentro `withTenant`: `document_snapshot` ha una policy RLS, e con la connessione
+  // ristretta una lettura senza contesto tornerebbe VUOTA. Non darebbe errore: darebbe
+  // versione 1 a ogni pubblicazione, e la seconda violerebbe l'unicità. Un difetto che
+  // si manifesta come «non riesco a ripubblicare», lontanissimo dalla sua causa.
+  const rows = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ versione: documentSnapshot.versione })
+      .from(documentSnapshot)
+      .where(and(eq(documentSnapshot.companyId, companyId), eq(documentSnapshot.tipo, tipo), eq(documentSnapshot.anno, anno)))
+      .orderBy(desc(documentSnapshot.versione))
+      .limit(1),
+  );
   return (rows[0]?.versione ?? 0) + 1;
 }
 
@@ -299,11 +310,13 @@ export async function publishSoaSnapshot(userId: string, orgId: string, companyI
  *  alla visualizzazione farebbe cambiare intestazione a un PDF già consegnato. */
 async function marchioCorrente(orgId: string) {
   const [ent, org] = await Promise.all([
-    db
-      .select({ whiteLabel: orgEntitlement.whiteLabel })
-      .from(orgEntitlement)
-      .where(eq(orgEntitlement.organizationId, orgId))
-      .limit(1),
+    withTenant({ orgId }, (tx) =>
+      tx
+        .select({ whiteLabel: orgEntitlement.whiteLabel })
+        .from(orgEntitlement)
+        .where(eq(orgEntitlement.organizationId, orgId))
+        .limit(1),
+    ),
     db.select({ nome: organization.name }).from(organization).where(eq(organization.id, orgId)).limit(1),
   ]);
   return marchioDaCongelare({
@@ -320,7 +333,7 @@ async function salvaSnapshot(
   anno: number,
   dati: Record<string, unknown>,
 ): Promise<string> {
-  const versione = await prossimaVersione(companyId, tipo, anno);
+  const versione = await prossimaVersione(orgId, companyId, tipo, anno);
   const id = randomUUID();
   // Il marchio si aggiunge QUI, nella strozzatura comune ai cinque documenti: metterlo
   // in ciascuna funzione di pubblicazione significherebbe dimenticarlo nella sesta.

@@ -4,6 +4,7 @@ import { and, eq, gte, lte, isNotNull } from "drizzle-orm";
 import { PIANI, prezzoDiVendita, euro, type PianoKey } from "@/lib/prezzi";
 import { titolareDelloStudio } from "@/features/billing/provisioning";
 import { sendPreavvisoRinnovoEmail } from "@/lib/email";
+import { withTenant } from "@/lib/db/tenant";
 
 // Il preavviso di rinnovo, sette giorni prima dell'addebito.
 //
@@ -31,21 +32,28 @@ export async function GET(req: Request) {
   const da = new Date(ora + 7 * GIORNO);
   const a = new Date(ora + 8 * GIORNO);
 
-  const inScadenza = await db
-    .select({
-      orgId: orgEntitlement.organizationId,
-      piano: orgEntitlement.piano,
-      quando: orgEntitlement.currentPeriodEnd,
-    })
-    .from(orgEntitlement)
-    .where(
-      and(
-        eq(orgEntitlement.status, "active"),
-        isNotNull(orgEntitlement.currentPeriodEnd),
-        gte(orgEntitlement.currentPeriodEnd, da),
-        lte(orgEntitlement.currentPeriodEnd, a),
+  // `platformAdmin`: questo giro guarda TUTTI gli studi, e non ha una sessione da cui
+  // ricavarne uno. E' esattamente il caso per cui la valvola esiste. Senza, con la
+  // connessione ristretta la lista tornerebbe vuota e i promemoria di rinnovo
+  // smetterebbero di partire **in silenzio** — nessun errore, nessuna email, e ce ne
+  // accorgeremmo dai mancati rinnovi.
+  const inScadenza = await withTenant({ platformAdmin: true }, (tx) =>
+    tx
+      .select({
+        orgId: orgEntitlement.organizationId,
+        piano: orgEntitlement.piano,
+        quando: orgEntitlement.currentPeriodEnd,
+      })
+      .from(orgEntitlement)
+      .where(
+        and(
+          eq(orgEntitlement.status, "active"),
+          isNotNull(orgEntitlement.currentPeriodEnd),
+          gte(orgEntitlement.currentPeriodEnd, da),
+          lte(orgEntitlement.currentPeriodEnd, a),
+        ),
       ),
-    );
+  );
 
   const esiti: { orgId: string; inviata: boolean; motivo?: string }[] = [];
   for (const riga of inScadenza) {

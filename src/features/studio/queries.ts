@@ -3,6 +3,7 @@ import { organization, member, invitation, user, orgEntitlement } from "@/lib/db
 import { and, eq, gt, asc } from "drizzle-orm";
 import { getAccountStatus, getCompanyUsage, getLimitiEffettivi } from "@/features/entitlement";
 import { PIANI, type PianoKey } from "@/lib/prezzi";
+import { withTenant } from "@/lib/db/tenant";
 
 // Letture per la pagina Impostazioni.
 //
@@ -121,18 +122,20 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
     getAccountStatus(userId, orgId),
     getCompanyUsage(userId, orgId),
     getQuadroAccessi(orgId),
-    db
-      .select({
-        piano: orgEntitlement.piano,
-        aziendeExtra: orgEntitlement.aziendeExtra,
-        accessiExtra: orgEntitlement.accessiExtra,
-        whiteLabel: orgEntitlement.whiteLabel,
-        attivatoIl: orgEntitlement.activatedAt,
-        rinnovoIl: orgEntitlement.currentPeriodEnd,
-      })
-      .from(orgEntitlement)
-      .where(eq(orgEntitlement.organizationId, orgId))
-      .limit(1),
+    withTenant({ userId, orgId }, (tx) =>
+      tx
+        .select({
+          piano: orgEntitlement.piano,
+          aziendeExtra: orgEntitlement.aziendeExtra,
+          accessiExtra: orgEntitlement.accessiExtra,
+          whiteLabel: orgEntitlement.whiteLabel,
+          attivatoIl: orgEntitlement.activatedAt,
+          rinnovoIl: orgEntitlement.currentPeriodEnd,
+        })
+        .from(orgEntitlement)
+        .where(eq(orgEntitlement.organizationId, orgId))
+        .limit(1),
+    ),
   ]);
 
   const e = righe[0];
@@ -167,10 +170,12 @@ async function entroQuattordiciGiorniSenzaDocumenti(orgId: string, attivatoIl: D
   const giorni = (Date.now() - attivatoIl.getTime()) / 86_400_000;
   if (giorni > 14) return false;
   const { documentSnapshot } = await import("@/lib/db/schema");
-  const r = await db
-    .select({ id: documentSnapshot.id })
-    .from(documentSnapshot)
-    .where(eq(documentSnapshot.organizationId, orgId))
-    .limit(1);
+  const r = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ id: documentSnapshot.id })
+      .from(documentSnapshot)
+      .where(eq(documentSnapshot.organizationId, orgId))
+      .limit(1),
+  );
   return r.length === 0;
 }
