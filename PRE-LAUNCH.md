@@ -69,6 +69,30 @@ un elenco piatto di caselle non dice quando una casella diventa urgente.
       → *provato rompendolo:* rimettendo il difetto della fase 2 il collaudo diventa rosso
         su quattro asserzioni, e mostra il danno vero — gli accessi extra tornano a **zero**
         e il cliente verrebbe fatturato 1.100 € invece di 2.225 €
+- [x] **Un secondo abbonamento non si apre** — chiuso il 2026-08-15
+      → *il difetto:* a chi aveva già pagato l'interfaccia proponeva gli altri piani, e quel
+        comando apriva una sessione di checkout sullo stesso cliente. Due abbonamenti
+        annuali attivi, uno solo visibile, e **nessuna via d'uscita**: il portale ha
+        disdetta e cambio piano spenti di proposito
+      → *verifica:* `bloccoAlCheckout` rifiuta **lato server**, prima di qualunque chiamata a
+        Stripe. Cinque prove sul database, e messe in rosso di proposito togliendo la guardia
+      → *stato reale al momento della correzione:* 8 abbonamenti su 8 organizzazioni
+        distinte, **nessuna con più di uno**. Non aveva ancora morso
+- [x] **Un pagamento non sparisce se il processo muore a metà** — chiuso il 2026-08-15
+      → *il difetto:* il claim si rilasciava solo nel `catch`, che non intercetta il timeout
+        della funzione. La riga restava, Stripe riceveva `200 «già processato»` e smetteva
+        di ritentare: **un cliente che ha pagato restava bloccato, con 200 ovunque e nessun
+        errore in nessun log**
+      → *verifica:* `billing-claim-morto.db.test.ts` — 6 prove, compreso che un evento
+        **completato** non si riprocessa mai per quanto vecchio, e che un claim fresco non
+        si ruba. Rimettendo il difetto tornano rosse
+- [x] **Registro delle capacità** append-only (`entitlement_event`, migrazione `0017`)
+      → *verifica:* immutabilità provata **anche con la connessione privilegiata** — trigger,
+        revoca e policy, i tre pezzi di `document_snapshot` e non uno solo
+      → *conseguenza:* il recesso a quattordici giorni **promesso dai Termini** non si riapre
+        più da solo a ogni rinnovo annuale
+      → *resta da fare, non urgente:* travasare le 58 righe di `audit_log` degli abbonamenti
+        già attivati. Finché non si fa, la storia comincia il 2026-08-15
 
 ## 2. Email
 

@@ -55,7 +55,18 @@ if (!scelto) {
 const env = { ...process.env };
 if (prod) env.BASE = PROD;
 
-console.log(`→ ${scelto}${prod ? `  (${PROD})` : ""}\n`);
+// IL BERSAGLIO SI DICHIARA SEMPRE, non solo con `--prod`.
+//
+// Prima l'indirizzo compariva solo quando era quello di produzione, quindi un referto
+// senza indirizzo poteva voler dire due cose opposte: «sto interrogando il tuo server
+// locale» oppure «hai passato una variabile che nessuno legge e sto interrogando il tuo
+// server locale lo stesso». È successo: tre collaudi verdi, dati per fatti sul sito
+// vero, erano andati tutti contro un `next start` acceso ore prima con un altro codice.
+//
+// Un collaudo che non dice contro cosa ha parlato può essere verde sul bersaglio
+// sbagliato, ed è il modo più economico di credersi coperti senza esserlo.
+const bersaglio = env.BASE ?? "http://localhost:3000";
+console.log(`→ ${scelto}  (${bersaglio})${prod ? "" : "  ← locale: il server deve essere acceso E aggiornato"}\n`);
 const esito = spawnSync(process.execPath, [join(QUI, scelto), ...argomenti.filter((a) => a !== nome)], {
   stdio: "inherit",
   env,
