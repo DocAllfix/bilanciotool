@@ -55,13 +55,41 @@ async function clienteDelloStudio(orgId: string, email: string): Promise<string>
     metadata: { organizationId: orgId },
   });
 
-  await withTenant({ orgId }, (tx) =>
+  // ⚠️ Si restituisce il cliente REGISTRATO, non quello appena creato.
+  //
+  // Fra la lettura qui sopra e questo inserimento non c'e' nessun lucchetto: due richieste
+  // concorrenti leggono entrambe «non c'e'» e creano entrambe un cliente su Stripe. Il
+  // vincolo di unicita' sulla tabella (PK su `organization_id`) fa vincere una sola riga —
+  // ma protegge il DATABASE, non Stripe, dove i clienti restano due.
+  //
+  // Prima qui c'era `return cliente.id`, cioe' il cliente appena creato: il perdente della
+  // corsa apriva la sessione di pagamento su un cliente che il nostro database non
+  // conosce. L'attivazione reggeva (il webhook segue `metadata.organizationId`), ma il
+  // portale apre le fatture sul cliente REGISTRATO: chi aveva appena pagato non trovava
+  // le proprie ricevute.
+  //
+  // `onConflictDoNothing().returning()` torna vuoto quando ha perso: in quel caso si
+  // rilegge la riga vincente e si usa quella. Il cliente creato di troppo resta su Stripe
+  // senza abbonamenti — inerte, e visibile nel cruscotto.
+  const inserito = await withTenant({ orgId }, (tx) =>
     tx
       .insert(stripeCustomer)
       .values({ organizationId: orgId, stripeCustomerId: cliente.id })
-      .onConflictDoNothing(),
+      .onConflictDoNothing()
+      .returning({ id: stripeCustomer.stripeCustomerId }),
   );
-  return cliente.id;
+  if (inserito[0]) return inserito[0].id;
+
+  const vincente = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ id: stripeCustomer.stripeCustomerId })
+      .from(stripeCustomer)
+      .where(eq(stripeCustomer.organizationId, orgId))
+      .limit(1),
+  );
+  if (!vincente[0]) throw new Error("Cliente di fatturazione non registrato: riprova fra poco.");
+  console.error("[billing] corsa sul cliente Stripe per", orgId, "- creato di troppo:", cliente.id);
+  return vincente[0].id;
 }
 
 export type EsitoCheckout = { url: string };

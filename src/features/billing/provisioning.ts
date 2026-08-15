@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { db } from "@/lib/db";
-import { orgEntitlement, stripeCustomer, stripeSubscription, member, user } from "@/lib/db/schema";
+import { orgEntitlement, stripeCustomer, stripeSubscription, entitlementEvent, member, user } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
@@ -94,7 +94,14 @@ export async function organizzazioneDelCliente(customerId: string): Promise<stri
  * dimenticarlo produrrebbe un update a zero righe **in silenzio** — il caso peggiore,
  * perché tutto sembrerebbe funzionare e il cliente resterebbe bloccato.
  */
-export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string): Promise<void> {
+export async function applicaAbbonamento(
+  sub: Stripe.Subscription,
+  orgId: string,
+  /** L'evento Stripe che ha causato il cambiamento. Va nel registro: senza, resta una
+   *  transizione senza causa, e «perche' questo studio e' finito in sola lettura» non ha
+   *  risposta. Facoltativo perche' non tutte le chiamate vengono da un webhook. */
+  causa?: { id: string; type: string; created: number },
+): Promise<void> {
   const capacita = capacitaDaAbbonamento(sub);
   const stato = statoDaStripe(sub.status);
   // Lo stato PRIMA di scrivere: le email si mandano al CAMBIO, non a ogni evento.
@@ -157,6 +164,27 @@ export async function applicaAbbonamento(sub: Stripe.Subscription, orgId: string
           stripeScheduleId: typeof sub.schedule === "string" ? sub.schedule : (sub.schedule?.id ?? null),
         },
       });
+
+    // Il REGISTRO, nella stessa transazione dello stato: o si scrivono entrambi o
+    // nessuno dei due. Se il registro fosse scritto fuori, una transazione fallita a
+    // meta' lascerebbe una storia che racconta un cambiamento mai avvenuto -- peggio
+    // che non averla.
+    await tx.insert(entitlementEvent).values({
+      organizationId: orgId,
+      origine: "stripe",
+      stripeEventId: causa?.id ?? null,
+      stripeEventType: causa?.type ?? null,
+      subscriptionId: sub.id,
+      occurredAt: causa ? new Date(causa.created * 1000) : null,
+      statoPrima: statoPrecedente,
+      statoDopo: stato,
+      piano: capacita.piano,
+      aziendeExtra: capacita.aziendeExtra,
+      accessiExtra: capacita.accessiExtra,
+      whiteLabel: capacita.whiteLabel,
+      currentPeriodEnd: rinnovoIl,
+      dettagli: { statoStripe: sub.status },
+    });
 
     await logAudit(tx, {
       organizationId: orgId,

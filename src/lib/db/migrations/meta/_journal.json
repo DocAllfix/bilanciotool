@@ -120,6 +120,13 @@
       "when": 1786749120601,
       "tag": "0016_claim_webhook_stato",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1786750188774,
+      "tag": "0017_registro_capacita",
+      "breakpoints": true
     }
   ]
 }

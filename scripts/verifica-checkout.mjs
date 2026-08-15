@@ -65,9 +65,18 @@ await check("i prezzi di lancio si vedono col listino barrato", async () => {
 });
 
 await check("il comando porta alla pagina di pagamento di Stripe", async () => {
-  const bottoni = page.getByRole("button", { name: /Attiva|Passa a questo/ });
+  // ⚠️ Fra il pulsante e Stripe c'e' un DIALOGO, dal 13 agosto: e' li' che si scelgono le
+  // estensioni e si vede il totale prima di uscire. Questo collaudo e' del 10 e premeva
+  // un solo pulsante aspettando la navigazione, che con un dialogo in mezzo non poteva
+  // piu' arrivare: falliva da due giorni e nessuno l'aveva rilanciato.
+  const bottoni = page.getByRole("button", { name: /^(Attiva|Passa a questo)$/ });
   if (!(await bottoni.count())) throw new Error("nessun comando di acquisto");
   await bottoni.first().click();
+
+  // Il totale sta sul pulsante di conferma: si aspetta lui, non un tempo fisso.
+  const paga = page.getByRole("button", { name: /^Paga / });
+  await paga.waitFor({ timeout: 15_000 });
+  await paga.click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60_000 });
 });
 

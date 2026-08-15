@@ -8,7 +8,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { apriCheckoutAction } from "@/features/billing/actions";
-import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione, type PianoKey } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione, type PianoKey, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
 
 // La scelta di che cosa si compra, prima di andare a pagare.
 //
@@ -20,8 +20,10 @@ import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione, type PianoK
 // Il totale si mostra QUI, prima di uscire verso Stripe: chi arriva sulla pagina di
 // pagamento e trova un importo che non si aspettava chiude, e non torna.
 
-const MAX_BLOCCHI = 10;
-const MAX_ACCESSI = 20;
+// I tetti vengono dal listino, non riscritti qui: il server applica gli stessi, e due
+// numeri in due posti divergono al primo che cambia.
+const MAX_BLOCCHI = MAX_BLOCCHI_AZIENDE;
+const MAX_ACCESSI = MAX_ACCESSI_EXTRA;
 
 function Contatore({
   etichetta,

@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { requireStudioAdmin } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import { CHIAVI_PIANO, PIANI } from "@/lib/prezzi";
+import { CHIAVI_PIANO, PIANI, ESTENSIONI, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
 import { stripeConfigurato } from "@/lib/stripe/client";
 import { creaSessioneCheckout } from "./checkout";
 import { urlPortale } from "./portale";
@@ -16,9 +16,15 @@ import { bloccoAlCheckout, messaggioBlocco } from "./gia-abbonato";
 
 const schema = z.object({
   piano: z.enum(CHIAVI_PIANO as unknown as [string, ...string[]]),
-  aziendeExtra: z.coerce.number().int().min(0).max(500).optional(),
-  accessiExtra: z.coerce.number().int().min(0).max(200).optional(),
-  whiteLabel: z.coerce.boolean().optional(),
+  // I tetti sono gli STESSI del dialogo d'acquisto, e la fonte e' una: il server
+  // accettava 500 aziende e 200 accessi mentre il client si fermava a 10 blocchi e 20
+  // accessi. Due verita' sullo stesso limite, e quella che decide non era quella scritta.
+  aziendeExtra: z.coerce.number().int().min(0).max(MAX_BLOCCHI_AZIENDE * ESTENSIONI.bloccoAziende.aziende).optional(),
+  accessiExtra: z.coerce.number().int().min(0).max(MAX_ACCESSI_EXTRA).optional(),
+  // `z.boolean()` e NON `z.coerce.boolean()`: con `coerce`, la stringa "false" diventa
+  // `true` e aggiunge una riga a pagamento. Dal dialogo arriva un booleano vero, ma un
+  // client diverso — o un modulo codificato — no.
+  whiteLabel: z.boolean().optional(),
 });
 
 export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ url: string }>> {

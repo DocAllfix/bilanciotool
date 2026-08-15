@@ -259,3 +259,17 @@ export function prezzoEstensione(
     ? { importo: e.prezzoLancio, lookup: e.lookupLancio, listino: e.prezzo }
     : { importo: e.prezzo, lookup: e.lookup };
 }
+
+/**
+ * Quante estensioni si possono comprare in un colpo solo.
+ *
+ * Stanno QUI e non nel dialogo d'acquisto perché il server deve applicare gli stessi
+ * numeri: prima il client si fermava a 10 blocchi e 20 accessi mentre la server action
+ * accettava 500 aziende e 200 accessi. Due verità sullo stesso limite, e quella che
+ * decideva non era quella scritta nell'interfaccia.
+ *
+ * Non sono soglie di sicurezza — l'importo va solo verso l'alto, non è una perdita — ma
+ * un tetto che il prodotto dichiara e non applica è un tetto che non esiste.
+ */
+export const MAX_BLOCCHI_AZIENDE = 10;
+export const MAX_ACCESSI_EXTRA = 20;

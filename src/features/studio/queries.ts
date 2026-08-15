@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { organization, member, invitation, user, orgEntitlement } from "@/lib/db/schema";
+import { organization, member, invitation, user, orgEntitlement, entitlementEvent } from "@/lib/db/schema";
 import { and, eq, gt, asc } from "drizzle-orm";
 import { getAccountStatus, getCompanyUsage, getLimitiEffettivi } from "@/features/entitlement";
 import { PIANI, type PianoKey } from "@/lib/prezzi";
@@ -140,6 +140,14 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
 
   const e = righe[0];
   const piano = (e?.piano ?? null) as PianoKey | null;
+  // La PRIMA attivazione, dal registro. La colonna `activated_at` non serve: viene
+  // riscritta a ogni evento che contenga un piano — quindi anche al rinnovo annuale — e
+  // con essa si spostava in avanti la finestra di recesso a quattordici giorni promessa
+  // dai Termini, che si riapriva da sola ogni anno.
+  //
+  // Il registro non si riscrive: il primo ingresso in `active` resta il primo per sempre.
+  // Ripiego sulla colonna solo per gli studi attivati prima che il registro esistesse.
+  const attivatoIl = (await primaAttivazione(orgId)) ?? e?.attivatoIl ?? null;
 
   return {
     status,
@@ -154,10 +162,32 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
     aziendeTotali: usoAziende.limit,
     accessiUsati: accessi.usati,
     accessiTotali: accessi.limite,
-    attivatoIl: e?.attivatoIl ?? null,
+    attivatoIl,
     rinnovoIl: e?.rinnovoIl ?? null,
-    rimborsabile: await entroQuattordiciGiorniSenzaDocumenti(orgId, e?.attivatoIl ?? null),
+    rimborsabile: await entroQuattordiciGiorniSenzaDocumenti(orgId, attivatoIl),
   };
+}
+
+/**
+ * Quando questo studio è stato attivato **la prima volta**.
+ *
+ * Il primo evento del registro che porta in `active`, e nient'altro: il registro è
+ * append-only, quindi quella riga non può più cambiare. `null` per gli studi attivati
+ * prima che il registro esistesse — lì si ripiega sulla colonna, che è il meglio che si
+ * ha per loro.
+ */
+async function primaAttivazione(orgId: string): Promise<Date | null> {
+  const [r] = await withTenant({ orgId }, (tx) =>
+    tx
+      .select({ quando: entitlementEvent.recordedAt, emesso: entitlementEvent.occurredAt })
+      .from(entitlementEvent)
+      .where(and(eq(entitlementEvent.organizationId, orgId), eq(entitlementEvent.statoDopo, "active")))
+      .orderBy(asc(entitlementEvent.id))
+      .limit(1),
+  );
+  // `occurredAt` è quando Stripe l'ha emesso, ed è la data giusta se c'è: gli eventi
+  // arrivano fuori ordine, e la cronologia vera è la sua.
+  return r ? (r.emesso ?? r.quando) : null;
 }
 
 /**

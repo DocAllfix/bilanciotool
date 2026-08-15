@@ -91,6 +91,8 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
 async function riallinea(
   subscriptionId: string,
   nota: string,
+  /** L'evento che ha causato il riallineamento: finisce nel registro delle capacita'. */
+  causa?: { id: string; type: string; created: number },
 ): Promise<EsitoEvento & { sub?: Stripe.Subscription }> {
   const sub = await stripe().subscriptions.retrieve(subscriptionId);
   const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
@@ -105,7 +107,7 @@ async function riallinea(
     return { fatto: false, nota: "cliente senza organizzazione" };
   }
 
-  await applicaAbbonamento(sub, orgId);
+  await applicaAbbonamento(sub, orgId, causa);
   return { fatto: true, nota, sub };
 }
 
@@ -125,11 +127,11 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
       // entrambe vedevano `null`: la seconda riceveva un errore da Stripe, e ogni
       // pagamento produceva un 500 spurio che alimentava il contatore di fallimenti
       // dell'endpoint.
-      return riallinea(subId, "attivato dal checkout");
+      return riallinea(subId, "attivato dal checkout", evento);
     }
 
     case "customer.subscription.created": {
-      const esito = await riallinea(evento.data.object.id, "abbonamento creato");
+      const esito = await riallinea(evento.data.object.id, "abbonamento creato", evento);
       // Le due fasi si impostano su OGNI abbonamento nuovo, non solo su quelli nati dal
       // checkout: un abbonamento creato a mano — per un Enterprise, o per rimediare a un
       // pagamento fuori flusso — resterebbe altrimenti al prezzo del primo anno per
@@ -145,14 +147,14 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
 
     case "customer.subscription.updated":
     case "customer.subscription.deleted":
-      return riallinea(evento.data.object.id, `abbonamento ${evento.type.split(".").pop()}`);
+      return riallinea(evento.data.object.id, `abbonamento ${evento.type.split(".").pop()}`, evento);
 
     case "invoice.paid":
     case "invoice.payment_failed": {
       const fattura = evento.data.object as Stripe.Invoice & { subscription?: string | { id: string } };
       const sub = fattura.subscription;
       if (!sub) return { fatto: false, nota: "fattura non legata a un abbonamento" };
-      return riallinea(typeof sub === "string" ? sub : sub.id, `fattura ${evento.type.split(".").pop()}`);
+      return riallinea(typeof sub === "string" ? sub : sub.id, `fattura ${evento.type.split(".").pop()}`, evento);
     }
 
     default:

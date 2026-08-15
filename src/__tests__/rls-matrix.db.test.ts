@@ -10,6 +10,8 @@ const url = process.env.DIRECT_URL;
 // Aggiungere una tabella qui richiede una giustificazione scritta, non è un opt-out comodo.
 const ECCEZIONI: Record<string, string> = {
   audit_log: "append-only: insert libero, select per-org, update/delete revocati a livello grant",
+  entitlement_event:
+    "registro append-only delle capacità: policy SEPARATE per INSERT (propria org o platform_admin, che serve al webhook) e SELECT (propria org). Nessuna policy per UPDATE/DELETE, perché non devono esistere — ed è PIÙ stretto di una `FOR ALL`, non più largo. In più un trigger BEFORE UPDATE OR DELETE che vale anche per la connessione privilegiata, come per document_snapshot.",
   member:
     "tabella Better Auth: letta/scritta dal plugin organization FUORI da withTenant (hook di sessione, accept-invitation); protezione a livello applicativo del plugin. Passthrough consapevole.",
   invitation:
