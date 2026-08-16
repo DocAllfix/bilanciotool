@@ -59,7 +59,15 @@ async function prova(nome, fn) {
 }
 
 /** Consegna a mano un evento al nostro webhook, firmandolo col segreto di prova.
- *  L'evento è VERO, riletto da Stripe: si rifà solo la firma. */
+ *
+ *  L'OGGETTO è vero, riletto da Stripe; la BUSTA che lo avvolge la costruiamo qui, ed è
+ *  una distinzione che è costata cara: mancava `created`, che Stripe mette sempre, e il
+ *  provisioning ci costruiva sopra una data invalida — 500 nel percorso dei pagamenti.
+ *  Il difetto era nostro (ora corretto, e coperto da un test), ma il collaudo lo ha
+ *  trovato per il motivo sbagliato: stava spedendo una busta che Stripe non spedisce.
+ *
+ *  Una busta finta va tenuta il più vicino possibile a quella vera, altrimenti prova
+ *  qualcosa che in produzione non succede — e, peggio, NON prova quello che succede. */
 async function consegna(tipo, oggetto) {
   const segreto = process.env.STRIPE_WEBHOOK_SECRET;
   if (!segreto) throw new Error("STRIPE_WEBHOOK_SECRET assente: non posso firmare l'evento");
@@ -67,6 +75,7 @@ async function consegna(tipo, oggetto) {
     id: `evt_${randomUUID()}`,
     object: "event",
     type: tipo,
+    created: Math.floor(Date.now() / 1000),
     data: { object: oggetto },
   });
   const t = Math.floor(Date.now() / 1000);

@@ -128,6 +128,42 @@ describe.skipIf(!url)("il registro delle capacità", () => {
     expect(dopo.statoDopo).toBe("active");
   });
 
+  it("un evento senza `created` non fa fallire il provisioning", async () => {
+    // IL DIFETTO, trovato dal collaudo del rinnovo il 2026-08-16. La riga era
+    // `occurredAt: causa ? new Date(causa.created * 1000) : null`: il ternario controlla
+    // l'OGGETTO, non il campo. Senza `created` nasce `new Date(NaN)`, e Drizzle chiama
+    // `toISOString()` su una data invalida → `RangeError` → il webhook risponde 500.
+    //
+    // Perché conta più di quanto sembri: il 500 è nel percorso dei PAGAMENTI. Stripe
+    // ritenta, ritenta ancora, e alla fine disabilita l'endpoint — un cliente che ha
+    // pagato resta senza servizio. Un timestamp mancante nel registro è una nota di
+    // cronaca che si perde; fermare un'attivazione per quella nota è sproporzionato.
+    //
+    // La regola che ne esce: il registro non deve MAI poter far fallire il lavoro che
+    // sta registrando.
+    const fra = Math.floor(Date.now() / 1000) + 86_400 * 365;
+    const senzaQuando = { id: `evt_reg_nudo_${RUN}`, type: "customer.subscription.created" } as unknown as {
+      id: string;
+      type: string;
+      created: number;
+    };
+
+    await expect(
+      applicaAbbonamento(abbonamento("active", fra), S.orgId, senzaQuando),
+    ).resolves.not.toThrow();
+
+    const [riga] = await db
+      .select()
+      .from(entitlementEvent)
+      .where(eq(entitlementEvent.stripeEventId, `evt_reg_nudo_${RUN}`));
+
+    // La riga si scrive lo stesso, e il campo che non si sapeva resta vuoto invece di
+    // essere inventato: `occurred_at` nullo dice «non lo so», una data finta mentirebbe.
+    expect(riga, "la riga di registro si scrive comunque").toBeTruthy();
+    expect(riga.occurredAt).toBeNull();
+    expect(riga.statoDopo).toBe("active");
+  });
+
   it("la finestra di recesso NON si riapre al rinnovo", async () => {
     // Il difetto vero. `activated_at` si riscrive a ogni evento con un piano, quindi al
     // rinnovo annuale la colonna diceva «attivato adesso» e il recesso a quattordici

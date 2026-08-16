@@ -522,6 +522,24 @@ Gate: typecheck · build · **549 test** in entrambi i modi, `RLS_FORCE_ROLE=app
 
 ⚠️ **Resta aperto** (nel piano, non fatto): il travaso in `entitlement_event` delle 58 righe di `audit_log` degli abbonamenti già attivati. Non è urgente — `attivatoIl` ha la colonna come ripiego per chi è stato attivato prima che il registro esistesse — ma finché non si fa, la storia comincia il 15 agosto 2026.
 
+**Le email di Stripe al committente, e il difetto che c'era sotto (2026-08-16)**
+
+Il committente inoltra quattro schermate: Stripe segnala **93 consegne fallite** al webhook `https://evalisdeck.it/api/stripe/webhook`, e minaccia di disattivarlo il 22 agosto.
+
+**Non era un guasto, ed era la sandbox.** L'ID account dell'email (`acct_1U3Gy0AhHHoi7ST9`) è quello della chiave di prova locale. In quella sandbox c'era **un solo** endpoint, registrato l'11 agosto e puntato al sito vero: la produzione ha il segreto **vivo**, quindi un evento firmato con quello di prova non può che essere respinto — misurato, non dedotto: `400 {"errore":"firma non valida"}`. I 93 eventi erano i nostri collaudi del 13 agosto (estensioni, checkout, orologio di prova). **Il rimbalzo era il controllo della firma che funziona**: se la produzione accettasse un evento firmato col segreto di prova, *quello* sarebbe il difetto grave. Endpoint cancellato dalla sandbox: non lo usa nessuno, i collaudi consegnano gli eventi firmati **a mano**.
+
+**Cercando la conferma è saltato fuori un difetto vero, nel percorso dei pagamenti.** `occurredAt: causa ? new Date(causa.created * 1000) : null` — il ternario controllava **l'oggetto**, non il campo. Senza `created` nasceva `new Date(NaN)`, Drizzle ci chiamava sopra `toISOString()` e sollevava `RangeError` **dentro la transazione del provisioning**: webhook 500, Stripe ritenta, e un cliente che ha pagato resta senza servizio. Ora `dataDaEpoch` restituisce `null` quando l'istante non si sa: **il registro non deve mai poter far fallire il lavoro che sta registrando**, e un timestamp mancante è una nota di cronaca, non un motivo per bloccare un'attivazione.
+
+**In produzione non aveva morso**, verificato sui dati: l'ultimo evento webhook reale è del 14 agosto 21:18, prima del rilascio. E con Stripe vero non morderebbe comunque, perché gli eventi reali portano sempre `created`. A farlo esplodere era la busta **sintetica** di `verifica-rinnovo`, che dichiarava in un commento di mandare un evento vero mentre ne ometteva un campo obbligatorio.
+
+**Regole nate qui:**
+- **La stessa regola scritta ieri l'ho violata oggi.** Il gate del 15 agosto dava `qa -- rinnovo` 8/8 mentre il webhook era rotto: girava contro un `next start` acceso prima delle modifiche, e il codice del registro non è mai passato di lì. **Prima di ogni collaudo locale si confronta l'orario del processo con quello del build** — qui il server era di 18:11 e il build di 18:30, diciannove minuti di scarto e un referto che mentiva.
+- **La busta finta va tenuta vicina a quella vera.** Una busta che omette un campo che il mittente vero manda sempre non prova quello che succede in produzione, e in compenso fa fallire cose che in produzione non falliscono.
+- **Un collaudo che dichiara «l'evento è vero» va letto due volte**: qui l'OGGETTO era vero, riletto da Stripe; la busta la costruivamo noi. Il commento non distingueva, e la distinzione era tutto.
+- **Le notifiche Stripe sono per utente, non per account**: nessuno può spegnerle a un altro. Per togliere il rumore tecnico al committente si aggiunge prima un nostro indirizzo al team, e **solo dopo** lui si disiscrive dalle proprie preferenze. Spegnerle e basta lascerebbe senza ascolto anche il guasto vero dell'endpoint vivo.
+
+Gate: typecheck · build · **550 test** in entrambi i modi, `RLS_FORCE_ROLE=app_rls` compreso · il test nuovo scritto **prima** e visto fallire con `RangeError` · `qa -- rinnovo` 8/8 sul build corretto, con l'orario del processo verificato.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

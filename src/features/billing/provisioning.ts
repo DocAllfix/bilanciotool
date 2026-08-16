@@ -69,6 +69,26 @@ export function statoDaStripe(statoStripe: string): "active" | "past_due" | "exp
 }
 
 /**
+ * Un istante Stripe (secondi dall'epoca) diventa una `Date`, oppure `null`.
+ *
+ * Sembra pignoleria e invece è la differenza fra un dato mancante e un pagamento perso.
+ * Prima la conversione era `campo ? new Date(campo * 1000) : null`, e il ternario
+ * controllava l'OGGETTO che conteneva il campo invece del campo stesso: con `created`
+ * assente nasceva `new Date(NaN)`, Drizzle ci chiamava sopra `toISOString()` e sollevava
+ * `RangeError` **dentro la transazione del provisioning**. Il webhook rispondeva 500,
+ * Stripe ritentava, e un cliente che ha pagato restava senza servizio.
+ *
+ * Il registro non deve mai poter far fallire il lavoro che sta registrando: un istante
+ * che non si sa si scrive `null` — «non lo so» — invece di inventarlo o di far saltare
+ * tutto. Il `<= 0` conserva il comportamento di prima, dove uno zero valeva come assente.
+ */
+function dataDaEpoch(secondi: number | null | undefined): Date | null {
+  if (typeof secondi !== "number" || !Number.isFinite(secondi) || secondi <= 0) return null;
+  const d = new Date(secondi * 1000);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/**
  * L'organizzazione a cui appartiene un cliente Stripe. `null` se non è nostra.
  *
  * `platformAdmin`: la domanda è «di CHI è questo cliente», quindi l'organizzazione non
@@ -115,8 +135,7 @@ export async function applicaAbbonamento(
       .limit(1),
   );
   const statoPrecedente = prima?.status ?? null;
-  const fineperiodo = sub.items.data[0]?.current_period_end;
-  const rinnovoIl = fineperiodo ? new Date(fineperiodo * 1000) : null;
+  const rinnovoIl = dataDaEpoch(sub.items.data[0]?.current_period_end);
 
   await withTenant({ platformAdmin: true }, async (tx) => {
     const aggiornate = await tx
@@ -175,7 +194,7 @@ export async function applicaAbbonamento(
       stripeEventId: causa?.id ?? null,
       stripeEventType: causa?.type ?? null,
       subscriptionId: sub.id,
-      occurredAt: causa ? new Date(causa.created * 1000) : null,
+      occurredAt: dataDaEpoch(causa?.created),
       statoPrima: statoPrecedente,
       statoDopo: stato,
       piano: capacita.piano,
