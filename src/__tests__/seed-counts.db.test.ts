@@ -25,7 +25,9 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
   };
 
   it("conteggi esatti per ogni catalogo", async () => {
-    expect(await conta(contentSet)).toBe(5); // ghg + report + energy + supplier + soa
+    // Cinque moduli in produzione piu' i sei di conformita': un content set per
+    // dominio, cosi' la versione del corpus di ciascuno si congela da sola.
+    expect(await conta(contentSet)).toBe(11);
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);

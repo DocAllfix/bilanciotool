@@ -9,7 +9,12 @@ export const contentSet = pgTable(
   "content_set",
   {
     id: text("id").primaryKey(),
-    dominio: text("dominio", { enum: ["ghg", "report", "energy", "supplier", "soa"] }).notNull(),
+    dominio: text("dominio", {
+      enum: ["ghg", "report", "energy", "supplier", "soa",
+        // I sei moduli di conformità: un content set per modulo, così la versione
+        // del corpus si congela indipendentemente da quella degli altri.
+        "mog231", "iso37001", "sgiqas", "sa8000", "filiera", "wb"],
+    }).notNull(),
     versione: integer("versione").notNull(),
     note: text("note"),
     publishedAt: timestamp("published_at").defaultNow().notNull(),

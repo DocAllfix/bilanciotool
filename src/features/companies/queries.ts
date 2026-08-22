@@ -37,6 +37,13 @@ export type DocumentoRecente = {
 export type VoceAttivita = { etichetta: string; companyNome: string | null; quando: Date };
 
 export const ETICHETTE_AUDIT: Record<string, string> = {
+  // I sei moduli di conformità: il corpus documentale e i suoi registri.
+  "corpus.documento.stato": "Documento del sistema aggiornato",
+  "corpus.blocco.personalizza": "Testo del documento personalizzato",
+  "corpus.blocco.ripristina": "Testo del documento ripristinato",
+  "corpus.registro.aggiungi": "Registrazione inserita",
+  "corpus.registro.aggiorna": "Registrazione modificata",
+  "corpus.registro.elimina": "Registrazione eliminata",
   "billing.checkout.apri": "Pagamento avviato",
   "billing.abbonamento.aggiorna": "Abbonamento aggiornato",
   "company.create": "Nuova azienda in portafoglio",

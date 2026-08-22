@@ -127,6 +127,20 @@
       "when": 1786750188774,
       "tag": "0017_registro_capacita",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1787406678876,
+      "tag": "0018_corpus_documentale",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1787413158466,
+      "tag": "0019_registri_corpus",
+      "breakpoints": true
     }
   ]
 }
