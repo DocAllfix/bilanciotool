@@ -15,7 +15,23 @@ import { contentSet } from "@/lib/db/schema";
 // creazione (`contentSetId`). È la ragione per cui un catalogo nuovo non cambia i
 // documenti già avviati: chi ha iniziato con la versione 1 la tiene fino alla fine.
 
-export type DominioContenuti = "ghg" | "report" | "energy" | "soa" | "supplier";
+// I sei domini di conformita' sono gia' seminati (Fase A: corpus, registri e
+// segnaposto). Il tipo li elenca perche' il compilatore possa rifiutare un dominio
+// inventato: la migrazione 0018 ha allargato il CHECK a undici valori, e senza questa
+// riga il codice potrebbe chiedere un catalogo che il database accetta e nessuno ha mai
+// seminato — un `null` a runtime al posto di un errore di compilazione.
+export type DominioContenuti =
+  | "ghg"
+  | "report"
+  | "energy"
+  | "soa"
+  | "supplier"
+  | "iso37001"
+  | "mog231"
+  | "wb"
+  | "sgiqas"
+  | "sa8000"
+  | "filiera";
 
 /**
  * L'identificativo del content set più recente per il dominio.

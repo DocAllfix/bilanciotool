@@ -1,0 +1,8 @@
+[
+  {"key":"f_succ","etichetta":"Remunerazione a provvigione o a successo","ordine":1},
+  {"key":"f_cli","etichetta":"Nominato o imposto dal cliente o da un pubblico ufficiale","ordine":2},
+  {"key":"f_te","etichetta":"Titolarità effettiva non ricostruibile o giurisdizione opaca","ordine":3},
+  {"key":"f_prec","etichetta":"Indagini, condanne, sanzioni o esclusioni per corruzione o reati analoghi","ordine":4},
+  {"key":"f_leg","etichetta":"Legami con pubblici ufficiali, candidati a cariche pubbliche o loro familiari","ordine":5},
+  {"key":"f_pag","etichetta":"Richiesta di pagamenti a soggetti diversi dal contraente","ordine":6}
+]

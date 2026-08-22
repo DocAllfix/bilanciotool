@@ -8,6 +8,7 @@ import {
   energyVector, energyArea, energyEndUse, energyDriverDefinition, energyIndicator,
   supplierArea, supplierQuestion,
   soaFramework, soaSection, soaControl,
+  briberyChapter, briberyRequirement, briberyDimension, briberyFlag,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -175,6 +176,29 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     expect((t01.guida as { imp: string[] }).imp).toHaveLength(3);
     const [sf6] = await db.select().from(emissionFactor).where(eq(emissionFactor.key, "sf6"));
     expect(sf6.fe).toBe("23500"); // GWP SF6 — il valore più estremo della libreria
+  });
+
+  it("i cataloghi di ISO 37001 hanno i conteggi del prototipo", async () => {
+    expect(await conta(briberyChapter)).toBe(7);
+    expect(await conta(briberyRequirement)).toBe(91);
+    expect(await conta(briberyDimension)).toBe(4);
+    expect(await conta(briberyFlag)).toBe(6);
+  });
+
+  it("ogni requisito ISO 37001 appartiene a un capitolo esistente", async () => {
+    const capi = new Set((await db.select().from(briberyChapter)).map((c) => c.key));
+    for (const r of await db.select().from(briberyRequirement)) {
+      expect(capi.has(r.chapterKey), `${r.key} rimanda al capitolo ${r.chapterKey}`).toBe(true);
+    }
+  });
+
+  it("ogni dimensione del rischio ha quattro gradini descritti", async () => {
+    // Non e' pignoleria: la media si fa su una scala 1÷4, e una dimensione con tre
+    // gradini darebbe un livello di rischio che non corrisponde a nessuna descrizione.
+    for (const d of await db.select().from(briberyDimension)) {
+      expect((d.scala as string[]).length, `${d.key}`).toBe(4);
+      for (const gradino of d.scala as string[]) expect(gradino.length).toBeGreaterThan(10);
+    }
   });
 
   it("ogni sorgente appartiene a una categoria esistente", async () => {

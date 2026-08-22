@@ -1,0 +1,511 @@
+{
+  "estrattoDa": "aggiuntenuovimoduli/sgpc-iso37001-v1.html",
+  "casi": {
+    "vuoto": {},
+    "unaSolaAlta": {
+      "d_paese": 4
+    },
+    "unaSolaBassa": {
+      "d_paese": 1
+    },
+    "tutteBasse": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1
+    },
+    "sogliaMedio": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2
+    },
+    "sogliaAlto": {
+      "d_paese": 3,
+      "d_pu": 3,
+      "d_nat": 3,
+      "d_val": 3
+    },
+    "tutteCritiche": {
+      "d_paese": 4,
+      "d_pu": 4,
+      "d_nat": 4,
+      "d_val": 4
+    },
+    "bassoConFlag": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1,
+      "f_cli": true
+    },
+    "bassoConPrecedenti": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1,
+      "f_prec": true
+    },
+    "altoConPrecedenti": {
+      "d_paese": 3,
+      "d_pu": 3,
+      "d_nat": 3,
+      "d_val": 3,
+      "f_prec": true
+    },
+    "medioTuttoAssolto": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2,
+      "dd_data": "2099-01-15",
+      "pol_com": "Sì",
+      "imp": "Sì",
+      "clausole": "Sì",
+      "ctrl": "Adeguati"
+    },
+    "medioDdScaduta": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2,
+      "dd_data": "2019-01-15"
+    },
+    "nonFattibileMotivato": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2,
+      "dd_data": "2099-01-15",
+      "pol_com": "Sì",
+      "imp": "Non fattibile, motivato",
+      "clausole": "Sì",
+      "ctrl": "Non fattibile, valutato nel rischio"
+    },
+    "clausoleNonApplicabili": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2,
+      "dd_data": "2099-01-15",
+      "pol_com": "Sì",
+      "imp": "Sì",
+      "clausole": "Non applicabile",
+      "ctrl": "Adeguati"
+    },
+    "agiscePerConto": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 4,
+      "d_val": 2
+    },
+    "agiscePerContoFormato": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 4,
+      "d_val": 2,
+      "form_data": "2019-01-15"
+    },
+    "provvigioneConFlag": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1,
+      "f_succ": true
+    },
+    "provvigioneSenzaFlag": {
+      "d_paese": 2,
+      "d_pu": 2,
+      "d_nat": 2,
+      "d_val": 2,
+      "remun": "A provvigione"
+    },
+    "controllataAdeguata": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1,
+      "controllata": "Sì",
+      "adeg": "Applica il nostro sistema"
+    },
+    "controllataDaDefinire": {
+      "d_paese": 1,
+      "d_pu": 1,
+      "d_nat": 1,
+      "d_val": 1,
+      "controllata": "Sì",
+      "adeg": "Da definire"
+    }
+  },
+  "soci": {
+    "vuoto": {
+      "punteggio": 0,
+      "livello": "",
+      "superiore": false,
+      "livelloDD": 1,
+      "frequenzaDD": 24,
+      "obblighi": [],
+      "aperti": []
+    },
+    "unaSolaAlta": {
+      "punteggio": 4,
+      "livello": "Critico",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "unaSolaBassa": {
+      "punteggio": 1,
+      "livello": "Basso",
+      "superiore": false,
+      "livelloDD": 1,
+      "frequenzaDD": 36,
+      "obblighi": [],
+      "aperti": []
+    },
+    "tutteBasse": {
+      "punteggio": 1,
+      "livello": "Basso",
+      "superiore": false,
+      "livelloDD": 1,
+      "frequenzaDD": 36,
+      "obblighi": [],
+      "aperti": []
+    },
+    "sogliaMedio": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "sogliaAlto": {
+      "punteggio": 3,
+      "livello": "Alto",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ]
+    },
+    "tutteCritiche": {
+      "punteggio": 4,
+      "livello": "Critico",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ]
+    },
+    "bassoConFlag": {
+      "punteggio": 1,
+      "livello": "Alto",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "bassoConPrecedenti": {
+      "punteggio": 1,
+      "livello": "Critico",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "altoConPrecedenti": {
+      "punteggio": 3,
+      "livello": "Critico",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ]
+    },
+    "medioTuttoAssolto": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": []
+    },
+    "medioDdScaduta": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "nonFattibileMotivato": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": []
+    },
+    "clausoleNonApplicabili": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "clau"
+      ]
+    },
+    "agiscePerConto": {
+      "punteggio": 2.5,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ]
+    },
+    "agiscePerContoFormato": {
+      "punteggio": 2.5,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "form"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "provvigioneConFlag": {
+      "punteggio": 1,
+      "livello": "Alto",
+      "superiore": true,
+      "livelloDD": 3,
+      "frequenzaDD": 12,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "pag"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl",
+        "pag"
+      ]
+    },
+    "provvigioneSenzaFlag": {
+      "punteggio": 2,
+      "livello": "Medio",
+      "superiore": true,
+      "livelloDD": 2,
+      "frequenzaDD": 24,
+      "obblighi": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ],
+      "aperti": [
+        "dd",
+        "pol",
+        "imp",
+        "clau",
+        "ctrl"
+      ]
+    },
+    "controllataAdeguata": {
+      "punteggio": 1,
+      "livello": "Basso",
+      "superiore": false,
+      "livelloDD": 1,
+      "frequenzaDD": 36,
+      "obblighi": [
+        "ctr"
+      ],
+      "aperti": []
+    },
+    "controllataDaDefinire": {
+      "punteggio": 1,
+      "livello": "Basso",
+      "superiore": false,
+      "livelloDD": 1,
+      "frequenzaDD": 36,
+      "obblighi": [
+        "ctr"
+      ],
+      "aperti": [
+        "ctr"
+      ]
+    }
+  },
+  "scenari": {
+    "1 - Rara x 1 - Lieve": "Basso",
+    "2 - Possibile x 2 - Moderata": "Medio",
+    "3 - Probabile x 3 - Grave": "Alto",
+    "4 - Molto probabile x 4 - Gravissima": "Critico",
+    "2 - Possibile x 4 - Gravissima": "Alto",
+    "(vuoto) x 3 - Grave": ""
+  }
+}

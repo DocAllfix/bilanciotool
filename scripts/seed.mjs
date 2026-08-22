@@ -32,6 +32,8 @@ const SUPPLIER_SET = "supplier-v1";
 const sid = (key) => `${SUPPLIER_SET}:${key}`;
 const SOA_SET = "soa-v1";
 const oid = (key) => `${SOA_SET}:${key}`;
+const AC_SET = "iso37001-v1";
+const acid = (key) => `${AC_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
@@ -41,7 +43,8 @@ try {
            (${REPORT_SET}, 'report', 1, 'Estratto dal prototipo percorso-bilancio-v4.html'),
            (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html'),
            (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html'),
-           (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html')
+           (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html'),
+           (${AC_SET}, 'iso37001', 1, 'Estratto dal prototipo sgpc-iso37001-v1.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -272,6 +275,43 @@ try {
       on conflict (id) do update set livelli = excluded.livelli`;
   }
 
+  // --- ISO 37001, prevenzione della corruzione ---
+  //
+  // Il CORPUS (12 procedure, 47 moduli, 12 registri) lo semina `seed-corpus.mjs`: qui
+  // c'e' il dominio. Gli otto obblighi derivati NON stanno nel database, e non e' una
+  // dimenticanza: sono regole eseguibili, e vivono con la logica che le applica
+  // (`src/lib/calc/anticorruzione/obblighi.ts`). Etichette qui e condizioni li'
+  // vorrebbe dire poterle far divergere senza che nessuno se ne accorga.
+  for (const [i, c] of load("iso37001-capi.json").entries()) {
+    await sql`
+      insert into bribery_chapter (id, set_id, key, nome, descrizione, ordine)
+      values (${acid(`cap:${c.id}`)}, ${AC_SET}, ${c.id}, ${c.n}, ${c.d}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione, ordine = excluded.ordine`;
+  }
+
+  for (const [i, r] of load("iso37001-req.json").entries()) {
+    await sql`
+      insert into bribery_requirement (id, set_id, key, chapter_key, riferimento, procedura, testo, ordine)
+      values (${acid(`req:${r.id}`)}, ${AC_SET}, ${r.id}, ${r.cap}, ${r.rif}, ${r.pro ?? null}, ${r.t}, ${i})
+      on conflict (id) do update set chapter_key = excluded.chapter_key, riferimento = excluded.riferimento,
+        procedura = excluded.procedura, testo = excluded.testo, ordine = excluded.ordine`;
+  }
+
+  for (const d of load("iso37001-dimensioni.json")) {
+    await sql`
+      insert into bribery_dimension (id, set_id, key, etichetta, descrizione, scala, ordine)
+      values (${acid(`dim:${d.key}`)}, ${AC_SET}, ${d.key}, ${d.etichetta}, ${d.descrizione}, ${sql.json(d.scala)}, ${d.ordine})
+      on conflict (id) do update set etichetta = excluded.etichetta, descrizione = excluded.descrizione,
+        scala = excluded.scala, ordine = excluded.ordine`;
+  }
+
+  for (const x of load("iso37001-fattori.json")) {
+    await sql`
+      insert into bribery_flag (id, set_id, key, etichetta, ordine)
+      values (${acid(`flag:${x.key}`)}, ${AC_SET}, ${x.key}, ${x.etichetta}, ${x.ordine})
+      on conflict (id) do update set etichetta = excluded.etichetta, ordine = excluded.ordine`;
+  }
+
   // Il corpus documentale dei sei moduli di conformità: 447 documenti, 6.489 blocchi.
   const corpus = await seedCorpus(sql);
   console.log(`  corpus: ${corpus.documenti} documenti, ${corpus.blocchi} blocchi, ${corpus.forme} segnaposto`);
@@ -292,6 +332,7 @@ try {
     "energy_vector", "energy_area", "energy_end_use", "energy_driver_definition", "energy_indicator",
     "supplier_area", "supplier_question",
     "soa_framework", "soa_section", "soa_control",
+    "bribery_chapter", "bribery_requirement", "bribery_dimension", "bribery_flag",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

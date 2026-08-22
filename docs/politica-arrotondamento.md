@@ -40,3 +40,40 @@ costo medio, due terzi del consumo alle attività principali, consumo specifico 
 | Tempo di ritorno senza risparmio economico | 0 | `null` | Uno zero si legge come "ritorno immediato", il contrario di ciò che significa. Il documento mostra "—". |
 | Quadratura della ripartizione | su quantità | identico | Le celle restano nell'unità del vettore e non in kWh: la verifica confronta quantità entrate e attribuite, quindi correggere un potere calorifico non può invalidare la quadratura di un esercizio già chiuso. |
 | Ricalcolo per intervento | `derive()` completo per ogni intervento | totali passati una volta | Solo prestazioni: i numeri sono identici. |
+
+## ISO 37001 — prevenzione della corruzione (Fase D)
+
+Due scostamenti dal prototipo `sgpc-iso37001-v1.html`, entrambi verificati leggendo il
+sorgente e non ricordati, entrambi coperti da un test messo in rosso di proposito.
+
+**1. «Non applicabile» sulle clausole contrattuali assolve l'obbligo.**
+Nel prototipo l'obbligo accettava solo `"Sì"` (riga 286) mentre l'indicatore contava
+`"Sì" || "Non applicabile"` (riga 1286): **lo stesso socio risultava inadempiente nella
+propria scheda e adempiente nel cruscotto**. Ci si allinea all'assolvimento, che e' anche
+il comportamento gia' adottato dagli altri due obblighi della stessa norma — impegni
+(`"Non fattibile, motivato"`) e controlli (`"Non fattibile, valutato nel rischio"`).
+«Non applicabile» e' una risposta, non un'omissione.
+*Effetto sui numeri*: un socio con clausole non applicabili passa da 1 obbligo aperto a 0.
+
+**2. La verifica di proporzionalita' del corrispettivo scatta anche dal campo strutturato.**
+Il prototipo la faceva dipendere **solo** dal flag di rischio «remunerazione a provvigione
+o a successo», ignorando il campo «Modalita' di remunerazione», che ha gia' le opzioni
+`"A provvigione"` e `"A successo"`. Chi sceglieva la provvigione senza spuntare anche il
+flag non aveva l'obbligo: **un obbligo che manca, non uno di troppo**. Ora basta uno dei
+due segnali.
+*Effetto sui numeri*: un socio a rischio Medio con remunerazione «A provvigione» passa da
+5 obblighi applicabili a 6.
+
+**Cio' che invece NON si tocca**, perche' sembra un difetto e non lo e':
+- **La media si fa sulle sole dimensioni valutate**, non su quattro. Chi ha valutato una
+  sola dimensione a 4 ottiene Critico; dividendo per quattro otterrebbe 1,0, cioe' Basso,
+  e non gli si chiederebbe nemmeno la due diligence.
+- **`MATRICE` a parte, un socio senza livello determinato non e' sopra soglia**: non gli si
+  imputano obblighi che nessuno ha ancora stabilito.
+- **`superiore()` nel prototipo restituisce la stringa vuota** quando il livello manca,
+  invece di `false`. E' un artefatto di JavaScript, non una regola: normalizzato
+  nell'estrazione del golden (`scripts/golden-anticorruzione.mjs`), dove si vede il perche'.
+- **La verifica del corrispettivo non ammette «Non applicabile»**, a differenza delle
+  clausole: l'obbligo esiste perche' il corrispettivo E' a provvigione, quindi dichiararlo
+  non applicabile contraddice il proprio presupposto. Una clausola contrattuale puo'
+  davvero non applicarsi; questa verifica no.
