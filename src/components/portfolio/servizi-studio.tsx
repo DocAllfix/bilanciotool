@@ -1,7 +1,7 @@
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import type { ContoServizio } from "@/features/companies/stati-moduli";
 
-// I cinque servizi dello studio, sul portafoglio intero.
+// I servizi dello studio, sul portafoglio intero, nell'ordine del registro (per area).
 //
 // È l'unico aggregato che ha senso su un portafoglio di clienti diversi fra
 // loro, perché conta LAVORI, che sono omogenei per definizione. Sommare le
@@ -15,7 +15,7 @@ import type { ContoServizio } from "@/features/companies/stati-moduli";
 export function ServiziStudio({ servizi }: { servizi: ContoServizio[] }) {
   const totale = servizi[0]?.totale ?? 0;
   // Con nessuna azienda reale non c'è niente da contare: l'utente in demo
-  // vedrebbe cinque barre vuote, che non dicono nulla e sembrano un guasto.
+  // vedrebbe una fila di barre vuote, che non dicono nulla e sembrano un guasto.
   if (totale === 0) return null;
 
   return (

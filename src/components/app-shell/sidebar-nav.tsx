@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Briefcase, FileStack, HelpCircle, Settings2, ChevronLeft } from "lucide-react";
 
 // Navigazione della shell, in due modi.
 //
 // Fuori da un'azienda: le voci dello studio.
-// Dentro un'azienda: il nome, i cinque moduli e il ritorno al portafoglio.
+// Dentro un'azienda: il nome, i moduli raggruppati per area e il ritorno al portafoglio.
 // Senza il secondo modo, da dentro la SoA non si raggiungeva il Bilancio della
 // stessa azienda senza ripassare dal portafoglio: con due moduli si sopportava,
 // con cinque no.
@@ -109,24 +109,41 @@ export function SidebarNav({
           </Link>
         </ConEtichetta>
 
-        {MODULI_AZIENDA.map((m) => {
-          const href = `${base}/${m.href}`;
-          const attiva = pathname.startsWith(href);
-          return (
-            <ConEtichetta key={m.href} attivo={compatta} etichetta={`${m.nome} · ${m.norma}`}>
-              <Link
-                href={href}
-                data-tour={`nav-modulo-${m.href}`}
-                aria-current={attiva ? "page" : undefined}
-                aria-label={m.nome}
-                className={classeVoce(attiva)}
-              >
-                <m.icona className="size-4 shrink-0" strokeWidth={1.75} />
-                {!compatta && m.nome}
-              </Link>
-            </ConEtichetta>
-          );
-        })}
+        {/* Sotto intestazione d'area. Qui lo spazio verticale c'e', e undici voci di
+            fila sono un muro: raggruppate diventano cinque blocchi da due o tre.
+            L'intestazione sparisce quando la barra e' stretta — li' c'e' posto per
+            un'icona sola, e il colore dell'area resta a dire la materia.
+
+            Le aree senza moduli non compaiono: se la barra mostrasse
+            «Responsabilita' dell'ente» sopra il vuoto, direbbe che manca qualcosa. */}
+        {MODULI_PER_AREA.map((g) => (
+          <div key={g.area} className="contents">
+            {!compatta && (
+              <p className="mt-3 px-2 text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/45 first:mt-0">
+                {g.nome}
+              </p>
+            )}
+            {g.moduli.map((m) => {
+              const href = `${base}/${m.href}`;
+              const attiva = pathname.startsWith(href);
+              return (
+                <ConEtichetta key={m.href} attivo={compatta} etichetta={`${m.nome} · ${m.norma}`}>
+                  <Link
+                    href={href}
+                    data-tour={`nav-modulo-${m.href}`}
+                    data-modulo={m.href}
+                    aria-current={attiva ? "page" : undefined}
+                    aria-label={m.nome}
+                    className={classeVoce(attiva)}
+                  >
+                    <m.icona className="size-4 shrink-0" strokeWidth={1.75} />
+                    {!compatta && m.nome}
+                  </Link>
+                </ConEtichetta>
+              );
+            })}
+          </div>
+        ))}
       </nav>
       </TooltipProvider>
     );

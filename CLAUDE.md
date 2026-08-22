@@ -542,6 +542,26 @@ Il committente inoltra quattro schermate: Stripe segnala **93 consegne fallite**
 
 Gate: typecheck · build · **550 test** in entrambi i modi, `RLS_FORCE_ROLE=app_rls` compreso · il test nuovo scritto **prima** e visto fallire con `RangeError` · `qa -- rinnovo` 8/8 sul build corretto, con l'orario del processo verificato.
 
+**Fasi 0, A, B e C dei sei nuovi moduli (2026-08-22)** — ambiente sicuro, motore del corpus, collaudi strutturali, aree.
+
+- **Fase 0 — due database.** Vedi la voce «Due database» piu' sopra. In piu': `qa.mjs` impostava `BASE` **solo** con `--prod`, e nove script su trentuno hanno come predefinito il sito vero: `npm run qa -- tutto-demo` andava a registrarsi in produzione stampando «localhost». Tre utenti e tre organizzazioni scritti nel database che incassa, poi rimossi in transazione. Ora `BASE` si imposta sempre e il bersaglio si stampa in entrambi i casi.
+- **Fase A — il motore comune del corpus.** 447 documenti, 6.489 blocchi, 80 schede di segnaposto, 70 registri, 779 colonne. **Una riga per blocco** e non un JSONB per documento: la personalizzazione del cliente diventa una chiave esterna vera, e cancellare una versione in uso lo rifiuta il database. **Chiavi dei blocchi derivate dal contenuto** (FNV-1a), mai dalla posizione. **I segnaposto sono due meccanismi**: 31 token si sostituiscono, 49 caselle si riempiono a mano.
+- **Fase B — i collaudi non si appendono piu' ai nomi.** Ancoraggi `data-percorsi`/`data-modulo` sulle tre superfici che elencano i moduli. Quattro difetti veri trovati cercando la baseline (sotto).
+- **Fase C — le aree.** `AREE_MODULI` + `area` per modulo, colore **dall'area**, `documenti` come tupla **non vuota** (il primo e' il principale), registro **ordinato per area**, `MODULI_PER_AREA` derivato, filtro d'area nell'archivio. Le cinque tinte restano: cambia a chi appartengono, e **un solo modulo cambia colore** (il Bilancio energetico, che entra nell'area del GHG e libera l'ambra per la responsabilita' dell'ente).
+
+**Regole nate qui:**
+- **Le classi Tailwind si scrivono per esteso, mai costruite con un template literal.** Tailwind genera le utility scandendo il TESTO: `bg-area-${a}` non esiste da nessuna parte, e i riquadri restano senza fondo. Delle cinque aree solo una aveva il colore, e ce l'aveva **per caso** — `bg-area-ambiente` compare in un esempio dentro `DESIGN.md`, che il scanner legge. Difetto che il compilatore non vede (le stringhe sono valide) e che i collaudi funzionali non vedono (la pagina si apre, i comandi rispondono): **si vede solo guardando**.
+- **Un collaudo che si ferma al database non prova cio' che l'utente vede**, e uno che legge tutta la pagina prova troppo: cercare «Statement (SoA)» nel testo di `main` lo trova sempre, perche' e' scritto sulla pastiglia del filtro. I risultati si contano sui risultati.
+- **`limit 1` senza filtrare l'azienda pesca la dimostrativa.** Da quando la demo ha tutti e cinque i percorsi, il primo progetto del 2025 di un'organizzazione e' il suo: `visual-check-bilancio` seminava i punteggi in un progetto e ne guardava un altro, poi accusava la materialita'.
+- **Un ternario che salta il proprio popolamento e' peggio di un errore**: il collaudo falliva trenta secondi dopo, indicando il posto sbagliato. Il presupposto si pretende, e le righe seminate si verificano.
+- **Il velo dei giri guidati intercetta i clic, e lascia passare il primo.** Driver.js taglia un buco sopra l'elemento in evidenza: il gesto sull'elemento giusto riesce, quello dopo no, e il referto accusa il prodotto. Ora c'e' `spegniTour` in `comune-collaudo.mjs`.
+- **`npm run test | tail` scarta il codice d'uscita.** In una pipe il risultato e' quello dell'ULTIMO comando: la suite puo' fallire e il referto uscire con zero. Il conteggio stampato («1 failed | 661 passed») resta l'unica prova, e va letto. La suite si lancia senza pipe.
+- **L'app non segue `prefers-color-scheme`**: ha un interruttore. `emulateMedia({colorScheme:"dark"})` non cambia niente, e le foto «scure» sono chiare identiche.
+
+⚠️ **Difetto aperto, in `PRE-LAUNCH.md`**: nel build di **produzione** il portafoglio non si aggiorna dopo aver creato un'azienda — mai, non «in ritardo». La richiesta parte e il server risponde col dato giusto: e' il client a non applicarlo. In `npm run dev` compare dopo tre secondi. Non verificato in produzione perche' significherebbe scrivere un'azienda vera nel database che incassa.
+
+Gate: typecheck · build · **662 test** in entrambe le modalita' · in locale sul build di **produzione** `tutto-attivo` 30/30, `tutto-demo` 68/68, `demo-completa` 9/9, `fornitore` 28/28, `energetico` 40/40, `soa-percorso` 34/34, `guida` 7/7, `bilancio` verde · aree verificate a schermo nei due temi.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

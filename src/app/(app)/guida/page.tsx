@@ -47,12 +47,12 @@ export default function GuidaPage() {
         arrivano più spesso.
       </p>
 
-      {/* ── i cinque percorsi ─────────────────────────────────────────────── */}
+      {/* ── i percorsi di lavoro ─────────────────────────────────────────────── */}
       <h2 className="mt-9 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        I cinque percorsi
+        I percorsi di lavoro
       </h2>
       <p className="mt-2 max-w-prose text-[13px] leading-relaxed text-muted-foreground">
-        Ogni azienda del portafoglio ha gli stessi cinque percorsi, indipendenti fra loro. Si aprono
+        Ogni azienda del portafoglio ha gli stessi percorsi, indipendenti fra loro. Si aprono
         dal fascicolo dell&apos;azienda e si possono lasciare a metà: il completamento è contato passo
         per passo.
       </p>
@@ -60,7 +60,7 @@ export default function GuidaPage() {
           e un numero cambia. Vedi il commento nel fascicolo azienda. */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2" data-percorsi="">
         {MODULI_AZIENDA.map((m) => {
-          const doc = DOCUMENTI[m.documento];
+          const doc = DOCUMENTI[m.documenti[0]];
           const Icona = m.icona;
           return (
             <div key={m.href} className="rounded-lg border p-4" data-modulo={m.href}>

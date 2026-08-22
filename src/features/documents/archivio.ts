@@ -1,4 +1,5 @@
 import { withTenant } from "@/lib/db/tenant";
+import { areaDelDocumento, type AreaModuli } from "@/features/companies/moduli";
 import { company, documentSnapshot } from "@/lib/db/schema";
 import type { TipoDocumento } from "./tipi";
 import { and, desc, eq, inArray } from "drizzle-orm";
@@ -25,13 +26,15 @@ export type Archivio = {
   /** Aziende che hanno almeno un documento, col relativo conteggio. */
   aziende: { id: string; nome: string; n: number }[];
   conteggiPerTipo: Partial<Record<TipoDocumento, number>>;
+  /** Quanti documenti per area, per disegnare il filtro senza una seconda lettura. */
+  conteggiPerArea: Partial<Record<AreaModuli, number>>;
   totale: number;
 };
 
 export async function listArchivioDocumenti(
   userId: string,
   orgId: string,
-  filtri: { tipo: TipoDocumento | null; companyId: string | null },
+  filtri: { tipo: TipoDocumento | null; area: AreaModuli | null; companyId: string | null },
 ): Promise<Archivio> {
   return withTenant({ userId, orgId }, async (tx) => {
     // Si legge una volta sola l'elenco completo dei metadati: i conteggi per
@@ -57,14 +60,23 @@ export async function listArchivioDocumenti(
     const nomePerId = new Map(nomi.map((n) => [n.id, n.nome]));
 
     const conteggiPerTipo: Partial<Record<TipoDocumento, number>> = {};
+    const conteggiPerArea: Partial<Record<AreaModuli, number>> = {};
     const perAzienda = new Map<string, number>();
     for (const d of tutti) {
       conteggiPerTipo[d.tipo] = (conteggiPerTipo[d.tipo] ?? 0) + 1;
+      const a = areaDelDocumento(d.tipo);
+      if (a) conteggiPerArea[a] = (conteggiPerArea[a] ?? 0) + 1;
       perAzienda.set(d.companyId, (perAzienda.get(d.companyId) ?? 0) + 1);
     }
 
+    // I conteggi si contano su TUTTI, i filtri si applicano dopo: cosi' le pastiglie
+    // continuano a dire quanti documenti troverebbe ciascun filtro, invece di dire
+    // zero per tutti tranne quello acceso.
     const filtrati = tutti.filter(
-      (d) => (!filtri.tipo || d.tipo === filtri.tipo) && (!filtri.companyId || d.companyId === filtri.companyId),
+      (d) =>
+        (!filtri.tipo || d.tipo === filtri.tipo) &&
+        (!filtri.area || areaDelDocumento(d.tipo) === filtri.area) &&
+        (!filtri.companyId || d.companyId === filtri.companyId),
     );
 
     return {
@@ -73,6 +85,7 @@ export async function listArchivioDocumenti(
         .map(([id, n]) => ({ id, nome: nomePerId.get(id) ?? "—", n }))
         .sort((a, b) => a.nome.localeCompare(b.nome, "it")),
       conteggiPerTipo,
+      conteggiPerArea,
       totale: tutti.length,
     };
   });

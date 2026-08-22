@@ -114,7 +114,7 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
       isDemo: a.isDemo,
       moduli: MODULI_AZIENDA.map((m) => {
         const radice = radici[m.href].get(a.id);
-        const annoPubblicato = pubblicati.get(`${a.id}|${m.documento}`) ?? null;
+        const annoPubblicato = pubblicati.get(`${a.id}|${m.documenti[0]}`) ?? null;
         const anno = m.perEsercizio ? (radice?.anno ?? null) : null;
         return {
           modulo: m.href,

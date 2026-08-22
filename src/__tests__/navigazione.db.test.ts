@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import {
   user, organization, member, orgEntitlement, company, auditLog, documentSnapshot, ghgInventory, reportProject,
 } from "@/lib/db/schema";
+import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { getFascicolo, listCompanyNames, listDocumentiAzienda } from "@/features/companies/fascicolo";
 import { getScadenzario } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
@@ -88,10 +89,21 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     }
   });
 
-  it("il fascicolo elenca i cinque moduli, con lo stato di ciascuno", async () => {
+  it("il fascicolo elenca i moduli nell'ordine del registro, con lo stato di ciascuno", async () => {
     const f = (await getFascicolo(userA, orgA, companyA))!;
     expect(f.azienda.nome).toBe("Azienda dello studio A");
-    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "bilancio", "energetico", "fornitore", "soa"]);
+    // L'ordine e' quello del registro, che dal 22 agosto 2026 e' RAGGRUPPATO PER AREA:
+    // GHG ed Energetico sono la stessa materia e stanno vicini. Prima era
+    // ["ghg", "bilancio", "energetico", ...], e la differenza non e' cosmetica —
+    // da questo elenco discendono card, barra laterale, guida e giro guidato.
+    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "energetico", "bilancio", "fornitore", "soa"]);
+    // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo
+    // finisse lontano dai suoi, la sua area comparirebbe due volte a distanza — e nella
+    // barra laterale si vedrebbero due intestazioni uguali separate da altre voci.
+    const aree = f.voci.map((v) => MODULI_AZIENDA.find((m) => m.href === v.modulo)!.area);
+    const blocchi = aree.filter((a, i) => i === 0 || aree[i - 1] !== a);
+    expect(blocchi).toEqual([...new Set(aree)]);
+
     expect(f.voci.find((v) => v.modulo === "ghg")!.stato).toBe("in-corso");
     expect(f.voci.find((v) => v.modulo === "ghg")!.anno).toBe(ANNO_VECCHIO);
     expect(f.voci.find((v) => v.modulo === "energetico")!.stato).toBe("non-avviato");
@@ -142,18 +154,18 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
   });
 
   it("l'archivio conta e filtra soltanto i documenti del proprio studio", async () => {
-    const dellaB = await listArchivioDocumenti(userB, orgB, { tipo: null, companyId: null });
+    const dellaB = await listArchivioDocumenti(userB, orgB, { tipo: null, area: null, companyId: null });
     expect(dellaB.totale).toBe(1);
     expect(dellaB.conteggiPerTipo.soa).toBe(1);
     expect(dellaB.aziende.map((a) => a.nome)).toEqual(["Azienda dello studio B"]);
 
-    const dellaA = await listArchivioDocumenti(userA, orgA, { tipo: null, companyId: null });
+    const dellaA = await listArchivioDocumenti(userA, orgA, { tipo: null, area: null, companyId: null });
     expect(dellaA.totale).toBe(0);
     expect(dellaA.documenti).toEqual([]);
 
     // Il filtro per tipo restringe l'elenco ma non il totale, che serve a dire
     // «ne hai 12, ne stai vedendo 3».
-    const soloGhg = await listArchivioDocumenti(userB, orgB, { tipo: "ghg", companyId: null });
+    const soloGhg = await listArchivioDocumenti(userB, orgB, { tipo: "ghg", area: null, companyId: null });
     expect(soloGhg.totale).toBe(1);
     expect(soloGhg.documenti.length).toBe(0);
   });

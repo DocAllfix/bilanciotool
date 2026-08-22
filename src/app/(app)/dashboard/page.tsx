@@ -190,15 +190,23 @@ export default async function DashboardPage() {
                     )}
                   </p>
                 </CardContent>
-                {/* Cinque caselle di stato, non cinque bottoni uguali: piena =
-                    documento consegnato, contorno = avviato, tratteggio = da
-                    avviare. Il colore è quello del modulo, lo stesso ovunque. */}
+                {/* Una casella di stato per percorso, non un bottone: piena =
+                    documento consegnato, contorno = avviato, tratteggio = da avviare.
+                    Il colore è quello dell'AREA, lo stesso ovunque, e siccome il
+                    registro è ordinato per area le caselle si raggruppano da sole.
+
+                    ⚠️ Righe che vanno a capo, non `grid-cols-5`. Il numero fisso è
+                    lo stesso difetto che aveva già mandato Fornitore e SoA fuori dal
+                    bordo quando i moduli passarono da due a cinque: con undici, una
+                    griglia a cinque colonne o taglia o schiaccia. Celle di larghezza
+                    fissa che vanno a capo reggono qualunque numero, e l'etichetta
+                    resta leggibile invece di sparire. */}
                 {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi.
                     Il nome accessibile della casella NON e' il nome del modulo: e'
                     «Fornitore: da avviare», perche' dichiara anche lo stato. Cercarla
                     per nome secco non trova niente, e i nomi cambiano quando cambia la
                     disposizione. La chiave del registro no. */}
-                <CardFooter data-percorsi="" className="relative z-10 grid grid-cols-5 gap-1 p-2">
+                <CardFooter data-percorsi="" className="relative z-10 flex flex-wrap gap-1 p-2">
                   {MODULI_AZIENDA.map((m) => {
                     const st = moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato";
                     return (
@@ -209,7 +217,7 @@ export default async function DashboardPage() {
                         aria-label={`${m.nome}: ${
                           st === "pubblicato" ? "documento pubblicato" : st === "in-corso" ? "in corso" : "da avviare"
                         }`}
-                        className="flex min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
+                        className="flex w-[calc(20%-0.2rem)] min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
                       >
                         <span
                           className={

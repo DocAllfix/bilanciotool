@@ -119,7 +119,7 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
       for (const m of MODULI_AZIENDA) {
         const radice = radici[m.href].get(a.id) as { anno?: number | null } | undefined;
         const base = `/aziende/${a.id}/${m.href}`;
-        const annoPubblicato = pubblicati.get(`${a.id}|${m.documento}`) ?? null;
+        const annoPubblicato = pubblicati.get(`${a.id}|${m.documenti[0]}`) ?? null;
 
         if (!radice) {
           // Mai avviato: è un promemoria, non un ritardo. Sta in fondo.

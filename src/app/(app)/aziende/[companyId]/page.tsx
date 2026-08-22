@@ -83,13 +83,15 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
         </div>
       </dl>
 
-      {/* I cinque moduli come righe e non come riquadri: si leggono in colonna,
-          si confrontano fra loro, e non impongono una griglia che a cinque
-          elementi lascia sempre un buco. */}
+      {/* I moduli come righe e non come riquadri: si leggono in colonna, si
+          confrontano fra loro, e non impongono una griglia che a un numero dispari
+          di elementi lascia sempre un buco. L'ordine e' quello del registro, cioe'
+          per area: i percorsi della stessa materia stanno vicini, e la tinta lo
+          conferma senza bisogno di un'intestazione su una lista di cinque righe. */}
       <div className="mt-8">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">I cinque percorsi</h2>
-        {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi: il testo
-            visibile — «I cinque percorsi» — dice un numero, e un numero cambia. Un
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">I percorsi dell&apos;azienda</h2>
+        {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi: il titolo
+            diceva «I cinque percorsi», e un numero scritto in pagina invecchia. Un
             controllo appeso a quella frase diventerebbe rosso il giorno in cui il
             prodotto cresce, per un motivo che col prodotto non c'entra. */}
         <ul className="mt-3 divide-y rounded-xl border" data-percorsi="">

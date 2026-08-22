@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireConsultant } from "@/features/auth/guards";
 import { listArchivioDocumenti } from "@/features/documents/archivio";
 import { DOCUMENTI, TIPI_DOCUMENTO, etichettaDocumento, type TipoDocumento } from "@/features/documents/tipi";
+import { AREE, AREE_MODULI, type AreaModuli } from "@/features/companies/moduli";
 import { Badge } from "@/components/ui/badge";
 import { fmtRelativa } from "@/lib/format";
 import { ExternalLink, FileStack, FileText } from "lucide-react";
@@ -22,20 +23,24 @@ export const metadata: Metadata = { title: "Documenti" };
 export default async function DocumentiPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tipo?: string; azienda?: string }>;
+  searchParams: Promise<{ tipo?: string; area?: string; azienda?: string }>;
 }) {
-  const { tipo, azienda } = await searchParams;
+  const { tipo, area, azienda } = await searchParams;
   const s = await requireConsultant();
 
   const tipoFiltro = TIPI_DOCUMENTO.includes(tipo as TipoDocumento) ? (tipo as TipoDocumento) : null;
-  const { documenti, aziende, conteggiPerTipo, totale } = await listArchivioDocumenti(s.userId, s.orgId, {
-    tipo: tipoFiltro,
-    companyId: azienda ?? null,
-  });
+  const areaFiltro = AREE_MODULI.includes(area as AreaModuli) ? (area as AreaModuli) : null;
+  const { documenti, aziende, conteggiPerTipo, conteggiPerArea, totale } = await listArchivioDocumenti(
+    s.userId,
+    s.orgId,
+    { tipo: tipoFiltro, area: areaFiltro, companyId: azienda ?? null },
+  );
+  const areeConDocumenti = AREE_MODULI.filter((a) => (conteggiPerArea[a] ?? 0) > 0);
 
-  const rotta = (t: string | null, a: string | null) => {
+  const rotta = (t: string | null, ar: string | null, a: string | null) => {
     const p = new URLSearchParams();
     if (t) p.set("tipo", t);
+    if (ar) p.set("area", ar);
     if (a) p.set("azienda", a);
     const q = p.toString();
     return q ? `/documenti?${q}` : "/documenti";
@@ -72,13 +77,42 @@ export default async function DocumentiPage({
       {/* Filtri come collegamenti: stanno nell'indirizzo, quindi sono
           condivisibili e sopravvivono al tasto indietro. */}
       <div className="mt-6 space-y-3">
+        {/* Area e tipo sono due tagli della STESSA cosa, non due filtri che si sommano:
+            scegliere un'area azzera il tipo e viceversa. Combinabili produrrebbero stati
+            che non trovano nulla — «area Filiera + tipo Rapporto GHG» — e chi ci finisce
+            dentro pensa che l'archivio sia vuoto invece che mal filtrato.
+
+            La riga compare solo con piu' di un'area rappresentata: oggi i tipi sono
+            cinque e la loro riga basta; con sedici sara' l'unico modo di trovare qualcosa. */}
+        {areeConDocumenti.length > 1 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Area</span>
+            <Filtro
+              href={rotta(null, null, azienda ?? null)}
+              attivo={!areaFiltro && !tipoFiltro}
+              etichetta={`Tutte (${totale})`}
+            />
+            {areeConDocumenti.map((a) => (
+              <Filtro
+                key={a}
+                href={rotta(null, a, azienda ?? null)}
+                attivo={areaFiltro === a}
+                etichetta={`${AREE[a].nome} (${conteggiPerArea[a] ?? 0})`}
+              />
+            ))}
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Tipo</span>
-          <Filtro href={rotta(null, azienda ?? null)} attivo={!tipoFiltro} etichetta={`Tutti (${totale})`} />
+          <Filtro
+            href={rotta(null, null, azienda ?? null)}
+            attivo={!tipoFiltro && !areaFiltro}
+            etichetta={`Tutti (${totale})`}
+          />
           {TIPI_DOCUMENTO.map((t) => (
             <Filtro
               key={t}
-              href={rotta(t, azienda ?? null)}
+              href={rotta(t, null, azienda ?? null)}
               attivo={tipoFiltro === t}
               etichetta={`${DOCUMENTI[t].breve} (${conteggiPerTipo[t] ?? 0})`}
             />
@@ -87,11 +121,11 @@ export default async function DocumentiPage({
         {aziende.length > 1 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Azienda</span>
-            <Filtro href={rotta(tipo ?? null, null)} attivo={!azienda} etichetta="Tutte" />
+            <Filtro href={rotta(tipo ?? null, area ?? null, null)} attivo={!azienda} etichetta="Tutte" />
             {aziende.map((a) => (
               <Filtro
                 key={a.id}
-                href={rotta(tipo ?? null, a.id)}
+                href={rotta(tipo ?? null, area ?? null, a.id)}
                 attivo={azienda === a.id}
                 etichetta={`${a.nome} (${a.n})`}
               />

@@ -14,6 +14,93 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
+
+// ─── Aree ────────────────────────────────────────────────────────────────────
+//
+// Il prodotto passa da cinque moduli a undici, e a undici l'elenco piatto smette
+// di funzionare: e' gia' successo una volta, quando i moduli passarono da due a
+// cinque e gli ultimi due finirono fuori dal bordo della card.
+//
+// ⚠️ EMENDAMENTO DELIBERATO a `DESIGN.md`, che diceva «un modulo, un colore».
+// Undici tinte distinguibili su due temi, tutte sopra AA, non esistono: il cerchio
+// e' gia' occupato a 190·155·68·300·250. Quindi **un'area un colore, un modulo
+// un'icona** — la tinta dice la materia, l'icona dice il percorso.
+//
+// La partizione e' quella confermata dal committente (per materia), con la
+// rifinitura a cinque aree adottata come impostazione di lavoro: si rivede quando
+// gli undici moduli si vedono a schermo, e costa una riga per modulo.
+export const AREE_MODULI = [
+  "ambiente",
+  "sostenibilita",
+  "filiera",
+  "sistemi",
+  "responsabilita",
+] as const;
+export type AreaModuli = (typeof AREE_MODULI)[number];
+
+export type ColoreArea = {
+  /** Fondo pieno + icona in negativo: il percorso ha prodotto un documento. */
+  pieno: string;
+  /** Contorno e fondo tenue: il percorso e' avviato ma non consegnato. */
+  tenue: string;
+  /** Solo il colore del tratto, per barre e segni. */
+  tratto: string;
+};
+
+// ⚠️ LE CLASSI SI SCRIVONO PER ESTESO, mai costruite con un template literal.
+//
+// Tailwind genera le utility scandendo il TESTO dei sorgenti: `bg-area-${a}` non e'
+// una classe che esiste da nessuna parte, quindi non ne genera nessuna e i riquadri
+// restano senza fondo. Provato: con la versione derivata, delle cinque aree solo
+// «ambiente» aveva il colore — e ce l'aveva **per caso**, perche' `bg-area-ambiente`
+// compare scritto per esteso in un esempio dentro `DESIGN.md`, che il scanner legge.
+//
+// Un difetto che il compilatore non puo' vedere (le stringhe sono valide) e che i
+// collaudi funzionali non vedono (la pagina si apre, i comandi rispondono): si vede
+// solo guardando. Le classi letterali qui erano una decisione, non ripetizione.
+export const AREE = {
+  ambiente: {
+    nome: "Ambiente ed energia",
+    colore: {
+      pieno: "bg-area-ambiente text-white",
+      tenue: "border-area-ambiente/35 bg-area-ambiente/10 text-area-ambiente",
+      tratto: "bg-area-ambiente",
+    },
+  },
+  sostenibilita: {
+    nome: "Sostenibilità e rendicontazione",
+    colore: {
+      pieno: "bg-area-sostenibilita text-white",
+      tenue: "border-area-sostenibilita/35 bg-area-sostenibilita/10 text-area-sostenibilita",
+      tratto: "bg-area-sostenibilita",
+    },
+  },
+  filiera: {
+    nome: "Filiera",
+    colore: {
+      pieno: "bg-area-filiera text-white",
+      tenue: "border-area-filiera/35 bg-area-filiera/10 text-area-filiera",
+      tratto: "bg-area-filiera",
+    },
+  },
+  sistemi: {
+    nome: "Sistemi di gestione",
+    colore: {
+      pieno: "bg-area-sistemi text-white",
+      tenue: "border-area-sistemi/35 bg-area-sistemi/10 text-area-sistemi",
+      tratto: "bg-area-sistemi",
+    },
+  },
+  responsabilita: {
+    nome: "Responsabilità dell'ente",
+    colore: {
+      pieno: "bg-area-responsabilita text-white",
+      tenue: "border-area-responsabilita/35 bg-area-responsabilita/10 text-area-responsabilita",
+      tratto: "bg-area-responsabilita",
+    },
+  },
+} as const satisfies Record<AreaModuli, { nome: string; colore: ColoreArea }>;
+
 export type VoceModulo = {
   /** Segmento di rotta sotto `/aziende/[companyId]/`. */
   href: ModuloAzienda;
@@ -24,26 +111,29 @@ export type VoceModulo = {
   /** Norma di riferimento, mostrata dove c'è spazio. */
   norma: string;
   icona: LucideIcon;
-  /** Classi Tailwind del colore del modulo, nei tre stati in cui compare.
-   *  Stanno qui e non sparse nei componenti perche il colore di un modulo deve
-   *  essere lo stesso ovunque: card, fascicolo, banda dei servizi, archivio.
-   *  I token sono definiti in globals.css (`--modulo-*`) e documentati in
-   *  DESIGN.md; il contrasto e stato verificato su entrambi i temi. */
-  colore: {
-    /** Fondo pieno + icona in negativo: il percorso ha prodotto un documento. */
-    pieno: string;
-    /** Contorno e fondo tenue: il percorso e avviato ma non consegnato. */
-    tenue: string;
-    /** Solo il colore del tratto, per barre e segni. */
-    tratto: string;
-  };
-  /** Documento che il modulo pubblica. */
-  documento: TipoDocumento;
+  /** Area di appartenenza: da qui viene il COLORE. */
+  area: AreaModuli;
+  /** Classi Tailwind del colore, nei tre stati in cui compare. Non si scrivono
+   *  qui: si derivano dall'area (vedi `AREE`), perche' due moduli della stessa
+   *  materia devono avere la stessa tinta ovunque. */
+  colore: ColoreArea;
+  /** Documenti pubblicabili del modulo, **il principale per primo**.
+   *
+   *  Era un valore singolo, e reggeva finche' un modulo produceva un documento
+   *  solo. I sei moduli in arrivo ne producono da due a sei ciascuno, e il primo
+   *  dell'elenco e' quello che rappresenta il modulo dove serve un documento solo:
+   *  scadenzario, fascicolo, stato del percorso. L'ordine non e' decorativo. */
+  documenti: readonly [TipoDocumento, ...TipoDocumento[]];
   /** true se il lavoro è per esercizio (rotta `/[anno]`), false se è una
    *  fotografia corrente con revisioni. */
   perEsercizio: boolean;
 };
 
+// ⚠️ L'ORDINE E' PER AREA, e non e' estetico: da questo elenco discendono la card
+// del portafoglio, il fascicolo, la barra laterale, la guida e l'itinerario del giro
+// guidato. Raggruppati qui, sono raggruppati ovunque; sparsi qui, ogni superficie si
+// riscriverebbe il proprio ordine — che e' esattamente com'erano i cinque moduli prima
+// che questo registro esistesse.
 export const MODULI_AZIENDA = [
   {
     href: "ghg",
@@ -51,26 +141,9 @@ export const MODULI_AZIENDA = [
     nome: "Inventario GHG",
     norma: "ISO 14064-1",
     icona: Factory,
-    colore: {
-      pieno: "bg-modulo-ghg text-white",
-      tenue: "border-modulo-ghg/35 bg-modulo-ghg/10 text-modulo-ghg",
-      tratto: "bg-modulo-ghg",
-    },
-    documento: "ghg",
-    perEsercizio: true,
-  },
-  {
-    href: "bilancio",
-    etichetta: "Bilancio",
-    nome: "Bilancio di sostenibilità e conformità ESG",
-    norma: "GRI · ESRS VSME",
-    icona: BookOpen,
-    colore: {
-      pieno: "bg-modulo-bilancio text-white",
-      tenue: "border-modulo-bilancio/35 bg-modulo-bilancio/10 text-modulo-bilancio",
-      tratto: "bg-modulo-bilancio",
-    },
-    documento: "bilancio",
+    area: "ambiente",
+    colore: AREE.ambiente.colore,
+    documenti: ["ghg"],
     perEsercizio: true,
   },
   {
@@ -79,12 +152,20 @@ export const MODULI_AZIENDA = [
     nome: "Bilancio energetico",
     norma: "UNI CEI EN 16247",
     icona: Zap,
-    colore: {
-      pieno: "bg-modulo-energetico text-white",
-      tenue: "border-modulo-energetico/35 bg-modulo-energetico/10 text-modulo-energetico",
-      tratto: "bg-modulo-energetico",
-    },
-    documento: "energetico",
+    area: "ambiente",
+    colore: AREE.ambiente.colore,
+    documenti: ["energetico"],
+    perEsercizio: true,
+  },
+  {
+    href: "bilancio",
+    etichetta: "Bilancio",
+    nome: "Bilancio di sostenibilità e conformità ESG",
+    norma: "GRI · ESRS VSME",
+    icona: BookOpen,
+    area: "sostenibilita",
+    colore: AREE.sostenibilita.colore,
+    documenti: ["bilancio"],
     perEsercizio: true,
   },
   {
@@ -93,12 +174,9 @@ export const MODULI_AZIENDA = [
     nome: "Autovalutazione ESG",
     norma: "ESRS · ISO 20400",
     icona: BadgeCheck,
-    colore: {
-      pieno: "bg-modulo-fornitore text-white",
-      tenue: "border-modulo-fornitore/35 bg-modulo-fornitore/10 text-modulo-fornitore",
-      tratto: "bg-modulo-fornitore",
-    },
-    documento: "attestato",
+    area: "filiera",
+    colore: AREE.filiera.colore,
+    documenti: ["attestato"],
     perEsercizio: false,
   },
   {
@@ -107,12 +185,9 @@ export const MODULI_AZIENDA = [
     nome: "Statement of Applicability (SoA)",
     norma: "ISO/IEC 27001",
     icona: ShieldCheck,
-    colore: {
-      pieno: "bg-modulo-soa text-white",
-      tenue: "border-modulo-soa/35 bg-modulo-soa/10 text-modulo-soa",
-      tratto: "bg-modulo-soa",
-    },
-    documento: "soa",
+    area: "sistemi",
+    colore: AREE.sistemi.colore,
+    documenti: ["soa"],
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];
@@ -139,4 +214,37 @@ export function percorsoModulo(companyId: string, modulo: ModuloAzienda, anno?: 
   const base = `/aziende/${companyId}/${modulo}`;
   const voce = MODULI_AZIENDA.find((m) => m.href === modulo);
   return voce?.perEsercizio && anno !== undefined ? `${base}/${anno}` : base;
+}
+
+/**
+ * I moduli raggruppati per area, nell'ordine delle aree.
+ *
+ * Si deriva da `MODULI_AZIENDA` e non si scrive a mano: un modulo aggiunto al registro
+ * compare da solo nel proprio gruppo. Le aree senza moduli non compaiono — oggi ce n'e'
+ * una (la responsabilita' dell'ente, che si popola col Modello 231), e un'intestazione
+ * vuota sarebbe una promessa non mantenuta a schermo.
+ */
+export const MODULI_PER_AREA = AREE_MODULI.map((area) => ({
+  area,
+  nome: AREE[area].nome,
+  colore: AREE[area].colore,
+  moduli: MODULI_AZIENDA.filter((m) => m.area === area),
+})).filter((g) => g.moduli.length > 0);
+
+/**
+ * L'area a cui appartiene un tipo di documento, o `null` se non lo produce un modulo.
+ *
+ * Si deriva dal registro e non si scrive a mano: e' il ponte fra il documento
+ * archiviato e la materia di cui parla, e serve all'archivio per raggruppare. Il
+ * `null` non e' un caso teorico: i documenti del corpus dei sistemi di gestione non
+ * nascono da un percorso, e un raggruppamento che li desse per assenti li nasconderebbe.
+ */
+export function areaDelDocumento(tipo: TipoDocumento): AreaModuli | null {
+  const m = MODULI_AZIENDA.find((x) => (x.documenti as readonly TipoDocumento[]).includes(tipo));
+  return m ? m.area : null;
+}
+
+/** I tipi di documento prodotti dai moduli di un'area, nell'ordine del registro. */
+export function tipiDellArea(area: AreaModuli): TipoDocumento[] {
+  return MODULI_AZIENDA.filter((m) => m.area === area).flatMap((m) => [...m.documenti]);
 }

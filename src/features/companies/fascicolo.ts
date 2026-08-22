@@ -170,7 +170,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     const voci: VoceFascicolo[] = MODULI_AZIENDA.map((m) => {
       const r = radici[m.href];
-      const doc = ultimoPerTipo.get(m.documento) ?? null;
+      const doc = ultimoPerTipo.get(m.documenti[0]) ?? null;
       const base = `/aziende/${companyId}/${m.href}`;
       return {
         modulo: m.href,
