@@ -58,10 +58,19 @@ await check("ci sono tutti e cinque i percorsi, con norma e documento prodotto",
       if (!t.includes(pezzo)) throw new Error(`manca «${pezzo}» (percorso ${nome})`);
     }
   }
-  // Annuali e fotografie non vanno confusi: sono tre e due.
+  // Annuali e fotografie non vanno confusi. NON si conta quanti sono di ciascun tipo: un
+  // numero fisso diventerebbe rosso al primo modulo aggiunto, per un motivo che col
+  // prodotto non c'entra. Si verifica il FATTO che conta — che le due nature esistano
+  // entrambe e che ogni percorso ne dichiari una.
   const annuali = (t.match(/Si compila per esercizio/g) ?? []).length;
   const fotografie = (t.match(/fotografia dello stato corrente/g) ?? []).length;
-  if (annuali !== 3 || fotografie !== 2) throw new Error(`${annuali} annuali e ${fotografie} fotografie, attesi 3 e 2`);
+  const percorsi = await page.locator("[data-percorsi] [data-modulo]").count();
+  if (annuali < 1 || fotografie < 1) {
+    throw new Error(`le due nature devono esserci entrambe: ${annuali} annuali, ${fotografie} fotografie`);
+  }
+  if (annuali + fotografie !== percorsi) {
+    throw new Error(`${percorsi} percorsi ma ${annuali + fotografie} dichiarano la propria natura`);
+  }
 });
 
 await check("il pulsante dei tour toglie DAVVERO i segni da localStorage", async () => {

@@ -88,11 +88,15 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
           elementi lascia sempre un buco. */}
       <div className="mt-8">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">I cinque percorsi</h2>
-        <ul className="mt-3 divide-y rounded-xl border">
+        {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi: il testo
+            visibile — «I cinque percorsi» — dice un numero, e un numero cambia. Un
+            controllo appeso a quella frase diventerebbe rosso il giorno in cui il
+            prodotto cresce, per un motivo che col prodotto non c'entra. */}
+        <ul className="mt-3 divide-y rounded-xl border" data-percorsi="">
           {f.voci.map((v) => {
             const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
             return (
-              <li key={v.modulo} className="group relative">
+              <li key={v.modulo} className="group relative" data-modulo={v.modulo}>
                 <Link
                   href={v.href}
                   className="flex items-center gap-4 px-4 py-4 transition-colors hover:bg-accent sm:px-5"

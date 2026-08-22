@@ -179,3 +179,51 @@ export async function attendi(condizione, { entro = 45000, ogni = 500, cosa = "c
     await new Promise((r) => setTimeout(r, ogni));
   }
 }
+
+// La card di un'azienda appena creata, attesa ricaricando.
+//
+// Perché la ricarica serve, misurato il 22 agosto 2026 e non dedotto: con un build di
+// PRODUZIONE (`next start`) il portafoglio NON si aggiorna dopo la creazione. La richiesta
+// di aggiornamento parte davvero (`GET /dashboard?_rsc=…`, non un prefetch, con l'albero
+// di stato) e il server risponde col dato giusto (58 KB che contengono il nome nuovo):
+// e' il client a non applicarlo, e non lo applica MAI — provato con una sonda che ha
+// atteso sessanta secondi, e provato che non e' «indietro di un aggiornamento» creando
+// una seconda azienda senza che comparisse la prima. Con `npm run dev` invece compare
+// dopo ~3 secondi.
+//
+// ⚠️ Una nota precedente in `visual-check-energetico.mjs` dava la colpa a `next start` e
+// dichiarava che in produzione l'elenco si aggiorna. Il verso e' l'opposto: il build di
+// produzione e' proprio quello che gira su Vercel. Quella nota non e' stata verificata da
+// chi l'ha scritta, e finche' il difetto non e' chiuso questa attesa serve a misurare il
+// PERCORSO, non l'artefatto.
+export async function attendiCard(page, nome, { tentativi = 12, attesa = 1500 } = {}) {
+  // Si filtra per NOME e non si prende la prima card del portafoglio: la prima e'
+  // l'azienda dimostrativa, seminata alla registrazione. Un `.first()` secco agirebbe
+  // sulla demo, e il collaudo misurerebbe il percorso sbagliato credendolo il proprio.
+  const card = page.locator('[data-slot="card"]').filter({ hasText: nome }).first();
+  for (let t = 0; t < tentativi && !(await card.count()); t++) {
+    await page.waitForTimeout(attesa);
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+  }
+  await card.waitFor({ timeout: 20000 });
+  return card;
+}
+
+// Spegne i giri guidati prima di toccare qualunque comando.
+//
+// Il velo di driver.js copre la pagina e taglia un buco solo sopra l'elemento in
+// evidenza: tutto il resto e' incliccabile, e Playwright riprova per venti secondi su
+// un pulsante raggiungibile a occhio ma non al puntatore. Peggio: quando il buco cade
+// sul comando giusto il clic passa, il gesto successivo no, e il collaudo riferisce
+// «l'azienda non risulta nel database» — cioe' accusa il prodotto di un difetto che e'
+// del velo. E' successo a `verifica-tutto-attivo`, che era l'unico a non farlo.
+//
+// I giri hanno un collaudo proprio (`qa -- benvenuto`): qui vanno tolti di mezzo.
+export async function spegniTour(page, chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+  await page.evaluate((ks) => {
+    for (const k of ks) {
+      try { localStorage.setItem(`evalisdeck-tour:${k}`, "1"); } catch {}
+    }
+  }, chiavi);
+}

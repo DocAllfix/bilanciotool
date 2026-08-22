@@ -56,12 +56,14 @@ export default function GuidaPage() {
         dal fascicolo dell&apos;azienda e si possono lasciare a metà: il completamento è contato passo
         per passo.
       </p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      {/* Ancoraggio strutturale per i collaudi: il titolo qui sopra porta un numero,
+          e un numero cambia. Vedi il commento nel fascicolo azienda. */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-2" data-percorsi="">
         {MODULI_AZIENDA.map((m) => {
           const doc = DOCUMENTI[m.documento];
           const Icona = m.icona;
           return (
-            <div key={m.href} className="rounded-lg border p-4">
+            <div key={m.href} className="rounded-lg border p-4" data-modulo={m.href}>
               <div className="flex items-center gap-3">
                 <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${m.colore.pieno}`}>
                   <Icona className="size-4" />

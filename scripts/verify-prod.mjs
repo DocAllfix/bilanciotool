@@ -66,7 +66,7 @@ await sql`update org_entitlement set status='active' where organization_id = (
 await sql.end();
 
 // 5. Percorso GHG della demo → passo 8 → pubblica
-await demoCard.getByRole("link", { name: /Inventario GHG/ }).click();
+await demoCard.locator('[data-modulo="ghg"]').click();
 await page.waitForURL("**/ghg/**", { timeout: 30000 });
 await page.waitForLoadState("networkidle");
 const chiudiTour = async () => {

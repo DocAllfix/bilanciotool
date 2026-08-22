@@ -8,6 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { attendiCard } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa-percorso";
@@ -94,21 +95,7 @@ await page.fill("#na-nome", "Nexus Cloud Services S.r.l.");
 await page.fill("#na-settore", "Servizi applicativi in cloud");
 await page.fill("#na-ateco", "62.01");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
-// Un ricarico dopo la creazione. Non e' pigrizia: in produzione la card compare
-// subito (verificato su evalisdeck.it, elenco aggiornato senza ricaricare), mentre
-// con `next start` in locale l'elenco resta indietro di un aggiornamento. Il collaudo
-// deve misurare il percorso SoA, non quell'artefatto del server di prova.
-const card = page.locator('[data-slot="card"]').filter({ hasText: "Nexus Cloud Services S.r.l." }).first();
-// Si ricarica finche' la card non c'e'. Non e' pigrizia: in produzione compare subito
-// (verificato su evalisdeck.it, elenco aggiornato senza ricaricare), mentre con
-// `next start` in locale l'elenco resta indietro di un aggiornamento. Il collaudo deve
-// misurare il percorso SoA, non quell'artefatto del server di prova.
-for (let t = 0; t < 12 && !(await card.count()); t++) {
-  await page.waitForTimeout(1500);
-  await page.reload();
-  await page.waitForLoadState("networkidle");
-}
-await card.waitFor({ timeout: 20000 });
+const card = await attendiCard(page, "Nexus Cloud Services S.r.l.");
 // Il nome accessibile e' quello per esteso piu' lo stato — «Statement of Applicability
 // (SoA): da avviare» — non la sigla: la card e' stata ridisegnata dopo che questo
 // collaudo fu scritto. Si aggancia all'indirizzo, che e' il fatto stabile.

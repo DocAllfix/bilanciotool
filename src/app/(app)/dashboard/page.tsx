@@ -193,13 +193,19 @@ export default async function DashboardPage() {
                 {/* Cinque caselle di stato, non cinque bottoni uguali: piena =
                     documento consegnato, contorno = avviato, tratteggio = da
                     avviare. Il colore è quello del modulo, lo stesso ovunque. */}
-                <CardFooter className="relative z-10 grid grid-cols-5 gap-1 p-2">
+                {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi.
+                    Il nome accessibile della casella NON e' il nome del modulo: e'
+                    «Fornitore: da avviare», perche' dichiara anche lo stato. Cercarla
+                    per nome secco non trova niente, e i nomi cambiano quando cambia la
+                    disposizione. La chiave del registro no. */}
+                <CardFooter data-percorsi="" className="relative z-10 grid grid-cols-5 gap-1 p-2">
                   {MODULI_AZIENDA.map((m) => {
                     const st = moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato";
                     return (
                       <Link
                         key={m.href}
                         href={`/aziende/${a.id}/${m.href}`}
+                        data-modulo={m.href}
                         aria-label={`${m.nome}: ${
                           st === "pubblicato" ? "documento pubblicato" : st === "in-corso" ? "in corso" : "da avviare"
                         }`}

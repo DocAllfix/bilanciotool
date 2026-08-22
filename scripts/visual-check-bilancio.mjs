@@ -5,6 +5,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { attendiCard } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-bilancio";
 mkdirSync(OUT, { recursive: true });
@@ -33,6 +34,7 @@ const vaiPasso = async (n, atteso) => {
   }
 };
 
+const NOME_AZIENDA = "Cartiera del Sele S.p.A.";
 const email = `visual-bil-${Date.now()}@example.com`;
 await page.goto(BASE + "/registrati");
 await page.waitForLoadState("networkidle");
@@ -45,15 +47,25 @@ const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 await sql`update org_entitlement set status='active' where organization_id = (select m.organization_id from member m join "user" u on u.id=m.user_id where u.email=${email})`;
 await sql.end();
 
+// I tour vanno spenti PRIMA di toccare qualunque comando: il velo di driver.js copre
+// la pagina e intercetta i clic, e Playwright riprova per venti secondi su un pulsante
+// che non e' raggiungibile. Era l'unico dei collaudi a non farlo, e falliva sul primo
+// gesto senza mai arrivare a misurare il bilancio.
+await page.evaluate(() => {
+  for (const k of ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+    localStorage.setItem(`evalisdeck-tour:${k}`, "1");
+  }
+});
+
 await page.reload();
 await page.waitForLoadState("networkidle");
 await page.click('[data-tour="nuova-azienda"]');
-await page.fill("#na-nome", "Cartiera del Sele S.p.A.");
+await page.fill("#na-nome", NOME_AZIENDA);
 await page.fill("#na-settore", "Carta e cartone");
 await page.fill("#na-ateco", "17.12");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
-await page.getByRole("link", { name: "Bilancio", exact: true }).waitFor({ timeout: 15000 });
-await page.getByRole("link", { name: "Bilancio", exact: true }).click();
+const cardBilancio = await attendiCard(page, NOME_AZIENDA);
+await cardBilancio.locator('[data-modulo="bilancio"]').click();
 await page.waitForURL("**/bilancio", { timeout: 15000 });
 await page.waitForLoadState("networkidle");
 await page.waitForTimeout(800);
@@ -73,25 +85,64 @@ await shot("01-bil-passo1-organizzazione");
 
 // Materialità: punteggi seedati via DB (l'interazione UI è già coperta
 // dall'e2e bilancio.spec — qui serve solo popolare la matrice per la foto).
-const projectId = page.url().match(/\/aziende\/[^/]+\/bilancio\/2025/) ? await (async () => {
+// L'indirizzo si PRETENDE, non si interroga con un ternario: cosi' com'era, se il
+// percorso non era quello il popolamento veniva saltato in silenzio e il collaudo
+// falliva trenta secondi dopo su un'attesa che non poteva compiersi, indicando il
+// posto sbagliato. Un controllo che salta se stesso non e' ne' verde ne' rosso.
+if (!page.url().match(/\/aziende\/[^/]+\/bilancio\/2025/)) {
+  throw new Error("non sono sul bilancio 2025 ma su " + page.url());
+}
+let temiTotali = 0;
+let punteggiSeminati = 0;
+const projectId = await (async () => {
   const s2 = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
+  // ⚠️ Il filtro sull'AZIENDA e' obbligatorio, non un di piu'. Senza, `limit 1` pesca
+  // un progetto a caso dell'organizzazione — e da quando l'azienda dimostrativa ha tutti
+  // e cinque i percorsi (13 agosto 2026) il primo e' il bilancio DELLA DEMO. Il collaudo
+  // seminava i punteggi in un progetto e ne guardava un altro: il riepilogo restava a
+  // zero valutati e l'attesa scadeva accusando la materialita', che era intatta.
   const [row] = await s2`select rp.id from report_project rp join company c on c.id = rp.company_id
     join member m on m.organization_id = c.organization_id join "user" u on u.id = m.user_id
-    where u.email = ${email} and rp.anno = 2025 limit 1`;
+    where u.email = ${email} and rp.anno = 2025 and c.is_demo = false and c.nome = ${NOME_AZIENDA}
+    limit 1`;
+  if (!row) throw new Error(`nessun bilancio 2025 per ${NOME_AZIENDA}`);
   const punteggi = [["T01", 4, 3], ["T02", 4, 4], ["T07", 5, 4], ["T03", 2, 2]];
+  punteggiSeminati = punteggi.length;
   for (const [t, imp, fin] of punteggi) {
     await s2`insert into materiality_assessment (id, organization_id, project_id, topic_key, score_impact, score_financial)
       select gen_random_uuid()::text, c.organization_id, ${row.id}, ${t}, ${imp}, ${fin}
       from report_project rp join company c on c.id = rp.company_id where rp.id = ${row.id}
       on conflict (project_id, topic_key) do update set score_impact = excluded.score_impact, score_financial = excluded.score_financial`;
   }
+  // Il collaudo verifica il PROPRIO presupposto: se il popolamento non ha lasciato
+  // righe, il fallimento va detto qui e non trenta secondi dopo, come attesa scaduta
+  // su una schermata che non poteva mostrare niente.
+  const righe = await s2`select topic_key, score_impact, score_financial from materiality_assessment where project_id = ${row.id} order by topic_key`;
+  if (righe.length !== punteggi.length) {
+    throw new Error(`popolamento: attese ${punteggi.length}, trovate ${righe.length} — ` +
+      righe.map((r) => `${r.topic_key}(${r.score_impact},${r.score_financial})`).join(" "));
+  }
+  const [{ n }] = await s2`select count(*)::int n from materiality_topic mt
+    join report_project rp on rp.content_set_id = mt.set_id where rp.id = ${row.id}`;
+  temiTotali = n;
   await s2.end();
   return row.id;
-})() : null;
+})();
 await vaiPasso(2, "Matrice di doppia rilevanza");
 await page.reload();
 await page.waitForLoadState("networkidle");
-await page.getByText("3 materiali · 4/18 valutati").waitFor({ timeout: 30000 });
+// Il denominatore si legge dal DATABASE — un 18 scritto a mano diventa rosso al primo
+// tema aggiunto al catalogo, per un motivo che col bilancio non c'entra. Il numeratore
+// e' quello che questo collaudo ha appena seminato, quindi lo conosce. Il conteggio dei
+// materiali (3 su 4) resta un golden: dipende dalla soglia, che e' del prodotto.
+const riepilogo = page.locator('[data-slot="kpi"]').filter({
+  hasText: new RegExp(`materiali · ${punteggiSeminati}/${temiTotali} valutati`),
+});
+await riepilogo.first().waitFor({ timeout: 30000 });
+const testoRiepilogo = await riepilogo.first().innerText();
+if (!testoRiepilogo.startsWith("3 materiali")) {
+  throw new Error(`materiali attesi 3, letto: ${testoRiepilogo}`);
+}
 await page.click('[data-tour="proposta-ateco"]');
 await page.getByLabel("Guida Cambiamento climatico ed emissioni").click();
 await page.waitForTimeout(400);

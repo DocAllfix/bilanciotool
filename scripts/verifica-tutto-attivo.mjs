@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore, attendi } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi, spegniTour } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
@@ -55,6 +55,7 @@ if (process.env.CONTO) {
 // Piano Studio, con il marchio dello studio acceso: cosi' si prova anche il white-label.
 await sql`update org_entitlement set status='active', piano='studio', activated_at=now(), white_label=true
   where organization_id=${orgId}`;
+await spegniTour(page);
 const [demo] = await sql`select id from company where organization_id=${orgId} and is_demo=true`;
 const A = `/aziende/${demo.id}`;
 const vai = (r) => page.goto(`${BASE}${r}`, { waitUntil: "networkidle" });

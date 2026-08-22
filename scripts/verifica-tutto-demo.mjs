@@ -144,10 +144,14 @@ await agisci("il fascicolo elenca i cinque percorsi", async () => {
   // resa: leggere `main` subito dopo restituisce un contenuto parziale, e il controllo
   // accusa il prodotto di una mancanza che e' solo un'attesa saltata. Si aspetta un
   // ancoraggio del contenuto vero.
-  await page.getByText("I CINQUE PERCORSI", { exact: false }).first().waitFor({ timeout: 20_000 });
-  const t = await page.locator("main").innerText();
-  for (const n of ["Inventario GHG", "Bilancio di sostenibilità e conformità ESG", "Bilancio energetico", "Autovalutazione ESG", "Statement of Applicability"]) {
-    if (!t.includes(n)) throw new Error(`manca ${n}`);
+  // Ancoraggio STRUTTURALE e non testuale: la frase visibile porta un numero, e il giorno
+  // in cui i percorsi non sono piu' cinque questo controllo diventerebbe rosso per un
+  // motivo che col prodotto non c'entra. Si verifica che i percorsi CI SIANO, non quanti.
+  await page.locator("[data-percorsi]").first().waitFor({ timeout: 20_000 });
+  for (const m of ["ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+    if (!(await page.locator(`[data-modulo="${m}"]`).count())) {
+      throw new Error(`manca il percorso ${m}`);
+    }
   }
 });
 

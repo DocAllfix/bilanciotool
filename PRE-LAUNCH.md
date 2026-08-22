@@ -275,6 +275,28 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0. ⚠️ **Il portafoglio non si aggiorna dopo aver creato un'azienda, nel build di
+   produzione.** Misurato il 22 agosto 2026 su `next start`, che e' lo stesso build che
+   gira su Vercel. La riga viene scritta, il dialogo si chiude, e l'elenco resta quello di
+   prima: l'azienda compare solo ricaricando la pagina a mano.
+   - **Che cosa e' stato escluso, misurando**: la richiesta di aggiornamento parte davvero
+     (`GET /dashboard?_rsc=…`, non un prefetch, con l'albero di stato in intestazione) e il
+     server risponde col dato giusto (58 KB che contengono il nome nuovo). E' il client a
+     non applicarlo. Non e' «indietro di un aggiornamento»: creando una seconda azienda non
+     compare nemmeno la prima, e una sonda ha atteso **sessanta secondi**. Non e' l'ordine
+     fra chiusura del dialogo e aggiornamento (invertito: identico), non e' `startTransition`
+     (provato: identico), non e' la cache statica (`/dashboard` e' dinamica, `staleTimes`
+     e' a zero ed e' riconosciuta dal build). Con `npm run dev` l'elenco si aggiorna in ~3 s.
+   - **Impatto sul cliente**: crea un'azienda, non la vede, e la ricrea. Nessun messaggio,
+     nessun errore in console, nessuna richiesta fallita.
+   - **Non e' stato verificato in produzione** perche' provarlo significa scrivere
+     un'azienda vera nel database che incassa. Una nota in `visual-check-energetico.mjs`
+     dichiarava che in produzione l'elenco si aggiorna: **quella nota aveva il verso
+     sbagliato** (dava la colpa a `next start` come «server di prova», mentre e' proprio il
+     build di produzione) e non risulta verificata da chi l'ha scritta.
+   - **Intanto** i collaudi usano `attendiCard` (`scripts/comune-collaudo.mjs`), che ricarica
+     finche' la card non c'e': misurano il percorso, non l'artefatto.
+
 1. **Nessun canale di allarme funziona.** Da WordPress non esce posta (`sendmail` assente
    nel contenitore) e sul server del blog manca `RESEND_API_KEY`. I backup del blog girano
    e il restore-test settimanale passa, ma **se smettessero nessuno lo saprebbe**.

@@ -8,6 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { attendiCard } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-energetico";
@@ -95,19 +96,7 @@ await page.fill("#na-nome", "Fonderia Irno S.p.A.");
 await page.fill("#na-settore", "Fonderia di alluminio");
 await page.fill("#na-ateco", "24.53");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
-// La card giusta è quella dell'azienda appena creata: la prima del portafoglio
-// è l'organizzazione dimostrativa seminata alla registrazione.
-const card = page.locator('[data-slot="card"]').filter({ hasText: "Fonderia Irno S.p.A." }).first();
-// Si ricarica finche' la card non c'e'. In produzione compare subito (verificato su
-// evalisdeck.it: elenco aggiornato senza ricaricare, e il server rende sempre il dato
-// giusto), mentre con `next start` in locale l'elenco resta indietro di un aggiornamento.
-// Il collaudo deve misurare il percorso energetico, non quell'artefatto.
-for (let t = 0; t < 12 && !(await card.count()); t++) {
-  await page.waitForTimeout(1500);
-  await page.reload();
-  await page.waitForLoadState("networkidle");
-}
-await card.waitFor({ timeout: 20000 });
+const card = await attendiCard(page, "Fonderia Irno S.p.A.");
 // Il nome accessibile del pulsante porta anche lo stato («Bilancio energetico: da
 // avviare»): ci si aggancia all'INDIRIZZO, che e' il fatto stabile.
 const linkEnergetico = card.locator('a[href$="/energetico"]').first();

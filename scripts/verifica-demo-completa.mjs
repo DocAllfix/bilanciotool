@@ -121,13 +121,23 @@ await check("le esclusioni della SoA sono tutte motivate", async () => {
   if (escluse[0].n) throw new Error(`${escluse[0].n} esclusioni senza motivazione`);
 });
 
-await check("il fascicolo dell'azienda mostra tutti e cinque i percorsi avviati", async () => {
+await check("il fascicolo dell'azienda mostra OGNI percorso, e nessuno da avviare", async () => {
+  // I percorsi si contano dalle ancore strutturali, non dai nomi scritti qui: un
+  // elenco a mano non si accorge di un modulo aggiunto al registro e resta verde
+  // mentre la dimostrativa e' rimasta indietro — che e' esattamente cio' che era
+  // successo prima del 13 agosto 2026, quando i percorsi seminati erano due su cinque.
   await page.goto(`${BASE}/aziende/${az}`, { waitUntil: "networkidle" });
-  const t = await page.locator("body").innerText();
-  for (const n of ["Inventario GHG", "Bilancio di sostenibilità e conformità ESG", "Bilancio energetico", "Autovalutazione ESG", "Statement of Applicability"]) {
-    if (!t.includes(n)) throw new Error(`manca ${n}`);
+  const voci = page.locator("[data-percorsi] [data-modulo]");
+  const quanti = await voci.count();
+  if (quanti < 5) throw new Error(`il fascicolo mostra ${quanti} percorsi, meno dei cinque che il prodotto ha`);
+  const fermi = [];
+  for (let i = 0; i < quanti; i++) {
+    const chiave = await voci.nth(i).getAttribute("data-modulo");
+    const testo = await voci.nth(i).innerText();
+    if (!testo.trim()) throw new Error(`il percorso ${chiave} non mostra nulla`);
+    if (/Non avviato/i.test(testo)) fermi.push(chiave);
   }
-  if (/Non avviato/i.test(t)) throw new Error("un percorso risulta ancora non avviato");
+  if (fermi.length) throw new Error(`percorsi non avviati sulla dimostrativa: ${fermi.join(", ")}`);
 });
 
 await sql.end();
