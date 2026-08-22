@@ -53,7 +53,17 @@ if (!scelto) {
 // I collaudi leggono BASE dall'ambiente: quelli locali vogliono il server acceso,
 // `--prod` li punta al sito vero senza che ciascuno debba saperlo.
 const env = { ...process.env };
-if (prod) env.BASE = PROD;
+// ⚠️ `BASE` si IMPOSTA sempre, non solo con `--prod`.
+//
+// Nove script su trentuno hanno come valore predefinito `https://evalisdeck.it`: lasciando
+// la variabile assente, `npm run qa -- tutto-demo` andava a registrarsi IN PRODUZIONE
+// mentre il lanciatore stampava «http://localhost:3000». Il messaggio nato per dire il
+// vero era diventato la bugia peggiore, perche' credibile.
+//
+// Il difetto e' costato tre utenti e tre organizzazioni scritti nel database che incassa,
+// prima che si vedesse — e si e' visto solo perche' lo script cercava poi quell'utente sul
+// database di sviluppo e non lo trovava. Senza quel controllo sarebbe passato.
+env.BASE = prod ? PROD : env.BASE || "http://localhost:3000";
 
 // IL BERSAGLIO SI DICHIARA SEMPRE, non solo con `--prod`.
 //
@@ -65,7 +75,7 @@ if (prod) env.BASE = PROD;
 //
 // Un collaudo che non dice contro cosa ha parlato può essere verde sul bersaglio
 // sbagliato, ed è il modo più economico di credersi coperti senza esserlo.
-const bersaglio = env.BASE ?? "http://localhost:3000";
+const bersaglio = env.BASE;
 console.log(`→ ${scelto}  (${bersaglio})${prod ? "" : "  ← locale: il server deve essere acceso E aggiornato"}\n`);
 const esito = spawnSync(process.execPath, [join(QUI, scelto), ...argomenti.filter((a) => a !== nome)], {
   stdio: "inherit",

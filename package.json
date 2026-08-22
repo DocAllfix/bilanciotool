@@ -12,10 +12,10 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/guardia-database.mjs && drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "qa": "node scripts/qa.mjs",
-    "db:seed": "node scripts/seed.mjs",
+    "db:seed": "node scripts/guardia-database.mjs && node scripts/seed.mjs",
     "db:extract-seed": "node scripts/extract-seed.mjs"
   },
   "dependencies": {

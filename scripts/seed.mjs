@@ -7,6 +7,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import postgres from "postgres";
+import { seedCorpus } from "./seed-corpus.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = join(root, "src", "lib", "db", "seeds", "data");
@@ -270,6 +271,11 @@ try {
       values (${oid(k)}, ${SOA_SET}, ${k}, ${sql.json(load(file))})
       on conflict (id) do update set livelli = excluded.livelli`;
   }
+
+  // Il corpus documentale dei sei moduli di conformità: 447 documenti, 6.489 blocchi.
+  const corpus = await seedCorpus(sql);
+  console.log(`  corpus: ${corpus.documenti} documenti, ${corpus.blocchi} blocchi, ${corpus.forme} segnaposto`);
+  console.log(`  registri: ${corpus.registri} registri, ${corpus.colonneReg} colonne`);
 
   // Config limiti di piattaforma (se assente: default del piano 10/8/5).
   await sql`
