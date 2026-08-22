@@ -64,6 +64,29 @@ due segnali.
 *Effetto sui numeri*: un socio a rischio Medio con remunerazione «A provvigione» passa da
 5 obblighi applicabili a 6.
 
+**3. Un requisito applicabile e non valutato pesa zero.**
+Il prototipo mediava i soli requisiti VALUTATI. Misurato eseguendo il suo stesso codice:
+
+| Capitolo di 20 requisiti | Prototipo | Nostro |
+|---|---|---|
+| nessuno valutato | 0 | 0 |
+| **3 conformi, 17 mai guardati** | **100** | **15** |
+| 3 conformi, 17 non applicabili | 100 | 100 |
+| tutti e 20 conformi | 100 | 100 |
+| 10 conformi, 10 non conformi | 50 | 50 |
+| 20 parzialmente conformi | 50 | 50 |
+
+Tre righe diverse davano **lo stesso 100**: «ho fatto tutto», «ho fatto tre cose» e «ne
+ho tre e le altre non mi riguardano». E' un numero che finisce su un documento portato a
+un ente di certificazione. Vale la regola gia' adottata per la Dichiarazione di
+Applicabilita': mediare sui soli valutati fa **salire** l'indice man mano che si saltano
+i requisiti difficili.
+
+«Non applicabile» resta invece fuori dal denominatore, ed e' un'altra cosa: e' una
+valutazione, non un'omissione. **Diverge un caso solo su sei**, ed e' quello in cui il
+prototipo mentiva: c'e' un test che lo verifica, e diventa rosso se un domani divergesse
+anche il resto.
+
 **Cio' che invece NON si tocca**, perche' sembra un difetto e non lo e':
 - **La media si fa sulle sole dimensioni valutate**, non su quattro. Chi ha valutato una
   sola dimensione a 4 ottiene Critico; dividendo per quattro otterrebbe 1,0, cioe' Basso,
@@ -73,6 +96,13 @@ due segnali.
 - **`superiore()` nel prototipo restituisce la stringa vuota** quando il livello manca,
   invece di `false`. E' un artefatto di JavaScript, non una regola: normalizzato
   nell'estrazione del golden (`scripts/golden-anticorruzione.mjs`), dove si vede il perche'.
+- **La conformita' del sistema e' la media NON PESATA dei sette capitoli**: uno da cinque
+  requisiti conta quanto uno da trenta. La norma non dice che il capitolo 8 valga sei
+  volte il capitolo 10.
+- **«Parzialmente conforme» vale 50, non zero.** In SA8000/2026 lo stesso concetto pesa
+  zero: sono due prototipi dello stesso autore che trattano la stessa idea in modo
+  opposto. Si resta fedeli a ciascuno, e la divergenza fra i due moduli e' registrata,
+  non appianata.
 - **La verifica del corrispettivo non ammette «Non applicabile»**, a differenza delle
   clausole: l'obbligo esiste perche' il corrispettivo E' a provvigione, quindi dichiararlo
   non applicabile contraddice il proprio presupposto. Una clausola contrattuale puo'

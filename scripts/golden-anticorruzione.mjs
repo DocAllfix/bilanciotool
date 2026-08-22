@@ -93,9 +93,35 @@ for (const [prob, cons] of [["1 - Rara", "1 - Lieve"], ["2 - Possibile", "2 - Mo
     `livScenario({ prob: ${JSON.stringify(prob)}, cons: ${JSON.stringify(cons)} })`, ctx);
 }
 
-const golden = { estrattoDa: "aggiuntenuovimoduli/sgpc-iso37001-v1.html", casi: CASI, soci, scenari };
+// Conformita': il prototipo pesa Conforme 100, Parzialmente 50, Non conforme 0, ed
+// ESCLUDE dalla media sia «Non applicabile» sia i requisiti non valutati. Qui si
+// estrae il suo comportamento su casi minimi, per poter misurare — e non affermare —
+// quanto la nostra scelta diversa sposti i numeri.
+vm.runInContext(`
+  const PESO = { "Conforme":100, "Parzialmente conforme":50, "Non conforme":0 };
+  function capStatoProto(stati){
+    const v = stati.filter(s => s && s !== "Non applicabile");
+    if (!v.length) return 0;
+    return Math.round(v.reduce((a, s) => a + (PESO[s] || 0), 0) / v.length);
+  }
+`, ctx);
+const conformita = {};
+for (const [nome, stati] of Object.entries({
+  "nessuno valutato su 20": Array(20).fill(""),
+  "3 conformi su 20, il resto intatto": ["Conforme", "Conforme", "Conforme", ...Array(17).fill("")],
+  "3 conformi e 17 non applicabili": ["Conforme", "Conforme", "Conforme", ...Array(17).fill("Non applicabile")],
+  "tutti e 20 conformi": Array(20).fill("Conforme"),
+  "10 conformi e 10 non conformi": [...Array(10).fill("Conforme"), ...Array(10).fill("Non conforme")],
+  "20 parzialmente conformi": Array(20).fill("Parzialmente conforme"),
+})) {
+  ctx.__s = stati;
+  conformita[nome] = { stati, prototipo: vm.runInContext("capStatoProto(__s)", ctx) };
+}
+
+const golden = { conformita, estrattoDa: "aggiuntenuovimoduli/sgpc-iso37001-v1.html", casi: CASI, soci, scenari };
 writeFileSync("src/lib/calc/anticorruzione/__tests__/golden.json", JSON.stringify(golden, null, 2) + "\n");
-console.log(`golden: ${Object.keys(soci).length} casi socio, ${Object.keys(scenari).length} scenari`);
+console.log(`golden: ${Object.keys(soci).length} casi socio, ${Object.keys(scenari).length} scenari, ${Object.keys(conformita).length} casi di conformita'`);
+for (const [k, v] of Object.entries(conformita)) console.log(`  ${k.padEnd(38)} prototipo=${v.prototipo}`);
 for (const [k, v] of Object.entries(soci)) {
   console.log(`  ${k.padEnd(24)} ${(v.livello || "—").padEnd(8)} obblighi=${v.obblighi.length} aperti=${v.aperti.length}`);
 }
