@@ -19,6 +19,7 @@ import { getWizardData as getEnergyWizardData } from "@/features/energy/queries"
 import { listChapters as listEnergyChapters } from "@/features/energy/narrative";
 import { getSupplierData } from "@/features/supplier/queries";
 import { getSoaData } from "@/features/soa/queries";
+import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
@@ -304,6 +305,127 @@ export async function publishSoaSnapshot(userId: string, orgId: string, companyI
   };
 
   return salvaSnapshot(userId, orgId, companyId, "soa", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La Relazione annuale sulla prevenzione della corruzione.
+ *
+ * È il documento che la funzione anticorruzione porta all'organo di governo: dice
+ * quanti soci in affari sono sopra la soglia, quanti obblighi sono aperti, a che punto
+ * è la conformità ai 91 requisiti. Si congela QUI, insieme ai derivati: il livello di
+ * rischio di un socio cambia il giorno in cui si aggiorna una dimensione, e una
+ * relazione già consegnata non deve cambiare sotto i piedi di chi l'ha ricevuta.
+ */
+export async function publishRelazionePcSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getAnticorruzione(userId, orgId, companyId);
+  if (!d) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
+
+  const azienda = await aziendaPerDocumento(userId, orgId, companyId);
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda,
+    sistema: d.sistema,
+    // I soci con i loro derivati: livello, obblighi applicabili e aperti. Nel documento
+    // NON si ricalcola niente — è la ragione per cui stanno qui e non si rende dai dati
+    // vivi. I rapporti cessati restano, perché la relazione racconta anche cosa è
+    // finito nel periodo; gli indicatori invece li escludono.
+    soci: d.soci.map((s) => ({
+      nome: s.nome,
+      categoria: s.categoria,
+      paese: s.paeseOperativita,
+      stato: s.stato,
+      livello: s.livello,
+      sopraSoglia: s.sopraSoglia,
+      livelloDD: s.livelloDD,
+      frequenzaDD: s.frequenzaDD,
+      dueDiligenceIl: s.dueDiligenceIl,
+      ddScaduta: s.ddScaduta,
+      obblighi: s.obblighi,
+      aperti: s.aperti,
+    })),
+    capitoli: d.capitoli.map((c) => ({
+      key: c.key,
+      nome: c.nome,
+      descrizione: c.descrizione,
+      requisiti: c.requisiti,
+      valutati: c.valutati,
+      conformita: c.conformita,
+    })),
+    conformita: d.conformita,
+    indicatori: d.indicatori,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "relazione_pc", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La Matrice di conformità: i 91 requisiti con stato, evidenza e procedura.
+ *
+ * È il documento che un auditor sfoglia riga per riga. A differenza della Relazione
+ * contiene il TESTO di ogni requisito: chi lo riceve deve poter leggere la domanda
+ * accanto alla risposta, senza avere la norma sul tavolo.
+ */
+export async function publishMatricePcSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getAnticorruzione(userId, orgId, companyId);
+  if (!d) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
+
+  const azienda = await aziendaPerDocumento(userId, orgId, companyId);
+  const statoPerChiave = new Map(d.statiRequisiti.map((r) => [r.requirementKey, r]));
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda,
+    sistema: { ragione: d.sistema.ragione, scopo: d.sistema.scopo, revisione: d.sistema.revisione, dataAdozione: d.sistema.dataAdozione },
+    capitoli: d.capitoli.map((c) => ({
+      key: c.key,
+      nome: c.nome,
+      descrizione: c.descrizione,
+      conformita: c.conformita,
+      valutati: c.valutati,
+      requisiti: d.catalogo.requisiti
+        .filter((r) => r.chapterKey === c.key)
+        .map((r) => {
+          const s = statoPerChiave.get(r.key);
+          return {
+            key: r.key,
+            riferimento: r.riferimento,
+            procedura: r.procedura,
+            testo: r.testo,
+            stato: s?.stato ?? null,
+            note: s?.note ?? null,
+            evidenza: s?.evidenza ?? null,
+          };
+        }),
+    })),
+    conformita: d.conformita,
+    requisitiTotali: d.indicatori.requisitiTotali,
+    requisitiValutati: d.indicatori.requisitiValutati,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "matrice_pc", SENZA_ESERCIZIO, dati);
+}
+
+/** L'intestazione dell'azienda, uguale per tutti i documenti. */
+async function aziendaPerDocumento(userId: string, orgId: string, companyId: string) {
+  const [az] = await withTenant({ userId, orgId }, (tx) =>
+    tx
+      .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede })
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId))),
+  );
+  if (!az) throw new Error("Azienda inesistente o di un altro tenant");
+  return az;
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

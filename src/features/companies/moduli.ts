@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, Factory, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, Factory, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -188,6 +188,20 @@ export const MODULI_AZIENDA = [
     area: "sistemi",
     colore: AREE.sistemi.colore,
     documenti: ["soa"],
+    perEsercizio: false,
+  },
+  {
+    href: "anticorruzione",
+    etichetta: "ISO 37001",
+    nome: "Prevenzione della corruzione",
+    norma: "UNI ISO 37001",
+    icona: Scale,
+    area: "responsabilita",
+    colore: AREE.responsabilita.colore,
+    // Due uscite, il principale per primo: la Relazione e' cio' che si porta all'organo
+    // di governo, la Matrice e' cio' che l'auditor sfoglia. La prima rappresenta il
+    // modulo dove ne serve una sola (scadenzario, fascicolo, stato del percorso).
+    documenti: ["relazione_pc", "matrice_pc"],
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];

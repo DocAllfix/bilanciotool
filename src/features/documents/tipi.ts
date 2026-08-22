@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -64,6 +64,22 @@ export const DOCUMENTI = {
     mostraAnno: false,
     haMedia: false,
   },
+  relazione_pc: {
+    nome: "Relazione annuale sulla prevenzione della corruzione",
+    breve: "Relazione ISO 37001",
+    file: "relazione-prevenzione-corruzione",
+    // Non annuale malgrado il nome: il documento e' una REVISIONE del sistema, e le
+    // revisioni formano una serie unica. L'anno nel titolo lo mette chi lo redige.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  matrice_pc: {
+    nome: "Matrice di conformita' UNI ISO 37001",
+    breve: "Matrice ISO 37001",
+    file: "matrice-conformita-37001",
+    mostraAnno: false,
+    haMedia: false,
+  }
 } as const satisfies Record<TipoDocumento, VoceDocumento>;
 
 /** "Rapporto GHG 2025" per i documenti annuali, "Attestato ESG" per gli altri. */

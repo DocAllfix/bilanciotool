@@ -8,6 +8,8 @@ import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
 import { DocumentoEnergetico } from "@/components/documento/documento-energetico";
 import { DocumentoAttestato } from "@/components/documento/documento-attestato";
 import { DocumentoSoa } from "@/components/documento/documento-soa";
+import { DocumentoRelazionePc } from "@/components/documento/documento-relazione-pc";
+import { DocumentoMatricePc } from "@/components/documento/documento-matrice-pc";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +40,10 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         return <DocumentoEnergetico dati={dati} imageUrls={imageUrls} />;
       case "soa":
         return <DocumentoSoa dati={dati} />;
+      case "relazione_pc":
+        return <DocumentoRelazionePc dati={dati} />;
+      case "matrice_pc":
+        return <DocumentoMatricePc dati={dati} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

@@ -6,6 +6,7 @@ import type { TipoDocumento } from "./tipi";
 import {
   listSnapshots, publishBilancioSnapshot, publishEnergySnapshot, publishGhgSnapshot,
   publishSoaSnapshot, publishSupplierSnapshot,
+  publishRelazionePcSnapshot, publishMatricePcSnapshot,
 } from "./snapshot";
 
 export async function publishDocumentAction(
@@ -29,6 +30,10 @@ export async function publishDocumentAction(
         case "attestato":
           // Non ha esercizio: l'anno ricevuto è SENZA_ESERCIZIO e va scartato.
           return (u: string, o: string, c: string) => publishSupplierSnapshot(u, o, c);
+        case "relazione_pc":
+          return (u: string, o: string, c: string) => publishRelazionePcSnapshot(u, o, c);
+        case "matrice_pc":
+          return (u: string, o: string, c: string) => publishMatricePcSnapshot(u, o, c);
         default: {
           const mai: never = tipo;
           throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);

@@ -39,6 +39,12 @@ export type VoceAttivita = { etichetta: string; companyNome: string | null; quan
 export const ETICHETTE_AUDIT: Record<string, string> = {
   // I sei moduli di conformità: il corpus documentale e i suoi registri.
   "corpus.documento.stato": "Documento del sistema aggiornato",
+  "anticorruzione.sistema.create": "Sistema anticorruzione avviato",
+  "anticorruzione.profilo.set": "Profilo del sistema anticorruzione aggiornato",
+  "anticorruzione.socio.create": "Socio in affari censito",
+  "anticorruzione.socio.set": "Socio in affari aggiornato",
+  "anticorruzione.socio.delete": "Socio in affari rimosso",
+  "anticorruzione.requisito.set": "Requisito ISO 37001 valutato",
   "corpus.blocco.personalizza": "Testo del documento personalizzato",
   "corpus.blocco.ripristina": "Testo del documento ripristinato",
   "corpus.registro.aggiungi": "Registrazione inserita",
@@ -112,9 +118,13 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.attestato.publish": "Attestato del fornitore pubblicato",
   "documento.attestato.pdf": "Attestato scaricato in PDF",
   "documento.soa.publish": "Dichiarazione di Applicabilità pubblicata",
+  "documento.relazione_pc.publish": "Relazione anticorruzione pubblicata",
+  "documento.matrice_pc.publish": "Matrice ISO 37001 pubblicata",
   "condivisione.create": "Collegamento per il cliente generato",
   "condivisione.revoke": "Collegamento per il cliente disattivato",
   "documento.soa.pdf": "Dichiarazione scaricata in PDF",
+  "documento.relazione_pc.pdf": "Relazione anticorruzione scaricata in PDF",
+  "documento.matrice_pc.pdf": "Matrice ISO 37001 scaricata in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };
