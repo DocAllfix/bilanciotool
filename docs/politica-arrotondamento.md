@@ -143,3 +143,38 @@ verificate contro le cento combinazioni del golden:
 - **Il livello di un processo e' il PEGGIORE dei suoi scenari**, non la media: un
   processo con nove scenari bassi e uno critico e' critico, e mediare nasconderebbe
   proprio cio' che il modello deve far vedere.
+
+## Gestione delle segnalazioni — D.Lgs. 24/2023 (Fase F)
+
+Due scostamenti dal prototipo `whistleblowing-v1.html`, e qui non sono raffinatezze:
+sono **termini perentori di legge**, e un giorno in meno e' una violazione.
+
+**1. Le date si calcolano in UTC.** Il prototipo interpretava la data a mezzanotte UTC e
+poi la manipolava in ora LOCALE. Misurato eseguendo il suo codice con due fusi
+(`scripts/golden-segnalazioni.mjs`), **lo stesso input dava due risposte**:
+
+| Termine | fuso UTC | fuso Europe/Rome |
+|---|---|---|
+| avviso su 2026-03-25 | 1 aprile | **31 marzo** |
+| avviso su 2026-03-29 | 5 aprile | 4 aprile |
+| riscontro su 2026-01-31 | 1 maggio | 30 aprile |
+| riscontro su 2026-02-28 | 28 maggio | **27 maggio** |
+
+Chi lavora in Italia riceveva sempre quella piu' corta. Il golden registra le quattro
+divergenze, e un test verifica che siano esattamente quattro.
+
+**2. I mesi si agganciano all'ultimo giorno invece di traboccare.** Il prototipo dava
+`30 novembre + 3 mesi = 2 marzo`, due giorni oltre la fine di febbraio; e
+`29 novembre 2024 + 3 mesi = 1 marzo 2025`. Ora danno 28 febbraio, che e' cio' che
+calcolano date-fns, Luxon e l'`INTERVAL` di Postgres — e cio' che calcolerebbe un
+avvocato.
+
+⚠️ **Nel caso del 31 gennaio i due difetti si ANNULLAVANO a vicenda**: nel fuso italiano
+il risultato era 30 aprile, cioe' la risposta giusta per la ragione sbagliata.
+Correggerne uno solo avrebbe peggiorato le cose, ed e' il motivo per cui il golden e'
+stato estratto con due fusi invece che con uno.
+
+**Cio' che invece NON si tocca**, perche' il prototipo lo aveva gia' giusto: **il
+riscontro decorre dall'avviso EFFETTIVAMENTE reso**, e solo in sua mancanza dalla
+scadenza dei sette giorni. E' precisamente cio' che dice la norma: chi non da' l'avviso
+non guadagna tempo, ma nemmeno ne perde oltre quello che gli e' concesso.
