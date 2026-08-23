@@ -174,7 +174,32 @@ il risultato era 30 aprile, cioe' la risposta giusta per la ragione sbagliata.
 Correggerne uno solo avrebbe peggiorato le cose, ed e' il motivo per cui il golden e'
 stato estratto con due fusi invece che con uno.
 
+**3. Un solo «No» non basta a dichiarare il rischio di ritorsione.** Il prototipo
+considerava «valutato» un fascicolo in cui anche UNO solo dei sei fattori avesse un
+valore qualsiasi, «No» compreso: rispondere no alla prima domanda e lasciare le altre
+cinque in bianco produceva **«Basso»** — un rischio dichiarato basso che nessuno aveva
+misurato. Qui servono tutti e sei; finche' ne manca uno il livello e' `null`, e un
+livello che non c'e' non puo' rassicurare ne' attivare il monitoraggio.
+
+**4. Il livello «Critico» non esiste.** Il prototipo lo dichiarava nella tabella dei
+colori e la funzione non lo restituiva mai. Un gradino irraggiungibile fa credere che la
+scala arrivi piu' in alto di dove arriva.
+
+**5. L'ammissibilita' non valutata e' `null`, non stringa vuota.** Nel prototipo era `""`,
+che nei confronti si comporta come un falso: chi non aveva ancora valutato risultava
+indistinguibile da chi aveva valutato negativamente.
+
 **Cio' che invece NON si tocca**, perche' il prototipo lo aveva gia' giusto: **il
 riscontro decorre dall'avviso EFFETTIVAMENTE reso**, e solo in sua mancanza dalla
 scadenza dei sette giorni. E' precisamente cio' che dice la norma: chi non da' l'avviso
 non guadagna tempo, ma nemmeno ne perde oltre quello che gli e' concesso.
+
+Sempre nel modulo Segnalazioni, si conservano tre asimmetrie volute:
+- **il tetto a «Medio» per l'anonima con identita' non conoscibile** (soglia unica a 6,
+  «Alto» irraggiungibile per costruzione): se non si puo' risalire alla persona, la
+  ritorsione ha un limite materiale;
+- **la contattabilita' asimmetrica**: per la non anonima basta che il recapito non sia un
+  «No» esplicito, per l'anonima serve un positivo — un codice o un recapito dichiarato;
+- **«Da integrare» come unica eccezione alla porta AND** dell'ammissibilita': se manca
+  soltanto l'elemento «fatti precisi e concordanti» la segnalazione si completa, non si
+  archivia. Archiviare cio' che si poteva chiarire toglie la tutela a chi si e' esposto.
