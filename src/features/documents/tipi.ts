@@ -13,6 +13,33 @@ export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
  *  numerazione al cambio di calendario. */
 export const SENZA_ESERCIZIO = 0;
 
+/**
+ * I documenti che NON possono uscire dal portale cliente.
+ *
+ * ⚠️ Questo insieme esiste PRIMA che ne esista un membro, ed è deliberato.
+ *
+ * Il collegamento del portale è **per azienda, non per documento**: chi lo riceve vede
+ * tutti i documenti pubblicati di quella azienda. Quindi il giorno in cui si aggiunge un
+ * tipo che contiene l'identità di chi ha segnalato — il fascicolo di una segnalazione ex
+ * D.Lgs. 24/2023 — quel documento comparirebbe **da solo** dentro i collegamenti già
+ * consegnati, senza che nessuno prema niente. L'esposizione non richiederebbe un errore
+ * dell'utente: la produrrebbe l'aggiunta del tipo.
+ *
+ * Il filtro sta nella QUERY DEL PORTALE (`features/condivisione/index.ts`) e non
+ * nell'interfaccia, e non in un controllo al momento della pubblicazione: quello
+ * varrebbe solo per i documenti futuri, e lascerebbe fuori quelli già archiviati.
+ *
+ * Rivelare l'identità di chi segnala senza il suo consenso espresso è vietato dall'art.
+ * 12 del decreto. È l'unico modulo dei sei in cui un errore di permessi ha una
+ * conseguenza legale diretta per una persona che si è esposta.
+ */
+export const TIPI_RISERVATI: readonly TipoDocumento[] = [];
+
+/** true se il documento non deve mai raggiungere il portale cliente. */
+export function riservato(tipo: TipoDocumento): boolean {
+  return TIPI_RISERVATI.includes(tipo);
+}
+
 export type VoceDocumento = {
   /** Etichetta estesa, per il pulsante di pubblicazione. */
   nome: string;

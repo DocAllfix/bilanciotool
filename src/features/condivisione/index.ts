@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { withTenant } from "@/lib/db/tenant";
 import { companyShareLink, company, documentSnapshot } from "@/lib/db/schema";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { TIPI_RISERVATI } from "@/features/documents/tipi";
+import { and, desc, eq, sql, notInArray } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { DOCUMENTI } from "@/features/documents/tipi";
@@ -210,10 +211,19 @@ export async function apriCollegamento(token: string): Promise<AperturaCollegame
       })
       .from(documentSnapshot)
       // Solo i documenti di QUELLA azienda: un collegamento apre una porta sola.
+      //
+      // ⚠️ E MAI i tipi riservati. Il collegamento è per AZIENDA, non per documento:
+      // senza questo filtro, il giorno in cui si aggiunge un tipo che contiene
+      // l'identità di chi ha segnalato, quel documento comparirebbe da solo dentro i
+      // collegamenti già consegnati. Il filtro sta qui e non nell'interfaccia, e non al
+      // momento della pubblicazione: quello varrebbe solo per i documenti futuri.
+      //
+      // Vedi `TIPI_RISERVATI` in `features/documents/tipi.ts` per la ragione di legge.
       .where(
         and(
           eq(documentSnapshot.companyId, link.companyId),
           eq(documentSnapshot.organizationId, link.organizationId),
+          TIPI_RISERVATI.length ? notInArray(documentSnapshot.tipo, [...TIPI_RISERVATI]) : undefined,
         ),
       )
       .orderBy(desc(documentSnapshot.publishedAt));
