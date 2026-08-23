@@ -4,6 +4,8 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getMog231 } from "@/features/mog231/queries";
 import { Mog231Shell } from "@/components/mog231/mog231-shell";
 import { CreaModello } from "@/components/mog231/crea-modello";
+import { caricaCorpus, contatoriCorpus } from "@/features/corpus/carica";
+import { anagraficaCorpus231 } from "@/features/mog231/anagrafica-corpus";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Modello 231" };
@@ -13,10 +15,10 @@ export default async function Mog231Page({
   searchParams,
 }: {
   params: Promise<{ companyId: string }>;
-  searchParams: Promise<{ vista?: string }>;
+  searchParams: Promise<{ vista?: string; doc?: string; reg?: string }>;
 }) {
   const { companyId } = await params;
-  const { vista } = await searchParams;
+  const { vista, doc, reg } = await searchParams;
 
   const s = await requireConsultant();
   const dati = await getMog231(s.userId, s.orgId, companyId);
@@ -36,5 +38,19 @@ export default async function Mog231Page({
     );
   }
 
-  return <Mog231Shell companyId={companyId} dati={dati} vistaIniziale={vista ?? "quadro"} />;
+  // Il corpus del modulo: si carica solo cio' che la vista aperta chiede.
+  const [corpus, contatori] = await Promise.all([
+    caricaCorpus(s.userId, s.orgId, companyId, dati.modello.contentSetId, { vista, doc, reg }, anagraficaCorpus231(dati.modello)),
+    contatoriCorpus(s.userId, s.orgId, companyId, dati.modello.contentSetId),
+  ]);
+
+  return (
+    <Mog231Shell
+      companyId={companyId}
+      dati={dati}
+      vistaIniziale={vista ?? "quadro"}
+      corpus={corpus}
+      contatoriCorpus={contatori}
+    />
+  );
 }

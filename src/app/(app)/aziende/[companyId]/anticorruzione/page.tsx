@@ -4,6 +4,8 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { AnticorruzioneShell } from "@/components/anticorruzione/anticorruzione-shell";
 import { CreaSistema } from "@/components/anticorruzione/crea-sistema";
+import { caricaCorpus, contatoriCorpus } from "@/features/corpus/carica";
+import { anagraficaCorpusPc } from "@/features/anticorruzione/anagrafica-corpus";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Prevenzione della corruzione" };
@@ -13,10 +15,10 @@ export default async function AnticorruzionePage({
   searchParams,
 }: {
   params: Promise<{ companyId: string }>;
-  searchParams: Promise<{ vista?: string }>;
+  searchParams: Promise<{ vista?: string; doc?: string; reg?: string }>;
 }) {
   const { companyId } = await params;
-  const { vista } = await searchParams;
+  const { vista, doc, reg } = await searchParams;
 
   const s = await requireConsultant();
   const dati = await getAnticorruzione(s.userId, s.orgId, companyId);
@@ -36,5 +38,19 @@ export default async function AnticorruzionePage({
     );
   }
 
-  return <AnticorruzioneShell companyId={companyId} dati={dati} vistaIniziale={vista ?? "quadro"} />;
+  // Il corpus del modulo: si carica solo cio' che la vista aperta chiede.
+  const [corpus, contatori] = await Promise.all([
+    caricaCorpus(s.userId, s.orgId, companyId, dati.sistema.contentSetId, { vista, doc, reg }, anagraficaCorpusPc(dati.sistema)),
+    contatoriCorpus(s.userId, s.orgId, companyId, dati.sistema.contentSetId),
+  ]);
+
+  return (
+    <AnticorruzioneShell
+      companyId={companyId}
+      dati={dati}
+      vistaIniziale={vista ?? "quadro"}
+      corpus={corpus}
+      contatoriCorpus={contatori}
+    />
+  );
 }

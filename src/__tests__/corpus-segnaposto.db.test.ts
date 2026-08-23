@@ -3,7 +3,9 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { corpusPlaceholder } from "@/lib/db/schema";
 import { anagraficaCorpus } from "@/features/segnalazioni/anagrafica-corpus";
-import type { wbSystem } from "@/lib/db/schema";
+import { anagraficaCorpus231 } from "@/features/mog231/anagrafica-corpus";
+import { anagraficaCorpusPc } from "@/features/anticorruzione/anagrafica-corpus";
+import type { briberySystem, mogModel, wbSystem } from "@/lib/db/schema";
 
 // I segnaposto del corpus trovano davvero il loro dato?
 //
@@ -28,18 +30,40 @@ const ASSETTO_FINTO = {
   organoIndirizzo: "x", organoControllo: "x", gestore: "x", sostituto: "x", dpo: "x",
 } as unknown as typeof wbSystem.$inferSelect;
 
-describe("i segnaposto delle Segnalazioni trovano il loro dato", () => {
-  it("ogni campo richiesto dal catalogo è coperto dalla mappatura", async () => {
+/** Ogni modulo di conformità col proprio catalogo e la propria mappatura. */
+const MODULI = [
+  {
+    nome: "Segnalazioni",
+    set: "wb-v1",
+    file: "src/features/segnalazioni/anagrafica-corpus.ts",
+    coperti: () => Object.keys(anagraficaCorpus(ASSETTO_FINTO)),
+  },
+  {
+    nome: "Modello 231",
+    set: "mog231-v1",
+    file: "src/features/mog231/anagrafica-corpus.ts",
+    coperti: () => Object.keys(anagraficaCorpus231({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", organoAmministrativo: "x", odvComposizione: "x" } as unknown as typeof mogModel.$inferSelect)),
+  },
+  {
+    nome: "ISO 37001",
+    set: "iso37001-v1",
+    file: "src/features/anticorruzione/anagrafica-corpus.ts",
+    coperti: () => Object.keys(anagraficaCorpusPc({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", direzione: "x", funzionePc: "x" } as unknown as typeof briberySystem.$inferSelect)),
+  },
+] as const;
+
+describe("i segnaposto del corpus trovano il loro dato", () => {
+  it.each(MODULI)("$nome: ogni campo richiesto dal catalogo è coperto", async (m) => {
     const richiesti = await db
       .select({ forma: corpusPlaceholder.forma, campo: corpusPlaceholder.campo })
       .from(corpusPlaceholder)
-      .where(and(eq(corpusPlaceholder.contentSetId, "wb-v1"), eq(corpusPlaceholder.fonte, "azienda")));
+      .where(and(eq(corpusPlaceholder.contentSetId, m.set), eq(corpusPlaceholder.fonte, "azienda")));
 
     // Guardia sulla prova stessa: se il catalogo non fosse seminato, l'elenco sarebbe
     // vuoto e il test passerebbe senza provare niente.
-    expect(richiesti.length, "il catalogo dei segnaposto non risulta seminato").toBeGreaterThan(0);
+    expect(richiesti.length, `il catalogo ${m.set} non risulta seminato`).toBeGreaterThan(0);
 
-    const coperti = new Set(Object.keys(anagraficaCorpus(ASSETTO_FINTO)));
+    const coperti = new Set(m.coperti());
     const scoperti = richiesti
       .filter((r) => r.campo && !coperti.has(r.campo))
       .map((r) => `${r.forma} → «${r.campo}»`);
@@ -47,8 +71,7 @@ describe("i segnaposto delle Segnalazioni trovano il loro dato", () => {
     expect(
       scoperti,
       "Segnaposto senza dato: si stamperebbero evidenziati, e sembrerebbero un dato " +
-        "mancante del cliente invece di una mappatura mancante. Aggiungi la chiave in " +
-        "src/features/segnalazioni/anagrafica-corpus.ts.",
+        `mancante del cliente invece di una mappatura mancante. Aggiungi la chiave in ${m.file}.`,
     ).toEqual([]);
   });
 

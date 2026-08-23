@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { SezioneCorpus, type DatiCorpus, type VistaCorpus } from "@/components/corpus/sezione-corpus";
 import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
 import { SENZA_ESERCIZIO } from "@/features/documents/tipi";
 import { VistaQuadro } from "./vista-quadro";
@@ -23,17 +24,27 @@ const VISTE = [
   { k: "reati", n: "Reati presupposto" },
   { k: "processi", n: "Processi e rischi" },
   { k: "presidi", n: "Presidi" },
+  // Le tre viste del CORPUS, uguali in tutti i moduli di conformità.
+  { k: "procedure", n: "Procedure" },
+  { k: "moduli", n: "Modulistica" },
+  { k: "registri", n: "Registri" },
   { k: "documenti", n: "Documenti" },
 ] as const;
+
+const VISTE_CORPUS: readonly string[] = ["procedure", "moduli", "registri"];
 
 export function Mog231Shell({
   companyId,
   dati,
   vistaIniziale,
+  corpus,
+  contatoriCorpus,
 }: {
   companyId: string;
   dati: DatiMog231;
   vistaIniziale: string;
+  corpus: DatiCorpus;
+  contatoriCorpus: { procedure: number; moduli: number; approvate: number };
 }) {
   const router = useRouter();
   const vista = VISTE.some((v) => v.k === vistaIniziale) ? vistaIniziale : "quadro";
@@ -46,6 +57,12 @@ export function Mog231Shell({
     reati: `${k.reatiApplicabili}/${dati.catalogo.reati.length}`,
     processi: k.processi ? String(k.processi) : null,
     presidi: `${k.requisitiValutati}/${k.requisitiTotali}`,
+    // ⚠️ I contatori del corpus arrivano da una lettura DEDICATA: la barra li mostra
+    // sempre, e caricare 447 documenti per scrivere tre numeri sarebbe il costo peggiore
+    // del prodotto.
+    procedure: `${contatoriCorpus.approvate}/${contatoriCorpus.procedure}`,
+    moduli: String(contatoriCorpus.moduli),
+    registri: corpus.registri.length ? String(corpus.registri.reduce((a, r) => a + r.righe, 0)) : null,
     documenti: null,
   };
 
@@ -120,6 +137,15 @@ export function Mog231Shell({
         {vista === "reati" && <VistaReati companyId={companyId} dati={dati} />}
         {vista === "processi" && <VistaProcessi companyId={companyId} dati={dati} />}
         {vista === "presidi" && <VistaPresidi companyId={companyId} dati={dati} />}
+        {VISTE_CORPUS.includes(vista) && (
+          <SezioneCorpus
+            companyId={companyId}
+            contentSetId={dati.modello.contentSetId}
+            vista={vista as VistaCorpus}
+            rotta={`/aziende/${companyId}/mog231`}
+            dati={corpus}
+          />
+        )}
         {vista === "documenti" && (
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground">

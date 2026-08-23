@@ -36,6 +36,8 @@ const MOG_SET = "mog231-v1";
 const mid = (key) => `${MOG_SET}:${key}`;
 const AC_SET = "iso37001-v1";
 const acid = (key) => `${AC_SET}:${key}`;
+const QAS_SET = "sgiqas-v1";
+const qid = (key) => `${QAS_SET}:${key}`;
 const WB_SET = "wb-v1";
 const wid = (key) => `${WB_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
@@ -362,6 +364,48 @@ try {
   // capi vi puntano con una chiave esterna. Messo sopra, su un database vergine
   // fallirebbe — e su uno gia' seminato passerebbe, che e' il modo peggiore di
   // sbagliare: verde in sviluppo, rosso al primo ambiente nuovo.
+  // --- Sistema di gestione integrato QAS (ISO 9001 · 14001 · 45001) ---
+  //
+  // ⚠️ `norme` diventa un ARRAY. Nel prototipo e' la stringa concatenata `nrm: "QAS"`,
+  // interrogata con `String.includes`: in Postgres sarebbe un `LIKE '%Q%'`,
+  // inindicizzabile. Qui si spezza in lettere e l'indice GIN fa il resto.
+  for (const [i, [key, norma, nome]] of load("sgiqas-norme.json").entries()) {
+    await sql`
+      insert into qas_norm (id, set_id, key, nome, norma, ordine)
+      values (${qid(`norm:${key}`)}, ${QAS_SET}, ${key}, ${nome}, ${norma}, ${i})
+      on conflict (id) do update set nome = excluded.nome, norma = excluded.norma, ordine = excluded.ordine`;
+  }
+
+  for (const [i, c] of load("sgiqas-capi.json").entries()) {
+    await sql`
+      insert into qas_chapter (id, set_id, key, nome, ordine)
+      values (${qid(`cap:${c.id}`)}, ${QAS_SET}, ${c.id}, ${c.n}, ${i})
+      on conflict (id) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const [i, r] of load("sgiqas-req.json").entries()) {
+    const norme = [...String(r.nrm || "")];
+    await sql`
+      insert into qas_requirement (id, set_id, key, chapter_key, riferimento, norme, procedura, testo, ordine)
+      values (${qid(`req:${r.id}`)}, ${QAS_SET}, ${r.id}, ${r.cap}, ${r.rif}, ${norme}, ${r.pro ?? null}, ${r.t}, ${i})
+      on conflict (id) do update set chapter_key = excluded.chapter_key, riferimento = excluded.riferimento,
+        norme = excluded.norme, procedura = excluded.procedura, testo = excluded.testo, ordine = excluded.ordine`;
+  }
+
+  // I venti indicatori di partenza: target e soglia sono SUGGERITI, non imposti.
+  for (const [i, b] of load("sgiqas-indicatori.json").entries()) {
+    const [cod, nome, ambito, tipo, , formula, um, freq, target, verso, soglia] = b;
+    await sql`
+      insert into qas_indicator_default (id, set_id, key, nome, ambito, tipo, formula, um, frequenza,
+        verso_positivo, target, soglia, ordine)
+      values (${qid(`ind:${cod}`)}, ${QAS_SET}, ${cod}, ${nome}, ${ambito}, ${tipo}, ${formula}, ${um}, ${freq},
+        ${verso === "Crescente"}, ${target == null ? null : String(target)}, ${soglia == null ? null : String(soglia)}, ${i})
+      on conflict (id) do update set nome = excluded.nome, ambito = excluded.ambito, tipo = excluded.tipo,
+        formula = excluded.formula, um = excluded.um, frequenza = excluded.frequenza,
+        verso_positivo = excluded.verso_positivo, target = excluded.target, soglia = excluded.soglia,
+        ordine = excluded.ordine`;
+  }
+
   // --- Gestione delle segnalazioni (D.Lgs. 24/2023) ---
   //
   // Il content set `wb-v1` lo crea `seed-corpus.mjs` insieme alle 12 procedure e ai 34
@@ -404,6 +448,7 @@ try {
     "bribery_chapter", "bribery_requirement", "bribery_dimension", "bribery_flag",
     "mog_family", "mog_crime", "mog_pillar", "mog_requirement",
     "wb_chapter", "wb_requirement",
+    "qas_norm", "qas_chapter", "qas_requirement", "qas_indicator_default",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }
