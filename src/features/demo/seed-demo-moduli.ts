@@ -7,11 +7,13 @@ import {
   supplierAssessment, supplierAnswer, supplierQuestion,
   soaDeclaration, soaModule, soaControlDecision, soaControl,
   briberySystem, briberyPartner, briberyRequirement, briberyRequirementState,
+  mogModel, mogProcess, mogScenario, mogCrimeApplicability, mogRequirement, mogRequirementState,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
 import { latestSoaSetId } from "@/features/soa/declarations";
 import { latestAnticorruzioneSetId } from "@/features/anticorruzione/sistema";
+import { latestMog231SetId } from "@/features/mog231/modello";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -402,6 +404,112 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
         requirementKey: r.key,
         stato: STATI_AC[i % STATI_AC.length],
         evidenza: i % 4 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
+      })),
+  );
+
+  /* ── Modello 231 ────────────────────────────────────────────────────────── */
+  //
+  // Stessi fatti degli altri percorsi: stessa sede, stesso settore, stessa partita IVA.
+  //
+  // Tre processi sensibili che coprono i tre casi che insegnano la regola: uno con
+  // presidi adeguati (rischio accettabile), uno con presidi assenti su un reato grave
+  // (Critico), e uno con uno scenario MAI VALUTATO — che nel cruscotto pesa come non
+  // accettabile, ed e' la stranezza del prototipo che vale la pena vedere invece di
+  // leggerla in una guida.
+  const mogSet = await latestMog231SetId();
+  const modelloId = randomUUID();
+  await tx.insert(mogModel).values({
+    id: modelloId, organizationId: orgId, companyId, contentSetId: mogSet,
+    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48",
+    organoAmministrativo: "Amministratore Unico — Ing. Marco Loprete",
+    odvComposizione: "Monocratico esterno: Avv. Chiara Delvecchio, professionista indipendente.",
+    odvNomina: "2026-03-16", dataDelibera: "2026-03-16", dataAdozione: "2026-03-16",
+    scopo:
+      "Stabilimento di Bari: progettazione, produzione, vendita e assistenza dei componenti meccanici. Il deposito di Modugno, privo di lavorazioni, e' escluso.",
+    canaleSegnalazione: "segnalazioni@meccanicaadriatica.example — gestito dall'OdV, art. 6 c. 2-quater",
+    revisione: "1.0",
+  });
+
+  // Quattro reati applicabili, uno escluso con motivazione: l'esclusione motivata e'
+  // cio' che distingue una mappatura fatta da una subita.
+  await tx.insert(mogCrimeApplicability).values([
+    { id: randomUUID(), organizationId: orgId, modelId: modelloId, crimeKey: "24", applicabile: "Sì" },
+    { id: randomUUID(), organizationId: orgId, modelId: modelloId, crimeKey: "25", applicabile: "Sì" },
+    { id: randomUUID(), organizationId: orgId, modelId: modelloId, crimeKey: "25-septies", applicabile: "Sì" },
+    { id: randomUUID(), organizationId: orgId, modelId: modelloId, crimeKey: "25-undecies", applicabile: "Sì" },
+    {
+      id: randomUUID(), organizationId: orgId, modelId: modelloId, crimeKey: "25-quater",
+      applicabile: "No",
+      motivazione:
+        "L'Organizzazione non opera in aree a rischio, non ha rapporti con soggetti esteri in territori sensibili e non effettua trasferimenti di fondi verso giurisdizioni segnalate. La valutazione e' riesaminata a ogni riesame del Modello.",
+    },
+  ]);
+
+  const PROCESSI = [
+    {
+      nome: "Gare e appalti pubblici", area: "Commerciale", responsabile: "Dott.ssa Elena Fiore",
+      descrizione: "Partecipazione a bandi della Regione Puglia per la ricerca industriale e a gare di fornitura di enti pubblici.",
+      presidi: "Doppia firma sull'offerta, tracciabilita' dei contatti con la stazione appaltante, divieto di intermediari.",
+      scenari: [
+        { reato: "24", prob: 3, imp: 4, adeg: "Adeguati", modalita: "Dichiarazioni non veritiere per l'accesso a contributi regionali." },
+        { reato: "25", prob: 2, imp: 4, adeg: "Parziali", modalita: "Dazione o promessa di utilita' a funzionari della stazione appaltante." },
+      ],
+    },
+    {
+      nome: "Salute e sicurezza sul lavoro", area: "HSE", responsabile: "Ing. Paola Ranieri",
+      descrizione: "Gestione delle lavorazioni di tornitura, fresatura e rettifica; manutenzione delle macchine utensili.",
+      presidi: "Valutazione dei rischi aggiornata, formazione documentata, sorveglianza sanitaria.",
+      scenari: [
+        // Presidi ASSENTI su un reato grave: il residuo resta Critico ed e' il caso che
+        // il quadro deve far vedere per primo.
+        { reato: "25-septies", prob: 3, imp: 4, adeg: "Assenti", modalita: "Lesioni gravi o omicidio colposo per violazione delle norme antinfortunistiche." },
+      ],
+    },
+    {
+      nome: "Gestione dei rifiuti di lavorazione", area: "Produzione", responsabile: "Geom. Sergio Palmisano",
+      descrizione: "Deposito temporaneo e conferimento di sfridi metallici, oli esausti ed emulsioni.",
+      presidi: null,
+      scenari: [
+        // ⚠️ MAI VALUTATO: nessuna probabilita', nessun impatto. Nel cruscotto pesa come
+        // NON accettabile, e il processo non ha livello. E' la regola del prototipo che
+        // si impara guardandola.
+        { reato: "25-undecies", prob: null, imp: null, adeg: null, modalita: "Gestione di rifiuti speciali in assenza di formulario o con formulario incompleto." },
+      ],
+    },
+  ] as const;
+
+  for (const p of PROCESSI) {
+    const pid = randomUUID();
+    await tx.insert(mogProcess).values({
+      id: pid, organizationId: orgId, modelId: modelloId,
+      nome: p.nome, area: p.area, responsabile: p.responsabile,
+      descrizione: p.descrizione, presidi: p.presidi,
+    });
+    await tx.insert(mogScenario).values(
+      p.scenari.map((s) => ({
+        id: randomUUID(), organizationId: orgId, processId: pid, crimeKey: s.reato,
+        probabilita: s.prob, impatto: s.imp, adeguatezza: s.adeg, modalita: s.modalita,
+      })),
+    );
+  }
+
+  // Due terzi dei presidi valutati: l'idoneita' della demo non e' ne' 0 ne' 100.
+  const presidi231 = await db
+    .select({ key: mogRequirement.key })
+    .from(mogRequirement)
+    .where(eq(mogRequirement.setId, mogSet))
+    .orderBy(asc(mogRequirement.ordine));
+  const STATI_231 = ["Presente ed efficace", "Presente ed efficace", "Presente ma da rafforzare", "Assente"] as const;
+  await tx.insert(mogRequirementState).values(
+    presidi231
+      .filter((_, i) => i % 3 !== 2)
+      .map((r, i) => ({
+        id: randomUUID(), organizationId: orgId, modelId: modelloId,
+        requirementKey: r.key,
+        stato: STATI_231[i % STATI_231.length],
+        evidenza: i % 5 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
       })),
   );
 }

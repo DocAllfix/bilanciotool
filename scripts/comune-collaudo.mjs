@@ -220,10 +220,25 @@ export async function attendiCard(page, nome, { tentativi = 12, attesa = 1500 } 
 // del velo. E' successo a `verifica-tutto-attivo`, che era l'unico a non farlo.
 //
 // I giri hanno un collaudo proprio (`qa -- benvenuto`): qui vanno tolti di mezzo.
-export async function spegniTour(page, chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa"]) {
+export async function spegniTour(
+  page,
+  // ⚠️ Questo elenco DEVE crescere insieme a `src/lib/tour/registry.ts`, e nulla lo
+  // obbliga: aggiungendo il tour del Modello 231 il velo e' tornato a bloccare i clic,
+  // e il collaudo del modulo e' morto al primo gesto. Da qui il ripiego qui sotto.
+  chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231"],
+) {
   await page.evaluate((ks) => {
     for (const k of ks) {
       try { localStorage.setItem(`evalisdeck-tour:${k}`, "1"); } catch {}
     }
   }, chiavi);
+
+  // Ripiego autoriparante: se un velo e' gia' aperto — perche' la pagina era caricata
+  // prima, o perche' la chiave di quel tour manca dall'elenco — lo si chiude. Senza,
+  // il collaudo riprova per trenta secondi su un pulsante visibile e incliccabile, e
+  // riferisce un difetto del prodotto che e' del velo.
+  if (await page.locator(".driver-overlay").count()) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(400);
+  }
 }

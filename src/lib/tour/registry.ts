@@ -165,6 +165,41 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "mog231",
+    pathPattern: /^\/aziende\/[^/]+\/mog231/,
+    steps: [
+      {
+        title: "Modello 231",
+        description:
+          "D.Lgs. 231/2001. Sei viste, e il lavoro vero e' la mappatura: quali reati riguardano l'ente, e in quali processi possono essere commessi.",
+      },
+      {
+        element: '[data-tour="mog-vista-reati"]',
+        title: "Prima i reati",
+        description:
+          "Venticinque reati presupposto. Dichiarare che uno NON riguarda l'ente e' una decisione da motivare, non un silenzio: e' cio' che un giudice legge per capire se la mappatura e' stata fatta o subita.",
+      },
+      {
+        element: '[data-tour="mog-vista-processi"]',
+        title: "Poi i processi, e il rischio",
+        description:
+          "Ogni reato applicabile va ricondotto ai processi in cui puo' accadere. Il rischio si calcola in due stadi: probabilita' per impatto, poi l'incrocio con l'adeguatezza dei presidi. Presidi non dichiarati valgono «Assenti».",
+      },
+      {
+        element: '[data-tour="mog-vista-presidi"]',
+        title: "Gli 81 presidi",
+        description:
+          "Dieci pilastri, dall'adozione al sistema disciplinare. Un presidio dovuto e non valutato pesa zero: saltare i difficili non fa salire l'idoneita'.",
+      },
+      {
+        element: '[data-tour="mog-vista-documenti"]',
+        title: "I due documenti",
+        description:
+          "La Matrice reati-processi e' cio' che un giudice guarda per primo; la Relazione dell'OdV va all'organo amministrativo. Entrambe riportano anche le lacune, perche' tacerle le renderebbe un'autoassoluzione.",
+      },
+    ],
+  },
+  {
     pageId: "anticorruzione",
     // ⚠️ Prima della SoA nell'elenco: `pathPattern` vince il PRIMO che combacia, e
     // `/aziende/<id>/anticorruzione` non combacia con `/soa`, ma l'ordine qui conta
