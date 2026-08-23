@@ -43,7 +43,23 @@ export function AziendaAzioni({
       }
       setChiedeConferma(false);
       toast.success(riuscito);
-      router.refresh();
+      // ⚠️ L'aggiornamento va rimandato al tick successivo, e la ragione e' misurata.
+      //
+      // Chiamato nello STESSO tick in cui il dialogo si chiude, `router.refresh()` non
+      // applica mai l'albero che il server restituisce: l'azienda archiviata resta fra
+      // le attive, quella creata non compare. Provato con finestre di 45 e 200 secondi.
+      // Con `setTimeout(..., 0)` — cioe' semplicemente dopo lo smontaggio del dialogo —
+      // la pagina si aggiorna in circa sette secondi.
+      //
+      // Non serve attendere l'animazione: zero basta. Non e' un ritardo, e' un ORDINE.
+      //
+      // Il secondo fattore, indipendente da questo, era `revalidatePath("/dashboard")`
+      // nelle azioni: vedi il commento in `src/features/companies/actions.ts`. Bastava
+      // uno dei due a rompere l'aggiornamento, e servivano entrambe le correzioni.
+      //
+      // C'e' un controllo che diventa rosso se una delle due torna:
+      // `npm run qa -- portafoglio-aggiorna`, che non ricarica mai la pagina.
+      setTimeout(() => router.refresh(), 0);
     });
   }
 

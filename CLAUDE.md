@@ -562,6 +562,24 @@ Gate: typecheck · build · **550 test** in entrambi i modi, `RLS_FORCE_ROLE=app
 
 Gate: typecheck · build · **662 test** in entrambe le modalita' · in locale sul build di **produzione** `tutto-attivo` 30/30, `tutto-demo` 68/68, `demo-completa` 9/9, `fornitore` 28/28, `energetico` 40/40, `soa-percorso` 34/34, `guida` 7/7, `bilancio` verde · aree verificate a schermo nei due temi.
 
+**Il portafoglio che non si aggiornava (2026-08-23)** — debito aperto il 22, chiuso il 23. Le cause erano **tre**, ciascuna sufficiente da sola, ed e' il motivo per cui i tre tentativi del giorno prima erano falliti: correggevano una cosa per volta su un difetto che ne aveva tre.
+
+| Comando | Rimedio | Prima | Dopo |
+|---|---|---|---|
+| ripristina (voce di menu) | togliere `revalidatePath("/dashboard")` dall'azione | mai | 7,7 s |
+| archivia (dialogo) | + rimandare `router.refresh()` al tick successivo | mai | 7,2 s |
+| crea (dialogo) | navigare al fascicolo: il refresh non basta mai | mai | 7,2 s |
+
+**Regole nate qui:**
+- **`revalidatePath` su una pagina `force-dynamic` non protegge niente e puo' rompere l'aggiornamento del client.** Non c'e' cache da invalidare — ne' sul server, che rende a ogni richiesta, ne' sul client, che con `staleTimes.dynamic: 0` rifa' la richiesta a ogni navigazione.
+- **`router.refresh()` chiamato nello stesso tick in cui si chiude un dialogo non si applica.** Basta `setTimeout(..., 0)`: non e' un ritardo, e' un ordine. Non serve attendere l'animazione.
+- **Dopo aver creato qualcosa si NAVIGA verso quel qualcosa.** Sul portafoglio il refresh non basta comunque, ed e' anche la cosa giusta: chi crea un'azienda vuole aprirla, ed e' cio' che gia' facevano SoA ed energetico.
+- **Un difetto con piu' cause si isola una variabile per volta, e l'ipotesi va messa alla prova anche quando spiega tutto.** L'ipotesi «revalidare la pagina su cui ci si trova» spiegava il portafoglio e l'ho creduta finche' non l'ho provata sul modulo: li' la stessa cosa funziona. **Si sa cosa succede, non perche'** — ed e' scritto nel codice.
+- **Non si corregge un collaudo su un solo fallimento.** `energetico` e' passato 40/40 piu' volte in giornata e una volta no: la "correzione" che avevo scritto introduceva una query su una connessione vecchia di dieci minuti, cioe' una fragilita' nuova. Ripristinato.
+- **Un aiutante che aggira un difetto va rivisto quando il difetto si chiude**: `attendiCard` ricaricava per compensare, e ora deve sapere che creare un'azienda porta altrove.
+
+Guardia: `npm run qa -- portafoglio-aggiorna` — cinque controlli che **non ricaricano mai** la pagina dopo una mutazione. Messo in rosso rimettendo una delle tre cause: fallisce sull'asserzione giusta e solo su quella.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

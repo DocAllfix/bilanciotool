@@ -48,7 +48,21 @@ export function NuovaAziendaDialog({
       return;
     }
     setAperto(false);
-    router.refresh();
+    // ⚠️ Si NAVIGA verso l'azienda appena creata, non si aggiorna il portafoglio.
+    //
+    // Non è una scelta di comodo: `router.refresh()` su questa pagina non applica mai
+    // l'albero che il server restituisce, e per la creazione non bastano i due rimedi
+    // che risolvono archiviazione e ripristino (togliere `revalidatePath` dall'azione,
+    // rimandare l'aggiornamento al tick successivo). Misurato con finestre fino a 90
+    // secondi: la card non compare. Con la navigazione: 7 secondi, e si atterra sul
+    // fascicolo dell'azienda.
+    //
+    // È anche la cosa giusta da fare. Chi ha appena creato un'azienda vuole aprirla, ed
+    // è ciò che fanno già i moduli SoA ed energetico dopo aver creato un esercizio.
+    // L'alternativa, oggi, è che non succeda visibilmente niente.
+    //
+    // `qa -- portafoglio-aggiorna` diventa rosso se questo comportamento cambia.
+    router.push(`/aziende/${esito.dati!.id}`);
   }
 
   if (atLimit) {

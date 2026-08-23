@@ -182,21 +182,21 @@ export async function attendi(condizione, { entro = 45000, ogni = 500, cosa = "c
 
 // La card di un'azienda appena creata, attesa ricaricando.
 //
-// Perché la ricarica serve, misurato il 22 agosto 2026 e non dedotto: con un build di
-// PRODUZIONE (`next start`) il portafoglio NON si aggiorna dopo la creazione. La richiesta
-// di aggiornamento parte davvero (`GET /dashboard?_rsc=…`, non un prefetch, con l'albero
-// di stato) e il server risponde col dato giusto (58 KB che contengono il nome nuovo):
-// e' il client a non applicarlo, e non lo applica MAI — provato con una sonda che ha
-// atteso sessanta secondi, e provato che non e' «indietro di un aggiornamento» creando
-// una seconda azienda senza che comparisse la prima. Con `npm run dev` invece compare
-// dopo ~3 secondi.
+// ⚠️ Il difetto per cui questa funzione ricaricava e' CHIUSO dal 23 agosto 2026 (vedi
+// PRE-LAUNCH, voce 0): il portafoglio si aggiorna da solo, e creare un'azienda porta
+// direttamente al suo fascicolo. Le ricariche restano come rete — questi collaudi
+// devono misurare il percorso del modulo, non la reattivita' del portafoglio — ma NON
+// sono piu' un aggiramento.
 //
-// ⚠️ Una nota precedente in `visual-check-energetico.mjs` dava la colpa a `next start` e
-// dichiarava che in produzione l'elenco si aggiorna. Il verso e' l'opposto: il build di
-// produzione e' proprio quello che gira su Vercel. Quella nota non e' stata verificata da
-// chi l'ha scritta, e finche' il difetto non e' chiuso questa attesa serve a misurare il
-// PERCORSO, non l'artefatto.
+// Chi verifica che il portafoglio si aggiorni da solo usa `qa -- portafoglio-aggiorna`,
+// che non ricarica mai: e' li' che il difetto tornerebbe rosso.
 export async function attendiCard(page, nome, { tentativi = 12, attesa = 1500 } = {}) {
+  // ⚠️ Dal 23 agosto 2026 creare un'azienda PORTA AL SUO FASCICOLO (vedi PRE-LAUNCH,
+  // voce 0): chi chiama questa funzione subito dopo la creazione non e' piu' sul
+  // portafoglio, e cercherebbe una card in una pagina che non ne ha. Ci si riporta.
+  if (!/\/dashboard(\?|$)/.test(new URL(page.url()).pathname + new URL(page.url()).search)) {
+    await page.goto(new URL("/dashboard", page.url()).toString(), { waitUntil: "domcontentloaded" });
+  }
   // Si filtra per NOME e non si prende la prima card del portafoglio: la prima e'
   // l'azienda dimostrativa, seminata alla registrazione. Un `.first()` secco agirebbe
   // sulla demo, e il collaudo misurerebbe il percorso sbagliato credendolo il proprio.

@@ -275,38 +275,32 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
-0. ⚠️ **La pagina `/dashboard` non si aggiorna dopo una mutazione, nel build di
-   produzione.** Misurato il 22 e il 23 agosto 2026 su `next start`, che e' lo stesso
-   build che gira su Vercel.
-   - **Non e' `router.refresh()` in generale, ed e' la correzione piu' importante a
-     quanto avevo scritto il 22.** Sulla pagina di un modulo
-     (`/aziende/<id>/anticorruzione`) lo stesso `router.refresh()` funziona: la vista
-     compare dopo **~6 secondi**. Sul portafoglio non compare **mai**, provato con
-     un'attesa di sessanta secondi.
-   - **Non e' il dialogo della creazione.** Anche **archiviare** un'azienda — componente
-     diverso, dialogo diverso, azione diversa — lascia la card al suo posto per
-     quarantacinque secondi, mentre la riga nel database e' cambiata. Sono due mutazioni
-     indipendenti che falliscono allo stesso modo *sulla stessa pagina*.
-   - **Ipotesi escluse misurando**: l'ordine fra chiusura del dialogo e aggiornamento
-     (invertito: identico); `startTransition` (identico); `router.push` verso lo stesso
-     indirizzo prima del refresh (identico); la cache statica (`/dashboard` e' dinamica,
-     `staleTimes` a zero, riconosciuta dal build); `export const dynamic` (presente su
-     tutte e quattro le pagine confrontate).
-   - **Cosa si sa con certezza**: la richiesta di aggiornamento parte davvero (`GET
-     /dashboard?_rsc=…`, non un prefetch, con l'albero di stato in intestazione) e il
-     server risponde col dato giusto (58 KB che contengono il nome nuovo). E' il client a
-     non applicarlo. Con `npm run dev` l'elenco si aggiorna in ~3 secondi.
-   - **Impatto sul cliente**: crea un'azienda, non la vede, e la ricrea. Archivia
-     un'azienda, la vede ancora li'. Nessun messaggio, nessun errore in console, nessuna
-     richiesta fallita.
-   - **Non e' stato verificato in produzione** perche' provarlo significa scrivere
-     un'azienda vera nel database che incassa.
-   - **Nessuna correzione applicata**: le tre tentate non funzionano, e la causa non e'
-     ancora capita. Una ricarica completa della pagina la aggirerebbe di sicuro, ma
-     sarebbe un rimedio a una causa ignota, e va deciso.
-   - **Intanto** i collaudi usano `attendiCard` (`scripts/comune-collaudo.mjs`), che
-     ricarica finche' la card non c'e': misurano il percorso, non l'artefatto.
+0. ✅ **CHIUSO il 23 agosto 2026 — la pagina `/dashboard` non si aggiornava dopo una
+   mutazione.** Restava qui come debito aperto con la causa non capita. La causa era
+   TRIPLA, e le tre parti sono state separate misurando, una variabile per volta:
 
+   | Comando | Rimedio | Prima | Dopo |
+   |---|---|---|---|
+   | ripristina (voce di menu) | togliere `revalidatePath("/dashboard")` dall'azione | mai | 7,7 s |
+   | archivia (dialogo) | + rimandare `router.refresh()` al tick successivo | mai | 7,2 s |
+   | crea (dialogo) | navigare al fascicolo: il refresh non basta mai | mai | 7,2 s |
+
+   Ciascuna bastava da sola a rompere l'aggiornamento, ed e' il motivo per cui i tre
+   tentativi del 22 agosto erano falliti: correggevano una cosa alla volta su un difetto
+   che ne aveva tre.
+
+   **Il meccanismo non e' capito, e va detto.** L'ipotesi che il difetto nascesse dal
+   revalidare la pagina su cui ci si trova e' stata SMENTITA: la pagina di un modulo fa
+   la stessa cosa e si aggiorna lo stesso. Si sa **cosa** succede, non **perche'**.
+
+   **Perche' i rimedi sono sicuri**: `/dashboard` e' `force-dynamic` e la cache del
+   router client ha `staleTimes.dynamic: 0` — non c'era nessuna cache da invalidare, ne'
+   sul server ne' sul client. La navigazione dopo la creazione e' anche la cosa giusta:
+   chi crea un'azienda vuole aprirla, ed e' cio' che fanno gia' SoA ed energetico.
+
+   **Guardia**: `npm run qa -- portafoglio-aggiorna`, cinque controlli che non ricaricano
+   mai la pagina dopo una mutazione. Messo in rosso di proposito rimettendo una delle tre
+   cause: fallisce sull'asserzione giusta e solo su quella.
 0-bis. **Il portafoglio impiega ~13 secondi a caricare, e ogni modulo aggiunto lo
    peggiora.** Misurato il 23 agosto 2026 in locale contro il database di sviluppo
    (Francoforte, ~60 ms per viaggio in regime):
