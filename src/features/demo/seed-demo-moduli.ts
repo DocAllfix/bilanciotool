@@ -9,6 +9,7 @@ import {
   briberySystem, briberyPartner, briberyRequirement, briberyRequirementState,
   mogModel, mogProcess, mogScenario, mogCrimeApplicability, mogRequirement, mogRequirementState,
   wbSystem, wbChannel, wbReport, wbRequirement, wbRequirementState,
+  qasSystem, qasIndicator, qasIndicatorDefault, qasMeasurement, qasRequirement, qasRequirementState,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
@@ -16,6 +17,7 @@ import { latestSoaSetId } from "@/features/soa/declarations";
 import { latestAnticorruzioneSetId } from "@/features/anticorruzione/sistema";
 import { latestMog231SetId } from "@/features/mog231/modello";
 import { latestWbSetId } from "@/features/segnalazioni/sistema";
+import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -634,6 +636,87 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
         evidenza: i % 5 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
       })),
   );
+
+  // ─── Sistema di gestione integrato QAS ─────────────────────────────────────
+  //
+  // ⚠️ Perimetro a DUE norme su tre: Qualita' e Sicurezza, senza Ambiente. E' il caso
+  // piu' istruttivo — fa vedere che l'indice si calcola sui soli requisiti in perimetro,
+  // e che i 55 dell'Ambiente spariscono davvero invece di restare a zero.
+  const qasSet = await latestSgiQasSetId();
+  const sistemaQasId = randomUUID();
+  await tx.insert(qasSystem).values({
+    id: sistemaQasId, organizationId: orgId, companyId, contentSetId: qasSet,
+    norme: ["Q", "S"],
+    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48",
+    direzione: "Amministratore Unico — Ing. Marco Loprete",
+    responsabileSistema: "Ing. Paola Ranieri",
+    rspp: "Ing. Paola Ranieri — incarico interno",
+    rls: "Sig. Antonio Curci, eletto il 12 marzo 2025",
+    medico: "Dott. Vito Larosa, medico competente",
+    scopo:
+      "Progettazione, produzione, vendita e assistenza di componenti meccanici di precisione. Stabilimento di Bari.",
+    siti: "Bari, via delle Officine 12 (produzione) · Modugno (deposito, senza lavorazioni)",
+    esclusioni:
+      "Il deposito di Modugno e' escluso dal campo di applicazione della ISO 45001: non vi si svolgono lavorazioni ne' e' presente personale stabile.",
+    dataAdozione: "2026-01-20", revisione: "1.0",
+  });
+
+  // Due terzi dei requisiti IN PERIMETRO valutati: l'indice della demo non e' ne' 0 ne' 100.
+  const reqQas = await db
+    .select({ key: qasRequirement.key, norme: qasRequirement.norme })
+    .from(qasRequirement)
+    .where(eq(qasRequirement.setId, qasSet))
+    .orderBy(asc(qasRequirement.ordine));
+  const inPerimetro = reqQas.filter((r) => r.norme.includes("Q") || r.norme.includes("S"));
+  const STATI_QAS = ["Conforme", "Conforme", "Parzialmente conforme", "Non conforme"] as const;
+  await tx.insert(qasRequirementState).values(
+    inPerimetro
+      .filter((_, i) => i % 3 !== 2)
+      .map((r, i) => ({
+        id: randomUUID(), organizationId: orgId, systemId: sistemaQasId,
+        requirementKey: r.key,
+        stato: STATI_QAS[i % STATI_QAS.length],
+        evidenza: i % 6 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
+      })),
+  );
+
+  // Gli indicatori di partenza, con qualche serie storica vera: senza rilevazioni il
+  // riesame non puo' riferire sulle prestazioni, ed e' meta' del suo scopo.
+  const baseQas = await db
+    .select()
+    .from(qasIndicatorDefault)
+    .where(eq(qasIndicatorDefault.setId, qasSet))
+    .orderBy(asc(qasIndicatorDefault.ordine));
+  const indicatoriDemo = baseQas.map((b, i) => ({
+    id: randomUUID(), organizationId: orgId, systemId: sistemaQasId,
+    codice: b.key, nome: b.nome, ambito: b.ambito, tipo: b.tipo,
+    formula: b.formula, um: b.um, frequenza: b.frequenza,
+    versoPositivo: b.versoPositivo,
+    // ⚠️ Uno resta SENZA target di proposito: nel quadro compare fra le lacune, ed e'
+    // il difetto del prototipo reso visibile invece che nascosto.
+    target: i === 3 ? null : b.target,
+    soglia: b.soglia,
+    ordine: i,
+  }));
+  await tx.insert(qasIndicator).values(indicatoriDemo);
+
+  // Sei mesi di rilevazioni sui primi cinque indicatori, con un andamento credibile.
+  const PERIODI = ["2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03"];
+  const rilevazioni = [];
+  for (const [k, ind] of indicatoriDemo.slice(0, 5).entries()) {
+    const partenza = Number(ind.target ?? 90) * (ind.versoPositivo ? 0.93 : 1.35);
+    for (const [j, per] of PERIODI.entries()) {
+      const passo = (Number(ind.target ?? 90) - partenza) * (j / (PERIODI.length - 1)) * (k === 2 ? 0.4 : 1);
+      rilevazioni.push({
+        id: randomUUID(), organizationId: orgId, indicatorId: ind.id, periodo: per,
+        valore: (Math.round((partenza + passo) * 10) / 10).toFixed(1),
+        ordine: j,
+      });
+    }
+  }
+  await tx.insert(qasMeasurement).values(rilevazioni);
 }
 
 const testoATiptap = (testo: string) => ({
