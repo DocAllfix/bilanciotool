@@ -9,6 +9,7 @@ import {
   publishRelazionePcSnapshot, publishMatricePcSnapshot,
   publishMatrice231Snapshot, publishRelazioneOdvSnapshot,
   publishRelazioneWbSnapshot,
+  publishRiesameQasSnapshot,
 } from "./snapshot";
 
 export async function publishDocumentAction(
@@ -42,6 +43,8 @@ export async function publishDocumentAction(
           return (u: string, o: string, c: string) => publishRelazioneOdvSnapshot(u, o, c);
         case "relazione_wb":
           return (u: string, o: string, c: string) => publishRelazioneWbSnapshot(u, o, c);
+        case "riesame_qas":
+          return (u: string, o: string, c: string) => publishRiesameQasSnapshot(u, o, c);
         default: {
           const mai: never = tipo;
           throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);

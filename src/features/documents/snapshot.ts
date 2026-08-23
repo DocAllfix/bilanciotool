@@ -22,6 +22,7 @@ import { getSoaData } from "@/features/soa/queries";
 import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { getMog231 } from "@/features/mog231/queries";
 import { getSegnalazioni } from "@/features/segnalazioni/queries";
+import { getSgiQas } from "@/features/sgiqas/queries";
 import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
 import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
@@ -616,6 +617,71 @@ export async function publishRelazioneWbSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "relazione_wb", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * Il Riesame di direzione del sistema integrato (ISO 9001 · 14001 · 45001, §9.3).
+ *
+ * ⚠️ Congela il PERIMETRO delle norme insieme ai numeri. Un riesame consegnato dice
+ * «conformità 72%»: se domani si aggiunge la 45001 al perimetro quel numero cambia, e il
+ * documento non deve seguirlo — chi lo ha ricevuto ha in mano il giudizio su un altro
+ * sistema.
+ */
+export async function publishRiesameQasSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSgiQas(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema integrato da pubblicare per questa azienda");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    sistema: d.sistema,
+    perimetro: d.sistema.norme,
+    norme: d.norme.filter((n) => d.sistema!.norme.includes(n.key)),
+    capitoli: d.conformita.perCapitolo.map((c) => ({
+      key: c.capitolo.key,
+      nome: c.capitolo.nome,
+      requisiti: c.requisiti,
+      valutati: c.valutati,
+      conformita: c.indice,
+    })),
+    perNorma: d.conformita.perNorma.map((n) => ({
+      key: n.norma.key,
+      nome: n.norma.nome,
+      norma: n.norma.norma,
+      requisiti: n.requisiti,
+      valutati: n.valutati,
+      conformita: n.indice,
+    })),
+    conformita: d.conformita.indice,
+    requisitiValutati: d.conformita.valutati,
+    requisitiTotali: d.conformita.totale,
+    // Gli indicatori con l'ultima rilevazione e la serie: il riesame vive di tendenze,
+    // e un valore senza storia non dice se si sta migliorando.
+    indicatori: d.indicatori.map((i) => ({
+      codice: i.codice,
+      nome: i.nome,
+      ambito: i.ambito,
+      um: i.um,
+      target: i.target,
+      soglia: i.soglia,
+      versoPositivo: i.versoPositivo,
+      stato: i.stato,
+      tendenza: i.tendenza,
+      ultimo: i.ultimo ? { periodo: i.ultimo.periodo, valore: i.ultimo.valore } : null,
+      rilevazioni: i.serie.length,
+    })),
+    // Le lacune, che un riesame deve riportare: tacerle lo renderebbe un'autoassoluzione.
+    nonConformi: d.inPerimetro
+      .filter((r) => d.stati.find((s) => s.requirementKey === r.key)?.stato === "Non conforme")
+      .map((r) => ({ key: r.key, riferimento: r.riferimento, testo: r.testo, norme: r.norme })),
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "riesame_qas", SENZA_ESERCIZIO, dati);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

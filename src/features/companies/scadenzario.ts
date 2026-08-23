@@ -6,7 +6,7 @@ import {
   reportProject,
   energyBalance,
   supplierAssessment,
-  soaDeclaration, briberySystem, mogModel, wbSystem } from "@/lib/db/schema";
+  soaDeclaration, briberySystem, mogModel, wbSystem, qasSystem } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, desc, eq, max } from "drizzle-orm";
 
@@ -62,7 +62,7 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
   return withTenant({ userId, orgId }, async (tx) => {
     const perCompany = <T extends { companyId: string }>(righe: T[]) => new Map(righe.map((r) => [r.companyId, r]));
 
-    const [aziende, ghg, bil, ene, sup, soa, pc, mog, wb, docs] = await Promise.all([
+    const [aziende, ghg, bil, ene, sup, soa, pc, mog, wb, qas, docs] = await Promise.all([
       tx
         .select({ id: company.id, nome: company.nome, isDemo: company.isDemo })
         .from(company)
@@ -104,6 +104,10 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
         .from(wbSystem)
         .where(eq(wbSystem.organizationId, orgId)),
       tx
+        .select({ companyId: qasSystem.companyId })
+        .from(qasSystem)
+        .where(eq(qasSystem.organizationId, orgId)),
+      tx
         .select({
           companyId: documentSnapshot.companyId,
           tipo: documentSnapshot.tipo,
@@ -123,6 +127,7 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
       anticorruzione: perCompany(pc),
       mog231: perCompany(mog),
       segnalazioni: perCompany(wb),
+      sgiqas: perCompany(qas),
     } as const;
 
     // Chiave `companyId|tipo` → anno massimo pubblicato.

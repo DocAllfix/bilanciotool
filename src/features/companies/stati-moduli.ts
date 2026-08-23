@@ -6,7 +6,7 @@ import {
   reportProject,
   energyBalance,
   supplierAssessment,
-  soaDeclaration, briberySystem, mogModel, wbSystem } from "@/lib/db/schema";
+  soaDeclaration, briberySystem, mogModel, wbSystem, qasSystem } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import type { StatoModulo } from "./fascicolo";
 import { and, desc, eq, max } from "drizzle-orm";
@@ -56,7 +56,7 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
   // Ogni select porta il proprio filtro sull'organizzazione oltre alle policy
   // RLS: in sviluppo la connessione è privilegiata e le policy non scattano.
   return withTenant({ userId, orgId }, async (tx) => {
-    const [aziende, ghg, bil, ene, sup, soa, pc, mog, wb, docs] = await Promise.all([
+    const [aziende, ghg, bil, ene, sup, soa, pc, mog, wb, qas, docs] = await Promise.all([
       tx
         .select({ id: company.id, nome: company.nome, isDemo: company.isDemo })
         .from(company)
@@ -98,6 +98,10 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
         .from(wbSystem)
         .where(eq(wbSystem.organizationId, orgId)),
       tx
+        .select({ companyId: qasSystem.companyId })
+        .from(qasSystem)
+        .where(eq(qasSystem.organizationId, orgId)),
+      tx
         .select({
           companyId: documentSnapshot.companyId,
           tipo: documentSnapshot.tipo,
@@ -119,6 +123,7 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
       anticorruzione: new Map(pc.map((r) => [r.companyId, { anno: null }])),
       mog231: new Map(mog.map((r) => [r.companyId, { anno: null }])),
       segnalazioni: new Map(wb.map((r) => [r.companyId, { anno: null }])),
+      sgiqas: new Map(qas.map((r) => [r.companyId, { anno: null }])),
     };
     const pubblicati = new Map(docs.map((d) => [`${d.companyId}|${d.tipo}`, d.anno ?? 0]));
 

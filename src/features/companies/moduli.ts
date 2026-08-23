@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, Factory, Gavel, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -188,6 +188,21 @@ export const MODULI_AZIENDA = [
     area: "sistemi",
     colore: AREE.sistemi.colore,
     documenti: ["soa"],
+    perEsercizio: false,
+  },
+  {
+    href: "sgiqas",
+    etichetta: "SGI QAS",
+    nome: "Sistema di gestione integrato QAS",
+    norma: "ISO 9001 · 14001 · 45001",
+    icona: ClipboardCheck,
+    // Stessa area della SoA: sono i due sistemi di gestione CERTIFICABILI del prodotto.
+    // ⚠️ E la voce sta QUI, prima di «anticorruzione», perche' l'ordine del registro
+    // raggruppa per area: un modulo lontano dai suoi farebbe comparire la stessa
+    // intestazione due volte nella barra laterale. Lo verifica `navigazione.db.test.ts`.
+    area: "sistemi",
+    colore: AREE.sistemi.colore,
+    documenti: ["riesame_qas"],
     perEsercizio: false,
   },
   {
