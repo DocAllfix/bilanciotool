@@ -200,6 +200,47 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "sgiqas",
+    pathPattern: /^\/aziende\/[^/]+\/sgiqas/,
+    steps: [
+      {
+        title: "Sistema di gestione integrato",
+        description:
+          "Tre norme in un sistema solo: ISO 9001, 14001 e 45001. I 107 requisiti non si sommano — trentatre' valgono per tutte e tre, e si valutano una volta sola.",
+      },
+      {
+        element: '[data-tour="qas-vista-sistema"]',
+        title: "Prima il perimetro",
+        description:
+          "E' il comando che cambia tutto il resto: decide quanti requisiti si vedono e su quali si calcola l'indice. Un'azienda certificata solo ISO 9001 ne vede 57, non 107. Togliere una norma non cancella il lavoro gia' fatto sui suoi requisiti.",
+      },
+      {
+        element: '[data-tour="qas-vista-requisiti"]',
+        title: "I requisiti, per capitolo",
+        description:
+          "Struttura di alto livello, dal punto 4 al 10. Un requisito applicabile e non valutato pesa ZERO: saltare i difficili non fa salire la conformita'. «Non applicabile» esce invece dal conto, perche' e' una valutazione e non un'omissione.",
+      },
+      {
+        element: '[data-tour="qas-vista-indicatori"]',
+        title: "Gli indicatori, e il target",
+        description:
+          "Il riesame vive di tendenze: un valore senza storia non dice se si sta migliorando. E un indicatore senza target NON e' «a target» — risulta non rilevato, ed e' segnalato come lacuna. Nel prototipo da cui nasce questo modulo risultava a posto.",
+      },
+      {
+        element: '[data-tour="qas-vista-registri"]',
+        title: "I sedici registri",
+        description:
+          "Qui vivono gli aspetti ambientali e i pericoli per la sicurezza, con la loro significativita' e il loro livello calcolati. Sono l'evidenza operativa del sistema: senza, la procedura che li prescrive resta senza prova di applicazione.",
+      },
+      {
+        element: '[data-tour="qas-vista-documenti"]',
+        title: "Il Riesame di direzione",
+        description:
+          "E' cio' che un auditor chiede per primo. Riporta anche le lacune: un riesame che elencasse solo cio' che funziona sarebbe un'autoassoluzione, e la norma chiede l'opposto.",
+      },
+    ],
+  },
+  {
     pageId: "segnalazioni",
     // ⚠️ Prima di «anticorruzione» e della SoA: vince il PRIMO pattern che combacia, e
     // qui non c'e' sovrapposizione, ma l'ordine di questo elenco e' gia' stato una

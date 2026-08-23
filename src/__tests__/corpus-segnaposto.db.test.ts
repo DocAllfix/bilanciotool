@@ -5,7 +5,8 @@ import { corpusPlaceholder } from "@/lib/db/schema";
 import { anagraficaCorpus } from "@/features/segnalazioni/anagrafica-corpus";
 import { anagraficaCorpus231 } from "@/features/mog231/anagrafica-corpus";
 import { anagraficaCorpusPc } from "@/features/anticorruzione/anagrafica-corpus";
-import type { briberySystem, mogModel, wbSystem } from "@/lib/db/schema";
+import { anagraficaCorpusQas } from "@/features/sgiqas/anagrafica-corpus";
+import type { briberySystem, mogModel, qasSystem, wbSystem } from "@/lib/db/schema";
 
 // I segnaposto del corpus trovano davvero il loro dato?
 //
@@ -49,6 +50,12 @@ const MODULI = [
     set: "iso37001-v1",
     file: "src/features/anticorruzione/anagrafica-corpus.ts",
     coperti: () => Object.keys(anagraficaCorpusPc({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", direzione: "x", funzionePc: "x" } as unknown as typeof briberySystem.$inferSelect)),
+  },
+  {
+    nome: "Sistema integrato QAS",
+    set: "sgiqas-v1",
+    file: "src/features/sgiqas/anagrafica-corpus.ts",
+    coperti: () => Object.keys(anagraficaCorpusQas({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", direzione: "x", rspp: "x", rls: "x", responsabileSistema: "x" } as unknown as typeof qasSystem.$inferSelect)),
   },
 ] as const;
 
