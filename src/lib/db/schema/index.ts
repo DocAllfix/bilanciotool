@@ -13,3 +13,4 @@ export * from "./billing";
 export * from "./security";
 export * from "./condivisione";
 export * from "./bribery";
+export * from "./mog231";

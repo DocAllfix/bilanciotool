@@ -32,6 +32,8 @@ const SUPPLIER_SET = "supplier-v1";
 const sid = (key) => `${SUPPLIER_SET}:${key}`;
 const SOA_SET = "soa-v1";
 const oid = (key) => `${SOA_SET}:${key}`;
+const MOG_SET = "mog231-v1";
+const mid = (key) => `${MOG_SET}:${key}`;
 const AC_SET = "iso37001-v1";
 const acid = (key) => `${AC_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
@@ -44,7 +46,8 @@ try {
            (${ENERGY_SET}, 'energy', 1, 'Estratto dal prototipo bilancio-energetico-v1.html'),
            (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html'),
            (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html'),
-           (${AC_SET}, 'iso37001', 1, 'Estratto dal prototipo sgpc-iso37001-v1.html')
+           (${AC_SET}, 'iso37001', 1, 'Estratto dal prototipo sgpc-iso37001-v1.html'),
+           (${MOG_SET}, 'mog231', 1, 'Estratto dal prototipo mog-231-v1.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -312,6 +315,42 @@ try {
       on conflict (id) do update set etichetta = excluded.etichetta, ordine = excluded.ordine`;
   }
 
+  // --- Modello 231 ---
+  //
+  // Come per ISO 37001: il CORPUS (18 procedure, 54 moduli, 12 registri) lo semina
+  // `seed-corpus.mjs`. Qui c'e' il dominio. La matrice del rischio a due stadi e i pesi
+  // dei presidi NON stanno nel database: sono regole eseguibili e vivono in
+  // `src/lib/calc/mog231/`, con la regola comune in `calc/comune/valutazione.ts`.
+  for (const [i, [key, nome]] of load("mog231-fam.json").entries()) {
+    await sql`
+      insert into mog_family (id, set_id, key, nome, ordine)
+      values (${mid(`fam:${key}`)}, ${MOG_SET}, ${key}, ${nome}, ${i})
+      on conflict (id) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const [i, r] of load("mog231-reati.json").entries()) {
+    await sql`
+      insert into mog_crime (id, set_id, key, family_key, titolo, descrizione, ordine)
+      values (${mid(`reato:${r.id}`)}, ${MOG_SET}, ${r.id}, ${r.fam}, ${r.t}, ${r.d ?? null}, ${i})
+      on conflict (id) do update set family_key = excluded.family_key, titolo = excluded.titolo,
+        descrizione = excluded.descrizione, ordine = excluded.ordine`;
+  }
+
+  for (const [i, c] of load("mog231-capi.json").entries()) {
+    await sql`
+      insert into mog_pillar (id, set_id, key, nome, descrizione, ordine)
+      values (${mid(`pil:${c.id}`)}, ${MOG_SET}, ${c.id}, ${c.n}, ${c.d}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione, ordine = excluded.ordine`;
+  }
+
+  for (const [i, r] of load("mog231-req.json").entries()) {
+    await sql`
+      insert into mog_requirement (id, set_id, key, pillar_key, riferimento, procedura, testo, ordine)
+      values (${mid(`req:${r.id}`)}, ${MOG_SET}, ${r.id}, ${r.cap}, ${r.rif}, ${r.pro ?? null}, ${r.t}, ${i})
+      on conflict (id) do update set pillar_key = excluded.pillar_key, riferimento = excluded.riferimento,
+        procedura = excluded.procedura, testo = excluded.testo, ordine = excluded.ordine`;
+  }
+
   // Il corpus documentale dei sei moduli di conformità: 447 documenti, 6.489 blocchi.
   const corpus = await seedCorpus(sql);
   console.log(`  corpus: ${corpus.documenti} documenti, ${corpus.blocchi} blocchi, ${corpus.forme} segnaposto`);
@@ -333,6 +372,7 @@ try {
     "supplier_area", "supplier_question",
     "soa_framework", "soa_section", "soa_control",
     "bribery_chapter", "bribery_requirement", "bribery_dimension", "bribery_flag",
+    "mog_family", "mog_crime", "mog_pillar", "mog_requirement",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

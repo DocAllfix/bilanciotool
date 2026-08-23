@@ -9,6 +9,7 @@ import {
   supplierArea, supplierQuestion,
   soaFramework, soaSection, soaControl,
   briberyChapter, briberyRequirement, briberyDimension, briberyFlag,
+  mogFamily, mogCrime, mogPillar, mogRequirement,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -198,6 +199,24 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     for (const d of await db.select().from(briberyDimension)) {
       expect((d.scala as string[]).length, `${d.key}`).toBe(4);
       for (const gradino of d.scala as string[]) expect(gradino.length).toBeGreaterThan(10);
+    }
+  });
+
+  it("i cataloghi del Modello 231 hanno i conteggi del prototipo", async () => {
+    expect(await conta(mogFamily)).toBe(10);
+    expect(await conta(mogCrime)).toBe(25);
+    expect(await conta(mogPillar)).toBe(10);
+    expect(await conta(mogRequirement)).toBe(81);
+  });
+
+  it("ogni reato appartiene a una famiglia esistente, e ogni requisito a un pilastro", async () => {
+    const fam = new Set((await db.select().from(mogFamily)).map((f) => f.key));
+    for (const r of await db.select().from(mogCrime)) {
+      expect(fam.has(r.familyKey), `${r.key} rimanda alla famiglia ${r.familyKey}`).toBe(true);
+    }
+    const pil = new Set((await db.select().from(mogPillar)).map((p) => p.key));
+    for (const r of await db.select().from(mogRequirement)) {
+      expect(pil.has(r.pillarKey), `${r.key} rimanda al pilastro ${r.pillarKey}`).toBe(true);
     }
   });
 
