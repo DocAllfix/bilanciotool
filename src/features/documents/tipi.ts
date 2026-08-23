@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -121,7 +121,16 @@ export const DOCUMENTI = {
     file: "relazione-odv",
     mostraAnno: false,
     haMedia: false,
-  }
+  },
+  relazione_wb: {
+    nome: "Relazione periodica sulle segnalazioni (D.Lgs. 24/2023)",
+    breve: "Relazione segnalazioni",
+    file: "relazione-segnalazioni",
+    // Periodica ma non ancorata all'esercizio: si redige quando l'organo di controllo la
+    // chiede, e le revisioni formano una serie unica.
+    mostraAnno: false,
+    haMedia: false,
+  },
 } as const satisfies Record<TipoDocumento, VoceDocumento>;
 
 /** "Rapporto GHG 2025" per i documenti annuali, "Attestato ESG" per gli altri. */

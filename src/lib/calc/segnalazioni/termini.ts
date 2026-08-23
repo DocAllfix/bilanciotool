@@ -110,3 +110,19 @@ export function riscontroEntro(
 export function cancellazioneEntro(dataChiusura: string | null | undefined): string | null {
   return piuAnni(dataChiusura, ANNI_CONSERVAZIONE);
 }
+
+/**
+ * Quanti giorni mancano a `data` a partire da `oggi`. Negativo se è passata.
+ *
+ * ⚠️ In UTC, come tutto il resto di questo file. Con `new Date()` e l'ora locale il
+ * conto sbaglia di uno nei giorni del cambio d'ora — che è precisamente il difetto per
+ * cui questo modulo esiste.
+ */
+export function giorniA(data: string | null | undefined, oggi: string): number | null {
+  const a = parti(data);
+  const b = parti(oggi);
+  if (!a || !b) return null;
+  const ms =
+    Date.UTC(a.anno, a.mese - 1, a.giorno) - Date.UTC(b.anno, b.mese - 1, b.giorno);
+  return Math.round(ms / 86_400_000);
+}

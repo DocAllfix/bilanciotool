@@ -200,6 +200,44 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "segnalazioni",
+    // ⚠️ Prima di «anticorruzione» e della SoA: vince il PRIMO pattern che combacia, e
+    // qui non c'e' sovrapposizione, ma l'ordine di questo elenco e' gia' stato una
+    // trappola una volta e conviene tenerlo esplicito.
+    pathPattern: /^\/aziende\/[^/]+\/segnalazioni/,
+    steps: [
+      {
+        title: "Gestione delle segnalazioni",
+        description:
+          "D.Lgs. 24/2023. Questo modulo GOVERNA il canale: non lo sostituisce. Le segnalazioni continuano ad arrivare dove arrivano oggi, e il legame fra il codice e la persona resta custodito dal gestore, fuori da qui. In questo strumento non si registra mai un nominativo.",
+      },
+      {
+        element: '[data-tour="wb-vista-canale"]',
+        title: "Le tre forme del canale",
+        description:
+          "L'art. 4 le pretende tutte e tre: scritta, orale, e incontro diretto su richiesta. Sono cumulative — la mancanza di una sola rende il canale non conforme, per quanto curate siano le altre due. Il prototipo da cui nasce questo modulo non lo verificava, e un ente con la sola casella di posta risultava a posto.",
+      },
+      {
+        element: '[data-tour="wb-vista-registro"]',
+        title: "I fascicoli, ordinati per urgenza",
+        description:
+          "Sette giorni per l'avviso, tre mesi per il riscontro: sono termini perentori, e il riscontro decorre dall'avviso EFFETTIVAMENTE reso. Aprire un fascicolo lascia una riga nel registro degli accessi — e' un obbligo, non una scelta del prodotto.",
+      },
+      {
+        element: '[data-tour="wb-vista-conformita"]',
+        title: "Gli 82 requisiti",
+        description:
+          "Dieci capi, dall'obbligo al riesame, ognuno ancorato a un articolo del decreto. Un requisito dovuto e non valutato pesa zero: saltare i difficili non fa salire la conformita'.",
+      },
+      {
+        element: '[data-tour="wb-vista-documenti"]',
+        title: "La relazione periodica",
+        description:
+          "Va all'organo di controllo e riferisce su canale, termini e conformita'. Non contiene identita' ne' contenuto delle segnalazioni: sotto i cinque casi avverte da sola che anche il dato aggregato puo' rendere riconoscibili le persone.",
+      },
+    ],
+  },
+  {
     pageId: "anticorruzione",
     // ⚠️ Prima della SoA nell'elenco: `pathPattern` vince il PRIMO che combacia, e
     // `/aziende/<id>/anticorruzione` non combacia con `/soa`, ma l'ordine qui conta

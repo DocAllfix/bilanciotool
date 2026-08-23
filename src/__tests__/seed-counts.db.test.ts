@@ -10,6 +10,7 @@ import {
   soaFramework, soaSection, soaControl,
   briberyChapter, briberyRequirement, briberyDimension, briberyFlag,
   mogFamily, mogCrime, mogPillar, mogRequirement,
+  wbChapter, wbRequirement,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -217,6 +218,26 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     const pil = new Set((await db.select().from(mogPillar)).map((p) => p.key));
     for (const r of await db.select().from(mogRequirement)) {
       expect(pil.has(r.pillarKey), `${r.key} rimanda al pilastro ${r.pillarKey}`).toBe(true);
+    }
+  });
+
+  it("i cataloghi delle Segnalazioni hanno i conteggi del prototipo", async () => {
+    // I capi sono dieci e vanno da A a L SENZA J e K: nel decreto non esistono, e
+    // «dieci lettere consecutive» sarebbe la correzione ragionevole e sbagliata.
+    expect(await conta(wbChapter)).toBe(10);
+    expect(await conta(wbRequirement)).toBe(82);
+    const lettere = (await db.select().from(wbChapter)).map((c) => c.key).sort();
+    expect(lettere).toEqual(["A", "B", "C", "D", "E", "F", "G", "H", "I", "L"]);
+  });
+
+  it("ogni requisito delle Segnalazioni rimanda a un capo e a un articolo", async () => {
+    const capi = new Set((await db.select().from(wbChapter)).map((c) => c.key));
+    for (const r of await db.select().from(wbRequirement)) {
+      expect(capi.has(r.chapterKey), `${r.key} rimanda al capo ${r.chapterKey}`).toBe(true);
+      // Il riferimento normativo è ciò che rende il requisito opponibile: un requisito
+      // senza articolo è un'opinione, e in un documento che va a un organo di controllo
+      // la differenza si vede.
+      expect(r.riferimento.length, `${r.key} senza riferimento`).toBeGreaterThan(3);
     }
   });
 

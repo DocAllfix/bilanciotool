@@ -8,12 +8,14 @@ import {
   soaDeclaration, soaModule, soaControlDecision, soaControl,
   briberySystem, briberyPartner, briberyRequirement, briberyRequirementState,
   mogModel, mogProcess, mogScenario, mogCrimeApplicability, mogRequirement, mogRequirementState,
+  wbSystem, wbChannel, wbReport, wbRequirement, wbRequirementState,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
 import { latestSoaSetId } from "@/features/soa/declarations";
 import { latestAnticorruzioneSetId } from "@/features/anticorruzione/sistema";
 import { latestMog231SetId } from "@/features/mog231/modello";
+import { latestWbSetId } from "@/features/segnalazioni/sistema";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -509,6 +511,126 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
         id: randomUUID(), organizationId: orgId, modelId: modelloId,
         requirementKey: r.key,
         stato: STATI_231[i % STATI_231.length],
+        evidenza: i % 5 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
+      })),
+  );
+
+  // ─── Gestione delle segnalazioni (D.Lgs. 24/2023) ──────────────────────────
+  //
+  // Stessi fatti dell'azienda: 48 addetti, stesso stabilimento, e il canale gestito
+  // dall'OdV — che nel Modello 231 e' gia' scritto in `canaleSegnalazione`. Un
+  // consulente che apre i due moduli della stessa azienda e trova due gestori diversi
+  // smette di fidarsi di entrambi.
+  const wbSet = await latestWbSetId();
+  const assettoId = randomUUID();
+  await tx.insert(wbSystem).values({
+    id: assettoId, organizationId: orgId, companyId, contentSetId: wbSet,
+    ragione: "Meccanica Adriatica S.r.l.", formaGiuridica: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48",
+    // 48 addetti: sotto i 50. L'obbligo nasce dal Modello 231, ed e' il caso che fa
+    // vedere che i due moduli sono legati ma non coincidono.
+    obbligo: "Adozione del modello 231, indipendentemente dal numero",
+    mogAdottato: "Sì", canaleCondiviso: "No",
+    gestoreTipo: "Organismo di vigilanza",
+    gestore: "Organismo di Vigilanza — Avv. Chiara Delvecchio",
+    sostituto: "Dott.ssa Elena Fiore, per i casi che riguardano l'OdV",
+    nomina: "2026-03-16",
+    organoIndirizzo: "Amministratore Unico — Ing. Marco Loprete",
+    organoControllo: "Revisore unico — Dott. Nicola Sabatini",
+    dpo: "Studio Legale Ferrante, responsabile della protezione dei dati",
+    consultazioneSindacale: "2026-03-02",
+    dataAdozione: "2026-03-16", revisione: "1.0",
+  });
+
+  // ⚠️ Due forme attive su tre, e l'incontro diretto NON attivo. E' il difetto piu'
+  // frequente nella realta' — e quello che il prototipo non sapeva vedere: il canale
+  // risulta non conforme all'art. 4 c. 1, e il quadro lo dice in prima riga.
+  await tx.insert(wbChannel).values([
+    {
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, forma: "Scritta", attiva: true,
+      descrizione: "Piattaforma dedicata su segnalazioni.meccanicaadriatica.example, raggiungibile anche dall'esterno.",
+      fornitore: "WhistleSafe S.r.l. — server in UE",
+      riservatezza: "Cifratura in transito e a riposo; l'identita' e' separata dal contenuto e accessibile al solo gestore.",
+      attivatoIl: "2026-03-16",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, forma: "Orale", attiva: true,
+      descrizione: "Segreteria telefonica dedicata, 080 555 0142, con messaggistica vocale.",
+      riservatezza: "Casella vocale ad accesso riservato al gestore; su richiesta la segnalazione e' verbalizzata e fatta confermare.",
+      attivatoIl: "2026-03-16",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, forma: "Incontro diretto", attiva: false,
+      descrizione: null,
+    },
+  ]);
+
+  // Quattro fascicoli che coprono i casi che valgono la pena di essere visti:
+  // uno nei termini, uno anonimo non contattabile, uno scaduto, uno chiuso.
+  await tx.insert(wbReport).values([
+    {
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, numero: 1,
+      dataRicezione: "2026-04-08", canale: "Scritto informatico", anonima: false,
+      qualita: "Dipendente", ambito: "Salute e sicurezza sul lavoro",
+      codice: "MA-2026-001", recapito: "Sì",
+      oggetto: "Segnalata l'omessa manutenzione di due macchine utensili del reparto rettifica.",
+      avvisoReso: "2026-04-10", stato: "In istruttoria",
+      ammOggetto: "Sì", ammLegittimato: "Sì", ammContesto: "Sì", ammElementi: "Sì", ammNonPersonale: "Sì",
+      ritIdentitaConoscibile: "Sì", ritSovraordinato: "Sì", ritContestoRistretto: "Sì",
+      ritPrecedenti: "No", ritRapportoPrecario: "No", ritGiaEsposto: "No",
+      monitoraggioAperto: "Sì", monitoraggioPeriodicita: "Mensile",
+    },
+    {
+      // ⚠️ Anonima e senza recapito ne' codice: i termini NON si applicano, e non
+      // risulta scaduta. E' la distinzione che il quadro deve far vedere.
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, numero: 2,
+      dataRicezione: "2026-04-20", canale: "Scritto analogico", anonima: true,
+      qualita: "Non dichiarata", ambito: "Tutela dell'ambiente",
+      oggetto: "Segnalato il conferimento di emulsioni esauste senza formulario.",
+      stato: "In valutazione",
+    },
+    {
+      // ⚠️ Avviso mai reso e termine superato: e' la riga rossa dello scadenzario.
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, numero: 3,
+      dataRicezione: "2026-05-04", canale: "Orale telefonico", anonima: false,
+      qualita: "Fornitore o appaltatore", ambito: "Appalti pubblici",
+      codice: "MA-2026-003", recapito: "Sì",
+      oggetto: "Segnalata una pressione ricevuta in fase di gara da un intermediario.",
+      stato: "Ricevuta",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: assettoId, numero: 4,
+      dataRicezione: "2026-02-02", canale: "Incontro diretto", anonima: false,
+      qualita: "Ex dipendente", ambito: "Violazione del modello o del codice etico",
+      codice: "MA-2026-004", recapito: "Sì",
+      oggetto: "Segnalato il mancato rispetto della procedura sui regali e le ospitalita'.",
+      avvisoReso: "2026-02-05", riscontroReso: "2026-04-30",
+      esito: "Non fondata", personaSentita: "Sì",
+      motivazione:
+        "Gli accertamenti non hanno riscontrato dazioni eccedenti la soglia; le ospitalita' contestate risultano registrate e autorizzate.",
+      stato: "Chiusa", dataChiusura: "2026-04-30",
+      ammOggetto: "Sì", ammLegittimato: "Sì", ammContesto: "Sì", ammElementi: "No", ammNonPersonale: "Sì",
+      ritIdentitaConoscibile: "No", ritSovraordinato: "No", ritContestoRistretto: "No",
+      ritPrecedenti: "No", ritRapportoPrecario: "No", ritGiaEsposto: "No",
+    },
+  ]);
+
+  // Due terzi dei requisiti valutati, come per gli altri moduli: la conformita' della
+  // demo non e' ne' zero ne' cento.
+  const requisitiWb = await db
+    .select({ key: wbRequirement.key })
+    .from(wbRequirement)
+    .where(eq(wbRequirement.setId, wbSet))
+    .orderBy(asc(wbRequirement.ordine));
+  const STATI_WB = ["Conforme", "Conforme", "Parzialmente conforme", "Non conforme"] as const;
+  await tx.insert(wbRequirementState).values(
+    requisitiWb
+      .filter((_, i) => i % 3 !== 2)
+      .map((r, i) => ({
+        id: randomUUID(), organizationId: orgId, systemId: assettoId,
+        requirementKey: r.key,
+        stato: STATI_WB[i % STATI_WB.length],
         evidenza: i % 5 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
       })),
   );

@@ -11,6 +11,7 @@ import { DocumentoSoa } from "@/components/documento/documento-soa";
 import { DocumentoRelazionePc } from "@/components/documento/documento-relazione-pc";
 import { DocumentoMatricePc } from "@/components/documento/documento-matrice-pc";
 import { DocumentoMatrice231 } from "@/components/documento/documento-matrice-231";
+import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 
@@ -50,6 +51,8 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         return <DocumentoMatrice231 dati={dati} />;
       case "relazione_odv":
         return <DocumentoRelazioneOdv dati={dati} />;
+      case "relazione_wb":
+        return <DocumentoRelazioneWb dati={dati} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

@@ -94,6 +94,7 @@ export function CampoScelta({
   opzioni,
   aiuto,
   salva,
+  etichettaNascosta,
 }: {
   id: string;
   etichetta: string;
@@ -101,6 +102,17 @@ export function CampoScelta({
   opzioni: readonly string[];
   aiuto?: string;
   salva: Salva;
+  /**
+   * L'etichetta esiste ma non si vede.
+   *
+   * ⚠️ Serve dove la domanda è già scritta accanto alla tendina — una riga di tabella,
+   * una griglia di valutazione — e ripeterla sopra il campo raddoppierebbe il testo.
+   * La tentazione è passare `etichetta=""`: quella però lascia il campo SENZA NOME
+   * ACCESSIBILE, cioè una tendina che uno screen reader annuncia come «combobox» e
+   * basta, e che nessun collaudo riesce a selezionare per nome. `sr-only` tiene il nome
+   * e toglie l'ingombro.
+   */
+  etichettaNascosta?: boolean;
 }) {
   // Stato locale = comando ottimistico. Il valore mostrato cambia al clic; se il server
   // rifiuta si torna a quello di prima, che è l'unica cosa che si sa essere vera.
@@ -121,7 +133,9 @@ export function CampoScelta({
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id}>{etichetta}</Label>
+      <Label htmlFor={id} className={etichettaNascosta ? "sr-only" : undefined}>
+        {etichetta}
+      </Label>
       <Select value={scelto ?? "__vuoto"} onValueChange={invia}>
         {/* `w-full`: senza, la tendina si stringe sul contenuto e accanto a un campo di
             testo a piena larghezza sembra un difetto di allineamento. */}

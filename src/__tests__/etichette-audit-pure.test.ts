@@ -25,9 +25,22 @@ function azioniNelCodice(dir: string, trovate = new Set<string>()): Set<string> 
     if (!/\.tsx?$/.test(voce)) continue;
     const testo = readFileSync(percorso, "utf8");
     // Forma letterale: azione: "ghg.row.create"
-    for (const m of testo.matchAll(/azione:\s*"([a-z0-9._]+)"/g)) trovate.add(m[1]);
+    //
+    // ⚠️ Il confine davanti a `azione:` non è decorativo. Senza, la regex trova
+    // «azione:» anche dentro `consultazione:`, `valutazione:`, `motivazione:` — e ogni
+    // proprietà che finisce così inietta un'azione fantasma nell'elenco. È successo con
+    // `consultazione: "ok" | "tardiva" | …` in una dichiarazione di tipo, e il rimedio
+    // sbagliato sarebbe stato aggiungere l'etichetta «ok» al registro: una voce falsa
+    // per zittire un controllo che diceva il falso.
+    //
+    // Il confine è scritto come lookbehind e non come `\b` di proposito: `\b` è la
+    // sequenza che si sbaglia più facilmente scrivendola da uno script, dove diventa un
+    // carattere di backspace invisibile e la regex smette di trovare quasi tutto. È
+    // successo, e il test se n'è accorto solo perché la guardia qui sotto pretende un
+    // numero minimo di azioni.
+    for (const m of testo.matchAll(/(?<![A-Za-z])azione:\s*"([a-z0-9._]+)"/g)) trovate.add(m[1]);
     // Forma composta: azione: `documento.${tipo}.publish` → si espande sui tipi.
-    for (const m of testo.matchAll(/azione:\s*`documento\.\$\{[^}]+\}\.([a-z]+)`/g)) {
+    for (const m of testo.matchAll(/(?<![A-Za-z])azione:\s*`documento\.\$\{[^}]+\}\.([a-z]+)`/g)) {
       for (const t of TIPI_DOCUMENTO) trovate.add(`documento.${t}.${m[1]}`);
     }
   }
@@ -43,6 +56,14 @@ describe("etichette del registro delle operazioni", () => {
     expect(azioni.size).toBeGreaterThan(40);
     expect(azioni.has("company.create")).toBe(true);
     expect(azioni.has("documento.soa.publish")).toBe(true);
+  });
+
+  it("⚠️ la scansione non inventa azioni da proprietà che finiscono per «azione»", () => {
+    // La controprova del confine: `consultazione:` esiste davvero nel codice — è il
+    // verdetto sulla consultazione sindacale del canale di segnalazione — e non deve
+    // comparire qui sotto nessuna forma.
+    expect(azioni.has("ok")).toBe(false);
+    expect(azioni.has("tardiva")).toBe(false);
   });
 
   it("ogni azione registrata ha un'etichetta in italiano", () => {

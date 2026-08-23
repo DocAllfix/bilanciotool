@@ -14,7 +14,12 @@ export const documentSnapshot = pgTable(
     companyId: text("company_id")
       .notNull()
       .references(() => company.id, { onDelete: "cascade" }),
-    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv"] }).notNull(),
+    // ⚠️ L'elenco e' ricopiato da `TIPI_DOCUMENTO` (`features/documents/tipi.ts`) e NON
+    // importato: lo schema deve poter essere caricato da drizzle-kit da solo, senza gli
+    // alias di percorso dell'applicazione. La copia non puo' divergere in silenzio —
+    // aggiungendo un tipo di la' e non di qua, il compilatore si ferma su ogni punto che
+    // scrive o legge questa colonna. E' successo, e ci ha messo tre secondi.
+    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb"] }).notNull(),
     anno: integer("anno").notNull(),
     versione: integer("versione").notNull(),
     dati: jsonb("dati").notNull(), // tutti i dati risolti + derivati calcolati alla pubblicazione

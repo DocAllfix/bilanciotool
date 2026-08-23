@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, Factory, Gavel, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, Factory, Gavel, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -216,6 +216,26 @@ export const MODULI_AZIENDA = [
     // documento principale; la Relazione dell'OdV e' periodica e ha un destinatario
     // interno all'ente.
     documenti: ["matrice_231", "relazione_odv"],
+    perEsercizio: false,
+  },
+  {
+    href: "segnalazioni",
+    etichetta: "Segnalazioni",
+    nome: "Gestione delle segnalazioni",
+    norma: "D.Lgs. 24/2023",
+    icona: Megaphone,
+    // Terzo modulo della responsabilita' dell'ente, e i tre sono legati per legge: il
+    // Modello 231 contiene gia' una procedura sul canale di segnalazione (art. 6 c.
+    // 2-quater), e ISO 37001 ha i propri registri di segnalazione e indagine. Chi apre
+    // uno dei tre, prima o poi apre gli altri.
+    area: "responsabilita",
+    colore: AREE.responsabilita.colore,
+    // ⚠️ Un documento solo, ed e' una decisione. La Relazione periodica e' aggregata e
+    // puo' essere consegnata; il FASCICOLO della singola segnalazione no — non per la
+    // riservatezza soltanto, ma perche' la chiave di un documento pubblicato e'
+    // (azienda, tipo, anno, versione) e per il fascicolo manca l'asse «quale
+    // fascicolo». Vedi la migrazione 0028.
+    documenti: ["relazione_wb"],
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];

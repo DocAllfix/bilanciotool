@@ -36,6 +36,8 @@ const MOG_SET = "mog231-v1";
 const mid = (key) => `${MOG_SET}:${key}`;
 const AC_SET = "iso37001-v1";
 const acid = (key) => `${AC_SET}:${key}`;
+const WB_SET = "wb-v1";
+const wid = (key) => `${WB_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
@@ -356,6 +358,34 @@ try {
   console.log(`  corpus: ${corpus.documenti} documenti, ${corpus.blocchi} blocchi, ${corpus.forme} segnaposto`);
   console.log(`  registri: ${corpus.registri} registri, ${corpus.colonneReg} colonne`);
 
+  // ⚠️ Dopo il corpus, e non prima: il content set `wb-v1` lo crea `seedCorpus`, e i
+  // capi vi puntano con una chiave esterna. Messo sopra, su un database vergine
+  // fallirebbe — e su uno gia' seminato passerebbe, che e' il modo peggiore di
+  // sbagliare: verde in sviluppo, rosso al primo ambiente nuovo.
+  // --- Gestione delle segnalazioni (D.Lgs. 24/2023) ---
+  //
+  // Il content set `wb-v1` lo crea `seed-corpus.mjs` insieme alle 12 procedure e ai 34
+  // moduli: qui si aggiungono i capi e i requisiti, che sono dominio e non corpus.
+  //
+  // I termini di legge (7 giorni, 3 mesi, 5 anni) NON stanno nel database: sono regole
+  // eseguibili, e vivono in `src/lib/calc/segnalazioni/termini.ts`. In una tabella
+  // sarebbero modificabili da chi non sa che sono perentori.
+  for (const [i, c] of load("wb-capi.json").entries()) {
+    await sql`
+      insert into wb_chapter (id, set_id, key, nome, descrizione, ordine)
+      values (${wid(`cap:${c.id}`)}, ${WB_SET}, ${c.id}, ${c.n}, ${c.d}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione, ordine = excluded.ordine`;
+  }
+
+  for (const [i, r] of load("wb-req.json").entries()) {
+    await sql`
+      insert into wb_requirement (id, set_id, key, chapter_key, riferimento, procedura, testo, ordine)
+      values (${wid(`req:${r.id}`)}, ${WB_SET}, ${r.id}, ${r.cap}, ${r.rif}, ${r.pro ?? null}, ${r.t}, ${i})
+      on conflict (id) do update set chapter_key = excluded.chapter_key, riferimento = excluded.riferimento,
+        procedura = excluded.procedura, testo = excluded.testo, ordine = excluded.ordine`;
+  }
+
+
   // Config limiti di piattaforma (se assente: default del piano 10/8/5).
   await sql`
     insert into platform_config (key, value)
@@ -373,6 +403,7 @@ try {
     "soa_framework", "soa_section", "soa_control",
     "bribery_chapter", "bribery_requirement", "bribery_dimension", "bribery_flag",
     "mog_family", "mog_crime", "mog_pillar", "mog_requirement",
+    "wb_chapter", "wb_requirement",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

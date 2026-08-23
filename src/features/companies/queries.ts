@@ -55,6 +55,19 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "mog231.scenario.delete": "Scenario di rischio rimosso",
   "mog231.reato.set": "Applicabilità di un reato dichiarata",
   "mog231.requisito.set": "Presidio del Modello 231 valutato",
+  // Gestione delle segnalazioni. ⚠️ Le etichette NON nominano mai il contenuto di un
+  // fascicolo: questa cronologia si vede nel quadro dello studio, il fascicolo no.
+  // «Fascicolo di segnalazione aperto» dice che è successo qualcosa, non che cosa.
+  "segnalazioni.assetto.create": "Gestione delle segnalazioni avviata",
+  "segnalazioni.profilo.set": "Assetto delle segnalazioni aggiornato",
+  "segnalazioni.canale.create": "Modalità del canale istituita",
+  "segnalazioni.canale.set": "Modalità del canale aggiornata",
+  "segnalazioni.canale.delete": "Modalità del canale rimossa",
+  "segnalazioni.fascicolo.create": "Fascicolo di segnalazione aperto",
+  "segnalazioni.fascicolo.set": "Fascicolo di segnalazione aggiornato",
+  "segnalazioni.fascicolo.read": "Accesso a un fascicolo di segnalazione",
+  "segnalazioni.fascicolo.delete": "Fascicolo di segnalazione eliminato",
+  "segnalazioni.requisito.set": "Requisito D.Lgs. 24/2023 valutato",
   "corpus.blocco.personalizza": "Testo del documento personalizzato",
   "corpus.blocco.ripristina": "Testo del documento ripristinato",
   "corpus.registro.aggiungi": "Registrazione inserita",
@@ -132,6 +145,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.matrice_pc.publish": "Matrice ISO 37001 pubblicata",
   "documento.matrice_231.publish": "Matrice reati-processi pubblicata",
   "documento.relazione_odv.publish": "Relazione dell'OdV pubblicata",
+  "documento.relazione_wb.publish": "Relazione sulle segnalazioni pubblicata",
   "condivisione.create": "Collegamento per il cliente generato",
   "condivisione.revoke": "Collegamento per il cliente disattivato",
   "documento.soa.pdf": "Dichiarazione scaricata in PDF",
@@ -139,6 +153,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.matrice_pc.pdf": "Matrice ISO 37001 scaricata in PDF",
   "documento.matrice_231.pdf": "Matrice reati-processi scaricata in PDF",
   "documento.relazione_odv.pdf": "Relazione dell'OdV scaricata in PDF",
+  "documento.relazione_wb.pdf": "Relazione sulle segnalazioni scaricata in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };

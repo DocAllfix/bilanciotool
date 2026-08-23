@@ -96,7 +96,7 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // GHG ed Energetico sono la stessa materia e stanno vicini. Prima era
     // ["ghg", "bilancio", "energetico", ...], e la differenza non e' cosmetica —
     // da questo elenco discendono card, barra laterale, guida e giro guidato.
-    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "energetico", "bilancio", "fornitore", "soa", "anticorruzione", "mog231"]);
+    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "energetico", "bilancio", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni"]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo
     // finisse lontano dai suoi, la sua area comparirebbe due volte a distanza — e nella
     // barra laterale si vedrebbero due intestazioni uguali separate da altre voci.

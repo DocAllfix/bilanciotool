@@ -21,6 +21,9 @@ import { getSupplierData } from "@/features/supplier/queries";
 import { getSoaData } from "@/features/soa/queries";
 import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { getMog231 } from "@/features/mog231/queries";
+import { getSegnalazioni } from "@/features/segnalazioni/queries";
+import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
+import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
@@ -535,6 +538,84 @@ export async function publishRelazioneOdvSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "relazione_odv", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La relazione periodica sulle segnalazioni (D.Lgs. 24/2023).
+ *
+ * ⚠️ QUESTO DOCUMENTO PUÒ RAGGIUNGERE IL PORTALE CLIENTE, e la conseguenza è nella
+ * scelta dei campi: niente oggetto, niente fatti segnalati, niente codice del
+ * segnalante, niente qualità caso per caso. La qualità si aggrega — «quante da soggetti
+ * esterni» — perché «la numero 4 è di un ex dipendente», in un'azienda di trenta
+ * persone, è un nome.
+ *
+ * Il livello di rischio di ritorsione, per la stessa ragione, esce solo come conteggio.
+ */
+export async function publishRelazioneWbSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSegnalazioni(userId, orgId, companyId);
+  if (!d?.assetto) throw new Error("Nessuna gestione delle segnalazioni da pubblicare per questa azienda");
+
+  // La data di pubblicazione è anche il momento rispetto al quale i termini sono
+  // giudicati: congelata qui, il documento non cambia più verdetto col passare dei
+  // giorni — che è esattamente ciò che un documento consegnato non deve fare.
+  const oggi = new Date().toISOString().slice(0, 10);
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    riferitaAl: oggi,
+    azienda: d.azienda,
+    assetto: d.assetto,
+    canale: {
+      forme: d.canali.map((c) => ({
+        forma: c.forma,
+        attiva: c.attiva,
+        descrizione: c.descrizione,
+        fornitore: c.fornitore,
+        riservatezza: c.riservatezza,
+        attivatoIl: c.attivatoIl,
+      })),
+      stato: d.canale.stato,
+      consultazione: d.canale.consultazione,
+      condivisioneAmmessa: d.canale.condivisioneAmmessa,
+    },
+    statistiche: statistiche(d.fascicoli, oggi),
+    capitoli: d.conformita.perCapitolo.map((c) => ({
+      key: c.capitolo.key,
+      nome: c.capitolo.nome,
+      descrizione: c.capitolo.descrizione,
+      requisiti: c.requisiti,
+      valutati: c.valutati,
+      conformita: c.indice,
+    })),
+    conformita: d.conformita.indice,
+    requisitiValutati: d.conformita.valutati,
+    requisitiTotali: d.conformita.totale,
+    // Il prospetto per fascicolo, di soli dati di processo.
+    prospetto: d.fascicoli
+      .slice()
+      .sort((a, b) => urgenza(a, oggi) - urgenza(b, oggi) || a.numero - b.numero)
+      .map((f) => ({
+        numero: f.numero,
+        dataRicezione: f.dataRicezione,
+        canale: f.canale,
+        anonima: f.anonima,
+        stato: f.stato,
+        esito: f.esito,
+        avvisoEntro: avvisoEntro(f.dataRicezione),
+        avvisoReso: f.avvisoReso,
+        statoAvviso: statoTermine(f, "avviso", oggi),
+        riscontroEntro: riscontroEntro(f.dataRicezione, f.avvisoReso),
+        riscontroReso: f.riscontroReso,
+        statoRiscontro: statoTermine(f, "riscontro", oggi),
+      })),
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "relazione_wb", SENZA_ESERCIZIO, dati);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo
