@@ -6,10 +6,12 @@ import {
   energyDriverValue, energyMeasure, energyNarrative,
   supplierAssessment, supplierAnswer, supplierQuestion,
   soaDeclaration, soaModule, soaControlDecision, soaControl,
+  briberySystem, briberyPartner, briberyRequirement, briberyRequirementState,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
 import { latestSoaSetId } from "@/features/soa/declarations";
+import { latestAnticorruzioneSetId } from "@/features/anticorruzione/sistema";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -299,6 +301,108 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
         statoAzione: attuato ? null : i % 2 === 0 ? ("in_corso" as const) : ("da_avviare" as const),
       };
     }),
+  );
+
+  /* ── prevenzione della corruzione (ISO 37001) ───────────────────────────── */
+  //
+  // I fatti sono gli STESSI degli altri percorsi: stessa sede, stesso settore, stessa
+  // partita IVA. Un consulente che apre due moduli della stessa azienda e trova due
+  // anagrafiche diverse smette di fidarsi di entrambe.
+  //
+  // I quattro soci in affari coprono i quattro livelli di rischio, e ciascuno mostra
+  // una situazione diversa: uno in regola, uno con la due diligence scaduta, uno con
+  // precedenti (che porta sempre a Critico), uno sotto la soglia. Senza questa varieta'
+  // la dimostrativa mostrerebbe un cruscotto tutto verde, che non insegna niente.
+  const acSet = await latestAnticorruzioneSetId();
+  const sistemaId = randomUUID();
+  await tx.insert(briberySystem).values({
+    id: sistemaId, organizationId: orgId, companyId, contentSetId: acSet,
+    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48", paesi: "Italia, Germania, Tunisia",
+    direzione: "Ing. Marco Loprete — Amministratore Unico",
+    organoGov: "No",
+    funzionePc: "Avv. Chiara Delvecchio", funzionePcImpegno: "Esternalizzata",
+    funzionePcDirigente: "Ing. Paola Ranieri — HSE Manager",
+    pubbliciUfficiali:
+      "Rapporti con l'Agenzia delle Dogane per l'export verso la Tunisia e con la Regione Puglia per i bandi di ricerca industriale. Nessun rapporto diretto con enti appaltanti.",
+    canaleEmail: "segnalazioni@meccanicaadriatica.example",
+    canaleLingue: "Italiano, inglese",
+    scopo:
+      "Stabilimento di Bari. Include progettazione, produzione, vendita e assistenza post-vendita dei componenti meccanici di precisione. Il deposito di Modugno, privo di lavorazioni, e' escluso.",
+    esclusioni: "Deposito di Modugno: nessuna attivita' esposta al rischio di corruzione.",
+    dataAdozione: "2026-03-16", revisione: "1.0",
+  });
+
+  await tx.insert(briberyPartner).values([
+    {
+      id: randomUUID(), organizationId: orgId, systemId: sistemaId,
+      nome: "Adriatic Trade Agency Ltd", categoria: "Agente o intermediario",
+      paeseOperativita: "Tunisia", oggetto: "Intermediazione commerciale per il mercato nordafricano",
+      valoreAnnuo: "85000.00", remunerazione: "A provvigione", attivoDal: "2024-09-01",
+      dimPaese: 3, dimPubbliciUfficiali: 3, dimNatura: 4, dimValore: 3,
+      flagSuccesso: true,
+      dueDiligenceIl: "2026-02-10", dueDiligenceEsito: "Favorevole con condizioni",
+      politicaComunicata: "Sì", impegni: "Sì", clausole: "Sì", controlli: "Richiesti e attuati",
+      formazioneIl: "2026-04-08", verificaCorrispettivo: "Sì",
+      stato: "Attivo",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: sistemaId,
+      nome: "Studio Tecnico Ferrandina", categoria: "Consulente",
+      paeseOperativita: "Italia", oggetto: "Assistenza tecnica per bandi di ricerca industriale",
+      valoreAnnuo: "24000.00", remunerazione: "Corrispettivo fisso", attivoDal: "2023-04-15",
+      dimPaese: 1, dimPubbliciUfficiali: 3, dimNatura: 3, dimValore: 2,
+      // Due diligence del 2024: con livello Medio il rinnovo e' ogni 24 mesi, quindi
+      // risulta SCADUTA. E' l'avviso che il quadro deve mostrare a chi apre la demo.
+      dueDiligenceIl: "2024-01-20", dueDiligenceEsito: "Favorevole",
+      politicaComunicata: "Sì", impegni: "Sì", clausole: "Non applicabile",
+      controlli: "Da verificare",
+      stato: "Attivo",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: sistemaId,
+      nome: "Logistica Sud Trasporti S.r.l.", categoria: "Fornitore di servizi",
+      paeseOperativita: "Italia", oggetto: "Trasporto su gomma dei semilavorati",
+      valoreAnnuo: "156000.00", remunerazione: "A consumo o a misura", attivoDal: "2022-11-02",
+      dimPaese: 1, dimPubbliciUfficiali: 1, dimNatura: 1, dimValore: 2,
+      stato: "Attivo",
+    },
+    {
+      id: randomUUID(), organizationId: orgId, systemId: sistemaId,
+      nome: "Global Parts Sourcing GmbH", categoria: "Distributore o rivenditore",
+      paeseOperativita: "Germania", oggetto: "Rivendita dei componenti sul mercato DACH",
+      valoreAnnuo: "310000.00", remunerazione: "Mista", attivoDal: "2021-06-14",
+      dimPaese: 1, dimPubbliciUfficiali: 2, dimNatura: 3, dimValore: 4,
+      // Precedenti per corruzione: porta a Critico qualunque sia la media. E' il caso
+      // che insegna la regola guardandola, invece di leggerla in una guida.
+      flagPrecedenti: true, flagTitolarita: true,
+      dueDiligenceIl: "2026-05-22", dueDiligenceEsito: "Favorevole con condizioni",
+      politicaComunicata: "Sì", impegni: "Non fattibile, motivato",
+      impegniNote:
+        "Il contraente applica un proprio codice di condotta e ha rifiutato la sottoscrizione di impegni ulteriori. La circostanza e' valutata nel rischio e compensata da clausole risolutive espresse.",
+      clausole: "Sì", controlli: "Non fattibile, valutato nel rischio",
+      stato: "Attivo",
+    },
+  ]);
+
+  // Circa due terzi dei requisiti valutati: la conformita' della demo non e' ne' 0
+  // (sistema mai toccato) ne' 100 (sistema perfetto, che non esiste).
+  const requisitiAc = await db
+    .select({ key: briberyRequirement.key })
+    .from(briberyRequirement)
+    .where(eq(briberyRequirement.setId, acSet))
+    .orderBy(asc(briberyRequirement.ordine));
+  const STATI_AC = ["Conforme", "Conforme", "Parzialmente conforme", "Conforme", "Non conforme"] as const;
+  await tx.insert(briberyRequirementState).values(
+    requisitiAc
+      .filter((_, i) => i % 3 !== 2)
+      .map((r, i) => ({
+        id: randomUUID(), organizationId: orgId, systemId: sistemaId,
+        requirementKey: r.key,
+        stato: STATI_AC[i % STATI_AC.length],
+        evidenza: i % 4 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
+      })),
   );
 }
 

@@ -275,27 +275,59 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
-0. ⚠️ **Il portafoglio non si aggiorna dopo aver creato un'azienda, nel build di
-   produzione.** Misurato il 22 agosto 2026 su `next start`, che e' lo stesso build che
-   gira su Vercel. La riga viene scritta, il dialogo si chiude, e l'elenco resta quello di
-   prima: l'azienda compare solo ricaricando la pagina a mano.
-   - **Che cosa e' stato escluso, misurando**: la richiesta di aggiornamento parte davvero
-     (`GET /dashboard?_rsc=…`, non un prefetch, con l'albero di stato in intestazione) e il
+0. ⚠️ **La pagina `/dashboard` non si aggiorna dopo una mutazione, nel build di
+   produzione.** Misurato il 22 e il 23 agosto 2026 su `next start`, che e' lo stesso
+   build che gira su Vercel.
+   - **Non e' `router.refresh()` in generale, ed e' la correzione piu' importante a
+     quanto avevo scritto il 22.** Sulla pagina di un modulo
+     (`/aziende/<id>/anticorruzione`) lo stesso `router.refresh()` funziona: la vista
+     compare dopo **~6 secondi**. Sul portafoglio non compare **mai**, provato con
+     un'attesa di sessanta secondi.
+   - **Non e' il dialogo della creazione.** Anche **archiviare** un'azienda — componente
+     diverso, dialogo diverso, azione diversa — lascia la card al suo posto per
+     quarantacinque secondi, mentre la riga nel database e' cambiata. Sono due mutazioni
+     indipendenti che falliscono allo stesso modo *sulla stessa pagina*.
+   - **Ipotesi escluse misurando**: l'ordine fra chiusura del dialogo e aggiornamento
+     (invertito: identico); `startTransition` (identico); `router.push` verso lo stesso
+     indirizzo prima del refresh (identico); la cache statica (`/dashboard` e' dinamica,
+     `staleTimes` a zero, riconosciuta dal build); `export const dynamic` (presente su
+     tutte e quattro le pagine confrontate).
+   - **Cosa si sa con certezza**: la richiesta di aggiornamento parte davvero (`GET
+     /dashboard?_rsc=…`, non un prefetch, con l'albero di stato in intestazione) e il
      server risponde col dato giusto (58 KB che contengono il nome nuovo). E' il client a
-     non applicarlo. Non e' «indietro di un aggiornamento»: creando una seconda azienda non
-     compare nemmeno la prima, e una sonda ha atteso **sessanta secondi**. Non e' l'ordine
-     fra chiusura del dialogo e aggiornamento (invertito: identico), non e' `startTransition`
-     (provato: identico), non e' la cache statica (`/dashboard` e' dinamica, `staleTimes`
-     e' a zero ed e' riconosciuta dal build). Con `npm run dev` l'elenco si aggiorna in ~3 s.
-   - **Impatto sul cliente**: crea un'azienda, non la vede, e la ricrea. Nessun messaggio,
-     nessun errore in console, nessuna richiesta fallita.
+     non applicarlo. Con `npm run dev` l'elenco si aggiorna in ~3 secondi.
+   - **Impatto sul cliente**: crea un'azienda, non la vede, e la ricrea. Archivia
+     un'azienda, la vede ancora li'. Nessun messaggio, nessun errore in console, nessuna
+     richiesta fallita.
    - **Non e' stato verificato in produzione** perche' provarlo significa scrivere
-     un'azienda vera nel database che incassa. Una nota in `visual-check-energetico.mjs`
-     dichiarava che in produzione l'elenco si aggiorna: **quella nota aveva il verso
-     sbagliato** (dava la colpa a `next start` come «server di prova», mentre e' proprio il
-     build di produzione) e non risulta verificata da chi l'ha scritta.
-   - **Intanto** i collaudi usano `attendiCard` (`scripts/comune-collaudo.mjs`), che ricarica
-     finche' la card non c'e': misurano il percorso, non l'artefatto.
+     un'azienda vera nel database che incassa.
+   - **Nessuna correzione applicata**: le tre tentate non funzionano, e la causa non e'
+     ancora capita. Una ricarica completa della pagina la aggirerebbe di sicuro, ma
+     sarebbe un rimedio a una causa ignota, e va deciso.
+   - **Intanto** i collaudi usano `attendiCard` (`scripts/comune-collaudo.mjs`), che
+     ricarica finche' la card non c'e': misurano il percorso, non l'artefatto.
+
+0-bis. **Il portafoglio impiega ~13 secondi a caricare, e ogni modulo aggiunto lo
+   peggiora.** Misurato il 23 agosto 2026 in locale contro il database di sviluppo
+   (Francoforte, ~60 ms per viaggio in regime):
+
+   | Pagina | `networkidle` |
+   |---|---|
+   | registrazione + seed della dimostrativa | 21,4 s |
+   | **`/dashboard`** | **12,8 s** |
+   | fascicolo azienda | 7,0 s |
+   | passi del percorso GHG | 6,1 – 7,3 s |
+   | SoA | 3,3 s |
+   | prevenzione della corruzione | 6,8 s |
+
+   Il modulo nuovo e' in linea con gli altri: non e' lui il problema. Il portafoglio lo
+   e', ed e' la prima pagina che un cliente vede dopo l'accesso. Con undici moduli
+   peggiorera' ancora.
+
+   **Conseguenza gia' visibile sui collaudi**: `qa -- tutto-demo` arriva a 67 su 68 e il
+   rosso cade ogni volta su un `page.goto` DIVERSO, con timeout a 30 secondi. Non e' un
+   difetto del prodotto — e' margine che si e' assottigliato. Va guardato prima del
+   lancio, perche' un margine che si assottiglia da solo finisce per rompersi.
 
 1. **Nessun canale di allarme funziona.** Da WordPress non esce posta (`sendmail` assente
    nel contenitore) e sul server del blog manca `RESEND_API_KEY`. I backup del blog girano

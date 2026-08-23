@@ -96,7 +96,7 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // GHG ed Energetico sono la stessa materia e stanno vicini. Prima era
     // ["ghg", "bilancio", "energetico", ...], e la differenza non e' cosmetica —
     // da questo elenco discendono card, barra laterale, guida e giro guidato.
-    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "energetico", "bilancio", "fornitore", "soa"]);
+    expect(f.voci.map((v) => v.modulo)).toEqual(["ghg", "energetico", "bilancio", "fornitore", "soa", "anticorruzione"]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo
     // finisse lontano dai suoi, la sua area comparirebbe due volte a distanza — e nella
     // barra laterale si vedrebbero due intestazioni uguali separate da altre voci.
@@ -293,9 +293,13 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
       expect(ghg.pubblicati).toBe(0);
       const ene = st.servizi.find((x) => x.modulo === "energetico")!;
       expect(ene.avviati).toBe(0);
-      // Cinque servizi sempre, anche quelli mai proposti: la riga a zero e
-      // un'informazione, non un buco.
-      expect(st.servizi.length).toBe(5);
+      // ⚠️ Una riga per OGNI modulo del registro, anche per quelli mai proposti: la
+      // riga a zero e' un'informazione commerciale, non un buco. Si confrontano le
+      // CHIAVI e non il numero — un numero fisso diventa rosso al primo modulo
+      // aggiunto, per un motivo che col prodotto non c'entra, ed e' successo qui.
+      // Il confronto sulle chiavi invece continua a catturare cio' che conta: che
+      // nessun servizio sia stato filtrato via perche' a zero.
+      expect([...st.servizi.map((x) => x.modulo)].sort()).toEqual([...MODULI_AZIENDA.map((m) => m.href)].sort());
     } finally {
       await db.delete(ghgInventory).where(eq(ghgInventory.companyId, demoId));
       await db.delete(company).where(eq(company.id, demoId));

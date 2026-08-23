@@ -323,9 +323,8 @@ export async function publishRelazionePcSnapshot(
 ): Promise<string> {
   await requireEntitlement(userId, orgId, "generate_pdf");
   const d = await getAnticorruzione(userId, orgId, companyId);
-  if (!d) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
-
-  const azienda = await aziendaPerDocumento(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
+  const azienda = d.azienda;
 
   const dati = {
     generatoIl: new Date().toISOString(),
@@ -378,9 +377,8 @@ export async function publishMatricePcSnapshot(
 ): Promise<string> {
   await requireEntitlement(userId, orgId, "generate_pdf");
   const d = await getAnticorruzione(userId, orgId, companyId);
-  if (!d) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
-
-  const azienda = await aziendaPerDocumento(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema anticorruzione da pubblicare per questa azienda");
+  const azienda = d.azienda;
   const statoPerChiave = new Map(d.statiRequisiti.map((r) => [r.requirementKey, r]));
 
   const dati = {
@@ -414,18 +412,6 @@ export async function publishMatricePcSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "matrice_pc", SENZA_ESERCIZIO, dati);
-}
-
-/** L'intestazione dell'azienda, uguale per tutti i documenti. */
-async function aziendaPerDocumento(userId: string, orgId: string, companyId: string) {
-  const [az] = await withTenant({ userId, orgId }, (tx) =>
-    tx
-      .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede })
-      .from(company)
-      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId))),
-  );
-  if (!az) throw new Error("Azienda inesistente o di un altro tenant");
-  return az;
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

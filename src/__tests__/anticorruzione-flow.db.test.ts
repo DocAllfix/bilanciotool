@@ -21,6 +21,14 @@ import { publishMatricePcSnapshot, publishRelazionePcSnapshot } from "@/features
 // producano gli stessi numeri. È il punto in cui una colonna mappata sul campo
 // sbagliato si vedrebbe — e non si vedrebbe in nessun test puro.
 
+/** Il modello con il sistema garantito: `getAnticorruzione` restituisce l'azienda anche
+ *  quando il sistema non c'e', e qui i test lo pretendono invece di ipotizzarlo. */
+async function dati(userId: string, orgId: string, companyId: string) {
+  const d = await getAnticorruzione(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("il sistema non risulta creato");
+  return d;
+}
+
 const RUN = Date.now();
 let studio: Awaited<ReturnType<typeof creaStudio>>;
 let systemId: string;
@@ -83,8 +91,8 @@ describe("soci in affari e livello di rischio", () => {
 
   it("una sola dimensione a 4 porta a Critico — il caso limite del prototipo", async () => {
     await setCampoSocio(studio.userId, studio.orgId, socioId, { campo: "dimPaese", valore: 4 });
-    const d = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const s = d!.soci.find((x) => x.id === socioId)!;
+    const d = await dati(studio.userId, studio.orgId, studio.companyId);
+    const s = d.soci.find((x) => x.id === socioId)!;
     // Se la media si facesse su quattro dimensioni sarebbe 1,0 → Basso, e a questo
     // socio non si chiederebbe nemmeno la due diligence.
     expect(s.livello).toBe("Critico");
@@ -97,12 +105,12 @@ describe("soci in affari e livello di rischio", () => {
     for (const campo of ["dimPaese", "dimPubbliciUfficiali", "dimNatura", "dimValore"] as const) {
       await setCampoSocio(studio.userId, studio.orgId, altro, { campo, valore: 1 });
     }
-    let d = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    expect(d!.soci.find((x) => x.id === altro)!.livello).toBe("Basso");
+    let d = await dati(studio.userId, studio.orgId, studio.companyId);
+    expect(d.soci.find((x) => x.id === altro)!.livello).toBe("Basso");
 
     await setCampoSocio(studio.userId, studio.orgId, altro, { campo: "flagPrecedenti", valore: true });
-    d = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    expect(d!.soci.find((x) => x.id === altro)!.livello).toBe("Critico");
+    d = await dati(studio.userId, studio.orgId, studio.companyId);
+    expect(d.soci.find((x) => x.id === altro)!.livello).toBe("Critico");
 
     await eliminaSocio(studio.userId, studio.orgId, altro);
   });
@@ -131,20 +139,20 @@ describe("soci in affari e livello di rischio", () => {
   it("la provvigione dichiarata nel campo fa scattare la verifica del corrispettivo", async () => {
     // ⚠️ SCOSTAMENTO VOLUTO: il prototipo guardava solo il flag, quindi chi sceglieva
     // «A provvigione» senza spuntarlo non aveva l'obbligo.
-    const prima = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const n = prima!.soci.find((x) => x.id === socioId)!.obblighi;
+    const prima = await dati(studio.userId, studio.orgId, studio.companyId);
+    const n = prima.soci.find((x) => x.id === socioId)!.obblighi;
 
     await setCampoSocio(studio.userId, studio.orgId, socioId, { campo: "remunerazione", valore: "A provvigione" });
-    const dopo = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    expect(dopo!.soci.find((x) => x.id === socioId)!.obblighi).toBe(n + 1);
+    const dopo = await dati(studio.userId, studio.orgId, studio.companyId);
+    expect(dopo.soci.find((x) => x.id === socioId)!.obblighi).toBe(n + 1);
   });
 
   it("un rapporto cessato esce dagli indicatori ma resta nell'elenco", async () => {
     await setCampoSocio(studio.userId, studio.orgId, socioId, { campo: "stato", valore: "Cessato" });
-    const d = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    expect(d!.indicatori.sociTotali).toBe(1);
-    expect(d!.indicatori.sociAttivi).toBe(0);
-    expect(d!.indicatori.sopraSoglia).toBe(0);
+    const d = await dati(studio.userId, studio.orgId, studio.companyId);
+    expect(d.indicatori.sociTotali).toBe(1);
+    expect(d.indicatori.sociAttivi).toBe(0);
+    expect(d.indicatori.sopraSoglia).toBe(0);
     await setCampoSocio(studio.userId, studio.orgId, socioId, { campo: "stato", valore: "Attivo" });
   });
 
@@ -159,19 +167,19 @@ describe("soci in affari e livello di rischio", () => {
 
 describe("conformita' ai requisiti", () => {
   it("un requisito applicabile e non valutato pesa zero", async () => {
-    const prima = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const cap4 = prima!.capitoli.find((c) => c.key === "4")!;
+    const prima = await dati(studio.userId, studio.orgId, studio.companyId);
+    const cap4 = prima.capitoli.find((c) => c.key === "4")!;
     expect(cap4.conformita).toBe(0);
 
     // Si valuta UN requisito del capitolo 4: la conformità del capitolo non diventa 100.
-    const primo = prima!.catalogo.requisiti.find((r) => r.chapterKey === "4")!;
+    const primo = prima.catalogo.requisiti.find((r) => r.chapterKey === "4")!;
     await setCampoRequisito(studio.userId, studio.orgId, systemId, {
       requirementKey: primo.key,
       campo: "stato",
       valore: "Conforme",
     });
-    const dopo = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const cap4b = dopo!.capitoli.find((c) => c.key === "4")!;
+    const dopo = await dati(studio.userId, studio.orgId, studio.companyId);
+    const cap4b = dopo.capitoli.find((c) => c.key === "4")!;
     expect(cap4b.valutati).toBe(1);
     expect(cap4b.conformita).toBeGreaterThan(0);
     // ⚠️ Il prototipo qui direbbe 100. È lo scostamento documentato.
@@ -180,12 +188,12 @@ describe("conformita' ai requisiti", () => {
   });
 
   it("nota e stato sono campi distinti: scrivere l'una non cancella l'altro", async () => {
-    const d = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const r = d!.catalogo.requisiti[0]!;
+    const d = await dati(studio.userId, studio.orgId, studio.companyId);
+    const r = d.catalogo.requisiti[0]!;
     await setCampoRequisito(studio.userId, studio.orgId, systemId, { requirementKey: r.key, campo: "stato", valore: "Conforme" });
     await setCampoRequisito(studio.userId, studio.orgId, systemId, { requirementKey: r.key, campo: "note", valore: "Verbale del 12 marzo" });
-    const dopo = await getAnticorruzione(studio.userId, studio.orgId, studio.companyId);
-    const s = dopo!.statiRequisiti.find((x) => x.requirementKey === r.key)!;
+    const dopo = await dati(studio.userId, studio.orgId, studio.companyId);
+    const s = dopo.statiRequisiti.find((x) => x.requirementKey === r.key)!;
     expect(s.stato).toBe("Conforme");
     expect(s.note).toBe("Verbale del 12 marzo");
   });
@@ -239,7 +247,7 @@ describe("documenti", () => {
       .select()
       .from(documentSnapshot)
       .where(and(eq(documentSnapshot.companyId, studio.companyId), eq(documentSnapshot.tipo, "relazione_pc")));
-    const congelato = JSON.stringify(prima!.dati);
+    const congelato = JSON.stringify(prima.dati);
 
     await aggiornaProfilo(studio.userId, studio.orgId, systemId, { direzione: "Dott. Sanna" });
 
@@ -247,7 +255,7 @@ describe("documenti", () => {
       .select()
       .from(documentSnapshot)
       .where(and(eq(documentSnapshot.companyId, studio.companyId), eq(documentSnapshot.tipo, "relazione_pc")));
-    expect(JSON.stringify(dopo!.dati)).toBe(congelato);
+    expect(JSON.stringify(dopo.dati)).toBe(congelato);
   });
 
   it("ripubblicare crea la revisione successiva", async () => {

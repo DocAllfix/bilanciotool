@@ -12,7 +12,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
@@ -220,11 +220,20 @@ await agisci("Fornitore: cambiare una risposta si salva", async () => {
   await page.waitForTimeout(1000);
   // Il nome accessibile porta la domanda davanti: «B1: In parte», non «In parte».
   await page.getByRole("button", { name: "B1: In parte", exact: true }).click();
-  await page.waitForTimeout(1800);
-  const [r] = await sql`select a.risposta from supplier_answer a
-    join supplier_assessment s on s.id = a.assessment_id
-    where s.company_id = ${az.id} and a.question_key = 'B1'`;
-  if (r?.risposta !== "parziale") throw new Error(`nel database c'e' «${r?.risposta}»`);
+  // ⚠️ Si aspetta la CONDIZIONE, non un tempo. L'attesa fissa di 1,8 secondi qui era
+  // tarata sul margine: il giorno in cui il salvataggio ha impiegato un istante di piu'
+  // il collaudo ha letto il valore SEMINATO («si») e ha accusato il prodotto di non
+  // salvare. La riga nel database e' la prova; il tempo che ci mette non lo e'.
+  const rispostaB1 = async () => {
+    const [x] = await sql`select a.risposta from supplier_answer a
+      join supplier_assessment s on s.id = a.assessment_id
+      where s.company_id = ${az.id} and a.question_key = 'B1'`;
+    return x?.risposta ?? null;
+  };
+  await attendi(async () => (await rispostaB1()) === "parziale", {
+    entro: 30000,
+    cosa: "la risposta B1 salvata come «parziale»",
+  });
   await page.getByRole("button", { name: "B1: Sì", exact: true }).click();
   await page.waitForTimeout(1200);
 });
@@ -308,10 +317,22 @@ await agisci("impostazioni: «Salva» resta spento finche' non cambia niente", a
 await agisci("impostazioni: rinominare lo studio si salva", async () => {
   await page.locator("#nome-studio").fill(NUOVO_NOME);
   await page.getByRole("button", { name: /^Salva/ }).click();
-  await page.waitForTimeout(1800);
+  // ⚠️ La riga nel database, non un tempo. Con l'attesa fissa di 1,8 secondi questo
+  // controllo passava in una corsa e falliva in quella dopo, sullo stesso codice: e'
+  // la firma di una gara, non di un difetto. Il nome salvato e' la prova; quanto ci
+  // mette ad arrivarci non lo e'.
+  await attendi(
+    async () => {
+      const [o] = await sql`select name from organization where id = ${orgId}`;
+      return o?.name === NUOVO_NOME;
+    },
+    { entro: 30000, cosa: `il nome dello studio salvato come «${NUOVO_NOME}»` },
+  );
+  // E poi che l'interfaccia lo mostri: sono due fatti diversi, e questo collaudo li
+  // vuole entrambi — il database dice che e' stato scritto, la pagina che si vede.
   await vai("/impostazioni");
   const v = await page.locator("#nome-studio").inputValue();
-  if (v !== NUOVO_NOME) throw new Error(`salvato «${v}»`);
+  if (v !== NUOVO_NOME) throw new Error(`nel database c'e' «${NUOVO_NOME}», in pagina «${v}»`);
 });
 
 await agisci("impostazioni: la scheda Membri mostra il limite", async () => {

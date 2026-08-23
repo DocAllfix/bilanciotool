@@ -165,6 +165,44 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "anticorruzione",
+    // ⚠️ Prima della SoA nell'elenco: `pathPattern` vince il PRIMO che combacia, e
+    // `/aziende/<id>/anticorruzione` non combacia con `/soa`, ma l'ordine qui conta
+    // per chiunque aggiunga un modulo con un prefisso che ne contiene un altro.
+    pathPattern: /^\/aziende\/[^/]+\/anticorruzione/,
+    steps: [
+      {
+        title: "Prevenzione della corruzione",
+        description:
+          "UNI ISO 37001. Non e' un percorso a passi: e' un fascicolo che si consulta. Cinque viste, e i documenti si pubblicano quando servono.",
+      },
+      {
+        element: '[data-tour="pc-vista-organizzazione"]',
+        title: "L'organizzazione",
+        description:
+          "Alimenta i segnaposto delle 12 procedure e dei 47 moduli del sistema. Cio' che resta vuoto qui resta evidenziato nei documenti: e' un promemoria, non un errore.",
+      },
+      {
+        element: '[data-tour="pc-vista-soci"]',
+        title: "I soci in affari",
+        description:
+          "Il cuore della norma. Per ciascuno si valutano quattro dimensioni di rischio: da li' discendono due diligence, impegni, clausole e formazione. La media si fa sulle sole dimensioni valutate.",
+      },
+      {
+        element: '[data-tour="pc-vista-requisiti"]',
+        title: "I 91 requisiti",
+        description:
+          "Sette capitoli, dal contesto al miglioramento. Un requisito applicabile e non valutato pesa zero: saltare i difficili non fa salire la conformita'.",
+      },
+      {
+        element: '[data-tour="pc-vista-documenti"]',
+        title: "I due documenti",
+        description:
+          "La Relazione e' cio' che si porta all'organo di governo; la Matrice e' cio' che l'auditor sfoglia riga per riga. Si pubblicano come revisioni, non per esercizio.",
+      },
+    ],
+  },
+  {
     pageId: "soa",
     pathPattern: /^\/aziende\/[^/]+\/soa/,
     steps: [

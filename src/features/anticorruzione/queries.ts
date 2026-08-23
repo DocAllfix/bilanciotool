@@ -1,8 +1,11 @@
 import { conformitaCapitolo, conformitaSistema, valutati } from "@/lib/calc/anticorruzione/conformita";
 import { obblighiAperti, obblighiDi, statoObblighi } from "@/lib/calc/anticorruzione/obblighi";
 import { frequenzaDueDiligence, livello, livelloDueDiligence, scaduta, superiore } from "@/lib/calc/anticorruzione/rischio";
-import type { Dimensione, SocioInAffari } from "@/lib/calc/anticorruzione/tipi";
+import { socioDalDatabase } from "@/lib/calc/anticorruzione/mappa";
 import type { briberyPartner } from "@/lib/db/schema";
+import { and, eq } from "drizzle-orm";
+import { withTenant } from "@/lib/db/tenant";
+import { company } from "@/lib/db/schema";
 import { getCatalogo, getSistema, listaRequisiti, listaSoci } from "./sistema";
 
 // Il modello di lettura del modulo ISO 37001.
@@ -14,41 +17,6 @@ import { getCatalogo, getSistema, listaRequisiti, listaSoci } from "./sistema";
 // si scrive.
 
 type RigaSocio = typeof briberyPartner.$inferSelect;
-
-/**
- * Dalla riga del database alla forma che il motore conosce.
- *
- * ⚠️ Sta in UN POSTO SOLO, ed è deliberato. La corrispondenza fra colonne e campi del
- * motore è l'unico punto in cui i due mondi si toccano: due copie divergerebbero al
- * primo campo aggiunto, e la divergenza si vedrebbe come un livello di rischio
- * sbagliato — cioè come un difetto del motore, che sarebbe innocente.
- */
-export function socioDalDatabase(p: RigaSocio): SocioInAffari {
-  const dim = (v: number | null): Dimensione => (v === 1 || v === 2 || v === 3 || v === 4 ? v : null);
-  return {
-    paese: dim(p.dimPaese),
-    pubbliciUfficiali: dim(p.dimPubbliciUfficiali),
-    natura: dim(p.dimNatura),
-    valore: dim(p.dimValore),
-    remunerazioneSuccesso: p.flagSuccesso,
-    impostoDalCliente: p.flagCliente,
-    titolaritaOpaca: p.flagTitolarita,
-    precedenti: p.flagPrecedenti,
-    legamiPubblici: p.flagLegami,
-    pagamentiATerzi: p.flagPagamenti,
-    dueDiligenceIl: p.dueDiligenceIl,
-    politicaComunicata: p.politicaComunicata,
-    impegni: p.impegni,
-    clausole: p.clausole,
-    controlli: p.controlli,
-    formazioneIl: p.formazioneIl,
-    verificaCorrispettivo: p.verificaCorrispettivo,
-    remunerazione: p.remunerazione,
-    controllata: p.controllata,
-    adeguamento: p.adeguamento,
-    stato: p.stato === "Sospeso" || p.stato === "Cessato" ? p.stato : "Attivo",
-  };
-}
 
 export type SocioCalcolato = RigaSocio & {
   livello: ReturnType<typeof livello>;
@@ -67,8 +35,21 @@ export type SocioCalcolato = RigaSocio & {
  * pure, e una funzione che legge il tempo non si può provare due volte allo stesso modo.
  */
 export async function getAnticorruzione(userId: string, orgId: string, companyId: string, oggi = new Date()) {
+  // L'azienda si legge SEMPRE, anche quando il sistema non c'e': la pagina deve poter
+  // distinguere «questa azienda non esiste o e' di un altro studio» — che e' un 404 —
+  // da «il sistema non e' ancora stato avviato», che e' un invito a cominciare. Con un
+  // `null` solo per entrambi i casi, chi apre il modulo su un'azienda vera vedrebbe una
+  // pagina non trovata.
+  const [azienda] = await withTenant({ userId, orgId }, (tx) =>
+    tx
+      .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede })
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId))),
+  );
+  if (!azienda) return null;
+
   const sistema = await getSistema(userId, orgId, companyId);
-  if (!sistema) return null;
+  if (!sistema) return { azienda, sistema: null } as const;
 
   const [catalogo, righeSoci, statiRequisiti] = await Promise.all([
     getCatalogo(sistema.contentSetId),
@@ -111,6 +92,7 @@ export async function getAnticorruzione(userId: string, orgId: string, companyId
   });
 
   return {
+    azienda,
     sistema,
     catalogo,
     soci,

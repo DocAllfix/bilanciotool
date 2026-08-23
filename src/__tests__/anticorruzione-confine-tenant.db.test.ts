@@ -27,6 +27,14 @@ import { publishRelazionePcSnapshot } from "@/features/documents/snapshot";
 // Ogni asserzione è stata messa in rosso di proposito togliendo il filtro
 // `organization_id` dalla funzione corrispondente.
 
+/** Il modello con il sistema garantito: `getAnticorruzione` restituisce l'azienda anche
+ *  quando il sistema non c'e', e qui i test lo pretendono invece di ipotizzarlo. */
+async function dati(userId: string, orgId: string, companyId: string) {
+  const d = await getAnticorruzione(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("il sistema non risulta creato");
+  return d;
+}
+
 const RUN = Date.now();
 let A: Awaited<ReturnType<typeof creaStudio>>;
 let B: Awaited<ReturnType<typeof creaStudio>>;
@@ -56,6 +64,9 @@ describe("lo studio B non vede il sistema di A", () => {
   });
 
   it("non ne legge il modello completo", async () => {
+    // Qui il `null` E' il risultato atteso, e non si passa dall'aiutante: `dati()`
+    // pretende il sistema e lancerebbe, trasformando la prova di un divieto in un
+    // errore del collaudo — che e' un'altra cosa.
     expect(await getAnticorruzione(B.userId, B.orgId, A.companyId)).toBeNull();
   });
 
@@ -96,13 +107,13 @@ describe("lo studio B non scrive sulle righe di A", () => {
   });
 
   it("non valuta un requisito nel sistema di A", async () => {
-    const d = await getAnticorruzione(A.userId, A.orgId, A.companyId);
-    const chiave = d!.catalogo.requisiti[0]!.key;
+    const d = await dati(A.userId, A.orgId, A.companyId);
+    const chiave = d.catalogo.requisiti[0]!.key;
     await expect(
       setCampoRequisito(B.userId, B.orgId, sistemaA, { requirementKey: chiave, campo: "stato", valore: "Conforme" }),
     ).rejects.toThrow();
-    const dopo = await getAnticorruzione(A.userId, A.orgId, A.companyId);
-    expect(dopo!.statiRequisiti).toHaveLength(0);
+    const dopo = await dati(A.userId, A.orgId, A.companyId);
+    expect(dopo.statiRequisiti).toHaveLength(0);
   });
 
   it("non pubblica un documento sull'azienda di A", async () => {
