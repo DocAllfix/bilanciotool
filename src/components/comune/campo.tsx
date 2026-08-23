@@ -6,7 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-// I campi che salvano DA SOLI, uno per volta.
+// I campi che salvano DA SOLI, uno per volta. Condivisi da tutti i moduli.
+//
+// Stanno qui e non dentro un modulo perche' la domanda e' la stessa dappertutto: un
+// campo che salva sfocandosi, una tendina che risponde subito, una data che si rifiuta
+// se non e' una data. Scriverli una seconda volta significherebbe correggere due volte
+// il prossimo difetto — ed e' gia' successo con la validazione delle date.
 //
 // Tre regole pagate da questo progetto, tutte e tre qui dentro:
 //

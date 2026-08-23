@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
-import { CampoData, CampoScelta, CampoTesto } from "./campo";
+import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { COLORE_LIVELLO, type DatiAnticorruzione, type Socio } from "./types";
 
 // I soci in affari: elenco a sinistra, scheda a destra.

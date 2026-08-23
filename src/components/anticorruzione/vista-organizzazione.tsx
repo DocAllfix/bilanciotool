@@ -2,7 +2,7 @@
 
 import { aggiornaProfiloAction } from "@/features/anticorruzione/actions";
 import { IMPEGNO_FUNZIONE, SI_NO } from "@/features/anticorruzione/validation";
-import { CampoData, CampoScelta, CampoTesto } from "./campo";
+import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import type { DatiAnticorruzione } from "./types";
 
 // L'anagrafica del sistema, in cinque gruppi.
