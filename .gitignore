@@ -62,3 +62,8 @@ shot-*
 # collaudi locali passavano, e in produzione la rotta non esisteva.
 /videodemo/
 /video/
+
+# Sonde di misura usa-e-getta. Ancorata con la barra: un pattern senza barra
+# iniziale vale a QUALSIASI livello, e questo progetto ha gia perso una rotta
+# cosi (`video/` si porto via `src/app/api/onboarding/video/`).
+/scratch/

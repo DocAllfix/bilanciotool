@@ -301,27 +301,39 @@ Non bloccano il lancio, ma vanno saputi.
    **Guardia**: `npm run qa -- portafoglio-aggiorna`, cinque controlli che non ricaricano
    mai la pagina dopo una mutazione. Messo in rosso di proposito rimettendo una delle tre
    cause: fallisce sull'asserzione giusta e solo su quella.
-0-bis. **Il portafoglio impiega ~13 secondi a caricare, e ogni modulo aggiunto lo
-   peggiora.** Misurato il 23 agosto 2026 in locale contro il database di sviluppo
-   (Francoforte, ~60 ms per viaggio in regime):
+0-bis. **Il portafoglio fa 55 viaggi al database per un render, e il numero cresce con
+   ogni modulo.** Misurato il 23 agosto 2026, con quattro aziende in portafoglio:
 
-   | Pagina | `networkidle` |
+   | Lettura | Viaggi |
    |---|---|
-   | registrazione + seed della dimostrativa | 21,4 s |
-   | **`/dashboard`** | **12,8 s** |
-   | fascicolo azienda | 7,0 s |
-   | passi del percorso GHG | 6,1 – 7,3 s |
-   | SoA | 3,3 s |
-   | prevenzione della corruzione | 6,8 s |
+   | `getCompanyUsage` | 13 |
+   | `listCompaniesWithStats` | 9 |
+   | `getPortfolioOverview` | 7 |
+   | `getStatiPortafoglio` | 13 |
+   | `getScadenzario` | 13 |
+   | **totale** | **55** |
 
-   Il modulo nuovo e' in linea con gli altri: non e' lui il problema. Il portafoglio lo
-   e', ed e' la prima pagina che un cliente vede dopo l'accesso. Con undici moduli
-   peggiorera' ancora.
+   ⚠️ **Il numero da guardare sono i VIAGGI, non i millisecondi.** Da questa macchina il
+   portafoglio impiega 12,4 s al primo caricamento e 3,7 s a caldo, ma il database di
+   sviluppo e' a Francoforte e il client e' qui: ~60 ms a viaggio, che moltiplicati per
+   55 danno esattamente i 3,3 s misurati. **In produzione le funzioni girano in `fra1` e
+   il database sta nella stessa regione**: ~1-2 ms a viaggio, cioe' meno di un decimo di
+   secondo. Una versione precedente di questa voce diceva «il portafoglio e' lento»: era
+   una misura dell'ambiente locale spacciata per una misura del prodotto.
 
-   **Conseguenza gia' visibile sui collaudi**: `qa -- tutto-demo` arriva a 67 su 68 e il
-   rosso cade ogni volta su un `page.goto` DIVERSO, con timeout a 30 secondi. Non e' un
-   difetto del prodotto — e' margine che si e' assottigliato. Va guardato prima del
-   lancio, perche' un margine che si assottiglia da solo finisce per rompersi.
+   **Non e' quindi un difetto da correggere adesso**, ed e' scritto perche' non lo si
+   corregga alla cieca: ottimizzare su questi millisecondi vorrebbe dire ottimizzare per
+   un ambiente che nessun cliente usa.
+
+   **Cio' che invece va guardato**: dei 55 viaggi, **15 sono puro sovraccarico di
+   transazione** — cinque chiamate a `withTenant`, ciascuna con `BEGIN`, `SET LOCAL` e
+   `COMMIT`. E `getStatiPortafoglio` e `getScadenzario` interrogano una tabella per
+   modulo: con undici moduli diventeranno una ventina di viaggi ciascuna. La
+   consolidazione e' gia' nel piano (Fase J).
+
+   **Conseguenza sui collaudi, questa reale**: `qa -- tutto-demo` arriva a 67 su 68 e il
+   rosso cade ogni volta su un `page.goto` DIVERSO, con timeout a 30 secondi. E' il
+   margine di questa macchina, non del prodotto.
 
 1. **Nessun canale di allarme funziona.** Da WordPress non esce posta (`sendmail` assente
    nel contenitore) e sul server del blog manca `RESEND_API_KEY`. I backup del blog girano
