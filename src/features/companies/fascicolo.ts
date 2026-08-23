@@ -11,7 +11,7 @@ import {
   supplierAssessment,
   supplierAnswer,
   soaDeclaration,
-  soaControlDecision, briberySystem, briberyRequirementState } from "@/lib/db/schema";
+  soaControlDecision, briberySystem, briberyRequirementState, mogModel, mogProcess, mogScenario } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, count, desc, eq, isNotNull } from "drizzle-orm";
 
@@ -59,7 +59,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, valutazione, dichiarazione, sistemaPc, documenti] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, valutazione, dichiarazione, sistemaPc, modello231, documenti] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -88,6 +88,10 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .from(briberySystem)
         .where(and(eq(briberySystem.companyId, companyId), eq(briberySystem.organizationId, orgId))),
       tx
+        .select({ id: mogModel.id })
+        .from(mogModel)
+        .where(and(eq(mogModel.companyId, companyId), eq(mogModel.organizationId, orgId))),
+      tx
         .select({
           id: documentSnapshot.id,
           tipo: documentSnapshot.tipo,
@@ -106,11 +110,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const supId = valutazione[0]?.id ?? null;
     const soaId = dichiarazione[0]?.id ?? null;
     const pcId = sistemaPc[0]?.id ?? null;
+    const mogId = modello231[0]?.id ?? null;
     const annoBilancio = progetti[0]?.anno ?? null;
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nRisposte, nDecisioni, nRequisiti] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nRisposte, nDecisioni, nRequisiti, nScenari] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -142,6 +147,17 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
             .select({ n: count() })
             .from(briberyRequirementState)
             .where(and(eq(briberyRequirementState.systemId, pcId), isNotNull(briberyRequirementState.stato)))
+        : zero,
+
+      // Il riempimento del 231 si conta sugli SCENARI, non sui requisiti: la mappatura
+      // processo-reato e' il lavoro vero, e un Modello con novanta presidi valutati e
+      // zero scenari non e' un Modello avviato.
+      mogId
+        ? tx
+            .select({ n: count() })
+            .from(mogScenario)
+            .innerJoin(mogProcess, eq(mogProcess.id, mogScenario.processId))
+            .where(eq(mogProcess.modelId, mogId))
         : zero,
     ]);
 
@@ -181,6 +197,13 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         anno: null,
         riempimento: pcId
           ? { valore: nRequisiti[0].n, etichetta: nRequisiti[0].n === 1 ? "requisito valutato" : "requisiti valutati" }
+          : null,
+      },
+      mog231: {
+        avviato: !!mogId,
+        anno: null,
+        riempimento: mogId
+          ? { valore: nScenari[0].n, etichetta: nScenari[0].n === 1 ? "scenario mappato" : "scenari mappati" }
           : null,
       },
     };

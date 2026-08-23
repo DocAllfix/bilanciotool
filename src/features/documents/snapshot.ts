@@ -20,6 +20,7 @@ import { listChapters as listEnergyChapters } from "@/features/energy/narrative"
 import { getSupplierData } from "@/features/supplier/queries";
 import { getSoaData } from "@/features/soa/queries";
 import { getAnticorruzione } from "@/features/anticorruzione/queries";
+import { getMog231 } from "@/features/mog231/queries";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
@@ -412,6 +413,128 @@ export async function publishMatricePcSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "matrice_pc", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La Matrice reati-processi.
+ *
+ * È il documento che un giudice guarda per primo: dice quali reati presupposto
+ * riguardano l'ente, in quali processi possono essere commessi, con quale rischio
+ * inerente e quale rischio residuo dopo i presidi.
+ *
+ * Comprende anche i reati dichiarati applicabili e NON associati a nessun processo. Non
+ * è un difetto dell'elenco: è la lacuna più importante che un Modello possa avere, e
+ * tacerla renderebbe il documento un'autoassoluzione.
+ */
+export async function publishMatrice231Snapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getMog231(userId, orgId, companyId);
+  if (!d?.modello) throw new Error("Nessun Modello 231 da pubblicare per questa azienda");
+
+  const nomeReato = new Map(d.catalogo.reati.map((r) => [r.key, r]));
+  const appPerReato = new Map(d.applicabilita.map((a) => [a.crimeKey, a]));
+  const perProcesso = new Map<string, typeof d.scenari>();
+  for (const s of d.scenari) {
+    const e = perProcesso.get(s.processId) ?? [];
+    e.push(s);
+    perProcesso.set(s.processId, e);
+  }
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    modello: d.modello,
+    famiglie: d.catalogo.famiglie,
+    // I derivati si congelano QUI: il rischio residuo di uno scenario cambia il giorno
+    // in cui si aggiorna un presidio, e una matrice consegnata non deve cambiare sotto
+    // gli occhi di chi l'ha ricevuta.
+    processi: d.processi.map((p) => ({
+      nome: p.nome,
+      area: p.area,
+      responsabile: p.responsabile,
+      descrizione: p.descrizione,
+      presidi: p.presidi,
+      livello: p.livello,
+      scenari: (perProcesso.get(p.id) ?? []).map((s) => ({
+        reato: s.crimeKey,
+        titolo: nomeReato.get(s.crimeKey)?.titolo ?? s.crimeKey,
+        famiglia: nomeReato.get(s.crimeKey)?.familyKey ?? null,
+        probabilita: s.probabilita,
+        impatto: s.impatto,
+        adeguatezza: s.adeguatezza,
+        inerente: s.inerente,
+        residuo: s.residuo,
+        accettabile: s.accettabile,
+        modalita: s.modalita,
+        note: s.note,
+      })),
+    })),
+    reati: d.catalogo.reati.map((r) => ({
+      key: r.key,
+      titolo: r.titolo,
+      famiglia: r.familyKey,
+      applicabile: appPerReato.get(r.key)?.applicabile ?? null,
+      motivazione: appPerReato.get(r.key)?.motivazione ?? null,
+      processi: d.scenari.filter((s) => s.crimeKey === r.key).length,
+    })),
+    indicatori: d.indicatori,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "matrice_231", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La Relazione dell'Organismo di Vigilanza all'organo amministrativo.
+ *
+ * Periodica, con un destinatario esterno alla funzione che la redige: merita versioni
+ * congelate. Riferisce sull'idoneità del Modello — i dieci pilastri — e sugli scenari
+ * che restano non accettabili.
+ */
+export async function publishRelazioneOdvSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getMog231(userId, orgId, companyId);
+  if (!d?.modello) throw new Error("Nessun Modello 231 da pubblicare per questa azienda");
+
+  const nomeReato = new Map(d.catalogo.reati.map((r) => [r.key, r.titolo]));
+  const nomeProcesso = new Map(d.processi.map((p) => [p.id, p.nome]));
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    modello: d.modello,
+    pilastri: d.pilastri.map((p) => ({
+      key: p.key,
+      nome: p.nome,
+      descrizione: p.descrizione,
+      requisiti: p.requisiti,
+      valutati: p.valutati,
+      idoneita: p.idoneita,
+    })),
+    idoneita: d.idoneita,
+    // Gli scenari NON accettabili, che è ciò su cui l'organo amministrativo deve
+    // deliberare. Quelli non ancora valutati ci sono dentro, e sono i più importanti:
+    // un rischio non misurato non è un rischio assente.
+    daDeliberare: d.scenari
+      .filter((s) => !s.accettabile)
+      .map((s) => ({
+        processo: nomeProcesso.get(s.processId) ?? "—",
+        reato: s.crimeKey,
+        titolo: nomeReato.get(s.crimeKey) ?? s.crimeKey,
+        residuo: s.residuo,
+        valutato: s.residuo !== null,
+      })),
+    indicatori: d.indicatori,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "relazione_odv", SENZA_ESERCIZIO, dati);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

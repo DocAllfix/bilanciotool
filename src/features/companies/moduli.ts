@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, Factory, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, Factory, Gavel, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -202,6 +202,20 @@ export const MODULI_AZIENDA = [
     // di governo, la Matrice e' cio' che l'auditor sfoglia. La prima rappresenta il
     // modulo dove ne serve una sola (scadenzario, fascicolo, stato del percorso).
     documenti: ["relazione_pc", "matrice_pc"],
+    perEsercizio: false,
+  },
+  {
+    href: "mog231",
+    etichetta: "231",
+    nome: "Modello 231",
+    norma: "D.Lgs. 231/2001",
+    icona: Gavel,
+    area: "responsabilita",
+    colore: AREE.responsabilita.colore,
+    // La Matrice reati-processi e' cio' che un giudice guarda per primo, quindi e' il
+    // documento principale; la Relazione dell'OdV e' periodica e ha un destinatario
+    // interno all'ente.
+    documenti: ["matrice_231", "relazione_odv"],
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];

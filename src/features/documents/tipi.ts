@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -77,6 +77,21 @@ export const DOCUMENTI = {
     nome: "Matrice di conformita' UNI ISO 37001",
     breve: "Matrice ISO 37001",
     file: "matrice-conformita-37001",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  matrice_231: {
+    nome: "Matrice reati-processi (D.Lgs. 231/2001)",
+    breve: "Matrice 231",
+    file: "matrice-reati-processi",
+    // Il Modello e' una fotografia che si revisiona, non un esercizio annuale.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  relazione_odv: {
+    nome: "Relazione dell'Organismo di Vigilanza",
+    breve: "Relazione OdV",
+    file: "relazione-odv",
     mostraAnno: false,
     haMedia: false,
   }
