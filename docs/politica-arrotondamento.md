@@ -107,3 +107,39 @@ anche il resto.
   clausole: l'obbligo esiste perche' il corrispettivo E' a provvigione, quindi dichiararlo
   non applicabile contraddice il proprio presupposto. Una clausola contrattuale puo'
   davvero non applicarsi; questa verifica no.
+
+## Modello 231 (Fase E)
+
+**Un requisito applicabile e non valutato pesa zero** — lo stesso scostamento gia'
+applicato a ISO 37001, e per la stessa ragione misurata sul codice dei prototipi. Il
+Modello 231 usa un vocabolario diverso (presidi «Presente ed efficace», «Presente ma da
+rafforzare», «Assente») ma la regola e' identica, e ora vive in un posto solo:
+`src/lib/calc/comune/valutazione.ts`.
+
+| Pilastro di 12 requisiti | Prototipo | Nostro |
+|---|---|---|
+| nessuno valutato | 0 | 0 |
+| **2 efficaci, 10 mai guardati** | **100** | **17** |
+| 2 efficaci, 10 non applicabili | 100 | 100 |
+| tutti e 12 efficaci | 100 | 100 |
+| 6 efficaci e 6 assenti | 50 | 50 |
+| 12 da rafforzare | 50 | 50 |
+
+Diverge un caso solo su sei, ed e' quello in cui il prototipo mentiva. **La regola
+condivisa e' difesa da due moduli**: rimettendo il difetto in `valutazione.ts`
+falliscono quattro asserzioni, due in ISO 37001 e due nel 231.
+
+**Cio' che invece NON si tocca**, perche' sembra strano ed e' giusto — tutte e tre
+verificate contro le cento combinazioni del golden:
+- **I presidi non dichiarati valgono «Assenti»**, non «da valutare». In materia 231
+  l'onere e' dell'ente: trattarli come incogniti abbasserebbe il rischio residuo proprio
+  di chi non ha compilato niente.
+- **Uno scenario non valutato NON e' accettabile.** Aggiungere un reato al modello
+  peggiora il cruscotto finche' non lo si valuta: un rischio non misurato non e' un
+  rischio assente.
+- **Le righe «Critico» e «Alto» della matrice sono identiche.** Con presidi adeguati
+  entrambi scendono a Medio, con presidi parziali entrambi restano Alto: la distinzione
+  fra i due la fa il primo stadio.
+- **Il livello di un processo e' il PEGGIORE dei suoi scenari**, non la media: un
+  processo con nove scenari bassi e uno critico e' critico, e mediare nasconderebbe
+  proprio cio' che il modello deve far vedere.

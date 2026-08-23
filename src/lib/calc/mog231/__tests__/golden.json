@@ -1,0 +1,614 @@
+{
+  "estrattoDa": "aggiuntenuovimoduli/mog-231-v1.html",
+  "scenari": {
+    "(vuoto) × (vuoto) / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × (vuoto) / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × (vuoto) / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × (vuoto) / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 1 · lieve / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 1 · lieve / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 1 · lieve / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 1 · lieve / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 2 · moderato / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 2 · moderato / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 2 · moderato / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 2 · moderato / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 3 · grave / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 3 · grave / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 3 · grave / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 3 · grave / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 4 · molto grave / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 4 · molto grave / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 4 · molto grave / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "(vuoto) × 4 · molto grave / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "1 · remota × (vuoto) / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "1 · remota × (vuoto) / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "1 · remota × (vuoto) / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "1 · remota × (vuoto) / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "1 · remota × 1 · lieve / (vuoto)": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 1 · lieve / Assenti": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 1 · lieve / Parziali": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 1 · lieve / Adeguati": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 2 · moderato / (vuoto)": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 2 · moderato / Assenti": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 2 · moderato / Parziali": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 2 · moderato / Adeguati": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 3 · grave / (vuoto)": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 3 · grave / Assenti": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 3 · grave / Parziali": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 3 · grave / Adeguati": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "1 · remota × 4 · molto grave / (vuoto)": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "1 · remota × 4 · molto grave / Assenti": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "1 · remota × 4 · molto grave / Parziali": {
+      "inerente": "Medio",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "1 · remota × 4 · molto grave / Adeguati": {
+      "inerente": "Medio",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "2 · possibile × (vuoto) / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "2 · possibile × (vuoto) / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "2 · possibile × (vuoto) / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "2 · possibile × (vuoto) / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "2 · possibile × 1 · lieve / (vuoto)": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "2 · possibile × 1 · lieve / Assenti": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "2 · possibile × 1 · lieve / Parziali": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "2 · possibile × 1 · lieve / Adeguati": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "2 · possibile × 2 · moderato / (vuoto)": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "2 · possibile × 2 · moderato / Assenti": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "2 · possibile × 2 · moderato / Parziali": {
+      "inerente": "Medio",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "2 · possibile × 2 · moderato / Adeguati": {
+      "inerente": "Medio",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "2 · possibile × 3 · grave / (vuoto)": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "2 · possibile × 3 · grave / Assenti": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "2 · possibile × 3 · grave / Parziali": {
+      "inerente": "Medio",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "2 · possibile × 3 · grave / Adeguati": {
+      "inerente": "Medio",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "2 · possibile × 4 · molto grave / (vuoto)": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "2 · possibile × 4 · molto grave / Assenti": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "2 · possibile × 4 · molto grave / Parziali": {
+      "inerente": "Alto",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "2 · possibile × 4 · molto grave / Adeguati": {
+      "inerente": "Alto",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "3 · probabile × (vuoto) / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "3 · probabile × (vuoto) / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "3 · probabile × (vuoto) / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "3 · probabile × (vuoto) / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "3 · probabile × 1 · lieve / (vuoto)": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "3 · probabile × 1 · lieve / Assenti": {
+      "inerente": "Basso",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "3 · probabile × 1 · lieve / Parziali": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "3 · probabile × 1 · lieve / Adeguati": {
+      "inerente": "Basso",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "3 · probabile × 2 · moderato / (vuoto)": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "3 · probabile × 2 · moderato / Assenti": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "3 · probabile × 2 · moderato / Parziali": {
+      "inerente": "Medio",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "3 · probabile × 2 · moderato / Adeguati": {
+      "inerente": "Medio",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "3 · probabile × 3 · grave / (vuoto)": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "3 · probabile × 3 · grave / Assenti": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "3 · probabile × 3 · grave / Parziali": {
+      "inerente": "Alto",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "3 · probabile × 3 · grave / Adeguati": {
+      "inerente": "Alto",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "3 · probabile × 4 · molto grave / (vuoto)": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "3 · probabile × 4 · molto grave / Assenti": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "3 · probabile × 4 · molto grave / Parziali": {
+      "inerente": "Critico",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "3 · probabile × 4 · molto grave / Adeguati": {
+      "inerente": "Critico",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "4 · attesa × (vuoto) / (vuoto)": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "4 · attesa × (vuoto) / Assenti": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "4 · attesa × (vuoto) / Parziali": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "4 · attesa × (vuoto) / Adeguati": {
+      "inerente": "",
+      "residuo": "",
+      "accettabile": false
+    },
+    "4 · attesa × 1 · lieve / (vuoto)": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "4 · attesa × 1 · lieve / Assenti": {
+      "inerente": "Medio",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "4 · attesa × 1 · lieve / Parziali": {
+      "inerente": "Medio",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "4 · attesa × 1 · lieve / Adeguati": {
+      "inerente": "Medio",
+      "residuo": "Basso",
+      "accettabile": true
+    },
+    "4 · attesa × 2 · moderato / (vuoto)": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 2 · moderato / Assenti": {
+      "inerente": "Alto",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 2 · moderato / Parziali": {
+      "inerente": "Alto",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "4 · attesa × 2 · moderato / Adeguati": {
+      "inerente": "Alto",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "4 · attesa × 3 · grave / (vuoto)": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 3 · grave / Assenti": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 3 · grave / Parziali": {
+      "inerente": "Critico",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "4 · attesa × 3 · grave / Adeguati": {
+      "inerente": "Critico",
+      "residuo": "Medio",
+      "accettabile": true
+    },
+    "4 · attesa × 4 · molto grave / (vuoto)": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 4 · molto grave / Assenti": {
+      "inerente": "Critico",
+      "residuo": "Critico",
+      "accettabile": false
+    },
+    "4 · attesa × 4 · molto grave / Parziali": {
+      "inerente": "Critico",
+      "residuo": "Alto",
+      "accettabile": false
+    },
+    "4 · attesa × 4 · molto grave / Adeguati": {
+      "inerente": "Critico",
+      "residuo": "Medio",
+      "accettabile": true
+    }
+  },
+  "pilastri": {
+    "nessuno valutato su 12": {
+      "stati": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "prototipo": 0
+    },
+    "2 efficaci su 12, il resto intatto": {
+      "stati": [
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "prototipo": 100
+    },
+    "2 efficaci e 10 non applicabili": {
+      "stati": [
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile",
+        "Non applicabile"
+      ],
+      "prototipo": 100
+    },
+    "tutti e 12 efficaci": {
+      "stati": [
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace"
+      ],
+      "prototipo": 100
+    },
+    "6 efficaci e 6 assenti": {
+      "stati": [
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Presente ed efficace",
+        "Assente",
+        "Assente",
+        "Assente",
+        "Assente",
+        "Assente",
+        "Assente"
+      ],
+      "prototipo": 50
+    },
+    "12 da rafforzare": {
+      "stati": [
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare",
+        "Presente ma da rafforzare"
+      ],
+      "prototipo": 50
+    }
+  },
+  "pesi": {
+    "Presente ed efficace": 100,
+    "Presente ma da rafforzare": 50,
+    "Assente": 0
+  }
+}
