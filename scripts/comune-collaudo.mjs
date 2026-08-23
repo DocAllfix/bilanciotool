@@ -15,6 +15,41 @@
 /** Indirizzi di terze parti che possono fallire senza che sia colpa nostra. */
 const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co)/;
 
+/**
+ * Il server in ascolto sta servendo QUESTO build?
+ *
+ * ⚠️ `CLAUDE.md` dice da tempo che «un next start non rilegge il sorgente», e non basta.
+ * Il modo in cui ci si ricasca e' piu' sottile: si lancia `npm run start`, quello
+ * fallisce con `EADDRINUSE` perche' un server di ore prima e' ancora acceso, e la porta
+ * risponde 200 lo stesso. Guardare l'ora in cui si e' LANCIATO un server non prova
+ * niente — conta l'ora del processo che risponde, e non si vede da qui.
+ *
+ * Il build id invece si puo' chiedere. Sta in `.next/BUILD_ID` e cambia a ogni build; il
+ * manifesto sotto quel nome esiste solo nel server che quel build lo ha caricato. Un
+ * server vecchio risponde 404 e il collaudo si ferma subito, invece di produrre un
+ * referto su codice di ieri.
+ *
+ * ⚠️ Solo in locale: in produzione il build id di questa macchina non c'entra niente.
+ */
+export async function pretendiServerAggiornato(base) {
+  if (!/^https?:\/\/(localhost|127\.0\.0\.1)/.test(base)) return;
+  const { readFileSync } = await import("node:fs");
+  let buildId;
+  try {
+    buildId = readFileSync(".next/BUILD_ID", "utf8").trim();
+  } catch {
+    throw new Error("Manca .next/BUILD_ID: esegui `npm run build` prima del collaudo.");
+  }
+  const r = await fetch(`${base}/_next/static/${buildId}/_buildManifest.js`);
+  if (!r.ok) {
+    throw new Error(
+      `Il server su ${base} NON sta servendo il build corrente (${buildId}): ha risposto ${r.status}.\n` +
+        "Quasi sempre significa che un `next start` di prima e' ancora acceso e il tuo e' morto con EADDRINUSE.\n" +
+        "Fermalo davvero — la porta va vista libera — poi riavvia e rilancia.",
+    );
+  }
+}
+
 export function strumenta(page, { ignora = [] } = {}) {
   const problemi = [];
   const nuovi = () => problemi.splice(0, problemi.length);

@@ -161,7 +161,7 @@ export function DocumentoGhg({ dati }: { dati: Snapshot }) {
       <TabellaCategoria cat="1" />
       {Number(r.bio) > 0 && (
         <p>
-          <strong>CO₂ biogenica.</strong> Nel periodo sono state emesse {fmtNum(r.bio, 2)} tonnellate di CO₂ da combustione di biomassa, riportate separatamente e non incluse nei totali, come previsto dalla norma.
+          <strong>CO₂ biogenica.</strong>{" "}Nel periodo sono state emesse {fmtNum(r.bio, 2)} tonnellate di CO₂ da combustione di biomassa, riportate separatamente e non incluse nei totali, come previsto dalla norma.
         </p>
       )}
 

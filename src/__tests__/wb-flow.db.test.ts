@@ -127,6 +127,31 @@ describe("il numero progressivo non si riusa", () => {
     const numeri = (await dati()).fascicoli.map((f) => f.numero);
     expect(numeri).toEqual([1, 3, 4]);
   });
+
+  it("⚠️ nemmeno cancellando l'ULTIMO: è il caso che `max + 1` non copriva", async () => {
+    // Questo test è nato da un rosso del collaudo dell'interfaccia, non da un'intuizione.
+    // La versione precedente calcolava `max(numero) + 1`: cancellando un fascicolo in
+    // mezzo funzionava — ed è l'unico caso che questo file provava — ma cancellando il
+    // PIÙ ALTO il massimo scendeva e il numero veniva riusato. Il vincolo di unicità non
+    // poteva vederlo: la riga vecchia non esiste più, quindi non c'è nessun conflitto.
+    //
+    // Il danno è nei registri: ritorsioni, accessi ed eventi di riservatezza rimandano
+    // al fascicolo per NUMERO, e il «5» nuovo erediterebbe in silenzio i rimandi del «5»
+    // cancellato — cioè accessi e contestazioni attribuiti al caso sbagliato.
+    const cinque = await creaFascicolo(studio.userId, studio.orgId, systemId, {
+      dataRicezione: "2026-02-01", canale: "Altro", anonima: false,
+    });
+    await eliminaFascicolo(studio.userId, studio.orgId, cinque.id);
+
+    const dopo = await creaFascicolo(studio.userId, studio.orgId, systemId, {
+      dataRicezione: "2026-02-02", canale: "Altro", anonima: false,
+    });
+    expect(dopo.numero).toBeGreaterThan(cinque.numero);
+
+    // E il contatore vive sull'assetto, non si deduce dalle righe rimaste.
+    const [s] = await db.select().from(wbSystem).where(eq(wbSystem.id, systemId));
+    expect(s.ultimoNumero).toBe(dopo.numero);
+  });
 });
 
 describe("il fascicolo si aggiorna un campo per volta", () => {

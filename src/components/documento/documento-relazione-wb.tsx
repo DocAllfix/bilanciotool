@@ -138,13 +138,13 @@ export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
         </p>
         <div style={RIQUADRO}>
           <p>
-            <strong>Natura del documento.</strong> La relazione non contiene l&apos;identità delle persone
+            <strong>Natura del documento.</strong>{" "}La relazione non contiene l&apos;identità delle persone
             segnalanti, né il contenuto delle segnalazioni, né elementi che consentano di risalirvi. I dati sono
             resi in forma aggregata o limitata agli estremi di processo, come impone l&apos;art. 12 del decreto.
           </p>
           {pochi && (
             <p>
-              <strong>Avvertenza.</strong> Le segnalazioni pervenute nel periodo sono {k.totali}: al di sotto di
+              <strong>Avvertenza.</strong>{" "}Le segnalazioni pervenute nel periodo sono {k.totali}: al di sotto di
               cinque casi, anche il dato aggregato può rendere riconoscibili le persone coinvolte. La diffusione
               di questa relazione va valutata di conseguenza.
             </p>
@@ -202,7 +202,7 @@ export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
         {!canale.stato.conforme && (
           <div style={RIQUADRO}>
             <p>
-              <strong>Rilievo.</strong> Il canale non soddisfa l&apos;art. 4 comma 1.
+              <strong>Rilievo.</strong>{" "}Il canale non soddisfa l&apos;art. 4 comma 1.
               {canale.stato.mancanti.length > 0 && (
                 <> Non risulta istituita la forma <strong>{canale.stato.mancanti.join(", ")}</strong>.</>
               )}
@@ -240,13 +240,13 @@ export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
               canale, come prevede l&apos;art. 4 comma 1.</>
           )}
           {canale.consultazione === "tardiva" && (
-            <><strong>Rilievo.</strong> La consultazione sindacale risulta effettuata il{" "}
+            <><strong>Rilievo.</strong>{" "}La consultazione sindacale risulta effettuata il{" "}
               {a.consultazioneSindacale ? fmtData(a.consultazioneSindacale) : "—"}, successivamente
               all&apos;attivazione del canale. La procedura va adottata sentite le rappresentanze: l&apos;omissione
               è contestabile.</>
           )}
           {canale.consultazione === "assente" && (
-            <><strong>Rilievo.</strong> Il canale risulta attivo e non è registrata alcuna consultazione delle
+            <><strong>Rilievo.</strong>{" "}Il canale risulta attivo e non è registrata alcuna consultazione delle
               rappresentanze sindacali.</>
           )}
           {canale.consultazione === "nonVerificabile" && (
@@ -258,7 +258,7 @@ export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
           <p>
             Il canale è condiviso con altri enti.{" "}
             {canale.condivisioneAmmessa === false ? (
-              <><strong>Rilievo.</strong> La condivisione è riservata agli enti fino a 249 lavoratori, e la media
+              <><strong>Rilievo.</strong>{" "}La condivisione è riservata agli enti fino a 249 lavoratori, e la media
                 dichiarata è superiore.</>
             ) : canale.condivisioneAmmessa === null ? (
               <>La media dei lavoratori non è dichiarata: l&apos;ammissibilità della condivisione non è
@@ -276,7 +276,7 @@ export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
               Nel periodo non sono pervenute segnalazioni.
             </p>
             <p>
-              <strong>Come va letto questo dato.</strong> Un numero di segnalazioni pari a zero non è di per sé un
+              <strong>Come va letto questo dato.</strong>{" "}Un numero di segnalazioni pari a zero non è di per sé un
               buon risultato: è più spesso l&apos;indice di un canale non conosciuto, non ritenuto affidabile o non
               accessibile. Il riesame dovrebbe verificare la diffusione dell&apos;informazione e la percezione di
               sicurezza, prima di concludere che non vi siano violazioni da segnalare.

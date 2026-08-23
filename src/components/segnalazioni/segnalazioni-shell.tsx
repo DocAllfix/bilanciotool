@@ -9,6 +9,7 @@ import { VistaAssetto } from "./vista-assetto";
 import { VistaCanale } from "./vista-canale";
 import { VistaRegistro } from "./vista-registro";
 import { VistaConformita } from "./vista-conformita";
+import { SezioneCorpus, vociCorpus, type DatiCorpus, type VistaCorpus } from "@/components/corpus/sezione-corpus";
 import type { DatiSegnalazioni } from "./types";
 
 // La gestione delle segnalazioni è un fascicolo che si consulta, non un percorso a
@@ -21,18 +22,28 @@ const VISTE = [
   { k: "canale", n: "Canale" },
   { k: "registro", n: "Segnalazioni" },
   { k: "conformita", n: "Conformità" },
+  // Le tre viste del CORPUS, uguali in tutti i moduli di conformità.
+  { k: "procedure", n: "Procedure" },
+  { k: "moduli", n: "Modulistica" },
+  { k: "registri", n: "Registri" },
   { k: "documenti", n: "Documenti" },
 ] as const;
+
+const VISTE_CORPUS: readonly string[] = ["procedure", "moduli", "registri"];
 
 export function SegnalazioniShell({
   companyId,
   dati,
   vistaIniziale,
   oggi,
+  corpus,
+  contatoriCorpus,
 }: {
   companyId: string;
   dati: DatiSegnalazioni;
   vistaIniziale: string;
+  corpus: DatiCorpus;
+  contatoriCorpus: { procedure: number; moduli: number; approvate: number };
   /** ⚠️ Dal server: in un componente client sarebbe l'orologio del browser, e i termini
    *  «in scadenza» cambierebbero fra il render del server e l'idratazione. */
   oggi: string;
@@ -48,6 +59,12 @@ export function SegnalazioniShell({
     canale: `${dati.canale.stato.coperte.length}/3`,
     registro: `${aperte}/${dati.fascicoli.length}`,
     conformita: `${dati.conformita.valutati}/${dati.conformita.totale}`,
+    // ⚠️ I contatori del corpus arrivano da una lettura DEDICATA, non dai dati della
+    // vista: la barra li mostra sempre, e caricare 447 documenti per scrivere tre numeri
+    // sarebbe il costo peggiore del prodotto.
+    procedure: `${contatoriCorpus.approvate}/${contatoriCorpus.procedure}`,
+    moduli: String(contatoriCorpus.moduli),
+    registri: corpus.registri.length ? String(corpus.registri.reduce((a, r) => a + r.righe, 0)) : null,
     documenti: null,
   };
 
@@ -93,6 +110,15 @@ export function SegnalazioniShell({
         {vista === "canale" && <VistaCanale companyId={companyId} dati={dati} />}
         {vista === "registro" && <VistaRegistro companyId={companyId} dati={dati} oggi={oggi} />}
         {vista === "conformita" && <VistaConformita companyId={companyId} dati={dati} />}
+        {VISTE_CORPUS.includes(vista) && (
+          <SezioneCorpus
+            companyId={companyId}
+            contentSetId={dati.assetto.contentSetId}
+            vista={vista as VistaCorpus}
+            rotta={`/aziende/${companyId}/segnalazioni`}
+            dati={corpus}
+          />
+        )}
         {vista === "documenti" && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">

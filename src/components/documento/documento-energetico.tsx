@@ -343,7 +343,7 @@ export function DocumentoEnergetico({ dati, imageUrls }: { dati: Snapshot; image
           </tbody>
         </table>
         <p>
-          <strong>Metodo di determinazione degli usi finali.</strong> Per ciascuna utenza è dichiarato se il dato
+          <strong>Metodo di determinazione degli usi finali.</strong>{" "}Per ciascuna utenza è dichiarato se il dato
           è misurato, calcolato o stimato, secondo la scala riportata al capitolo 7. La dichiarazione del metodo
           è parte del risultato: un consumo stimato e uno misurato non hanno lo stesso valore probatorio.
         </p>

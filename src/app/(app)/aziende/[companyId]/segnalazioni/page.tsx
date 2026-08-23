@@ -4,6 +4,8 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getSegnalazioni } from "@/features/segnalazioni/queries";
 import { SegnalazioniShell } from "@/components/segnalazioni/segnalazioni-shell";
 import { CreaAssetto } from "@/components/segnalazioni/crea-assetto";
+import { caricaCorpus, contatoriCorpus } from "@/features/corpus/carica";
+import { anagraficaCorpus } from "@/features/segnalazioni/anagrafica-corpus";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Gestione delle segnalazioni" };
@@ -13,10 +15,10 @@ export default async function SegnalazioniPage({
   searchParams,
 }: {
   params: Promise<{ companyId: string }>;
-  searchParams: Promise<{ vista?: string }>;
+  searchParams: Promise<{ vista?: string; doc?: string; reg?: string }>;
 }) {
   const { companyId } = await params;
-  const { vista } = await searchParams;
+  const { vista, doc, reg } = await searchParams;
 
   const s = await requireConsultant();
   const dati = await getSegnalazioni(s.userId, s.orgId, companyId);
@@ -40,12 +42,22 @@ export default async function SegnalazioniPage({
   // sarebbe l'orologio del browser, e i termini «in scadenza» cambierebbero fra il
   // render del server e l'idratazione.
   const oggi = new Date().toISOString().slice(0, 10);
+
+  // Il corpus: 12 procedure, 34 moduli, 13 registri. Si carica solo cio' che la vista
+  // aperta chiede — vedi `caricaCorpus`.
+  const [corpus, contatori] = await Promise.all([
+    caricaCorpus(s.userId, s.orgId, companyId, dati.assetto.contentSetId, { vista, doc, reg }, anagraficaCorpus(dati.assetto)),
+    contatoriCorpus(s.userId, s.orgId, companyId, dati.assetto.contentSetId),
+  ]);
+
   return (
     <SegnalazioniShell
       companyId={companyId}
       dati={{ ...dati, assetto: dati.assetto }}
       vistaIniziale={vista ?? "quadro"}
       oggi={oggi}
+      corpus={corpus}
+      contatoriCorpus={contatori}
     />
   );
 }

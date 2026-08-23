@@ -74,7 +74,7 @@ export function DocumentoRelazionePc({ dati }: { dati: Snapshot }) {
         </p>
         {s.organoGov !== "Sì" && (
           <p>
-            <strong>Nota.</strong> Un organo di governo distinto dall'alta direzione non è presente: le attività
+            <strong>Nota.</strong>{" "}Un organo di governo distinto dall'alta direzione non è presente: le attività
             di sorveglianza sono svolte dall'alta direzione, e la circostanza è qui dichiarata come la norma
             richiede.
           </p>

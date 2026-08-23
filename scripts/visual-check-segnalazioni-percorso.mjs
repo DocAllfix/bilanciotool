@@ -17,7 +17,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-segnalazioni";
@@ -282,8 +282,14 @@ await shot("06-tutele");
 // ─── conformità ──────────────────────────────────────────────────────────────
 await page.goto(`${U}?vista=conformita`, { waitUntil: "domcontentloaded" });
 await page.locator('[data-tour="wb-conformita"]').waitFor({ timeout: 30_000 });
-await page.getByRole("button", { name: /^A\b/ }).first().click();
-await page.waitForTimeout(600);
+// ⚠️ Il primo capo è GIÀ aperto: la vista non deve accogliere con dieci righe chiuse.
+// La prima versione di questo controllo lo cliccava «per aprirlo» e in realtà lo
+// CHIUDEVA, poi accusava il prodotto di non avere i pulsanti dei requisiti. Il rosso
+// era del collaudo, e indicava il posto sbagliato.
+verifica(
+  "Il primo capo è già aperto all'ingresso",
+  (await page.getByRole("button", { name: "A.01: Conforme", exact: true }).count()) === 1,
+);
 await page.getByRole("button", { name: "A.01: Conforme", exact: true }).click();
 await attendi(async () => {
   const [r] = await sql`select stato from wb_requirement_state
@@ -325,6 +331,15 @@ const [r3] = await sql`select numero from wb_report where id = ${f3}`;
 verifica("⚠️ Dopo un'eliminazione il numero NON torna indietro", r3?.numero === 3, String(r3?.numero));
 
 // ─── documenti ───────────────────────────────────────────────────────────────
+//
+// ⚠️ Si spegne una modalità PRIMA di pubblicare, ed è deliberato: il ramo che vale la
+// pena provare è quello in cui il documento deve DIRE una cosa scomoda. Una relazione
+// che tacesse la non conformità del canale sarebbe il danno vero — e la prima versione
+// di questo collaudo pretendeva quel rilievo dopo aver acceso tutte e tre le forme,
+// cioè accusava il documento di non dire una cosa che era giusto non dire.
+await sql`update wb_channel set attiva = false
+  where system_id = ${a0.id} and forma = 'Incontro diretto'`;
+
 await page.goto(`${U}?vista=documenti`, { waitUntil: "domcontentloaded" });
 await page.getByRole("button", { name: /^Pubblica/ }).waitFor({ timeout: 30_000 });
 verifica("La vista documenti dichiara che la relazione non contiene identità",
@@ -356,6 +371,14 @@ verifica("Il giorno di riferimento dei termini è congelato", /"riferitaAl"/.tes
 
 const testoDoc = await doc.locator(".doc-corpo").innerText();
 verifica("Il documento dichiara in chiaro la propria natura", /Natura del documento/.test(testoDoc));
+// ⚠️ Lo spazio dopo il grassetto si misura sul testo RESO, mai a occhio e mai sul
+// sorgente. Guardando la fotografia sembrava mangiato — «documento.La» — e non lo era:
+// il serif stringe il punto contro la maiuscola. La regola del progetto dice di
+// misurare, e qui ha salvato una correzione che avrebbe rotto una frase giusta.
+const iNatura = testoDoc.indexOf("Natura del documento");
+verifica("Lo spazio dopo il grassetto non è mangiato",
+  /Natura del documento\.\s+La relazione/.test(testoDoc),
+  JSON.stringify(testoDoc.slice(iNatura, iNatura + 45)));
 verifica("…e il rilievo sul canale non conforme", /non soddisfa l/.test(testoDoc));
 // Sotto i cinque casi l'avvertenza sulla riconoscibilità compare da sola.
 verifica("Sotto i cinque casi avverte sulla riconoscibilità", /rendere riconoscibili/.test(testoDoc));

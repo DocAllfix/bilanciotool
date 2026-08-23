@@ -580,6 +580,42 @@ Gate: typecheck · build · **662 test** in entrambe le modalita' · in locale s
 
 Guardia: `npm run qa -- portafoglio-aggiorna` — cinque controlli che **non ricaricano mai** la pagina dopo una mutazione. Messo in rosso rimettendo una delle tre cause: fallisce sull'asserzione giusta e solo su quella.
 
+**Fasi D, E ed F (2026-08-22/23) — tre moduli su sei: ISO 37001, Modello 231, Segnalazioni**
+
+Il prodotto passa da cinque moduli a **otto**. I tre nuovi stanno tutti nell'area «responsabilita' dell'ente», e sono legati per legge: il 231 contiene gia' una procedura sul canale di segnalazione (art. 6 c. 2-quater), ISO 37001 ha i propri registri di segnalazione e indagine.
+
+- **Fase D — Prevenzione della corruzione (UNI ISO 37001).** Motore in TDD (media delle sole dimensioni compilate, flag che elevano il livello, otto obblighi dichiarativi), schema e cataloghi, due documenti (Relazione all'organo di governo, Matrice di conformita'), interfaccia a cinque viste, tour, dimostrativa.
+- **Fase E — Modello 231.** Rischio a due stadi (probabilita' per impatto, poi incrocio con l'adeguatezza dei presidi), 25 reati, 10 pilastri, 81 presidi, due documenti (Matrice reati-processi, Relazione dell'OdV).
+- **Fase F — Gestione delle segnalazioni (D.Lgs. 24/2023).** 82 requisiti su 10 capi (A÷L, **senza J e K**: nel decreto non esistono), un documento (Relazione periodica).
+
+**Il modulo Segnalazioni NON raccoglie segnalazioni**, e nessuna sua colonna puo' contenere un nominativo: il legame fra codice e persona resta custodito dal gestore fuori dall'applicazione. Chi aggiungesse un campo «nominativo» cambierebbe la natura giuridica del prodotto. Due cose che negli altri moduli non esistono:
+
+- **Il canale e' un'ENTITA'**, una riga per forma. Nel prototipo erano tre caselle di testo e nessuno verificava che fossero riempite: un ente con la sola casella di posta risultava a posto, mentre l'art. 4 c. 1 pretende scritta, orale e incontro diretto, **cumulative**. Con una riga per forma la verifica e' totale, e distingue «non istituita» da «prevista e spenta»: il rimedio e' diverso.
+- **La lettura di un fascicolo SCRIVE**, ed e' una precondizione: se l'audit fallisce, il fascicolo non si apre. E' il contrario della regola scritta per il webhook di Stripe, e le due non si contraddicono — li' il registro annotava un lavoro gia' pagato, qui il registro **e'** la garanzia.
+
+**Regole nate in queste tre fasi:**
+
+- **Un requisito applicabile e non valutato pesa ZERO, non viene ignorato.** I prototipi mediavano i soli valutati: tre requisiti conformi su venti davano **100**, lo stesso numero di «tutti e venti conformi». Tre situazioni opposte, un numero solo, su un documento che va a un ente di certificazione. La regola sta in `src/lib/calc/comune/valutazione.ts`, condivisa da tutti i moduli di conformita'.
+- **Il 31 febbraio non e' una data.** `new Date("2026-02-31")` non solleva, scivola al 3 marzo. Il validatore ricompone la data e la confronta (`dataIsoSchema`), e i CHECK sulle quattro date da cui discende un termine perentorio fermano il formato italiano.
+- **I termini di legge si calcolano in UTC.** Il prototipo interpretava la data a mezzanotte UTC e la manipolava in ora locale: su un browser italiano l'avviso del 25 marzo scadeva il 31 invece che il 1 aprile. Su un termine perentorio e' una violazione. E i mesi si **agganciano** all'ultimo giorno invece di traboccare. Nel caso del 31 gennaio i due difetti si annullavano: correggerne uno solo peggiorava le cose.
+- **Un contatore, non `max(numero) + 1`.** Regge cancellando un fascicolo in mezzo e cede sull'ultimo: il massimo scende e il numero viene **riusato**. Il vincolo di unicita' non puo' accorgersene, perche' la riga vecchia non esiste piu'. I registri rimandano al fascicolo per numero, quindi il «2» nuovo eredita i rimandi del «2» cancellato. **Trovato dal collaudo dell'interfaccia, non dal test su database**, che cancellava un fascicolo in mezzo.
+- **Un `next start` puo' non essere quello che credi.** Non basta avviarlo dopo il build: se un server di ore prima e' ancora acceso, il tuo muore con `EADDRINUSE` e la porta risponde 200 lo stesso. Confrontare l'ora del build con quella in cui **hai lanciato** un server non prova niente. `pretendiServerAggiornato` chiede al server il manifesto del build corrente: un server vecchio risponde 404.
+- **Rendere un componente in isolamento non e' una misura fedele di cio' che arriva al browser.** Un avviso legale leggeva «Natura del documento.La relazione»; nel sorgente lo spazio c'era, e `renderToStaticMarkup` lo restituiva. Sulla pagina vera non c'era. Lo spazio dopo un tag in linea si scrive con l'espressione esplicita, e `documenti-spazi-pure.test.ts` lo pretende su tutti i template.
+- **La mappatura fra le chiavi di un motore e i nomi delle colonne va resa esplicita e verificata dal compilatore.** Le colonne portano prefissi (`ritIdentitaConoscibile`) perche' il fascicolo ha settanta campi; il motore no. Passando il fascicolo intero, il motore trovava sei fattori vuoti e restituiva livello ignoto per tutti, cioe' «monitoraggi dovuti: zero» in un documento destinato all'organo di controllo.
+- **Uno scanner che cerca `azione:` senza confine di parola trova `consultazione:`.** Segnalava un'azione fantasma «ok», e il rimedio sbagliato era a portata di mano: aggiungere l'etichetta al registro, cioe' una voce falsa per zittire un controllo che diceva il falso.
+- **Un'etichetta vuota lascia un campo senza nome accessibile.** `CampoScelta` ha `etichettaNascosta`, che tiene il nome e toglie l'ingombro.
+- **`ENOTFOUND` a raffica non e' una regressione.** Una suite che fallisce su 33 file in un terzo del tempo abituale sta dicendo che il database non si risolve, non che il codice si e' rotto. Si verifica la raggiungibilita' e si rilancia, non si corregge.
+
+**Il FASCICOLO di una segnalazione non e' un documento pubblicabile**, e la ragione e' di chiave: l'unicita' di uno snapshot e' `(azienda, tipo, anno, versione)` e manca l'asse «quale fascicolo». Con `anno = 0` il fascicolo 3 e il 7 diventerebbero due versioni dello stesso documento, con lo stesso nome di file. La scelta fra un quarto asse e una stampa non congelata **e' del committente** (quesito A9 riaperto).
+
+Gate delle tre fasi: typecheck · build · **970 test** · `qa -- mog231-percorso` 19/19 · `qa -- segnalazioni-percorso` **46/46** con documento reale pubblicato e PDF verificato.
+
+⚠️ **DEBITI APERTI, misurati e non ricordati:**
+
+1. **Il corpus non ha superficie.** Il motore della Fase A c'e' ed e' provato, le **letture non esistono**: zero funzioni esportate che elenchino documenti, carichino blocchi o leggano righe di registro. Le due sole `select` fuori dai test sono guardie interne. Sono **42 procedure, 135 moduli, 37 registri, 390 colonne** seminate e irraggiungibili sui tre moduli usciti. Il test non poteva vederlo: verifica le scritture interrogando il database direttamente.
+2. **Colophon e pagina pubblica di verifica** (A17b + A18, decisi il 2026-08-21) non esistono: nessuna rotta di verifica, e il codice sta su **un solo** documento, l'attestato. Il piano ci mette una scadenza dura — **prima della prima pubblicazione in produzione**, perche' gli snapshot sono immutabili e un documento senza codice non potra' mai averlo. Non ancora violata solo perche' i tre moduli non sono in produzione.
+3. **I registri segnalazioni duplicati** in 231 (`MOD-06.02`) e ISO 37001 (`MOD-11.02`) sono ancora scrivibili. Toglierli dal corpus non si puo': e' versionato e **congelato alla creazione**, quindi i modelli gia' avviati non vedrebbero la versione nuova. La strada e' renderli di sola lettura quando il modulo Segnalazioni e' attivo, col rimando al fascicolo dove i termini si calcolano davvero.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

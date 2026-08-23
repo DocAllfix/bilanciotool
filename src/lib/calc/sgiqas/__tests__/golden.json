@@ -1,0 +1,211 @@
+{
+  "generatoIl": "2026-08-23",
+  "sogliaAspetti": 24,
+  "aspetti": [
+    {
+      "nome": "gfs pieni sotto soglia",
+      "punteggio": 8,
+      "esito": "Non significativo"
+    },
+    {
+      "nome": "gfs pieni sopra soglia",
+      "punteggio": 36,
+      "esito": "Significativo"
+    },
+    {
+      "nome": "prescrizione legale, gfs pieni",
+      "punteggio": 1,
+      "esito": "Significativo"
+    },
+    {
+      "nome": "prescrizione legale con gfs VUOTI",
+      "punteggio": 0,
+      "esito": ""
+    },
+    {
+      "nome": "emergenza con gravita alta, gfs vuoti",
+      "punteggio": 0,
+      "esito": ""
+    },
+    {
+      "nome": "emergenza con gravita alta e gfs pieni",
+      "punteggio": 3,
+      "esito": "Significativo"
+    },
+    {
+      "nome": "esposto della popolazione, gfs vuoti",
+      "punteggio": 0,
+      "esito": ""
+    },
+    {
+      "nome": "tutto vuoto",
+      "punteggio": 0,
+      "esito": ""
+    }
+  ],
+  "rischi": [
+    {
+      "p": "",
+      "g": "",
+      "livello": ""
+    },
+    {
+      "p": "",
+      "g": "1 · lieve",
+      "livello": ""
+    },
+    {
+      "p": "",
+      "g": "2 · media",
+      "livello": ""
+    },
+    {
+      "p": "",
+      "g": "3 · grave",
+      "livello": ""
+    },
+    {
+      "p": "",
+      "g": "4 · gravissima",
+      "livello": ""
+    },
+    {
+      "p": "1 · rara",
+      "g": "",
+      "livello": ""
+    },
+    {
+      "p": "1 · rara",
+      "g": "1 · lieve",
+      "livello": "Basso"
+    },
+    {
+      "p": "1 · rara",
+      "g": "2 · media",
+      "livello": "Basso"
+    },
+    {
+      "p": "1 · rara",
+      "g": "3 · grave",
+      "livello": "Basso"
+    },
+    {
+      "p": "1 · rara",
+      "g": "4 · gravissima",
+      "livello": "Medio"
+    },
+    {
+      "p": "2 · possibile",
+      "g": "",
+      "livello": ""
+    },
+    {
+      "p": "2 · possibile",
+      "g": "1 · lieve",
+      "livello": "Basso"
+    },
+    {
+      "p": "2 · possibile",
+      "g": "2 · media",
+      "livello": "Medio"
+    },
+    {
+      "p": "2 · possibile",
+      "g": "3 · grave",
+      "livello": "Medio"
+    },
+    {
+      "p": "2 · possibile",
+      "g": "4 · gravissima",
+      "livello": "Alto"
+    },
+    {
+      "p": "3 · probabile",
+      "g": "",
+      "livello": ""
+    },
+    {
+      "p": "3 · probabile",
+      "g": "1 · lieve",
+      "livello": "Basso"
+    },
+    {
+      "p": "3 · probabile",
+      "g": "2 · media",
+      "livello": "Medio"
+    },
+    {
+      "p": "3 · probabile",
+      "g": "3 · grave",
+      "livello": "Alto"
+    },
+    {
+      "p": "3 · probabile",
+      "g": "4 · gravissima",
+      "livello": "Critico"
+    },
+    {
+      "p": "4 · frequente",
+      "g": "",
+      "livello": ""
+    },
+    {
+      "p": "4 · frequente",
+      "g": "1 · lieve",
+      "livello": "Medio"
+    },
+    {
+      "p": "4 · frequente",
+      "g": "2 · media",
+      "livello": "Alto"
+    },
+    {
+      "p": "4 · frequente",
+      "g": "3 · grave",
+      "livello": "Critico"
+    },
+    {
+      "p": "4 · frequente",
+      "g": "4 · gravissima",
+      "livello": "Critico"
+    }
+  ],
+  "indicatori": [
+    {
+      "nome": "nessuna rilevazione",
+      "stato": "nd"
+    },
+    {
+      "nome": "sopra il target, verso positivo",
+      "stato": "ok"
+    },
+    {
+      "nome": "sotto il target, sopra la soglia",
+      "stato": "mid"
+    },
+    {
+      "nome": "sotto la soglia",
+      "stato": "no"
+    },
+    {
+      "nome": "verso negativo, sotto il target",
+      "stato": "ok"
+    },
+    {
+      "nome": "TARGET VUOTO, valore qualsiasi",
+      "stato": "ok"
+    },
+    {
+      "nome": "target vuoto, verso negativo",
+      "stato": "no"
+    },
+    {
+      "nome": "solo soglia, nessun target",
+      "stato": "ok"
+    },
+    {
+      "nome": "valore non numerico",
+      "stato": "nd"
+    }
+  ]
+}

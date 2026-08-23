@@ -106,6 +106,21 @@ export const wbSystem = pgTable(
     revisione: text("revisione"),
     note: text("note"),
 
+    /**
+     * L'ultimo numero di fascicolo assegnato. Non torna mai indietro.
+     *
+     * ⚠️ Un contatore vero, e non `max(numero) + 1`. Con il massimo, eliminando il
+     * fascicolo più alto il numero viene RIUSATO — e i registri delle ritorsioni, degli
+     * accessi e degli eventi di riservatezza rimandano al fascicolo per numero: il «2»
+     * nuovo erediterebbe i rimandi del «2» cancellato, che è la stessa classe di difetto
+     * che il vincolo di unicità esiste per impedire, spostata di un caso.
+     *
+     * In più l'incremento è UNA sola istruzione atomica (`update … returning`), quindi
+     * non serve bloccare la riga a mano: due gestori che aprono un fascicolo nello
+     * stesso istante si mettono in fila da soli.
+     */
+    ultimoNumero: integer("ultimo_numero").notNull().default(0),
+
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

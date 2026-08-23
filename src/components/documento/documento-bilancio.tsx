@@ -186,9 +186,9 @@ export function DocumentoBilancio({ dati, imageUrls }: { dati: Snapshot; imageUr
         <h2>Nota metodologica</h2>
         <Capitolo chiave="metodo" />
         <p><strong>Perimetro.</strong> {p.perimetro || <span className="doc-manca">da definire</span>}</p>
-        <p><strong>Periodo.</strong> Esercizio {anno}, con dati comparativi {anno - 1} ove disponibili.</p>
+        <p><strong>Periodo.</strong>{" "}Esercizio {anno}, con dati comparativi {anno - 1} ove disponibili.</p>
         <p>
-          <strong>Emissioni.</strong> Calcolate secondo il GHG Protocol; Scope 2 riportato con approccio location-based e market-based. Fattori applicati: gas naturale {fmtNum(DEFAULT_CONVERSION_FACTORS.gas, 4)} kgCO₂e/Smc; gasolio {fmtNum(DEFAULT_CONVERSION_FACTORS.gasolio, 3)} kgCO₂e/l; benzina {fmtNum(DEFAULT_CONVERSION_FACTORS.benzina, 3)} kgCO₂e/l; energia elettrica {fmtNum(DEFAULT_CONVERSION_FACTORS.eleLoc, 4)} kgCO₂/kWh (location) e {fmtNum(DEFAULT_CONVERSION_FACTORS.eleMkt, 3)} kgCO₂/kWh (residual mix).
+          <strong>Emissioni.</strong>{" "}Calcolate secondo il GHG Protocol; Scope 2 riportato con approccio location-based e market-based. Fattori applicati: gas naturale {fmtNum(DEFAULT_CONVERSION_FACTORS.gas, 4)} kgCO₂e/Smc; gasolio {fmtNum(DEFAULT_CONVERSION_FACTORS.gasolio, 3)} kgCO₂e/l; benzina {fmtNum(DEFAULT_CONVERSION_FACTORS.benzina, 3)} kgCO₂e/l; energia elettrica {fmtNum(DEFAULT_CONVERSION_FACTORS.eleLoc, 4)} kgCO₂/kWh (location) e {fmtNum(DEFAULT_CONVERSION_FACTORS.eleMkt, 3)} kgCO₂/kWh (residual mix).
         </p>
         <p className="doc-meta">Il presente documento non è stato sottoposto ad assurance esterna, salvo diversa indicazione.</p>
 

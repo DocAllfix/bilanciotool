@@ -212,23 +212,23 @@ export async function creaFascicolo(
   const id = randomUUID();
 
   const numero = await withTenant({ userId, orgId }, async (tx) => {
-    // ⚠️ Il blocco sulla riga dell'assetto serve a una cosa sola: mettere in fila due
-    // inserimenti simultanei. Senza, due gestori che aprono un fascicolo nello stesso
-    // istante leggono lo stesso massimo, e uno dei due si prende una violazione di
-    // unicità in faccia — cioè un errore incomprensibile mentre registra una
-    // segnalazione appena arrivata. Il vincolo resta ed è la rete: questo è il modo di
-    // non farla mai toccare.
+    // ⚠️ UN CONTATORE, non `max(numero) + 1`.
+    //
+    // Il massimo regge finché si cancella un fascicolo in mezzo e cede sull'ultimo:
+    // eliminato il più alto, il massimo scende e il numero successivo riusa quello
+    // appena liberato. I registri delle ritorsioni e degli accessi rimandano al
+    // fascicolo per numero, quindi il «2» nuovo eredita i rimandi del «2» cancellato —
+    // e il vincolo di unicità non può accorgersene, perché la riga vecchia non c'è più.
+    //
+    // L'incremento è UNA istruzione: l'`update` prende da solo il blocco sulla riga, e
+    // due gestori simultanei si mettono in fila senza che nessuno debba chiederlo.
     const [assetto] = await tx
-      .select({ id: wbSystem.id })
-      .from(wbSystem)
+      .update(wbSystem)
+      .set({ ultimoNumero: sql`${wbSystem.ultimoNumero} + 1` })
       .where(and(eq(wbSystem.id, systemId), eq(wbSystem.organizationId, orgId)))
-      .for("update");
+      .returning({ prossimo: wbSystem.ultimoNumero });
     if (!assetto) throw new Error("Assetto inesistente o di un altro tenant");
-
-    const [{ prossimo }] = await tx
-      .select({ prossimo: sql<number>`coalesce(max(${wbReport.numero}), 0) + 1` })
-      .from(wbReport)
-      .where(and(eq(wbReport.systemId, systemId), eq(wbReport.organizationId, orgId)));
+    const prossimo = assetto.prossimo;
 
     await tx.insert(wbReport).values({
       id,
