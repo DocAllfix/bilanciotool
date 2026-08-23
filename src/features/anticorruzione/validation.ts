@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { companyIdSchema } from "@/features/campi";
+import { companyIdSchema, dataIsoSchema } from "@/features/campi";
 
 // Validazioni del modulo ISO 37001: ogni input attraversa questi schemi PRIMA di
 // toccare il database, e i domini si ricontrollano anche nel CHECK della migrazione
@@ -88,7 +88,7 @@ export const profiloSchema = z.object({
   canaleLingue: z.string().trim().max(300).optional(),
   scopo: z.string().trim().max(4000).optional(),
   esclusioni: z.string().trim().max(4000).optional(),
-  dataAdozione: dataSchema().optional(),
+  dataAdozione: dataIsoSchema.optional(),
   revisione: z.string().trim().max(60).optional(),
 });
 export type ProfiloSistema = z.infer<typeof profiloSchema>;
@@ -115,7 +115,7 @@ export const campoSocioSchema = z.discriminatedUnion("campo", [
   z.object({ campo: z.literal("titolariEffettivi"), valore: testo(2000) }),
   z.object({ campo: z.literal("valoreAnnuo"), valore: z.number().nonnegative().max(1e12).nullable() }),
   z.object({ campo: z.literal("remunerazione"), valore: z.enum(REMUNERAZIONI).nullable() }),
-  z.object({ campo: z.literal("attivoDal"), valore: dataSchema().nullable() }),
+  z.object({ campo: z.literal("attivoDal"), valore: dataIsoSchema.nullable() }),
   z.object({ campo: z.literal("controllata"), valore: z.enum(SI_NO).nullable() }),
   z.object({ campo: z.literal("adeguamento"), valore: z.enum(ADEGUAMENTI).nullable() }),
   z.object({ campo: z.literal("dimPaese"), valore: dimensioneSchema }),
@@ -128,7 +128,7 @@ export const campoSocioSchema = z.discriminatedUnion("campo", [
   z.object({ campo: z.literal("flagPrecedenti"), valore: z.boolean() }),
   z.object({ campo: z.literal("flagLegami"), valore: z.boolean() }),
   z.object({ campo: z.literal("flagPagamenti"), valore: z.boolean() }),
-  z.object({ campo: z.literal("dueDiligenceIl"), valore: dataSchema().nullable() }),
+  z.object({ campo: z.literal("dueDiligenceIl"), valore: dataIsoSchema.nullable() }),
   z.object({ campo: z.literal("dueDiligenceEsito"), valore: z.enum(ESITI_DD).nullable() }),
   z.object({ campo: z.literal("dueDiligenceNote"), valore: testo(4000) }),
   z.object({ campo: z.literal("politicaComunicata"), valore: z.enum(SI_NO).nullable() }),
@@ -136,7 +136,7 @@ export const campoSocioSchema = z.discriminatedUnion("campo", [
   z.object({ campo: z.literal("impegniNote"), valore: testo(4000) }),
   z.object({ campo: z.literal("clausole"), valore: z.enum(CLAUSOLE).nullable() }),
   z.object({ campo: z.literal("controlli"), valore: z.enum(CONTROLLI).nullable() }),
-  z.object({ campo: z.literal("formazioneIl"), valore: dataSchema().nullable() }),
+  z.object({ campo: z.literal("formazioneIl"), valore: dataIsoSchema.nullable() }),
   z.object({ campo: z.literal("verificaCorrispettivo"), valore: z.enum(VERIFICHE).nullable() }),
   z.object({ campo: z.literal("stato"), valore: z.enum(STATI_RAPPORTO) }),
   z.object({ campo: z.literal("note"), valore: testo(4000) }),
@@ -149,23 +149,6 @@ export const requisitoSchema = z.object({
   valore: z.union([z.enum(STATI_REQUISITO), z.string().trim().max(4000), z.null()]),
 });
 
-/**
- * Una data ISO, oppure la stringa vuota.
- *
- * ⚠️ Non basta che sia una stringa: `new Date("2026-13-45")` non lancia, restituisce
- * un `Invalid Date`, e quel valore ha già fermato un pagamento in produzione una volta
- * (16 agosto 2026). Qui la data si RIFIUTA all'ingresso, dove costa un messaggio, non
- * a valle, dove costa una transazione.
- */
-function dataSchema() {
-  return z
-    .string()
-    .trim()
-    .max(10)
-    .refine((v) => v === "" || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(new Date(v).getTime())), {
-      message: "Data non valida: usa il formato gg/mm/aaaa",
-    });
-}
 
 function testo(max: number) {
   return z.string().trim().max(max);
