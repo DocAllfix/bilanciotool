@@ -23,6 +23,7 @@ import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { getMog231 } from "@/features/mog231/queries";
 import { getSegnalazioni } from "@/features/segnalazioni/queries";
 import { getSgiQas } from "@/features/sgiqas/queries";
+import { getFiliera } from "@/features/filiera/queries";
 import { getSa8000 } from "@/features/sa8000/queries";
 import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
 import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
@@ -737,6 +738,56 @@ export async function publishManualeSa8000Snapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "manuale_sa8000", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * La Dichiarazione annuale sulla due diligence di filiera.
+ *
+ * ⚠️ È l'unico dei nuovi documenti con un obbligo di PUBBLICAZIONE dietro: la CSDDD
+ * all'articolo 16 chiede che sia resa accessibile. Per questo congela anche i partner
+ * uno per uno con il loro rischio residuo, e non solo il quadro: chi la riceve deve
+ * poter risalire dal numero aggregato alla riga che lo produce, altrimenti la
+ * dichiarazione è un'affermazione senza appoggio.
+ */
+export async function publishDichiarazioneFilieraSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getFiliera(userId, orgId, companyId);
+  if (!d?.programma) throw new Error("Nessun programma di due diligence da pubblicare per questa azienda");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    programma: d.programma,
+    fasi: d.fasi.map((f) => ({ key: f.key, nome: f.nome, descrizione: f.descrizione })),
+    dimensioni: d.dimensioni.map((x) => ({ key: x.key, nome: x.nome })),
+    aree: d.aree.map((a) => ({ key: a.key, nome: a.nome })),
+    flags: d.flags.map((f) => ({ key: f.key, nome: f.nome })),
+    partner: d.partner.map((v) => ({
+      nome: v.partner.nome,
+      paese: v.partner.paese,
+      livello: v.partner.livello,
+      categoria: v.partner.categoria,
+      stato: v.partner.stato,
+      spesa: v.partner.spesa,
+      qualifica: v.partner.qualifica,
+      flag: v.partner.flag,
+      punteggi: v.punteggi,
+      inerente: v.inerente,
+      categoriaInerente: v.categoria,
+      maturita: v.maturita,
+      residuo: v.residuo,
+      mesiVerifica: v.mesiVerifica,
+      criticheMancanti: v.criticheMancanti,
+      vivo: v.vivo,
+    })),
+    quadro: d.quadro,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "dichiarazione_filiera", SENZA_ESERCIZIO, dati);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

@@ -388,6 +388,47 @@ export const TOURS: TourDef[] = [
       },
     ],
   },
+  {
+    pageId: "filiera",
+    pathPattern: /^\/aziende\/[^/]+\/filiera/,
+    steps: [
+      {
+        title: "Due diligence di filiera",
+        description:
+          "Guarda dalla parte opposta rispetto all'Autovalutazione fornitore: li' l'azienda risponde a un committente, qui valuta i propri fornitori. Il ciclo e' quello delle linee guida OCSE, in sei fasi.",
+      },
+      {
+        element: '[data-tour="fil-vista-quadro"]',
+        title: "La copertura si misura sulla spesa",
+        description:
+          "Non sul numero di fornitori: dieci partner marginali valutati non compensano il grosso della spesa non guardato, e la leva verso un partner e' proporzionale a quanto pesa il rapporto.",
+      },
+      {
+        element: '[data-tour="fil-vista-partner"]',
+        title: "Il registro dei partner",
+        description:
+          "L'unita' di analisi e' il SITO e non la ragione sociale: un partner con piu' stabilimenti genera profili distinti, altrimenti la valutazione media stabilimenti incomparabili. I rapporti cessati escono da ogni conteggio, spesa compresa.",
+      },
+      {
+        element: '[data-tour="fil-vista-programma"]',
+        title: "Il governo del processo, e il riesame",
+        description:
+          "Chi risponde, verso quale organo, con quale politica. E la data del riesame: e' la quarta fase del ciclo, e senza il processo non si chiude. Nel prototipo da cui nasce questo modulo il campo esisteva e nessuna schermata lo scriveva.",
+      },
+      {
+        element: '[data-tour="fil-vista-procedure"]',
+        title: "Il corpus, che si personalizza",
+        description:
+          "Quattordici procedure e cinquantasei moduli gia' scritti: si adottano, si revisionano, si riscrive un blocco per volta. La modifica resta dentro il prodotto, cosi' il processo che vedete e' quello che l'azienda applica davvero.",
+      },
+      {
+        element: '[data-tour="fil-vista-documenti"]',
+        title: "La Dichiarazione annuale",
+        description:
+          "E' l'unico documento del prodotto con un obbligo di pubblicazione dietro: la direttiva all'articolo 16 chiede che sia accessibile. Porta anche il registro dei partner, perche' chi la riceve deve poter risalire dal numero alla riga che lo produce.",
+      },
+    ],
+  },
 ];
 
 export const findTourForPath = (path: string): TourDef | null =>

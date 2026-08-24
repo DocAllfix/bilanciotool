@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -128,6 +128,17 @@ export const DOCUMENTI = {
     file: "manuale-sa8000-2026",
     // E' cio' che si esibisce in audit di certificazione: una fotografia che si
     // revisiona, non un esercizio annuale.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  dichiarazione_filiera: {
+    nome: "Dichiarazione annuale sulla due diligence di filiera",
+    breve: "Dichiarazione filiera",
+    file: "dichiarazione-due-diligence-filiera",
+    // ⚠️ E' l'unico dei nuovi documenti con un obbligo di PUBBLICAZIONE dietro: la
+    // CSDDD all'articolo 16 chiede che la dichiarazione sia resa accessibile. Non porta
+    // l'anno nel titolo perche' resta la revisione N di una serie unica, ed e' chi la
+    // redige a datarla nel corpo.
     mostraAnno: false,
     haMedia: false,
   },

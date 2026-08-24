@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AREE_VETRINA, LETTERE } from "@/components/landing/percorsi-vetrina";
 import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
 import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   // titolo che Google mostra per il nome del prodotto, quindi il marchio ripetuto si
   // mangiava i sessanta caratteri utili proprio nel posto che conta di più.
   title: {
-    absolute: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
+    absolute: "EvalisDeck · Undici documenti di conformità, un solo strumento",
   },
   description:
     "Inventario GHG ISO 14064-1, bilancio di sostenibilità e conformità ESG, bilancio energetico UNI CEI EN 16247, autovalutazione ESG dei fornitori e Statement of Applicability ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
@@ -112,7 +113,7 @@ export default function LandingPage() {
                 Un solo strumento.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Cinque percorsi guidati, dall&apos;inventario GHG allo Statement of Applicability: ogni passo sa
+                Undici percorsi guidati, dall&apos;inventario GHG al Modello 231: ogni passo sa
                 cosa chiede la norma, i calcoli si fanno da soli, e quello che ne esce è un documento impaginato che
                 regge la verifica.
               </p>
@@ -199,83 +200,46 @@ export default function LandingPage() {
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                   <span className="h-px w-8 bg-primary" aria-hidden />
-                  Cinque documenti, un solo archivio
+                  Undici percorsi, un solo archivio
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
-                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, cinque percorsi.
+                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, undici percorsi in cinque aree.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Tre si redigono per esercizio e seguono il calendario. Due sono fotografie che si aggiornano per
-                  revisioni, quando il committente le chiede.
+                  Alcuni si redigono per esercizio e seguono il calendario. Altri sono fotografie che si aggiornano
+                  per revisioni, quando il committente, la banca o l&apos;ente di certificazione le chiedono.
                 </p>
               </div>
             </Reveal>
 
-            <Reveal delay={80}>
-              <p className="mt-14 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                <span className="h-px w-6 bg-border" aria-hidden />
-                Per esercizio
-              </p>
-            </Reveal>
-            <div className="mt-6 grid gap-10 md:grid-cols-3 md:gap-8">
-              <Reveal>
-                <Percorso
-                  indice="A"
-                  titolo="Inventario GHG"
-                  norma="ISO 14064-1:2018"
-                  passi={["Confini e perimetro", "Registro delle 25 sorgenti", "Dati di attività", "Fattori e fonti", "Risultati e incertezza", "Anno base e obiettivi", "Verifica", "Rapporto §9.3.1"]}
-                  punto="Doppia rendicontazione Scope 2, CO₂ biogenica separata, incertezza in quadratura: ciò che l'ente di verifica chiede, già al posto giusto."
-                />
-              </Reveal>
-              <Reveal delay={100}>
-                <Percorso
-                  indice="B"
-                  titolo="Bilancio di sostenibilità e conformità ESG"
-                  norma="GRI 2021 · ESRS VSME"
-                  passi={["Organizzazione", "Doppia materialità guidata", "49 indicatori su due anni", "Politiche e obiettivi", "Racconto e fotografie", "Verifica delle lacune", "Documento impaginato"]}
-                  punto="La sezione emissioni legge direttamente dall'inventario GHG della stessa azienda: una modifica lì, aggiornata qui."
-                />
-              </Reveal>
-              <Reveal delay={200}>
-                <Percorso
-                  indice="C"
-                  titolo="Bilancio energetico"
-                  norma="UNI CEI EN 16247 · ISO 50001"
-                  passi={["Sito e perimetro", "12 vettori energetici", "Ripartizione sui 20 usi finali", "Indicatori di prestazione", "Interventi e ritorno", "Racconto", "Verifica", "Bilancio impaginato"]}
-                  punto="La ripartizione si quadra da sola: le celle restano nell'unità del vettore, quindi correggere un potere calorifico non invalida un esercizio già chiuso."
-                />
-              </Reveal>
-            </div>
-
-            <Reveal delay={80}>
-              <p className="mt-16 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                <span className="h-px w-6 bg-border" aria-hidden />
-                Fotografie con revisioni
-              </p>
-            </Reveal>
-            <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-16">
-              <Reveal>
-                <Percorso
-                  indice="D"
-                  titolo="Autovalutazione ESG del fornitore"
-                  norma="ESRS · GRI · ISO 20400"
-                  passi={["Anagrafica e committente", "37 domande su 5 aree pesate", "Indice di prontezza con soglia", "Piano di adeguamento ordinato", "Evidenze documentali", "Attestato con codice di verifica"]}
-                  punto="L'indice si rinormalizza sulle sole aree valutate: chi ha compilato una sola area non risulta bocciato sulle altre quattro."
-                />
-              </Reveal>
-              <Reveal delay={120}>
-                <Percorso
-                  indice="E"
-                  titolo="Statement of Applicability (SoA)"
-                  norma="ISO/IEC 27001:2022 §6.1.3 d)"
-                  passi={["Contesto e ambito", "174 controlli su 5 quadri", "Applicabilità e motivazioni", "Verifiche di coerenza", "Piano di attuazione", "Statement firmato"]}
-                  punto="Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice."
-                />
-              </Reveal>
+            <div className="mt-16 space-y-16">
+              {AREE_VETRINA.map((area, iArea) => (
+                <div key={area.nome}>
+                  <Reveal delay={40}>
+                    <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      <span className={`h-px w-6 ${area.tratto}`} aria-hidden />
+                      {area.nome}
+                    </p>
+                  </Reveal>
+                  <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-12">
+                    {area.percorsi.map((p, i) => (
+                      <Reveal key={p.titolo} delay={i * 90}>
+                        <Percorso
+                          indice={LETTERE[iArea * 3 + i] ?? "•"}
+                          titolo={p.titolo}
+                          norma={p.norma}
+                          passi={p.passi}
+                          punto={p.punto}
+                        />
+                      </Reveal>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <Reveal delay={200}>
-              <p className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
+              <p className="mt-14 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
                 <span className="inline-flex items-center gap-2 font-semibold text-foreground">
                   <span className="size-2 rounded-full bg-scope-1" aria-hidden />
                   Dall&apos;inventario al bilancio
@@ -423,7 +387,7 @@ export default function LandingPage() {
                 Un abbonamento solo, annuale, tutto incluso.
               </h2>
               <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Si sottoscrive per studio, non per documento e non per utente. Comprende i cinque percorsi,
+                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti e undici i percorsi,
                 i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori di emissione
                 e gli accessi per chi lavora con te.
               </p>
@@ -453,7 +417,7 @@ export default function LandingPage() {
                     ],
                     [
                       "Oppure guardi prima, e attivi dopo",
-                      "Se preferisci vedere com'è fatto, l'azienda d'esempio è già compilata e i cinque percorsi sono percorribili per intero. Attivi da dentro quando hai deciso, senza rifare niente.",
+                      "Se preferisci vedere com'è fatto, l'azienda d'esempio è già compilata e i percorsi sono percorribili per intero. Attivi da dentro quando hai deciso, senza rifare niente.",
                     ],
                     [
                       "Ti serve una fattura da pagare a bonifico?",

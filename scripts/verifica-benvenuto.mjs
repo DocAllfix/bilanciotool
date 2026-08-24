@@ -126,6 +126,14 @@ await check("l'itinerario lo calcola il server e parte dalla dashboard", async (
   const { tappe } = await r.json();
   if (!Array.isArray(tappe) || !tappe.length) throw new Error("itinerario vuoto");
   if (tappe[0].path !== "/dashboard") throw new Error(`prima tappa ${tappe[0].path}`);
+  // ⚠️ UNA TAPPA PER AREA: le aree sono cinque, quindi al massimo sei tappe compresa la
+  // dashboard. I moduli sono undici, e un giro che li attraversasse tutti si chiuderebbe
+  // a meta'. Il numero NON e' fisso al ribasso -- un modulo non avviato nella demo salta
+  // la sua area -- ma il tetto e' un fatto, e senza questo controllo tornerebbe a dodici
+  // il giorno in cui qualcuno toglie il filtro senza accorgersene.
+  if (tappe.length > 6) throw new Error(`${tappe.length} tappe: l'itinerario non e' piu' capato per area`);
+  const aree = new Set(tappe.slice(1).map((t) => t.pageId));
+  if (aree.size !== tappe.length - 1) throw new Error("due tappe sullo stesso modulo");
   // Ogni tappa dev'essere una pagina che ha davvero un tour: una tappa senza tour
   // sarebbe una navigazione muta, e il giro sembrerebbe essersi rotto.
   console.log("       itinerario: " + tappe.map((t) => t.pageId).join(" -> "));

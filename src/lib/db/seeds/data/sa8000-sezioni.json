@@ -1,17 +1,5 @@
 [
- {
-  "key": "F",
-  "nome": "Criteri fondazionali",
-  "ordine": 0
- },
- {
-  "key": "M",
-  "nome": "Sistema di gestione e due diligence",
-  "ordine": 1
- },
- {
-  "key": "D",
-  "nome": "Criteri di prestazione per il lavoro dignitoso",
-  "ordine": 2
- }
+{"key":"F","nome":"Criteri fondazionali","ordine":0},
+{"key":"M","nome":"Sistema di gestione e due diligence","ordine":1},
+{"key":"D","nome":"Criteri di prestazione per il lavoro dignitoso","ordine":2}
 ]

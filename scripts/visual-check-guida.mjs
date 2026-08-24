@@ -44,7 +44,7 @@ await check("accesso e apertura della guida", async () => {
   if (!/Guida all/.test(await page.locator("h1").innerText())) throw new Error("non è la guida");
 });
 
-await check("ci sono tutti e cinque i percorsi, con norma e documento prodotto", async () => {
+await check("ci sono tutti gli undici percorsi, con norma e documento prodotto", async () => {
   const t = await page.locator("main").innerText();
   const attesi = [
     ["Inventario GHG", "ISO 14064-1", "Rapporto GHG"],
@@ -52,6 +52,12 @@ await check("ci sono tutti e cinque i percorsi, con norma e documento prodotto",
     ["Bilancio energetico", "UNI CEI EN 16247", "Bilancio energetico"],
     ["Autovalutazione ESG", "ISO 20400", "Attestato"],
     ["Statement of Applicability (SoA)", "ISO/IEC 27001", "Statement of Applicability"],
+    ["Sistema di gestione integrato QAS", "ISO 9001", "Riesame di direzione"],
+    ["Sistema di gestione SA8000/2026", "SA8000:2026", "Manuale del sistema SA8000/2026"],
+    ["Due diligence di filiera", "OCSE", "Dichiarazione annuale sulla due diligence di filiera"],
+    ["Prevenzione della corruzione", "ISO 37001", "Relazione annuale sulla prevenzione della corruzione"],
+    ["Modello 231", "231/2001", "Matrice reati-processi"],
+    ["Gestione delle segnalazioni", "24/2023", "Relazione periodica sulle segnalazioni"],
   ];
   for (const [nome, norma, doc] of attesi) {
     for (const pezzo of [nome, norma, doc]) {

@@ -21,7 +21,7 @@ export function PiedeMarketing() {
         <div>
           <LogoOrizzontale className="h-10" />
           <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
-            Cinque documenti di rendicontazione per le PMI, con il metodo incorporato.
+            Undici documenti di conformità e rendicontazione per le PMI, con il metodo incorporato.
           </p>
           {/* 68 px: sotto questa misura "Sustainability Rating" e la data non si leggono più. */}
           <BadgeEcoVadis dimensione={68} className="mt-5" />
@@ -31,7 +31,7 @@ export function PiedeMarketing() {
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <Link href="/#percorsi" className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">
-                I cinque documenti
+                I percorsi
               </Link>
             </li>
             <li>

@@ -11,6 +11,7 @@ import {
   wbSystem, wbChannel, wbReport, wbRequirement, wbRequirementState,
   qasSystem, qasIndicator, qasIndicatorDefault, qasMeasurement, qasRequirement, qasRequirementState,
   saSystem, saCriterion, saCriterionState,
+  chainProgram, chainPartner, chainPartnerScore,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
@@ -20,6 +21,7 @@ import { latestMog231SetId } from "@/features/mog231/modello";
 import { latestWbSetId } from "@/features/segnalazioni/sistema";
 import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
 import { latestSa8000SetId } from "@/features/sa8000/sistema";
+import { latestFilieraSetId } from "@/features/filiera/programma";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -760,7 +762,88 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
         evidenza: i % 7 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
       })),
   );
+
+  // ─── Due diligence di filiera ──────────────────────────────────────────────
+  //
+  // ⚠️ Sette partner scelti per far vedere i casi che contano, e non per riempire:
+  //   · uno CRITICO in un paese difficile, con due fattori aggravanti;
+  //   · uno valutato bene MA con le tre aree critiche in bianco — nel prototipo quel
+  //     silenzio produceva maturita' 4,0 e rischio Basso, ed e' il difetto B2;
+  //   · uno CESSATO e grosso, che deve sparire da ogni conteggio, spesa compresa;
+  //   · uno mai valutato, perche' una filiera vera non e' mai coperta al 100%.
+  const filSet = await latestFilieraSetId();
+  const programmaId = randomUUID();
+  await tx.insert(chainProgram).values({
+    id: programmaId, organizationId: orgId, companyId, contentSetId: filSet,
+    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48",
+    direzione: "Amministratore Unico — Ing. Marco Loprete",
+    responsabile: "Dott.ssa Chiara Petrosino, responsabile acquisti e due diligence",
+    organo: "Amministratore Unico",
+    reclamiCanale: "filiera.reclami@meccanicaadriatica.example",
+    politica:
+      "L'Impresa applica la dovuta diligenza a tutti i fornitori diretti e, ove il rischio lo richieda, ai livelli successivi. La qualifica precede l'ordine; il rapporto si interrompe solo come ultima misura, dopo aver usato la leva disponibile.",
+    perimetro: "Fornitori diretti di materia prima, lavorazioni esterne e servizi di manodopera.",
+    esclusioni:
+      "Utenze, servizi bancari e assicurativi: nessuna leva contrattuale e rischio di condotta trascurabile.",
+    dataAdozione: "2026-01-15", revisione: "1.0",
+  });
+
+  // [nome, paese, livello, categoria, spesa, stato, dim(rp,rs,rpr,rm), aree, flag]
+  const PARTNER: [string, string, string, string, number, string,
+    [number, number, number, number], Record<string, number>, string[]][] = [
+    ["Trafilerie Metalliche del Sud S.p.A.", "Italia", "Livello 1", "Semilavorati in acciaio", 480_000, "Attivo",
+      [1, 2, 2, 1], { gov: 3, min: 4, forz: 4, ora: 3, foa: 3, hs: 3, amb: 3 }, []],
+    ["Zhengda Precision Components Ltd.", "Cina", "Livello 1", "Componenti torniti", 310_000, "Attivo",
+      [4, 3, 3, 4], { gov: 2, min: 1, forz: 1, ora: 2, foa: 1, hs: 2, amb: 2 }, ["f_ag", "f_dom"]],
+    // ⚠️ IL CASO DEL DIFETTO B2: governance a 4, tre aree critiche in bianco.
+    ["Bright Surface Treatments Sdn Bhd", "Malesia", "Livello 2", "Trattamenti superficiali", 165_000, "Attivo",
+      [3, 3, 2, 3], { gov: 4, ora: 3, amb: 3 }, []],
+    ["Officina Meccanica Trulli S.n.c.", "Italia", "Livello 1", "Lavorazioni esterne", 92_000, "Attivo",
+      [1, 3, 1, 2], { gov: 2, min: 4, forz: 4, ora: 3, foa: 3, hs: 2, amb: 3 }, []],
+    ["Servizi Logistici Levante S.r.l.", "Italia", "Livello 1", "Logistica e magazzino", 74_000, "In uscita graduale",
+      [1, 3, 1, 3], { gov: 2, min: 3, forz: 2, ora: 2, foa: 2, hs: 2, amb: 3 }, ["f_segn"]],
+    // Mai valutato: una filiera vera non e' mai coperta al 100%.
+    ["Componenti Plastici Salento S.r.l.", "Italia", "Livello 2", "Particolari in tecnopolimero", 38_000, "Attivo",
+      [0, 0, 0, 0], {}, []],
+    // Cessato E grosso: deve sparire da ogni conteggio, spesa compresa.
+    ["Ferriere Adriatiche S.p.A. (cessato)", "Italia", "Livello 1", "Barre trafilate", 620_000, "Cessato",
+      [1, 2, 2, 1], { gov: 3, min: 4, forz: 4, ora: 3, foa: 3, hs: 3, amb: 3 }, []],
+  ];
+
+  const CHIAVI_DIM = ["rp", "rs", "rpr", "rm"] as const;
+  const punteggiDemo: (typeof chainPartnerScore.$inferInsert)[] = [];
+  await tx.insert(chainPartner).values(
+    PARTNER.map(([nome, paese, livello, categoria, spesa, stato, dim, aree, flag], i) => {
+      const id = randomUUID();
+      for (const [j, v] of dim.entries()) {
+        if (v > 0) punteggiDemo.push({
+          id: randomUUID(), organizationId: orgId, partnerId: id,
+          genere: "dim", chiave: CHIAVI_DIM[j], valore: v,
+        });
+      }
+      for (const [k, v] of Object.entries(aree)) {
+        punteggiDemo.push({
+          id: randomUUID(), organizationId: orgId, partnerId: id,
+          genere: "area", chiave: k, valore: v,
+        });
+      }
+      return {
+        id, organizationId: orgId, programId: programmaId,
+        nome, paese, livello, categoria, stato, flag,
+        spesa: String(spesa),
+        qualifica: stato === "Cessato" ? "Sospesa" : i < 4 ? "Piena" : "In istruttoria",
+        codiceCondotta: "Sì", clausole: i < 5 ? "Sì" : "No",
+        cascading: livello === "Livello 2" ? "Non richiesto" : i < 3 ? "Sì" : "No",
+        canaleAffisso: i < 4 ? "Sì" : "No",
+        ordine: i,
+      };
+    }),
+  );
+  await tx.insert(chainPartnerScore).values(punteggiDemo);
 }
+
 
 const testoATiptap = (testo: string) => ({
   type: "doc",

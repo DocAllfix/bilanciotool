@@ -31,8 +31,19 @@ export async function GET() {
   const demo = aziende.find((a) => a.isDemo) ?? aziende[0];
   const tappe: Tappa[] = [{ path: "/dashboard", pageId: "portfolio" }];
 
+  // ⚠️ UNA TAPPA PER AREA, non una per modulo.
+  //
+  // I moduli sono undici: un giro che li attraversasse tutti sarebbe di dodici tappe, e
+  // chi si è appena registrato lo chiuderebbe a metà — e chi chiude un tour dice «basta
+  // spiegazioni», non «basta prodotto». Con una tappa per area il giro resta di sei come
+  // quando i moduli erano cinque, e chi guarda impara la cosa che serve davvero: che le
+  // aree sono cinque, non che le pagine sono dodici. Le altre si trovano dal fascicolo,
+  // che è dove un consulente le cerca.
+  const areeViste = new Set<string>();
+
   if (demo) {
     for (const m of MODULI_AZIENDA) {
+      if (areeViste.has(m.area)) continue;
       const stato = demo.moduli.find((x) => x.modulo === m.href);
       // Un modulo mai avviato non si visita: mostrerebbe la pagina di creazione, non
       // il modulo. La presentazione fa vedere il prodotto pieno, non i suoi vuoti.
@@ -43,6 +54,7 @@ export async function GET() {
       } else {
         tappe.push({ path: `/aziende/${demo.id}/${m.href}`, pageId: m.href });
       }
+      areeViste.add(m.area);
     }
   }
 

@@ -1,0 +1,1 @@
+ALTER TABLE "chain_program" ADD COLUMN "direzione" text;

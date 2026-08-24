@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "it_IT",
     siteName: "EvalisDeck",
-    title: "EvalisDeck · Cinque documenti di rendicontazione, un solo strumento",
+    title: "EvalisDeck · Undici documenti di conformità, un solo strumento",
     description: DESCRIZIONE,
     url: SITO,
   },

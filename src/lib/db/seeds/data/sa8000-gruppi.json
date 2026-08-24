@@ -1,110 +1,20 @@
 [
- {
-  "key": "M1",
-  "sezione": "M",
-  "nome": "Impegno della direzione, coinvolgimento e integrazione",
-  "ordine": 0
- },
- {
-  "key": "M2",
-  "sezione": "M",
-  "nome": "Coinvolgimento e integrazione dei lavoratori",
-  "ordine": 1
- },
- {
-  "key": "M3",
-  "sezione": "M",
-  "nome": "Coinvolgimento e integrazione degli stakeholder",
-  "ordine": 2
- },
- {
-  "key": "M4",
-  "sezione": "M",
-  "nome": "Impegno di politica e coerenza",
-  "ordine": 3
- },
- {
-  "key": "M5",
-  "sezione": "M",
-  "nome": "Contesto, impatti e rischi",
-  "ordine": 4
- },
- {
-  "key": "M6",
-  "sezione": "M",
-  "nome": "Obiettivi, pianificazione e risorse",
-  "ordine": 5
- },
- {
-  "key": "M7",
-  "sezione": "M",
-  "nome": "Consapevolezza e attuazione",
-  "ordine": 6
- },
- {
-  "key": "M8",
-  "sezione": "M",
-  "nome": "Integrità e trasparenza",
-  "ordine": 7
- },
- {
-  "key": "M9",
-  "sezione": "M",
-  "nome": "Monitoraggio e meccanismi di reclamo",
-  "ordine": 8
- },
- {
-  "key": "M10",
-  "sezione": "M",
-  "nome": "Analisi strategica, riesame e miglioramento",
-  "ordine": 9
- },
- {
-  "key": "D1",
-  "sezione": "D",
-  "nome": "Protezione dei bambini e dei giovani lavoratori",
-  "ordine": 10
- },
- {
-  "key": "D2",
-  "sezione": "D",
-  "nome": "Libertà di associazione e contrattazione collettiva",
-  "ordine": 11
- },
- {
-  "key": "D3",
-  "sezione": "D",
-  "nome": "Reclutamento, impiego e cessazione liberi ed equi",
-  "ordine": 12
- },
- {
-  "key": "D4",
-  "sezione": "D",
-  "nome": "Orari, retribuzioni e benefit dignitosi",
-  "ordine": 13
- },
- {
-  "key": "D5",
-  "sezione": "D",
-  "nome": "Libertà dalla discriminazione",
-  "ordine": 14
- },
- {
-  "key": "D6",
-  "sezione": "D",
-  "nome": "Salute e sicurezza",
-  "ordine": 15
- },
- {
-  "key": "D7",
-  "sezione": "D",
-  "nome": "Privacy",
-  "ordine": 16
- },
- {
-  "key": "F",
-  "sezione": "F",
-  "nome": "Criteri fondazionali (F1–F5)",
-  "ordine": 17
- }
+{"key":"M1","sezione":"M","nome":"Impegno della direzione, coinvolgimento e integrazione","ordine":0},
+{"key":"M2","sezione":"M","nome":"Coinvolgimento e integrazione dei lavoratori","ordine":1},
+{"key":"M3","sezione":"M","nome":"Coinvolgimento e integrazione degli stakeholder","ordine":2},
+{"key":"M4","sezione":"M","nome":"Impegno di politica e coerenza","ordine":3},
+{"key":"M5","sezione":"M","nome":"Contesto, impatti e rischi","ordine":4},
+{"key":"M6","sezione":"M","nome":"Obiettivi, pianificazione e risorse","ordine":5},
+{"key":"M7","sezione":"M","nome":"Consapevolezza e attuazione","ordine":6},
+{"key":"M8","sezione":"M","nome":"Integrità e trasparenza","ordine":7},
+{"key":"M9","sezione":"M","nome":"Monitoraggio e meccanismi di reclamo","ordine":8},
+{"key":"M10","sezione":"M","nome":"Analisi strategica, riesame e miglioramento","ordine":9},
+{"key":"D1","sezione":"D","nome":"Protezione dei bambini e dei giovani lavoratori","ordine":10},
+{"key":"D2","sezione":"D","nome":"Libertà di associazione e contrattazione collettiva","ordine":11},
+{"key":"D3","sezione":"D","nome":"Reclutamento, impiego e cessazione liberi ed equi","ordine":12},
+{"key":"D4","sezione":"D","nome":"Orari, retribuzioni e benefit dignitosi","ordine":13},
+{"key":"D5","sezione":"D","nome":"Libertà dalla discriminazione","ordine":14},
+{"key":"D6","sezione":"D","nome":"Salute e sicurezza","ordine":15},
+{"key":"D7","sezione":"D","nome":"Privacy","ordine":16},
+{"key":"F","sezione":"F","nome":"Criteri fondazionali (F1–F5)","ordine":17}
 ]

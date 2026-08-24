@@ -12,7 +12,7 @@ import {
   supplierAnswer,
   soaDeclaration,
   soaControlDecision, briberySystem, briberyRequirementState, mogModel, mogProcess, mogScenario,
-  wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState } from "@/lib/db/schema";
+  wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState, chainProgram, chainPartner } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, count, desc, eq, isNotNull } from "drizzle-orm";
 
@@ -60,7 +60,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, documenti] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, programmaFiliera, documenti] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -105,6 +105,10 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .from(saSystem)
         .where(and(eq(saSystem.companyId, companyId), eq(saSystem.organizationId, orgId))),
       tx
+        .select({ id: chainProgram.id })
+        .from(chainProgram)
+        .where(and(eq(chainProgram.companyId, companyId), eq(chainProgram.organizationId, orgId))),
+      tx
         .select({
           id: documentSnapshot.id,
           tipo: documentSnapshot.tipo,
@@ -127,11 +131,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const wbId = sistemaWb[0]?.id ?? null;
     const qasId = sistemaQas[0]?.id ?? null;
     const saId = sistemaSa[0]?.id ?? null;
+    const filId = programmaFiliera[0]?.id ?? null;
     const annoBilancio = progetti[0]?.anno ?? null;
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -202,6 +207,9 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
             .from(saCriterionState)
             .where(and(eq(saCriterionState.systemId, saId), isNotNull(saCriterionState.stato)))
         : zero,
+      filId
+        ? tx.select({ n: count() }).from(chainPartner).where(eq(chainPartner.programId, filId))
+        : zero,
     ]);
 
     // Per ogni tipo di documento, la versione più alta (l'elenco è già ordinato
@@ -254,6 +262,13 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         anno: null,
         riempimento: saId
           ? { valore: nCriteriSa[0].n, etichetta: nCriteriSa[0].n === 1 ? "criterio valutato" : "criteri valutati" }
+          : null,
+      },
+      filiera: {
+        avviato: !!filId,
+        anno: null,
+        riempimento: filId
+          ? { valore: nPartner[0].n, etichetta: nPartner[0].n === 1 ? "partner mappato" : "partner mappati" }
           : null,
       },
       sgiqas: {

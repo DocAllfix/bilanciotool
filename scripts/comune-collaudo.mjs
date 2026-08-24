@@ -260,7 +260,7 @@ export async function spegniTour(
   // ⚠️ Questo elenco DEVE crescere insieme a `src/lib/tour/registry.ts`, e nulla lo
   // obbliga: aggiungendo il tour del Modello 231 il velo e' tornato a bloccare i clic,
   // e il collaudo del modulo e' morto al primo gesto. Da qui il ripiego qui sotto.
-  chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000"],
+  chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000", "filiera"],
 ) {
   await page.evaluate((ks) => {
     for (const k of ks) {

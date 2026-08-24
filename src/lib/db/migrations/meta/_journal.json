@@ -267,6 +267,34 @@
       "when": 1787561988267,
       "tag": "0037_sa8000_sito",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1787574997914,
+      "tag": "0038_filiera",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1787574997915,
+      "tag": "0039_filiera_rls_domini",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1787575904795,
+      "tag": "0040_filiera_direzione",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1787575904796,
+      "tag": "0041_documento_filiera",
+      "breakpoints": true
     }
   ]
 }

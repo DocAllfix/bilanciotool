@@ -9,23 +9,23 @@
 export const DOMANDE: [string, string][] = [
   [
     "Come funziona la demo guidata?",
-    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti e cinque i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
+    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti gli undici moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
   ],
   [
     "Come si acquista? E quanto costa?",
-    "L'abbonamento è annuale e si sottoscrive per studio: comprende tutti e cinque i percorsi, i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori e gli accessi per il tuo team. Si attiva in due minuti con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Gli importi dipendono da quante aziende segui e da quanti accedono, e si vedono appena entri, nella pagina Abbonamento: la registrazione è gratuita e non chiede la carta, quindi puoi guardare il listino prima di decidere qualsiasi cosa. Dal secondo anno il rinnovo costa meno del primo.",
+    "L'abbonamento è annuale e si sottoscrive per studio: comprende tutti e undici i percorsi, i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori e gli accessi per il tuo team. Si attiva in due minuti con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Gli importi dipendono da quante aziende segui e da quanti accedono, e si vedono appena entri, nella pagina Abbonamento: la registrazione è gratuita e non chiede la carta, quindi puoi guardare il listino prima di decidere qualsiasi cosa. Dal secondo anno il rinnovo costa meno del primo.",
   ],
   [
     "Serve essere consulenti per usarlo?",
     "No, ma è pensato per chi la rendicontazione la fa di mestiere: studi, consulenti HSE/ESG, responsabili qualità. Una PMI può usarlo in autonomia, perché le guide di valutazione tema per tema spiegano cosa guardare e dove trovare i dati in azienda.",
   ],
   [
-    "Devo comprarli tutti e cinque?",
-    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono il bilancio energetico o lo Statement of Applicability quando arriva il cliente che le chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
+    "Devo comprarli tutti e undici?",
+    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono il bilancio energetico, la Dichiarazione di Applicabilità o il Modello 231 quando arriva il cliente che li chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
   ],
   [
     "A quali norme sono conformi i documenti?",
-    "Il rapporto GHG segue i contenuti minimi del §9.3.1 della UNI EN ISO 14064-1:2018, con doppia rendicontazione Scope 2 e CO₂ biogenica separata. Il bilancio è redatto con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, con analisi di doppia rilevanza e indice dei contenuti. Il bilancio energetico è una diagnosi energetica secondo la UNI CEI EN 16247 e la struttura richiesta dall'articolo 8 del D.Lgs. 102/2014. Lo Statement of Applicability (la Dichiarazione di Applicabilità richiesta dalla norma) copre i 174 controlli di ISO/IEC 27001:2022 e dei quadri 27017, 27018 e 27701, con la nota di conformità al punto 6.1.3 lettera d). L'autovalutazione del fornitore si appoggia a ESRS, GRI e ISO 20400.",
+    "Il rapporto GHG segue i contenuti minimi del §9.3.1 della UNI EN ISO 14064-1:2018, con doppia rendicontazione Scope 2 e CO₂ biogenica separata. Il bilancio è redatto con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, con analisi di doppia rilevanza e indice dei contenuti. Il bilancio energetico è una diagnosi energetica secondo la UNI CEI EN 16247 e la struttura richiesta dall'articolo 8 del D.Lgs. 102/2014. Lo Statement of Applicability (la Dichiarazione di Applicabilità richiesta dalla norma) copre i 174 controlli di ISO/IEC 27001:2022 e dei quadri 27017, 27018 e 27701, con la nota di conformità al punto 6.1.3 lettera d). L'autovalutazione del fornitore si appoggia a ESRS, GRI e ISO 20400, e la due diligence di filiera alle linee guida OCSE e alla direttiva (UE) 2024/1760. Il sistema integrato copre ISO 9001, 14001 e 45001; il sistema di responsabilità sociale lo Standard SA8000:2026; il Modello 231 il D.Lgs. 231/2001 con i 25 reati presupposto, la prevenzione della corruzione la UNI ISO 37001 e la gestione delle segnalazioni il D.Lgs. 24/2023.",
   ],
   [
     "I fattori di emissione sono aggiornati?",

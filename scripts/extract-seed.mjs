@@ -204,7 +204,10 @@ const CONFORMITA = [
   { dom: "iso37001", file: "sgpc-iso37001-v1.html", extra: ["capi", "req"] },
   { dom: "sgiqas", file: "sgi-qas-v1.html", extra: ["capi", "req", "norme"] },
   { dom: "sa8000", file: "sgs-sa8000-2026-v1.html", extra: [], criteri: true },
-  { dom: "filiera", file: "due-diligence-filiera-v1.html", extra: ["fasi"] },
+  // ⚠️ Le quattro dimensioni, le sette aree e i cinque fattori aggravanti della
+  // filiera NON stanno nel blob del corpus: sono `const` nel sorgente, come i
+  // cataloghi della SoA. Si estraggono da lì, non si riscrivono a mano.
+  { dom: "filiera", file: "due-diligence-filiera-v1.html", extra: ["fasi"], consts: { dim: "DIM", aree: "AREE", flags: "FLAGS" } },
   { dom: "wb", file: "whistleblowing-v1.html", extra: ["capi", "req"] },
 ];
 
@@ -223,9 +226,30 @@ for (const m of CONFORMITA) {
   // SA8000/2026 ha un SECONDO blob: i 112 criteri della norma, con i gruppi, le
   // sezioni e la mappa criterio -> procedure. Dieci criteri su 112 ne toccano
   // due, quindi in SQL serve una tabella ponte vera, non una colonna.
+  for (const [k, nome] of Object.entries(m.consts ?? {})) {
+    outCorpus[`${m.dom}-${k}.json`] = extractConst(html, nome);
+  }
   if (m.criteri) {
     const c = extractJsonBlob(html, "criteri");
     for (const k of ["crit", "grp", "sez", "map"]) outCorpus[`${m.dom}-${k}.json`] = c[k];
+
+    // ⚠️ E ANCHE la forma normalizzata che il seme legge davvero.
+    //
+    // Le tre collezioni del blob sono mappe con chiavi corte (`s`, `c`, `t`), e il seme
+    // vuole array con nome, sezione e ordine. Per una versione questa conversione era
+    // stata fatta a mano, una volta sola: rilanciare l'estrattore rigenerava
+    // `sa8000-crit.json` mentre il seme continuava a leggere `sa8000-criteri.json`,
+    // fermo alla prima estrazione. Il difetto non si sarebbe visto — solo un catalogo
+    // vecchio, coi conteggi giusti, che nessun test avrebbe potuto smentire.
+    outCorpus[`${m.dom}-sezioni.json`] = Object.entries(c.sez).map(([key, nome], ordine) => ({
+      key, nome, ordine,
+    }));
+    outCorpus[`${m.dom}-gruppi.json`] = Object.entries(c.grp).map(([key, nome], ordine) => ({
+      key, sezione: key.slice(0, 1), nome, ordine,
+    }));
+    outCorpus[`${m.dom}-criteri.json`] = c.crit.map((k, ordine) => ({
+      key: k.c, sezione: k.s, testo: k.t, procedure: c.map[k.c] ?? [], ordine,
+    }));
   }
 }
 

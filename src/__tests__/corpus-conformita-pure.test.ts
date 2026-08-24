@@ -20,7 +20,7 @@ const ATTESI = {
   iso37001: { procedure: 12, moduli: 47, blocchi: 674, extra: { capi: 7, req: 91 } },
   sgiqas: { procedure: 18, moduli: 56, blocchi: 714, extra: { capi: 7, req: 107, norme: 3 } },
   sa8000: { procedure: 22, moduli: 104, blocchi: 2793, extra: { crit: 112, grp: 18, sez: 3, map: 112 } },
-  filiera: { procedure: 14, moduli: 56, blocchi: 1045, extra: { fasi: 6 } },
+  filiera: { procedure: 14, moduli: 56, blocchi: 1045, extra: { fasi: 6, dim: 4, aree: 7, flags: 5 } },
   wb: { procedure: 12, moduli: 34, blocchi: 502, extra: { capi: 10, req: 82 } },
 } as const;
 

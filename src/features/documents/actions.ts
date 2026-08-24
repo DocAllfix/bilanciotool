@@ -11,6 +11,7 @@ import {
   publishRelazioneWbSnapshot,
   publishRiesameQasSnapshot,
   publishManualeSa8000Snapshot,
+  publishDichiarazioneFilieraSnapshot,
 } from "./snapshot";
 
 export async function publishDocumentAction(
@@ -48,6 +49,8 @@ export async function publishDocumentAction(
           return (u: string, o: string, c: string) => publishRiesameQasSnapshot(u, o, c);
         case "manuale_sa8000":
           return (u: string, o: string, c: string) => publishManualeSa8000Snapshot(u, o, c);
+        case "dichiarazione_filiera":
+          return (u: string, o: string, c: string) => publishDichiarazioneFilieraSnapshot(u, o, c);
         default: {
           const mai: never = tipo;
           throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);

@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, HeartHandshake, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, HeartHandshake, Megaphone, Network, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000", "filiera"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -193,6 +193,20 @@ export const MODULI_AZIENDA = [
     area: "filiera",
     colore: AREE.filiera.colore,
     documenti: ["attestato"],
+    perEsercizio: false,
+  },
+  {
+    href: "filiera",
+    etichetta: "Filiera",
+    nome: "Due diligence di filiera",
+    norma: "Linee guida OCSE · CSDDD",
+    icona: Network,
+    // ⚠️ Stessa area dell'Autovalutazione fornitore, e guarda dalla parte OPPOSTA: la'
+    // il cliente valuta se' stesso per rispondere a un committente, qui valuta i propri
+    // fornitori. Sono le due estremita' dello stesso rapporto, e stanno insieme.
+    area: "filiera",
+    colore: AREE.filiera.colore,
+    documenti: ["dichiarazione_filiera"],
     perEsercizio: false,
   },
   {

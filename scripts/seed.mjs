@@ -40,6 +40,8 @@ const SA_SET = "sa8000-v1";
 const said = (key) => `${SA_SET}:${key}`;
 const QAS_SET = "sgiqas-v1";
 const qid = (key) => `${QAS_SET}:${key}`;
+const FIL_SET = "filiera-v1";
+const fid = (key) => `${FIL_SET}:${key}`;
 const WB_SET = "wb-v1";
 const wid = (key) => `${WB_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
@@ -396,6 +398,41 @@ try {
         testo = excluded.testo, procedure = excluded.procedure, ordine = excluded.ordine`;
   }
 
+  // --- Due diligence di filiera (OCSE · CSDDD) ---
+  //
+  // ⚠️ Le quattro dimensioni, le sette aree e i cinque fattori aggravanti NON stanno nel
+  // blob del corpus: sono `const` nel sorgente del prototipo. Si estraggono da lì —
+  // riscriverli a mano significherebbe che la prossima versione del prototipo li
+  // aggiorna e il prodotto no, in silenzio.
+  for (const [i, d] of load("filiera-dim.json").entries()) {
+    await sql`
+      insert into chain_dimension (id, set_id, key, nome, descrizione, scala, ordine)
+      values (${fid(`dim:${d.k}`)}, ${FIL_SET}, ${d.k}, ${d.l}, ${d.d}, ${d.s}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione,
+        scala = excluded.scala, ordine = excluded.ordine`;
+  }
+
+  for (const [i, a] of load("filiera-aree.json").entries()) {
+    await sql`
+      insert into chain_area (id, set_id, key, nome, ordine)
+      values (${fid(`area:${a.k}`)}, ${FIL_SET}, ${a.k}, ${a.l}, ${i})
+      on conflict (id) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const [i, f] of load("filiera-flags.json").entries()) {
+    await sql`
+      insert into chain_flag_def (id, set_id, key, nome, ordine)
+      values (${fid(`flag:${f.k}`)}, ${FIL_SET}, ${f.k}, ${f.l}, ${i})
+      on conflict (id) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const [i, f] of load("filiera-fasi.json").entries()) {
+    await sql`
+      insert into chain_phase (id, set_id, key, nome, descrizione, ordine)
+      values (${fid(`fase:${f.id}`)}, ${FIL_SET}, ${f.id}, ${f.n}, ${f.d}, ${i})
+      on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione, ordine = excluded.ordine`;
+  }
+
   // --- Sistema di gestione integrato QAS (ISO 9001 · 14001 · 45001) ---
   //
   // ⚠️ `norme` diventa un ARRAY. Nel prototipo e' la stringa concatenata `nrm: "QAS"`,
@@ -482,6 +519,7 @@ try {
     "wb_chapter", "wb_requirement",
     "qas_norm", "qas_chapter", "qas_requirement", "qas_indicator_default",
     "sa_section", "sa_group", "sa_criterion",
+    "chain_dimension", "chain_area", "chain_flag_def", "chain_phase",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

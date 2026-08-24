@@ -1,0 +1,6 @@
+[
+{"k":"rp","l":"Rischio paese","d":"Contesto normativo e sua applicazione effettiva, libertà sindacale, presenza di lavoro forzato o minorile, corruzione, conflitti.","s":["Contesto solido, applicazione effettiva della legge","Criticità circoscritte e documentate","Criticità diffuse o applicazione debole","Criticità sistemiche o assenza di tutela"]},
+{"k":"rs","l":"Rischio settore","d":"Intensità di manodopera, stagionalità, pericolosità delle lavorazioni, impatti ambientali tipici.","s":["Settore a bassa intensità di manodopera","Manodopera rilevante, rischi ordinari","Alta intensità di manodopera o lavorazioni pericolose","Settore notoriamente critico per diritti o ambiente"]},
+{"k":"rpr","l":"Rischio prodotto o materia prima","d":"Origine, tracciabilità, presenza di lavorazioni notoriamente critiche.","s":["Origine tracciata e verificabile","Tracciabilità parziale","Origine incerta o filiera frammentata","Materia prima associata a impatti gravi noti"]},
+{"k":"rm","l":"Rischio del modello di approvvigionamento","d":"Ricorso a intermediari, subappalto, manodopera somministrata o migrante, pressione su tempi e prezzi.","s":["Rapporto diretto, manodopera stabile","Ricorso limitato a terzi","Subappalto o somministrazione strutturali","Intermediazione opaca o reclutamento di migranti"]}
+]

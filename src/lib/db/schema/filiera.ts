@@ -102,8 +102,18 @@ export const chainProgram = pgTable(
     /** Chi risponde della due diligence, e l'organo a cui riferisce. */
     responsabile: text("responsabile"),
     organo: text("organo"),
+    /**
+     * L'alta direzione.
+     *
+     * ⚠️ Non è `organo`, e la distinzione la chiede il corpus: il segnaposto
+     * `[Alta Direzione]` firma le procedure — è chi le adotta — mentre l'organo è chi
+     * riceve la relazione. Nella governance italiana l'amministratore delegato e il
+     * consiglio sono spesso due cose diverse, e far firmare le procedure al consiglio
+     * sarebbe un documento sbagliato.
+     */
+    direzione: text("direzione"),
     /** Il canale di reclamo che la CSDDD pretende accessibile lungo la filiera. */
-    reclamiCanale: text("reclamiCanale"),
+    reclamiCanale: text("reclami_canale"),
     politica: text("politica"),
     perimetro: text("perimetro"),
     esclusioni: text("esclusioni"),

@@ -174,7 +174,7 @@ export function DialogoAcquisto({
             <span className="min-w-0">
               <span className="block text-sm font-medium">Documenti col marchio del tuo studio</span>
               <span className="block text-[12.5px] leading-relaxed text-muted-foreground">
-                I cinque documenti escono col tuo nome · {euro(pMarchio.importo)} l&apos;anno
+                I documenti escono col tuo nome · {euro(pMarchio.importo)} l&apos;anno
               </span>
             </span>
             <span
