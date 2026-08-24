@@ -1,0 +1,93 @@
+{
+  "generatoIl": "2026-08-24",
+  "soglieInerente": [
+    1.8,
+    2.6,
+    3.4
+  ],
+  "areeCritiche": [
+    "min",
+    "forz",
+    "hs"
+  ],
+  "frequenze": {
+    "Critico": 12,
+    "Alto": 24,
+    "Medio": 36,
+    "Basso": 48
+  },
+  "casi": [
+    {
+      "nome": "SOLO governance, nessuna area critica",
+      "inerente": 3,
+      "categoria": "Alta",
+      "maturita": 4,
+      "residuo": "Medio",
+      "mesiVerifica": 36
+    },
+    {
+      "nome": "solo governance a 1",
+      "inerente": 3,
+      "categoria": "Alta",
+      "maturita": 1,
+      "residuo": "Critico",
+      "mesiVerifica": 12
+    },
+    {
+      "nome": "governance alta, una critica bassa",
+      "inerente": 3,
+      "categoria": "Alta",
+      "maturita": 1.9,
+      "residuo": "Alto",
+      "mesiVerifica": 24
+    },
+    {
+      "nome": "tutte le aree a 4",
+      "inerente": 3,
+      "categoria": "Alta",
+      "maturita": 4,
+      "residuo": "Medio",
+      "mesiVerifica": 36
+    },
+    {
+      "nome": "nessuna area valutata",
+      "inerente": 3,
+      "categoria": "Alta",
+      "maturita": 0,
+      "residuo": "Critico",
+      "mesiVerifica": 12
+    },
+    {
+      "nome": "inerente basso senza flag",
+      "inerente": 1,
+      "categoria": "Bassa",
+      "maturita": 3,
+      "residuo": "Basso",
+      "mesiVerifica": 48
+    },
+    {
+      "nome": "inerente basso CON flag",
+      "inerente": 1,
+      "categoria": "Alta",
+      "maturita": 3,
+      "residuo": "Alto",
+      "mesiVerifica": 24
+    },
+    {
+      "nome": "inerente critico",
+      "inerente": 4,
+      "categoria": "Critica",
+      "maturita": 4,
+      "residuo": "Alto",
+      "mesiVerifica": 24
+    },
+    {
+      "nome": "niente di niente",
+      "inerente": 0,
+      "categoria": "",
+      "maturita": 0,
+      "residuo": "",
+      "mesiVerifica": null
+    }
+  ]
+}

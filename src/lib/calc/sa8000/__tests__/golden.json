@@ -1,0 +1,64 @@
+{
+  "generatoIl": "2026-08-24",
+  "pesi": {
+    "anagrafica": 0.15,
+    "procedure": 0.3,
+    "moduli": 0.15,
+    "criteri": 0.25,
+    "registri": 0.15
+  },
+  "criteri": 112,
+  "perSezione": {
+    "F": 5,
+    "M": 42,
+    "D": 65
+  },
+  "gruppi": 18,
+  "sezioni": {
+    "F": "Criteri fondazionali",
+    "M": "Sistema di gestione e due diligence",
+    "D": "Criteri di prestazione per il lavoro dignitoso"
+  },
+  "gruppiOrfani": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "criteriOrfani": 5,
+  "punteggi": [
+    {
+      "nome": "tutto a zero",
+      "valore": 0
+    },
+    {
+      "nome": "tutto al cento",
+      "valore": 100
+    },
+    {
+      "nome": "solo anagrafica",
+      "valore": 15
+    },
+    {
+      "nome": "solo procedure",
+      "valore": 30
+    },
+    {
+      "nome": "solo moduli",
+      "valore": 15
+    },
+    {
+      "nome": "solo criteri",
+      "valore": 25
+    },
+    {
+      "nome": "solo registri",
+      "valore": 15
+    },
+    {
+      "nome": "meta ovunque",
+      "valore": 50
+    }
+  ]
+}
