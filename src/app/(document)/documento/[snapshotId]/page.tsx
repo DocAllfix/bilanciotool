@@ -11,6 +11,7 @@ import { DocumentoSoa } from "@/components/documento/documento-soa";
 import { DocumentoRelazionePc } from "@/components/documento/documento-relazione-pc";
 import { DocumentoMatricePc } from "@/components/documento/documento-matrice-pc";
 import { DocumentoMatrice231 } from "@/components/documento/documento-matrice-231";
+import { DocumentoManualeSa8000 } from "@/components/documento/documento-manuale-sa8000";
 import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qas";
 import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
@@ -56,6 +57,8 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         return <DocumentoRelazioneWb dati={dati} />;
       case "riesame_qas":
         return <DocumentoRiesameQas dati={dati} />;
+      case "manuale_sa8000":
+        return <DocumentoManualeSa8000 dati={dati} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

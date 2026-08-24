@@ -347,6 +347,47 @@ export const TOURS: TourDef[] = [
       },
     ],
   },
+  {
+    pageId: "sa8000",
+    pathPattern: /^\/aziende\/[^/]+\/sa8000/,
+    steps: [
+      {
+        title: "Responsabilita' sociale, SA8000/2026",
+        description:
+          "Lo standard porta l'anno perche' le norme si datano: un sistema costruito sull'edizione precedente non e' lo stesso sistema. Qui stanno 112 criteri, 22 procedure e 104 moduli gia' scritti.",
+      },
+      {
+        element: '[data-tour="sa-vista-quadro"]',
+        title: "Un numero, cinque voci",
+        description:
+          "Il completamento e' una media PESATA: anagrafica 15, procedure 30, modulistica 15, criteri 25, registri 15. La pagina lo scompone invece di mostrarlo e basta — un consulente che vede «54%» senza sapere da dove viene non sa dove intervenire.",
+      },
+      {
+        element: '[data-tour="sa-vista-anagrafica"]',
+        title: "L'anagrafica riempie le procedure",
+        description:
+          "Non e' una scheda burocratica: i suoi campi sono i segnaposto che compaiono dentro le 22 procedure. Il contratto collettivo qui scritto e' il riferimento di ogni criterio su orario e retribuzione.",
+      },
+      {
+        element: '[data-tour="sa-vista-criteri"]',
+        title: "I 112 criteri",
+        description:
+          "«Parziale» pesa ZERO, non meta': un criterio sociale attuato a meta' non protegge a meta' un lavoratore. «Non applicabile» esce invece dal conto, perche' e' una valutazione e non un'omissione.",
+      },
+      {
+        element: '[data-tour="sa-vista-procedure"]',
+        title: "Il corpus, che si personalizza",
+        description:
+          "Le procedure sono testo gia' scritto che si adotta e si mantiene: si approva, si revisiona, si riscrive un blocco per volta. La modifica resta dentro il prodotto, cosi' il sistema che vedete e' quello che l'azienda usa davvero.",
+      },
+      {
+        element: '[data-tour="sa-vista-documenti"]',
+        title: "Il Manuale del sistema",
+        description:
+          "E' cio' che si esibisce in audit di certificazione, e riporta anche i criteri NON attuati. Un rilievo trovato dall'ente pesa piu' di uno dichiarato.",
+      },
+    ],
+  },
 ];
 
 export const findTourForPath = (path: string): TourDef | null =>

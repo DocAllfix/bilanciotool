@@ -23,6 +23,7 @@ import { getAnticorruzione } from "@/features/anticorruzione/queries";
 import { getMog231 } from "@/features/mog231/queries";
 import { getSegnalazioni } from "@/features/segnalazioni/queries";
 import { getSgiQas } from "@/features/sgiqas/queries";
+import { getSa8000 } from "@/features/sa8000/queries";
 import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
 import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
@@ -682,6 +683,60 @@ export async function publishRiesameQasSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "riesame_qas", SENZA_ESERCIZIO, dati);
+}
+
+/**
+ * Il Manuale del sistema SA8000/2026.
+ *
+ * ⚠️ E' cio' che si esibisce in audit di certificazione, e riporta i criteri NON attuati
+ * insieme a quelli attuati. Un manuale che elencasse solo cio' che funziona sarebbe
+ * inutile all'auditor, che entra proprio per cercare il resto — e dannoso all'azienda,
+ * perche' un rilievo trovato dall'ente vale piu' di uno dichiarato.
+ */
+export async function publishManualeSa8000Snapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSa8000(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema SA8000 da pubblicare per questa azienda");
+
+  const stato = new Map(d.stati.map((s) => [s.criterionKey, s]));
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    sistema: d.sistema,
+    sezioni: d.perSezione.map((s) => ({
+      key: s.sezione.key,
+      nome: s.sezione.nome,
+      criteri: s.criteri,
+      valutati: s.valutati,
+      percentuale: s.percentuale,
+    })),
+    gruppi: d.perGruppo.map((g) => ({
+      key: g.gruppo.key,
+      sezione: g.gruppo.sectionKey,
+      nome: g.gruppo.nome,
+      criteri: g.criteri,
+      valutati: g.valutati,
+      percentuale: g.percentuale,
+    })),
+    criteri: d.criteri.map((c) => ({
+      key: c.key,
+      sezione: c.sectionKey,
+      gruppo: c.groupKey,
+      testo: c.testo,
+      procedure: c.procedure,
+      stato: stato.get(c.key)?.stato ?? null,
+      evidenza: stato.get(c.key)?.evidenza ?? null,
+    })),
+    completamento: d.completamento,
+    dettaglio: d.dettaglio,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, "manuale_sa8000", SENZA_ESERCIZIO, dati);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

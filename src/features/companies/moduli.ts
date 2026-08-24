@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, HeartHandshake, Megaphone, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas"] as const;
+export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -167,6 +167,22 @@ export const MODULI_AZIENDA = [
     colore: AREE.sostenibilita.colore,
     documenti: ["bilancio"],
     perEsercizio: true,
+  },
+  {
+    href: "sa8000",
+    etichetta: "SA8000/2026",
+    nome: "Sistema di gestione SA8000/2026",
+    // ⚠️ L'anno fa parte del nome, ed e' una richiesta esplicita del committente: le
+    // norme si datano perche' si superano, e un sistema costruito sull'edizione
+    // precedente non e' lo stesso sistema.
+    norma: "SA8000:2026",
+    icona: HeartHandshake,
+    // Stessa area del Bilancio: e' rendicontazione sociale, non un sistema certificabile
+    // di processo. E' la partizione confermata dal committente.
+    area: "sostenibilita",
+    colore: AREE.sostenibilita.colore,
+    documenti: ["manuale_sa8000"],
+    perEsercizio: false,
   },
   {
     href: "fornitore",

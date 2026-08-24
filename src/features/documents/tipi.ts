@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -119,6 +119,15 @@ export const DOCUMENTI = {
     nome: "Relazione dell'Organismo di Vigilanza",
     breve: "Relazione OdV",
     file: "relazione-odv",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  manuale_sa8000: {
+    nome: "Manuale del sistema SA8000/2026",
+    breve: "Manuale SA8000",
+    file: "manuale-sa8000-2026",
+    // E' cio' che si esibisce in audit di certificazione: una fotografia che si
+    // revisiona, non un esercizio annuale.
     mostraAnno: false,
     haMedia: false,
   },

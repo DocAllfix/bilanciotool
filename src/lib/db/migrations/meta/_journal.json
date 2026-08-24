@@ -253,6 +253,20 @@
       "when": 1787559739746,
       "tag": "0035_sa8000_rls_domini",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1787559739747,
+      "tag": "0036_documento_sa8000",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1787561988267,
+      "tag": "0037_sa8000_sito",
+      "breakpoints": true
     }
   ]
 }

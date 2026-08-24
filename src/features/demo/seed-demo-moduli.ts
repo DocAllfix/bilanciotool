@@ -10,6 +10,7 @@ import {
   mogModel, mogProcess, mogScenario, mogCrimeApplicability, mogRequirement, mogRequirementState,
   wbSystem, wbChannel, wbReport, wbRequirement, wbRequirementState,
   qasSystem, qasIndicator, qasIndicatorDefault, qasMeasurement, qasRequirement, qasRequirementState,
+  saSystem, saCriterion, saCriterionState,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
@@ -18,6 +19,7 @@ import { latestAnticorruzioneSetId } from "@/features/anticorruzione/sistema";
 import { latestMog231SetId } from "@/features/mog231/modello";
 import { latestWbSetId } from "@/features/segnalazioni/sistema";
 import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
+import { latestSa8000SetId } from "@/features/sa8000/sistema";
 import type { withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
@@ -717,9 +719,51 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
     }
   }
   await tx.insert(qasMeasurement).values(rilevazioni);
+
+  // ─── Sistema di gestione SA8000/2026 ───────────────────────────────────────
+  //
+  // ⚠️ Quadro voluto: anagrafica quasi completa, criteri a due terzi, con QUATTRO
+  // criteri dichiarati NON attuati. Un manuale in cui tutto e' a posto non insegna
+  // niente a chi guarda la demo, e in audit non esiste.
+  const saSet = await latestSa8000SetId();
+  const sistemaSaId = randomUUID();
+  await tx.insert(saSystem).values({
+    id: sistemaSaId, organizationId: orgId, companyId, contentSetId: saSet,
+    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
+    addetti: "48",
+    ccnl: "CCNL Metalmeccanica Industria — Federmeccanica/Assistal",
+    respSa: "Sig. Antonio Curci, rappresentante SA8000 dei lavoratori, eletto il 12 marzo 2025",
+    direzione: "Ing. Marco Loprete, rappresentante della direzione",
+    reclamiEmail: "responsabilita.sociale@meccanicaadriatica.example",
+    sitoWeb: "https://www.meccanicaadriatica.example/responsabilita-sociale",
+    scopo:
+      "Progettazione, produzione, vendita e assistenza di componenti meccanici di precisione. Stabilimento di Bari.",
+    siti: "Bari, via delle Officine 12 (produzione) · Modugno (deposito)",
+    dataAdozione: "2026-02-10", revisione: "1.0",
+  });
+
+  const critSa = await db
+    .select({ key: saCriterion.key })
+    .from(saCriterion)
+    .where(eq(saCriterion.setId, saSet))
+    .orderBy(asc(saCriterion.ordine));
+  // Uno su tre resta senza stato: pesa zero e compare fra le lacune, come in audit.
+  const STATI_SA = ["ok", "ok", "ok", "parziale", "ok", "no"] as const;
+  await tx.insert(saCriterionState).values(
+    critSa
+      .filter((_, i) => i % 3 !== 2)
+      .map((c, i) => ({
+        id: randomUUID(), organizationId: orgId, systemId: sistemaSaId,
+        criterionKey: c.key,
+        stato: STATI_SA[i % STATI_SA.length],
+        evidenza: i % 7 === 0 ? RIFERIMENTI[i % RIFERIMENTI.length] : null,
+      })),
+  );
 }
 
 const testoATiptap = (testo: string) => ({
   type: "doc",
   content: testo.split(/\n\n/).map((p) => ({ type: "paragraph", content: [{ type: "text", text: p }] })),
+
 });

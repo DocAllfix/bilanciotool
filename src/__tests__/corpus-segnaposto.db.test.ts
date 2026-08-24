@@ -6,7 +6,8 @@ import { anagraficaCorpus } from "@/features/segnalazioni/anagrafica-corpus";
 import { anagraficaCorpus231 } from "@/features/mog231/anagrafica-corpus";
 import { anagraficaCorpusPc } from "@/features/anticorruzione/anagrafica-corpus";
 import { anagraficaCorpusQas } from "@/features/sgiqas/anagrafica-corpus";
-import type { briberySystem, mogModel, qasSystem, wbSystem } from "@/lib/db/schema";
+import { anagraficaCorpusSa } from "@/features/sa8000/anagrafica-corpus";
+import type { briberySystem, mogModel, qasSystem, saSystem, wbSystem } from "@/lib/db/schema";
 
 // I segnaposto del corpus trovano davvero il loro dato?
 //
@@ -56,6 +57,12 @@ const MODULI = [
     set: "sgiqas-v1",
     file: "src/features/sgiqas/anagrafica-corpus.ts",
     coperti: () => Object.keys(anagraficaCorpusQas({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", direzione: "x", rspp: "x", rls: "x", responsabileSistema: "x" } as unknown as typeof qasSystem.$inferSelect)),
+  },
+  {
+    nome: "SA8000/2026",
+    set: "sa8000-v1",
+    file: "src/features/sa8000/anagrafica-corpus.ts",
+    coperti: () => Object.keys(anagraficaCorpusSa({ ragione: "x", forma: "x", piva: "x", sede: "x", settore: "x", addetti: "x", ccnl: "x", respSa: "x", direzione: "x", reclamiEmail: "x", sitoWeb: "x" } as unknown as typeof saSystem.$inferSelect)),
   },
 ] as const;
 

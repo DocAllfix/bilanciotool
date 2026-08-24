@@ -104,6 +104,8 @@ export const saSystem = pgTable(
     direzione: text("direzione"),
     /** Il canale di reclamo, che lo Standard pretende raggiungibile. */
     reclamiEmail: text("reclami_email"),
+    /** Il sito dove la politica e' pubblicata: lo Standard chiede che sia accessibile. */
+    sitoWeb: text("sito_web"),
     scopo: text("scopo"),
     siti: text("siti"),
     dataAdozione: text("data_adozione"),

@@ -79,6 +79,10 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "sgiqas.indicatori.base": "Indicatori di partenza caricati",
   "sgiqas.rilevazione.set": "Rilevazione registrata",
   "sgiqas.rilevazione.delete": "Rilevazione eliminata",
+  // SA8000/2026.
+  "sa8000.sistema.create": "Sistema SA8000 avviato",
+  "sa8000.profilo.set": "Anagrafica SA8000 aggiornata",
+  "sa8000.criterio.set": "Criterio SA8000 valutato",
   "corpus.blocco.personalizza": "Testo del documento personalizzato",
   "corpus.blocco.ripristina": "Testo del documento ripristinato",
   "corpus.registro.aggiungi": "Registrazione inserita",
@@ -158,6 +162,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.relazione_odv.publish": "Relazione dell'OdV pubblicata",
   "documento.relazione_wb.publish": "Relazione sulle segnalazioni pubblicata",
   "documento.riesame_qas.publish": "Riesame di direzione pubblicato",
+  "documento.manuale_sa8000.publish": "Manuale SA8000 pubblicato",
   "condivisione.create": "Collegamento per il cliente generato",
   "condivisione.revoke": "Collegamento per il cliente disattivato",
   "documento.soa.pdf": "Dichiarazione scaricata in PDF",
@@ -167,6 +172,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.relazione_odv.pdf": "Relazione dell'OdV scaricata in PDF",
   "documento.relazione_wb.pdf": "Relazione sulle segnalazioni scaricata in PDF",
   "documento.riesame_qas.pdf": "Riesame di direzione scaricato in PDF",
+  "documento.manuale_sa8000.pdf": "Manuale SA8000 scaricato in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };
