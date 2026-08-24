@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { eliminaFascicoloAction, setCampoFascicoloAction } from "@/features/segnalazioni/actions";
 import {
   AMBITI,
@@ -103,7 +103,23 @@ export function VistaFascicolo({
         >
           <ArrowLeft className="size-4" /> Registro
         </Link>
-        <Eliminazione companyId={companyId} fascicoloId={f.id} numero={f.numero} onFatto={() => router.push(`/aziende/${companyId}/segnalazioni?vista=registro`)} />
+        <div className="flex items-center gap-2">
+          {/* ⚠️ Il fascicolo si STAMPA, non si pubblica. Non e' un tipo di documento e non
+              deve diventarlo: il collegamento del portale cliente e' per azienda e non
+              per documento, e un tipo nuovo comparirebbe dentro i collegamenti gia'
+              consegnati senza che nessuno prema niente. La stampa e' dietro sessione,
+              non si archivia, e registra l'accesso come ogni consultazione. */}
+          <a
+            href={`/api/fascicolo/${companyId}/${f.id}/pdf`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[13px] font-medium transition-colors hover:bg-accent"
+            data-tour="wb-stampa-fascicolo"
+          >
+            <Download className="size-4" /> Stampa il fascicolo
+          </a>
+          <Eliminazione companyId={companyId} fascicoloId={f.id} numero={f.numero} onFatto={() => router.push(`/aziende/${companyId}/segnalazioni?vista=registro`)} />
+        </div>
       </div>
 
       <div>

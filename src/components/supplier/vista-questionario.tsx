@@ -28,7 +28,7 @@ const COLORE_SCELTA: Record<string, string> = {
   na: "bg-muted text-muted-foreground border-border",
 };
 
-export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: PropsVista) {
+export function VistaQuestionario({ companyId, valutazione, catalogo, stato, suggerimenti = [] }: PropsVista) {
   const router = useRouter();
   const [errore, setErrore] = useState<string | null>(null);
   const [inCorso, setInCorso] = useState(false);
@@ -127,6 +127,32 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato }: P
                         <p className="mt-1 text-xs text-muted-foreground">
                           {q.riferimento} · evidenza attesa: {q.evidenzaAttesa} · peso {q.peso}
                         </p>
+                        {/* ⚠️ Il suggerimento si PROPONE, non si applica. Viene dal
+                            programma di due diligence della stessa azienda: sono dati
+                            che lo studio ha già scritto, quindi non c'è nessun confine
+                            da attraversare e nessun consenso da chiedere. Ma una
+                            risposta comparsa da sola in un'autovalutazione che qualcuno
+                            firma è una risposta che nessuno ha dato — e infatti si
+                            mostra col MOTIVO accanto, perché non si accetti a scatola
+                            chiusa. */}
+                        {(() => {
+                          const sug = suggerimenti.find((x) => x.chiave === q.key);
+                          if (!sug || risposte[q.key]) return null;
+                          return (
+                            <p className="mt-1.5 flex flex-wrap items-center gap-2 text-xs" data-slot="suggerimento">
+                              <span className="text-muted-foreground">Dalla due diligence di filiera:</span>
+                              <button
+                                type="button"
+                                onClick={() => rispondi(q.key, sug.risposta)}
+                                aria-label={`${q.key}: accetta il suggerimento ${ETICHETTA_RISPOSTA[sug.risposta]}`}
+                                className="rounded-md border border-dashed px-2 py-0.5 font-medium transition-colors hover:bg-accent"
+                              >
+                                {ETICHETTA_RISPOSTA[sug.risposta]}
+                              </button>
+                              <span className="text-muted-foreground">{sug.motivo}</span>
+                            </p>
+                          );
+                        })()}
                       </div>
                       <div className="flex shrink-0 gap-1" role="group" aria-label={`Risposta a ${q.key}`}>
                         {OPZIONI.map((o) => {

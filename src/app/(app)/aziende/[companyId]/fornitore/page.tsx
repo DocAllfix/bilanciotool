@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
 import { getSupplierData } from "@/features/supplier/queries";
+import { suggerimentiDaFiliera } from "@/features/supplier/ponte-filiera";
 import { SupplierShell } from "@/components/supplier/supplier-shell";
 import { CreaValutazione } from "@/components/supplier/crea-valutazione";
 
@@ -19,7 +20,14 @@ export default async function FornitorePage({
   const { vista } = await searchParams;
 
   const s = await requireConsultant();
-  const dati = await getSupplierData(s.userId, s.orgId, companyId);
+  // ⚠️ Il ponte leggero con la Due diligence di filiera: proposte, non risposte. Sta
+  // dentro un solo tenant — sono dati che questo studio ha gia' scritto per questa
+  // azienda — quindi non c'e' nessun consenso da chiedere. Vuoto se il modulo filiera non
+  // e' avviato. Vedi `features/supplier/ponte-filiera.ts`.
+  const [dati, suggerimenti] = await Promise.all([
+    getSupplierData(s.userId, s.orgId, companyId),
+    suggerimentiDaFiliera(s.userId, s.orgId, companyId),
+  ]);
   if (!dati) notFound();
 
   if (!dati.valutazione || !dati.catalogo || !dati.stato || !dati.esito) {
@@ -36,6 +44,7 @@ export default async function FornitorePage({
 
   return (
     <SupplierShell
+      suggerimenti={suggerimenti}
       companyId={companyId}
       azienda={dati.azienda}
       valutazione={dati.valutazione}

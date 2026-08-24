@@ -79,6 +79,7 @@ export const partnerNuovoSchema = z.object({
 export const campoPartnerSchema = z.discriminatedUnion("campo", [
   z.object({ campo: z.literal("nome"), valore: z.string().trim().min(1).max(300) }),
   z.object({ campo: z.literal("codiceInterno"), valore: z.string().trim().max(120).nullable() }),
+  z.object({ campo: z.literal("piva"), valore: z.string().trim().max(60).nullable() }),
   z.object({ campo: z.literal("livello"), valore: z.enum(LIVELLI).nullable() }),
   z.object({ campo: z.literal("categoria"), valore: z.string().trim().max(300).nullable() }),
   z.object({ campo: z.literal("paese"), valore: z.string().trim().max(120).nullable() }),

@@ -156,6 +156,26 @@ export const chainPartner = pgTable(
     // Identificazione
     nome: text("nome").notNull(),
     codiceInterno: text("codice_interno"),
+    /**
+     * La partita IVA del partner.
+     *
+     * ⚠️ È qui PRIMA del ponte che la userà, ed è deliberato. Quando un partner è anche
+     * un cliente di EvalisDeck con la propria autovalutazione compilata, l'acquirente
+     * potrà riceverne i dati invece di ridigitarli — ma quel ponte paga solo quando
+     * ENTRAMBE le estremità sono clienti, e con la base attuale la probabilità è vicina
+     * a zero. Costruire adesso il flusso di consenso sarebbe una funzione senza utenti.
+     *
+     * La CHIAVE però va messa ora: senza, non esiste niente su cui agganciare le due
+     * sponde, e aggiungerla fra un anno significherebbe chiedere a ogni cliente di
+     * tornare sui partner già mappati. È l'unica parte del ponte che il tempo rende più
+     * cara.
+     *
+     * ⚠️ E quando il ponte si costruirà: la mappatura dell'autovalutazione del fornitore
+     * verso la maturità deve **saturare a 3** finché la verifica documentale non è
+     * compilata. Il 4 significa «documentato, applicato e verificato», e una
+     * dichiarazione del fornitore non è una verifica di chi la riceve.
+     */
+    piva: text("piva"),
     livello: text("livello"),
     categoria: text("categoria"),
     paese: text("paese"),

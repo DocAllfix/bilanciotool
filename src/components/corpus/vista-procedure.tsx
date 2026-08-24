@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Download } from "lucide-react";
 import type { StatoDocumento, VoceCorpus } from "@/features/corpus/letture";
 
 // L'elenco delle procedure o della modulistica di un modulo.
@@ -27,10 +28,14 @@ export function VistaProcedure({
   voci,
   tipo,
   href,
+  companyId,
+  contentSetId,
 }: {
   voci: readonly VoceCorpus[];
   tipo: "procedura" | "modulo";
   href: (code: string) => string;
+  companyId: string;
+  contentSetId: string;
 }) {
   if (!voci.length) {
     return (
@@ -60,6 +65,36 @@ export function VistaProcedure({
         {tipo === "procedura" ? "e" : "i"}. Il testo è comune a tutti gli studi e si personalizza blocco per
         blocco: le modifiche valgono solo per questa azienda.
       </p>
+
+      {/* ⚠️ La stampa del fascicolo compare SOLO se il corpus ha davvero delle fasi,
+          cioe' se i gruppi sono piu' d'uno e portano un nome. Il Modello 231 le ha —
+          nove procedure «Parte generale» e nove «Parte speciale», ed e' la divisione con
+          cui si consegna un primo blocco al cliente — mentre altri corpus no. Inventare
+          fasi che il corpus non ha sarebbe peggio che non averle. */}
+      {tipo === "procedura" && gruppi.length > 1 && gruppi.every((g) => g.nome !== "—") && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border p-3" data-slot="stampa-fascicolo">
+          <span className="text-[13px] text-muted-foreground">Stampa un fascicolo intero:</span>
+          {gruppi.map((g) => (
+            <a
+              key={g.nome}
+              href={`/api/corpus/${companyId}/${encodeURIComponent(contentSetId)}/insieme/pdf?fase=${encodeURIComponent(g.nome)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[13px] font-medium transition-colors hover:bg-accent"
+            >
+              <Download className="size-3.5" /> {g.nome}
+            </a>
+          ))}
+          <a
+            href={`/api/corpus/${companyId}/${encodeURIComponent(contentSetId)}/insieme/pdf`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[13px] font-medium transition-colors hover:bg-accent"
+          >
+            <Download className="size-3.5" /> Tutte
+          </a>
+        </div>
+      )}
 
       {gruppi.map((g) => (
         <section key={g.nome} aria-label={g.nome}>

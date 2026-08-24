@@ -89,6 +89,8 @@ export function SezioneCorpus({
 
   return (
     <VistaProcedure
+      companyId={companyId}
+      contentSetId={contentSetId}
       voci={vista === "procedure" ? dati.procedure : dati.moduli}
       tipo={vista === "procedure" ? "procedura" : "modulo"}
       href={(code) => indirizzo({ doc: code })}

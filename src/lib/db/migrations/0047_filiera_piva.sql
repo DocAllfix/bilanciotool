@@ -1,0 +1,1 @@
+ALTER TABLE "chain_partner" ADD COLUMN "piva" text;

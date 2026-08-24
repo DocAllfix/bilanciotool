@@ -54,7 +54,7 @@ export type FascicoloTermini = {
  * controllo quello zero si legge come «nessuno era a rischio». Il compilatore non lo
  * vedeva perché `Partial<Record<...>>` accetta l'assenza di ogni chiave.
  */
-function fattoriRitorsione(f: FascicoloTermini) {
+export function fattoriRitorsione(f: FascicoloTermini) {
   return {
     identitaConoscibile: f.ritIdentitaConoscibile,
     sovraordinato: f.ritSovraordinato,

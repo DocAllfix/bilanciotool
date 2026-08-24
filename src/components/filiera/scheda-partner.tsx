@@ -265,6 +265,8 @@ export function SchedaPartner({
       <Gruppo titolo="Identificazione">
         <CampoTesto id={`fil-${p.id}-nome`} etichetta="Ragione sociale" valore={p.nome} salva={testo("nome")} />
         <CampoTesto id={`fil-${p.id}-cod`} etichetta="Codice interno" valore={p.codiceInterno} salva={testo("codiceInterno")} />
+        <CampoTesto id={`fil-${p.id}-piva`} etichetta="Partita IVA" valore={p.piva} salva={testo("piva")}
+          aiuto="E' la chiave con cui, quando il fornitore usa a sua volta EvalisDeck, si potranno ricevere i suoi dati invece di ridigitarli" />
         <CampoScelta id={`fil-${p.id}-liv`} etichetta="Livello nella filiera" valore={p.livello} opzioni={LIVELLI} salva={testo("livello")} />
         <CampoTesto id={`fil-${p.id}-cat`} etichetta="Categoria merceologica" valore={p.categoria} salva={testo("categoria")} />
         <CampoTesto id={`fil-${p.id}-paese`} etichetta="Paese del sito produttivo" valore={p.paese} salva={testo("paese")} />

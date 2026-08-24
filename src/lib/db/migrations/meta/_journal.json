@@ -330,6 +330,13 @@
       "when": 1787596218555,
       "tag": "0046_documenti_qas",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1787603348097,
+      "tag": "0047_filiera_piva",
+      "breakpoints": true
     }
   ]
 }

@@ -34,8 +34,10 @@ export function SupplierShell(props: {
   stato: StatoSupplier;
   esito: EsitoSupplier;
   vistaIniziale: string;
+  /** Le proposte dal programma di due diligence di filiera della stessa azienda. */
+  suggerimenti?: { chiave: string; risposta: "si" | "parziale" | "no"; motivo: string }[];
 }) {
-  const { companyId, azienda, valutazione, catalogo, stato, esito } = props;
+  const { companyId, azienda, valutazione, catalogo, stato, esito, suggerimenti } = props;
   const router = useRouter();
   const vista = VISTE.some((v) => v.k === props.vistaIniziale) ? props.vistaIniziale : "quadro";
   const vai = (v: string) => router.replace(`/aziende/${companyId}/fornitore?vista=${v}`, { scroll: false });
@@ -103,7 +105,7 @@ export function SupplierShell(props: {
 
       <div className="mt-6">
         {vista === "quadro" && <VistaQuadro {...propsVista} vai={vai} />}
-        {vista === "questionario" && <VistaQuestionario {...propsVista} />}
+        {vista === "questionario" && <VistaQuestionario {...propsVista} suggerimenti={suggerimenti} />}
         {vista === "piano" && <VistaPiano {...propsVista} />}
         {vista === "documenti" && <VistaDocumenti {...propsVista} />}
         {vista === "anagrafica" && <VistaAnagrafica azienda={azienda} valutazione={valutazione} />}

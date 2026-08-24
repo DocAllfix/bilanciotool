@@ -21,6 +21,13 @@ export type PropsVista = {
   catalogo: CatalogoSupplier;
   stato: StatoSupplier;
   esito: EsitoSupplier;
+  /**
+   * Le proposte che vengono dal programma di due diligence della stessa azienda.
+   *
+   * ⚠️ Sono SUGGERIMENTI, non risposte: si mostrano solo dove la domanda è ancora
+   * vuota, e col motivo accanto. Vuoto quando il modulo filiera non è avviato.
+   */
+  suggerimenti?: { chiave: string; risposta: "si" | "parziale" | "no"; motivo: string }[];
 };
 
 export const ETICHETTA_RISPOSTA: Record<string, string> = {
