@@ -616,6 +616,59 @@ Gate delle tre fasi: typecheck · build · **970 test** · `qa -- mog231-percors
 2. **Colophon e pagina pubblica di verifica** (A17b + A18, decisi il 2026-08-21) non esistono: nessuna rotta di verifica, e il codice sta su **un solo** documento, l'attestato. Il piano ci mette una scadenza dura — **prima della prima pubblicazione in produzione**, perche' gli snapshot sono immutabili e un documento senza codice non potra' mai averlo. Non ancora violata solo perche' i tre moduli non sono in produzione.
 3. **I registri segnalazioni duplicati** in 231 (`MOD-06.02`) e ISO 37001 (`MOD-11.02`) sono ancora scrivibili. Toglierli dal corpus non si puo': e' versionato e **congelato alla creazione**, quindi i modelli gia' avviati non vedrebbero la versione nuova. La strada e' renderli di sola lettura quando il modulo Segnalazioni e' attivo, col rimando al fascicolo dove i termini si calcolano davvero.
 
+**Fasi G, H e I (2026-08-23/24) — SGI QAS, SA8000/2026, Due diligence di filiera. Undici moduli.**
+
+Il debito numero 1 della voce precedente è chiuso: il corpus ha la sua superficie
+(`src/features/corpus/letture.ts` e `sezione-corpus.tsx`, un punto di integrazione solo
+invece di tre viste per modulo). La guardia `corpus-segnaposto.db.test.ts` ha trovato
+**quattro** mappature mancanti su quattro moduli diversi, l'ultima delle quali era un
+campo che allo schema mancava davvero (il sito dove SA8000 chiede che la politica sia
+pubblicata).
+
+- **SGI QAS**: `norme` come `text[]` con indice GIN, e il **perimetro decide cosa conta** —
+  chi è certificato solo ISO 9001 vede 57 requisiti, non 107. Un indicatore senza target
+  NON è «a target»: nel prototipo `Number("") === 0` lo rendeva conforme, e il ramo soglia
+  era irraggiungibile.
+- **SA8000/2026**: 112 criteri, «parziale» pesa **zero** e non metà (divergenza voluta dal
+  QAS, e la ragione regge da sola). I cinque fondazionali stanno **insieme** sotto `F`: nel
+  prototipo `codice.split(".")[0]` su «F1» dava «F1», e finivano in cinque riquadri senza
+  titolo mentre `grp.F` era lì scritto per loro.
+- **Due diligence di filiera**: due assi ortogonali, e la correzione del difetto B2 — un
+  partner che aveva risposto a **una sola domanda di governance** otteneva maturità 4,0 e
+  rischio Basso, con verifica ogni 48 mesi invece di 12. Il silenzio sulle tre aree critiche
+  ora **limita** la maturità invece di premiarla.
+
+**Regole nate qui:**
+- **Un file che il seme legge e che nessuno rigenera è un catalogo che invecchia in
+  silenzio.** Tre file di SA8000 erano stati normalizzati a mano una volta sola:
+  rilanciare l'estrattore aggiornava i grezzi e il seme continuava a leggere la prima
+  versione. Nessun conteggio se ne sarebbe accorto — i numeri sarebbero rimasti giusti.
+- **L'ordine di un catalogo non è per forza l'ordine in cui si legge.** I gruppi SA8000
+  arrivano nell'ordine dell'oggetto del prototipo, che comincia da M, mentre sezioni e
+  criteri cominciano da F: chi apriva i criteri trovava aperto M1 sopra un elenco che parte
+  da F1. Trovato dal collaudo, non dai test.
+- **Il plurale italiano non si fa attaccando lettere in coda**: «3 areae criticahe non
+  valutatae». Si vede solo stampando il testo reso.
+- **`CampoScelta` non è un `<select>` nativo**: `selectOption` fallisce, si apre il
+  combobox e si sceglie l'opzione per nome accessibile.
+- **Una colonna in camelCase in uno schema snake_case si paga nei collaudi**, che
+  interrogano in SQL grezzo. Va corretta quando costa poco, cioè subito.
+- **L'itinerario di benvenuto è capato a UNA TAPPA PER AREA.** Undici moduli farebbero
+  dodici tappe, e chi si è appena registrato le chiude a metà — e chi chiude un tour dice
+  «basta spiegazioni», non «basta prodotto». Sei restano sei, e chi guarda impara che le
+  aree sono cinque, non che le pagine sono dodici.
+
+Gate: typecheck · build · `qa -- sa8000-percorso` 30/30 · `qa -- filiera-percorso` 34/34 ·
+`qa -- guida` 7/7 con tutti e undici i percorsi · PDF reali (237 KB e 241 KB) · console
+pulita. Ogni test nuovo messo in rosso di proposito rimettendo il difetto.
+
+⚠️ **Debiti ancora aperti** (i punti 2 e 3 della voce precedente restano):
+**colophon e pagina pubblica di verifica** — da fare **prima della prima pubblicazione in
+produzione**, perché gli snapshot sono immutabili — e i **due registri segnalazioni
+duplicati** in 231 e ISO 37001, da rendere di sola lettura quando il modulo Segnalazioni è
+attivo. In più: il **giro con i DevTools su ogni singolo comando** dei sei moduli nuovi,
+che il committente ha chiesto **per ultimo**, dopo che tutti i prototipi fossero portati.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

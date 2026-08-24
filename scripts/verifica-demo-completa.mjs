@@ -1,4 +1,4 @@
-// Collaudo dell'azienda dimostrativa: i cinque percorsi mostrano numeri veri.
+// Collaudo dell'azienda dimostrativa: TUTTI i percorsi mostrano numeri veri.
 //
 //   node scripts/verifica-demo-completa.mjs
 //
@@ -38,19 +38,30 @@ const page = await ctx.newPage();
 page.on("pageerror", (e) => errori.push(e.message));
 
 let az;
-await check("la registrazione crea l'azienda dimostrativa coi cinque percorsi", async () => {
+await check("la registrazione crea l'azienda dimostrativa con tutti i percorsi", async () => {
   const { orgId } = await registraEEntra(page, sql, { base: BASE, nome: "Chi Prova", email: EMAIL, pwd: PWD });
   const [c] = await sql`select id from company where organization_id = ${orgId} and is_demo = true`;
   if (!c) throw new Error("nessuna azienda dimostrativa");
   az = c.id;
-  const [[bal], [val], [dic]] = await Promise.all([
-    sql`select id from energy_balance where company_id = ${az}`,
-    sql`select id from supplier_assessment where company_id = ${az}`,
-    sql`select id from soa_declaration where company_id = ${az}`,
-  ]);
-  if (!bal) throw new Error("manca la diagnosi energetica");
-  if (!val) throw new Error("manca l'autovalutazione");
-  if (!dic) throw new Error("manca la Dichiarazione");
+  // ⚠️ Ogni radice si interroga per nome: un modulo nuovo che il seme dimenticasse
+  // resterebbe invisibile a un controllo che ne guarda solo tre.
+  const RADICI = [
+    ["energy_balance", "la diagnosi energetica"],
+    ["supplier_assessment", "l'autovalutazione ESG"],
+    ["soa_declaration", "la Dichiarazione di Applicabilità"],
+    ["bribery_system", "il sistema ISO 37001"],
+    ["mog_model", "il Modello 231"],
+    ["wb_system", "il sistema delle segnalazioni"],
+    ["qas_system", "il sistema integrato QAS"],
+    ["sa_system", "il sistema SA8000/2026"],
+    ["chain_program", "il programma di due diligence di filiera"],
+  ];
+  const mancanti = [];
+  for (const [tabella, nome] of RADICI) {
+    const r = await sql.unsafe(`select id from ${tabella} where company_id = $1`, [az]);
+    if (!r.length) mancanti.push(nome);
+  }
+  if (mancanti.length) throw new Error("la dimostrativa non ha: " + mancanti.join(", "));
 });
 
 await check("i consumi per vettore sono quelli dell'inventario GHG", async () => {
@@ -129,7 +140,7 @@ await check("il fascicolo dell'azienda mostra OGNI percorso, e nessuno da avviar
   await page.goto(`${BASE}/aziende/${az}`, { waitUntil: "networkidle" });
   const voci = page.locator("[data-percorsi] [data-modulo]");
   const quanti = await voci.count();
-  if (quanti < 5) throw new Error(`il fascicolo mostra ${quanti} percorsi, meno dei cinque che il prodotto ha`);
+  if (quanti < 11) throw new Error(`il fascicolo mostra ${quanti} percorsi, meno degli undici che il prodotto ha`);
   const fermi = [];
   for (let i = 0; i < quanti; i++) {
     const chiave = await voci.nth(i).getAttribute("data-modulo");
