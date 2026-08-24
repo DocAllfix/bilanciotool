@@ -777,6 +777,74 @@ uno con cinque moduli), il fascicolo in 4,6. La causa e' nota e sta nel piano: u
 moduli fanno tredici query in parallelo a ogni apertura (`stati-moduli.ts`). Non blocca
 niente e nessun collaudo ci sbatte piu', ma e' il prossimo debito da chiudere.
 
+**Prestazioni, corpus consegnabile, edizione visibile (2026-08-24)** — tre cose che il
+prodotto non faceva, e un blocco che mi sono creato da solo.
+
+**La dashboard non era lenta: si BLOCCAVA.** Scrivendo una query condivisa fra due
+letture ho aperto un `withTenant` dentro un altro. Una transazione dentro un'altra prende
+una **seconda connessione** dal pool; con cinque letture in parallelo il pool finiva e le
+esterne aspettavano le interne. L'accesso rispondeva 200 e la pagina non finiva mai di
+rendersi — e il giro guidato del benvenuto, che attende i propri bersagli con una
+scadenza, aveva smesso di arrivare all'offerta.
+
+`withTenant` ora **riusa** la transazione aperta nella stessa catena di chiamate: quel
+caso non esiste piu', e le sei transazioni della dashboard diventano una. Numeri
+misurati: **70 ms a viaggio**, **299 ms per transazione**, **1.843 ms** per le sei che
+c'erano. In piu' le tre GUC vanno in un'istruzione sola invece di tre viaggi, e le
+ventidue query sulle radici dei moduli — undici in `stati-moduli`, undici identiche in
+`scadenzario` — diventano **una** UNION ALL condivisa con `cache()` di React.
+
+**Il corpus si puo' consegnare** (decisione A10). 447 procedure e moduli si
+consultavano, si personalizzavano e non si potevano stampare: il grosso del valore
+restava dentro. **Non** si congelano in snapshot — il corpus e' vivo e lo snapshot e'
+immutabile, e sarebbero 447 documenti per azienda — si stampa cio' che c'e' adesso, col
+registro editoriale, e il PDF **non si archivia**: un PDF archiviato sarebbe la fotografia
+di ieri servita come quella di oggi.
+
+**L'edizione dei contenuti si vede** (anti-abuso, opzione 8). Il versionamento esisteva
+gia' e non lo mostrava nessuno. Ora si congela nello snapshot — parametro **obbligatorio**
+in `salvaSnapshot`, l'unico modo di costringere il quattordicesimo documento a dichiararla
+— si stampa nel colophon, e `/verifica` dice se e' stata **superata**, distinguendo le due
+cose: un documento resta autentico per sempre, i contenuti su cui e' stato redatto
+invecchiano. E i **Termini** dicono finalmente per quali aziende vale la licenza e che i
+documenti non si rivendono come modelli: senza, colophon e verifica erano deterrenza senza
+sanzione.
+
+**SGI QAS produceva un documento su tre**, e i due motori che dovevano alimentare gli
+altri due — significativita' degli aspetti, livello di rischio — erano **codice morto**:
+provati da tredici test e chiamati da nessuno.
+
+**Regole nate qui:**
+- **Una `withTenant` dentro un'altra `withTenant` esaurisce il pool.** Non e' lentezza,
+  e' un abbraccio mortale, e si presenta come «la pagina non finisce di caricare» con
+  tutte le risposte a 200.
+- **Dentro una transazione `Promise.all` non parallelizza niente**: una connessione esegue
+  una istruzione per volta. Undici query in `Promise.all` sono undici viaggi in fila.
+- **Il costo di una pagina si misura in VIAGGI, non in query.** Tre `set_config` separate
+  costavano piu' della lettura che proteggevano.
+- **Le opzioni di una scala sono scritte per esteso.** «1 · trascurabile», non «1»:
+  `Number()` restituisce `NaN`, e un parsing ingenuo avrebbe letto ogni aspetto come non
+  valutato — su un documento firmato dal datore di lavoro, «nessun aspetto significativo»
+  su un registro pieno.
+- **Un motore senza chiamanti non e' codice morto da togliere: e' una funzione che non e'
+  mai stata collegata.** La domanda non e' «qualcuno la chiama?», e' «chi la userebbe?».
+- **Una policy che accetta qualunque riga non si documenta, si toglie.** Il contatore
+  delle verifiche passa da una funzione `SECURITY DEFINER` che tocca una riga sola.
+- **Un difetto intermittente non si dichiara chiuso su una misura sola.** Il portafoglio
+  che non si aggiornava: 4 mancati su 8 col vecchio ordine, 0 su 6 con l'effetto.
+- **I collaudi funzionali non vedono la disposizione.** Undici caselle su cinque colonne
+  facevano 5+5+1 con l'ultima orfana, e tutti i controlli erano verdi.
+
+Gate: typecheck · build · `qa -- corpus-pdf` 11/11 · `qa -- documenti-qas` 18/18 ·
+`qa -- codice-documento` 22/22 · `qa -- sgiqas-percorso` 32/32 · `qa --
+portafoglio-aggiorna` 5/5 · gli undici percorsi verdi con console pulita.
+
+⚠️ **Resta aperto**: la dashboard risponde in ~3,3 s (era 4,1). Il grosso e' il numero di
+query dentro l'unica transazione, non piu' le transazioni. E tre decisioni del committente
+mai chiuse: **A9** (il fascicolo di una segnalazione e' pubblicabile?), **A11** (consegna
+della sola parte generale del 231), **A14** (il ponte filiera ↔ fornitore, ora che
+entrambe le sponde esistono).
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

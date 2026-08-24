@@ -275,6 +275,26 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0-quater. ✅ **CHIUSO il 24 agosto 2026 — il corpus si può consegnare.** Era il buco più
+   grosso dei moduli: 447 procedure e moduli si consultavano e si personalizzavano a
+   schermo, e non si potevano stampare. Il PDF **non si archivia**, al contrario dei
+   documenti pubblicati: quelli sono immutabili, il corpus è vivo, e un PDF archiviato
+   sarebbe la fotografia di ieri servita come quella di oggi.
+
+   → *verifica:* `npm run qa -- corpus-pdf` — 11 controlli, PDF reale, e la prova che i
+   segnaposto compilati spariscono mentre quelli in bianco restano **evidenziati** anche
+   in stampa. Nasconderli darebbe un documento che sembra completo e non lo è, e chi lo
+   firma non se ne accorgerebbe fino all'audit.
+
+0-quinquies. ✅ **CHIUSO il 24 agosto 2026 — SGI QAS produceva un documento su tre**, e i
+   due motori che dovevano alimentare gli altri due erano codice morto: provati da
+   tredici test, chiamati da nessuno.
+
+   → *verifica:* `npm run qa -- documenti-qas` — 18 controlli. Le due asserzioni che sono
+   il motivo per cui esiste: **un pericolo senza probabilità resta NON valutato e non
+   diventa «Basso»**, e **la prescrizione legale rende significativo un aspetto anche con
+   la scala in bianco**.
+
 0-bis. ✅ **CHIUSO il 24 agosto 2026 — colophon e pagina pubblica di verifica.** Era il
    debito con la scadenza più dura del piano («prima della prima pubblicazione in
    produzione»), e la scadenza si è sciolta da sola con la scelta di schema giusta: il
