@@ -26,6 +26,14 @@ export type DatiCorpus = {
   documento?: DocumentoCorpus | null;
   /** Presente solo quando l'indirizzo chiede un registro. */
   registro?: { registro: VoceRegistro; colonne: ColonnaRegistro[]; righe: RigaRegistro[] } | null;
+  /**
+   * I registri superati da un modulo piu' specifico, per `mod_code`.
+   *
+   * ⚠️ Oggi ce n'e' uno solo per modulo, ed e' il registro delle segnalazioni del 231 e
+   * della ISO 37001: quando il modulo Gestione delle segnalazioni e' attivo, quei due
+   * diventano di sola lettura col rimando al fascicolo. Vedi `registri-superati.ts`.
+   */
+  superati?: Record<string, { rotta: string; motivo: string }>;
 };
 
 export function SezioneCorpus({
@@ -61,10 +69,11 @@ export function SezioneCorpus({
           righe={dati.registro.righe}
           tornaA={elenco}
           calcolata={calcolata?.[dati.registro.registro.registerId]}
+          superato={dati.registro.registro.modCode ? dati.superati?.[dati.registro.registro.modCode] : undefined}
         />
       );
     }
-    return <VistaRegistri registri={dati.registri} href={(id) => indirizzo({ reg: id })} />;
+    return <VistaRegistri registri={dati.registri} href={(id) => indirizzo({ reg: id })} superati={dati.superati ?? {}} />;
   }
 
   if (dati.documento) {

@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
 import { getSnapshot, resolveSnapshotImages } from "@/features/documents/snapshot";
+import { Colophon } from "@/components/documento/colophon";
+import { codiceDelloSnapshot } from "@/features/documents/codice";
+import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOCUMENTI } from "@/features/documents/tipi";
 import { DocumentoGhg } from "@/components/documento/documento-ghg";
 import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
@@ -29,6 +32,11 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
   if (!snap) notFound();
 
   const dati = snap.dati as never;
+  const codice = await codiceDelloSnapshot(s.userId, s.orgId, snap.id);
+  const urlVerifica = `${(process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "")}/verifica`.replace(
+    /^https?:\/\//,
+    "",
+  );
   // Gli URL firmati si generano solo per i documenti che portano immagini nello snapshot.
   const imageUrls = DOCUMENTI[snap.tipo].haMedia
     ? await resolveSnapshotImages(s.orgId, snap.dati as never)
@@ -76,7 +84,21 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
   return (
     <div className="px-4 py-4">
       <DocToolbar snapshotId={snap.id} tipo={snap.tipo} anno={snap.anno} versione={snap.versione} />
-      <article className="doc-pagina">{corpo}</article>
+      <article className="doc-pagina">
+        {corpo}
+        {/* ⚠️ Il colophon si aggiunge QUI, una volta per tutti i documenti: e' la stessa
+            strozzatura del marchio congelato. Nei dodici template si dimenticherebbe nel
+            tredicesimo, e un documento senza codice non potra' mai averne uno. */}
+        <Colophon
+          codice={codice}
+          emittente={marchioDelloSnapshot(snap.dati as never).nome}
+          tipo={snap.tipo}
+          anno={snap.anno}
+          versione={snap.versione}
+          pubblicatoIl={snap.publishedAt.toISOString()}
+          urlVerifica={urlVerifica}
+        />
+      </article>
     </div>
   );
 }

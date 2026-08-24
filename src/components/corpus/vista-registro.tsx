@@ -34,6 +34,7 @@ export function VistaRegistro({
   tornaA,
   /** Colonna calcolata: la mostra il modulo, che sa come si calcola. */
   calcolata,
+  superato,
 }: {
   companyId: string;
   contentSetId: string;
@@ -44,6 +45,14 @@ export function VistaRegistro({
   righe: readonly RigaRegistro[];
   tornaA: string;
   calcolata?: { etichetta: string; valore: (dati: Record<string, unknown>) => string | null };
+  /**
+   * Il registro è superato da un modulo più specifico: sola lettura, col rimando.
+   *
+   * ⚠️ Il comando «Nuova registrazione» SPARISCE, non si limita a spegnersi. Un pulsante
+   * disabilitato dice «forse più tardi»; qui la risposta è «mai più, e si fa di là».
+   * Vedi `features/corpus/registri-superati.ts`.
+   */
+  superato?: { rotta: string; motivo: string };
 }) {
   const router = useRouter();
   const [apertaId, setApertaId] = useState<string | null>(null);
@@ -82,9 +91,19 @@ export function VistaRegistro({
         >
           <ArrowLeft className="size-4" /> Tutti i registri
         </Link>
-        <Button size="sm" onClick={aggiungi} disabled={inCorso} data-tour="corpus-nuova-riga">
-          <Plus className="size-4" /> {inCorso ? "Creazione…" : "Nuova registrazione"}
-        </Button>
+        {superato ? (
+          <Link
+            href={superato.rotta}
+            className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[13px] font-medium"
+            data-slot="vai-al-modulo"
+          >
+            Apri il modulo Gestione delle segnalazioni
+          </Link>
+        ) : (
+          <Button size="sm" onClick={aggiungi} disabled={inCorso} data-tour="corpus-nuova-riga">
+            <Plus className="size-4" /> {inCorso ? "Creazione…" : "Nuova registrazione"}
+          </Button>
+        )}
       </div>
 
       <div>
@@ -93,6 +112,19 @@ export function VistaRegistro({
           {[registro.descrizione, registro.modCode, registro.proCode].filter(Boolean).join(" · ")}
         </p>
       </div>
+
+      {superato && (
+        <div
+          className="rounded-xl border p-4"
+          style={{ borderColor: "var(--warning)" }}
+          data-slot="registro-superato"
+        >
+          <p className="text-[13px] font-medium" style={{ color: "var(--warning)" }}>
+            Questo registro è di sola lettura
+          </p>
+          <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{superato.motivo}</p>
+        </div>
+      )}
 
       {errore && (
         <p className="text-[13px] text-destructive" role="alert">

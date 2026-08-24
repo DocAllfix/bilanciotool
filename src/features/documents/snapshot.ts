@@ -5,6 +5,7 @@ import {
   kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
   orgEntitlement, reportProject, user,
 } from "@/lib/db/schema";
+import { assegnaCodice } from "./codice";
 import { marchioDaCongelare } from "./marchio";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -822,6 +823,16 @@ async function salvaSnapshot(
   // Il marchio si aggiunge QUI, nella strozzatura comune ai cinque documenti: metterlo
   // in ciascuna funzione di pubblicazione significherebbe dimenticarlo nella sesta.
   const marchio = await marchioCorrente(orgId);
+  // Il nome dell'azienda com'e' oggi: nel codice di verifica si congela, perche' chi
+  // riceve il PDF deve poter confermare cio' che il PDF dice, non cio' che il database
+  // dice fra due anni.
+  const [az] = await withTenant({ userId, orgId }, (tx) =>
+    tx
+      .select({ nome: company.nome })
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId))),
+  );
+
   await withTenant({ userId, orgId }, async (tx) => {
     await tx.insert(documentSnapshot).values({
       id,
@@ -832,6 +843,19 @@ async function salvaSnapshot(
       versione,
       dati: { ...dati, marchio },
       publishedBy: userId,
+    });
+    // ⚠️ Il codice si assegna QUI, nella stessa strozzatura e nella stessa transazione
+    // del marchio: un documento senza codice non potrebbe mai stamparlo nel colophon,
+    // e metterlo in ciascuna funzione di pubblicazione significherebbe dimenticarlo
+    // nella dodicesima.
+    await assegnaCodice(tx, {
+      snapshotId: id,
+      organizationId: orgId,
+      emittente: marchio.nome,
+      azienda: az?.nome ?? "—",
+      tipo,
+      anno,
+      versione,
     });
     await logAudit(tx, {
       organizationId: orgId,

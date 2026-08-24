@@ -14,10 +14,13 @@ import type { VoceRegistro } from "@/features/corpus/letture";
 export function VistaRegistri({
   registri,
   href,
+  superati = {},
 }: {
   registri: readonly VoceRegistro[];
   /** L'indirizzo di un registro. Lo costruisce il modulo: il corpus è condiviso. */
   href: (registerId: string) => string;
+  /** I registri superati da un modulo più specifico, per `mod_code`. */
+  superati?: Record<string, { rotta: string; motivo: string }>;
 }) {
   if (!registri.length) {
     return (
@@ -60,6 +63,15 @@ export function VistaRegistri({
               <span className="mt-1.5 block text-[14px] font-medium">{r.nome}</span>
               {r.descrizione && (
                 <span className="mt-1 block text-[12px] text-muted-foreground">{r.descrizione}</span>
+              )}
+              {r.modCode && superati[r.modCode] && (
+                <span
+                  className="mt-2 block rounded-md border px-2 py-1 text-[11px]"
+                  style={{ borderColor: "var(--warning)", color: "var(--warning)" }}
+                  data-slot="registro-superato"
+                >
+                  Sola lettura: si compila nel modulo Gestione delle segnalazioni
+                </span>
               )}
             </Link>
           </li>

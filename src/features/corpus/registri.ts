@@ -8,6 +8,7 @@ import {
   corpusRegisterRow,
 } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
+import { registriSuperatiTx } from "./registri-superati";
 import { requireEntitlement } from "@/features/entitlement";
 import { rigaRegistroSchema, aggiornaRigaSchema } from "./validation";
 import type { z } from "zod";
@@ -32,9 +33,34 @@ async function nostra(tx: Tx, orgId: string, companyId: string) {
  * finirebbe nel jsonb e nessuno se ne accorgerebbe fino a quando qualcuno cerca di
  * stamparla.
  */
+/**
+ * Rifiuta la scrittura su un registro superato da un modulo più specifico.
+ *
+ * Oggi il caso è uno solo: i registri delle segnalazioni del Modello 231 e della ISO
+ * 37001 quando il modulo Gestione delle segnalazioni è attivo per quell'azienda. Tenerli
+ * scrivibili entrambi produce due copie dello stesso dato personale ultra-sensibile, e
+ * quella meno curata è quella che si compila per prima.
+ */
+async function pretendiRegistroScrivibile(
+  tx: Tx,
+  orgId: string,
+  companyId: string,
+  contentSetId: string,
+  modCode: string | null,
+): Promise<void> {
+  if (!modCode) return;
+  const superati = await registriSuperatiTx(tx, orgId, companyId, contentSetId);
+  if (superati.has(modCode)) {
+    throw new Error(
+      "Questo registro è di sola lettura: le segnalazioni si registrano nel modulo dedicato, " +
+        "dove ogni fascicolo porta i termini di legge calcolati.",
+    );
+  }
+}
+
 async function schemaRegistro(tx: Tx, contentSetId: string, registerId: string) {
   const [r] = await tx
-    .select({ id: corpusRegister.registerId, nome: corpusRegister.nome })
+    .select({ id: corpusRegister.registerId, nome: corpusRegister.nome, modCode: corpusRegister.modCode })
     .from(corpusRegister)
     .where(
       and(eq(corpusRegister.contentSetId, contentSetId), eq(corpusRegister.registerId, registerId)),
@@ -52,6 +78,7 @@ async function schemaRegistro(tx: Tx, contentSetId: string, registerId: string) 
     );
   return {
     nome: r.nome,
+    modCode: r.modCode,
     chiavi: new Set(colonne.map((c) => c.chiave)),
     prefisso: colonne.find((c) => c.prefisso)?.prefisso ?? null,
   };
@@ -88,6 +115,11 @@ export async function aggiungiRiga(
     await nostra(tx, orgId, p.companyId);
     const schema = await schemaRegistro(tx, p.contentSetId, p.registerId);
     verificaChiavi(p.dati, schema.chiavi, schema.nome);
+    // ⚠️ Il divieto sta QUI e non nell'interfaccia. Il pulsante sparisce a schermo, ma un
+    // registro superato deve rifiutare la scrittura anche a chi chiama la server action
+    // per conto proprio: la prova di un divieto è la riga che non compare nel database,
+    // non il comando che non si vede.
+    await pretendiRegistroScrivibile(tx, orgId, p.companyId, p.contentSetId, schema.modCode);
 
     const id = randomUUID();
     // Il riferimento leggibile — «RT001» — si compone qui, dallo stesso massimo, così non

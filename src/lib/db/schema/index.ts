@@ -18,3 +18,4 @@ export * from "./whistleblowing";
 export * from "./sgiqas";
 export * from "./sa8000";
 export * from "./filiera";
+export * from "./verifica";

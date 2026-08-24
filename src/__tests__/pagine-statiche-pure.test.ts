@@ -92,6 +92,18 @@ describe("le pagine pubbliche restano generabili staticamente", () => {
 
     const problemi: string[] = [];
     for (const pagina of pagine) {
+      // ⚠️ Una pagina che dichiara `force-dynamic` non è candidata alla generazione
+      // statica, quindi il guasto che questo controllo esiste per prevenire non la
+      // riguarda: quel guasto era una pagina che Next AVREBBE generato staticamente e
+      // che, non potendo, rispondeva 500 al primo articolo pubblicato.
+      //
+      // È una regola STRUTTURALE e non un elenco di nomi da tenere aggiornato: si legge
+      // dal file la stessa dichiarazione che legge Next. Chi togliesse `force-dynamic`
+      // per errore rimetterebbe la pagina sotto il controllo, che è esattamente il
+      // comportamento voluto — mentre un'eccezione per nome resterebbe muta.
+      if (/export\s+const\s+dynamic\s*=\s*["']force-dynamic["']/.test(readFileSync(pagina, "utf8"))) {
+        continue;
+      }
       for (const [file, catena] of catenaVerso(pagina)) {
         const testo = readFileSync(file, "utf8");
         if (/^\s*["']use client["']/.test(testo)) continue;

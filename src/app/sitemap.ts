@@ -30,6 +30,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const prodotto: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
+    // ⚠️ La verifica sta in sitemap perche' e' una pagina che vogliamo si TROVI: chi
+    // riceve un documento non sa che esiste, e la cerca. Non espone niente finche' non
+    // le si da' un codice, quindi non ha la riserva del portale cliente.
+    { url: `${base}/verifica`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${base}/privacy`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/termini`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/cookie`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },

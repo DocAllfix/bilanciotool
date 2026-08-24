@@ -669,6 +669,62 @@ duplicati** in 231 e ISO 37001, da rendere di sola lettura quando il modulo Segn
 attivo. In più: il **giro con i DevTools su ogni singolo comando** dei sei moduli nuovi,
 che il committente ha chiesto **per ultimo**, dopo che tutti i prototipi fossero portati.
 
+**Colophon, codice di verifica e registri superati (2026-08-24)** — i due debiti con la
+scadenza più dura, chiusi.
+
+**Il codice sta in una tabella a parte, e la scadenza si è sciolta da sola.** Il piano
+diceva «prima della prima pubblicazione in produzione», perché gli snapshot sono
+immutabili e un documento senza codice non potrà mai averne uno. Ma la premessa era che
+il codice andasse **dentro** lo snapshot. Messo in `document_codice`, due cose cambiano
+insieme: lo snapshot resta immutabile davvero (il trigger della 0002 elenca le colonne
+bloccate una per una — una colonna nuova là dentro sarebbe un campo **mutabile** dentro
+un record immutabile), e i documenti **già pubblicati** si recuperano.
+`scripts/backfill-codici.mjs` ne ha assegnati 68 su 68, ed è idempotente.
+
+- **Il colophon lo stampa la PAGINA del documento**, non i dodici template: è la stessa
+  strozzatura in cui vive il marchio congelato. Nei template si dimenticherebbe nel
+  tredicesimo, e allora sarebbe tardi — il PDF è già in mano al cliente.
+- **`/verifica` è pubblica e indicizzabile**, al contrario del portale cliente: quella
+  mostra i documenti di un'azienda dietro un token, questa non mostra niente finché non
+  le si dà un codice. E la ricerca sta nell'**indirizzo**, perché chi verifica incolla il
+  collegamento in una mail interna.
+- **L'alfabeto esclude 0/O, 1/I/L, 2/Z, 5/S, 8/B**, e fuori alfabeto si **rifiuta**. Una
+  prima versione del modulo puro convertiva `O` in `D` per gentilezza: è il contrario
+  della gentilezza, perché una lettera indovinata male non produce «non trovato», produce
+  il codice di un **altro** documento — e la pagina confermerebbe con sicurezza il
+  documento sbagliato a chi sta verificando proprio quello.
+- **La tabella è denormalizzata apposta**: la pagina pubblica legge quella e nient'altro,
+  senza join verso `company`, `organization` o lo snapshot. Un errore in quella query non
+  può allargare la vista oltre le sei colonne che il codice è progettato per mostrare. La
+  SELECT aperta a chiunque è scritta e motivata nella migrazione, col rischio residuo
+  dichiarato invece che taciuto.
+- **Un codice emesso è immutabile**: un trigger lascia passare il solo contatore delle
+  verifiche. Un codice che potesse cambiare emittente o azienda dopo l'emissione non
+  varrebbe niente.
+
+**I due registri segnalazioni duplicati** (231 `MOD-06.02`, ISO 37001 `MOD-11.02`) sono
+di sola lettura quando il modulo Segnalazioni è attivo per quell'azienda. Non si tolgono
+dal corpus — è congelato alla creazione, quindi la correzione varrebbe solo per i clienti
+futuri — e si spengono **solo se il modulo è attivo**: togliere il registro a un ente che
+il modulo non l'ha aperto significherebbe togliergli l'unico posto dove annotare una
+segnalazione ricevuta.
+
+**Regole nate qui:**
+- **La scadenza di un debito dipende dalla scelta di schema, non dal debito.** «Prima
+  della prima pubblicazione» valeva per il codice dentro lo snapshot; fuori, non vale più.
+  Prima di accettare una scadenza dura conviene chiedersi se sia una proprietà del
+  problema o della soluzione che si aveva in mente.
+- **Un controllo si estende con una regola strutturale, non con un elenco di nomi.** La
+  guardia sulle pagine statiche ora salta chi dichiara `force-dynamic`, letto dal file:
+  chi togliesse quella riga per errore rimetterebbe la pagina sotto controllo, mentre
+  un'eccezione per nome resterebbe muta.
+- **Un divieto che vive solo nell'interfaccia non è un divieto.** Il pulsante sparisce a
+  schermo *e* la server action rifiuta: la prova è la riga che non compare nel database.
+
+Gate: typecheck · build · `corpus-registri-superati` 5/5 (messo in rosso togliendo la
+guardia lato server) · `pagine-statiche-pure` verde col proprio controtest · `qa --
+codice-documento`.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

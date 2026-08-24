@@ -5,6 +5,7 @@ import {
   listaRegistri,
   registroCorpus,
 } from "./letture";
+import { registriSuperati } from "./registri-superati";
 import type { DatiCorpus } from "@/components/corpus/sezione-corpus";
 
 // Il caricamento del corpus per la pagina di un modulo.
@@ -29,12 +30,17 @@ export async function caricaCorpus(
 ): Promise<DatiCorpus> {
   const vista = richiesta.vista;
 
-  const [procedure, moduli, registri] = await Promise.all([
+  const [procedure, moduli, registri, superati] = await Promise.all([
     vista === "procedure" || vista === undefined
       ? listaCorpus(userId, orgId, companyId, contentSetId, "procedura")
       : Promise.resolve([]),
     vista === "moduli" ? listaCorpus(userId, orgId, companyId, contentSetId, "modulo") : Promise.resolve([]),
     vista === "registri" ? listaRegistri(userId, orgId, companyId, contentSetId) : Promise.resolve([]),
+    // ⚠️ Solo nella vista dei registri: e' l'unica che ne ha bisogno, e la domanda costa
+    // una select in piu' su ogni apertura di procedura se la si fa sempre.
+    vista === "registri"
+      ? registriSuperati(userId, orgId, companyId, contentSetId)
+      : Promise.resolve(new Map()),
   ]);
 
   const documento =
@@ -47,7 +53,7 @@ export async function caricaCorpus(
       ? await registroCorpus(userId, orgId, companyId, contentSetId, richiesta.reg)
       : null;
 
-  return { procedure, moduli, registri, documento, registro };
+  return { procedure, moduli, registri, documento, registro, superati: Object.fromEntries(superati) };
 }
 
 /**

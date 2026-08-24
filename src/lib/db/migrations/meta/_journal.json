@@ -295,6 +295,20 @@
       "when": 1787575904796,
       "tag": "0041_documento_filiera",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1787580142490,
+      "tag": "0042_verifica_codice",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1787580142491,
+      "tag": "0043_verifica_rls",
+      "breakpoints": true
     }
   ]
 }

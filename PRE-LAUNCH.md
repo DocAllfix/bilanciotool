@@ -275,6 +275,43 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0-bis. ✅ **CHIUSO il 24 agosto 2026 — colophon e pagina pubblica di verifica.** Era il
+   debito con la scadenza più dura del piano («prima della prima pubblicazione in
+   produzione»), e la scadenza si è sciolta da sola con la scelta di schema giusta: il
+   codice sta in una **tabella a parte** (`document_codice`) e non dentro lo snapshot.
+   Lo snapshot è immutabile per costruzione — il trigger della 0002 blocca l'update per
+   chiunque — quindi una colonna là dentro sarebbe stata un campo mutabile in un record
+   immutabile; e i documenti **già pubblicati** non avrebbero mai potuto averne uno. Con
+   la tabella a parte si recuperano: `node scripts/backfill-codici.mjs --scrivi` ne ha
+   assegnati **68 su 68** sul database di sviluppo, ed è idempotente.
+
+   → *verifica:* `npm run qa -- codice-documento`. Pubblica un documento vero, legge il
+   codice **dal database**, lo cerca nel colophon del PDF, e lo verifica da un browser
+   **senza sessione**. Poi prova un codice storpiato per vedere che venga **rifiutato**
+   invece che indovinato: una lettera indovinata male non produce «non trovato», produce
+   il codice di un **altro** documento — e la pagina confermerebbe con sicurezza il
+   documento sbagliato a chi sta verificando proprio quello.
+
+   ⚠️ **Il PDF già archiviato non cambia**, ed è coerente con la regola che il prodotto
+   ha già: quello consegnato al cliente è quello. Il codice serve ai documenti che
+   verranno riscaricati e a chi telefona con un documento in mano.
+
+0-ter. ✅ **CHIUSO il 24 agosto 2026 — i due registri segnalazioni duplicati.** In 231
+   (`MOD-06.02`) e ISO 37001 (`MOD-11.02`) diventano di **sola lettura** quando il modulo
+   Gestione delle segnalazioni è attivo per quell'azienda, col rimando al fascicolo dove
+   i termini di legge si calcolano davvero.
+
+   Non si tolgono dal corpus e il motivo è di versionamento: il corpus è congelato alla
+   creazione, quindi un modello già avviato continuerebbe a vedere la versione con dentro
+   il registro. E si spengono **solo se il modulo è attivo**: un ente che ha un Modello
+   231 e non ha ancora aperto il modulo Segnalazioni deve poter usare il proprio
+   registro, perché è l'unico posto che ha.
+
+   → *verifica:* `corpus-registri-superati.db.test.ts`, cinque prove, messo in rosso di
+   proposito togliendo la guardia lato server. Il divieto sta **nella server action** e
+   non solo nell'interfaccia: il pulsante sparisce a schermo, ma la prova è la **riga che
+   non compare nel database**.
+
 0. ✅ **CHIUSO il 23 agosto 2026 — la pagina `/dashboard` non si aggiornava dopo una
    mutazione.** Restava qui come debito aperto con la causa non capita. La causa era
    TRIPLA, e le tre parti sono state separate misurando, una variabile per volta:
