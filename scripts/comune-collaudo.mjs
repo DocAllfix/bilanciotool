@@ -276,4 +276,17 @@ export async function spegniTour(
     await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
   }
+
+  // ⚠️ E il VELO DEL BENVENUTO, che e' un'altra cosa dal velo dei tour: e' il video che
+  // si apre al primo accesso, sta a `z-70` sopra tutto e intercetta i clic. Un collaudo
+  // che non lo chiude riprova per trenta secondi su un pulsante visibile e incliccabile,
+  // e riferisce come rotto un comando che nessuno ha mai raggiunto. La chiave e' quella
+  // che il prodotto stesso scrive quando il giro e' finito.
+  await page.evaluate(() => {
+    try { localStorage.setItem("evalisdeck-benvenuto", "1"); } catch {}
+  });
+  if (await page.locator(".fixed.inset-0.z-70").count()) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(400);
+  }
 }

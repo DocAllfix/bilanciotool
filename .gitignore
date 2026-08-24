@@ -67,3 +67,7 @@ shot-*
 # iniziale vale a QUALSIASI livello, e questo progetto ha gia perso una rotta
 # cosi (`video/` si porto via `src/app/api/onboarding/video/`).
 /scratch/
+
+# Foto delle superfici: si rigenerano con `node scripts/foto-superfici.mjs`.
+/foto/
+/.referti/

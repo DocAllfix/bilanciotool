@@ -3,6 +3,7 @@
 // credenziali QA (env QA_EMAIL/QA_PASSWORD o default della org di sviluppo).
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
+import { spegniTour } from "./comune-collaudo.mjs";
 import { mkdirSync } from "node:fs";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
@@ -29,10 +30,10 @@ const go = async (url) => {
   await page.goto(BASE + url);
   await page.waitForLoadState("networkidle");
 };
-const silenziaTour = () =>
-  page.evaluate(() => {
-    for (const k of ["portfolio", "ghg", "bilancio"]) localStorage.setItem(`evalisdeck-tour:${k}`, "1");
-  });
+// ⚠️ Si usa il silenziatore CONDIVISO invece di una copia locale. Questa ne aveva una
+// ferma a tre chiavi da quando i moduli erano tre, e non chiudeva il velo del benvenuto:
+// il collaudo moriva su un pulsante coperto da un video.
+const silenziaTour = () => spegniTour(page);
 
 // Landing + auth: logo orizzontale e lockup verticale
 await go("/");
@@ -55,7 +56,13 @@ if (esito !== "ok") {
   await registraEEntra(page, sql, { base: BASE, nome: "QA Shell", email: `qa-shell-${suffisso}@example.com`, pwd: PW });
 }
 await silenziaTour();
-await page.reload({ waitUntil: "networkidle" });
+// ⚠️ `networkidle` pretende mezzo secondo di silenzio di rete, e la dashboard con undici
+// moduli ci mette fra i quattro e gli otto secondi a rispondere: la ricarica scadeva a
+// trenta senza che niente fosse rotto. Si aspetta cio' che serve davvero — che la pagina
+// sia lì — invece di una condizione che non e' quella che interessa.
+await page.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
+await page.locator("main").waitFor({ timeout: 60_000 });
+await page.waitForTimeout(800);
 
 // Dashboard arricchita
 await shot("03-dashboard");

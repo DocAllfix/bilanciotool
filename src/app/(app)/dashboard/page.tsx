@@ -200,7 +200,15 @@ export default async function DashboardPage() {
                     bordo quando i moduli passarono da due a cinque: con undici, una
                     griglia a cinque colonne o taglia o schiaccia. Celle di larghezza
                     fissa che vanno a capo reggono qualunque numero, e l'etichetta
-                    resta leggibile invece di sparire. */}
+                    resta leggibile invece di sparire.
+
+                    ⚠️ QUATTRO per riga, non cinque, e la ragione si vede solo guardando:
+                    con cinque, undici moduli fanno 5+5+1 e l'ultima casella resta orfana
+                    su una riga sua — «Segnalazioni», che e' anche l'etichetta piu' lunga.
+                    Con quattro fanno 4+4+3, e ogni casella guadagna un quarto di
+                    larghezza: le due etichette che si troncavano ci stanno. Non e' un
+                    numero da indovinare a ogni modulo aggiunto — con dodici sarebbe
+                    4+4+4 — ma va riguardato, e i collaudi funzionali non lo dicono. */}
                 {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi.
                     Il nome accessibile della casella NON e' il nome del modulo: e'
                     «Fornitore: da avviare», perche' dichiara anche lo stato. Cercarla
@@ -217,7 +225,7 @@ export default async function DashboardPage() {
                         aria-label={`${m.nome}: ${
                           st === "pubblicato" ? "documento pubblicato" : st === "in-corso" ? "in corso" : "da avviare"
                         }`}
-                        className="flex w-[calc(20%-0.2rem)] min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
+                        className="flex w-[calc(25%-0.2rem)] min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
                       >
                         <span
                           className={
