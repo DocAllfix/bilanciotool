@@ -68,7 +68,17 @@ await shot("00-vuoto");
 
 await page.click('[data-tour="mog-crea"]');
 await page.locator("[data-tour^='mog-vista-']").first().waitFor({ timeout: 60_000 });
-verifica("Il Modello si crea e apre le sei viste", (await page.locator("[data-tour^='mog-vista-']").count()) === 6);
+// ⚠️ Il numero delle viste NON si scrive a mano. Questa riga diceva «sei» ed era rossa
+// da quando il corpus ne ha aggiunte tre, senza che nessuno se ne accorgesse: nessuno
+// aveva piu' lanciato questo collaudo. Ora si verifica il FATTO che conta — che ci siano
+// le viste proprie del modulo PIU' le quattro comuni a tutti i moduli di conformita' —
+// e un modulo che ne aggiunge una non fa diventare rosso niente.
+const vistemog = await page.locator("[data-tour^='mog-vista-']").evaluateAll((n) =>
+  n.map((e) => e.getAttribute("data-tour").replace("mog-vista-", "")),
+);
+verifica("Il Modello si crea e apre le sue viste", vistemog.length >= 6, vistemog.join(" · "));
+verifica("…comprese le tre del corpus e i documenti",
+  ["procedure", "moduli", "registri", "documenti"].every((v) => vistemog.includes(v)));
 const [mod] = await sql`select content_set_id, ragione from mog_model where company_id = ${az.id}`;
 verifica("Il catalogo si congela alla creazione", mod?.content_set_id === "mog231-v1", mod?.content_set_id);
 verifica("La ragione sociale si eredita dall'azienda", mod?.ragione === AZIENDA);

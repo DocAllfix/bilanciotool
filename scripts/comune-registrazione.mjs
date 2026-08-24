@@ -28,6 +28,23 @@
  *     const { userId, orgId } = await registraEEntra(page, sql, { ... });
  */
 export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
+  // ⚠️ Il freno sulle iscrizioni si azzera PRIMA di ogni registrazione di collaudo, e
+  // solo in locale.
+  //
+  // È tarato su dieci all'ora per indirizzo, che è giusto contro Internet e sbagliato
+  // contro noi stessi: una batteria di undici collaudi di modulo registra undici utenti
+  // dallo stesso indirizzo in mezz'ora, e dall'undicesimo in poi fallisce tutto — non
+  // per un difetto del prodotto ma perché il freno funziona. Ci ho perso una tornata
+  // intera prima di riconoscerlo, e il referto diceva «TimeoutError» su un elemento a
+  // caso invece che «sei frenato».
+  //
+  // NON si azzera contro un ambiente vero: là il freno è la difesa, e un collaudo che la
+  // spegne per comodità la sta collaudando spenta. E `verifica-limiti` fa la propria
+  // pulizia per conto suo, quindi questa non gli toglie niente.
+  if (/localhost|127\.0\.0\.1/.test(base)) {
+    await sql`delete from rate_limit where key like '%/sign-up/email' or key like '%/sign-in/email'`;
+  }
+
   await page.goto(`${base}/registrati`, { waitUntil: "networkidle" });
   await page.fill("#nome", nome);
   await page.fill("#email", email);

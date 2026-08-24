@@ -64,8 +64,14 @@ await page.screenshot({ path: `${OUT}/00-vuoto.png` });
 
 await page.click('[data-tour="fil-crea"]');
 await page.locator("[data-tour^='fil-vista-']").first().waitFor({ timeout: 60_000 });
-verifica("Il programma si crea e apre le sette viste",
-  (await page.locator("[data-tour^='fil-vista-']").count()) === 7);
+// ⚠️ Il numero delle viste NON si scrive a mano: due collaudi sono rimasti rossi per
+// giorni perche' il corpus ne aveva aggiunte tre e la riga diceva ancora «sei».
+const vistefil = await page.locator("[data-tour^='fil-vista-']").evaluateAll((n) =>
+  n.map((e) => e.getAttribute("data-tour").replace("fil-vista-", "")),
+);
+verifica("Il programma si crea e apre le sue viste", vistefil.length >= 6, vistefil.join(" · "));
+verifica("…comprese le tre del corpus e i documenti",
+  ["procedure", "moduli", "registri", "documenti"].every((v) => vistefil.includes(v)));
 
 const p0 = await programma();
 verifica("Il catalogo si congela alla creazione", p0?.content_set_id === "filiera-v1", p0?.content_set_id);

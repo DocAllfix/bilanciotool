@@ -9,6 +9,19 @@ const url = process.env.DIRECT_URL;
 // Eccezioni documentate: tabelle con organization_id ma policy speciale.
 // Aggiungere una tabella qui richiede una giustificazione scritta, non è un opt-out comodo.
 const ECCEZIONI: Record<string, string> = {
+  // ⚠️ Non ha `_tenant_rls` perché la SELECT è APERTA, e lo è di proposito: `/verifica`
+  // risponde a chiunque, senza sessione — chi riceve un documento non ha un account da
+  // noi, e chiedergli di crearlo per confermare che il PDF è autentico significherebbe
+  // non avere la funzione. Ciò che l'apertura espone è esattamente ciò che la pagina è
+  // progettata per mostrare a chi ha il codice, e la tabella è denormalizzata apposta:
+  // nessun join verso `company`, `organization` o lo snapshot, quindi un errore nella
+  // query pubblica non può allargare la vista. La SCRITTURA resta legata
+  // all'organizzazione (`document_codice_write`), e l'UPDATE è aperto al solo contatore
+  // delle verifiche perché lo incrementa la pagina pubblica, dove nessuna organizzazione
+  // è nel contesto: le colonne che descrivono il documento le blocca un trigger. Vedi la
+  // migrazione 0043, che porta anche il rischio residuo dichiarato.
+  document_codice:
+    "lettura pubblica per progetto: la pagina /verifica risponde senza sessione. Scrittura per-org, update al solo contatore, resto bloccato da trigger (migrazione 0043)",
   audit_log: "append-only: insert libero, select per-org, update/delete revocati a livello grant",
   entitlement_event:
     "registro append-only delle capacità: policy SEPARATE per INSERT (propria org o platform_admin, che serve al webhook) e SELECT (propria org). Nessuna policy per UPDATE/DELETE, perché non devono esistere — ed è PIÙ stretto di una `FOR ALL`, non più largo. In più un trigger BEFORE UPDATE OR DELETE che vale anche per la connessione privilegiata, come per document_snapshot.",

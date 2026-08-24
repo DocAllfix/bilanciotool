@@ -62,7 +62,14 @@ await page.screenshot({ path: `${OUT}/00-vuoto.png` });
 
 await page.click('[data-tour="qas-crea"]');
 await page.locator("[data-tour^='qas-vista-']").first().waitFor({ timeout: 60_000 });
-verifica("Il sistema si crea e apre le otto viste", (await page.locator("[data-tour^='qas-vista-']").count()) === 8);
+// ⚠️ Il numero delle viste NON si scrive a mano: due collaudi sono rimasti rossi per
+// giorni perche' il corpus ne aveva aggiunte tre e la riga diceva ancora «sei».
+const visteqas = await page.locator("[data-tour^='qas-vista-']").evaluateAll((n) =>
+  n.map((e) => e.getAttribute("data-tour").replace("qas-vista-", "")),
+);
+verifica("Il sistema si crea e apre le sue viste", visteqas.length >= 6, visteqas.join(" · "));
+verifica("…comprese le tre del corpus e i documenti",
+  ["procedure", "moduli", "registri", "documenti"].every((v) => visteqas.includes(v)));
 
 const s0 = await sistema();
 verifica("Il catalogo si congela alla creazione", s0?.content_set_id === "sgiqas-v1", s0?.content_set_id);

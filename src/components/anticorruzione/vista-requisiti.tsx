@@ -115,7 +115,14 @@ export function VistaRequisiti({ companyId, dati }: { companyId: string; dati: D
                     // un comando dedicato, ed è il gesto che i cinque moduli usano già.
                     onClick={() => scegli(r.key, stato === s ? null : s)}
                     aria-pressed={stato === s}
-                    aria-label={`${r.riferimento}: ${s}`}
+                    // ⚠️ Il nome accessibile porta la CHIAVE, non il riferimento alla
+                    // norma. I riferimenti si ripetono — sei requisiti diversi citano
+                    // tutti il punto 4.5 — e sei pulsanti che si annunciano «4.5:
+                    // Conforme» sono indistinguibili per chi usa un lettore di schermo, e
+                    // ambigui per qualunque collaudo. La chiave è unica per costruzione.
+                    // Trovato dal collaudo del percorso, fallito con «resolved to 2
+                    // elements»; la guardia è `nomi-accessibili-pure.test.ts`.
+                    aria-label={`${r.key}: ${s}`}
                     className={cn(
                       "rounded-md border px-2.5 py-1 text-[12px] font-medium transition-colors",
                       stato === s ? `border-transparent ${COLORE_STATO[s]}` : "hover:bg-accent",

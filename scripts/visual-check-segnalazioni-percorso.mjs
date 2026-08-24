@@ -70,7 +70,17 @@ await shot("00-vuoto");
 
 await page.click('[data-tour="wb-crea"]');
 await page.locator("[data-tour^='wb-vista-']").first().waitFor({ timeout: 60_000 });
-verifica("L'assetto si crea e apre le sei viste", (await page.locator("[data-tour^='wb-vista-']").count()) === 6);
+// ⚠️ Il numero delle viste NON si scrive a mano. Questa riga diceva «sei» ed era rossa
+// da quando il corpus ne ha aggiunte tre, senza che nessuno se ne accorgesse: nessuno
+// aveva piu' lanciato questo collaudo. Ora si verifica il FATTO che conta — che ci siano
+// le viste proprie del modulo PIU' le quattro comuni a tutti i moduli di conformita' —
+// e un modulo che ne aggiunge una non fa diventare rosso niente.
+const vistewb = await page.locator("[data-tour^='wb-vista-']").evaluateAll((n) =>
+  n.map((e) => e.getAttribute("data-tour").replace("wb-vista-", "")),
+);
+verifica("L'assetto si crea e apre le sue viste", vistewb.length >= 6, vistewb.join(" · "));
+verifica("…comprese le tre del corpus e i documenti",
+  ["procedure", "moduli", "registri", "documenti"].every((v) => vistewb.includes(v)));
 
 const a0 = await assetto();
 verifica("Il catalogo si congela alla creazione", a0?.content_set_id === "wb-v1", a0?.content_set_id);
@@ -348,7 +358,26 @@ await shot("08-documenti");
 
 // ─── pubblicazione e PDF ─────────────────────────────────────────────────────
 await page.click('[data-tour="pubblica-documento"]');
-const doc = await page.waitForEvent("popup", { timeout: 120_000 });
+// ⚠️ Se la pubblicazione fallisce, il popup non arriva MAI e l'attesa scade dopo due
+// minuti dicendo soltanto «Timeout»: il motivo resta scritto a schermo, dove nessuno lo
+// legge. Qui si corre il popup contro il messaggio d'errore, e vince chi arriva.
+const doc = await Promise.race([
+  page.waitForEvent("popup", { timeout: 120_000 }),
+  (async () => {
+    // ⚠️ Si aspetta un avviso con del TESTO dentro: `[role="alert"]` puo' essere un
+    // contenitore sempre presente e vuoto, e correrci contro il popup lo farebbe vincere
+    // sempre — il collaudo direbbe «rifiutata» su una pubblicazione riuscita.
+    const testo = await page.waitForFunction(
+      () =>
+        [...document.querySelectorAll('[role="alert"]')]
+          .map((n) => n.textContent?.trim() ?? "")
+          .find((t) => t.length > 3) ?? null,
+      undefined,
+      { timeout: 120_000 },
+    );
+    throw new Error("La pubblicazione e' stata rifiutata: " + String(await testo.jsonValue()).slice(0, 300));
+  })(),
+]);
 await doc.waitForLoadState("networkidle", { timeout: 120_000 });
 await doc.setViewportSize({ width: 1280, height: 1700 });
 await doc.waitForTimeout(800);

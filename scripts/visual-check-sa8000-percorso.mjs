@@ -62,8 +62,14 @@ await page.screenshot({ path: `${OUT}/00-vuoto.png` });
 
 await page.click('[data-tour="sa-crea"]');
 await page.locator("[data-tour^='sa-vista-']").first().waitFor({ timeout: 60_000 });
-verifica("Il sistema si crea e apre le sette viste",
-  (await page.locator("[data-tour^='sa-vista-']").count()) === 7);
+// ⚠️ Il numero delle viste NON si scrive a mano: due collaudi sono rimasti rossi per
+// giorni perche' il corpus ne aveva aggiunte tre e la riga diceva ancora «sei».
+const vistesa = await page.locator("[data-tour^='sa-vista-']").evaluateAll((n) =>
+  n.map((e) => e.getAttribute("data-tour").replace("sa-vista-", "")),
+);
+verifica("Il sistema si crea e apre le sue viste", vistesa.length >= 6, vistesa.join(" · "));
+verifica("…comprese le tre del corpus e i documenti",
+  ["procedure", "moduli", "registri", "documenti"].every((v) => vistesa.includes(v)));
 
 const s0 = await sistema();
 verifica("Il catalogo si congela alla creazione", s0?.content_set_id === "sa8000-v1", s0?.content_set_id);
