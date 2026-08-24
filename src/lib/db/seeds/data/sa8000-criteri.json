@@ -1,0 +1,1020 @@
+[
+ {
+  "key": "F1",
+  "sezione": "F",
+  "testo": "Rispetto dei principi dello Standard e dei riferimenti internazionali",
+  "procedure": [
+   "PRO-04",
+   "PRO-15"
+  ],
+  "ordine": 0
+ },
+ {
+  "key": "F2",
+  "sezione": "F",
+  "testo": "Conformità ai requisiti legali applicabili e agli altri requisiti sottoscritti",
+  "procedure": [
+   "PRO-04",
+   "PRO-15"
+  ],
+  "ordine": 1
+ },
+ {
+  "key": "F3",
+  "sezione": "F",
+  "testo": "Applicazione del requisito più favorevole in caso di difformità legge/Standard",
+  "procedure": [
+   "PRO-04",
+   "PRO-15"
+  ],
+  "ordine": 2
+ },
+ {
+  "key": "F4",
+  "sezione": "F",
+  "testo": "Gestione documentata delle contraddizioni tra legge e Standard",
+  "procedure": [
+   "PRO-04",
+   "PRO-15"
+  ],
+  "ordine": 3
+ },
+ {
+  "key": "F5",
+  "sezione": "F",
+  "testo": "Sistema di gestione istituito, mantenuto e migliorato con continuità",
+  "procedure": [
+   "PRO-04",
+   "PRO-15"
+  ],
+  "ordine": 4
+ },
+ {
+  "key": "M1.1",
+  "sezione": "M",
+  "testo": "Integrazione strategica dei principi negli obiettivi e nelle prestazioni",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 5
+ },
+ {
+  "key": "M1.2",
+  "sezione": "M",
+  "testo": "Rappresentatività degli organi decisionali",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 6
+ },
+ {
+  "key": "M1.3",
+  "sezione": "M",
+  "testo": "Responsabilità ultima in capo all'alta direzione",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 7
+ },
+ {
+  "key": "M1.4",
+  "sezione": "M",
+  "testo": "Identificazione e gestione dei conflitti di interesse",
+  "procedure": [
+   "PRO-08"
+  ],
+  "ordine": 8
+ },
+ {
+  "key": "M2.1",
+  "sezione": "M",
+  "testo": "Coinvolgimento dei lavoratori nelle funzioni chiave del sistema",
+  "procedure": [
+   "PRO-02"
+  ],
+  "ordine": 9
+ },
+ {
+  "key": "M2.2",
+  "sezione": "M",
+  "testo": "Collaborazione con le rappresentanze sindacali",
+  "procedure": [
+   "PRO-02"
+  ],
+  "ordine": 10
+ },
+ {
+  "key": "M2.3",
+  "sezione": "M",
+  "testo": "Canali di comunicazione efficaci, inclusivi e privi di ritorsione",
+  "procedure": [
+   "PRO-02"
+  ],
+  "ordine": 11
+ },
+ {
+  "key": "M2.4",
+  "sezione": "M",
+  "testo": "Social Performance Team costituito ed operativo",
+  "procedure": [
+   "PRO-02"
+  ],
+  "ordine": 12
+ },
+ {
+  "key": "M3.1",
+  "sezione": "M",
+  "testo": "Identificazione e prioritizzazione degli stakeholder",
+  "procedure": [
+   "PRO-03"
+  ],
+  "ordine": 13
+ },
+ {
+  "key": "M3.2",
+  "sezione": "M",
+  "testo": "Engagement significativo su politiche, rischi e monitoraggio",
+  "procedure": [
+   "PRO-03"
+  ],
+  "ordine": 14
+ },
+ {
+  "key": "M3.3",
+  "sezione": "M",
+  "testo": "Engagement accessibile, in buona fede e senza ritorsioni",
+  "procedure": [
+   "PRO-03"
+  ],
+  "ordine": 15
+ },
+ {
+  "key": "M3.4",
+  "sezione": "M",
+  "testo": "Integrazione degli esiti dell'engagement nelle decisioni",
+  "procedure": [
+   "PRO-03"
+  ],
+  "ordine": 16
+ },
+ {
+  "key": "M4.1",
+  "sezione": "M",
+  "testo": "Dichiarazione di politica documentata e aggiornata",
+  "procedure": [
+   "PRO-04"
+  ],
+  "ordine": 17
+ },
+ {
+  "key": "M4.2",
+  "sezione": "M",
+  "testo": "Politica di aspettative reciproche per i partner commerciali",
+  "procedure": [
+   "PRO-04"
+  ],
+  "ordine": 18
+ },
+ {
+  "key": "M4.3",
+  "sezione": "M",
+  "testo": "Coerenza tra politiche, pratiche, obiettivi e incentivi",
+  "procedure": [
+   "PRO-04"
+  ],
+  "ordine": 19
+ },
+ {
+  "key": "M4.4",
+  "sezione": "M",
+  "testo": "Coerenza delle interazioni esterne e delle attività di rappresentanza",
+  "procedure": [
+   "PRO-04"
+  ],
+  "ordine": 20
+ },
+ {
+  "key": "M5.1",
+  "sezione": "M",
+  "testo": "Analisi periodica del contesto interno ed esterno",
+  "procedure": [
+   "PRO-05"
+  ],
+  "ordine": 21
+ },
+ {
+  "key": "M5.2",
+  "sezione": "M",
+  "testo": "Identificazione degli impatti negativi attuali e potenziali",
+  "procedure": [
+   "PRO-05"
+  ],
+  "ordine": 22
+ },
+ {
+  "key": "M5.3",
+  "sezione": "M",
+  "testo": "Valutazione e prioritizzazione dei rischi documentata",
+  "procedure": [
+   "PRO-05"
+  ],
+  "ordine": 23
+ },
+ {
+  "key": "M5.4",
+  "sezione": "M",
+  "testo": "Analisi delle cause radice dei rischi prioritari",
+  "procedure": [
+   "PRO-05"
+  ],
+  "ordine": 24
+ },
+ {
+  "key": "M6.1",
+  "sezione": "M",
+  "testo": "Obiettivi documentati coerenti con politica e rischi",
+  "procedure": [
+   "PRO-06"
+  ],
+  "ordine": 25
+ },
+ {
+  "key": "M6.2",
+  "sezione": "M",
+  "testo": "Pianificazione delle azioni sui rischi causati o a cui si contribuisce",
+  "procedure": [
+   "PRO-06",
+   "PRO-14"
+  ],
+  "ordine": 26
+ },
+ {
+  "key": "M6.3",
+  "sezione": "M",
+  "testo": "Uso della leva e collaborazione sui rischi collegati ai partner",
+  "procedure": [
+   "PRO-06"
+  ],
+  "ordine": 27
+ },
+ {
+  "key": "M6.4",
+  "sezione": "M",
+  "testo": "Risorse, competenze e relazioni assegnate al piano",
+  "procedure": [
+   "PRO-06"
+  ],
+  "ordine": 28
+ },
+ {
+  "key": "M7.1",
+  "sezione": "M",
+  "testo": "Attuazione dei processi e delle azioni pianificate",
+  "procedure": [
+   "PRO-07"
+  ],
+  "ordine": 29
+ },
+ {
+  "key": "M7.2",
+  "sezione": "M",
+  "testo": "Consapevolezza del personale su diritti, rischi e canali",
+  "procedure": [
+   "PRO-07"
+  ],
+  "ordine": 30
+ },
+ {
+  "key": "M7.3",
+  "sezione": "M",
+  "testo": "Informazione degli stakeholder",
+  "procedure": [
+   "PRO-07"
+  ],
+  "ordine": 31
+ },
+ {
+  "key": "M7.4",
+  "sezione": "M",
+  "testo": "Supporto ai partner commerciali e condizioni commerciali sostenibili",
+  "procedure": [
+   "PRO-07"
+  ],
+  "ordine": 32
+ },
+ {
+  "key": "M7.5",
+  "sezione": "M",
+  "testo": "Controllo dell'informazione documentata",
+  "procedure": [
+   "PRO-07",
+   "PRO-09"
+  ],
+  "ordine": 33
+ },
+ {
+  "key": "M8.1",
+  "sezione": "M",
+  "testo": "Condotta e comunicazione improntate a integrità",
+  "procedure": [
+   "PRO-08",
+   "PRO-10"
+  ],
+  "ordine": 34
+ },
+ {
+  "key": "M8.2",
+  "sezione": "M",
+  "testo": "Reporting pubblico periodico su processi e risultati",
+  "procedure": [
+   "PRO-08",
+   "PRO-10"
+  ],
+  "ordine": 35
+ },
+ {
+  "key": "M8.3",
+  "sezione": "M",
+  "testo": "Trasparenza verso le terze parti autorizzate",
+  "procedure": [
+   "PRO-08",
+   "PRO-10"
+  ],
+  "ordine": 36
+ },
+ {
+  "key": "M9.1",
+  "sezione": "M",
+  "testo": "Monitoraggio dell'attuazione e dell'aderenza allo Standard",
+  "procedure": [
+   "PRO-11"
+  ],
+  "ordine": 37
+ },
+ {
+  "key": "M9.2",
+  "sezione": "M",
+  "testo": "Monitoraggio alimentato da fonti informative molteplici",
+  "procedure": [
+   "PRO-11"
+  ],
+  "ordine": 38
+ },
+ {
+  "key": "M9.3",
+  "sezione": "M",
+  "testo": "Meccanismo di reclamo interno conforme agli otto attributi",
+  "procedure": [
+   "PRO-12"
+  ],
+  "ordine": 39
+ },
+ {
+  "key": "M9.4",
+  "sezione": "M",
+  "testo": "Meccanismo di reclamo accessibile agli stakeholder esterni",
+  "procedure": [
+   "PRO-13"
+  ],
+  "ordine": 40
+ },
+ {
+  "key": "M9.5",
+  "sezione": "M",
+  "testo": "Partecipazione in buona fede ai processi esterni di rimedio",
+  "procedure": [
+   "PRO-13"
+  ],
+  "ordine": 41
+ },
+ {
+  "key": "M9.6",
+  "sezione": "M",
+  "testo": "Azioni correttive e rimedio a valle di monitoraggio e reclami",
+  "procedure": [
+   "PRO-14"
+  ],
+  "ordine": 42
+ },
+ {
+  "key": "M10.1",
+  "sezione": "M",
+  "testo": "Riesame periodico di obiettivi, azioni, risorse ed efficacia",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 43
+ },
+ {
+  "key": "M10.2",
+  "sezione": "M",
+  "testo": "Riesame alimentato da fonti informative molteplici",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 44
+ },
+ {
+  "key": "M10.3",
+  "sezione": "M",
+  "testo": "Output del riesame che orientano strategia e decisioni",
+  "procedure": [
+   "PRO-01"
+  ],
+  "ordine": 45
+ },
+ {
+  "key": "M10.4",
+  "sezione": "M",
+  "testo": "Dimostrazione del miglioramento continuo",
+  "procedure": [
+   "PRO-15"
+  ],
+  "ordine": 46
+ },
+ {
+  "key": "D1.1",
+  "sezione": "D",
+  "testo": "Rispetto dei diritti dei bambini e dei giovani lavoratori",
+  "procedure": [
+   "PRO-16"
+  ],
+  "ordine": 47
+ },
+ {
+  "key": "D1.2",
+  "sezione": "D",
+  "testo": "Divieto di impiego al di sotto dell'età minima",
+  "procedure": [
+   "PRO-16"
+  ],
+  "ordine": 48
+ },
+ {
+  "key": "D1.3",
+  "sezione": "D",
+  "testo": "Tutele specifiche per i giovani lavoratori",
+  "procedure": [
+   "PRO-16"
+  ],
+  "ordine": 49
+ },
+ {
+  "key": "D1.4",
+  "sezione": "D",
+  "testo": "Protezione dei bambini non lavoratori presenti nei luoghi di lavoro",
+  "procedure": [
+   "PRO-16"
+  ],
+  "ordine": 50
+ },
+ {
+  "key": "D1.5",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema minori",
+  "procedure": [
+   "PRO-16"
+  ],
+  "ordine": 51
+ },
+ {
+  "key": "D2.1",
+  "sezione": "D",
+  "testo": "Rispetto del diritto di associazione",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 52
+ },
+ {
+  "key": "D2.2",
+  "sezione": "D",
+  "testo": "Informazione del personale sui propri diritti",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 53
+ },
+ {
+  "key": "D2.3",
+  "sezione": "D",
+  "testo": "Non interferenza con le organizzazioni sindacali",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 54
+ },
+ {
+  "key": "D2.4",
+  "sezione": "D",
+  "testo": "Protezione da discriminazione e ritorsione sindacale",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 55
+ },
+ {
+  "key": "D2.5",
+  "sezione": "D",
+  "testo": "Accesso dei rappresentanti ai luoghi di lavoro",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 56
+ },
+ {
+  "key": "D2.6",
+  "sezione": "D",
+  "testo": "Contrattazione collettiva in buona fede",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 57
+ },
+ {
+  "key": "D2.7",
+  "sezione": "D",
+  "testo": "Rispetto degli accordi collettivi applicabili",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 58
+ },
+ {
+  "key": "D2.8",
+  "sezione": "D",
+  "testo": "Organismi consultivi che non sostituiscono i sindacati",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 59
+ },
+ {
+  "key": "D2.9",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema FOA",
+  "procedure": [
+   "PRO-17"
+  ],
+  "ordine": 60
+ },
+ {
+  "key": "D3.1",
+  "sezione": "D",
+  "testo": "Comprensione delle condizioni di impiego in lingua accessibile",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 61
+ },
+ {
+  "key": "D3.2",
+  "sezione": "D",
+  "testo": "Accettazione volontaria e contratto completo",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 62
+ },
+ {
+  "key": "D3.3",
+  "sezione": "D",
+  "testo": "Comunicazione anticipata delle variazioni contrattuali",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 63
+ },
+ {
+  "key": "D3.4",
+  "sezione": "D",
+  "testo": "Libertà di movimento e autonomia personale",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 64
+ },
+ {
+  "key": "D3.5",
+  "sezione": "D",
+  "testo": "Assenza di servitù per debito e oneri finanziari",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 65
+ },
+ {
+  "key": "D3.6",
+  "sezione": "D",
+  "testo": "Costi di reclutamento non a carico del personale",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 66
+ },
+ {
+  "key": "D3.7",
+  "sezione": "D",
+  "testo": "Libertà da molestie, intimidazioni e violenza",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 67
+ },
+ {
+  "key": "D3.8",
+  "sezione": "D",
+  "testo": "Procedure disciplinari chiare, proporzionate e tracciate",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 68
+ },
+ {
+  "key": "D3.9",
+  "sezione": "D",
+  "testo": "Condizioni che non isolano il personale",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 69
+ },
+ {
+  "key": "D3.10",
+  "sezione": "D",
+  "testo": "Tutela dei legami familiari e delle persone a carico",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 70
+ },
+ {
+  "key": "D3.11",
+  "sezione": "D",
+  "testo": "Apprendistati e tirocini regolari e retribuiti",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 71
+ },
+ {
+  "key": "D3.12",
+  "sezione": "D",
+  "testo": "Cessazione equa, trasparente e non discriminatoria",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 72
+ },
+ {
+  "key": "D3.13",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema D3",
+  "procedure": [
+   "PRO-18"
+  ],
+  "ordine": 73
+ },
+ {
+  "key": "D4.1",
+  "sezione": "D",
+  "testo": "Diritto a retribuzione e benefit adeguati",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 74
+ },
+ {
+  "key": "D4.2",
+  "sezione": "D",
+  "testo": "Tenore di vita dignitoso come riferimento retributivo",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 75
+ },
+ {
+  "key": "D4.3",
+  "sezione": "D",
+  "testo": "Collaborazione sulle barriere al salario dignitoso",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 76
+ },
+ {
+  "key": "D4.4",
+  "sezione": "D",
+  "testo": "Limiti alle ore ordinarie e straordinarie",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 77
+ },
+ {
+  "key": "D4.5",
+  "sezione": "D",
+  "testo": "Straordinario volontario e maggiorato",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 78
+ },
+ {
+  "key": "D4.6",
+  "sezione": "D",
+  "testo": "Orari prevedibili, pause e riposo settimanale",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 79
+ },
+ {
+  "key": "D4.7",
+  "sezione": "D",
+  "testo": "Trattamento del personale esente da limiti orari",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 80
+ },
+ {
+  "key": "D4.8",
+  "sezione": "D",
+  "testo": "Pagamento regolare e puntuale",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 81
+ },
+ {
+  "key": "D4.9",
+  "sezione": "D",
+  "testo": "Compensazione dei tempi non produttivi imposti",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 82
+ },
+ {
+  "key": "D4.10",
+  "sezione": "D",
+  "testo": "Trasparenza della busta paga",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 83
+ },
+ {
+  "key": "D4.11",
+  "sezione": "D",
+  "testo": "Priorità al pagamento del personale in situazioni di crisi",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 84
+ },
+ {
+  "key": "D4.12",
+  "sezione": "D",
+  "testo": "Divieto di deduzioni disciplinari illegittime",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 85
+ },
+ {
+  "key": "D4.13",
+  "sezione": "D",
+  "testo": "Benefit e contribuzione previdenziale conformi",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 86
+ },
+ {
+  "key": "D4.14",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema D4",
+  "procedure": [
+   "PRO-19"
+  ],
+  "ordine": 87
+ },
+ {
+  "key": "D5.1",
+  "sezione": "D",
+  "testo": "Pari accesso alle opportunità di impiego",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 88
+ },
+ {
+  "key": "D5.2",
+  "sezione": "D",
+  "testo": "Parità di trattamento in tutte le fasi del rapporto",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 89
+ },
+ {
+  "key": "D5.3",
+  "sezione": "D",
+  "testo": "Ambiente libero da molestie, bullismo e intimidazione",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 90
+ },
+ {
+  "key": "D5.4",
+  "sezione": "D",
+  "testo": "Inclusività ragionevole e accomodamenti",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 91
+ },
+ {
+  "key": "D5.5",
+  "sezione": "D",
+  "testo": "Divieto di procedure mediche invasive o discriminatorie",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 92
+ },
+ {
+  "key": "D5.6",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema D5",
+  "procedure": [
+   "PRO-20"
+  ],
+  "ordine": 93
+ },
+ {
+  "key": "D6.1",
+  "sezione": "D",
+  "testo": "Rispetto del diritto a un ambiente di lavoro sicuro",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 94
+ },
+ {
+  "key": "D6.2",
+  "sezione": "D",
+  "testo": "Responsabile competente designato",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 95
+ },
+ {
+  "key": "D6.3",
+  "sezione": "D",
+  "testo": "Identificazione periodica dei pericoli",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 96
+ },
+ {
+  "key": "D6.4",
+  "sezione": "D",
+  "testo": "Valutazione dei rischi da ambiente e attrezzature",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 97
+ },
+ {
+  "key": "D6.5",
+  "sezione": "D",
+  "testo": "Preparazione alle emergenze e ai disastri",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 98
+ },
+ {
+  "key": "D6.6",
+  "sezione": "D",
+  "testo": "Condizioni strutturali e igieniche adeguate",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 99
+ },
+ {
+  "key": "D6.7",
+  "sezione": "D",
+  "testo": "Valutazione e gestione dei rischi psicosociali",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 100
+ },
+ {
+  "key": "D6.8",
+  "sezione": "D",
+  "testo": "Consapevolezza del personale su pericoli e procedure",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 101
+ },
+ {
+  "key": "D6.9",
+  "sezione": "D",
+  "testo": "Primo soccorso e assistenza medica",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 102
+ },
+ {
+  "key": "D6.10",
+  "sezione": "D",
+  "testo": "DPI forniti e mantenuti a carico dell'organizzazione",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 103
+ },
+ {
+  "key": "D6.11",
+  "sezione": "D",
+  "testo": "Servizi igienici, acqua potabile, mensa e spogliatoi",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 104
+ },
+ {
+  "key": "D6.12",
+  "sezione": "D",
+  "testo": "Alloggi, trasporto e vitto conformi agli standard",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 105
+ },
+ {
+  "key": "D6.13",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema D6",
+  "procedure": [
+   "PRO-21"
+  ],
+  "ordine": 106
+ },
+ {
+  "key": "D7.1",
+  "sezione": "D",
+  "testo": "Raccolta dei dati personali limitata alle finalità di lavoro",
+  "procedure": [
+   "PRO-22"
+  ],
+  "ordine": 107
+ },
+ {
+  "key": "D7.2",
+  "sezione": "D",
+  "testo": "Uso non discriminatorio dei dati personali",
+  "procedure": [
+   "PRO-22"
+  ],
+  "ordine": 108
+ },
+ {
+  "key": "D7.3",
+  "sezione": "D",
+  "testo": "Dati accurati, minimizzati, sicuri e conservati per il tempo necessario",
+  "procedure": [
+   "PRO-22"
+  ],
+  "ordine": 109
+ },
+ {
+  "key": "D7.4",
+  "sezione": "D",
+  "testo": "Consapevolezza del personale e diritto di limitare il trattamento",
+  "procedure": [
+   "PRO-22"
+  ],
+  "ordine": 110
+ },
+ {
+  "key": "D7.5",
+  "sezione": "D",
+  "testo": "Sistema di gestione applicato al tema D7",
+  "procedure": [
+   "PRO-22"
+  ],
+  "ordine": 111
+ }
+]

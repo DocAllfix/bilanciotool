@@ -36,6 +36,8 @@ const MOG_SET = "mog231-v1";
 const mid = (key) => `${MOG_SET}:${key}`;
 const AC_SET = "iso37001-v1";
 const acid = (key) => `${AC_SET}:${key}`;
+const SA_SET = "sa8000-v1";
+const said = (key) => `${SA_SET}:${key}`;
 const QAS_SET = "sgiqas-v1";
 const qid = (key) => `${QAS_SET}:${key}`;
 const WB_SET = "wb-v1";
@@ -364,6 +366,36 @@ try {
   // capi vi puntano con una chiave esterna. Messo sopra, su un database vergine
   // fallirebbe — e su uno gia' seminato passerebbe, che e' il modo peggiore di
   // sbagliare: verde in sviluppo, rosso al primo ambiente nuovo.
+  // --- SA8000/2026 ---
+  //
+  // ⚠️ Il gruppo di un criterio arriva dal CATALOGO, non si ricava dal codice. Nel
+  // prototipo si ricavava con `codice.split(".")[0]`: per «F1» dava «F1», che fra i
+  // gruppi non esiste, e i cinque fondazionali finivano in cinque riquadri separati
+  // mentre `grp.F` era li' scritto per loro.
+  for (const sz of load("sa8000-sezioni.json")) {
+    await sql`
+      insert into sa_section (id, set_id, key, nome, ordine)
+      values (${said(`sez:${sz.key}`)}, ${SA_SET}, ${sz.key}, ${sz.nome}, ${sz.ordine})
+      on conflict (id) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const g of load("sa8000-gruppi.json")) {
+    await sql`
+      insert into sa_group (id, set_id, key, section_key, nome, ordine)
+      values (${said(`grp:${g.key}`)}, ${SA_SET}, ${g.key}, ${g.sezione}, ${g.nome}, ${g.ordine})
+      on conflict (id) do update set section_key = excluded.section_key, nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const k of load("sa8000-criteri.json")) {
+    // Il gruppo: la parte prima del punto, oppure la lettera della sezione.
+    const gruppo = k.key.includes(".") ? k.key.slice(0, k.key.indexOf(".")) : k.key.slice(0, 1);
+    await sql`
+      insert into sa_criterion (id, set_id, key, section_key, group_key, testo, procedure, ordine)
+      values (${said(`crit:${k.key}`)}, ${SA_SET}, ${k.key}, ${k.sezione}, ${gruppo}, ${k.testo}, ${k.procedure}, ${k.ordine})
+      on conflict (id) do update set section_key = excluded.section_key, group_key = excluded.group_key,
+        testo = excluded.testo, procedure = excluded.procedure, ordine = excluded.ordine`;
+  }
+
   // --- Sistema di gestione integrato QAS (ISO 9001 · 14001 · 45001) ---
   //
   // ⚠️ `norme` diventa un ARRAY. Nel prototipo e' la stringa concatenata `nrm: "QAS"`,
@@ -449,6 +481,7 @@ try {
     "mog_family", "mog_crime", "mog_pillar", "mog_requirement",
     "wb_chapter", "wb_requirement",
     "qas_norm", "qas_chapter", "qas_requirement", "qas_indicator_default",
+    "sa_section", "sa_group", "sa_criterion",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }
