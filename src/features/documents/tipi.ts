@@ -3,7 +3,7 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -139,6 +139,25 @@ export const DOCUMENTI = {
     // CSDDD all'articolo 16 chiede che la dichiarazione sia resa accessibile. Non porta
     // l'anno nel titolo perche' resta la revisione N di una serie unica, ed e' chi la
     // redige a datarla nel corpo.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  analisi_ambientale: {
+    nome: "Analisi ambientale iniziale (ISO 14001)",
+    breve: "Analisi ambientale",
+    file: "analisi-ambientale",
+    // ⚠️ Documento FIRMATO, e non un allegato del riesame: ha valore proprio davanti a un
+    // ente di certificazione, e chi lo firma se ne assume la responsabilita'. Per questo
+    // e' un tipo suo e non una sezione di un altro documento.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  valutazione_ssl: {
+    nome: "Valutazione dei rischi per la salute e la sicurezza",
+    breve: "Valutazione dei rischi",
+    file: "valutazione-rischi-ssl",
+    // Firmato dal datore di lavoro con l'RSPP, e nella pratica anche dal medico
+    // competente e dal RLS: le firme stanno nel documento perche' sono la sua sostanza.
     mostraAnno: false,
     haMedia: false,
   },

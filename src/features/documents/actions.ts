@@ -12,6 +12,8 @@ import {
   publishRiesameQasSnapshot,
   publishManualeSa8000Snapshot,
   publishDichiarazioneFilieraSnapshot,
+  publishAnalisiAmbientaleSnapshot,
+  publishValutazioneSslSnapshot,
 } from "./snapshot";
 
 export async function publishDocumentAction(
@@ -49,6 +51,10 @@ export async function publishDocumentAction(
           return (u: string, o: string, c: string) => publishRiesameQasSnapshot(u, o, c);
         case "manuale_sa8000":
           return (u: string, o: string, c: string) => publishManualeSa8000Snapshot(u, o, c);
+        case "analisi_ambientale":
+          return (u: string, o: string, c: string) => publishAnalisiAmbientaleSnapshot(u, o, c);
+        case "valutazione_ssl":
+          return (u: string, o: string, c: string) => publishValutazioneSslSnapshot(u, o, c);
         case "dichiarazione_filiera":
           return (u: string, o: string, c: string) => publishDichiarazioneFilieraSnapshot(u, o, c);
         default: {

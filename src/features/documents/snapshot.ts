@@ -742,6 +742,92 @@ export async function publishManualeSa8000Snapshot(
 }
 
 /**
+ * L'Analisi ambientale e la Valutazione dei rischi: i due documenti FIRMATI del sistema
+ * integrato.
+ *
+ * ⚠️ Non sono allegati del Riesame di direzione. Sono documenti che il datore di lavoro e
+ * l'RSPP sottoscrivono, e che un ente di certificazione o un organo di vigilanza guarda
+ * per proprio conto: hanno valore da soli. Il piano li aveva scelti (quesito A6, opzione
+ * B) e il modulo ne produceva uno su tre.
+ *
+ * ⚠️ Il verdetto lo dà il MOTORE, non il registro. La significatività di un aspetto e il
+ * livello di un rischio si calcolano con le stesse funzioni pure che il registro mostra a
+ * schermo (`src/lib/calc/sgiqas/motori.ts`): riscriverne una copia qui vorrebbe dire due
+ * aritmetiche che divergono alla prima correzione, e la seconda finirebbe su un documento
+ * firmato.
+ */
+async function registroFirmato(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  contentSetId: string,
+  registerId: string,
+) {
+  const { registroCorpus } = await import("@/features/corpus/letture");
+  const r = await registroCorpus(userId, orgId, companyId, contentSetId, registerId);
+  if (!r) throw new Error(`Registro «${registerId}» non disponibile per questa azienda`);
+  return r;
+}
+
+export async function publishAnalisiAmbientaleSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSgiQas(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema integrato da pubblicare per questa azienda");
+
+  const { COLONNE_CALCOLATE_QAS } = await import("@/components/sgiqas/colonne-calcolate");
+  const reg = await registroFirmato(userId, orgId, companyId, d.sistema.contentSetId, "aspetti");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    sistema: d.sistema,
+    colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
+    aspetti: reg.righe.map((r) => ({
+      riferimento: r.riferimento,
+      dati: r.dati,
+      significativita: COLONNE_CALCOLATE_QAS.aspetti.valore(r.dati),
+    })),
+  };
+
+  return salvaSnapshot(
+    userId, orgId, companyId, "analisi_ambientale", SENZA_ESERCIZIO, dati, d.sistema.contentSetId,
+  );
+}
+
+export async function publishValutazioneSslSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const d = await getSgiQas(userId, orgId, companyId);
+  if (!d?.sistema) throw new Error("Nessun sistema integrato da pubblicare per questa azienda");
+
+  const { COLONNE_CALCOLATE_QAS } = await import("@/components/sgiqas/colonne-calcolate");
+  const reg = await registroFirmato(userId, orgId, companyId, d.sistema.contentSetId, "pericoli");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: d.azienda,
+    sistema: d.sistema,
+    colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
+    pericoli: reg.righe.map((r) => ({
+      riferimento: r.riferimento,
+      dati: r.dati,
+      livello: COLONNE_CALCOLATE_QAS.pericoli.valore(r.dati),
+    })),
+  };
+
+  return salvaSnapshot(
+    userId, orgId, companyId, "valutazione_ssl", SENZA_ESERCIZIO, dati, d.sistema.contentSetId,
+  );
+}
+
+/**
  * La Dichiarazione annuale sulla due diligence di filiera.
  *
  * ⚠️ È l'unico dei nuovi documenti con un obbligo di PUBBLICAZIONE dietro: la CSDDD

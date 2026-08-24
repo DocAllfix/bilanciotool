@@ -9,6 +9,7 @@ import { VistaQuadro } from "./vista-quadro";
 import { VistaSistema } from "./vista-sistema";
 import { VistaRequisiti } from "./vista-requisiti";
 import { VistaIndicatori } from "./vista-indicatori";
+import { COLONNE_CALCOLATE_QAS } from "./colonne-calcolate";
 import type { DatiSgiQas } from "./types";
 
 // Il sistema integrato è un fascicolo che si consulta: quattro viste di lavoro, le tre
@@ -101,6 +102,7 @@ export function SgiQasShell({
         {vista === "indicatori" && <VistaIndicatori companyId={companyId} dati={dati} />}
         {VISTE_CORPUS.includes(vista) && (
           <SezioneCorpus
+            calcolata={COLONNE_CALCOLATE_QAS}
             companyId={companyId}
             contentSetId={dati.sistema.contentSetId}
             vista={vista as VistaCorpus}
@@ -125,6 +127,38 @@ export function SgiQasShell({
               anno={SENZA_ESERCIZIO}
               readyPct={k.indice ?? 0}
             />
+
+            {/* ⚠️ Gli altri due NON sono allegati del Riesame: sono documenti FIRMATI —
+                dal datore di lavoro, dall'RSPP, dal medico competente — che un ente di
+                certificazione e un organo di vigilanza guardano per proprio conto. Il
+                modulo ne produceva uno su tre. */}
+            <div className="border-t pt-5">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                I due documenti firmati
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Escono dai registri <strong>Aspetti ambientali</strong> e{" "}
+                <strong>Pericoli e valutazione dei rischi</strong>, col giudizio calcolato dalle stesse
+                funzioni che vedi nella colonna del registro. Le voci <strong>non ancora valutate</strong>{" "}
+                ci finiscono dentro dichiarate come tali: un aspetto non misurato non è un aspetto
+                trascurabile, e in un documento che qualcuno firma tacerlo sarebbe la dichiarazione
+                sbagliata.
+              </p>
+              <div className="mt-4 space-y-4">
+                <PannelloPubblicazione
+                  companyId={companyId}
+                  tipo="analisi_ambientale"
+                  anno={SENZA_ESERCIZIO}
+                  readyPct={k.indice ?? 0}
+                />
+                <PannelloPubblicazione
+                  companyId={companyId}
+                  tipo="valutazione_ssl"
+                  anno={SENZA_ESERCIZIO}
+                  readyPct={k.indice ?? 0}
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>

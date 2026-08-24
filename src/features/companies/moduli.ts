@@ -232,7 +232,7 @@ export const MODULI_AZIENDA = [
     // intestazione due volte nella barra laterale. Lo verifica `navigazione.db.test.ts`.
     area: "sistemi",
     colore: AREE.sistemi.colore,
-    documenti: ["riesame_qas"],
+    documenti: ["riesame_qas", "analisi_ambientale", "valutazione_ssl"],
     perEsercizio: false,
   },
   {
