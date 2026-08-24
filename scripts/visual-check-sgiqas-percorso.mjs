@@ -206,8 +206,15 @@ await page.screenshot({ path: `${OUT}/05-registri.png` });
 
 // ─── documento ───────────────────────────────────────────────────────────────
 await page.goto(`${U}?vista=documenti`, { waitUntil: "domcontentloaded", timeout: 60_000 });
-await page.getByRole("button", { name: /^Pubblica/ }).waitFor({ timeout: 30_000 });
-await page.click('[data-tour="pubblica-documento"]');
+// ⚠️ Il modulo pubblica TRE documenti: il Riesame e i due firmati. Un `/^Pubblica/`
+// secco ne trova tre e Playwright si ferma; e i tre vanno provati, non uno.
+await page.getByRole("button", { name: /^Pubblica/ }).first().waitFor({ timeout: 30_000 });
+const quantiPubblica = await page.getByRole("button", { name: /^Pubblica/ }).count();
+verifica("Il modulo pubblica i tre documenti del sistema", quantiPubblica === 3, `${quantiPubblica}`);
+verifica("…compresi i due firmati, che non sono allegati del riesame",
+  (await page.getByRole("button", { name: /Analisi ambientale/ }).count()) === 1 &&
+    (await page.getByRole("button", { name: /Valutazione dei/ }).count()) === 1);
+await page.locator('[data-tour="pubblica-documento"]').first().click();
 const doc = await page.waitForEvent("popup", { timeout: 120_000 });
 await doc.waitForLoadState("networkidle", { timeout: 120_000 });
 await doc.setViewportSize({ width: 1280, height: 1700 });
