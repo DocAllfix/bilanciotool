@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { archiveCompanyAction, restoreCompanyAction } from "@/features/companies/actions";
@@ -33,6 +33,42 @@ export function AziendaAzioni({
   const router = useRouter();
   const [chiedeConferma, setChiedeConferma] = useState(false);
   const [inCorso, avvia] = useTransition();
+  /** Sale di uno a ogni operazione riuscita: è il segnale che fa partire il rinfresco. */
+  const [fatte, setFatte] = useState(0);
+
+  // ⚠️ `router.refresh()` sta in un EFFETTO, e non dentro la transizione.
+  //
+  // La storia di questo punto è lunga tre correzioni, e ognuna misurata:
+  //
+  //  1. chiamato nello stesso tick in cui il dialogo si chiude, non si applicava MAI:
+  //     l'azienda archiviata restava fra le attive. Provato con finestre di 45 e 200s.
+  //  2. rimandato con `setTimeout(..., 0)` si applicava in circa sette secondi — ma
+  //     restava DENTRO la richiamata di `useTransition`, e da lì è tornato a mancare in
+  //     modo intermittente quando la dashboard è passata da cinque a undici moduli e il
+  //     suo tempo di risposta da circa un secondo a quattro-otto. Misurato: a volte
+  //     sette secondi, a volte mai in tre minuti — e una ricarica mostrava subito la
+  //     pagina giusta, quindi il server rispondeva bene ed era il client a non applicare.
+  //  3. in un effetto, il rinfresco parte DOPO che React ha eseguito il commit e la
+  //     transizione è finita. Non è un ritardo più lungo: è un momento diverso, l'unico
+  //     in cui non c'è una transizione in corso a cui l'aggiornamento possa restare
+  //     appeso.
+  //
+  // La controprova è stata fatta rimettendo il `setTimeout` dentro la transizione e
+  // ripetendo il ciclo archivia/ripristina quattro volte: **quattro aggiornamenti su
+  // otto non sono mai arrivati**, e una ricarica mostrava subito la pagina giusta. Con
+  // l'effetto, zero su sei, fra i 6,2 e gli 8,5 secondi. Lo strumento è
+  // `node scripts/misura-archiviazione.mjs`, e una misura sola non basta: il difetto è
+  // intermittente, quindi «ha funzionato una volta» non distingue corretto da fortunato.
+  //
+  // Il secondo fattore, indipendente da questo, era `revalidatePath("/dashboard")` nelle
+  // azioni: vedi il commento in `src/features/companies/actions.ts`. Bastava uno dei due
+  // a rompere l'aggiornamento.
+  //
+  // Il controllo che diventa rosso se una delle tre torna indietro è
+  // `npm run qa -- portafoglio-aggiorna`, che non ricarica MAI la pagina.
+  useEffect(() => {
+    if (fatte > 0) router.refresh();
+  }, [fatte, router]);
 
   function esegui(azione: () => Promise<{ ok: boolean; errore?: string }>, riuscito: string) {
     avvia(async () => {
@@ -43,23 +79,7 @@ export function AziendaAzioni({
       }
       setChiedeConferma(false);
       toast.success(riuscito);
-      // ⚠️ L'aggiornamento va rimandato al tick successivo, e la ragione e' misurata.
-      //
-      // Chiamato nello STESSO tick in cui il dialogo si chiude, `router.refresh()` non
-      // applica mai l'albero che il server restituisce: l'azienda archiviata resta fra
-      // le attive, quella creata non compare. Provato con finestre di 45 e 200 secondi.
-      // Con `setTimeout(..., 0)` — cioe' semplicemente dopo lo smontaggio del dialogo —
-      // la pagina si aggiorna in circa sette secondi.
-      //
-      // Non serve attendere l'animazione: zero basta. Non e' un ritardo, e' un ORDINE.
-      //
-      // Il secondo fattore, indipendente da questo, era `revalidatePath("/dashboard")`
-      // nelle azioni: vedi il commento in `src/features/companies/actions.ts`. Bastava
-      // uno dei due a rompere l'aggiornamento, e servivano entrambe le correzioni.
-      //
-      // C'e' un controllo che diventa rosso se una delle due torna:
-      // `npm run qa -- portafoglio-aggiorna`, che non ricarica mai la pagina.
-      setTimeout(() => router.refresh(), 0);
+      setFatte((n) => n + 1);
     });
   }
 
