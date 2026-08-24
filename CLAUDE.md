@@ -845,6 +845,46 @@ mai chiuse: **A9** (il fascicolo di una segnalazione e' pubblicabile?), **A11** 
 della sola parte generale del 231), **A14** (il ponte filiera ↔ fornitore, ora che
 entrambe le sponde esistono).
 
+**Le tre decisioni aperte, chiuse (2026-08-24)** — A9, A11, A14.
+
+**A9 — il fascicolo di una segnalazione si STAMPA, non si pubblica.** Quattro ragioni, e
+l'ultima da sola basterebbe: la chiave dello snapshot non ha l'asse «quale fascicolo» e
+piegare `anno` farebbe mentire una colonna; un quarto asse toccherebbe l'impianto di
+quindici tipi per servirne uno; un fascicolo ha UN lettore e vive finche' il caso e'
+aperto, quindi congelarne le versioni produrrebbe un archivio di mezze verita'; e **il
+collegamento del portale cliente e' per AZIENDA, non per documento** — un tipo nuovo
+comparirebbe dentro i collegamenti gia' consegnati senza che nessuno prema niente.
+La stampa e' dietro sessione, non si archivia mai, pretende `export` e non `generate_pdf`,
+e registra l'accesso. `fascicolo-non-pubblicabile-pure.test.ts` impedisce che qualcuno lo
+renda pubblicabile domani, che e' il momento in cui il danno si crea.
+
+**A11 — la parte generale del 231 e' una PROPRIETA', non un interruttore.** Il dato c'era
+gia': `fase` porta nove procedure «Parte generale» e nove «Parte speciale». Costruita come
+modalita' di stampa esisterebbe in un posto solo; derivata dal dato vale per qualunque
+corpus con fasi, e dove `fase` non distingue i pulsanti non compaiono.
+
+**A14 — la chiave adesso, il ponte quando ci sono i clienti.** Il ponte vero paga solo
+quando entrambe le estremita' sono clienti, e con otto organizzazioni paganti la
+probabilita' e' vicina a zero. Ma `chain_partner` non aveva la partita IVA: aggiungerla
+oggi costa una colonna, fra un anno costerebbe una campagna di richiamo su ogni partner
+gia' mappato. La meta' leggera invece si fa subito, perche' sta dentro un solo tenant: le
+sei risposte dell'area «Catena di fornitura» si **propongono** dai dati di filiera, col
+motivo accanto, solo dove la domanda e' vuota.
+
+**Regole nate qui:**
+- **Un pericolo si evita, non si filtra.** La difesa contro il fascicolo nel portale
+  sarebbe stata un filtro nella query — una difesa che deve restare giusta per sempre —
+  invece di non creare il tipo.
+- **Un vincolo che riguarda il futuro si scrive sul SORGENTE, non sui dati.** Un test che
+  pubblica e verifica che non compaia prova il comportamento di oggi; questo impedisce
+  che domani qualcuno lo renda pubblicabile.
+- **Una modalita' di export e' una proprieta' travestita.** Se la divisione e' nei dati,
+  si deriva; se non c'e', non si inventa.
+- **La chiave di un ponte va posata prima del ponte**: e' l'unica parte che il tempo rende
+  piu' cara, perche' dopo servirebbe una campagna di richiamo.
+- **Un suggerimento porta il proprio motivo.** Una risposta comparsa da sola in un
+  documento che qualcuno firma e' una risposta che nessuno ha dato.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

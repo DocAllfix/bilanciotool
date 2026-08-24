@@ -275,6 +275,22 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0-sexies. ✅ **CHIUSE il 24 agosto 2026 — le tre decisioni A9, A11, A14.** Il fascicolo
+   di una segnalazione si **stampa** e non si pubblica (la ragione decisiva: il
+   collegamento del portale è per azienda e non per documento); la **parte generale** del
+   231 si consegna come fascicolo, derivata dal campo `fase` che il corpus porta già; e
+   del ponte filiera ↔ fornitore c'è la **chiave** — la partita IVA del partner — più la
+   metà leggera dei suggerimenti dentro un solo tenant.
+
+   → *verifica:* `fascicolo-non-pubblicabile-pure.test.ts` (messo in rosso aggiungendo il
+   tipo vietato) · `qa -- segnalazioni-percorso` · `qa -- fornitore` · `qa --
+   filiera-percorso`.
+
+   ⚠️ **Il ponte pesante resta da fare**, e deliberatamente: paga solo quando entrambe le
+   estremità sono clienti, e serve un flusso di consenso vero. La regola da non
+   riscoprire è scritta accanto alla colonna: la mappatura deve **saturare a 3** finché
+   la verifica documentale non è compilata.
+
 0-quater. ✅ **CHIUSO il 24 agosto 2026 — il corpus si può consegnare.** Era il buco più
    grosso dei moduli: 447 procedure e moduli si consultavano e si personalizzavano a
    schermo, e non si potevano stampare. Il PDF **non si archivia**, al contrario dei
