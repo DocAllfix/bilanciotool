@@ -209,6 +209,37 @@ export default function TerminiPage() {
           I riferimenti a norme tecniche e a standard di rendicontazione appartengono ai rispettivi enti: la piattaforma
           ne applica i requisiti, ma non ne distribuisce il testo, che va acquisito dalle fonti ufficiali.
         </p>
+        {/* ⚠️ Le due frasi qui sotto sono l'unica difesa che vale davanti a un giudice.
+            Senza, il colophon sui documenti e la pagina pubblica di verifica sono
+            deterrenza senza sanzione: dicono da dove viene un documento, ma non dicono
+            che cosa il cliente ha comprato il diritto di farne. */}
+        <p>
+          <strong>Perimetro della licenza.</strong> Il corpus documentale — procedure, modulistica, registri e i
+          documenti che la piattaforma produce — è licenziato per le <strong>aziende del portafoglio dell&apos;Utente</strong>,
+          cioè quelle che l&apos;Utente rendiconta con il proprio abbonamento e nei limiti di capacità del piano
+          sottoscritto. Non è licenziato per aziende seguite da altri studi, né per un numero di aziende superiore a
+          quello previsto dal piano.
+        </p>
+        <p>
+          <strong>Che cosa si può fare, e che cosa no.</strong> I documenti prodotti si consegnano ai propri clienti,
+          nella forma in cui la piattaforma li emette, e restano dell&apos;Utente e del suo cliente anche dopo la
+          cessazione del rapporto. <strong>Non si rivendono, non si cedono e non si distribuiscono come modelli,
+          template o basi documentali</strong> a soggetti terzi, né a titolo oneroso né gratuito: sarebbe la
+          distribuzione del contenuto metodologico, che non è oggetto della licenza.
+        </p>
+        <p>
+          <strong>La cessazione non retroagisce.</strong> Alla fine del rapporto l&apos;Utente perde il diritto di
+          produrre documenti nuovi e di accedere agli aggiornamenti del corpus, ma <strong>non perde i documenti già
+          consegnati</strong>: quelli restano validi presso i destinatari, e la pagina pubblica di verifica continua a
+          confermarne l&apos;emissione. È il principio che il prodotto applica già ai dati: si perde il diritto di
+          scrivere, non il lavoro fatto.
+        </p>
+        <p>
+          <strong>Il contenuto è datato.</strong> Il corpus e i contenuti metodologici sono versionati per edizione, e
+          l&apos;edizione con cui un documento è stato prodotto è indicata nel documento stesso. Le norme si aggiornano:
+          un documento redatto su un&apos;edizione superata resta autentico, ma non è per questo aggiornato, e la
+          piattaforma non garantisce la conformità di contenuti prodotti su edizioni non più correnti.
+        </p>
       </Sezione>
 
       <Sezione n={12} titolo="Natura dei documenti prodotti">

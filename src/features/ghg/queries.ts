@@ -49,6 +49,9 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
     azienda: serAz(base.az),
     inventario: {
       id: inv.id,
+      // L'edizione dei contenuti: si congela nel documento pubblicato. Vedi
+      // `salvaSnapshot`, dove il parametro e' obbligatorio proprio per questo.
+      contentSetId: inv.contentSetId,
       anno: inv.anno,
       annoBase: inv.annoBase,
       gwpSetKey: inv.gwpSetKey,

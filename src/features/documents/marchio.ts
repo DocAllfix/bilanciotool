@@ -45,3 +45,34 @@ export function marchioDelloSnapshot(dati: unknown): Marchio {
   if (!m || typeof m.nome !== "string" || !m.nome.trim()) return MARCHIO_NOSTRO;
   return { nome: m.nome, nostro: m.nostro !== false };
 }
+
+/**
+ * Il marchio corrente dello studio, per i documenti che NON si congelano.
+ *
+ * ⚠️ I documenti pubblicati congelano il marchio nello snapshot, e devono: un PDF già
+ * consegnato non puo' cambiare intestazione. Il corpus e' l'opposto — si stampa vivo, e
+ * la stampa di domani porta il marchio di domani — quindi qui si legge lo stato attuale.
+ * Sono due comportamenti diversi perche' i due documenti hanno nature diverse, non per
+ * distrazione.
+ */
+export async function marchioDelloStudio(orgId: string): Promise<Marchio> {
+  const { db } = await import("@/lib/db");
+  const { withTenant } = await import("@/lib/db/tenant");
+  const { orgEntitlement, organization } = await import("@/lib/db/schema");
+  const { eq } = await import("drizzle-orm");
+
+  const [ent, org] = await Promise.all([
+    withTenant({ orgId }, (tx) =>
+      tx
+        .select({ whiteLabel: orgEntitlement.whiteLabel })
+        .from(orgEntitlement)
+        .where(eq(orgEntitlement.organizationId, orgId))
+        .limit(1),
+    ),
+    db.select({ nome: organization.name }).from(organization).where(eq(organization.id, orgId)).limit(1),
+  ]);
+  return marchioDaCongelare({
+    whiteLabel: ent[0]?.whiteLabel ?? false,
+    nomeStudio: org[0]?.nome ?? null,
+  });
+}

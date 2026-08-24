@@ -6,6 +6,8 @@ import { getPortfolioOverview, listCompaniesWithStats } from "@/features/compani
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { radiciModuli } from "@/features/companies/radici";
+import { withTenant } from "@/lib/db/tenant";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
 import { ServiziStudio } from "@/components/portfolio/servizi-studio";
@@ -20,13 +22,30 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const s = await requireConsultant();
-  const [aziende, usage, quadro, scadenzario, stati] = await Promise.all([
-    listCompaniesWithStats(s.userId, s.orgId),
-    getCompanyUsage(s.userId, s.orgId),
-    getPortfolioOverview(s.userId, s.orgId),
-    getScadenzario(s.userId, s.orgId),
-    getStatiPortafoglio(s.userId, s.orgId),
-  ]);
+  // ⚠️ UNA transazione per tutta la pagina, e le cinque letture la riusano.
+  //
+  // Ognuna apriva la propria: sei transazioni, e su questo database l'apertura e la
+  // chiusura costano ~300 ms a testa — quasi due secondi spesi prima di leggere un dato,
+  // su una pagina che si apre a ogni accesso. `withTenant` ora riusa quella aperta nella
+  // stessa catena di chiamate (vedi `lib/db/tenant.ts`), quindi basta aprirla qui e le
+  // funzioni dentro non cambiano di una riga.
+  //
+  // ⚠️ Le radici dei moduli si chiedono PRIMA: aprono una transazione loro e devono
+  // farlo fuori da questa, altrimenti chiedono una connessione in piu' al pool. Con
+  // `cache()` di React la domanda vale per tutta la richiesta, quindi chi la rifa' dentro
+  // non paga niente.
+  await radiciModuli(s.userId, s.orgId);
+  const [aziende, usage, quadro, scadenzario, stati] = await withTenant(
+    { userId: s.userId, orgId: s.orgId },
+    () =>
+      Promise.all([
+        listCompaniesWithStats(s.userId, s.orgId),
+        getCompanyUsage(s.userId, s.orgId),
+        getPortfolioOverview(s.userId, s.orgId),
+        getScadenzario(s.userId, s.orgId),
+        getStatiPortafoglio(s.userId, s.orgId),
+      ]),
+  );
   const attive = aziende.filter((a) => a.stato === "active");
   const archiviate = aziende.filter((a) => a.stato === "archived");
   // Solo le voci che chiedono un'azione, e non l'elenco completo dei

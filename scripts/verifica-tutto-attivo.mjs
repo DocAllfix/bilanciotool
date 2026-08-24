@@ -71,9 +71,16 @@ await agisci("si crea un'azienda propria", async () => {
   await page.locator("#na-settore").fill("Collaudo");
   await page.locator("#na-sede").fill("Bari");
   await page.getByRole("button", { name: /^Crea azienda$/ }).click();
-  await page.waitForTimeout(2500);
+  // ⚠️ Si ATTENDE la riga, non si aspettano due secondi e mezzo. L'attesa fissa reggeva
+  // quando la dashboard rispondeva in un secondo; con undici moduli ne impiega quattro-
+  // otto, e la scadenza arrivava prima della scrittura. Il referto diceva «l'azienda non
+  // risulta nel database» — cioe' accusava il prodotto di non aver creato niente — e i
+  // nove controlli successivi cadevano a valanga sulla stessa causa.
+  await attendi(async () => {
+    const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME_AZIENDA}`;
+    return !!r;
+  }, { entro: 40_000, cosa: "l'azienda creata" });
   const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME_AZIENDA}`;
-  if (!r) throw new Error("l'azienda non risulta nel database");
   mia = r.id;
 });
 

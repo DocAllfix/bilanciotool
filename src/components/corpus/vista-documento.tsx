@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, RotateCcw } from "lucide-react";
+import { ArrowLeft, Download, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -56,14 +56,30 @@ export function VistaDocumento({
         >
           <ArrowLeft className="size-4" /> Torna all&apos;elenco
         </Link>
-        <Button
-          size="sm"
-          variant={modifica ? "default" : "ghost"}
-          onClick={() => setModifica((m) => !m)}
-          data-tour="corpus-personalizza"
-        >
-          {modifica ? "Chiudi la personalizzazione" : "Personalizza il testo"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* ⚠️ Il PDF si apre in una scheda nuova e NON si archivia. I documenti
+              pubblicati sono immutabili, quindi il loro PDF si conserva; il corpus e'
+              vivo, e un PDF archiviato sarebbe la fotografia di ieri servita come se
+              fosse quella di oggi — il cliente firmerebbe una procedura che nel prodotto
+              e' gia' diversa. */}
+          <a
+            href={`/api/corpus/${companyId}/${encodeURIComponent(dati.contentSetId)}/${encodeURIComponent(d.code)}/pdf`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[13px] font-medium transition-colors hover:bg-accent"
+            data-tour="corpus-pdf"
+          >
+            <Download className="size-4" /> Scarica in PDF
+          </a>
+          <Button
+            size="sm"
+            variant={modifica ? "default" : "ghost"}
+            onClick={() => setModifica((m) => !m)}
+            data-tour="corpus-personalizza"
+          >
+            {modifica ? "Chiudi la personalizzazione" : "Personalizza il testo"}
+          </Button>
+        </div>
       </div>
 
       <div>

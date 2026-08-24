@@ -18,21 +18,37 @@ export function Colophon({
   codice,
   emittente,
   tipo,
+  nome,
   anno,
   versione,
+  edizione,
   pubblicatoIl,
   urlVerifica,
 }: {
   /** `null` per i documenti pubblicati prima che il codice esistesse. */
   codice: string | null;
   emittente: string;
-  tipo: TipoDocumento;
+  /** `null` per i documenti del corpus, che non sono un tipo pubblicabile. */
+  tipo: TipoDocumento | null;
+  /** Il nome, quando non viene dal registro dei tipi (procedure e moduli del corpus). */
+  nome?: string;
   anno: number;
   versione: number;
+  /**
+   * L'edizione dei contenuti metodologici con cui il documento e' stato prodotto.
+   *
+   * ⚠️ Non e' la revisione del documento, ed e' la distinzione che conta: la revisione
+   * dice quante volte l'ha ripubblicato lo studio, l'edizione dice su quale versione
+   * delle guide, dei cataloghi e dei modelli e' stato redatto. Le norme si aggiornano, e
+   * un documento su un'edizione superata resta autentico senza essere aggiornato. Sui
+   * documenti emessi prima che l'edizione si congelasse e' `null`, e allora non si
+   * stampa: meglio tacere che inventare.
+   */
+  edizione: string | null;
   pubblicatoIl: string;
   urlVerifica: string;
 }) {
-  const d = DOCUMENTI[tipo];
+  const titolo = nome ?? (tipo ? DOCUMENTI[tipo].nome : "Documento");
   return (
     <section
       aria-label="Colophon di emissione"
@@ -50,8 +66,10 @@ export function Colophon({
           <tr>
             <td style={{ width: "62%", verticalAlign: "top", padding: 0, border: "none" }}>
               <p className="doc-meta" style={{ margin: 0 }}>
-                <strong>{d.nome}</strong>
-                {anno !== SENZA_ESERCIZIO ? ` · esercizio ${anno}` : ""} · revisione {versione}
+                <strong>{titolo}</strong>
+                {anno !== SENZA_ESERCIZIO ? ` · esercizio ${anno}` : ""}
+                {versione > 0 ? ` · revisione ${versione}` : ""}
+                {edizione ? ` · contenuti ${edizione}` : ""}
               </p>
               <p className="doc-meta" style={{ margin: "2px 0 0" }}>
                 Emesso da <strong>{emittente}</strong> il {fmtData(pubblicatoIl.slice(0, 10))}.
@@ -62,7 +80,7 @@ export function Colophon({
               </p>
             </td>
             <td style={{ verticalAlign: "top", padding: "0 0 0 14px", border: "none", textAlign: "right" }}>
-              {codice ? (
+              {!codice && !urlVerifica ? null : codice ? (
                 <>
                   <p className="doc-meta" style={{ margin: 0 }}>
                     Codice di verifica

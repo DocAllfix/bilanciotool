@@ -135,7 +135,17 @@ await agisci("«Altre azioni» si apre", async () => {
 
 await agisci("la card porta al fascicolo", async () => {
   await vai("/dashboard");
-  await page.locator(`a[href="${A}"]`).first().click();
+  // ⚠️ Si clicca il NOME, non il centro della card. Il collegamento che copre la card
+  // e' sotto la griglia dei percorsi, e con undici moduli quella griglia occupa proprio
+  // il centro: cliccare li' apre il modulo su cui si e' finiti, che per un utente e' il
+  // comportamento giusto e per un collaudo e' un bersaglio diverso da quello che voleva.
+  await page
+    .locator('[data-slot="card"]')
+    .filter({ has: page.locator(`a[href="${A}"]`) })
+    .first()
+    .getByRole("heading")
+    .first()
+    .click();
   await page.waitForURL(`**${A}`, { timeout: 20_000 });
 });
 

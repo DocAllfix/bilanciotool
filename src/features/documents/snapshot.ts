@@ -104,7 +104,7 @@ export async function publishGhgSnapshot(userId: string, orgId: string, companyI
     risultati, // derivati congelati QUI
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "ghg", anno, dati);
+  return salvaSnapshot(userId, orgId, companyId, "ghg", anno, dati, wiz.inventario.contentSetId);
 }
 
 // ------------------------------------------------------------------ Bilancio
@@ -182,7 +182,7 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
     bridge,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "bilancio", anno, dati);
+  return salvaSnapshot(userId, orgId, companyId, "bilancio", anno, dati, proj.contentSetId);
 }
 
 // ------------------------------------------------------------------ Energetico
@@ -247,7 +247,7 @@ export async function publishEnergySnapshot(userId: string, orgId: string, compa
     risultati: wiz.risultati, // derivati congelati QUI
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "energetico", anno, dati);
+  return salvaSnapshot(userId, orgId, companyId, "energetico", anno, dati, wiz.bilancio.contentSetId);
 }
 
 // ------------------------------------------------------------------ Attestato
@@ -273,7 +273,7 @@ export async function publishSupplierSnapshot(userId: string, orgId: string, com
     esito: d.esito, // derivati congelati QUI
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "attestato", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "attestato", SENZA_ESERCIZIO, dati, d.valutazione.contentSetId);
 }
 
 // ------------------------------------------------------------------ SoA
@@ -312,7 +312,7 @@ export async function publishSoaSnapshot(userId: string, orgId: string, companyI
     esito: d.esito, // derivati congelati QUI
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "soa", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "soa", SENZA_ESERCIZIO, dati, d.dichiarazione.contentSetId);
 }
 
 /**
@@ -368,7 +368,7 @@ export async function publishRelazionePcSnapshot(
     indicatori: d.indicatori,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "relazione_pc", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "relazione_pc", SENZA_ESERCIZIO, dati, d.sistema.contentSetId);
 }
 
 /**
@@ -419,7 +419,7 @@ export async function publishMatricePcSnapshot(
     requisitiValutati: d.indicatori.requisitiValutati,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "matrice_pc", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "matrice_pc", SENZA_ESERCIZIO, dati, d.sistema.contentSetId);
 }
 
 /**
@@ -491,7 +491,7 @@ export async function publishMatrice231Snapshot(
     indicatori: d.indicatori,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "matrice_231", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "matrice_231", SENZA_ESERCIZIO, dati, d.modello.contentSetId);
 }
 
 /**
@@ -541,7 +541,7 @@ export async function publishRelazioneOdvSnapshot(
     indicatori: d.indicatori,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "relazione_odv", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "relazione_odv", SENZA_ESERCIZIO, dati, d.modello.contentSetId);
 }
 
 /**
@@ -619,7 +619,7 @@ export async function publishRelazioneWbSnapshot(
       })),
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "relazione_wb", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "relazione_wb", SENZA_ESERCIZIO, dati, d.assetto.contentSetId);
 }
 
 /**
@@ -684,7 +684,7 @@ export async function publishRiesameQasSnapshot(
       .map((r) => ({ key: r.key, riferimento: r.riferimento, testo: r.testo, norme: r.norme })),
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "riesame_qas", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "riesame_qas", SENZA_ESERCIZIO, dati, d.sistema.contentSetId);
 }
 
 /**
@@ -738,7 +738,7 @@ export async function publishManualeSa8000Snapshot(
     dettaglio: d.dettaglio,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "manuale_sa8000", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "manuale_sa8000", SENZA_ESERCIZIO, dati, d.sistema.contentSetId);
 }
 
 /**
@@ -788,7 +788,7 @@ export async function publishDichiarazioneFilieraSnapshot(
     quadro: d.quadro,
   };
 
-  return salvaSnapshot(userId, orgId, companyId, "dichiarazione_filiera", SENZA_ESERCIZIO, dati);
+  return salvaSnapshot(userId, orgId, companyId, "dichiarazione_filiera", SENZA_ESERCIZIO, dati, d.programma.contentSetId);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo
@@ -817,6 +817,19 @@ async function salvaSnapshot(
   tipo: TipoDocumento,
   anno: number,
   dati: Record<string, unknown>,
+  /**
+   * L'edizione dei contenuti metodologici con cui il documento e' stato prodotto.
+   *
+   * ⚠️ È OBBLIGATORIA di proposito. Le norme si aggiornano, e un Modello 231 del 2026 non
+   * vale nel 2028: chi riceve un documento deve poter sapere su quale edizione è stato
+   * redatto, e chi lo ha prodotto deve sapere quando è invecchiato. Il dato esisteva già
+   * — `content_set` è congelato alla creazione di ogni percorso — e non lo vedeva
+   * nessuno.
+   *
+   * Obbligatoria e non facoltativa perche' e' l'unico modo di costringere il
+   * QUATTORDICESIMO documento a dichiararla: un parametro che si puo' omettere si omette.
+   */
+  contentSetId: string,
 ): Promise<string> {
   const versione = await prossimaVersione(orgId, companyId, tipo, anno);
   const id = randomUUID();
@@ -841,7 +854,7 @@ async function salvaSnapshot(
       tipo,
       anno,
       versione,
-      dati: { ...dati, marchio },
+      dati: { ...dati, marchio, edizione: contentSetId },
       publishedBy: userId,
     });
     // ⚠️ Il codice si assegna QUI, nella stessa strozzatura e nella stessa transazione
@@ -856,6 +869,7 @@ async function salvaSnapshot(
       tipo,
       anno,
       versione,
+      edizione: contentSetId,
     });
     await logAudit(tx, {
       organizationId: orgId,

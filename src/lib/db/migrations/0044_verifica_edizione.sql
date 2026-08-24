@@ -1,0 +1,1 @@
+ALTER TABLE "document_codice" ADD COLUMN "edizione" text;

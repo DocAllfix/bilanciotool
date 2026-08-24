@@ -725,6 +725,58 @@ Gate: typecheck · build · `corpus-registri-superati` 5/5 (messo in rosso togli
 guardia lato server) · `pagine-statiche-pure` verde col proprio controtest · `qa --
 codice-documento`.
 
+**Il giro sui comandi, e il controllo visivo (2026-08-24)** — quattro difetti veri, e
+uno lo si vede solo guardando.
+
+Il collaudo per comando su tutti gli undici moduli, sul build di produzione, con le tre
+spie a ogni gesto. Quattro cose che nessun test aveva visto:
+
+1. **ISO 37001 non era mai stato collaudato.** Aveva il golden, il test di flusso e il
+   confine di tenant; nessuno aveva mai premuto i suoi pulsanti in un browser. Lo scarto
+   si e' visto solo elencando i collaudi accanto ai moduli.
+2. **Due requisiti con lo stesso nome accessibile.** Il pulsante di stato si annunciava
+   col riferimento alla norma — sei requisiti citano tutti il punto 4.5 — e Playwright si
+   e' fermato con «resolved to 2 elements». Per un lettore di schermo erano sei pulsanti
+   identici. Guardia: `nomi-accessibili-pure.test.ts`.
+3. **Due collaudi erano rossi da giorni**: verificavano «sei viste» mentre il corpus ne
+   aveva aggiunte tre. Nessuno li aveva piu' lanciati.
+4. **Il portafoglio non si aggiornava piu', a intermittenza** — 4 volte su 8. Terza
+   correzione dello stesso punto, e la prima in cui si sa perche'.
+
+**Regole nate qui:**
+- **Un difetto intermittente non si dichiara chiuso su una misura sola.** «Ha funzionato
+  una volta» non distingue corretto da fortunato: la controprova e' stata rimettere il
+  difetto e ripetere il ciclo quattro volte. `scripts/misura-archiviazione.mjs` resta nel
+  repository proprio per questo.
+- **`router.refresh()` va in un EFFETTO, non dentro la richiamata di `useTransition`.**
+  Non e' un ritardo piu' lungo, e' un momento diverso: dopo il commit non c'e' una
+  transizione a cui l'aggiornamento possa restare appeso. Il difetto e' tornato quando la
+  dashboard e' passata da un secondo a quattro-otto, cioe' quando la finestra in cui
+  l'aggiornamento si perdeva si e' allargata abbastanza da vedersi.
+- **Il freno sulle iscrizioni si azzera prima di ogni registrazione di collaudo, e solo in
+  locale.** Dieci all'ora e' giusto contro Internet e sbagliato contro noi stessi: una
+  batteria di undici collaudi lo fa scattare, e il referto dice «TimeoutError» su un
+  elemento a caso invece che «sei frenato».
+- **Un collaudo che aspetta un popup per due minuti non dice perche' non e' arrivato.** Si
+  corre il popup contro il messaggio d'errore a schermo. L'avviso deve pero' avere del
+  TESTO: `[role="alert"]` puo' essere un contenitore vuoto sempre presente, e correrci
+  contro il popup lo farebbe vincere sempre.
+- **`networkidle` non e' la condizione che interessa.** Pretende mezzo secondo di silenzio
+  di rete, e una pagina che risponde in otto secondi lo fa scadere senza che niente sia
+  rotto. Si aspetta che la pagina ci sia.
+- **Il numero delle viste non si scrive a mano in un collaudo.** Si verifica il fatto: le
+  viste proprie del modulo piu' le quattro comuni.
+- ⚠️ **I collaudi funzionali non vedono la disposizione.** La card del portafoglio aveva
+  undici caselle su cinque colonne — 5+5+1, l'ultima orfana e due etichette troncate — e
+  tutti i controlli erano verdi. `scripts/foto-superfici.mjs` fotografa le superfici
+  cambiate per essere GUARDATE: non ha asserzioni, ed e' l'unico modo di vedere questa
+  classe di difetti.
+
+**Prestazioni, misurate e non chiuse**: la dashboard risponde in **4-8 secondi** (era circa
+uno con cinque moduli), il fascicolo in 4,6. La causa e' nota e sta nel piano: undici
+moduli fanno tredici query in parallelo a ogni apertura (`stati-moduli.ts`). Non blocca
+niente e nessun collaudo ci sbatte piu', ma e' il prossimo debito da chiudere.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

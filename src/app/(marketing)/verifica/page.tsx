@@ -7,6 +7,7 @@ import { PiedeMarketing } from "@/components/landing/piede";
 import { normalizzaCodice } from "@/lib/calc/documenti/codice";
 import { verificaCodice } from "@/features/documents/codice";
 import { consumaColpo } from "@/features/documents/freno-verifica";
+import { edizionePiuRecente } from "@/features/documents/edizione";
 import { DOCUMENTI, SENZA_ESERCIZIO } from "@/features/documents/tipi";
 import { fmtData } from "@/lib/format";
 
@@ -46,6 +47,12 @@ export default async function VerificaPage({
   let esito: Awaited<ReturnType<typeof verificaCodice>> = null;
   let frenato: number | null = null;
 
+  // L'edizione corrente del dominio a cui il documento appartiene: serve a dire se
+  // quella con cui e' stato prodotto e' stata superata. Una sola query, e solo quando
+  // c'e' un esito da mostrare.
+  let edizioneCorrente: string | null = null;
+  let superata = false;
+
   if (canonico) {
     const h = await headers();
     // Su Vercel l'indirizzo vero sta in `x-forwarded-for`, e il primo della lista è il
@@ -54,6 +61,11 @@ export default async function VerificaPage({
     const freno = await consumaColpo(ip);
     if (freno.passa) esito = await verificaCodice(canonico);
     else frenato = freno.riprovaFra;
+
+    if (esito?.edizione) {
+      edizioneCorrente = await edizionePiuRecente(esito.edizione);
+      superata = Boolean(edizioneCorrente && edizioneCorrente !== esito.edizione);
+    }
   }
 
   return (
@@ -155,8 +167,29 @@ export default async function VerificaPage({
               {esito.anno !== SENZA_ESERCIZIO && <Voce k="Esercizio" v={String(esito.anno)} />}
               <Voce k="Revisione" v={String(esito.versione)} />
               <Voce k="Data di emissione" v={fmtData(esito.pubblicatoIl.toISOString().slice(0, 10))} />
+              {esito.edizione && <Voce k="Edizione dei contenuti" v={esito.edizione} mono />}
               <Voce k="Codice" v={esito.codice} mono />
             </dl>
+
+            {/* ⚠️ È il punto che rende utile la verifica a chi la fa. Un documento resta
+                AUTENTICO per sempre — l'emissione è un fatto — ma i contenuti
+                metodologici si aggiornano, e un Modello 231 redatto nel 2026 non è
+                aggiornato nel 2028. La pagina dice le due cose separatamente, perché
+                sono separate: confonderle vorrebbe dire o svalutare un documento
+                autentico, o far passare per attuale un documento vecchio. */}
+            {superata && (
+              <p
+                className="mt-5 rounded-lg border px-4 py-3 text-[13px] leading-relaxed"
+                style={{ borderColor: "var(--warning)" }}
+                data-slot="edizione-superata"
+              >
+                <strong>Il documento è autentico, ma i contenuti sono di un&apos;edizione precedente.</strong>{" "}
+                È stato redatto sull&apos;edizione <span className="font-mono">{esito.edizione}</span>, mentre
+                quella corrente è <span className="font-mono">{edizioneCorrente}</span>. Resta valido come atto
+                emesso in quella data; se ti serve una fotografia aggiornata, chiedila a chi te lo ha
+                consegnato.
+              </p>
+            )}
             <p className="mt-5 border-t pt-4 text-[13px] leading-relaxed text-muted-foreground">
               Questa pagina conferma <strong>l&apos;emissione</strong>, non il merito: dice che quel documento
               è stato prodotto da quel soggetto per quell&apos;azienda in quella data. Non attesta la

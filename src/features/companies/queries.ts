@@ -91,6 +91,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "filiera.partner.delete": "Partner eliminato",
   "filiera.punteggio.set": "Valutazione del partner aggiornata",
   "filiera.flag.set": "Fattore aggravante aggiornato",
+  "corpus.documento.pdf": "Documento del corpus scaricato in PDF",
   "corpus.blocco.personalizza": "Testo del documento personalizzato",
   "corpus.blocco.ripristina": "Testo del documento ripristinato",
   "corpus.registro.aggiungi": "Registrazione inserita",

@@ -1,12 +1,6 @@
 import { withTenant } from "@/lib/db/tenant";
-import {
-  company,
-  documentSnapshot,
-  ghgInventory,
-  reportProject,
-  energyBalance,
-  supplierAssessment,
-  soaDeclaration, briberySystem, mogModel, wbSystem, qasSystem, saSystem, chainProgram } from "@/lib/db/schema";
+import { radiciPerModulo } from "./radici";
+import { company, documentSnapshot } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import type { StatoModulo } from "./fascicolo";
 import { and, desc, eq, max } from "drizzle-orm";
@@ -55,60 +49,22 @@ export type StatiPortafoglio = {
 export async function getStatiPortafoglio(userId: string, orgId: string): Promise<StatiPortafoglio> {
   // Ogni select porta il proprio filtro sull'organizzazione oltre alle policy
   // RLS: in sviluppo la connessione è privilegiata e le policy non scattano.
+  // ⚠️ FUORI dalla transazione: `radiciPerModulo` apre la propria, e annidarle esaurisce
+  // il pool di connessioni. Vedi il commento in `radici.ts` — la dashboard si bloccava.
+  const radici = await radiciPerModulo(userId, orgId);
+
   return withTenant({ userId, orgId }, async (tx) => {
-    const [aziende, ghg, bil, ene, sup, soa, pc, mog, wb, qas, sa, fil, docs] = await Promise.all([
+    // ⚠️ DUE interrogazioni, non tredici. Le undici radici dei moduli arrivano da
+    // `radiciModuli`, che le chiede in un viaggio solo con una UNION ALL — e che
+    // `scadenzario.ts` condivide, perche' faceva le stesse identiche undici. Vedi il
+    // commento in `radici.ts`: dentro una transazione `Promise.all` non parallelizza
+    // niente, e con undici moduli la dashboard era passata da un secondo a quattro-otto.
+    const [aziende, docs] = await Promise.all([
       tx
         .select({ id: company.id, nome: company.nome, isDemo: company.isDemo })
         .from(company)
         .where(and(eq(company.organizationId, orgId), eq(company.stato, "active")))
         .orderBy(desc(company.createdAt)),
-      tx
-        .select({ companyId: ghgInventory.companyId, anno: max(ghgInventory.anno) })
-        .from(ghgInventory)
-        .where(eq(ghgInventory.organizationId, orgId))
-        .groupBy(ghgInventory.companyId),
-      tx
-        .select({ companyId: reportProject.companyId, anno: max(reportProject.anno) })
-        .from(reportProject)
-        .where(eq(reportProject.organizationId, orgId))
-        .groupBy(reportProject.companyId),
-      tx
-        .select({ companyId: energyBalance.companyId, anno: max(energyBalance.anno) })
-        .from(energyBalance)
-        .where(eq(energyBalance.organizationId, orgId))
-        .groupBy(energyBalance.companyId),
-      tx
-        .select({ companyId: supplierAssessment.companyId })
-        .from(supplierAssessment)
-        .where(eq(supplierAssessment.organizationId, orgId)),
-      tx
-        .select({ companyId: soaDeclaration.companyId })
-        .from(soaDeclaration)
-        .where(eq(soaDeclaration.organizationId, orgId)),
-      tx
-        .select({ companyId: briberySystem.companyId })
-        .from(briberySystem)
-        .where(eq(briberySystem.organizationId, orgId)),
-      tx
-        .select({ companyId: mogModel.companyId })
-        .from(mogModel)
-        .where(eq(mogModel.organizationId, orgId)),
-      tx
-        .select({ companyId: wbSystem.companyId })
-        .from(wbSystem)
-        .where(eq(wbSystem.organizationId, orgId)),
-      tx
-        .select({ companyId: qasSystem.companyId })
-        .from(qasSystem)
-        .where(eq(qasSystem.organizationId, orgId)),
-      tx
-        .select({ companyId: saSystem.companyId })
-        .from(saSystem)
-        .where(eq(saSystem.organizationId, orgId)),
-      tx
-        .select({ companyId: chainProgram.companyId })
-        .from(chainProgram)
-        .where(eq(chainProgram.organizationId, orgId)),
       tx
         .select({
           companyId: documentSnapshot.companyId,
@@ -120,21 +76,6 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
         .groupBy(documentSnapshot.companyId, documentSnapshot.tipo),
     ]);
 
-    // I due moduli non annuali non hanno un anno: la radice esiste e basta.
-    type Radice = { anno: number | null };
-    const radici: Record<ModuloAzienda, Map<string, Radice>> = {
-      ghg: new Map(ghg.map((r) => [r.companyId, { anno: r.anno }])),
-      bilancio: new Map(bil.map((r) => [r.companyId, { anno: r.anno }])),
-      energetico: new Map(ene.map((r) => [r.companyId, { anno: r.anno }])),
-      fornitore: new Map(sup.map((r) => [r.companyId, { anno: null }])),
-      soa: new Map(soa.map((r) => [r.companyId, { anno: null }])),
-      anticorruzione: new Map(pc.map((r) => [r.companyId, { anno: null }])),
-      mog231: new Map(mog.map((r) => [r.companyId, { anno: null }])),
-      segnalazioni: new Map(wb.map((r) => [r.companyId, { anno: null }])),
-      sgiqas: new Map(qas.map((r) => [r.companyId, { anno: null }])),
-      sa8000: new Map(sa.map((r) => [r.companyId, { anno: null }])),
-      filiera: new Map(fil.map((r) => [r.companyId, { anno: null }])),
-    };
     const pubblicati = new Map(docs.map((d) => [`${d.companyId}|${d.tipo}`, d.anno ?? 0]));
 
     const conStati: AziendaConStati[] = aziende.map((a) => ({

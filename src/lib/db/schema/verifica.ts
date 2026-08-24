@@ -49,6 +49,16 @@ export const documentCodice = pgTable(
     tipo: text("tipo").notNull(),
     anno: integer("anno").notNull(),
     versione: integer("versione").notNull(),
+    /**
+     * L'edizione dei contenuti metodologici con cui il documento e' stato prodotto.
+     *
+     * ⚠️ Serve a chi VERIFICA, e non a noi: le norme si aggiornano, e un documento
+     * redatto su un'edizione superata resta autentico ma non e' aggiornato. E' la
+     * distinzione che la pagina di verifica deve saper fare, perche' e' quella che chi
+     * riceve il documento vuole sapere. `null` sui codici assegnati a posteriori, dove
+     * l'edizione non si puo' ricostruire senza inventarla.
+     */
+    edizione: text("edizione"),
     pubblicatoIl: timestamp("pubblicato_il", { withTimezone: true }).notNull().defaultNow(),
 
     /**

@@ -52,6 +52,8 @@ export async function assegnaCodice(
     tipo: TipoDocumento;
     anno: number;
     versione: number;
+    /** L'edizione dei contenuti con cui e' stato prodotto: la verifica la mostra. */
+    edizione: string;
   },
 ): Promise<string> {
   for (let tentativo = 0; tentativo < 5; tentativo++) {
@@ -73,6 +75,7 @@ export type EsitoVerifica = {
   tipo: TipoDocumento;
   anno: number;
   versione: number;
+  edizione: string | null;
   pubblicatoIl: Date;
   verifiche: number;
 };
@@ -100,10 +103,12 @@ export async function verificaCodice(codiceCanonico: string): Promise<EsitoVerif
   if (!riga) return null;
 
   try {
-    await db
-      .update(documentCodice)
-      .set({ verifiche: sql`${documentCodice.verifiche} + 1`, ultimaVerifica: new Date() })
-      .where(eq(documentCodice.codice, codiceCanonico));
+    // ⚠️ Una funzione dedicata, non un UPDATE. Ad `app_rls` l'UPDATE su questa tabella e'
+    // revocato: la policy che glielo dava accettava qualunque riga — serviva perche' qui
+    // non c'e' nessuna organizzazione nel contesto — e una guardia sui sorgenti delle
+    // migrazioni l'ha segnalata. La funzione fa una cosa sola, su una riga sola, e non
+    // nomina nessun'altra colonna. Vedi la migrazione 0045.
+    await db.execute(sql`select document_codice_conta(${codiceCanonico})`);
   } catch {
     // Il contatore non è la funzione: se non si scrive, la conferma si dà lo stesso.
   }
@@ -115,6 +120,7 @@ export async function verificaCodice(codiceCanonico: string): Promise<EsitoVerif
     tipo: riga.tipo as TipoDocumento,
     anno: riga.anno,
     versione: riga.versione,
+    edizione: riga.edizione,
     pubblicatoIl: riga.pubblicatoIl,
     verifiche: riga.verifiche,
   };

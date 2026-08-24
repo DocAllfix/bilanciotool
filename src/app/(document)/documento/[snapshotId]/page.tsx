@@ -95,6 +95,7 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
           tipo={snap.tipo}
           anno={snap.anno}
           versione={snap.versione}
+          edizione={(snap.dati as { edizione?: string }).edizione ?? null}
           pubblicatoIl={snap.publishedAt.toISOString()}
           urlVerifica={urlVerifica}
         />
