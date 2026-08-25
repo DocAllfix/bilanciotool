@@ -88,6 +88,22 @@ for (const [nome, url, ancora] of SUPERFICI) {
   }
 }
 
+// La scheda cliente, che sta in fondo al fascicolo: va portata in vista, altrimenti la
+// foto del solo riquadro visibile non la contiene e il controllo "guardala" non guarda
+// niente.
+for (const scuro of [false, true]) {
+  await page.goto(`${BASE}/aziende/${az.id}`, { waitUntil: "domcontentloaded", timeout: 120_000 });
+  await tema(scuro);
+  await spegniTour(page);
+  const scheda = page.locator("[data-scheda-cliente]");
+  await scheda.waitFor({ timeout: 60_000 }).catch(() => {});
+  await scheda.scrollIntoViewIfNeeded().catch(() => {});
+  await page.waitForTimeout(600);
+  const file = `${OUT}/scheda-cliente-${scuro ? "scuro" : "chiaro"}.png`;
+  await page.screenshot({ path: file });
+  console.log("  " + file);
+}
+
 // La vetrina: undici percorsi nei tre gruppi del committente.
 //
 // ⚠️ IN ENTRAMBI I TEMI, e dichiarati. Prima la foto era una sola e usciva col tema che

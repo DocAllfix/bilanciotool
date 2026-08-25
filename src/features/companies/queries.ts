@@ -104,6 +104,15 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",
+  "company.update": "Anagrafica del cliente aggiornata",
+  // ⚠️ Le etichette dei contatti NON nominano la persona, e non e' una svista.
+  // Questa cronologia si vede nel quadro dello studio, cioe' anche da un socio che con
+  // quel cliente non lavora: «Contatto aggiunto» dice che e' successo qualcosa, «Aggiunta
+  // Giulia Ferri» dice chi. Il nome sta nella rubrica, dove serve a chiamarla.
+  "company_contact.create": "Contatto aggiunto alla rubrica",
+  "company_contact.update": "Recapito di un contatto aggiornato",
+  "company_contact.promote": "Cambiato il contatto di riferimento",
+  "company_contact.delete": "Contatto rimosso dalla rubrica",
   "ghg.inventory.create": "Nuovo inventario GHG",
   "ghg.boundaries.update": "Confini dell'inventario aggiornati",
   "ghg.source.set": "Registro sorgenti aggiornato",

@@ -42,7 +42,22 @@ export type VoceFascicolo = {
 };
 
 export type Fascicolo = {
-  azienda: { id: string; nome: string; settore: string | null; sede: string | null; ateco: string | null; stato: "active" | "archived"; isDemo: boolean };
+  azienda: {
+    id: string;
+    nome: string;
+    settore: string | null;
+    sede: string | null;
+    ateco: string | null;
+    // Anagrafica del cliente (Fase 2). Vengono dalla stessa `select *` di prima: non
+    // costano un viaggio in piu', e la scheda cliente sta nel fascicolo.
+    piva: string | null;
+    nazione: string | null;
+    sitoWeb: string | null;
+    dipendenti: number | null;
+    fatturato: string | null;
+    stato: "active" | "archived";
+    isDemo: boolean;
+  };
   voci: VoceFascicolo[];
   documentiTotali: number;
 };
@@ -319,6 +334,11 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         settore: az.settore,
         sede: az.sede,
         ateco: az.ateco,
+        piva: az.piva,
+        nazione: az.nazione,
+        sitoWeb: az.sitoWeb,
+        dipendenti: az.dipendenti,
+        fatturato: az.fatturato,
         stato: az.stato,
         isDemo: az.isDemo,
       },

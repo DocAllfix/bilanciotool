@@ -7,6 +7,9 @@ import { getStorico } from "@/features/companies/storico";
 import { Storico } from "@/components/portfolio/storico";
 import { PannelloCondivisione } from "@/components/condivisione/pannello";
 import { elencaCollegamenti } from "@/features/condivisione";
+import { elencaContatti } from "@/features/companies/contatti";
+import { can, getAccountStatus } from "@/features/entitlement";
+import { SchedaCliente } from "@/components/portfolio/scheda-cliente";
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
 import { etichettaDocumento } from "@/features/documents/tipi";
 import { Badge } from "@/components/ui/badge";
@@ -31,11 +34,13 @@ const ETICHETTA_STATO = {
 export default async function FascicoloPage({ params }: { params: Promise<{ companyId: string }> }) {
   const { companyId } = await params;
   const s = await requireConsultant();
-  const [f, documenti, storico, collegamenti] = await Promise.all([
+  const [f, documenti, storico, collegamenti, contatti, stato] = await Promise.all([
     getFascicolo(s.userId, s.orgId, companyId),
     listDocumentiAzienda(s.userId, s.orgId, companyId),
     getStorico(s.userId, s.orgId, companyId),
     elencaCollegamenti(s.userId, s.orgId, companyId),
+    elencaContatti(s.userId, s.orgId, companyId),
+    getAccountStatus(s.userId, s.orgId),
   ]);
   if (!f) notFound();
 
@@ -187,6 +192,16 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
       {/* Compare da solo quando c'è qualcosa da mostrare: con una sola versione
           pubblicata non esiste un andamento, e un grafico a un punto è rumore. */}
       <Storico serie={storico} />
+
+      {/* La scheda del cliente: anagrafica e rubrica. Sta nel fascicolo e non in una
+          pagina sua — una voce in piu' nella barra laterale sarebbe la cosa che la
+          riorganizzazione in tre gruppi e' servita a togliere. */}
+      <SchedaCliente
+        companyId={companyId}
+        azienda={f.azienda}
+        contatti={contatti}
+        soloLettura={!can(stato, "write_data") || f.azienda.stato === "archived"}
+      />
 
       {/* Sta qui e non nelle impostazioni: il collegamento riguarda UNA azienda, e si
           genera guardando i documenti che si sta per condividere. */}

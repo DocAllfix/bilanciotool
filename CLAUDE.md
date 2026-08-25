@@ -1008,6 +1008,68 @@ Gate: typecheck · build · **1062 test** verdi senza pipe · `qa -- tutto-demo`
 `filiera-percorso` 35/35 · `bilancio`, `guida` 7/7, `portafoglio-aggiorna` 5/5 · 17 foto
 in chiaro e scuro **guardate**, console pulita, zero sfondamento da telefono.
 
+**Fase 2 (2026-08-25) — l'azienda diventa un cliente: anagrafica e rubrica**
+
+Da `clienti` e `contatti_cliente` di ESG Nexus, **senza una tabella nuova per l'azienda**:
+`company` esiste già, e il committente ha deciso che cliente e azienda restano la stessa
+cosa. Quindi quattro colonne (`nazione`, `dipendenti`, `fatturato`, `sito_web`) e una
+tabella sola, `company_contact`, ri-ancorata all'**organizzazione** e non all'utente — in
+ESG Nexus ogni tabella porta `user_id` perché il prodotto è per un consulente solo, e
+copiarlo darebbe uno studio in cui il socio non vede il lavoro del collega.
+
+La scheda sta **dentro il fascicolo**, non in una pagina sua: una voce in più nella barra
+laterale sarebbe esattamente la cosa che la Fase 1 è servita a togliere.
+
+**Quattro decisioni che valgono più del codice che le implementa:**
+
+1. **`dipendenti` e `fatturato` esistono già nei profili dei moduli, e restano lì.** Non
+   sono la stessa cosa: quelli sono i valori **dell'esercizio** — l'organico del 2024 con
+   cui si è calcolata l'intensità di quell'anno — questi sono i valori **correnti**.
+   Unificarli sembrerebbe una pulizia e farebbe cambiare sotto i piedi il denominatore di
+   un indicatore già consegnato. Sta scritto nello schema e detto all'utente sotto la
+   griglia, perché chi vede due numeri diversi in due posti conclude che il prodotto sbaglia.
+2. **`nazione` si normalizza in maiuscolo ma non si indovina.** «it» → «IT»; «Italia»
+   viene **respinta**. Convertire un nome di paese in un codice sembra gentile finché non
+   tocca all'Irlanda, che diventerebbe «IR» — cioè l'Iran.
+3. **Un solo contatto principale per azienda, e lo impone il DATABASE** (indice parziale
+   `WHERE principale`). L'alternativa era spegnere gli altri nella transazione
+   applicativa, e regge finché nessuno sbaglia. Il test lo prova scrivendo la riga
+   **direttamente**, senza passare dalla funzione: deve essere l'indice a respingere.
+4. **`company_contact` è il primo posto del prodotto in cui compaiono persone fisiche che
+   non sono utenti.** L'informativa privacy va estesa **prima** che la tabella riceva un
+   dato vero: è la Fase 9 del piano, ed è scritto nello schema.
+
+⚠️ **Un difetto vero, ed è la quarta volta che questo progetto lo incontra.** Il client
+decideva se un contatto fosse il primo leggendo `contatti.length` **dalle props**.
+Aggiungendone due in fretta, il rinfresco della pagina non era ancora atterrato e il
+secondo si dichiarava riferimento **scalzando il primo**. L'ha trovato il collaudo al
+primo colpo. Ora il conteggio lo fa il server dentro la stessa transazione che inserisce,
+e il client non passa più `principale`.
+
+⚠️ **E una guardia del progetto ha preso me.** `etichette-audit-pure.test.ts` è diventato
+rosso perché le cinque azioni nuove non avevano un'etichetta italiana: nel pannello
+«Attività recente» sarebbe comparso `company_contact.promote`. Le etichette dei contatti
+**non nominano la persona**, e non è una svista — quella cronologia la vede anche un socio
+che con quel cliente non lavora.
+
+**Regole nate qui:**
+- **Un controllo va scritto su ciò che il prodotto fa, non su ciò che si immaginava
+  facesse.** Il controllo sull'email storta cercava il messaggio del server e falliva
+  accusando il prodotto di non spiegarsi: il campo è `type="email"`, quindi il browser
+  blocca l'invio **prima della rete** e la server action non viene nemmeno chiamata. Il
+  rifiuto c'era, ed era arrivato prima.
+- **`[role="alert"]` si cerca DENTRO il riquadro del campo**, mai col `.first()` sulla
+  pagina: un contenitore vuoto sempre presente farebbe passare il controllo per sempre.
+- **Il campo che decide «è il primo?» non può stare nel browser.** Vale per ogni valore
+  derivato da un conteggio: il conteggio si fa dove i dati sono, dentro la transazione.
+
+Gate: typecheck · build · **1070 test** senza pipe · `qa -- scheda-cliente` **16/16**
+(ogni divieto provato sulla riga che non compare) · confine di tenant provato
+**rompendolo** (tolto il filtro org: fallisce sull'asserzione giusta) · `rls-matrix` verde
+da solo · regressioni `tutto-demo` 68/68, `tutto-attivo` 30/30, `portafoglio-aggiorna`
+5/5, `guida` 7/7, `fornitore` 28/28, `energetico` 40/40 · foto della scheda in chiaro e
+scuro guardate, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
