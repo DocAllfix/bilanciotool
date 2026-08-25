@@ -73,6 +73,7 @@ const SUPERFICI = [
   ["dashboard", `${BASE}/dashboard`, "main"],
   ["fascicolo", `${BASE}/aziende/${az.id}`, "[data-percorsi]"],
   ["archivio", `${BASE}/documenti`, "main"],
+  ["agenda", `${BASE}/agenda`, "main"],
   ...(pEsg
     ? [
         ["sgesg", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}`, "[data-fasi]"],

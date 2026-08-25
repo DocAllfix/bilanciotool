@@ -1250,6 +1250,60 @@ fotografia del database prima e dopo · `sgesg-schede` 14/14 · `sgesg-percorso`
 regressioni `tutto-demo` 68/68, `demo-completa` 9/9, `guida` 7/7, `energetico` 40/40 ·
 foto guardate, console pulita.
 
+**Fase 6 (2026-08-26) — Agenda: le date che lo studio decide**
+
+Lo scadenzario esiste dal 3 agosto e si **calcola**: dice quali percorsi sono indietro
+rispetto a ciò che la norma impone. Nessuno lo scrive e nessuno lo può cancellare, perché
+non è un elenco di cose da fare — è una misura. Mancava l'altra metà: la telefonata al
+referente, la riunione col consiglio, la consegna promessa per il quindici. Cose che un
+consulente si segna, e che il prodotto non poteva dedurre da nessun dato perché non stanno
+in nessun dato.
+
+**I due elenchi restano DISTINTI, e il prodotto lo dice.** Stanno accanto nella banda dei
+numeri della dashboard, con etichette diverse — «percorsi da riprendere» e «voci in
+agenda» — e la pagina dell'agenda nomina l'altro elenco per spiegare la differenza.
+Fonderli sembrerebbe un servizio e sarebbe una perdita: uno si chiude lavorandoci, l'altro
+si chiude spuntandolo, e **un consulente che spuntasse «GHG 2025 da pubblicare» crederebbe
+di aver chiuso un lavoro che nessuno ha fatto.** Due controlli lo provano, uno dei quali
+verifica che spuntare una voce d'agenda non muova di una virgola lo scadenzario.
+
+**Una tabella sola** per scadenze, milestone e azioni del giorno, dove ESG Nexus ne ha tre:
+hanno la stessa grana — una cosa, una data, uno stato — e la differenza è di significato,
+non di struttura. È la scelta già fatta per le quattro mappe parallele delle segnalazioni.
+
+**Tre decisioni scritte nello schema:**
+1. **`companyId` è nullo di proposito**: metà del lavoro di uno studio non riguarda un
+   cliente preciso — la formazione interna, il rinnovo di un accreditamento. Pretendere
+   un'azienda costringerebbe a inventarne una.
+2. **`chiusaIl` si cancella riaprendo**, e lo pretende un CHECK: senza, la voce direbbe di
+   essere stata chiusa un giorno in cui era aperta.
+3. **La data si ricompone e si confronta**: `2026-02-31` viene respinta, non fatta
+   scivolare al 3 marzo.
+
+⚠️ **«Oggi» è il giorno LOCALE, non quello UTC** — ed è l'opposto della regola dei termini
+di legge, senza contraddizione. Alle 00:30 del quindici `toISOString()` direbbe ancora il
+quattordici, e «le voci di oggi» mostrerebbe quelle di ieri. Sui termini perentori conta il
+termine e si usa UTC; qui conta il giorno in cui uno si trova. E **lo decide il server**,
+arrivando come prop: calcolarlo nel client farebbe cadere il render del server e quello del
+browser in due giorni diversi intorno a mezzanotte.
+
+**Regole nate qui:**
+- **`innerText` restituisce il testo RESO, con le trasformazioni del CSS applicate.** Un
+  controllo che cercava `/Chiuse/` non poteva passare **mai**: l'intestazione porta
+  `uppercase` e a schermo si legge «CHIUSE». Falliva accusando il prodotto di non mostrare
+  una sezione che c'era, e l'ho scoperto solo sondando la pagina invece di supporre.
+- **`waitForURL` e `domcontentloaded` si risolvono quando la navigazione COMINCIA**, non
+  quando il contenuto è reso: quattro controlli leggevano `main` un istante troppo presto.
+  Seconda volta in due fasi.
+- **Un 503 durante una batteria concorrente è contesa, non una regressione.** `tutto-demo`
+  ha segnalato un 503 mentre la suite completa martellava il pool, ed è tornato 68/68 al
+  rilancio da solo. Stessa famiglia dell'`ENOTFOUND` a raffica: si verifica e si rilancia,
+  non si corregge.
+
+Gate: typecheck · build · **1125 test** senza pipe · `qa -- agenda` **16/16** · confine di
+tenant provato **rompendolo** · `rls-matrix` ed `etichette-audit` verdi · regressioni
+`tutto-demo` 68/68, `tutto-attivo` 30/30 · foto in chiaro e scuro guardate, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

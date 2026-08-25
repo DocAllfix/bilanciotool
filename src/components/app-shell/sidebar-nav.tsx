@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, FileStack, HelpCircle, Settings2, ChevronLeft } from "lucide-react";
+import { Briefcase, CalendarDays, ChevronLeft, FileStack, HelpCircle, Settings2 } from "lucide-react";
 
 // Navigazione della shell, in due modi.
 //
@@ -18,6 +18,9 @@ import { Briefcase, FileStack, HelpCircle, Settings2, ChevronLeft } from "lucide
 const VOCI = [
   { href: "/dashboard", label: "Portafoglio", icon: Briefcase, tour: "nav-portafoglio" },
   { href: "/documenti", label: "Documenti", icon: FileStack, tour: "nav-documenti" },
+  // ⚠️ L'agenda sta accanto al portafoglio e NON dentro un'azienda: le date che uno
+  // studio si segna riguardano spesso tutti i clienti, o nessuno.
+  { href: "/agenda", label: "Agenda", icon: CalendarDays, tour: "nav-agenda" },
   { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
   { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
 ] as const;

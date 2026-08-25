@@ -20,4 +20,5 @@ export * from "./sa8000";
 export * from "./filiera";
 export * from "./sgesg";
 export * from "./sgesg-schede";
+export * from "./agenda";
 export * from "./verifica";

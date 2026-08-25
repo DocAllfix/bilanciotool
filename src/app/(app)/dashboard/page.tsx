@@ -6,6 +6,7 @@ import { getPortfolioOverview, listCompaniesWithStats } from "@/features/compani
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
+import { conteggioDaFare, oggiIso } from "@/features/agenda";
 import { withTenant } from "@/lib/db/tenant";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
@@ -34,7 +35,7 @@ export default async function DashboardPage() {
   // `withTenant` riusa quella aperta nella stessa catena di chiamate, l'annidamento è
   // sicuro — e chiederle fuori costava una transazione intera, cioè ~300 ms su questo
   // database.
-  const [aziende, usage, quadro, scadenzario, stati] = await withTenant(
+  const [aziende, usage, quadro, scadenzario, stati, agendaOggi] = await withTenant(
     { userId: s.userId, orgId: s.orgId },
     () =>
       Promise.all([
@@ -43,6 +44,8 @@ export default async function DashboardPage() {
         getPortfolioOverview(s.userId, s.orgId),
         getScadenzario(s.userId, s.orgId),
         getStatiPortafoglio(s.userId, s.orgId),
+        // L'agenda dello studio, dentro la stessa transazione delle altre letture.
+        conteggioDaFare(s.userId, s.orgId, oggiIso()),
       ]),
   );
   const attive = aziende.filter((a) => a.stato === "active");
@@ -88,6 +91,27 @@ export default async function DashboardPage() {
           </dd>
           <dt className="text-[13px] text-muted-foreground">
             {daFare.length === 1 ? "percorso da riprendere" : "percorsi da riprendere"}
+          </dt>
+        </div>
+        {/* ⚠️ L'AGENDA ACCANTO ai percorsi da riprendere, e con parole diverse. Sono
+            due elenchi che si somigliano abbastanza da confondersi: quello sopra lo
+            calcola il prodotto e si chiude lavorandoci, questo lo scrive lo studio e si
+            spunta. Metterli vicini con la stessa etichetta li avrebbe fusi nella testa
+            di chi legge; metterli vicini con etichette diverse è ciò che li distingue. */}
+        <div className="flex items-baseline gap-2">
+          <dd className="text-xl font-semibold tracking-tight" data-slot="kpi" data-agenda-oggi={agendaOggi}>
+            {agendaOggi}
+          </dd>
+          <dt className="text-[13px] text-muted-foreground">
+            {agendaOggi === 1 ? "voce in agenda" : "voci in agenda"} per oggi
+            {agendaOggi > 0 && (
+              <>
+                {" · "}
+                <Link className="font-medium underline underline-offset-4" href="/agenda">
+                  apri
+                </Link>
+              </>
+            )}
           </dt>
         </div>
         <div className="flex items-baseline gap-2">

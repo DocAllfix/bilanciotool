@@ -112,6 +112,13 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // non lavora. Che una scheda sia stata compilata basta; quale sta nel percorso.
   "sgesg.scheda.set": "Scheda del metodo ESG compilata",
   "sgesg.scheda.stato": "Stato di una scheda del metodo ESG",
+  // Agenda dello studio. ⚠️ L'etichetta non riporta il TITOLO della voce: qui ci
+  // finiscono nomi di persone da richiamare e trattative in corso, e questa cronologia
+  // la vede tutto lo studio.
+  "agenda.voce.create": "Voce aggiunta in agenda",
+  "agenda.voce.set": "Voce dell'agenda modificata",
+  "agenda.voce.stato": "Voce dell'agenda chiusa o riaperta",
+  "agenda.voce.delete": "Voce rimossa dall'agenda",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",
