@@ -70,7 +70,7 @@ export function VistaPartner({
               className="rounded-md border px-2.5 py-1 text-[12px]"
               aria-pressed={filtro === f.k}
               aria-label={`Filtra: ${f.n}`}
-              style={filtro === f.k ? { background: "var(--area-filiera)", color: "white" } : undefined}
+              style={filtro === f.k ? { background: "var(--area-compliance)", color: "white" } : undefined}
               onClick={() => setFiltro(f.k)}
             >
               {f.n}

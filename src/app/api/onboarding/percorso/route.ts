@@ -31,30 +31,56 @@ export async function GET() {
   const demo = aziende.find((a) => a.isDemo) ?? aziende[0];
   const tappe: Tappa[] = [{ path: "/dashboard", pageId: "portfolio" }];
 
-  // ⚠️ UNA TAPPA PER AREA, non una per modulo.
+  // ⚠️ PRIMA OGNI GRUPPO, POI SI RIEMPIE FINO AL TETTO.
   //
   // I moduli sono undici: un giro che li attraversasse tutti sarebbe di dodici tappe, e
   // chi si è appena registrato lo chiuderebbe a metà — e chi chiude un tour dice «basta
-  // spiegazioni», non «basta prodotto». Con una tappa per area il giro resta di sei come
-  // quando i moduli erano cinque, e chi guarda impara la cosa che serve davvero: che le
-  // aree sono cinque, non che le pagine sono dodici. Le altre si trovano dal fascicolo,
-  // che è dove un consulente le cerca.
-  const areeViste = new Set<string>();
+  // spiegazioni», non «basta prodotto». Serve quindi un tetto, ed è TETTO.
+  //
+  // La regola era «una tappa per area», e con cinque aree dava sei tappe. Passando ai
+  // tre gruppi del committente quella stessa regola ne avrebbe date **quattro**, in
+  // silenzio: un giro più corto di un terzo, deciso da nessuno, come effetto collaterale
+  // di una riorganizzazione della navigazione. Il tetto non deve dipendere da quanti
+  // gruppi ci sono: quello è un numero che cambia per ragioni sue.
+  //
+  // Quindi due passate. La prima prende un modulo per gruppo, e garantisce che chi
+  // guarda impari la cosa che serve davvero — **quali sono i gruppi** — invece di quante
+  // sono le pagine. La seconda riempie fino a `TETTO` con quello che resta, in ordine di
+  // registro. Gli altri si trovano dal fascicolo, che è dove un consulente li cerca.
+  const TETTO = 6;
+  const scelti = new Set<string>();
+
+  /** La tappa di un modulo, o `null` se non è visitabile. */
+  const tappaDi = (m: (typeof MODULI_AZIENDA)[number]): Tappa | null => {
+    const stato = demo?.moduli.find((x) => x.modulo === m.href);
+    // Un modulo mai avviato non si visita: mostrerebbe la pagina di creazione, non il
+    // modulo. La presentazione fa vedere il prodotto pieno, non i suoi vuoti.
+    if (!stato || stato.stato === "non-avviato") return null;
+    if (m.perEsercizio) {
+      if (stato.anno === null) return null;
+      return { path: `/aziende/${demo!.id}/${m.href}/${stato.anno}`, pageId: m.href };
+    }
+    return { path: `/aziende/${demo!.id}/${m.href}`, pageId: m.href };
+  };
 
   if (demo) {
+    const gruppiVisti = new Set<string>();
     for (const m of MODULI_AZIENDA) {
-      if (areeViste.has(m.area)) continue;
-      const stato = demo.moduli.find((x) => x.modulo === m.href);
-      // Un modulo mai avviato non si visita: mostrerebbe la pagina di creazione, non
-      // il modulo. La presentazione fa vedere il prodotto pieno, non i suoi vuoti.
-      if (!stato || stato.stato === "non-avviato") continue;
-      if (m.perEsercizio) {
-        if (stato.anno === null) continue;
-        tappe.push({ path: `/aziende/${demo.id}/${m.href}/${stato.anno}`, pageId: m.href });
-      } else {
-        tappe.push({ path: `/aziende/${demo.id}/${m.href}`, pageId: m.href });
+      if (gruppiVisti.has(m.area) || tappe.length >= TETTO) continue;
+      const t = tappaDi(m);
+      if (!t) continue;
+      tappe.push(t);
+      scelti.add(m.href);
+      gruppiVisti.add(m.area);
+    }
+    for (const m of MODULI_AZIENDA) {
+      if (tappe.length >= TETTO) break;
+      if (scelti.has(m.href)) continue;
+      const t = tappaDi(m);
+      if (t) {
+        tappe.push(t);
+        scelti.add(m.href);
       }
-      areeViste.add(m.area);
     }
   }
 

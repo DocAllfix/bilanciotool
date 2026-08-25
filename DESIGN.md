@@ -69,15 +69,25 @@ Sobrio: transizioni colore 150ms, hover shadow; progress animate; **niente** bou
 > l'ambra resta libera per l'area della responsabilita' dell'ente (Modello 231, ISO 37001,
 > Segnalazioni). Nessuna tinta nuova da inventare, nessun contrasto nuovo da verificare.
 
-Cinque token, uno per **area**, definiti in `globals.css` come `--area-*` ed esposti come utility Tailwind (`bg-area-ambiente`, `text-area-sistemi`, ...). Le classi pronte per i tre stati si **derivano dall'area** dentro il registro `src/features/companies/moduli.ts` e non si scrivono a mano nelle voci: due moduli della stessa materia non possono divergere per una svista di copia.
+> **Aggiornamento del 25 agosto 2026 — da cinque aree a tre gruppi.** La tassonomia
+> l'ha dettata il committente, e i due nomi che ha usato sono i suoi: *Ecosostenibilità*
+> e *Compliance*. Il terzo raccoglie i moduli che non ha nominato e che hanno in comune
+> una cosa sola ma decisiva, l'essere **certificabili da un ente terzo**.
+>
+> **Nessun valore cambia**: le tre tinte sono verde, ambra e blu, gli stessi `oklch` di
+> prima, contrasto già verificato. Cambia solo a chi appartengono. **Petrolio e violetto
+> si liberano**, e il petrolio è un guadagno vero: è l'accento del marchio, e smette di
+> voler dire due cose.
 
-| Area | Moduli | Tinta | Chiaro | Scuro |
+Tre token, uno per **gruppo**, definiti in `globals.css` come `--area-*` ed esposti come utility Tailwind (`bg-area-ecosostenibilita`, `text-area-sistemi`, ...). Le classi pronte per i tre stati si **derivano dal gruppo** dentro il registro `src/features/companies/moduli.ts` e non si scrivono a mano nelle voci: due moduli della stessa materia non possono divergere per una svista di copia.
+
+⚠️ **E non si scrivono a mano nemmeno nei componenti di modulo.** Quindici lo facevano, e alla rinomina dei gruppi quei riquadri sarebbero rimasti senza fondo: il compilatore non lo vede (una stringa è valida), Tailwind non protesta (per un token inesistente non genera niente), i collaudi funzionali non lo vedono (la pagina si apre). Lo vede il cliente. La guardia è `src/__tests__/classi-area-pure.test.ts`, che confronta le classi usate nel sorgente coi token definiti in `globals.css`.
+
+| Gruppo | Moduli | Tinta | Chiaro | Scuro |
 |---|---|---|---|---|
-| Ambiente ed energia | Inventario GHG · Bilancio energetico | petrolio | `oklch(0.45 0.075 190)` | `oklch(0.72 0.085 185)` |
-| Sostenibilità e rendicontazione | Bilancio ESG · SA8000/2026 | verde | `oklch(0.48 0.12 155)` | `oklch(0.74 0.12 155)` |
-| Responsabilità dell'ente | Modello 231 · ISO 37001 · Segnalazioni | ambra | `oklch(0.55 0.115 68)` | `oklch(0.78 0.11 72)` |
-| Filiera | Autovalutazione ESG · Due diligence di filiera | violetto | `oklch(0.49 0.115 300)` | `oklch(0.73 0.11 300)` |
-| Sistemi di gestione | SGI QAS · Dichiarazione SoA | blu | `oklch(0.49 0.09 250)` | `oklch(0.72 0.095 250)` |
+| Ecosostenibilità | Inventario GHG · Bilancio energetico · Bilancio ESG · Autovalutazione ESG | verde | `oklch(0.48 0.12 155)` | `oklch(0.74 0.12 155)` |
+| Compliance | Modello 231 · ISO 37001 · Segnalazioni · Due diligence di filiera | ambra | `oklch(0.55 0.115 68)` | `oklch(0.78 0.11 72)` |
+| Sistemi di gestione | SGI QAS · SA8000/2026 · Dichiarazione SoA | blu | `oklch(0.49 0.09 250)` | `oklch(0.72 0.095 250)` |
 
 *(Le colonne «Moduli» elencano anche i sei in arrivo: l'area esiste gia', il modulo si aggiunge al registro.)*
 

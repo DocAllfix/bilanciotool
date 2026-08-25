@@ -238,20 +238,66 @@ export async function attendiCard(page, nome, { tentativi = 12, attesa = 1500 } 
   // ⚠️ Dal 23 agosto 2026 creare un'azienda PORTA AL SUO FASCICOLO (vedi PRE-LAUNCH,
   // voce 0): chi chiama questa funzione subito dopo la creazione non e' piu' sul
   // portafoglio, e cercherebbe una card in una pagina che non ne ha. Ci si riporta.
-  if (!/\/dashboard(\?|$)/.test(new URL(page.url()).pathname + new URL(page.url()).search)) {
-    await page.goto(new URL("/dashboard", page.url()).toString(), { waitUntil: "domcontentloaded" });
-  }
+  //
+  // ⚠️ E ci si riporta SEMPRE, senza chiedere prima dove si e'. La versione precedente
+  // guardava l'indirizzo e navigava solo se non era gia' il portafoglio: e' una corsa
+  // con la navigazione che il prodotto ha appena avviato. Chiamata subito dopo il
+  // «Crea azienda», l'indirizzo e' ancora `/dashboard` — la `router.push` non e'
+  // atterrata — quindi il salto si saltava; un istante dopo arrivava il fascicolo, e i
+  // dodici tentativi ricaricavano QUELLO, dove card non ce ne sono. Il collaudo moriva
+  // dicendo «la card non c'e'» mentre la riga era nel database e la pagina giusta non
+  // era mai stata aperta.
+  //
+  // Una navigazione in piu' costa un caricamento; indovinare dove si e' costa una
+  // diagnosi che parte dalla parte sbagliata del sistema.
+  await page.goto(new URL("/dashboard", page.url()).toString(), { waitUntil: "domcontentloaded" });
   // Si filtra per NOME e non si prende la prima card del portafoglio: la prima e'
   // l'azienda dimostrativa, seminata alla registrazione. Un `.first()` secco agirebbe
   // sulla demo, e il collaudo misurerebbe il percorso sbagliato credendolo il proprio.
   const card = page.locator('[data-slot="card"]').filter({ hasText: nome }).first();
+  // ⚠️ `domcontentloaded` e non `networkidle`, ed e' la regola che questo progetto ha
+  // gia' pagato una volta: networkidle pretende mezzo secondo di silenzio di rete, e la
+  // dashboard ne fa poco — ogni card prefetch-a i propri collegamenti, e le richieste
+  // `_rsc` si accavallano e si annullano a vicenda. Il silenzio non arriva, ogni giro
+  // consuma il proprio tempo massimo, e i dodici tentativi finiscono senza che nessuno
+  // abbia mai guardato se la card c'era.
+  //
+  // La condizione che interessa non e' «la rete tace»: e' «la card c'e'», ed e' gia'
+  // scritta nella condizione del ciclo.
   for (let t = 0; t < tentativi && !(await card.count()); t++) {
     await page.waitForTimeout(attesa);
-    await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.reload({ waitUntil: "domcontentloaded" });
   }
   await card.waitFor({ timeout: 20000 });
   return card;
+}
+
+/**
+ * Apre il percorso `modulo` dell'azienda `nome`, partendo dal portafoglio.
+ *
+ * ⚠️ Dal 25 agosto 2026 la card del portafoglio NON ha piu' un collegamento per
+ * percorso: mostra tre caselle di gruppo col rapporto «avviati su totale», e i percorsi
+ * si aprono uno per uno dal FASCICOLO. Cinque collaudi facevano
+ * `card.locator('[data-modulo="ghg"]').click()` e si sarebbero fermati tutti sullo
+ * stesso scoglio, ciascuno con una diagnosi diversa da rifare.
+ *
+ * Sta qui e non in ognuno di quelli perche' la navigazione e' UNA: quando cambiera'
+ * ancora — e cambiera' — si aggiusta in un posto solo. E' la ragione per cui
+ * `attendiCard` esiste, dopo che creare un'azienda comincio' a portare altrove.
+ */
+export async function apriModulo(page, nome, modulo) {
+  const card = await attendiCard(page, nome);
+  // ⚠️ Si clicca IL COLLEGAMENTO che copre la card, non il titolo. Il titolo e' coperto
+  // da quel collegamento (`absolute inset-0 z-10`), e Playwright rifiuta di cliccare un
+  // elemento che qualcosa intercetta: riprova per trenta secondi e poi riferisce un
+  // difetto che non c'e'. Il collegamento e' proprio l'affordance da usare — e' cio' che
+  // rende la card cliccabile per intero — e si trova per nome accessibile.
+  await card.locator('a[aria-label^="Apri "]').first().click();
+  await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 20000 });
+  const voce = page.locator(`[data-percorsi] [data-modulo="${modulo}"]`);
+  await voce.waitFor({ timeout: 20000 });
+  await voce.locator("a").first().click();
+  return page;
 }
 
 // Spegne i giri guidati prima di toccare qualunque comando.

@@ -52,7 +52,7 @@ console.log("  creata dal dialogo, si è aperto il fascicolo");
 await page.goto(`${BASE}/dashboard`, { waitUntil: "domcontentloaded", timeout: 120_000 });
 const card = () => page.locator('[data-slot="card"]').filter({ hasText: NOME });
 await card().first().waitFor({ timeout: 120_000 });
-console.log(`  la card c'è, con ${await card().locator("[data-modulo]").count()} caselle di percorso`);
+console.log(`  la card c'è, con ${await card().locator("[data-gruppo]").count()} caselle di gruppo`);
 
 const CICLI = Number(process.env.CICLI ?? 3);
 const esiti = [];
@@ -71,7 +71,7 @@ console.log(`  ${Date.now() - t} ms — il database ha registrato l'archiviazion
 
 let visto = false;
 for (let i = 0; i < FINESTRA / 1000; i++) {
-  const caselle = await card().locator("[data-modulo]").count();
+  const caselle = await card().locator("[data-gruppo]").count();
   if (caselle === 0) {
     console.log(`  ${Date.now() - t} ms — la card ha perso le caselle: la pagina si è rifatta`);
     visto = true;
@@ -84,7 +84,7 @@ if (!visto) {
   console.log(`  MAI — dopo ${FINESTRA / 1000}s la card ha ancora le sue caselle`);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 120_000 });
   await page.waitForTimeout(1500);
-  const dopoRicarica = await card().locator("[data-modulo]").count();
+  const dopoRicarica = await card().locator("[data-gruppo]").count();
   console.log(`  dopo una RICARICA le caselle sono ${dopoRicarica}: ` +
     (dopoRicarica === 0 ? "il server risponde giusto, è il client a non applicare" : "risponde male anche il server"));
 }
@@ -101,7 +101,7 @@ console.log(`  ${Date.now() - t2} ms — il database ha registrato il ripristino
 
 let tornata = false;
 for (let i = 0; i < FINESTRA / 1000; i++) {
-  if ((await card().locator("[data-modulo]").count()) > 0) {
+  if ((await card().locator("[data-gruppo]").count()) > 0) {
     console.log(`  ${Date.now() - t2} ms — la card è tornata fra le attive`);
     tornata = true;
     break;
@@ -113,7 +113,7 @@ if (!tornata) {
   console.log(`  MAI — dopo ${FINESTRA / 1000}s la card non è tornata fra le attive`);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 120_000 });
   await page.waitForTimeout(1500);
-  const dopo = await card().locator("[data-modulo]").count();
+  const dopo = await card().locator("[data-gruppo]").count();
   console.log(`  dopo una RICARICA le caselle sono ${dopo}: ` +
     (dopo > 0 ? "il server risponde giusto, è il client a non applicare" : "risponde male anche il server"));
 }

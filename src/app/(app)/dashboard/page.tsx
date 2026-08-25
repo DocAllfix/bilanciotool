@@ -5,7 +5,7 @@ import { getCompanyUsage } from "@/features/entitlement";
 import { getPortfolioOverview, listCompaniesWithStats } from "@/features/companies/queries";
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
-import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
 import { withTenant } from "@/lib/db/tenant";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
@@ -219,62 +219,77 @@ export default async function DashboardPage() {
                     )}
                   </p>
                 </CardContent>
-                {/* Una casella di stato per percorso, non un bottone: piena =
-                    documento consegnato, contorno = avviato, tratteggio = da avviare.
-                    Il colore è quello dell'AREA, lo stesso ovunque, e siccome il
-                    registro è ordinato per area le caselle si raggruppano da sole.
+                {/* Una casella per GRUPPO, non per percorso, e con dentro il rapporto
+                    «avviati su totale»: pieno = almeno un documento consegnato,
+                    contorno = lavoro aperto, tratteggio = niente.
 
-                    ⚠️ Righe che vanno a capo, non `grid-cols-5`. Il numero fisso è
-                    lo stesso difetto che aveva già mandato Fornitore e SoA fuori dal
-                    bordo quando i moduli passarono da due a cinque: con undici, una
-                    griglia a cinque colonne o taglia o schiaccia. Celle di larghezza
-                    fissa che vanno a capo reggono qualunque numero, e l'etichetta
-                    resta leggibile invece di sparire.
+                    ⚠️ Qui c'era una casella per modulo, e la storia di questa riga e'
+                    la storia del difetto che torna. Con due moduli andava; a cinque gli
+                    ultimi due finirono fuori dal bordo; a undici, cinque per riga davano
+                    5+5+1 con l'ultima orfana, e si passo' a quattro per riga. Ogni volta
+                    la risposta era «cambiamo il numero di colonne», che rimanda il
+                    problema al modulo dopo. Con tre gruppi il numero smette di essere
+                    una cosa da indovinare, e la card regge un dodicesimo percorso senza
+                    cambiare una riga — perche' il percorso entra in un gruppo che
+                    esiste gia'.
 
-                    ⚠️ QUATTRO per riga, non cinque, e la ragione si vede solo guardando:
-                    con cinque, undici moduli fanno 5+5+1 e l'ultima casella resta orfana
-                    su una riga sua — «Segnalazioni», che e' anche l'etichetta piu' lunga.
-                    Con quattro fanno 4+4+3, e ogni casella guadagna un quarto di
-                    larghezza: le due etichette che si troncavano ci stanno. Non e' un
-                    numero da indovinare a ogni modulo aggiunto — con dodici sarebbe
-                    4+4+4 — ma va riguardato, e i collaudi funzionali non lo dicono. */}
-                {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi.
-                    Il nome accessibile della casella NON e' il nome del modulo: e'
-                    «Fornitore: da avviare», perche' dichiara anche lo stato. Cercarla
-                    per nome secco non trova niente, e i nomi cambiano quando cambia la
-                    disposizione. La chiave del registro no. */}
-                <CardFooter data-percorsi="" className="relative z-20 flex flex-wrap gap-1 p-2">
-                  {MODULI_AZIENDA.map((m) => {
-                    const st = moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato";
+                    ⚠️ E si perde qualcosa, detto invece che taciuto: dalla card non si
+                    salta piu' dentro un singolo percorso. Il salto e' di un clic piu'
+                    lungo, e passa dal fascicolo — che e' il posto dove i percorsi di
+                    un'azienda stanno tutti, con stato, esercizio e ultima versione. */}
+                {/* `data-percorsi` e `data-gruppo` sono gli ancoraggi dei collaudi. Il
+                    nome accessibile NON e' quello che si legge: a schermo c'e' «2/4»,
+                    che a un lettore di schermo arriverebbe come «due barra quattro». */}
+                <CardFooter data-percorsi="" className="relative z-20 flex gap-1 p-2">
+                  {MODULI_PER_AREA.map((g) => {
+                    const stati = g.moduli.map(
+                      (m) => moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato",
+                    );
+                    const avviati = stati.filter((s) => s !== "non-avviato").length;
+                    const pubblicati = stati.filter((s) => s === "pubblicato").length;
                     return (
                       <Link
-                        key={m.href}
-                        href={`/aziende/${a.id}/${m.href}`}
-                        data-modulo={m.href}
-                        aria-label={`${m.nome}: ${
-                          st === "pubblicato" ? "documento pubblicato" : st === "in-corso" ? "in corso" : "da avviare"
+                        key={g.area}
+                        // Al FASCICOLO, ancorato al gruppo: la card non ha piu' un
+                        // collegamento per percorso, e il posto dove i percorsi si
+                        // aprono uno per uno e' il fascicolo. L'ancora ci porta gia'
+                        // in mezzo, invece che in cima a una pagina da scorrere.
+                        href={`/aziende/${a.id}#gruppo-${g.area}`}
+                        data-gruppo={g.area}
+                        // ⚠️ Il nome accessibile dice i NUMERI, non solo il gruppo: a
+                        // schermo il rapporto si legge, a un lettore di schermo «2/4»
+                        // arriverebbe come «due barra quattro».
+                        aria-label={`${g.nome}: ${avviati} percorsi avviati su ${g.moduli.length}${
+                          pubblicati > 0
+                            ? `, ${pubblicati} con documento pubblicato`
+                            : ", nessun documento pubblicato"
                         }`}
-                        className="flex w-[calc(25%-0.2rem)] min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
+                        className="flex w-[calc(33.333%-0.17rem)] min-w-0 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-center transition-colors hover:bg-accent"
                       >
+                        {/* Il rapporto al posto dell'icona. Con undici percorsi la
+                            casella per modulo era un pittogramma di 14px con
+                            un'etichetta di 10: dodici di quelli, per ogni azienda del
+                            portafoglio, sono il muro che il committente ha chiesto di
+                            smontare. Tre numeri si leggono da lontano e dicono di piu'. */}
                         <span
                           className={
-                            "flex size-7 items-center justify-center rounded-md border transition-colors " +
-                            (st === "pubblicato"
-                              ? `border-transparent ${m.colore.pieno}`
-                              : st === "in-corso"
-                                ? m.colore.tenue
+                            "flex h-7 min-w-9 items-center justify-center rounded-md border px-1.5 font-mono text-[11px] font-semibold tabular-nums transition-colors " +
+                            (pubblicati > 0
+                              ? `border-transparent ${g.colore.pieno}`
+                              : avviati > 0
+                                ? g.colore.tenue
                                 : "border-dashed border-border text-muted-foreground/60")
                           }
                         >
-                          <m.icona className="size-3.5" strokeWidth={2} />
+                          {avviati}/{g.moduli.length}
                         </span>
                         <span
                           className={
                             "w-full truncate text-[10px] font-medium leading-none " +
-                            (st === "non-avviato" ? "text-muted-foreground/60" : "text-foreground")
+                            (avviati === 0 ? "text-muted-foreground/60" : "text-foreground")
                           }
                         >
-                          {m.etichetta}
+                          {g.breve}
                         </span>
                       </Link>
                     );

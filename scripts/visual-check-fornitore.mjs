@@ -9,7 +9,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { attendiCard } from "./comune-collaudo.mjs";
+import { attendiCard, apriModulo } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-fornitore";
 mkdirSync(OUT, { recursive: true });
@@ -85,10 +85,16 @@ await page.fill("#na-nome", "Carpenteria Sarnese S.r.l.");
 await page.fill("#na-settore", "Carpenteria metallica");
 await page.fill("#na-ateco", "25.11");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
+// La card del portafoglio non espone piu' un pulsante per percorso: mostra le tre
+// caselle di gruppo, e i percorsi si aprono dal fascicolo. Si verifica quello che il
+// prodotto fa ADESSO, e in due passi distinti, perche' un solo controllo su tutta la
+// catena non direbbe quale dei due anelli si e' rotto.
 const card = await attendiCard(page, "Carpenteria Sarnese S.r.l.");
-const link = card.locator('[data-modulo="fornitore"]');
-verifica("Il portafoglio espone il pulsante Fornitore", await link.isVisible());
-await link.click();
+verifica(
+  "Il portafoglio espone il gruppo Ecosostenibilita'",
+  await card.locator('[data-gruppo="ecosostenibilita"]').isVisible(),
+);
+await apriModulo(page, "Carpenteria Sarnese S.r.l.", "fornitore");
 await page.waitForURL("**/fornitore", { timeout: 15000 });
 await page.waitForLoadState("networkidle");
 await shot("00-vuoto");

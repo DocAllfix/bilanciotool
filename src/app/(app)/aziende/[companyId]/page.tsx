@@ -7,7 +7,7 @@ import { getStorico } from "@/features/companies/storico";
 import { Storico } from "@/components/portfolio/storico";
 import { PannelloCondivisione } from "@/components/condivisione/pannello";
 import { elencaCollegamenti } from "@/features/condivisione";
-import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
 import { etichettaDocumento } from "@/features/documents/tipi";
 import { Badge } from "@/components/ui/badge";
 import { fmtRelativa } from "@/lib/format";
@@ -85,17 +85,34 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
 
       {/* I moduli come righe e non come riquadri: si leggono in colonna, si
           confrontano fra loro, e non impongono una griglia che a un numero dispari
-          di elementi lascia sempre un buco. L'ordine e' quello del registro, cioe'
-          per area: i percorsi della stessa materia stanno vicini, e la tinta lo
-          conferma senza bisogno di un'intestazione su una lista di cinque righe. */}
+          di elementi lascia sempre un buco.
+          ⚠️ E ora con l'INTESTAZIONE DI GRUPPO. Finche' le righe erano cinque bastava
+          la tinta a dire la materia; undici di fila sono un muro in cui il confine fra
+          un gruppo e l'altro si indovina. Le intestazioni si derivano dal registro,
+          quindi un percorso nuovo compare da solo nel gruppo giusto — e un gruppo
+          rimasto senza percorsi non compare affatto, perche' un titolo sopra il vuoto
+          promette qualcosa che non c'e'. */}
       <div className="mt-8">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">I percorsi dell&apos;azienda</h2>
         {/* `data-percorsi` e `data-modulo` sono gli ancoraggi dei collaudi: il titolo
             diceva «I cinque percorsi», e un numero scritto in pagina invecchia. Un
             controllo appeso a quella frase diventerebbe rosso il giorno in cui il
             prodotto cresce, per un motivo che col prodotto non c'entra. */}
-        <ul className="mt-3 divide-y rounded-xl border" data-percorsi="">
-          {f.voci.map((v) => {
+        <div className="mt-3 space-y-5" data-percorsi="">
+          {MODULI_PER_AREA.map((g) => {
+            const vociDelGruppo = f.voci.filter((v) => g.moduli.some((m) => m.href === v.modulo));
+            if (vociDelGruppo.length === 0) return null;
+            return (
+              <section key={g.area} aria-labelledby={`gruppo-${g.area}`}>
+                <h3
+                  id={`gruppo-${g.area}`}
+                  className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  <span className={`size-2 shrink-0 rounded-full ${g.colore.tratto}`} aria-hidden />
+                  {g.nome}
+                </h3>
+                <ul className="mt-2 divide-y rounded-xl border">
+          {vociDelGruppo.map((v) => {
             const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
             return (
               <li key={v.modulo} className="group relative" data-modulo={v.modulo}>
@@ -160,7 +177,11 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
               </li>
             );
           })}
-        </ul>
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       </div>
 
       {/* Compare da solo quando c'è qualcosa da mostrare: con una sola versione

@@ -116,7 +116,7 @@ export function VistaQuadro({ dati, vai }: { dati: DatiAnticorruzione; vai: (v: 
                 <span className="w-28 shrink-0">
                   <span className="block h-1.5 overflow-hidden rounded-full bg-muted">
                     <span
-                      className="block h-full rounded-full bg-area-responsabilita"
+                      className="block h-full rounded-full bg-area-compliance"
                       style={{ width: `${c.conformita}%` }}
                     />
                   </span>

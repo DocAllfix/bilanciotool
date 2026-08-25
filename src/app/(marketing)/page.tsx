@@ -203,7 +203,7 @@ export default function LandingPage() {
                   Undici percorsi, un solo archivio
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
-                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, undici percorsi in cinque aree.
+                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, undici percorsi in tre gruppi.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
                   Alcuni si redigono per esercizio e seguono il calendario. Altri sono fotografie che si aggiornano

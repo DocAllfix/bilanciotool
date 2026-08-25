@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { DOCUMENTI } from "@/features/documents/tipi";
 import { RipetiTour } from "@/components/guida/ripeti-tour";
 import { Badge } from "@/components/ui/badge";
@@ -58,8 +58,19 @@ export default function GuidaPage() {
       </p>
       {/* Ancoraggio strutturale per i collaudi: il titolo qui sopra porta un numero,
           e un numero cambia. Vedi il commento nel fascicolo azienda. */}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2" data-percorsi="">
-        {MODULI_AZIENDA.map((m) => {
+      {/* Raggruppati come nel prodotto. Undici schede in una griglia a due colonne si
+          leggevano come un elenco unico, e la guida e' il posto dove uno impara COME il
+          prodotto e' organizzato: se qui i gruppi non si vedono, la guida insegna una
+          struttura diversa da quella che poi si trova nel fascicolo. */}
+      <div className="mt-4 space-y-6" data-percorsi="">
+        {MODULI_PER_AREA.map((g) => (
+          <section key={g.area}>
+            <h3 className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className={`size-2 shrink-0 rounded-full ${g.colore.tratto}`} aria-hidden />
+              {g.nome}
+            </h3>
+            <div className="mt-2 grid gap-3 sm:grid-cols-2">
+        {g.moduli.map((m) => {
           const doc = DOCUMENTI[m.documenti[0]];
           const Icona = m.icona;
           return (
@@ -69,7 +80,10 @@ export default function GuidaPage() {
                   <Icona className="size-4" />
                 </span>
                 <div className="min-w-0">
-                  <h3 className="text-[15px] font-semibold tracking-tight">{m.nome}</h3>
+                  {/* h4 e non h3: il gruppo qui sopra e' h3, e due livelli uguali
+                      annidati fanno leggere a un lettore di schermo il modulo come
+                      pari del gruppo che lo contiene. */}
+                  <h4 className="text-[15px] font-semibold tracking-tight">{m.nome}</h4>
                   <p className="text-[12.5px] text-muted-foreground">{m.norma}</p>
                 </div>
               </div>
@@ -84,6 +98,9 @@ export default function GuidaPage() {
             </div>
           );
         })}
+            </div>
+          </section>
+        ))}
       </div>
 
       {/* ── tour ──────────────────────────────────────────────────────────── */}

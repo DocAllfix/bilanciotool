@@ -37,7 +37,7 @@ export function VistaCriteri({ companyId, dati }: { companyId: string; dati: Dat
           <button
             className="rounded-md border px-2.5 py-1 text-[12px]"
             aria-pressed={sezione === ""}
-            style={sezione === "" ? { background: "var(--area-sostenibilita)", color: "white" } : undefined}
+            style={sezione === "" ? { background: "var(--area-sistemi)", color: "white" } : undefined}
             onClick={() => setSezione("")}
           >
             Tutte
@@ -48,7 +48,7 @@ export function VistaCriteri({ companyId, dati }: { companyId: string; dati: Dat
               className="rounded-md border px-2.5 py-1 text-[12px]"
               aria-pressed={sezione === sz.key}
               aria-label={`Filtra: ${sz.nome}`}
-              style={sezione === sz.key ? { background: "var(--area-sostenibilita)", color: "white" } : undefined}
+              style={sezione === sz.key ? { background: "var(--area-sistemi)", color: "white" } : undefined}
               onClick={() => setSezione(sz.key)}
             >
               {sz.key} · {sz.nome}

@@ -92,20 +92,25 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
   it("il fascicolo elenca i moduli nell'ordine del registro, con lo stato di ciascuno", async () => {
     const f = (await getFascicolo(userA, orgA, companyA))!;
     expect(f.azienda.nome).toBe("Azienda dello studio A");
-    // L'ordine e' quello del registro, che dal 22 agosto 2026 e' RAGGRUPPATO PER AREA:
-    // GHG ed Energetico sono la stessa materia e stanno vicini. Prima era
-    // ["ghg", "bilancio", "energetico", ...], e la differenza non e' cosmetica —
-    // da questo elenco discendono card, barra laterale, guida e giro guidato.
+    // L'ordine e' quello del registro, che dal 25 agosto 2026 e' RAGGRUPPATO NEI TRE
+    // GRUPPI del committente: Ecosostenibilita', Compliance, Sistemi di gestione. Dal
+    // 22 agosto al 25 erano cinque aree per materia, e prima ancora un elenco piatto.
+    // La differenza non e' cosmetica: da questo elenco discendono card, barra laterale,
+    // fascicolo, guida e giro guidato.
+    //
+    // Tre moduli hanno cambiato casa, e sono i tre da guardare se questo test cade:
+    // l'Autovalutazione ESG (era con la Due diligence, ora sta in Ecosostenibilita'
+    // perche' e' la postura del cliente e non un obbligo), la Due diligence (in
+    // Compliance, discende dalla CSDDD) e SA8000 (era col Bilancio, ora coi sistemi
+    // certificabili).
     expect(f.voci.map((v) => v.modulo)).toEqual([
-      "ghg", "energetico",
-      "bilancio", "sa8000",
-      "fornitore", "filiera",
-      "soa", "sgiqas",
-      "anticorruzione", "mog231", "segnalazioni",
+      "ghg", "energetico", "bilancio", "fornitore",
+      "mog231", "anticorruzione", "segnalazioni", "filiera",
+      "sgiqas", "sa8000", "soa",
     ]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo
-    // finisse lontano dai suoi, la sua area comparirebbe due volte a distanza — e nella
-    // barra laterale si vedrebbero due intestazioni uguali separate da altre voci.
+    // finisse lontano dai suoi, il suo gruppo comparirebbe due volte a distanza — e nel
+    // fascicolo si vedrebbero due intestazioni uguali separate da altre voci.
     const aree = f.voci.map((v) => MODULI_AZIENDA.find((m) => m.href === v.modulo)!.area);
     const blocchi = aree.filter((a, i) => i === 0 || aree[i - 1] !== a);
     expect(blocchi).toEqual([...new Set(aree)]);

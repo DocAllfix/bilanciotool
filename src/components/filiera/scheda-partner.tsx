@@ -351,7 +351,7 @@ function Scala({
             onClick={() => scegli(i + 1)}
             className={cn(
               "rounded-md border px-2 py-1.5 text-left text-[11px] transition-colors",
-              scelto === i + 1 ? "border-area-filiera bg-area-filiera/15 font-medium" : "hover:bg-muted/50",
+              scelto === i + 1 ? "border-area-compliance bg-area-compliance/15 font-medium" : "hover:bg-muted/50",
             )}
           >
             <span className="font-mono">{i + 1}</span> · {g}

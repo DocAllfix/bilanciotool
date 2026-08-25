@@ -938,6 +938,76 @@ Ora sta a `z-10` sopra il testo, e i comandi veri salgono a `z-20`.
 la prima ipotesi da mettere alla prova e' che non si clicchi davvero. `elementFromPoint`
 lo dice in tre righe, e l'occhio no.
 
+**Fase 1 di EvalisDeck × ESG Nexus (2026-08-25) — da undici moduli a tre gruppi**
+
+Prima di aggiungere il dodicesimo percorso (ESG Nexus) si riordina, come quando i moduli
+passarono da cinque a undici. **La tassonomia l'ha dettata il committente**, e i due nomi
+sono i suoi: *Ecosostenibilità* (GHG, energetico, bilancio, autovalutazione ESG) e
+*Compliance* (231, 37001, whistleblowing, due diligence). I quattro che non ha nominato
+sono stati collocati così: il GHG in ecosostenibilità, e QAS + SA8000 + SoA in un terzo
+gruppo, *Sistemi di gestione*, perché hanno in comune una cosa sola ma decisiva —
+**sono certificabili da un ente terzo**. Metterli in «compliance» avrebbe fatto di quel
+gruppo un sacco, obblighi di legge e certificazioni volontarie insieme.
+
+Tre moduli cambiano casa: l'**Autovalutazione ESG** (era con la due diligence, ora è
+ecosostenibilità: è la postura da mostrare al mercato), la **Due diligence** (compliance:
+discende dalla CSDDD) e **SA8000** (era col Bilancio, ora coi certificabili — ⚠️ questa è
+una nostra lettura, non una parola del committente, e va confermata guardando lo schermo).
+
+La **card del portafoglio** passa da undici caselle a **tre**, con dentro il rapporto
+«avviati su totale». La storia di quella riga è la storia del difetto che torna: a due
+moduli andava, a cinque gli ultimi due finirono fuori bordo, a undici cinque per riga
+davano 5+5+1 con l'ultima orfana e si passò a quattro. Ogni volta la risposta era
+«cambiamo il numero di colonne», che rimanda il problema al modulo dopo. Con tre gruppi il
+numero smette di essere una cosa da indovinare. **Si perde qualcosa, ed è detto invece che
+taciuto**: dalla card non si salta più dentro un singolo percorso, si passa dal fascicolo.
+
+**Tre difetti veri trovati, e due erano negli strumenti di misura:**
+
+1. **Quindici componenti scrivevano a mano la classe del colore d'area.** Il registro le
+   deriva dal gruppo apposta, ma `bg-area-filiera`, `bg-area-responsabilita` e
+   `bg-area-sostenibilita` erano ricopiate nei componenti di modulo: alla rinomina quei
+   riquadri sarebbero rimasti **senza fondo**. Il compilatore non lo vede (una stringa è
+   valida), Tailwind non protesta (per un token inesistente non genera niente), i collaudi
+   funzionali non lo vedono (la pagina si apre). Guardia nuova:
+   `classi-area-pure.test.ts`, che confronta le classi usate nel sorgente coi token
+   definiti in `globals.css` — messa in rosso di proposito, fallisce sul file giusto.
+2. **Le foto «in chiaro» uscivano scure, e non sempre.** `foto-superfici.mjs` scriveva
+   `localStorage` e faceva il toggle della classe a pagina aperta: è una corsa con
+   l'idratazione di `next-themes`, e nella stessa esecuzione `dashboard-chiaro` usciva
+   chiara e `guida-chiaro` usciva scura. Ora il tema si applica **ricaricando**, e si
+   **verifica** che sia quello chiesto.
+3. **`attendiCard` indovinava dove si trovava.** Navigava al portafoglio solo se l'URL non
+   era già `/dashboard`: chiamata subito dopo «Crea azienda», l'indirizzo è ancora quello
+   vecchio perché la `router.push` non è atterrata, il salto si saltava, e i dodici
+   tentativi ricaricavano **il fascicolo**. Il collaudo moriva dicendo «la card non c'è»
+   mentre la riga era nel database e la pagina giusta non era mai stata aperta.
+
+**Regole nate qui:**
+- **Una classe Tailwind scritta a mano fuori dal registro è un colore che sparirà in
+  silenzio.** Il registro esiste per derivarla; derivarla in un posto e ricopiarla in
+  quindici è peggio che non averlo.
+- **Un difetto invisibile a compilatore, framework e collaudi funzionali va reso visibile
+  con una guardia strutturale**, non con la disciplina.
+- **Una foto che non dice in che stato è stata presa fa perdere più tempo di quanta ne
+  faccia risparmiare.** Guardando la vetrina fotografata col tema sbagliato ho creduto per
+  qualche minuto che i trattini dei gruppi fossero illeggibili, e stavo per «correggere»
+  un colore che nessuno vede così. Il ritaglio ingrandito dal vivo ha detto il contrario.
+- **Non indovinare dove si è: andarci.** Una navigazione in più costa un caricamento;
+  indovinare costa una diagnosi che parte dalla parte sbagliata del sistema.
+- **Il tetto di un itinerario non deve dipendere da quanti gruppi ci sono.** La regola «una
+  tappa per area» con tre gruppi avrebbe accorciato il giro di benvenuto da sei tappe a
+  quattro, in silenzio, come effetto collaterale di una riorganizzazione della
+  navigazione. Ora il server prende prima un modulo per gruppo — così chi guarda impara
+  **quali sono i gruppi** — e poi riempie fino a sei.
+- **`npm run test | tail` restituisce exit 0 con un test rosso.** Riconfermato sul campo:
+  la suite si lancia senza pipe, e il conteggio stampato va letto.
+
+Gate: typecheck · build · **1062 test** verdi senza pipe · `qa -- tutto-demo` 68/68 ·
+`fornitore` 28/28 · `energetico` 40/40 · `soa-percorso` 34/34 · `sa8000-percorso` 31/31 ·
+`filiera-percorso` 35/35 · `bilancio`, `guida` 7/7, `portafoglio-aggiorna` 5/5 · 17 foto
+in chiaro e scuro **guardate**, console pulita, zero sfondamento da telefono.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

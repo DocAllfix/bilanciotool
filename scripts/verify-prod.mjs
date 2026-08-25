@@ -66,7 +66,11 @@ await sql`update org_entitlement set status='active' where organization_id = (
 await sql.end();
 
 // 5. Percorso GHG della demo → passo 8 → pubblica
-await demoCard.locator('[data-modulo="ghg"]').click();
+// Dal 25 agosto 2026 la card porta al FASCICOLO, non dentro un percorso: le sue tre
+// caselle sono i gruppi. Si passa di li'.
+await demoCard.locator('[data-slot="card-title"], h3, h2').first().click();
+await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 20000 });
+await page.locator('[data-percorsi] [data-modulo="ghg"] a').first().click();
 await page.waitForURL("**/ghg/**", { timeout: 30000 });
 await page.waitForLoadState("networkidle");
 const chiudiTour = async () => {

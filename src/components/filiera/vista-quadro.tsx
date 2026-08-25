@@ -118,7 +118,7 @@ export function VistaQuadro({ dati, vai }: { dati: DatiFilieraPieno; vai: (v: st
         <ol className="mt-3 divide-y rounded-xl border" data-tour="fil-fasi">
           {dati.fasi.map((f) => (
             <li key={f.key} className="flex gap-3 px-4 py-3">
-              <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-area-filiera/15 font-mono text-[11px] text-area-filiera">
+              <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-area-compliance/15 font-mono text-[11px] text-area-compliance">
                 {f.key}
               </span>
               <div className="min-w-0">

@@ -11,31 +11,38 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000", "filiera"] as const;
+export const MODULI = ["ghg", "energetico", "bilancio", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "sgiqas", "sa8000", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
-// ─── Aree ────────────────────────────────────────────────────────────────────
-//
-// Il prodotto passa da cinque moduli a undici, e a undici l'elenco piatto smette
-// di funzionare: e' gia' successo una volta, quando i moduli passarono da due a
-// cinque e gli ultimi due finirono fuori dal bordo della card.
+// ─── Gruppi ──────────────────────────────────────────────────────────────────
 //
 // ⚠️ EMENDAMENTO DELIBERATO a `DESIGN.md`, che diceva «un modulo, un colore».
-// Undici tinte distinguibili su due temi, tutte sopra AA, non esistono: il cerchio
-// e' gia' occupato a 190·155·68·300·250. Quindi **un'area un colore, un modulo
-// un'icona** — la tinta dice la materia, l'icona dice il percorso.
+// Undici tinte distinguibili su due temi, tutte sopra AA, non esistono. Quindi
+// **un gruppo un colore, un modulo un'icona** — la tinta dice la materia,
+// l'icona dice il percorso.
 //
-// La partizione e' quella confermata dal committente (per materia), con la
-// rifinitura a cinque aree adottata come impostazione di lavoro: si rivede quando
-// gli undici moduli si vedono a schermo, e costa una riga per modulo.
-export const AREE_MODULI = [
-  "ambiente",
-  "sostenibilita",
-  "filiera",
-  "sistemi",
-  "responsabilita",
-] as const;
+// ⚠️ LA PARTIZIONE E' DEL COMMITTENTE, dettata a voce il 25 agosto 2026, e i due
+// nomi che ha usato sono i suoi:
+//
+//   «Gruppo ecosostenibilita' e ci metti bilancio di sostenibilita', bilancio
+//    energetico, autovalutazione conformita' ESG e implementazione sistema di
+//    gestione ESG.»
+//   «Gruppo compliance e ci metti 231, 37001, whistleblowing e due diligence.»
+//
+// I quattro moduli che non ha nominato sono stati collocati cosi': l'Inventario
+// GHG in ecosostenibilita' (alimenta il bilancio, e' la stessa catena), e SGI QAS,
+// SA8000 e SoA in un terzo gruppo. Quei tre hanno in comune una cosa sola ma
+// decisiva: **sono certificabili da un ente terzo**, con audit periodici e non
+// conformita'. Metterli in «compliance» avrebbe fatto di quel gruppo un sacco —
+// obblighi di legge e certificazioni volontarie insieme — e il gruppo del
+// committente sarebbe smesso di essere quello che ha descritto.
+//
+// Si passa da cinque aree per materia a tre gruppi, e la riduzione e' il punto:
+// con undici percorsi in fila la card del portafoglio faceva 5+5+1, con
+// l'ultima casella orfana. Undici caselle non si riordinano meglio, si
+// raggruppano.
+export const AREE_MODULI = ["ecosostenibilita", "compliance", "sistemi"] as const;
 export type AreaModuli = (typeof AREE_MODULI)[number];
 
 export type ColoreArea = {
@@ -58,48 +65,40 @@ export type ColoreArea = {
 // Un difetto che il compilatore non puo' vedere (le stringhe sono valide) e che i
 // collaudi funzionali non vedono (la pagina si apre, i comandi rispondono): si vede
 // solo guardando. Le classi letterali qui erano una decisione, non ripetizione.
+// ⚠️ `breve` non e' un vezzo: sulla card del portafoglio ogni gruppo ha un terzo di
+// larghezza, e «Sistemi di gestione» non ci sta — si troncherebbe a «Sistemi di ges…».
+// L'etichetta corta sta QUI e non nel componente perche' il nome di un gruppo e' del
+// registro: scritta a schermo, la seconda superficie che la mostra la sceglierebbe
+// diversa, ed e' cosi' che due pagine cominciano a chiamare la stessa cosa in due modi.
 export const AREE = {
-  ambiente: {
-    nome: "Ambiente ed energia",
+  ecosostenibilita: {
+    nome: "Ecosostenibilità",
+    breve: "Ecosostenibilità",
     colore: {
-      pieno: "bg-area-ambiente text-white",
-      tenue: "border-area-ambiente/35 bg-area-ambiente/10 text-area-ambiente",
-      tratto: "bg-area-ambiente",
+      pieno: "bg-area-ecosostenibilita text-white",
+      tenue: "border-area-ecosostenibilita/35 bg-area-ecosostenibilita/10 text-area-ecosostenibilita",
+      tratto: "bg-area-ecosostenibilita",
     },
   },
-  sostenibilita: {
-    nome: "Sostenibilità e rendicontazione",
+  compliance: {
+    nome: "Compliance",
+    breve: "Compliance",
     colore: {
-      pieno: "bg-area-sostenibilita text-white",
-      tenue: "border-area-sostenibilita/35 bg-area-sostenibilita/10 text-area-sostenibilita",
-      tratto: "bg-area-sostenibilita",
-    },
-  },
-  filiera: {
-    nome: "Filiera",
-    colore: {
-      pieno: "bg-area-filiera text-white",
-      tenue: "border-area-filiera/35 bg-area-filiera/10 text-area-filiera",
-      tratto: "bg-area-filiera",
+      pieno: "bg-area-compliance text-white",
+      tenue: "border-area-compliance/35 bg-area-compliance/10 text-area-compliance",
+      tratto: "bg-area-compliance",
     },
   },
   sistemi: {
     nome: "Sistemi di gestione",
+    breve: "Sistemi",
     colore: {
       pieno: "bg-area-sistemi text-white",
       tenue: "border-area-sistemi/35 bg-area-sistemi/10 text-area-sistemi",
       tratto: "bg-area-sistemi",
     },
   },
-  responsabilita: {
-    nome: "Responsabilità dell'ente",
-    colore: {
-      pieno: "bg-area-responsabilita text-white",
-      tenue: "border-area-responsabilita/35 bg-area-responsabilita/10 text-area-responsabilita",
-      tratto: "bg-area-responsabilita",
-    },
-  },
-} as const satisfies Record<AreaModuli, { nome: string; colore: ColoreArea }>;
+} as const satisfies Record<AreaModuli, { nome: string; breve: string; colore: ColoreArea }>;
 
 export type VoceModulo = {
   /** Segmento di rotta sotto `/aziende/[companyId]/`. */
@@ -129,20 +128,26 @@ export type VoceModulo = {
   perEsercizio: boolean;
 };
 
-// ⚠️ L'ORDINE E' PER AREA, e non e' estetico: da questo elenco discendono la card
+// ⚠️ L'ORDINE E' PER GRUPPO, e non e' estetico: da questo elenco discendono la card
 // del portafoglio, il fascicolo, la barra laterale, la guida e l'itinerario del giro
 // guidato. Raggruppati qui, sono raggruppati ovunque; sparsi qui, ogni superficie si
 // riscriverebbe il proprio ordine — che e' esattamente com'erano i cinque moduli prima
 // che questo registro esistesse.
+//
+// Dentro ogni gruppo l'ordine e' quello che il committente ha dettato, dove l'ha
+// dettato: 231, 37001, whistleblowing, due diligence.
 export const MODULI_AZIENDA = [
+  // ─── Ecosostenibilità ──────────────────────────────────────────────────────
+  // La catena di un lavoro solo: che cosa consumi, che cosa emetti, come lo
+  // racconti, come ti valuti.
   {
     href: "ghg",
     etichetta: "GHG",
     nome: "Inventario GHG",
     norma: "ISO 14064-1",
     icona: Factory,
-    area: "ambiente",
-    colore: AREE.ambiente.colore,
+    area: "ecosostenibilita",
+    colore: AREE.ecosostenibilita.colore,
     documenti: ["ghg"],
     perEsercizio: true,
   },
@@ -152,8 +157,8 @@ export const MODULI_AZIENDA = [
     nome: "Bilancio energetico",
     norma: "UNI CEI EN 16247",
     icona: Zap,
-    area: "ambiente",
-    colore: AREE.ambiente.colore,
+    area: "ecosostenibilita",
+    colore: AREE.ecosostenibilita.colore,
     documenti: ["energetico"],
     perEsercizio: true,
   },
@@ -163,10 +168,104 @@ export const MODULI_AZIENDA = [
     nome: "Bilancio di sostenibilità e conformità ESG",
     norma: "GRI · ESRS VSME",
     icona: BookOpen,
-    area: "sostenibilita",
-    colore: AREE.sostenibilita.colore,
+    area: "ecosostenibilita",
+    colore: AREE.ecosostenibilita.colore,
     documenti: ["bilancio"],
     perEsercizio: true,
+  },
+  {
+    href: "fornitore",
+    etichetta: "Fornitore",
+    nome: "Autovalutazione ESG",
+    norma: "ESRS · ISO 20400",
+    icona: BadgeCheck,
+    // ⚠️ Separata dalla Due diligence di filiera, che sta in «compliance», ed e' una
+    // scelta del committente. Le due guardano davvero da parti opposte: qui il cliente
+    // valuta se' stesso per rispondere a un committente — e' la sua postura ESG, roba
+    // da mostrare al mercato — mentre la due diligence e' un obbligo che discende dalla
+    // CSDDD. Il ponte fra le due (la partita IVA su `chain_partner`) attraversera' due
+    // gruppi, e va bene: il gruppo e' navigazione, non e' un confine di dominio.
+    area: "ecosostenibilita",
+    colore: AREE.ecosostenibilita.colore,
+    documenti: ["attestato"],
+    perEsercizio: false,
+  },
+  // ─── Compliance ────────────────────────────────────────────────────────────
+  // Obblighi che gravano sull'ente, non scelte volontarie. Il gruppo del
+  // committente, nel suo ordine.
+  {
+    href: "mog231",
+    etichetta: "231",
+    nome: "Modello 231",
+    norma: "D.Lgs. 231/2001",
+    icona: Gavel,
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    // La Matrice reati-processi e' cio' che un giudice guarda per primo, quindi e' il
+    // documento principale; la Relazione dell'OdV e' periodica e ha un destinatario
+    // interno all'ente.
+    documenti: ["matrice_231", "relazione_odv"],
+    perEsercizio: false,
+  },
+  {
+    href: "anticorruzione",
+    etichetta: "ISO 37001",
+    nome: "Prevenzione della corruzione",
+    norma: "UNI ISO 37001",
+    icona: Scale,
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    // Due uscite, il principale per primo: la Relazione e' cio' che si porta all'organo
+    // di governo, la Matrice e' cio' che l'auditor sfoglia. La prima rappresenta il
+    // modulo dove ne serve una sola (scadenzario, fascicolo, stato del percorso).
+    documenti: ["relazione_pc", "matrice_pc"],
+    perEsercizio: false,
+  },
+  {
+    href: "segnalazioni",
+    etichetta: "Segnalazioni",
+    nome: "Gestione delle segnalazioni",
+    norma: "D.Lgs. 24/2023",
+    icona: Megaphone,
+    // I tre che precedono sono legati per legge: il Modello 231 contiene gia' una
+    // procedura sul canale di segnalazione (art. 6 c. 2-quater), e ISO 37001 ha i
+    // propri registri di segnalazione e indagine. Chi apre uno dei tre, prima o poi
+    // apre gli altri.
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    // ⚠️ Un documento solo, ed e' una decisione. La Relazione periodica e' aggregata e
+    // puo' essere consegnata; il FASCICOLO della singola segnalazione no — non per la
+    // riservatezza soltanto, ma perche' la chiave di un documento pubblicato e'
+    // (azienda, tipo, anno, versione) e per il fascicolo manca l'asse «quale
+    // fascicolo». Vedi la migrazione 0028.
+    documenti: ["relazione_wb"],
+    perEsercizio: false,
+  },
+  {
+    href: "filiera",
+    etichetta: "Filiera",
+    nome: "Due diligence di filiera",
+    norma: "Linee guida OCSE · CSDDD",
+    icona: Network,
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    documenti: ["dichiarazione_filiera"],
+    perEsercizio: false,
+  },
+  // ─── Sistemi di gestione ───────────────────────────────────────────────────
+  // I tre certificabili da un ente terzo, con audit periodici e non conformita'.
+  // E' il gruppo che il committente non ha nominato: sono i moduli che restavano,
+  // e questa e' la cosa che hanno in comune.
+  {
+    href: "sgiqas",
+    etichetta: "SGI QAS",
+    nome: "Sistema di gestione integrato QAS",
+    norma: "ISO 9001 · 14001 · 45001",
+    icona: ClipboardCheck,
+    area: "sistemi",
+    colore: AREE.sistemi.colore,
+    documenti: ["riesame_qas", "analisi_ambientale", "valutazione_ssl"],
+    perEsercizio: false,
   },
   {
     href: "sa8000",
@@ -177,36 +276,15 @@ export const MODULI_AZIENDA = [
     // precedente non e' lo stesso sistema.
     norma: "SA8000:2026",
     icona: HeartHandshake,
-    // Stessa area del Bilancio: e' rendicontazione sociale, non un sistema certificabile
-    // di processo. E' la partizione confermata dal committente.
-    area: "sostenibilita",
-    colore: AREE.sostenibilita.colore,
+    // ⚠️ CAMBIO DI COLLOCAZIONE DA FAR CONFERMARE. Stava con il Bilancio, e la ragione
+    // scritta allora era «e' rendicontazione sociale, non un sistema certificabile di
+    // processo» — partizione confermata dal committente. Qui sta con QAS e SoA perche'
+    // e' certificato da enti accreditati SAI con audit periodici: la stessa natura
+    // degli altri due. Il committente non l'ha nominato nei due gruppi che ha dettato,
+    // quindi questa e' una nostra lettura e va detta ad alta voce, non lasciata qui.
+    area: "sistemi",
+    colore: AREE.sistemi.colore,
     documenti: ["manuale_sa8000"],
-    perEsercizio: false,
-  },
-  {
-    href: "fornitore",
-    etichetta: "Fornitore",
-    nome: "Autovalutazione ESG",
-    norma: "ESRS · ISO 20400",
-    icona: BadgeCheck,
-    area: "filiera",
-    colore: AREE.filiera.colore,
-    documenti: ["attestato"],
-    perEsercizio: false,
-  },
-  {
-    href: "filiera",
-    etichetta: "Filiera",
-    nome: "Due diligence di filiera",
-    norma: "Linee guida OCSE · CSDDD",
-    icona: Network,
-    // ⚠️ Stessa area dell'Autovalutazione fornitore, e guarda dalla parte OPPOSTA: la'
-    // il cliente valuta se' stesso per rispondere a un committente, qui valuta i propri
-    // fornitori. Sono le due estremita' dello stesso rapporto, e stanno insieme.
-    area: "filiera",
-    colore: AREE.filiera.colore,
-    documenti: ["dichiarazione_filiera"],
     perEsercizio: false,
   },
   {
@@ -218,69 +296,6 @@ export const MODULI_AZIENDA = [
     area: "sistemi",
     colore: AREE.sistemi.colore,
     documenti: ["soa"],
-    perEsercizio: false,
-  },
-  {
-    href: "sgiqas",
-    etichetta: "SGI QAS",
-    nome: "Sistema di gestione integrato QAS",
-    norma: "ISO 9001 · 14001 · 45001",
-    icona: ClipboardCheck,
-    // Stessa area della SoA: sono i due sistemi di gestione CERTIFICABILI del prodotto.
-    // ⚠️ E la voce sta QUI, prima di «anticorruzione», perche' l'ordine del registro
-    // raggruppa per area: un modulo lontano dai suoi farebbe comparire la stessa
-    // intestazione due volte nella barra laterale. Lo verifica `navigazione.db.test.ts`.
-    area: "sistemi",
-    colore: AREE.sistemi.colore,
-    documenti: ["riesame_qas", "analisi_ambientale", "valutazione_ssl"],
-    perEsercizio: false,
-  },
-  {
-    href: "anticorruzione",
-    etichetta: "ISO 37001",
-    nome: "Prevenzione della corruzione",
-    norma: "UNI ISO 37001",
-    icona: Scale,
-    area: "responsabilita",
-    colore: AREE.responsabilita.colore,
-    // Due uscite, il principale per primo: la Relazione e' cio' che si porta all'organo
-    // di governo, la Matrice e' cio' che l'auditor sfoglia. La prima rappresenta il
-    // modulo dove ne serve una sola (scadenzario, fascicolo, stato del percorso).
-    documenti: ["relazione_pc", "matrice_pc"],
-    perEsercizio: false,
-  },
-  {
-    href: "mog231",
-    etichetta: "231",
-    nome: "Modello 231",
-    norma: "D.Lgs. 231/2001",
-    icona: Gavel,
-    area: "responsabilita",
-    colore: AREE.responsabilita.colore,
-    // La Matrice reati-processi e' cio' che un giudice guarda per primo, quindi e' il
-    // documento principale; la Relazione dell'OdV e' periodica e ha un destinatario
-    // interno all'ente.
-    documenti: ["matrice_231", "relazione_odv"],
-    perEsercizio: false,
-  },
-  {
-    href: "segnalazioni",
-    etichetta: "Segnalazioni",
-    nome: "Gestione delle segnalazioni",
-    norma: "D.Lgs. 24/2023",
-    icona: Megaphone,
-    // Terzo modulo della responsabilita' dell'ente, e i tre sono legati per legge: il
-    // Modello 231 contiene gia' una procedura sul canale di segnalazione (art. 6 c.
-    // 2-quater), e ISO 37001 ha i propri registri di segnalazione e indagine. Chi apre
-    // uno dei tre, prima o poi apre gli altri.
-    area: "responsabilita",
-    colore: AREE.responsabilita.colore,
-    // ⚠️ Un documento solo, ed e' una decisione. La Relazione periodica e' aggregata e
-    // puo' essere consegnata; il FASCICOLO della singola segnalazione no — non per la
-    // riservatezza soltanto, ma perche' la chiave di un documento pubblicato e'
-    // (azienda, tipo, anno, versione) e per il fascicolo manca l'asse «quale
-    // fascicolo». Vedi la migrazione 0028.
-    documenti: ["relazione_wb"],
     perEsercizio: false,
   },
 ] as const satisfies readonly VoceModulo[];
@@ -310,16 +325,17 @@ export function percorsoModulo(companyId: string, modulo: ModuloAzienda, anno?: 
 }
 
 /**
- * I moduli raggruppati per area, nell'ordine delle aree.
+ * I moduli raggruppati, nell'ordine dei gruppi.
  *
  * Si deriva da `MODULI_AZIENDA` e non si scrive a mano: un modulo aggiunto al registro
- * compare da solo nel proprio gruppo. Le aree senza moduli non compaiono — oggi ce n'e'
- * una (la responsabilita' dell'ente, che si popola col Modello 231), e un'intestazione
- * vuota sarebbe una promessa non mantenuta a schermo.
+ * compare da solo nel proprio gruppo. I gruppi senza moduli non compaiono — oggi sono
+ * tutti pieni, ma un'intestazione vuota sarebbe una promessa non mantenuta a schermo, e
+ * il caso si ripresenta ogni volta che si apre un gruppo prima dei moduli che lo abitano.
  */
 export const MODULI_PER_AREA = AREE_MODULI.map((area) => ({
   area,
   nome: AREE[area].nome,
+  breve: AREE[area].breve,
   colore: AREE[area].colore,
   moduli: MODULI_AZIENDA.filter((m) => m.area === area),
 })).filter((g) => g.moduli.length > 0);

@@ -199,7 +199,9 @@ await attesa(1600);
 // 6. Materialità
 await cartello("Doppia materialità", "18 temi, ognuno con la sua guida. La matrice si aggiorna mentre valuti.");
 await vai(BASE + "/dashboard");
-await clicca('[data-tour="azienda-demo"] a[href$="/bilancio"]', 3200);
+// La card porta al fascicolo; il Bilancio si apre di li'.
+await clicca('[data-tour="azienda-demo"] a[aria-label^="Apri "]', 1600);
+await clicca('[data-percorsi] [data-modulo="bilancio"] a', 3200);
 await page.waitForLoadState("networkidle");
 await cursore();
 await clicca('[data-tour="bil-passo-2"]', 3000);

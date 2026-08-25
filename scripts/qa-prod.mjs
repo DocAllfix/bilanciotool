@@ -177,8 +177,12 @@ await check("ripristino azienda archiviata", async () => {
 // ============================================================ 4. PERCORSO GHG
 set("Percorso GHG (azienda demo)");
 await check("apertura inventario GHG della demo", async () => {
+  // ⚠️ Dal 25 agosto 2026 la card porta al FASCICOLO: le sue tre caselle sono i
+  // gruppi, non i percorsi. Si passa di li'.
   const demo = page.locator('[data-tour="azienda-demo"]');
-  await demo.locator('a[href$="/ghg"]').first().click();
+  await demo.locator('a[aria-label^="Apri "]').first().click();
+  await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 30000 });
+  await page.locator('[data-percorsi] [data-modulo="ghg"] a').first().click();
   await page.waitForURL("**/ghg/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
   await silenziaTour();
@@ -301,8 +305,12 @@ await check("apertura bilancio della demo", async () => {
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
   await silenziaTour();
   await chiudiTour();
+  // ⚠️ Dal 25 agosto 2026 la card porta al FASCICOLO: le sue tre caselle sono i
+  // gruppi, non i percorsi. Si passa di li'.
   const demo = page.locator('[data-tour="azienda-demo"]');
-  await demo.locator('a[href$="/bilancio"]').first().click();
+  await demo.locator('a[aria-label^="Apri "]').first().click();
+  await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 30000 });
+  await page.locator('[data-percorsi] [data-modulo="bilancio"] a').first().click();
   await page.waitForURL("**/bilancio/**", { timeout: 30000 });
   await page.waitForLoadState("networkidle");
   await silenziaTour();
@@ -391,8 +399,12 @@ await check("apertura del modulo energetico dal portafoglio", async () => {
   await page.goto(BASE + "/dashboard", { waitUntil: "networkidle" });
   await silenziaTour();
   await chiudiTour();
+  // ⚠️ Dal 25 agosto 2026 la card porta al FASCICOLO: le sue tre caselle sono i
+  // gruppi, non i percorsi. Si passa di li'.
   const card = page.locator('[data-slot="card"]').filter({ hasText: "(demo)" }).first();
-  await card.locator('a[href$="/energetico"]').first().click();
+  await card.locator('a[aria-label^="Apri "]').first().click();
+  await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 30000 });
+  await page.locator('[data-percorsi] [data-modulo="energetico"] a').first().click();
   await page.waitForURL("**/energetico**", { timeout: 40000 });
   companyDemo = page.url().match(/aziende\/([^/]+)/)?.[1] ?? null;
 });

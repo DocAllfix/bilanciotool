@@ -8,7 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { attendiCard } from "./comune-collaudo.mjs";
+import { attendiCard, apriModulo } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa-percorso";
@@ -96,12 +96,15 @@ await page.fill("#na-settore", "Servizi applicativi in cloud");
 await page.fill("#na-ateco", "62.01");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
 const card = await attendiCard(page, "Nexus Cloud Services S.r.l.");
-// Il nome accessibile e' quello per esteso piu' lo stato — «Statement of Applicability
-// (SoA): da avviare» — non la sigla: la card e' stata ridisegnata dopo che questo
-// collaudo fu scritto. Si aggancia all'indirizzo, che e' il fatto stabile.
-const link = card.locator('a[href$="/soa"]').first();
-verifica("Il portafoglio espone il pulsante SoA", await link.isVisible());
-await link.click();
+// ⚠️ Dal 25 agosto 2026 la card NON espone piu' un collegamento per percorso:
+// mostra le tre caselle di gruppo, e i percorsi si aprono dal fascicolo. Si verifica
+// cio' che il prodotto fa adesso, e in due passi distinti, perche' un controllo solo
+// su tutta la catena non direbbe quale dei due anelli si e' rotto.
+verifica(
+  "Il portafoglio espone il gruppo Sistemi di gestione",
+  await card.locator('[data-gruppo="sistemi"]').isVisible(),
+);
+await apriModulo(page, "Nexus Cloud Services S.r.l.", "soa");
 await page.waitForURL("**/soa", { timeout: 60000 });
 await page.waitForLoadState("networkidle", { timeout: 60000 });
 await shot("00-vuoto");

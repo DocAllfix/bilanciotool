@@ -38,7 +38,7 @@ export function CreaSistema({ companyId }: { companyId: string }) {
     <Card className="mt-6">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-area-responsabilita text-white">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-area-compliance text-white">
             <Scale className="size-4" />
           </span>
           <div>

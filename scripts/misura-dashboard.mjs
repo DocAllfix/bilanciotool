@@ -54,7 +54,7 @@ await cronometra("dashboard, attesa di networkidle", async () => {
 const [az] = await sql`select id from company where organization_id = ${orgId} limit 1`;
 await cronometra("fascicolo dell'azienda", async () => {
   await page.goto(`${BASE}/aziende/${az.id}`, { waitUntil: "domcontentloaded", timeout: 120_000 });
-  await page.locator("[data-percorsi] [data-modulo]").first().waitFor({ timeout: 120_000 });
+  await page.locator("[data-percorsi] [data-gruppo]").first().waitFor({ timeout: 120_000 });
 });
 
 await cronometra("router.refresh() sulla dashboard", async () => {

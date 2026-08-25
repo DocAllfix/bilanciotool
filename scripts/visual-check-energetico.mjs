@@ -8,7 +8,7 @@ import { mkdirSync } from "node:fs";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { attendiCard } from "./comune-collaudo.mjs";
+import { attendiCard, apriModulo } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-energetico";
@@ -97,11 +97,15 @@ await page.fill("#na-settore", "Fonderia di alluminio");
 await page.fill("#na-ateco", "24.53");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
 const card = await attendiCard(page, "Fonderia Irno S.p.A.");
-// Il nome accessibile del pulsante porta anche lo stato («Bilancio energetico: da
-// avviare»): ci si aggancia all'INDIRIZZO, che e' il fatto stabile.
-const linkEnergetico = card.locator('a[href$="/energetico"]').first();
-verifica("Il portafoglio espone il pulsante Energetico", await linkEnergetico.isVisible());
-await linkEnergetico.click();
+// ⚠️ Dal 25 agosto 2026 la card NON espone piu' un collegamento per percorso:
+// mostra le tre caselle di gruppo, e i percorsi si aprono dal fascicolo. Si verifica
+// cio' che il prodotto fa adesso, e in due passi distinti, perche' un controllo solo
+// su tutta la catena non direbbe quale dei due anelli si e' rotto.
+verifica(
+  "Il portafoglio espone il gruppo Ecosostenibilita'",
+  await card.locator('[data-gruppo="ecosostenibilita"]').isVisible(),
+);
+await apriModulo(page, "Fonderia Irno S.p.A.", "energetico");
 await page.waitForURL("**/energetico", { timeout: 15000 });
 await page.waitForLoadState("networkidle");
 await shot("00-vuoto");

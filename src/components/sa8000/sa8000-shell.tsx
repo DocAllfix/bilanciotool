@@ -74,7 +74,7 @@ export function Sa8000Shell({
             className={cn(
               "-mb-px border-b-2 px-3 py-2 text-[13px] transition-colors",
               vista === v.k
-                ? "border-area-sostenibilita font-medium text-foreground"
+                ? "border-area-sistemi font-medium text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >

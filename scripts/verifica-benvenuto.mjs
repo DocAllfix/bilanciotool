@@ -126,12 +126,17 @@ await check("l'itinerario lo calcola il server e parte dalla dashboard", async (
   const { tappe } = await r.json();
   if (!Array.isArray(tappe) || !tappe.length) throw new Error("itinerario vuoto");
   if (tappe[0].path !== "/dashboard") throw new Error(`prima tappa ${tappe[0].path}`);
-  // ⚠️ UNA TAPPA PER AREA: le aree sono cinque, quindi al massimo sei tappe compresa la
-  // dashboard. I moduli sono undici, e un giro che li attraversasse tutti si chiuderebbe
-  // a meta'. Il numero NON e' fisso al ribasso -- un modulo non avviato nella demo salta
-  // la sua area -- ma il tetto e' un fatto, e senza questo controllo tornerebbe a dodici
-  // il giorno in cui qualcuno toglie il filtro senza accorgersene.
-  if (tappe.length > 6) throw new Error(`${tappe.length} tappe: l'itinerario non e' piu' capato per area`);
+  // ⚠️ IL TETTO E' SEI, ed e' un numero indipendente da quanti gruppi ci sono.
+  //
+  // La regola era «una tappa per area», e con cinque aree dava sei tappe. Passando ai
+  // tre gruppi del 25 agosto 2026 quella stessa regola ne avrebbe date quattro: un giro
+  // piu' corto di un terzo, deciso da nessuno. Ora il server prende prima un modulo per
+  // gruppo — cosi' chi guarda impara quali sono i gruppi — e poi riempie fino al tetto.
+  //
+  // Il numero NON e' fisso al ribasso: un modulo non avviato nella dimostrativa non si
+  // visita, e l'itinerario si accorcia. Il tetto invece e' un fatto, e senza questo
+  // controllo tornerebbe a dodici il giorno in cui qualcuno toglie il filtro.
+  if (tappe.length > 6) throw new Error(`${tappe.length} tappe: l'itinerario non e' piu' capato`);
   const aree = new Set(tappe.slice(1).map((t) => t.pageId));
   if (aree.size !== tappe.length - 1) throw new Error("due tappe sullo stesso modulo");
   // Ogni tappa dev'essere una pagina che ha davvero un tour: una tappa senza tour

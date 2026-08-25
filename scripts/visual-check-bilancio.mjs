@@ -5,7 +5,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { attendiCard } from "./comune-collaudo.mjs";
+import { apriModulo } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-bilancio";
 mkdirSync(OUT, { recursive: true });
@@ -64,8 +64,7 @@ await page.fill("#na-nome", NOME_AZIENDA);
 await page.fill("#na-settore", "Carta e cartone");
 await page.fill("#na-ateco", "17.12");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
-const cardBilancio = await attendiCard(page, NOME_AZIENDA);
-await cardBilancio.locator('[data-modulo="bilancio"]').click();
+await apriModulo(page, NOME_AZIENDA, "bilancio");
 await page.waitForURL("**/bilancio", { timeout: 15000 });
 await page.waitForLoadState("networkidle");
 await page.waitForTimeout(800);

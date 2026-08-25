@@ -1,4 +1,4 @@
-// Gli undici percorsi della vetrina, raggruppati per area.
+// Gli undici percorsi della vetrina, raggruppati nei tre gruppi del committente.
 //
 // ⚠️ Sta in un file PROPRIO e non dentro la pagina: i dati non si importano da un modulo
 // `"use client"` — il build restituisce un riferimento al componente invece dell'array e
@@ -28,8 +28,8 @@ export const LETTERE = "ABCDEFGHILMNOPQ".split("");
 
 export const AREE_VETRINA: AreaVetrina[] = [
   {
-    nome: "Ambiente ed energia",
-    tratto: "bg-area-ambiente",
+    nome: "Ecosostenibilità",
+    tratto: "bg-area-ecosostenibilita",
     percorsi: [
       {
         titolo: "Inventario GHG",
@@ -63,12 +63,6 @@ export const AREE_VETRINA: AreaVetrina[] = [
         punto:
           "La ripartizione si quadra da sola: le celle restano nell'unità del vettore, quindi correggere un potere calorifico non invalida un esercizio già chiuso.",
       },
-    ],
-  },
-  {
-    nome: "Sostenibilità e rendicontazione",
-    tratto: "bg-area-sostenibilita",
-    percorsi: [
       {
         titolo: "Bilancio di sostenibilità e conformità ESG",
         norma: "GRI 2021 · ESRS VSME",
@@ -85,25 +79,6 @@ export const AREE_VETRINA: AreaVetrina[] = [
           "La sezione emissioni legge direttamente dall'inventario GHG della stessa azienda: una modifica lì, aggiornata qui.",
       },
       {
-        titolo: "Sistema di gestione SA8000/2026",
-        norma: "SA8000:2026",
-        passi: [
-          "Anagrafica del sistema",
-          "112 criteri in tre sezioni",
-          "22 procedure da adottare",
-          "104 moduli e 10 registri",
-          "Manuale del sistema",
-        ],
-        punto:
-          "Un criterio attuato parzialmente pesa zero, non metà: un criterio sociale applicato a metà non protegge a metà un lavoratore, e il punteggio non deve suggerire il contrario.",
-      },
-    ],
-  },
-  {
-    nome: "Filiera",
-    tratto: "bg-area-filiera",
-    percorsi: [
-      {
         titolo: "Autovalutazione ESG del fornitore",
         norma: "ESRS · GRI · ISO 20400",
         passi: [
@@ -117,60 +92,11 @@ export const AREE_VETRINA: AreaVetrina[] = [
         punto:
           "L'indice si rinormalizza sulle sole aree valutate: chi ha compilato una sola area non risulta bocciato sulle altre quattro.",
       },
-      {
-        titolo: "Due diligence di filiera",
-        norma: "Linee guida OCSE · CSDDD",
-        passi: [
-          "Politica e perimetro",
-          "Mappatura dei partner",
-          "Rischio inerente su quattro assi",
-          "Maturità su sette aree",
-          "Piano e frequenza di verifica",
-          "Riesame del processo",
-          "Dichiarazione annuale",
-        ],
-        punto:
-          "La copertura si misura sulla spesa, non sul numero di fornitori: dieci partner marginali valutati non compensano il grosso non guardato.",
-      },
     ],
   },
   {
-    nome: "Sistemi di gestione",
-    tratto: "bg-area-sistemi",
-    percorsi: [
-      {
-        titolo: "Statement of Applicability (SoA)",
-        norma: "ISO/IEC 27001:2022 §6.1.3 d)",
-        passi: [
-          "Contesto e ambito",
-          "174 controlli su 5 quadri",
-          "Applicabilità e motivazioni",
-          "Verifiche di coerenza",
-          "Piano di attuazione",
-          "Statement firmato",
-        ],
-        punto:
-          "Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice.",
-      },
-      {
-        titolo: "Sistema di gestione integrato QAS",
-        norma: "ISO 9001 · 14001 · 45001",
-        passi: [
-          "Perimetro delle tre norme",
-          "107 requisiti, 33 condivisi",
-          "Aspetti ambientali e rischi SSL",
-          "Indicatori con target e soglia",
-          "16 registri operativi",
-          "Riesame di direzione",
-        ],
-        punto:
-          "Chi è certificato su una norma sola ne vede solo i suoi requisiti. E un indicatore senza target non è «a target»: risulta non rilevato, com'è giusto.",
-      },
-    ],
-  },
-  {
-    nome: "Responsabilità dell'ente",
-    tratto: "bg-area-responsabilita",
+    nome: "Compliance",
+    tratto: "bg-area-compliance",
     percorsi: [
       {
         titolo: "Modello 231",
@@ -214,6 +140,68 @@ export const AREE_VETRINA: AreaVetrina[] = [
         ],
         punto:
           "I sette giorni e i tre mesi non sono un promemoria: il sistema li calcola, e il riscontro decorre dall'avviso effettivamente reso, come dice la norma.",
+      },
+      {
+        titolo: "Due diligence di filiera",
+        norma: "Linee guida OCSE · CSDDD",
+        passi: [
+          "Politica e perimetro",
+          "Mappatura dei partner",
+          "Rischio inerente su quattro assi",
+          "Maturità su sette aree",
+          "Piano e frequenza di verifica",
+          "Riesame del processo",
+          "Dichiarazione annuale",
+        ],
+        punto:
+          "La copertura si misura sulla spesa, non sul numero di fornitori: dieci partner marginali valutati non compensano il grosso non guardato.",
+      },
+    ],
+  },
+  {
+    nome: "Sistemi di gestione",
+    tratto: "bg-area-sistemi",
+    percorsi: [
+      {
+        titolo: "Sistema di gestione integrato QAS",
+        norma: "ISO 9001 · 14001 · 45001",
+        passi: [
+          "Perimetro delle tre norme",
+          "107 requisiti, 33 condivisi",
+          "Aspetti ambientali e rischi SSL",
+          "Indicatori con target e soglia",
+          "16 registri operativi",
+          "Riesame di direzione",
+        ],
+        punto:
+          "Chi è certificato su una norma sola ne vede solo i suoi requisiti. E un indicatore senza target non è «a target»: risulta non rilevato, com'è giusto.",
+      },
+      {
+        titolo: "Sistema di gestione SA8000/2026",
+        norma: "SA8000:2026",
+        passi: [
+          "Anagrafica del sistema",
+          "112 criteri in tre sezioni",
+          "22 procedure da adottare",
+          "104 moduli e 10 registri",
+          "Manuale del sistema",
+        ],
+        punto:
+          "Un criterio attuato parzialmente pesa zero, non metà: un criterio sociale applicato a metà non protegge a metà un lavoratore, e il punteggio non deve suggerire il contrario.",
+      },
+      {
+        titolo: "Statement of Applicability (SoA)",
+        norma: "ISO/IEC 27001:2022 §6.1.3 d)",
+        passi: [
+          "Contesto e ambito",
+          "174 controlli su 5 quadri",
+          "Applicabilità e motivazioni",
+          "Verifiche di coerenza",
+          "Piano di attuazione",
+          "Statement firmato",
+        ],
+        punto:
+          "Un controllo applicabile senza stato pesa zero e non viene ignorato: saltare i controlli difficili non fa salire l'indice.",
       },
     ],
   },

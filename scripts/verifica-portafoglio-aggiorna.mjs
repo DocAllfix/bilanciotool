@@ -92,7 +92,7 @@ await check("il fascicolo mostra i percorsi dell'azienda nuova", async () => {
 
 await check("tornando al portafoglio la card c'è", async () => {
   await page.goto(`${BASE}/dashboard`, { waitUntil: "domcontentloaded", timeout: 60_000 });
-  await attendi(async () => (await card().locator("[data-modulo]").count()) > 0, {
+  await attendi(async () => (await card().locator("[data-gruppo]").count()) > 0, {
     entro: ENTRO,
     cosa: "la card dell'azienda nuova nel portafoglio",
   });
@@ -110,7 +110,7 @@ await check("archiviare la fa sparire dalle attive senza ricaricare", async () =
 
   // Archiviata, la card perde le caselle dei percorsi: è il segno che la pagina si è
   // rifatta. Cercare la sparizione del nome non servirebbe — il nome resta, in archivio.
-  await attendi(async () => (await card().locator("[data-modulo]").count()) === 0, {
+  await attendi(async () => (await card().locator("[data-gruppo]").count()) === 0, {
     entro: ENTRO,
     cosa: "la card passata in archivio SENZA ricaricare la pagina",
   });
@@ -125,7 +125,7 @@ await check("ripristinare la riporta fra le attive senza ricaricare", async () =
     return r?.stato === "active";
   }, { entro: 30_000, cosa: "l'azienda ripristinata nel database" });
 
-  await attendi(async () => (await card().locator("[data-modulo]").count()) > 0, {
+  await attendi(async () => (await card().locator("[data-gruppo]").count()) > 0, {
     entro: ENTRO,
     cosa: "la card tornata fra le attive SENZA ricaricare la pagina",
   });

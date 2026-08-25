@@ -25,7 +25,7 @@ export function CreaSistema({ companyId }: { companyId: string }) {
     <Card className="mt-6">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-area-sostenibilita text-white">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-area-sistemi text-white">
             <HeartHandshake className="size-4" />
           </span>
           <div>
