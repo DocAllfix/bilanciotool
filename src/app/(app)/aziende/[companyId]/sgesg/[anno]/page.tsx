@@ -6,6 +6,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { company } from "@/lib/db/schema";
 import { can, getAccountStatus } from "@/features/entitlement";
 import { getProgramma } from "@/features/sgesg/programma";
+import { riepilogoSchede } from "@/features/sgesg/schede";
 import { VistaProgrammaEsg } from "@/components/sgesg/vista-programma";
 
 export const dynamic = "force-dynamic";
@@ -31,11 +32,17 @@ export default async function SgesgAnnoPage({
   ]);
   if (!az || !vista) notFound();
 
+  // Il riepilogo delle schede in UNA lettura, non una per fase: otto query dentro la
+  // stessa transazione sono otto viaggi in fila, e su questo database un viaggio costa
+  // piu' della lettura.
+  const schede = Object.fromEntries(await riepilogoSchede(s.userId, s.orgId, vista.programma.id));
+
   return (
     <VistaProgrammaEsg
       companyId={companyId}
       nomeAzienda={az.nome}
       vista={vista}
+      schede={schede}
       soloLettura={!can(stato, "write_data") || az.stato === "archived"}
     />
   );

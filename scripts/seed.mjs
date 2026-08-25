@@ -530,6 +530,25 @@ try {
         scopo = excluded.scopo, ordine = excluded.ordine`;
   }
 
+  // Le 63 schede, estratte ESEGUENDO i componenti d'origine (`extract-sgesg.mjs`).
+  //
+  // ⚠️ Ventuno portano `ha_logica`: sono tabelle e registri senza un campo indipendente,
+  // oppure hanno strutture ripetute in cui piu' campi scrivono nello stesso array. Si
+  // seminano lo stesso — titolo, sezioni e istruzione servono a dire di che si tratta —
+  // ma senza campi compilabili, e l'interfaccia lo dichiara invece di mostrare il vuoto.
+  for (const [i, sc] of load("sgesg-schede.json").entries()) {
+    await sql`
+      insert into sgesg_scheda_def (id, set_id, key, fase_key, codice, titolo, sottotitolo,
+                                    istruzione, sezioni, ha_logica, ordine)
+      values (${gid(`scheda:${sc.k}`)}, ${SGESG_SET}, ${sc.k}, ${sc.f}, ${sc.c ?? null},
+              ${sc.t}, ${sc.s ?? null}, ${sc.i ?? null},
+              ${sql.json(sc.z ?? [])}, ${sc.g ? true : false}, ${i})
+      on conflict (id) do update set fase_key = excluded.fase_key, codice = excluded.codice,
+        titolo = excluded.titolo, sottotitolo = excluded.sottotitolo,
+        istruzione = excluded.istruzione, sezioni = excluded.sezioni,
+        ha_logica = excluded.ha_logica, ordine = excluded.ordine`;
+  }
+
   console.log("Seed completato:");
   for (const t of [
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",

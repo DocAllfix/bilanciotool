@@ -12,6 +12,7 @@ import {
   mogFamily, mogCrime, mogPillar, mogRequirement,
   wbChapter, wbRequirement,
   sgesgPhaseDef,
+  sgesgSchedaDef,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -36,6 +37,10 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
     expect(await conta(sgesgPhaseDef)).toBe(8);
+    // ⚠️ SESSANTATRE, ed e' il numero che il metodo d'origine ha: 7+8+8+8+7+8+9+8. Una
+    // scheda in meno significa un pezzo di metodo che nessuno compilera' perche' non
+    // compare, e l'estrattore che l'ha persa non lo direbbe da solo.
+    expect(await conta(sgesgSchedaDef)).toBe(63);
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);

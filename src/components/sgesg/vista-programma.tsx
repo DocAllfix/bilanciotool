@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { CampoTesto } from "@/components/comune/campo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, CircleDashed, Play } from "lucide-react";
+import Link from "next/link";
+import { Check, CircleDashed, FileText, Play } from "lucide-react";
 import type { VistaProgramma } from "@/features/sgesg/programma";
 import type { StatoFase } from "@/lib/calc/sgesg/avanzamento";
 import { setCampoProgrammaAction, setNotaFaseAction, setStatoFaseAction } from "@/features/sgesg/actions";
@@ -41,11 +42,14 @@ export function VistaProgrammaEsg({
   companyId,
   nomeAzienda,
   vista,
+  schede,
   soloLettura,
 }: {
   companyId: string;
   nomeAzienda: string;
   vista: VistaProgramma;
+  /** Schede per fase: totali e completate. Viene dal riepilogo, in una lettura sola. */
+  schede: Record<string, { totali: number; completate: number }>;
   soloLettura?: boolean;
 }) {
   const router = useRouter();
@@ -282,6 +286,22 @@ export function VistaProgrammaEsg({
                       </Button>
                     </div>
                   )}
+                </div>
+
+                {/* Il collegamento alle schede della fase. Sta sotto la descrizione e
+                    non fra i comandi di stato: aprire una fase per lavorarci e' un'altra
+                    cosa dal dichiarare a che punto e'. */}
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <Link
+                    href={`/aziende/${companyId}/sgesg/${p.anno}/${f.key}`}
+                    data-schede-fase={f.key}
+                    className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[12.5px] font-medium transition-colors hover:bg-accent"
+                  >
+                    <FileText className="size-3.5" aria-hidden />
+                    {schede[f.key]
+                      ? `${schede[f.key].completate}/${schede[f.key].totali} schede`
+                      : "Schede"}
+                  </Link>
                 </div>
 
                 {!soloLettura && (

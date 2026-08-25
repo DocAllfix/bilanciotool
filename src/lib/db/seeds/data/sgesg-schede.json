@@ -1,0 +1,3417 @@
+[
+ {
+  "f": "proc00",
+  "k": "00A",
+  "c": "FORM-00A",
+  "t": "Primo Contatto",
+  "s": "Scheda di primo contatto commerciale — compilare entro 4 ore lavorative dalla ricezione",
+  "i": "📌 Istruzione operativa: Compilare entro 4 ore lavorative dalla ricezione. Annotare verbatim la descrizione della necessità espressa dal contatto. Aprire scheda CRM con stato LEAD — In valutazione.",
+  "z": [
+   {
+    "t": "Sezione 1 — Dati del contatto / Canale",
+    "c": [
+     {
+      "k": "data_primo_contatto",
+      "l": "Data primo contatto",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "ora_primo_contatto",
+      "l": "Ora primo contatto",
+      "t": "testo"
+     },
+     {
+      "k": "canale",
+      "l": "Canale di provenienza",
+      "t": "scelta",
+      "r": 1,
+      "o": [
+       "Sito web / Form",
+       "Email diretta",
+       "Telefono / WhatsApp",
+       "Passaparola / Referral",
+       "LinkedIn / Social",
+       "Evento / Convegno",
+       "Outbound / Cold"
+      ]
+     },
+     {
+      "k": "consulente_assegnato",
+      "l": "Consulente assegnato",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "descrizione_richiesta",
+      "l": "Descrizione richiesta (verbatim, così come espressa)",
+      "t": "testo_lungo",
+      "r": 1,
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Sezione 2 — Dati azienda",
+    "c": [
+     {
+      "k": "ragione_sociale",
+      "l": "Ragione sociale",
+      "t": "testo",
+      "r": 1,
+      "w": 2
+     },
+     {
+      "k": "piva",
+      "l": "P.IVA / C.F.",
+      "t": "testo"
+     },
+     {
+      "k": "sede",
+      "l": "Sede legale",
+      "t": "testo"
+     },
+     {
+      "k": "settore",
+      "l": "Settore di attività",
+      "t": "testo"
+     },
+     {
+      "k": "ateco",
+      "l": "Codice ATECO",
+      "t": "testo"
+     },
+     {
+      "k": "dipendenti",
+      "l": "N. dipendenti",
+      "t": "numero"
+     },
+     {
+      "k": "fatturato",
+      "l": "Fatturato annuo (€)",
+      "t": "testo"
+     },
+     {
+      "k": "sito_web",
+      "l": "Sito web",
+      "t": "testo"
+     },
+     {
+      "k": "quotazione",
+      "l": "Quotazione",
+      "t": "scelta",
+      "o": [
+       "Sì — specificare",
+       "No",
+       "Partecipata pubblica"
+      ]
+     },
+     {
+      "k": "quotazione_note",
+      "l": "Dettaglio quotazione (se Sì)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Sezione 3 — Referente aziendale",
+    "c": [
+     {
+      "k": "ref_nome",
+      "l": "Nome e cognome",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "ref_ruolo",
+      "l": "Ruolo / Funzione",
+      "t": "testo"
+     },
+     {
+      "k": "ref_email",
+      "l": "Email aziendale",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "ref_telefono",
+      "l": "Telefono diretto",
+      "t": "testo"
+     },
+     {
+      "k": "ref_autonomia",
+      "l": "Autonomia decisionale",
+      "t": "scelta",
+      "w": 2,
+      "o": [
+       "Sì, piena autonomia",
+       "Sì, parziale",
+       "No — decide altri"
+      ]
+     },
+     {
+      "k": "ref_autonomia_note",
+      "l": "Se parziale/no — specificare decisore",
+      "t": "testo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Sezione 4 — Natura della richiesta",
+    "c": [
+     {
+      "k": "servizi_richiesti",
+      "l": "Servizi richiesti (seleziona tutti applicabili)",
+      "t": "scelte",
+      "o": [
+       "Implementazione sistema ESG completo",
+       "Bilancio di Sostenibilità (GRI)",
+       "Bilancio CSRD / ESRS",
+       "Analisi di materialità",
+       "Gap Analysis ESG",
+       "ESG Rating & Benchmark",
+       "Formazione ESG",
+       "Supporto normativo (CSRD, Tassonomia UE)",
+       "Altro"
+      ]
+     },
+     {
+      "k": "servizi_altro",
+      "l": "Altro — specificare",
+      "t": "testo"
+     },
+     {
+      "k": "motivazione",
+      "l": "Motivazione (Perché ora?)",
+      "t": "testo"
+     },
+     {
+      "k": "timeline",
+      "l": "Timeline desiderata",
+      "t": "testo"
+     },
+     {
+      "k": "budget_indicativo",
+      "l": "Budget indicativo (€)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Sezione 5 — Valutazione immediata del consulente",
+    "c": [
+     {
+      "k": "interesse_percepito",
+      "l": "Interesse percepito",
+      "t": "scelta",
+      "o": [
+       "Alto",
+       "Medio",
+       "Basso",
+       "Non valutabile"
+      ]
+     },
+     {
+      "k": "maturita_esg",
+      "l": "Maturità ESG percepita",
+      "t": "scelta",
+      "o": [
+       "Avanzata",
+       "Intermedia",
+       "Base",
+       "Assente"
+      ]
+     },
+     {
+      "k": "urgenza",
+      "l": "Urgenza dichiarata",
+      "t": "scelta",
+      "o": [
+       "Alta",
+       "Media",
+       "Bassa"
+      ]
+     },
+     {
+      "k": "prossimi_passi",
+      "l": "Prossimi passi concordati",
+      "t": "testo"
+     },
+     {
+      "k": "data_follow_up",
+      "l": "Data follow-up programmata",
+      "t": "data"
+     },
+     {
+      "k": "note_interne",
+      "l": "Note interne (non condividere con il cliente)",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00B",
+  "c": "FORM-00B",
+  "t": "Questionario di Pre-Qualifica",
+  "s": "Raccolta strutturata di informazioni strategiche, operative e di contesto ESG dell'azienda",
+  "i": "📋 Il questionario va inviato al referente cliente via email con link. Spiegare che le risposte sono riservate e utilizzate esclusivamente per configurare la proposta di consulenza.",
+  "z": [
+   {
+    "t": "Blocco A — Contesto strategico ESG",
+    "c": [
+     {
+      "k": "A1_precedenti",
+      "l": "A1. Precedenti esperienze di rendicontazione ESG / sostenibilità",
+      "t": "testo_lungo",
+      "w": 2
+     },
+     {
+      "k": "A2_standard",
+      "l": "A2. Standard già utilizzati (se applicabili)",
+      "t": "scelte",
+      "o": [
+       "GRI Standards",
+       "CSRD / ESRS",
+       "SA8000",
+       "ISO 14001",
+       "ISO 45001",
+       "Carbon Disclosure Project (CDP)",
+       "TCFD",
+       "UN SDGs",
+       "Nessuno"
+      ]
+     },
+     {
+      "k": "A3_obiettivi",
+      "l": "A3. Principali obiettivi del progetto ESG",
+      "t": "scelte",
+      "w": 2,
+      "o": [
+       "Requisiti clienti OEM",
+       "Accesso a finanziamenti/bandi ESG",
+       "Miglioramento rating ESG / scoring banche",
+       "Rendicontazione obbligatoria CSRD",
+       "Comunicazione esterna / reputazione",
+       "Attrarre talenti / employer branding",
+       "Riduzione costi operativi (energia, rifiuti)",
+       "Pressione investitori",
+       "Richiesta del CdA",
+       "Altro"
+      ]
+     },
+     {
+      "k": "A4_sponsor",
+      "l": "A4. Chi è il principale sponsor del progetto?",
+      "t": "testo",
+      "w": 2
+     },
+     {
+      "k": "A5_orizzonte",
+      "l": "A5. Orizzonte temporale del progetto",
+      "t": "scelta",
+      "w": 2,
+      "o": [
+       "Urgente: pubblicazione entro 6 mesi",
+       "Breve: pubblicazione entro settembre 2025",
+       "Medio: 1-2 anni",
+       "Lungo: oltre 2 anni"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Blocco B — Disponibilità dati energia",
+    "c": [
+     {
+      "k": "B1_e_energia",
+      "l": "B1. Dati energetici disponibili (seleziona tutti applicabili)",
+      "t": "scelte",
+      "o": [
+       "Bollette gas (completo)",
+       "Bollette gas (parziale — anni mancanti)",
+       "Bollette elettricità (completo)",
+       "Bollette elettricità (parziale)",
+       "Bollette carburanti flotta (completo)",
+       "Bollette carburanti flotta (parziale)",
+       "Dati teleriscaldamento",
+       "Dati energia autoprodotta (FV/eolico)",
+       "Nessun dato disponibile"
+      ]
+     },
+     {
+      "k": "B2_sistemi_energia",
+      "l": "B2. Sistemi di monitoraggio energia attivi",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Blocco C — Emissioni GHG",
+    "c": [
+     {
+      "k": "C1_e_emissioni",
+      "l": "C1. Disponibilità dati GHG per vettore energetico",
+      "t": "scelte",
+      "o": [
+       "Dati gas naturale disponibili (archivio storico 3 anni)",
+       "Dati gas naturale disponibili (solo anno corrente)",
+       "Dati elettricità acquistata disponibili",
+       "Dati gasolio/benzina disponibili",
+       "Dati gas refrigeranti disponibili",
+       "Dati processi speciali disponibili",
+       "Nessun dato GHG disponibile"
+      ]
+     },
+     {
+      "k": "C2_vettori",
+      "l": "C2. Vettori energetici presenti in azienda",
+      "t": "scelte",
+      "o": [
+       "Gas naturale (Smc)",
+       "Gasolio / carburanti (litri)",
+       "Benzina (litri)",
+       "GPL (litri)",
+       "Energia elettrica acquistata (kWh)",
+       "Energie rinnovabili autoprodotte (kWh)",
+       "Teleriscaldamento / altri vettori",
+       "Gas refrigeranti (R134a, R410a, ecc.)"
+      ]
+     },
+     {
+      "k": "C3_acque_rifiuti",
+      "l": "C3. Acque e rifiuti — disponibilità dati",
+      "t": "scelte",
+      "o": [
+       "I consumi idrici non sono monitorati",
+       "I consumi idrici sono misurati annualmente",
+       "I rifiuti sono pesati e classificati per tipologia",
+       "Registro MUD aggiornato annualmente",
+       "Target di riduzione rifiuti formalizzati"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Blocco D — Dati sociali (S)",
+    "c": [
+     {
+      "k": "d1_disponibilita_dati_hr_per_ogni_indicatore_selezionare_il_",
+      "d": 1,
+      "l": "D1. Disponibilità dati HR — per ogni indicatore selezionare il livello",
+      "t": "testo"
+     },
+     {
+      "k": "D2_politiche",
+      "l": "D2. Politiche sociali adottate",
+      "t": "scelte",
+      "o": [
+       "Codice Etico approvato dal CdA",
+       "Politica di Salute e Sicurezza (DVR aggiornato)",
+       "Politica di Diversity, Equity & Inclusion",
+       "Politica di Smart Working / flessibilità",
+       "Piano di welfare aziendale strutturato",
+       "Codice di condotta fornitori con criteri sociali",
+       "Politica di work-life balance",
+       "Procedura segnalazione molestie/discriminazioni"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Blocco E — Governance (G)",
+    "c": [
+     {
+      "k": "E1_governance",
+      "l": "E1. Struttura di governance",
+      "t": "scelte",
+      "o": [
+       "CdA / organo di governo presente e formalizzato",
+       "Almeno 1/3 di consiglieri indipendenti",
+       "Comitato Audit istituito",
+       "Comitato Sostenibilità / ESG Committee istituito",
+       "Remunerazione dei vertici collegata a KPI ESG",
+       "Separazione ruoli Chairman/CEO"
+      ]
+     },
+     {
+      "k": "E2_compliance",
+      "l": "E2. Compliance e controlli",
+      "t": "scelte",
+      "o": [
+       "Modello Organizzativo ex D.Lgs. 231/2001 adottato",
+       "OdV (Organismo di Vigilanza) nominato",
+       "Canale di whistleblowing attivo e accessibile",
+       "Politica anticorruzione formalizzata",
+       "DPO nominato (GDPR)",
+       "Procedura gestione conflitti di interesse",
+       "Politica fiscale responsabile dichiarata"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Blocco F — Progetto e fattibilità",
+    "c": [
+     {
+      "k": "F1_sponsor",
+      "l": "F1. Livello di sponsorship del vertice aziendale",
+      "t": "scelta",
+      "o": [
+       "Sì, CEO/AD è sponsor diretto",
+       "Sì, con delega a direttore funzionale",
+       "Parzialmente — interesse limitato al livello operativo",
+       "No — è un'iniziativa bottom-up"
+      ]
+     },
+     {
+      "k": "F2_budget",
+      "l": "F2. Budget disponibile per il progetto",
+      "t": "scelte",
+      "o": [
+       "< €5.000",
+       "€5.000 – €15.000",
+       "€15.000 – €30.000",
+       "€30.000 – €60.000",
+       "€60.000 – €100.000",
+       "> €100.000",
+       "Budget non ancora definito"
+      ]
+     },
+     {
+      "k": "f3_prima_pubblicazione_desiderata",
+      "d": 1,
+      "l": "F3. Prima pubblicazione desiderata",
+      "t": "testo"
+     },
+     {
+      "k": "F3_anno_rendicontazione",
+      "l": "Anno di rendicontazione",
+      "t": "testo"
+     },
+     {
+      "k": "F3_vincoli",
+      "l": "F3. Vincoli esterni (assemblea azionisti, board, scadenze, gare)",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Dati del compilatore",
+    "c": [
+     {
+      "k": "comp_nome",
+      "l": "Nome e cognome",
+      "t": "testo"
+     },
+     {
+      "k": "comp_funzione",
+      "l": "Funzione aziendale",
+      "t": "testo"
+     },
+     {
+      "k": "comp_email",
+      "l": "Email",
+      "t": "testo"
+     },
+     {
+      "k": "comp_data",
+      "l": "Data compilazione",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00C",
+  "c": "FORM-00C",
+  "t": "Score di Pre-Qualifica",
+  "s": "Griglia di valutazione per la decisione Go / No-Go",
+  "i": "⚠ USO INTERNO: da compilare esclusivamente dal Consulente Senior ESG. Non condividere con il cliente.",
+  "z": [
+   {
+    "t": "Dati di riferimento",
+    "c": [
+     {
+      "k": "cliente_nome",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "data_valutazione",
+      "l": "Data valutazione",
+      "t": "data"
+     },
+     {
+      "k": "consulente",
+      "l": "Consulente",
+      "t": "testo"
+     },
+     {
+      "k": "crm_id",
+      "l": "CRM ID",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Griglia di valutazione — 14 criteri",
+    "c": []
+   },
+   {
+    "t": "Score Summary",
+    "c": []
+   },
+   {
+    "t": "Note e motivazione decisione",
+    "c": [
+     {
+      "k": "punti_forza",
+      "l": "Punti di forza del cliente",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "criticita",
+      "l": "Criticità e rischi identificati",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "motivazione_decisione",
+      "l": "Motivazione della decisione",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "decisione_finale",
+      "d": 1,
+      "l": "Decisione finale",
+      "t": "testo",
+      "w": 2
+     },
+     {
+      "k": "firma_consulente",
+      "l": "Firma consulente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_data",
+      "l": "Data firma",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00D",
+  "c": "FORM-00D",
+  "t": "Dichiarazione Conflitti di Interesse",
+  "s": "Verifica obbligatoria prima della decisione Go/No-Go — firmata sotto responsabilità del consulente",
+  "i": "⚠ Obbligatoria prima della decisione Go/No-Go. Dichiarazione sotto responsabilità del consulente. In caso di conflitto bloccante → NO-GO AUTOMATICO.",
+  "z": [
+   {
+    "t": "Dati della dichiarazione",
+    "c": [
+     {
+      "k": "cliente_potenziale",
+      "l": "Cliente potenziale",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "settore_ateco",
+      "l": "Settore / ATECO",
+      "t": "testo"
+     },
+     {
+      "k": "consulente_dichiarante",
+      "l": "Consulente dichiarante",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "data_dichiarazione",
+      "l": "Data dichiarazione",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "Verifica 1 — Clienti attivi in portafoglio",
+    "c": [
+     {
+      "k": "verifica1",
+      "l": "",
+      "t": "scelta",
+      "o": [
+       "✓ NON esistono clienti attivi nello stesso settore con info riservate rilevanti",
+       "⚠ ESISTONO clienti nel medesimo settore",
+       "✓ Situazione valutata con il partner e ritenuta compatibile (motivazione allegata)"
+      ]
+     },
+     {
+      "k": "verifica1_dettaglio",
+      "l": "Dettaglio (se ESISTONO)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Verifica 2 — Relazioni personali o familiari",
+    "c": [
+     {
+      "k": "verifica2",
+      "l": "",
+      "t": "scelta",
+      "o": [
+       "✓ Nessuna relazione personale/familiare tra consulenti e management cliente",
+       "⚠ Relazione personale esistente — dichiarata al partner — non compromette obiettività",
+       "🛑 Situazione richiede assegnazione del progetto ad altro consulente"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Verifica 3 — Interessi economici",
+    "c": [
+     {
+      "k": "verifica3",
+      "l": "",
+      "t": "scelta",
+      "o": [
+       "✓ Non detengo partecipazioni/interessi in aziende concorrenti del cliente",
+       "⚠ Detengo partecipazione dichiarata al partner"
+      ]
+     },
+     {
+      "k": "verifica3_dettaglio",
+      "l": "Dettaglio (se partecipazione presente)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Verifica 4 — Settore di attività",
+    "c": [
+     {
+      "k": "verifica4",
+      "l": "",
+      "t": "scelta",
+      "o": [
+       "✓ Settore compatibile con la policy etica dello studio",
+       "⚠ Settore borderline — valutazione con partner necessaria",
+       "🛑 Settore NON compatibile — No-Go automatico"
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Esito complessivo",
+    "c": [
+     {
+      "k": "esito",
+      "l": "Esito manuale (conferma o sovrascrivi)",
+      "t": "scelta",
+      "o": [
+       "✅ Conflitti assenti — Procedi",
+       "⚠ Conflitti presenti gestiti — Procedi con cautela",
+       "🛑 Conflitti bloccanti — NO-GO automatico"
+      ]
+     },
+     {
+      "k": "note",
+      "l": "Note aggiuntive",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Firme",
+    "c": [
+     {
+      "k": "firma_consulente",
+      "l": "Firma consulente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_partner",
+      "l": "Firma partner",
+      "t": "testo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00E",
+  "c": "FORM-00E",
+  "t": "Offerta Commerciale",
+  "s": "Da redigere solo dopo esito GO (FORM-00C) e KYC approvato (FORM-00F)",
+  "i": "📌 Da redigere solo dopo esito GO (FORM-00C) e KYC approvato (FORM-00F). Personalizzare sul contesto emerso in FORM-00A e 00B.",
+  "z": [
+   {
+    "t": "Intestazione offerta",
+    "c": [
+     {
+      "k": "num_offerta",
+      "l": "N. offerta",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "data_emissione",
+      "l": "Data emissione",
+      "t": "data"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "piva",
+      "l": "P.IVA Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "referente",
+      "l": "Referente cliente",
+      "t": "testo"
+     },
+     {
+      "k": "validita_gg",
+      "l": "Validità offerta (giorni)",
+      "t": "numero"
+     }
+    ]
+   },
+   {
+    "t": "Oggetto e contesto",
+    "c": [
+     {
+      "k": "descrizione_esigenza",
+      "l": "Descrizione dell'esigenza del cliente",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Servizi inclusi — Perimetro",
+    "c": [
+     {
+      "k": "servizi_inclusi",
+      "l": "Seleziona tutti i servizi compresi nell'offerta",
+      "t": "scelte",
+      "o": [
+       "Analisi di materialità (stakeholder mapping + questionari + mappa)",
+       "Gap Analysis ESG completa (E + S + G)",
+       "Raccolta e validazione dati ESG (tutte le aree materiali)",
+       "Redazione Bilancio di Sostenibilità (GRI Standards 2021)",
+       "Conformità CSRD / ESRS (dichiarazione di conformità)",
+       "Piano di Azione ESG (roadmap strategica 3-5 anni)",
+       "Formazione interna",
+       "ESG Rating & Benchmark di settore",
+       "Supporto presentazione CdA",
+       "Altro"
+      ]
+     },
+     {
+      "k": "formazione_sessioni",
+      "l": "N. sessioni di formazione incluse",
+      "t": "numero"
+     },
+     {
+      "k": "altro_servizio",
+      "l": "Altro servizio — specificare",
+      "t": "testo"
+     },
+     {
+      "k": "esclusioni",
+      "l": "Esclusioni esplicite dal perimetro",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Piano di progetto di massima",
+    "c": []
+   },
+   {
+    "t": "Corrispettivo economico",
+    "c": []
+   },
+   {
+    "t": "Modalità di pagamento",
+    "c": [
+     {
+      "k": "modalita_pagamento",
+      "l": "Modalità",
+      "t": "scelta",
+      "o": [
+       "30% firma / 40% metà / 30% consegna",
+       "50% firma / 50% consegna",
+       "100% a consegna",
+       "Altra"
+      ]
+     },
+     {
+      "k": "scadenza_fatture",
+      "l": "Scadenza fatture",
+      "t": "testo"
+     },
+     {
+      "k": "metodo_pagamento",
+      "l": "Metodo di pagamento",
+      "t": "scelta",
+      "o": [
+       "Bonifico IBAN",
+       "Altro"
+      ]
+     },
+     {
+      "k": "iban",
+      "l": "IBAN",
+      "t": "testo"
+     },
+     {
+      "k": "note_economiche",
+      "l": "Note economiche",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Accettazione e firme",
+    "c": [
+     {
+      "k": "firma_consulente",
+      "l": "Firma consulente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_consulente_data",
+      "l": "Data",
+      "t": "data"
+     },
+     {
+      "k": "firma_cliente",
+      "l": "Firma cliente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_cliente_data",
+      "l": "Data firma cliente",
+      "t": "data"
+     },
+     {
+      "k": "stato_offerta",
+      "d": 1,
+      "l": "Stato offerta",
+      "t": "testo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00F",
+  "c": "FORM-00F",
+  "t": "KYC / Adeguata Verifica Cliente",
+  "s": "Verifica da completare prima della firma del contratto — documentazione da allegare al fascicolo",
+  "i": "📌 Da completare prima della firma del contratto. Allegare la documentazione verificata al fascicolo cliente.",
+  "z": [
+   {
+    "t": "Tabella Verifiche KYC — 10 controlli",
+    "c": []
+   },
+   {
+    "t": "Esito finale KYC",
+    "c": [
+     {
+      "k": "esito_kyc_complessivo",
+      "d": 1,
+      "l": "Esito KYC complessivo",
+      "t": "testo"
+     },
+     {
+      "k": "note_motivazione",
+      "l": "Note e motivazione",
+      "t": "testo_lungo",
+      "w": 2
+     },
+     {
+      "k": "verificato_da",
+      "l": "Verificato da",
+      "t": "testo"
+     },
+     {
+      "k": "data_verifica",
+      "l": "Data verifica",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc00",
+  "k": "00G",
+  "c": "FORM-00G",
+  "t": "Chiusura Fase 0 — LOG",
+  "s": "Riepilogo decisioni e transizione a PROC-01",
+  "i": "📋 Verificare che TUTTI i form precedenti siano completati prima di procedere con questa chiusura. L'avvio di PROC-01 è condizionato alla decisione GO.",
+  "z": [
+   {
+    "t": "Riepilogo fase 0",
+    "c": []
+   },
+   {
+    "t": "Decisione finale",
+    "c": [
+     {
+      "k": "decisione_finale",
+      "l": "Esito chiusura fase 0",
+      "t": "scelta",
+      "o": [
+       "✅ GO — Contratto firmato — Avvio PROC-01",
+       "🛑 NO-GO — Declinazione formale",
+       "⏸ SOSPESO — In attesa"
+      ]
+     },
+     {
+      "k": "data_avvio",
+      "l": "Data avvio PROC-01 (se GO)",
+      "t": "data"
+     },
+     {
+      "k": "motivazione_nogo",
+      "l": "Motivazione NO-GO (se applicabile)",
+      "t": "testo_lungo",
+      "w": 2
+     },
+     {
+      "k": "attesa_di",
+      "l": "In attesa di... (se SOSPESO)",
+      "t": "testo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Stato CRM da aggiornare",
+    "c": [
+     {
+      "k": "seleziona_il_nuovo_stato_crm",
+      "d": 1,
+      "l": "Seleziona il nuovo stato CRM",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Approvazione e chiusura",
+    "c": [
+     {
+      "k": "approvato_da",
+      "l": "Approvato da",
+      "t": "testo"
+     },
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura fase 0",
+      "t": "data"
+     },
+     {
+      "k": "note_finali",
+      "l": "Note finali",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc01",
+  "k": "01A",
+  "c": "FORM-01A",
+  "t": "Validazione Contratto",
+  "s": "Verifica clausole essenziali del contratto di consulenza",
+  "i": "📌 Verificare ogni clausola del contratto rispetto all'offerta accettata. In caso di difformità CRITICA, bloccare l'avvio e contattare il partner.",
+  "z": [
+   {
+    "t": "Dati contratto",
+    "c": [
+     {
+      "k": "num_contratto",
+      "l": "N. contratto",
+      "t": "testo",
+      "r": 1
+     },
+     {
+      "k": "data_firma",
+      "l": "Data firma",
+      "t": "data"
+     },
+     {
+      "k": "data_decorrenza",
+      "l": "Data decorrenza",
+      "t": "data"
+     },
+     {
+      "k": "importo_netto",
+      "l": "Importo netto (€)",
+      "t": "numero"
+     }
+    ]
+   },
+   {
+    "t": "Checklist clausole",
+    "c": []
+   },
+   {
+    "t": "Esito e firma",
+    "c": [
+     {
+      "k": "esito_validazione",
+      "l": "Esito validazione",
+      "t": "scelta",
+      "r": 1,
+      "o": [
+       "APPROVATO",
+       "APPROVATO CON RISERVA",
+       "BLOCCATO"
+      ]
+     },
+     {
+      "k": "validato_da",
+      "l": "Validato da",
+      "t": "testo"
+     },
+     {
+      "k": "note_legali",
+      "l": "Note legali",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc01",
+  "k": "01B",
+  "c": "FORM-01B",
+  "t": "Verbale Kick-off Meeting",
+  "s": "Documento ufficiale della riunione di avvio progetto",
+  "i": "📋 Compilare durante o immediatamente dopo il kick-off. Inviare verbale firmato entro 48h dal meeting.",
+  "z": [
+   {
+    "t": "Dettagli riunione",
+    "c": [
+     {
+      "k": "data_kickoff",
+      "l": "Data kick-off",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "ora_kickoff",
+      "l": "Ora",
+      "t": "testo"
+     },
+     {
+      "k": "luogo",
+      "l": "Luogo",
+      "t": "testo"
+     },
+     {
+      "k": "modalita",
+      "l": "Modalità",
+      "t": "scelta",
+      "o": [
+       "Presenza",
+       "Videoconferenza",
+       "Ibrido"
+      ]
+     },
+     {
+      "k": "durata_ore",
+      "l": "Durata (ore)",
+      "t": "numero"
+     }
+    ]
+   },
+   {
+    "t": "Partecipanti — Cliente",
+    "c": []
+   },
+   {
+    "t": "Agenda",
+    "c": []
+   },
+   {
+    "t": "Decisioni prese",
+    "c": [
+     {
+      "k": "decisioni",
+      "l": "Sintesi decisioni e accordi",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Action items",
+    "c": []
+   },
+   {
+    "t": "Note",
+    "c": [
+     {
+      "k": "note",
+      "l": "Note aggiuntive e osservazioni",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc01",
+  "k": "01C",
+  "c": "FORM-01C",
+  "t": "Piano di Progetto — Milestone",
+  "s": "Gantt semplificato con milestone principali del progetto",
+  "i": "📅 Aggiornare date effettive ad ogni milestone raggiunta. Le milestone in ritardo >7 giorni richiedono notifica al partner.",
+  "z": [
+   {
+    "t": "Milestone di progetto",
+    "c": []
+   },
+   {
+    "t": "Cronoprogramma visivo",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc01",
+  "k": "01D",
+  "c": "FORM-01D",
+  "t": "Matrice RACI",
+  "s": "Responsabilità e accountability per ogni attività del progetto",
+  "i": "🎯 R = Responsible (esegue) · A = Accountable (risponde) · C = Consulted (consultato) · I = Informed (informato). Ogni riga deve avere esattamente 1 A e almeno 1 R.",
+  "z": [
+   {
+    "t": "Assegnazione RACI",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc01",
+  "k": "01E",
+  "c": "FORM-01E",
+  "t": "Risk Register",
+  "s": "Registro e piano di gestione dei rischi di progetto",
+  "i": "⚠️ Rischi CRITICI (score ≥ 15) richiedono approvazione partner e piano B definito. Aggiornare stato ad ogni SC mensile.",
+  "z": [
+   {
+    "t": "Heatmap rischio (probabilità × impatto)",
+    "c": []
+   },
+   {
+    "t": "Registro rischi",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc01",
+  "k": "01F",
+  "c": "FORM-01F",
+  "t": "Piano di Comunicazione",
+  "s": "Governance della comunicazione e del reporting interno di progetto",
+  "i": "📢 Definire e comunicare il piano di reporting a tutti gli stakeholder entro il kick-off. Rispettare le scadenze dei report per mantenere fiducia del cliente.",
+  "z": [
+   {
+    "t": "Impostazioni generali",
+    "c": [
+     {
+      "k": "frequenza_report",
+      "l": "Frequenza status report",
+      "t": "scelta",
+      "o": [
+       "settimanale",
+       "bisettimanale",
+       "mensile",
+       "ad hoc"
+      ]
+     },
+     {
+      "k": "canale_principale",
+      "l": "Canale di comunicazione principale",
+      "t": "testo"
+     },
+     {
+      "k": "piattaforma",
+      "l": "Piattaforma di progetto",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Piano riunioni",
+    "c": []
+   },
+   {
+    "t": "Piano reportistica",
+    "c": []
+   },
+   {
+    "t": "Procedura di escalation",
+    "c": [
+     {
+      "k": "escalation_procedure",
+      "l": "Procedura in caso di criticità bloccante",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc01",
+  "k": "01G",
+  "c": "FORM-01G",
+  "t": "Chiusura PROC-01 — Avvio Rapporto",
+  "s": "Checklist di completamento e transizione a PROC-02",
+  "i": "✅ Prima di passare a PROC-02, tutte le voci della checklist devono essere spuntate. In caso contrario, bloccare la transizione e completare le attività mancanti.",
+  "z": [
+   {
+    "t": "Checklist di chiusura PROC-01",
+    "c": []
+   },
+   {
+    "t": "Chiusura formale",
+    "c": [
+     {
+      "k": "data_chiusura_proc01",
+      "l": "Data chiusura PROC-01",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "approvato_da",
+      "l": "Approvato da",
+      "t": "testo"
+     },
+     {
+      "k": "note_transizione",
+      "l": "Note di transizione a PROC-02",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc01",
+  "k": "01H",
+  "c": "FORM-01H",
+  "t": "Checklist Setup Operativo",
+  "s": "30 voci di setup in 5 aree · Repository · Comunicazione · Task · Accessi · Amministrazione",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "pm",
+      "l": "PM responsabile",
+      "t": "testo"
+     },
+     {
+      "k": "data_completamento",
+      "l": "Data completamento",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "Checklist attività di setup",
+    "c": []
+   },
+   {
+    "t": "Struttura Repository standard",
+    "c": []
+   },
+   {
+    "t": "Setup completato — Avvio Fase 2",
+    "c": [
+     {
+      "k": "stato_setup",
+      "l": "Stato setup",
+      "t": "scelta",
+      "o": [
+       "✅ SETUP COMPLETATO — Tutti i punti verificati — Autorizzazione avvio PROC-02",
+       "⚠ SETUP PARZIALE — Punti mancanti documentati — Avvio condizionato"
+      ]
+     },
+     {
+      "k": "note_setup",
+      "l": "Note / punti mancanti",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Firme",
+    "c": [
+     {
+      "k": "firma_pm",
+      "l": "PM Consulenza",
+      "t": "testo"
+     },
+     {
+      "k": "firma_pm_data",
+      "l": "Data firma PM",
+      "t": "data"
+     },
+     {
+      "k": "firma_cli",
+      "l": "Referente Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_cli_data",
+      "l": "Data firma Cliente",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02A",
+  "c": "FORM-02A",
+  "t": "Stakeholder Mapping",
+  "s": "Identificazione e pianificazione del coinvolgimento degli stakeholder",
+  "i": "📌 Identificare tutti gli stakeholder rilevanti. Prioritizzare in base a dipendenza, influenza e impatto. Documentare il metodo di engagement per ogni gruppo.",
+  "z": [
+   {
+    "t": "Registro stakeholder",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc02",
+  "k": "02B",
+  "c": "FORM-02B",
+  "t": "Valutazione IRO — Doppia Materialità",
+  "s": "Assessment Impatti, Rischi e Opportunità per prospettiva di impatto e finanziaria",
+  "i": "🎯 Doppia Materialità ESRS: valutare ogni IRO sia dalla prospettiva di IMPATTO (scala, scopo, irrimediabilità) che FINANZIARIA (probabilità, magnitudine). Le soglie configurate qui si applicano anche alla matrice in FORM-02C.",
+  "z": [
+   {
+    "t": "E — Ambiente",
+    "c": []
+   },
+   {
+    "t": "S — Sociale",
+    "c": []
+   },
+   {
+    "t": "G — Governance",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc02",
+  "k": "02C",
+  "c": "FORM-02C",
+  "t": "Matrice di Materialità",
+  "s": "Visualizzazione e validazione dei temi materiali identificati",
+  "i": "📊 La matrice riflette gli IRO e le soglie configurati in FORM-02B. Deve essere presentata al CdA per approvazione formale.",
+  "z": [
+   {
+    "t": "Matrice di materialità — Score Impatto × Score Finanziario",
+    "c": []
+   },
+   {
+    "t": "Elenco IRO materiali",
+    "c": []
+   },
+   {
+    "t": "Commento analitico",
+    "c": [
+     {
+      "k": "note_analitiche",
+      "l": "Sintesi e motivazione dei risultati della matrice",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02D",
+  "c": "FORM-02D",
+  "t": "Perimetro Bilancio — Mapping IRO",
+  "s": "Definizione del perimetro di rendicontazione per ogni tema materiale",
+  "i": "📋 Per ogni tema materiale definire: standard di riferimento, KPI previsti, referente interno, capitolo del bilancio. Documentare le esclusioni.",
+  "z": [
+   {
+    "t": "Mapping temi materiali → bilancio",
+    "c": []
+   },
+   {
+    "t": "Nota metodologica",
+    "c": [
+     {
+      "k": "nota_metodologica",
+      "l": "Criteri di inclusione/esclusione e nota al perimetro",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02E",
+  "c": "FORM-02E",
+  "t": "Chiusura PROC-02 — Analisi di Materialità",
+  "s": "Checklist di completamento e transizione a PROC-03",
+  "i": "⚠️ Completare tutte le voci obbligatorie prima di procedere a PROC-03.",
+  "z": [
+   {
+    "t": "Checklist di chiusura PROC-02",
+    "c": []
+   },
+   {
+    "t": "Approvazione CdA",
+    "c": [
+     {
+      "k": "data_approvazione_cda",
+      "l": "Data approvazione CdA",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "approvato_da",
+      "l": "Approvato da",
+      "t": "testo"
+     },
+     {
+      "k": "note_finali",
+      "l": "Note finali e transizione a PROC-03",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02F",
+  "c": "FORM-02F",
+  "t": "Questionario Stakeholder Esterni — Dati aggregati",
+  "s": "12 temi ESG · Target ≥15% risposte · Clienti/Fornitori/Banche/Comunità",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione e contatori",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "periodo",
+      "l": "Periodo survey",
+      "t": "testo"
+     },
+     {
+      "k": "totale_invitati",
+      "l": "Totale invitati",
+      "t": "numero"
+     },
+     {
+      "k": "totale_risposte",
+      "l": "Totale risposte",
+      "t": "numero"
+     },
+     {
+      "k": "tasso_risposta",
+      "l": "Tasso risposta (%)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Segmentazione per tipologia stakeholder",
+    "c": [
+     {
+      "k": "seg_clienti",
+      "l": "Risposte da Clienti",
+      "t": "numero"
+     },
+     {
+      "k": "seg_fornitori",
+      "l": "Risposte da Fornitori",
+      "t": "numero"
+     },
+     {
+      "k": "seg_finanziari",
+      "l": "Risposte da Banche/Investitori",
+      "t": "numero"
+     },
+     {
+      "k": "seg_comunita",
+      "l": "Risposte da Comunità/Associaz.",
+      "t": "numero"
+     },
+     {
+      "k": "seg_pa",
+      "l": "Risposte da PA/Regolatori",
+      "t": "numero"
+     },
+     {
+      "k": "seg_ong",
+      "l": "Risposte da ONG",
+      "t": "numero"
+     }
+    ]
+   },
+   {
+    "t": "Aspettative ESG — risposte aggregate per tema",
+    "c": []
+   },
+   {
+    "t": "Sintesi domande qualitative aperte",
+    "c": [
+     {
+      "k": "req_futuri",
+      "l": "Requisiti ESG che gli stakeholder richiedono/richiederanno (sintesi)",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "rinuncia",
+      "l": "Stakeholder che hanno rinunciato a collaborare per motivi ESG",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "maggiore_impegno",
+      "l": "Tema su cui ci si aspetta maggiore impegno nei prossimi 3 anni",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "valutazione",
+      "l": "Valutazione complessiva attuale impegno ESG (sintesi)",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Elaborazione",
+    "c": [
+     {
+      "k": "elaborato_da",
+      "l": "Elaborato da",
+      "t": "testo"
+     },
+     {
+      "k": "data_elaborazione",
+      "l": "Data elaborazione",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02G",
+  "c": "FORM-02G",
+  "t": "Elaborazione Scoring e Ranking IRO",
+  "s": "24 temi aggregati · Score ponderato 40/25/25/10 · Soglie live · USO INTERNO",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "analista",
+      "l": "Analista responsabile",
+      "t": "testo"
+     },
+     {
+      "k": "data_elab",
+      "l": "Data elaborazione",
+      "t": "data"
+     },
+     {
+      "k": "n_quest_int",
+      "l": "N. questionari interni raccolti",
+      "t": "testo"
+     },
+     {
+      "k": "n_quest_ext",
+      "l": "N. questionari esterni raccolti",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Score aggregato IMPATTO + FINANZIARIO per-fonte",
+    "c": []
+   },
+   {
+    "t": "Rettifiche qualitative",
+    "c": [
+     {
+      "k": "elevati",
+      "l": "IRO/Temi elevati in soglia per motivi qualitativi (specificare e motivare)",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "abbassati",
+      "l": "IRO/Temi abbassati in soglia per motivi qualitativi (specificare e motivare)",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "note_robustezza",
+      "l": "Note sulla robustezza del dataset",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Validazione CS ESG",
+    "c": [
+     {
+      "k": "validato_da",
+      "l": "Validato da (CS ESG)",
+      "t": "testo"
+     },
+     {
+      "k": "data_validazione",
+      "l": "Data validazione",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc02",
+  "k": "02H",
+  "c": "FORM-02H",
+  "t": "Matrice di Materialità — Output Finale",
+  "s": "Top priority / Media / Non materiali · ESRS applicabili · Nota metodologica",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "versione",
+      "l": "Versione",
+      "t": "scelta",
+      "o": [
+       "Bozza",
+       "Condivisa in workshop",
+       "✓ Finale approvata"
+      ]
+     },
+     {
+      "k": "data_emissione",
+      "l": "Data emissione",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "Score per tema (compilare manualmente o importare da FORM-02G)",
+    "c": []
+   },
+   {
+    "t": "🔴 Temi ad alta materialità — Top 5",
+    "c": []
+   },
+   {
+    "t": "Nota metodologica (da includere nel Bilancio di Sostenibilità)",
+    "c": [
+     {
+      "k": "nota_metodologica",
+      "l": "Nota metodologica",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Approvazione formale",
+    "c": [
+     {
+      "k": "approvazione",
+      "l": "Decisione",
+      "t": "scelta",
+      "o": [
+       "✅ Approvata — Autorizzazione avvio PROC-03 (Gap Analysis) e PROC-04 (Raccolta Dati)",
+       "⚠ Approvata con modifiche — dettaglio sotto",
+       "🛑 Respinta — ricondurre a FORM-02G con rettifiche"
+      ]
+     },
+     {
+      "k": "modifiche",
+      "l": "Dettaglio modifiche richieste",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Firme",
+    "c": [
+     {
+      "k": "firma_pm",
+      "l": "PM Consulenza",
+      "t": "testo"
+     },
+     {
+      "k": "firma_pm_data",
+      "l": "Data firma PM",
+      "t": "data"
+     },
+     {
+      "k": "firma_cli",
+      "l": "Referente Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "firma_cli_data",
+      "l": "Data firma Cliente",
+      "t": "data"
+     },
+     {
+      "k": "firma_cs",
+      "l": "CS ESG",
+      "t": "testo"
+     },
+     {
+      "k": "firma_cda",
+      "l": "CdA / Management (se richiesto)",
+      "t": "testo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc03",
+  "k": "03A",
+  "c": "FORM-03A",
+  "t": "Piano di Audit Gap Analysis",
+  "s": "Pianificazione delle attività di audit documentale, interviste e workshop",
+  "i": "Definire per ogni area (E/S/G) le attività di audit, i responsabili e le date. Includere analisi documentale, interviste con referenti chiave e workshop di validazione.",
+  "z": [
+   {
+    "t": "Obiettivo audit",
+    "c": [
+     {
+      "k": "obiettivo",
+      "l": "Obiettivo generale della Gap Analysis",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Attività di audit",
+    "c": []
+   }
+  ]
+ },
+ {
+  "f": "proc03",
+  "k": "03B",
+  "c": "FORM-03B",
+  "t": "Richiesta Documenti Audit",
+  "s": "Elenco documenti richiesti al cliente per la Gap Analysis",
+  "i": "Tracciare lo stato di ricezione di ogni documento richiesto. I documenti mancanti configurano gap documentali che saranno riportati nella diagnosi.",
+  "z": [
+   {
+    "t": "Documenti richiesti",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc03",
+  "k": "03C",
+  "c": "FORM-03C",
+  "t": "Audit Area E — Ambiente",
+  "s": "Checklist di conformità per le disclosure ambientali GRI e ESRS",
+  "i": "Valutare ogni criterio su scala 1–5 (1=Critico, 5=Conforme). I criteri con rating 1–2 generano gap da inserire nel Report di Diagnosi.",
+  "z": [
+   {
+    "t": "E1 — Cambiamento Climatico & GHG",
+    "c": []
+   },
+   {
+    "t": "E1 — Energia",
+    "c": []
+   },
+   {
+    "t": "E2–E5 — Inquinamento, Acqua, Biodiversità, Rifiuti",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc03",
+  "k": "03D",
+  "c": "FORM-03D",
+  "t": "Audit Area S — Sociale",
+  "s": "Checklist di conformità per le disclosure sociali GRI e ESRS",
+  "i": "Valutare ogni criterio su scala 1–5. Particolare attenzione ai gap su D&I, gender pay gap e supply chain — temi in forte evoluzione normativa ESRS.",
+  "z": [
+   {
+    "t": "S1 — Forza lavoro propria: Salute e Sicurezza",
+    "c": []
+   },
+   {
+    "t": "S1 — Forza lavoro: Sviluppo e Formazione",
+    "c": []
+   },
+   {
+    "t": "S1 — Forza lavoro: Diversità e Inclusione",
+    "c": []
+   },
+   {
+    "t": "S2 — Catena di Fornitura",
+    "c": []
+   },
+   {
+    "t": "S3 — Comunità locale",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc03",
+  "k": "03E",
+  "c": "FORM-03E",
+  "t": "Audit Area G — Governance",
+  "s": "Checklist di conformità per la governance ESG, etica e anti-corruzione",
+  "i": "Valutare la maturità della governance ESG. I gap su whistleblowing e bilancio di sostenibilità sono tipicamente critici per le aziende nella fase di prima rendicontazione.",
+  "z": [
+   {
+    "t": "G1 — Governance ESG e Struttura",
+    "c": []
+   },
+   {
+    "t": "G1 — Etica, Anti-corruzione e Compliance",
+    "c": []
+   },
+   {
+    "t": "G1 — Trasparenza e Rendicontazione",
+    "c": []
+   },
+   {
+    "t": "G2 — Lobbying e Relazioni Istituzionali",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc03",
+  "k": "03F",
+  "c": "FORM-03F",
+  "t": "Sintesi Gap — Registro Completo",
+  "s": "Riepilogo di tutti i gap identificati per area, priorità e piano d'azione",
+  "i": "Il Gap Register alimenta direttamente il Piano di Azione ESG (PROC-05). Prioritizzare i gap CRITICI e ALTI per intervento immediato.",
+  "z": [
+   {
+    "t": "Gap rilevati (0)",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc03",
+  "k": "03G",
+  "c": "FORM-03G",
+  "t": "Report di Diagnosi ESG",
+  "s": "Dashboard dei gap, scoring per area e raccomandazioni prioritarie",
+  "i": "Report finale della Gap Analysis. Presentare al management prima dell'avvio PROC-04.",
+  "z": [
+   {
+    "t": "Score per area E / S / G",
+    "c": []
+   },
+   {
+    "t": "Sintesi diagnostica e raccomandazioni",
+    "c": [
+     {
+      "k": "sintesi",
+      "l": "Sintesi del profilo ESG e conclusioni dell'audit",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "raccomandazioni",
+      "l": "Raccomandazioni prioritarie (action list)",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc03",
+  "k": "03H",
+  "c": "LOG-03",
+  "t": "Chiusura Fase 3 e Avvio PROC-04/05",
+  "s": "Checklist documenti · KPI Fase 3 · Autorizzazione formale · Passaggio alla fase successiva",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Checklist documenti prodotti nella Fase 3",
+    "c": []
+   },
+   {
+    "t": "KPI della Fase 3 — rilevati e target",
+    "c": []
+   },
+   {
+    "t": "Autorizzazione avvio PROC-04 (Raccolta Dati) + PROC-05 (Piano d'Azione)",
+    "c": [
+     {
+      "k": "autorizzazione",
+      "l": "Decisione",
+      "t": "scelta",
+      "o": [
+       "AUTORIZZATO — avvio PROC-04 e PROC-05 in parallelo",
+       "Autorizzazione condizionata — punti aperti documentati",
+       "Sospeso — richiesti approfondimenti su specifici gap"
+      ]
+     },
+     {
+      "k": "data_autorizzazione",
+      "l": "Data autorizzazione",
+      "t": "data"
+     },
+     {
+      "k": "approvato_da",
+      "l": "Approvato da (CS ESG / Partner)",
+      "t": "testo"
+     },
+     {
+      "k": "punti_aperti",
+      "l": "Punti aperti (se condizionato)",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Note finali e passaggio a PROC-04/05",
+    "c": [
+     {
+      "k": "note_passaggio",
+      "l": "Note per il team PROC-04 (Raccolta Dati) e PROC-05 (Piano d'Azione)",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura Fase 3",
+      "t": "data"
+     },
+     {
+      "k": "prossima_revisione",
+      "l": "Data prossima revisione Report",
+      "t": "data"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04A",
+  "c": "FORM-04A",
+  "t": "Piano di Raccolta Dati GHG & KPI",
+  "s": "Pianificazione attività, fonti, responsabili e scadenze per la raccolta dati",
+  "i": "Definire fonti, metodi e responsabili per ogni dato richiesto. Il piano orienta la raccolta sistematica e garantisce tracciabilità per eventuale assurance.",
+  "z": [
+   {
+    "t": "Nota metodologica e perimetro",
+    "c": [
+     {
+      "k": "nota",
+      "l": "Metodologia, boundary e anno di riferimento",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Piano raccolta dati",
+    "c": []
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04B",
+  "c": "FORM-04B",
+  "t": "Calcolatore GHG — Scope 1, 2, 3",
+  "s": "Inventario emissioni con calcolo automatico e validazione per fonte",
+  "i": "Inserire i valori di attività per ogni fonte. Le emissioni sono calcolate automaticamente (valore × fattore emissione). Modificare lo stato per segnalare anomalie.",
+  "z": [
+   {
+    "t": "Scope 1 — Emissioni dirette",
+    "c": []
+   },
+   {
+    "t": "Scope 2 — Energia indiretta",
+    "c": []
+   },
+   {
+    "t": "Scope 3 — Emissioni indirette nella catena del valore",
+    "c": []
+   },
+   {
+    "t": "Note metodologiche",
+    "c": [
+     {
+      "k": "nota",
+      "l": "Fattori di emissione adottati e fonti",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04C",
+  "c": "FORM-04C",
+  "t": "KPI Ambientali — Area E",
+  "s": "Energia, GHG, acqua, rifiuti — ESRS E1/E3/E5 & GRI 300",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "anno_rend",
+      "l": "Anno di rendicontazione (N)",
+      "t": "numero"
+     },
+     {
+      "k": "anno_N1",
+      "l": "Anno N-1 (per confronto)",
+      "t": "numero"
+     },
+     {
+      "k": "raccolto_da",
+      "l": "Raccolto da",
+      "t": "testo"
+     },
+     {
+      "k": "data_raccolta",
+      "l": "Data raccolta",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "KPI Ambientali",
+    "c": []
+   },
+   {
+    "t": "Note e osservazioni area Ambiente",
+    "c": [
+     {
+      "k": "note_area_e",
+      "l": "Note metodologiche, variazioni significative, KPI omessi e motivazione",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04D",
+  "c": "FORM-04D",
+  "t": "KPI Sociali — Area S",
+  "s": "HR, salute e sicurezza, formazione, D&I — ESRS S1/S4 & GRI 400",
+  "i": null,
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "anno_rend",
+      "l": "Anno N",
+      "t": "numero"
+     },
+     {
+      "k": "anno_N1",
+      "l": "Anno N-1",
+      "t": "numero"
+     },
+     {
+      "k": "raccolto_da",
+      "l": "Raccolto da",
+      "t": "testo"
+     },
+     {
+      "k": "data_raccolta",
+      "l": "Data raccolta",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "KPI Sociali",
+    "c": []
+   },
+   {
+    "t": "Note e osservazioni area Sociale",
+    "c": [
+     {
+      "k": "note_area_s",
+      "l": "Note metodologiche, eventi rilevanti, KPI omessi",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04E",
+  "c": "FORM-04E",
+  "t": "KPI Library E/S/G — Raccolta e Validazione",
+  "s": "Inserimento valori, fonti e stato di validazione per ogni KPI",
+  "i": "Inserire il valore di ogni KPI e impostare lo stato di validazione. I KPI con anomalia devono essere risolti prima del freeze dataset.",
+  "z": [
+   {
+    "t": "KPI Area E — Ambiente (0/0 validati)",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc04",
+  "k": "04F",
+  "c": "FORM-04F",
+  "t": "Validazione e Gestione Anomalie",
+  "s": "Registro delle anomalie sui dati con piano di risoluzione",
+  "i": "Tutte le anomalie risolte — freeze dataset autorizzato.",
+  "z": [
+   {
+    "t": "Registro anomalie",
+    "c": []
+   },
+   {
+    "t": "Policy di gestione anomalie",
+    "c": [
+     {
+      "k": "nota",
+      "l": "Note generali e criteri di accettazione anomalie residue",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc04",
+  "k": "04G",
+  "c": "FORM-04G",
+  "t": "Freeze Dataset — Congelamento Dati",
+  "s": "Validazione finale e blocco del dataset per la rendicontazione",
+  "i": "7 condizioni non ancora soddisfatte. Completare prima del freeze.",
+  "z": [
+   {
+    "t": "Condizioni di freeze",
+    "c": []
+   },
+   {
+    "t": "Validazione responsabile cliente",
+    "c": [
+     {
+      "k": "resp_validazione",
+      "l": "Responsabile validazione dataset",
+      "t": "testo"
+     },
+     {
+      "k": "data_validazione",
+      "l": "Data conferma validazione",
+      "t": "data"
+     },
+     {
+      "k": "note",
+      "l": "Note al freeze",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc05",
+  "k": "05A",
+  "c": "FORM-05A",
+  "t": "Visione Strategica ESG",
+  "s": "Definizione di vision, mission ESG e pilastri strategici per area E/S/G",
+  "i": "La visione strategica ESG deve essere coerente con il business model aziendale, materialmente ancorata agli IRO identificati e approvata dal vertice.",
+  "z": [
+   {
+    "t": "Vision & Mission ESG",
+    "c": []
+   },
+   {
+    "t": "Pilastri strategici E / S / G",
+    "c": []
+   }
+  ],
+  "g": 1,
+  "gm": [
+   "pilastri (Impegni strategici principali / Driver e motivazioni (business case))",
+   "pilastri (Driver e motivazioni (business case) / Impegni strategici principali)",
+   "pilastri (Impegni strategici principali / Driver e motivazioni (business case))"
+  ]
+ },
+ {
+  "f": "proc05",
+  "k": "05B",
+  "c": "FORM-05B",
+  "t": "Obiettivi SMART ESG",
+  "s": "Definizione obiettivi Specifici, Misurabili, Achievable, Rilevanti, Temporali",
+  "i": "Ogni obiettivo deve essere SMART: collegato a un IRO materiale, a un KPI misurabile, con scadenza definita e responsabile chiaro.",
+  "z": [
+   {
+    "t": "Obiettivi SMART",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc05",
+  "k": "05C",
+  "c": "FORM-05C",
+  "t": "Target Quantitativi e Allineamento SBTi",
+  "s": "Obiettivi misurabili per area ESG · Science-based targets · Baseline e traiettorie",
+  "i": "I target quantitativi devono essere: (1) basati su una baseline verificata, (2) scientificamente giustificati per i target climatici (SBTi), (3) approvati dal CdA prima della pubblicazione nel Bilancio di Sostenibilità.",
+  "z": [
+   {
+    "t": "Identificazione e parametri temporali",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "anno_baseline",
+      "l": "Anno baseline",
+      "t": "numero"
+     },
+     {
+      "k": "anno_target_1",
+      "l": "Target anno 1",
+      "t": "numero"
+     },
+     {
+      "k": "anno_target_2",
+      "l": "Target anno 2",
+      "t": "numero"
+     },
+     {
+      "k": "anno_target_3",
+      "l": "Target anno 3 (lungo termine)",
+      "t": "numero"
+     }
+    ]
+   },
+   {
+    "t": "Commitment SBTi / Science-Based",
+    "c": [
+     {
+      "k": "sbti_commitment",
+      "l": "Percorso SBTi adottato",
+      "t": "scelta",
+      "o": [
+       "SBTi 1.5°C Assoluto",
+       "SBTi Well-Below 2°C",
+       "SBTi Net-Zero (lungo termine)",
+       "Science-based equivalente (no SBTi)",
+       "Non allineato (target interno)"
+      ]
+     },
+     {
+      "k": "note_sbti",
+      "l": "Note impegno SBTi / validazione",
+      "t": "testo"
+     },
+     {
+      "k": "metodo_calcolo",
+      "l": "Metodologia di calcolo riduzione (breve descrizione)",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Tabella target quantitativi per KPI",
+    "c": []
+   },
+   {
+    "t": "Approvazione e governance target",
+    "c": [
+     {
+      "k": "validato_da",
+      "l": "Validato da (CS ESG)",
+      "t": "testo"
+     },
+     {
+      "k": "data_validazione",
+      "l": "Data validazione",
+      "t": "data"
+     },
+     {
+      "k": "approvazione_cda",
+      "l": "Approvazione CdA",
+      "t": "scelta",
+      "w": 2,
+      "o": [
+       "Target approvati dal CdA / Organo di governance",
+       "In revisione — non ancora approvati",
+       "Da portare al prossimo CdA"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc05",
+  "k": "05D",
+  "c": "FORM-05D",
+  "t": "Catalogo Iniziative ESG",
+  "s": "Registro completo delle iniziative con budget, responsabili e avanzamento",
+  "i": "Ogni iniziativa deve essere collegata a un gap (FORM-03F) o a un obiettivo SMART (FORM-05B). Il budget alimenta il piano economico (FORM-05E).",
+  "z": [
+   {
+    "t": "Iniziative (0)",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc05",
+  "k": "05E",
+  "c": "FORM-05E",
+  "t": "Budget Piano ESG — 3 Anni",
+  "s": "Piano economico per voce, area e anno con visualizzazione grafica",
+  "i": "Distinguere CapEx (investimenti) da OpEx (costi ricorrenti). Il budget deve essere approvato dal CFO prima della presentazione al CdA.",
+  "z": [
+   {
+    "t": "Dettaglio voci di budget",
+    "c": []
+   },
+   {
+    "t": "Note al budget",
+    "c": [
+     {
+      "k": "nota",
+      "l": "Assunzioni, incentivi fiscali, note metodologiche",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc05",
+  "k": "05F",
+  "c": "FORM-05F",
+  "t": "Roadmap Strategica ESG",
+  "s": "Timeline delle iniziative e milestone chiave per area E/S/G",
+  "i": "La roadmap visualizza l'orizzonte temporale di ogni iniziativa e le milestone chiave. Presentare al CdA per approvazione contestualmente al budget.",
+  "z": [
+   {
+    "t": "Timeline iniziative per area",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc05",
+  "k": "05G",
+  "c": "FORM-05G",
+  "t": "Workshop CdA e Chiusura PROC-05",
+  "s": "Presentazione e approvazione formale del Piano ESG — Transizione a PROC-06",
+  "i": "Completare le attività obbligatorie prima di passare a PROC-06 (Bilancio di Sostenibilità).",
+  "z": [
+   {
+    "t": "Checklist di chiusura PROC-05",
+    "c": []
+   },
+   {
+    "t": "Approvazione formale CdA",
+    "c": [
+     {
+      "k": "data_approvazione",
+      "l": "Data approvazione",
+      "t": "data"
+     },
+     {
+      "k": "verbale",
+      "l": "Riferimento verbale CdA",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "note",
+      "l": "Note al piano approvato",
+      "t": "testo_lungo",
+      "w": 2
+     },
+     {
+      "k": "prossimo_step",
+      "l": "Prossimi passi — Avvio PROC-06",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc05",
+  "k": "05LOG",
+  "c": "LOG-05",
+  "t": "Chiusura Fase 5 e Avvio PROC-06",
+  "s": "Checklist documenti · KPI Piano Azione · Approvazione CdA · Passaggio a PROC-06",
+  "i": "Prerequisito per PROC-06: il Piano di Azione ESG deve essere formalmente approvato dal CdA o dall'organo di governance equivalente prima di procedere alla redazione del Bilancio di Sostenibilità.",
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Checklist documenti Fase 5",
+    "c": []
+   },
+   {
+    "t": "KPI Piano Azione",
+    "c": [
+     {
+      "k": "n_obiettivi",
+      "l": "N. obiettivi SMART approvati",
+      "t": "numero"
+     },
+     {
+      "k": "n_target",
+      "l": "N. target quantitativi",
+      "t": "numero"
+     },
+     {
+      "k": "n_iniziative",
+      "l": "N. iniziative ESG pianificate",
+      "t": "numero"
+     },
+     {
+      "k": "budget_totale",
+      "l": "Budget ESG triennale totale (€)",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Autorizzazione avvio PROC-06 (Bilancio di Sostenibilità)",
+    "c": [
+     {
+      "k": "autorizzazione",
+      "l": "Decisione",
+      "t": "scelta",
+      "o": [
+       "AUTORIZZATO — Piano ESG approvato, avvio PROC-06 (Redazione Bilancio)",
+       "Autorizzazione condizionata — punti aperti documentati",
+       "Sospeso — piano da completare o approvare"
+      ]
+     },
+     {
+      "k": "data_autorizzazione",
+      "l": "Data autorizzazione",
+      "t": "data"
+     },
+     {
+      "k": "approvato_da",
+      "l": "Approvato da",
+      "t": "testo"
+     },
+     {
+      "k": "punti_aperti",
+      "l": "Punti aperti",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Note passaggio a PROC-06",
+    "c": [
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura Fase 5",
+      "t": "data"
+     },
+     {
+      "k": "note_passaggio",
+      "l": "Note per il team PROC-06",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc06",
+  "k": "06A",
+  "c": "FORM-06A",
+  "t": "Struttura Capitoli Bilancio",
+  "s": "Architettura del documento: capitoli con assegnazione, stato e avanzamento",
+  "i": "La struttura deve essere approvata dal Partner prima di avviare la stesura. Ogni capitolo deve indicare il responsabile di redazione e il target parole.",
+  "z": [
+   {
+    "t": "Elenco capitoli",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc06",
+  "k": "06B",
+  "c": "FORM-06B",
+  "t": "Stesura Sezione Ambiente",
+  "s": "Editor capitoli 6-7-8: Clima, Energia, Acqua/Rifiuti/Biodiversità",
+  "i": "I testi devono riportare dati quantitativi validati in PROC-04. Ogni affermazione qualitativa deve essere supportata da evidenza documentale.",
+  "z": [],
+  "g": 1
+ },
+ {
+  "f": "proc06",
+  "k": "06C",
+  "c": "FORM-06C",
+  "t": "Stesura Sezione Sociale",
+  "s": "Editor capitoli 9-12: Persone, H&S, Formazione, Filiera",
+  "i": "Tutti i dati sociali devono provenire dal dataset validato in PROC-04 (Form 04E). Riferire sempre l'anno di rendicontazione.",
+  "z": [],
+  "g": 1
+ },
+ {
+  "f": "proc06",
+  "k": "06D",
+  "c": "FORM-06D",
+  "t": "Stesura Sezione Governance",
+  "s": "Editor capitoli 3 e 13: Governance ESG e Etica/Anti-corruzione",
+  "i": "I testi di governance devono essere revisionati dal Legale prima dell'approvazione. Le dichiarazioni vincolanti (es. remunerazione) richiedono validazione del CdA.",
+  "z": [],
+  "g": 1
+ },
+ {
+  "f": "proc06",
+  "k": "06E",
+  "c": "FORM-06E",
+  "t": "Piano Editoriale Bilancio di Sostenibilità",
+  "s": "Struttura capitoli · Assegnazioni · Scadenze · Tracciamento avanzamento redazione",
+  "i": "Il piano editoriale è il documento guida della redazione. Definisce struttura, responsabilità, scadenze e target di lunghezza per ogni capitolo. Va condiviso con il cliente prima di iniziare la redazione.",
+  "z": [
+   {
+    "t": "Identificazione e parametri editoriali",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "standard",
+      "l": "Standard applicati",
+      "t": "testo"
+     },
+     {
+      "k": "data_avvio_redazione",
+      "l": "Data avvio redazione",
+      "t": "data"
+     },
+     {
+      "k": "data_consegna_bozza",
+      "l": "Consegna bozza a cliente",
+      "t": "data"
+     },
+     {
+      "k": "data_consegna_finale",
+      "l": "Consegna versione finale",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "Struttura e piano editoriale capitoli",
+    "c": []
+   },
+   {
+    "t": "Nota editoriale e istruzioni di stile",
+    "c": [
+     {
+      "k": "nota_editoriale",
+      "l": "Istruzioni di stile, tono, vincoli di comunicazione",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc06",
+  "k": "06F",
+  "c": "FORM-06F",
+  "t": "Content Index GRI / ESRS",
+  "s": "Registro completo dei disclosure standard con stato di copertura e riferimento capitolo",
+  "i": "Il Content Index è il documento ufficiale di conformità agli standard. Ogni disclosure omesso deve riportare la motivazione. Il Content Index va pubblicato in appendice al bilancio.",
+  "z": [
+   {
+    "t": "Disclosure (22 / 22)",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc06",
+  "k": "06G",
+  "c": "FORM-06G",
+  "t": "Assurance del Bilancio",
+  "s": "Gestione del processo di verifica indipendente (limited/reasonable assurance)",
+  "i": "Completare le attività critiche prima di avviare il fieldwork dell'ente di assurance.",
+  "z": [
+   {
+    "t": "Dati mandato assurance",
+    "c": [
+     {
+      "k": "ente",
+      "l": "Società di assurance",
+      "t": "scelta",
+      "r": 1,
+      "o": [
+       "Deloitte",
+       "PwC",
+       "EY",
+       "KPMG",
+       "BDO",
+       "Grant Thornton",
+       "Altro"
+      ]
+     },
+     {
+      "k": "livello",
+      "l": "Livello di assurance",
+      "t": "scelta",
+      "o": [
+       "Limited assurance",
+       "Reasonable assurance"
+      ]
+     },
+     {
+      "k": "standard_ass",
+      "l": "Standard di riferimento",
+      "t": "scelta",
+      "o": [
+       "ISAE 3000 Revised",
+       "ISAE 3410 (GHG)",
+       "AA1000AS v3",
+       "IDW AsS 821",
+       "Altro"
+      ]
+     },
+     {
+      "k": "data_mandato",
+      "l": "Data mandato",
+      "t": "data"
+     },
+     {
+      "k": "data_rilascio",
+      "l": "Data rilascio relazione prevista",
+      "t": "data"
+     },
+     {
+      "k": "perimetro",
+      "l": "Perimetro degli indicatori soggetti ad assurance",
+      "t": "testo_lungo",
+      "w": 2
+     },
+     {
+      "k": "osservazioni",
+      "l": "Osservazioni ricevute e azioni intraprese",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Checklist preparazione assurance",
+    "c": []
+   }
+  ]
+ },
+ {
+  "f": "proc06",
+  "k": "06H",
+  "c": "FORM-06H",
+  "t": "Pubblicazione Bilancio di Sostenibilità",
+  "s": "Checklist di pubblicazione, canali di diffusione e gestione file",
+  "i": "Completare i prerequisiti critici prima di procedere alla pubblicazione ufficiale.",
+  "z": [
+   {
+    "t": "Checklist pre-pubblicazione",
+    "c": []
+   },
+   {
+    "t": "Dettagli pubblicazione",
+    "c": [
+     {
+      "k": "data_pub",
+      "l": "Data pubblicazione ufficiale",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "url_web",
+      "l": "URL pagina web bilancio",
+      "t": "testo"
+     },
+     {
+      "k": "assurance",
+      "l": "Ente assurance e livello",
+      "t": "testo"
+     },
+     {
+      "k": "note_pub",
+      "l": "Note e istruzioni distribuzione",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Canali di diffusione",
+    "c": []
+   },
+   {
+    "t": "File output",
+    "c": []
+   }
+  ]
+ },
+ {
+  "f": "proc06",
+  "k": "06LOG",
+  "c": "LOG-06",
+  "t": "Chiusura Fase 6 — Bilancio Pubblicato",
+  "s": "Checklist documenti · KPI editoriali · Delibera CdA · Pubblicazione · Avvio PROC-07",
+  "i": "Il Bilancio di Sostenibilità è il deliverable principale del progetto. La sua pubblicazione formale (con delibera CdA) completa la Fase 6 e apre la fase 7 di chiusura engagement e follow-up.",
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Checklist documenti Fase 6",
+    "c": []
+   },
+   {
+    "t": "KPI editoriali Bilancio",
+    "c": [
+     {
+      "k": "n_pagine",
+      "l": "N. pagine totali",
+      "t": "numero"
+     },
+     {
+      "k": "n_capitoli",
+      "l": "N. capitoli",
+      "t": "numero"
+     },
+     {
+      "k": "gri_coperti",
+      "l": "Standard GRI — disclosure coperte",
+      "t": "testo"
+     },
+     {
+      "k": "esrs_coperti",
+      "l": "Standard ESRS — disclosure coperte",
+      "t": "testo"
+     },
+     {
+      "k": "assurance_ente",
+      "l": "Ente di assurance",
+      "t": "testo"
+     },
+     {
+      "k": "assurance_livello",
+      "l": "Livello assurance",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Pubblicazione e delibera",
+    "c": [
+     {
+      "k": "url_pubblicazione",
+      "l": "URL pubblicazione bilancio",
+      "t": "testo"
+     },
+     {
+      "k": "data_pubblicazione",
+      "l": "Data pubblicazione ufficiale",
+      "t": "data"
+     }
+    ]
+   },
+   {
+    "t": "Autorizzazione avvio PROC-07 (Chiusura Engagement)",
+    "c": [
+     {
+      "k": "autorizzazione",
+      "l": "Decisione",
+      "t": "scelta",
+      "o": [
+       "AUTORIZZATO — Bilancio pubblicato, avvio PROC-07 (Chiusura e Follow-up)",
+       "In attesa — pubblicazione imminente",
+       "Sospeso — revisioni ancora in corso"
+      ]
+     },
+     {
+      "k": "approvato_da",
+      "l": "Approvato da (CS ESG / Partner)",
+      "t": "testo"
+     },
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura Fase 6",
+      "t": "data"
+     },
+     {
+      "k": "note_finali",
+      "l": "Note finali",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07A",
+  "c": "FORM-07A",
+  "t": "Report Finale e Dossier di Chiusura",
+  "s": "Raccolta e validazione di tutti i deliverable del progetto",
+  "i": "Completare i documenti critici prima di procedere alla chiusura formale.",
+  "z": [
+   {
+    "t": "Checklist dossier",
+    "c": []
+   },
+   {
+    "t": "File output del progetto",
+    "c": []
+   },
+   {
+    "t": "Archiviazione",
+    "c": [
+     {
+      "k": "url_cartella",
+      "l": "URL cartella condivisa",
+      "t": "testo",
+      "w": 2
+     },
+     {
+      "k": "note",
+      "l": "Note di archiviazione e retention",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07B",
+  "c": "FORM-07B",
+  "t": "Soddisfazione Cliente e NPS",
+  "s": "Rilevazione Net Promoter Score e valutazione qualitativa del servizio",
+  "i": "L'NPS e la soddisfazione cliente sono KPI interni dello studio. Un NPS ≥ 9 abilita il cliente alla categoria 'Reference' per case history e referral.",
+  "z": [
+   {
+    "t": "Valutazione soddisfazione (1-5 stelle)",
+    "c": []
+   },
+   {
+    "t": "Feedback qualitativo",
+    "c": [
+     {
+      "k": "feedback_libero",
+      "l": "Commento libero / suggerimenti del cliente",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Metadati rilevazione",
+    "c": [
+     {
+      "k": "data_somministrazione",
+      "d": 1,
+      "l": "Data somministrazione",
+      "t": "testo"
+     },
+     {
+      "k": "somministrato_a",
+      "d": 1,
+      "l": "Somministrato a",
+      "t": "testo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07C",
+  "c": "FORM-07C",
+  "t": "Proposta di Rinnovo Annuale",
+  "s": "Configurazione servizi, calcolo importo e invio proposta per ciclo successivo",
+  "i": "La proposta va inviata entro 30 giorni dalla pubblicazione del bilancio, quando la percezione di valore è massima. NPS ≥ 9 = cliente Reference.",
+  "z": [
+   {
+    "t": "Servizi inclusi (obbligatori)",
+    "c": []
+   },
+   {
+    "t": "Servizi opzionali (add-on)",
+    "c": []
+   },
+   {
+    "t": "Invio proposta",
+    "c": [
+     {
+      "k": "data_invio_prevista",
+      "d": 1,
+      "l": "Data invio prevista",
+      "t": "testo"
+     },
+     {
+      "k": "note_offerta",
+      "l": "Note all'offerta",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07D",
+  "c": "FORM-07D",
+  "t": "Follow-up 30 Giorni Post-Consegna",
+  "s": "Tracciamento azioni di follow-up per fidelizzazione e conversione rinnovo",
+  "i": "Il follow-up entro 30 giorni dalla consegna aumenta il tasso di rinnovo del 40%. Documentare ogni interazione con il cliente.",
+  "z": [
+   {
+    "t": "Piano azioni follow-up",
+    "c": []
+   },
+   {
+    "t": "Note generali follow-up",
+    "c": [
+     {
+      "k": "note_gen",
+      "l": "Osservazioni e opportunità identificate",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07E",
+  "c": "FORM-07E",
+  "t": "Follow-up a 3 Mesi",
+  "s": "Verifica avanzamento Piano ESG · Azioni da roadmap · Opportunità rinnovo",
+  "i": "Il follow-up a 3 mesi è il primo touchpoint post-progetto. Verifica che il cliente abbia avviato le azioni prioritarie del Piano ESG ed è il momento migliore per sondare l'interesse al rinnovo annuale.",
+  "z": [
+   {
+    "t": "Informazioni incontro di follow-up",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     },
+     {
+      "k": "data_followup",
+      "l": "Data follow-up",
+      "t": "data"
+     },
+     {
+      "k": "modalita",
+      "l": "Modalità (presenza/call/email)",
+      "t": "testo"
+     },
+     {
+      "k": "partecipanti",
+      "l": "Partecipanti",
+      "t": "testo",
+      "w": 2
+     }
+    ]
+   },
+   {
+    "t": "Monitoraggio azioni Piano ESG",
+    "c": []
+   },
+   {
+    "t": "Valutazione complessiva",
+    "c": [
+     {
+      "k": "valutazione_generale",
+      "l": "Valutazione generale avanzamento Piano ESG",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "criticita_emerse",
+      "l": "Criticità emerse",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "punti_forza",
+      "l": "Punti di forza / eccellenze dichiarate dal cliente",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "raccomandazioni",
+      "l": "Raccomandazioni per i prossimi 3 mesi",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Pre-qualifica rinnovo",
+    "c": [
+     {
+      "k": "interesse_rinnovo",
+      "l": "Interesse al rinnovo per ciclo successivo",
+      "t": "scelta",
+      "o": [
+       "Alto — cliente esprime chiaramente interesse a rinnovare",
+       "Medio — possibile, da qualificare meglio al prossimo follow-up",
+       "Basso — cliente non mostra interesse o ha budget ridotto"
+      ]
+     },
+     {
+      "k": "opportunita_rinnovo",
+      "l": "Note opportunità rinnovo",
+      "t": "testo_lungo"
+     },
+     {
+      "k": "prossimo_followup",
+      "l": "Data prossimo follow-up (6 mesi)",
+      "t": "data"
+     },
+     {
+      "k": "compilato_da",
+      "l": "Compilato da",
+      "t": "testo"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07F",
+  "c": "FORM-07F",
+  "t": "Lesson Learned",
+  "s": "Capitalizzazione della conoscenza acquisita nel progetto per miglioramento continuo",
+  "i": "Le lesson learned vengono condivise con tutto il team ESG nella riunione di retrospettiva mensile. Le azioni con priorità Alta devono essere assegnate entro 2 settimane.",
+  "z": [
+   {
+    "t": "Lesson learned (0)",
+    "c": []
+   }
+  ],
+  "g": 1
+ },
+ {
+  "f": "proc07",
+  "k": "07G",
+  "c": "FORM-07G",
+  "t": "Chiusura Formale Engagement",
+  "s": "Validazione finale e chiusura ufficiale del progetto ESG nel gestionale",
+  "i": "Completare le attività obbligatorie prima di chiudere formalmente l'engagement.",
+  "z": [
+   {
+    "t": "Checklist di chiusura",
+    "c": []
+   },
+   {
+    "t": "Dati di chiusura formale",
+    "c": [
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura formale",
+      "t": "data",
+      "r": 1
+     },
+     {
+      "k": "chiuso_da",
+      "l": "Chiuso da (Partner responsabile)",
+      "t": "testo"
+     },
+     {
+      "k": "note_finali",
+      "l": "Note finali sull'engagement",
+      "t": "testo_lungo",
+      "w": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "f": "proc07",
+  "k": "07LOG",
+  "c": "LOG-07",
+  "t": "Chiusura Formale Engagement",
+  "s": "Checklist documenti Fase 7 · KPI engagement · Chiusura amministrativa · Archivio",
+  "i": "Il LOG-07 chiude formalmente l'engagement nel sistema. Nessuna attività fatturabile può essere avviata dopo questa firma senza un nuovo contratto. Il documento è conservato nel repository per 10 anni (obbligatorio GDPR).",
+  "z": [
+   {
+    "t": "Identificazione",
+    "c": [
+     {
+      "k": "codice_progetto",
+      "l": "Codice progetto",
+      "t": "testo"
+     },
+     {
+      "k": "cliente",
+      "l": "Cliente",
+      "t": "testo"
+     }
+    ]
+   },
+   {
+    "t": "Checklist documenti Fase 7",
+    "c": []
+   },
+   {
+    "t": "KPI soddisfazione cliente",
+    "c": []
+   },
+   {
+    "t": "Lesson Learned sintesi",
+    "c": [
+     {
+      "k": "note_lessons",
+      "l": "Principali lesson learned (da includere nel knowledge base dello studio)",
+      "t": "testo_lungo"
+     }
+    ]
+   },
+   {
+    "t": "Chiusura formale engagement",
+    "c": [
+     {
+      "k": "decisione_chiusura",
+      "l": "Decisione di chiusura",
+      "t": "scelta",
+      "o": [
+       "CHIUSO — Engagement completato formalmente, CRM aggiornato a BIL_PUBBLICATO",
+       "Parzialmente chiuso — follow-up ancora aperto",
+       "RINNOVATO — Nuovo contratto firmato, engagement continua"
+      ]
+     },
+     {
+      "k": "data_chiusura",
+      "l": "Data chiusura formale",
+      "t": "data"
+     },
+     {
+      "k": "approvato_da",
+      "l": "Responsabile chiusura",
+      "t": "testo"
+     },
+     {
+      "k": "note_finali",
+      "l": "Note finali",
+      "t": "testo_lungo"
+     }
+    ]
+   }
+  ]
+ }
+]

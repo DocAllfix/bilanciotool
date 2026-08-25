@@ -106,6 +106,12 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "sgesg.programma.set": "Programma ESG aggiornato",
   "sgesg.fase.set": "Fase del metodo ESG aggiornata",
   "sgesg.fase.nota": "Nota su una fase del metodo ESG",
+  // ⚠️ L'etichetta non nomina la SCHEDA. Le 63 schede portano nomi che dicono a che
+  // punto e' un incarico — «Conflitti di interesse», «Chiusura formale» — e questa
+  // cronologia si vede nel quadro dello studio, anche da un socio che con quel cliente
+  // non lavora. Che una scheda sia stata compilata basta; quale sta nel percorso.
+  "sgesg.scheda.set": "Scheda del metodo ESG compilata",
+  "sgesg.scheda.stato": "Stato di una scheda del metodo ESG",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",

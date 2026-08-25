@@ -1132,6 +1132,71 @@ verdi · regressioni `tutto-demo` 68/68, `tutto-attivo` 30/30, `demo-completa` 9
 gruppo, poi riempie), `guida` 7/7, `scheda-cliente` 16/16, `portafoglio-aggiorna` 5/5 ·
 foto in chiaro e scuro guardate, console pulita.
 
+**Fase 4 (2026-08-25) — le 63 schede del metodo, estratte ESEGUENDO**
+
+La decisione che teneva in piedi il piano, applicata: le 63 schede di `esg-nexus-v2` sono
+**dati seminati**, non 63 componenti. Un renderer solo le disegna tutte, come il corpus
+(447 documenti da un componente) — perché nei prototipi erano codice ricopiato sei volte.
+
+**L'estrazione è per esecuzione, e c'è una ragione precisa.** `scripts/extract-sgesg.mjs`
+transpila ogni `.jsx` con esbuild, lo esegue in `node:vm` con un vocabolario finto e legge
+l'albero che ne esce. Non è pignoleria metodologica: **la chiave del dato sta dentro una
+chiusura** — `onChange={v => updateField("canale", v)}` — e non è una prop leggibile.
+L'estrattore **chiama l'`onChange`** con una sentinella e lascia che lo stub di
+`updateField` registri la chiave. Nessuna regex avrebbe retto.
+
+**Risultato**: 63 schede, 184 sezioni, **314 campi compilabili**, 42 dichiarative e **21
+con logica**. Migrazione `0050`, catalogo in `sgesg_scheda_def`, compilato in
+`sgesg_scheda_dato` (JSONB per scheda).
+
+**Quattro cose che l'estrattore mi ha insegnato, tutte con un rosso:**
+
+1. **`__esModule: true` su ogni modulo finto.** Senza, esbuild avvolge le `require` con
+   `__toESM`, il `default` diventa **l'intero oggetto modulo**, e l'estrattore riferiva
+   «nessun FormWrapper nell'albero» su tutte e 63.
+2. **La factory JSX non si può chiamare `h`.** Due schede fanno `.map((h) => <th…>)`: quel
+   parametro **oscura** la factory, esbuild rinomina entrambi in `h2`, e il risultato è
+   «h2 is not a function» per un nome scelto male. Ora si chiama `__jsx`.
+3. **Una chiave doppia non è un errore: è una classificazione.** In `05A` sei campi
+   scrivono tutti nell'array `pilastri`, uno per pilastro E/S/G. Nel modello piatto si
+   sovrascriverebbero e il secondo cancellerebbe il primo **in silenzio**. La collisione
+   marca la scheda come «con logica» invece di fermare l'estrazione.
+4. **Il criterio è «quanti campi si possono compilare», non «quante sezioni ci sono».** Una
+   prima versione guardava le sezioni e classificava con logica solo quattro schede:
+   passavano per dichiarative anche il Risk Register e la Matrice RACI, che hanno le
+   sezioni e **zero campi** perché sono tabelle con markup su misura. Seminate così
+   sarebbero comparse come schede vuote, e una scheda vuota fra altre piene si legge come
+   un guasto. Col criterio giusto sono **21**, vicinissimo alla stima del piano.
+
+**Le 21 con logica lo DICHIARANO a schermo** — «questa scheda è una tabella di lavoro», con
+l'elenco delle sezioni previste — invece di mostrare il nulla. E il server le rifiuta: non
+si compilano nemmeno forzandolo.
+
+**Regole nate qui:**
+- **Su un JSONB si scrive con `jsonb_set`, mai «leggi, modifica, riscrivi».** È lo stesso
+  difetto che ha azzerato la quantità salvando il costo, e su un oggetto JSON si
+  ripresenterebbe identico. Il test che lo prova vale più di tutti gli altri del file.
+- **Svuotare un campo TOGLIE la chiave** invece di lasciare una stringa vuota: così «è
+  compilato?» è una domanda sola e non due.
+- **Lo stato di una scheda è dichiarato, non dedotto dal riempimento.** Una scheda si può
+  considerare chiusa con campi facoltativi vuoti: è un giudizio del consulente, e il
+  prodotto non deve indovinarlo al posto suo.
+- **Una scelta multipla si salva come ARRAY, non come stringa con le virgole.** La prima
+  opzione che contiene una virgola nel proprio testo renderebbe illeggibile la scelta, e
+  nel catalogo ce ne sono.
+- **La repo di riferimento si clona in sola lettura** (`C:\Users\user\riferimenti\esg-nexus-v2`)
+  e non si modifica mai, come `FormazioneEvalis`.
+
+Gate: typecheck · build · **1103 test** senza pipe · `qa -- sgesg-schede` **14/14** ·
+`qa -- sgesg-percorso` 20/20 · `seed-counts` con 63 schede · regressioni `tutto-demo`
+68/68, `demo-completa` 9/9, `benvenuto` 12/12, `guida` 7/7, `scheda-cliente` 16/16,
+`portafoglio-aggiorna` 5/5, `energetico` 40/40 · foto guardate, console pulita.
+
+⚠️ **Debito dichiarato**: le 21 schede con logica (Risk Register, Matrice RACI, Valutazione
+IRO, Catalogo Iniziative, Ranking, Content Index…) hanno bisogno di schermate a righe
+dedicate. Non è un difetto nascosto: il prodotto lo dice all'utente, il server lo impone e
+il catalogo lo marca.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

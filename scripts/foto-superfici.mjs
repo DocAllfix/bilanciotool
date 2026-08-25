@@ -73,7 +73,13 @@ const SUPERFICI = [
   ["dashboard", `${BASE}/dashboard`, "main"],
   ["fascicolo", `${BASE}/aziende/${az.id}`, "[data-percorsi]"],
   ["archivio", `${BASE}/documenti`, "main"],
-  ...(pEsg ? [["sgesg", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}`, "[data-fasi]"]] : []),
+  ...(pEsg
+    ? [
+        ["sgesg", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}`, "[data-fasi]"],
+        ["sgesg-fase", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}/proc00`, "[data-schede]"],
+        ["sgesg-scheda", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}/proc00/00A`, "[data-scheda]"],
+      ]
+    : []),
   ["filiera", `${BASE}/aziende/${az.id}/filiera`, "main"],
   ["sa8000", `${BASE}/aziende/${az.id}/sa8000`, "main"],
   ["verifica", `${BASE}/verifica`, "main"],
