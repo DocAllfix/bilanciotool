@@ -7,6 +7,8 @@ import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
 import { conteggioDaFare, oggiIso } from "@/features/agenda";
+import { elencaCompensi } from "@/features/compensi";
+import { euro, riepilogo as riepilogoCompensi } from "@/lib/calc/compensi/importi";
 import { withTenant } from "@/lib/db/tenant";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
@@ -35,7 +37,7 @@ export default async function DashboardPage() {
   // `withTenant` riusa quella aperta nella stessa catena di chiamate, l'annidamento è
   // sicuro — e chiederle fuori costava una transazione intera, cioè ~300 ms su questo
   // database.
-  const [aziende, usage, quadro, scadenzario, stati, agendaOggi] = await withTenant(
+  const [aziende, usage, quadro, scadenzario, stati, agendaOggi, compensi] = await withTenant(
     { userId: s.userId, orgId: s.orgId },
     () =>
       Promise.all([
@@ -46,8 +48,11 @@ export default async function DashboardPage() {
         getStatiPortafoglio(s.userId, s.orgId),
         // L'agenda dello studio, dentro la stessa transazione delle altre letture.
         conteggioDaFare(s.userId, s.orgId, oggiIso()),
+        elencaCompensi(s.userId, s.orgId),
       ]),
   );
+  // L'andamento economico dello studio: si calcola dalle righe, mai persistito.
+  const soldi = riepilogoCompensi(compensi, oggiIso());
   const attive = aziende.filter((a) => a.stato === "active");
   const archiviate = aziende.filter((a) => a.stato === "archived");
   // Solo le voci che chiedono un'azione, e non l'elenco completo dei
@@ -114,6 +119,22 @@ export default async function DashboardPage() {
             )}
           </dt>
         </div>
+        {/* L'andamento economico. Compare solo se c'e' qualcosa da incassare: uno
+            studio che non ha ancora registrato un compenso non ha bisogno di vedersi
+            dire «0,00 €», che si legge come un rimprovero. */}
+        {soldi.daIncassare > 0 && (
+          <div className="flex items-baseline gap-2">
+            <dd className="text-xl font-semibold tracking-tight" data-slot="kpi" data-da-incassare={soldi.daIncassare}>
+              {euro(soldi.daIncassare)} €
+            </dd>
+            <dt className="text-[13px] text-muted-foreground">
+              da incassare{" · "}
+              <Link className="font-medium underline underline-offset-4" href="/compensi">
+                apri
+              </Link>
+            </dt>
+          </div>
+        )}
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi">
             {quadro.documentiTotali}

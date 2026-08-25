@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, CalendarDays, ChevronLeft, FileStack, HelpCircle, Settings2 } from "lucide-react";
+import { Briefcase, CalendarDays, ChevronLeft, FileStack, HelpCircle, Settings2, Wallet } from "lucide-react";
 
 // Navigazione della shell, in due modi.
 //
@@ -21,6 +21,10 @@ const VOCI = [
   // ⚠️ L'agenda sta accanto al portafoglio e NON dentro un'azienda: le date che uno
   // studio si segna riguardano spesso tutti i clienti, o nessuno.
   { href: "/agenda", label: "Agenda", icon: CalendarDays, tour: "nav-agenda" },
+  // ⚠️ I compensi stanno QUI e non dentro un'azienda, ed e' una difesa: il
+  // collegamento del portale cliente e' per azienda, e tutto cio' che vive in una
+  // pagina dell'azienda e' materiale che un giorno qualcuno potrebbe includerci.
+  { href: "/compensi", label: "Compensi", icon: Wallet, tour: "nav-compensi" },
   { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
   { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
 ] as const;

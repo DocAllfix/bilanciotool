@@ -21,4 +21,5 @@ export * from "./filiera";
 export * from "./sgesg";
 export * from "./sgesg-schede";
 export * from "./agenda";
+export * from "./compensi";
 export * from "./verifica";

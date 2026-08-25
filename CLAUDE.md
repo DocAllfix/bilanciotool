@@ -1304,6 +1304,61 @@ Gate: typecheck · build · **1125 test** senza pipe · `qa -- agenda` **16/16**
 tenant provato **rompendolo** · `rls-matrix` ed `etichette-audit` verdi · regressioni
 `tutto-demo` 68/68, `tutto-attivo` 30/30 · foto in chiaro e scuro guardate, console pulita.
 
+**Fase 7 (2026-08-26) — Compensi e andamento, e il confine che non si può attraversare**
+
+Quanto è stato concordato, quanto è arrivato, quanto manca. Con gli **acconti come righe**
+e non come un totale da riscrivere: un campo `incassato` da aggiornare a ogni versamento
+sarebbe un read-modify-write su un numero, cioè il difetto che questo progetto ha già
+pagato tre volte in altre forme. Con una riga per incasso il totale è una somma, il
+secondo acconto non può cancellare il primo, e resta la storia — che su un pagamento
+contestato è l'unica cosa che serve.
+
+⚠️ **Il vincolo più importante di questa fase non è una colonna: è dove i compensi NON
+sono.** Il collegamento del portale cliente è per **azienda**, si apre senza sessione, e
+serve tutto ciò che quella rotta restituisce. Un importo che ci finisse sarebbe il prezzo
+che uno studio ha chiesto, visibile al cliente che lo paga. Quindi i compensi vivono in
+`/compensi`, che è dello studio, e **non compaiono in nessuna pagina dell'azienda** — né nel
+fascicolo, né in un percorso. Tutto ciò che sta in una pagina dell'azienda è materiale che
+un giorno qualcuno includerà «per comodità». **Un pericolo si evita, non si filtra.**
+
+Il confine è provato in **tre modi**: il portale aperto davvero senza sessione, cercando
+gli importi nell'**HTML intero** (un numero nascosto in un attributo o nel payload di
+idratazione sarebbe uscito lo stesso); un test che serializza l'oggetto restituito e cerca
+le cifre; e un controllo **strutturale** che nessun file del portale nomini quelle tabelle
+— messo in rosso di proposito aggiungendo un import, e fallisce nominando il file esatto.
+
+**Regole nate qui, tutte pagate con un rosso:**
+- **`toLocaleString` non si usa per il denaro.** Dipende dai dati ICU del runtime: in Node
+  restituiva `1234` invece di `1.234`. Il guaio vero sarebbe stato altrove — **server e
+  browser hanno due ICU diversi**, e lo stesso importo si sarebbe stampato in due modi
+  nella stessa pagina. Le migliaia si raggruppano a mano.
+- **`parseFloat` non legge un importo italiano.** «1.234,56» vale milleduecentotrentaquattro
+  e cinquantasei; `parseFloat` legge `1.234` e restituisce **uno virgola
+  duecentotrentaquattro**, senza sollevare niente. Un importo indovinato male non produce
+  un errore: produce un numero sbagliato in una colonna che si somma.
+- **Il simbolo dell'euro si toglie solo agli ESTREMI**: togliendolo ovunque, «12€34»
+  diventava un compenso di milleduecentotrentaquattro euro nato da un refuso di dodici.
+- **Le funzioni pure che servono al browser non possono stare accanto al database.** Il
+  componente è `"use client"` e importava `euro` da `features/compensi`: il build si è
+  fermato con «Can't resolve 'fs'» perché `postgres` finiva nel bundle. L'aritmetica sta
+  in `src/lib/calc/compensi/importi.ts`. È lo specchio della regola delle domande della
+  vetrina.
+- **Un `.first()` su un elenco che cresce agisce su un elemento a caso**: il collaudo
+  toglieva il primo acconto invece del secondo, e poi accusava il prodotto di un residuo
+  sbagliato — che era quello giusto per l'acconto che aveva davvero tolto. Terza
+  occorrenza di questa regola.
+- **Il collegamento sta in un CAMPO, non nel testo**: `innerText` non legge il valore di
+  un `<input>`, e il controllo diceva «il collegamento non è comparso» mentre era lì.
+- **Un test che scandisce cartelle deve morire se una cartella non c'è.** Il controllo
+  strutturale puntava a `(public)/documenti-cliente`, che non esiste — il portale sta in
+  `(marketing)` — e passava guardando **zero file**. Ora conta i file letti e fallisce se
+  sono troppo pochi, e non ha un `try/catch` che nasconda un percorso sparito.
+
+Gate: typecheck · build · **1148 test** senza pipe · `qa -- compensi` **12/12**, portale
+cliente compreso · guardia strutturale messa in rosso rimettendo il difetto · regressioni
+`agenda` 16/16, `tutto-demo` 68/68, `tutto-attivo` 30/30, `portafoglio-aggiorna` 5/5 ·
+foto guardate, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

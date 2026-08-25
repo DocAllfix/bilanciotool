@@ -119,6 +119,14 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "agenda.voce.set": "Voce dell'agenda modificata",
   "agenda.voce.stato": "Voce dell'agenda chiusa o riaperta",
   "agenda.voce.delete": "Voce rimossa dall'agenda",
+  // Compensi. ⚠️ Le etichette NON riportano l'importo: questa cronologia si vede nel
+  // quadro dello studio, e un socio vedrebbe quanto e' stato chiesto a un cliente che
+  // non segue. Che sia stato registrato basta; quanto sta in `/compensi`.
+  "compenso.create": "Compenso registrato",
+  "compenso.set": "Compenso aggiornato",
+  "compenso.incasso": "Acconto registrato",
+  "compenso.incasso.delete": "Acconto rimosso",
+  "compenso.delete": "Compenso eliminato",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",
