@@ -11,6 +11,7 @@ import {
   briberyChapter, briberyRequirement, briberyDimension, briberyFlag,
   mogFamily, mogCrime, mogPillar, mogRequirement,
   wbChapter, wbRequirement,
+  sgesgPhaseDef,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -28,9 +29,13 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
   };
 
   it("conteggi esatti per ogni catalogo", async () => {
-    // Cinque moduli in produzione piu' i sei di conformita': un content set per
-    // dominio, cosi' la versione del corpus di ciascuno si congela da sola.
-    expect(await conta(contentSet)).toBe(11);
+    // Un content set per dominio, cosi' la versione dei contenuti di ciascuno si
+    // congela da sola. Dal 25 agosto 2026 sono dodici: si aggiunge `sgesg`, le otto
+    // fasi del metodo di implementazione del sistema di gestione ESG.
+    expect(await conta(contentSet)).toBe(12);
+    // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
+    // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
+    expect(await conta(sgesgPhaseDef)).toBe(8);
     expect(await conta(ghgCategory)).toBe(6);
     expect(await conta(ghgSourceType)).toBe(25);
     expect(await conta(emissionFactor)).toBe(59);

@@ -29,6 +29,7 @@ const RADICI: Record<ModuloAzienda, { tabella: string; anno: string | null }> = 
   ghg: { tabella: "ghg_inventory", anno: "anno" },
   energetico: { tabella: "energy_balance", anno: "anno" },
   bilancio: { tabella: "report_project", anno: "anno" },
+  sgesg: { tabella: "sgesg_programma", anno: "anno" },
   sa8000: { tabella: "sa_system", anno: null },
   fornitore: { tabella: "supplier_assessment", anno: null },
   filiera: { tabella: "chain_program", anno: null },

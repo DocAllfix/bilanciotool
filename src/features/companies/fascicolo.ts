@@ -13,7 +13,8 @@ import {
   supplierAnswer,
   soaDeclaration,
   soaControlDecision, briberySystem, briberyRequirementState, mogModel, mogProcess, mogScenario,
-  wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState, chainProgram, chainPartner } from "@/lib/db/schema";
+  wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState, chainProgram, chainPartner,
+  sgesgProgramma, sgesgFase } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, count, desc, eq, isNotNull } from "drizzle-orm";
 
@@ -76,7 +77,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, programmaFiliera, documenti] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, programmaFiliera, documenti] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -92,6 +93,11 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .from(energyBalance)
         .where(and(eq(energyBalance.companyId, companyId), eq(energyBalance.organizationId, orgId)))
         .orderBy(desc(energyBalance.anno)),
+      tx
+        .select({ id: sgesgProgramma.id, anno: sgesgProgramma.anno })
+        .from(sgesgProgramma)
+        .where(and(eq(sgesgProgramma.companyId, companyId), eq(sgesgProgramma.organizationId, orgId)))
+        .orderBy(desc(sgesgProgramma.anno)),
       tx
         .select({ id: supplierAssessment.id })
         .from(supplierAssessment)
@@ -140,6 +146,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const invId = inventari[0]?.id ?? null;
     const progId = progetti[0]?.id ?? null;
     const eneId = bilanciEnergia[0]?.id ?? null;
+    const esgId = programmiEsg[0]?.id ?? null;
     const supId = valutazione[0]?.id ?? null;
     const soaId = dichiarazione[0]?.id ?? null;
     const pcId = sistemaPc[0]?.id ?? null;
@@ -152,7 +159,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -166,6 +173,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         : zero,
       eneId
         ? tx.select({ n: count() }).from(energyVectorInput).where(eq(energyVectorInput.balanceId, eneId))
+        : zero,
+      // Le fasi AVVIATE, non quelle esistenti: una riga `sgesg_fase` nasce solo quando
+      // la fase viene toccata, quindi «da_avviare» qui vuol dire aperta e poi rimessa
+      // indietro — che e' lavoro cominciato, e va contato.
+      esgId
+        ? tx.select({ n: count() }).from(sgesgFase).where(eq(sgesgFase.programId, esgId))
         : zero,
       supId
         ? tx
@@ -244,6 +257,16 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         anno: progetti[0]?.anno ?? null,
         riempimento: progId ? { valore: nKpi[0].n, etichetta: nKpi[0].n === 1 ? "indicatore compilato" : "indicatori compilati" } : null,
       },
+      sgesg: {
+        avviato: !!esgId,
+        anno: programmiEsg[0]?.anno ?? null,
+        // Il riempimento e' quante fasi delle otto risultano avviate. Si conta con
+        // `nFasiEsg`, letto insieme agli altri conteggi: una query in piu' qui costerebbe
+        // un viaggio, e su questo database un viaggio costa piu' della lettura.
+        riempimento: esgId
+          ? { valore: nFasiEsg[0].n, etichetta: nFasiEsg[0].n === 1 ? "fase avviata" : "fasi avviate" }
+          : null,
+      },
       energetico: {
         avviato: !!eneId,
         anno: bilanciEnergia[0]?.anno ?? null,
@@ -311,7 +334,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     const voci: VoceFascicolo[] = MODULI_AZIENDA.map((m) => {
       const r = radici[m.href];
-      const doc = ultimoPerTipo.get(m.documenti[0]) ?? null;
+      // ⚠️ Un percorso puo' non pubblicare (ancora) niente: `documenti` e' vuoto, e
+      // allora non c'e' nessun «ultimo documento» da cercare. Lo stato resta fra
+      // «non avviato» e «in corso», che e' esattamente cio' che quel percorso puo'
+      // essere finche' i suoi documenti non esistono.
+      const principale = m.documenti[0];
+      const doc = principale ? (ultimoPerTipo.get(principale) ?? null) : null;
       const base = `/aziende/${companyId}/${m.href}`;
       return {
         modulo: m.href,

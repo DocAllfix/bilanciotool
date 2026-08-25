@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Factory, Gavel, HeartHandshake, Megaphone, Network, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, Megaphone, Network, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "energetico", "bilancio", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "sgiqas", "sa8000", "soa"] as const;
+export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "sgiqas", "sa8000", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -121,8 +121,17 @@ export type VoceModulo = {
    *  Era un valore singolo, e reggeva finche' un modulo produceva un documento
    *  solo. I sei moduli in arrivo ne producono da due a sei ciascuno, e il primo
    *  dell'elenco e' quello che rappresenta il modulo dove serve un documento solo:
-   *  scadenzario, fascicolo, stato del percorso. L'ordine non e' decorativo. */
-  documenti: readonly [TipoDocumento, ...TipoDocumento[]];
+   *  scadenzario, fascicolo, stato del percorso. L'ordine non e' decorativo.
+   *
+   *  ⚠️ E puo' essere VUOTO, il che significa «questo percorso non pubblica ancora».
+   *  Era una tupla non vuota, e la garanzia era comoda: il primo elemento esisteva
+   *  sempre. Ma quel tipo mi avrebbe costretto, per registrare un percorso i cui
+   *  documenti arrivano piu' avanti, a inventare un tipo di documento senza template —
+   *  cioe' a rendere possibile pubblicare un documento vuoto e consegnarlo a un
+   *  cliente. Meglio perdere la garanzia e gestire il vuoto nei tre punti che leggono
+   *  `documenti[0]`: il fascicolo, lo scadenzario e la guida. Un percorso che esiste
+   *  prima di produrre qualcosa non e' un caso teorico, e' come nascono tutti. */
+  documenti: readonly TipoDocumento[];
   /** true se il lavoro è per esercizio (rotta `/[anno]`), false se è una
    *  fotografia corrente con revisioni. */
   perEsercizio: boolean;
@@ -171,6 +180,23 @@ export const MODULI_AZIENDA = [
     area: "ecosostenibilita",
     colore: AREE.ecosostenibilita.colore,
     documenti: ["bilancio"],
+    perEsercizio: true,
+  },
+  {
+    href: "sgesg",
+    etichetta: "Sistema ESG",
+    nome: "Implementazione del sistema di gestione ESG",
+    // Non e' una norma: e' il metodo. Si dichiara verso quale standard il lavoro
+    // rendicontera', perche' e' quello che il consulente cerca leggendo la riga.
+    norma: "GRI · ESRS",
+    icona: Compass,
+    area: "ecosostenibilita",
+    colore: AREE.ecosostenibilita.colore,
+    // ⚠️ Vuoto: il percorso esiste, i suoi quattro documenti (offerta, verbale di
+    // avvio, rapporto di diagnosi, fascicolo finale) arrivano piu' avanti nel piano.
+    // Dichiarare qui un tipo senza template significherebbe rendere pubblicabile un
+    // documento vuoto, e un documento vuoto pubblicato e' immutabile per costruzione.
+    documenti: [],
     perEsercizio: true,
   },
   {

@@ -72,7 +72,11 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
       for (const m of MODULI_AZIENDA) {
         const radice = radici[m.href].get(a.id) as { anno?: number | null } | undefined;
         const base = `/aziende/${a.id}/${m.href}`;
-        const annoPubblicato = pubblicati.get(`${a.id}|${m.documenti[0]}`) ?? null;
+        // Un percorso che non pubblica non puo' essere «in ritardo di pubblicazione»:
+        // senza documento principale l'anno pubblicato e' `null`, e le voci che ne
+        // discendono non si generano. Non e' un caso da nascondere, e' la verita'.
+        const principale = m.documenti[0];
+        const annoPubblicato = principale ? (pubblicati.get(`${a.id}|${principale}`) ?? null) : null;
 
         if (!radice) {
           // Mai avviato: è un promemoria, non un ritardo. Sta in fondo.

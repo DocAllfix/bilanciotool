@@ -344,6 +344,13 @@
       "when": 1787672339047,
       "tag": "0048_clienti_contatti",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1787676210191,
+      "tag": "0049_sgesg",
+      "breakpoints": true
     }
   ]
 }

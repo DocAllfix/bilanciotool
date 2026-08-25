@@ -12,6 +12,7 @@ import {
   qasSystem, qasIndicator, qasIndicatorDefault, qasMeasurement, qasRequirement, qasRequirementState,
   saSystem, saCriterion, saCriterionState,
   chainProgram, chainPartner, chainPartnerScore,
+  sgesgProgramma, sgesgFase,
 } from "@/lib/db/schema";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
@@ -21,6 +22,7 @@ import { latestMog231SetId } from "@/features/mog231/modello";
 import { latestWbSetId } from "@/features/segnalazioni/sistema";
 import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
 import { latestSa8000SetId } from "@/features/sa8000/sistema";
+import { latestSetId } from "@/features/content-set";
 import { latestFilieraSetId } from "@/features/filiera/programma";
 import type { withTenant } from "@/lib/db/tenant";
 
@@ -842,6 +844,51 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
     }),
   );
   await tx.insert(chainPartnerScore).values(punteggiDemo);
+
+  /* ── implementazione del sistema di gestione ESG ──────────────────────────── */
+  //
+  // ⚠️ La dimostrativa deve avere TUTTI i percorsi, e la ragione e' costata gia' una
+  // volta: quando ne aveva due su cinque, gli altri tre sembravano non funzionare. Un
+  // percorso vuoto nella demo non si legge come «non compilato», si legge come «rotto».
+  //
+  // Il programma e' a meta' del guado di proposito: tre fasi chiuse, una in corso, le
+  // altre da avviare. Un lavoro tutto verde non mostra a che serve il percorso.
+  const setEsg = await latestSetId(
+    "sgesg",
+    "Catalogo delle fasi del sistema di gestione ESG non disponibile: esegui il seed dei contenuti",
+  );
+  const programmaEsg = randomUUID();
+  await tx.insert(sgesgProgramma).values({
+    id: programmaEsg,
+    organizationId: orgId,
+    companyId,
+    contentSetId: setEsg,
+    anno: 2025,
+    standard: "ESRS",
+    stato: "in_corso",
+    responsabile: "Dott.ssa Silvia Marino",
+    dataInizio: "2025-09-15",
+    dataFine: "2026-06-30",
+  });
+  const FASI_DEMO = [
+    ["proc00", "conclusa", "Incarico firmato il 15 settembre. Nessun conflitto d'interesse rilevato."],
+    ["proc01", "conclusa", "Perimetro: stabilimento di Bari. Kick-off con la direzione il 2 ottobre."],
+    ["proc02", "conclusa", "Nove temi materiali su diciotto. Consultati clienti e rappresentanza sindacale."],
+    ["proc03", "in_corso", "Audit ambiente e sociale chiusi; governance da completare."],
+  ] as const;
+  await tx.insert(sgesgFase).values(
+    FASI_DEMO.map(([faseKey, stato, note]) => ({
+      id: randomUUID(),
+      organizationId: orgId,
+      programId: programmaEsg,
+      faseKey,
+      stato,
+      note,
+      // Il CHECK del database pretende che la data ci sia se e solo se la fase e'
+      // conclusa: non e' un dettaglio del seme, e' la stessa regola dell'applicazione.
+      conclusaIl: stato === "conclusa" ? new Date("2025-11-30T10:00:00Z") : null,
+    })),
+  );
 }
 
 

@@ -103,8 +103,11 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // perche' e' la postura del cliente e non un obbligo), la Due diligence (in
     // Compliance, discende dalla CSDDD) e SA8000 (era col Bilancio, ora coi sistemi
     // certificabili).
+    // Dal 25 agosto 2026 i percorsi sono DODICI: «sgesg» — l'implementazione del
+    // sistema di gestione ESG — entra in Ecosostenibilita' dopo il Bilancio, perche'
+    // e' il metodo che porta a quel documento.
     expect(f.voci.map((v) => v.modulo)).toEqual([
-      "ghg", "energetico", "bilancio", "fornitore",
+      "ghg", "energetico", "bilancio", "sgesg", "fornitore",
       "mog231", "anticorruzione", "segnalazioni", "filiera",
       "sgiqas", "sa8000", "soa",
     ]);

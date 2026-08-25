@@ -44,6 +44,8 @@ const FIL_SET = "filiera-v1";
 const fid = (key) => `${FIL_SET}:${key}`;
 const WB_SET = "wb-v1";
 const wid = (key) => `${WB_SET}:${key}`;
+const SGESG_SET = "sgesg-v1";
+const gid = (key) => `${SGESG_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
 try {
@@ -55,7 +57,8 @@ try {
            (${SUPPLIER_SET}, 'supplier', 1, 'Estratto dal prototipo esg-supplier-ready.html'),
            (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html'),
            (${AC_SET}, 'iso37001', 1, 'Estratto dal prototipo sgpc-iso37001-v1.html'),
-           (${MOG_SET}, 'mog231', 1, 'Estratto dal prototipo mog-231-v1.html')
+           (${MOG_SET}, 'mog231', 1, 'Estratto dal prototipo mog-231-v1.html'),
+           (${SGESG_SET}, 'sgesg', 1, 'Le otto fasi del metodo, da DocAllfix/esg-nexus-v2')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -506,6 +509,27 @@ try {
     on conflict (key) do nothing`;
 
   const conta = async (t) => Number((await sql.unsafe(`select count(*)::int n from ${t}`))[0].n);
+
+  // --- Implementazione del sistema di gestione ESG (le otto fasi) ---
+  //
+  // ⚠️ Le fasi sono DATI seminati e non costanti nel codice, come i 25 sorgenti ISO o i
+  // 18 temi di materialita': il programma congela il set alla creazione, quindi un
+  // cliente avviato oggi continua a vedere le fasi di oggi anche quando il metodo
+  // cambiera'. Scritte come `const` in un file sorgente, cambierebbero sotto i piedi di
+  // un lavoro gia' in corso.
+  //
+  // Provenienza: `PROC-00`...`PROC-07` di `DocAllfix/esg-nexus-v2`. Le 63 schede che
+  // stanno dentro le fasi arrivano alla fase successiva del piano, ed e' li' che
+  // l'estrazione dovra' essere fatta ESEGUENDO i componenti del progetto d'origine e non
+  // ricopiandone il contenuto a mano.
+  for (const [i, f] of load("sgesg-fasi.json").entries()) {
+    await sql`
+      insert into sgesg_fase_def (id, set_id, key, codice, nome, scopo, ordine)
+      values (${gid(`fase:${f.k}`)}, ${SGESG_SET}, ${f.k}, ${f.c}, ${f.n}, ${f.s}, ${i})
+      on conflict (id) do update set codice = excluded.codice, nome = excluded.nome,
+        scopo = excluded.scopo, ordine = excluded.ordine`;
+  }
+
   console.log("Seed completato:");
   for (const t of [
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",

@@ -140,7 +140,21 @@ await check("il fascicolo dell'azienda mostra OGNI percorso, e nessuno da avviar
   await page.goto(`${BASE}/aziende/${az}`, { waitUntil: "networkidle" });
   const voci = page.locator("[data-percorsi] [data-modulo]");
   const quanti = await voci.count();
-  if (quanti < 11) throw new Error(`il fascicolo mostra ${quanti} percorsi, meno degli undici che il prodotto ha`);
+  // ⚠️ Quanti percorsi abbia il prodotto NON si scrive qui. Il numero era fisso a
+  // undici, e sarebbe diventato rosso al dodicesimo per un motivo che con la
+  // dimostrativa non c'entra. Si chiede alla GUIDA, che elenca il registro intero:
+  // due superfici che derivano dalla stessa fonte devono dire lo stesso numero, e se
+  // divergono e' la dimostrativa a essere rimasta indietro — che e' esattamente cio'
+  // che questo controllo esiste per cogliere.
+  const p2 = await page.context().newPage();
+  await p2.goto(`${BASE}/guida`, { waitUntil: "domcontentloaded" });
+  await p2.locator("[data-percorsi]").waitFor({ timeout: 60_000 });
+  const attesi = await p2.locator("[data-percorsi] [data-modulo]").count();
+  await p2.close();
+  if (attesi === 0) throw new Error("la guida non elenca nessun percorso: il controllo non puo' misurare niente");
+  if (quanti < attesi) {
+    throw new Error(`il fascicolo mostra ${quanti} percorsi, il prodotto ne ha ${attesi}`);
+  }
   const fermi = [];
   for (let i = 0; i < quanti; i++) {
     const chiave = await voci.nth(i).getAttribute("data-modulo");

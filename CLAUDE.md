@@ -1070,6 +1070,68 @@ da solo · regressioni `tutto-demo` 68/68, `tutto-attivo` 30/30, `portafoglio-ag
 5/5, `guida` 7/7, `fornitore` 28/28, `energetico` 40/40 · foto della scheda in chiaro e
 scuro guardate, console pulita.
 
+**Fase 3 (2026-08-25) — il dodicesimo percorso: implementazione del sistema di gestione ESG**
+
+Il nome è del committente («che sarebbe il nexus»), e la sua lettura è quella giusta: le
+otto fasi di ESG Nexus sono il percorso che porta **un'azienda, in un anno** da zero a un
+sistema ESG funzionante — esattamente la forma degli altri undici. Non nasce un secondo
+gestionale: nasce un percorso, e la sua radice sta accanto a `ghgInventory`.
+
+Tre tabelle (`sgesg_fase_def` catalogo, `sgesg_programma`, `sgesg_fase`), migrazione `0049`
+con RLS, sei CHECK e il catalogo `sgesg-v1` con le otto fasi seminate. Motore puro in TDD
+(`src/lib/calc/sgesg/avanzamento.ts`, 7 test), percorso a schermo, dimostrativa compilata
+a metà del guado.
+
+**Cinque decisioni:**
+
+1. **Non è uno stepper.** Nelle otto fasi si lavora avanti e indietro — la materialità si
+   riapre quando la diagnosi trova qualcosa — e uno stepper che pretende l'ordine
+   costringerebbe a barare per procedere.
+2. **Una fase esiste solo quando viene toccata.** Otto righe create in anticipo
+   cancellerebbero la differenza fra «non avviata» e «avviata e vuota», che è informazione.
+3. **Una fase dovuta e non conclusa pesa zero.** Tre concluse su otto danno **38%**, non
+   100%: mediare sulle sole fasi toccate darebbe lo stesso numero di «tutte e otto
+   concluse». Tre situazioni opposte, un numero solo, su un lavoro che si consegna.
+4. **`conclusaIl` si cancella riaprendo**, e lo pretende un CHECK: senza, il «quando è
+   finita» sopravviverebbe alla riapertura e il documento finale riporterebbe una data di
+   chiusura per un lavoro riaperto.
+5. **Una chiave di fase che il catalogo non conosce viene rifiutata**, non scartata a
+   valle: una riga fantasma non comparirebbe a schermo — la vista rende il catalogo — ma
+   occuperebbe spazio e i conteggi la vedrebbero.
+
+⚠️ **`documenti` del registro dei moduli ora può essere VUOTO.** Era una tupla non vuota,
+e la garanzia era comoda. Ma per registrare un percorso i cui documenti arrivano in Fase 8
+quel tipo mi avrebbe costretto a **inventare un tipo di documento senza template** — cioè
+a rendere possibile pubblicare un documento vuoto, che è immutabile per costruzione e
+finisce in mano a un cliente. Meglio perdere la garanzia e gestire il vuoto nei tre punti
+che leggono `documenti[0]`: fascicolo, scadenzario e guida. La guida **lo dice**: «Non
+produce ancora un documento pubblicabile» — una scheda muta, in mezzo ad altre che
+nominano un'uscita, si legge come una svista.
+
+**Due guardie del progetto hanno preso me**, ed è il secondo turno di fila:
+`etichette-audit-pure` (le quattro azioni nuove senza etichetta italiana) e
+`seed-counts` (dodicesimo content set, otto fasi). Entrambe hanno fallito sull'asserzione
+giusta prima che qualcuno se ne accorgesse a schermo.
+
+**Regole nate qui:**
+- **Il numero dei percorsi non si scrive in un collaudo.** `verifica-demo-completa`
+  fissava `< 11` e sarebbe diventato rosso al dodicesimo per un motivo che con la
+  dimostrativa non c'entra. Ora chiede alla **guida** quanti sono: due superfici che
+  derivano dallo stesso registro devono dire lo stesso numero, e se divergono è la
+  dimostrativa a essere rimasta indietro — che è esattamente ciò che quel controllo esiste
+  per cogliere.
+- **Una foto di una pagina che rimanda va puntata alla destinazione.** `/sgesg` rinvia a
+  `/sgesg/<anno>`, e il ricaricamento con cui si applica il tema correva contro il rinvio.
+  L'anno si chiede al database invece di indovinarlo.
+
+Gate: typecheck · build · **1090 test** senza pipe · `qa -- sgesg-percorso` **20/20 al
+primo colpo** (tre spie a ogni gesto, ogni esito letto dal database) · confine di tenant
+provato **rompendolo** · `rls-matrix`, `navigazione`, `etichette-audit`, `seed-counts`
+verdi · regressioni `tutto-demo` 68/68, `tutto-attivo` 30/30, `demo-completa` 9/9,
+`benvenuto` 12/12 (itinerario `ghg → mog231 → sgiqas → energetico → bilancio`: uno per
+gruppo, poi riempie), `guida` 7/7, `scheda-cliente` 16/16, `portafoglio-aggiorna` 5/5 ·
+foto in chiaro e scuro guardate, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

@@ -1,0 +1,50 @@
+[
+  {
+    "k": "proc00",
+    "c": "PROC-00",
+    "n": "Acquisizione",
+    "s": "Dal primo contatto all'incarico firmato: pre-qualifica, conflitti d'interesse, verifiche preliminari sul cliente e offerta. È la fase che decide se il lavoro si fa, e a quali condizioni."
+  },
+  {
+    "k": "proc01",
+    "c": "PROC-01",
+    "n": "Avvio",
+    "s": "Si mette in piedi il lavoro: contratto d'incarico, gruppo di lavoro e responsabilità, perimetro di rendicontazione, calendario, riunione di apertura e registro dei rischi del progetto."
+  },
+  {
+    "k": "proc02",
+    "c": "PROC-02",
+    "n": "Materialità",
+    "s": "Si stabilisce di che cosa il bilancio dovrà parlare: confronto di settore, mappatura degli stakeholder, inventario e valutazione di impatti, rischi e opportunità, consultazioni e matrice finale."
+  },
+  {
+    "k": "proc03",
+    "c": "PROC-03",
+    "n": "Diagnosi",
+    "s": "Si guarda com'è messa l'azienda oggi: piano di audit, inventario dei documenti esistenti, verifiche su ambiente, sociale e governance, registro delle lacune e rapporto di diagnosi."
+  },
+  {
+    "k": "proc04",
+    "c": "PROC-04",
+    "n": "Dati",
+    "s": "Si raccolgono e si validano i numeri: piano di raccolta, calcolo delle emissioni sui tre Scope, indicatori ambientali e sociali, controlli di qualità e congelamento del set di dati."
+  },
+  {
+    "k": "proc05",
+    "c": "PROC-05",
+    "n": "Strategia",
+    "s": "Si decide dove andare: visione, obiettivi misurabili, target di riduzione, catalogo delle iniziative, budget pluriennale, piano di attuazione e presentazione all'organo di governo."
+  },
+  {
+    "k": "proc06",
+    "c": "PROC-06",
+    "n": "Redazione",
+    "s": "Si scrive il documento: struttura dei capitoli, stesura delle tre aree, piano editoriale, indice dei contenuti secondo lo standard scelto, eventuale assurance esterna e pubblicazione."
+  },
+  {
+    "k": "proc07",
+    "c": "PROC-07",
+    "n": "Chiusura",
+    "s": "Si chiude e si semina il lavoro successivo: fascicolo finale al cliente, rilevazione della soddisfazione, proposta di rinnovo, verifiche di ritorno a trenta giorni e a tre mesi, lezioni apprese."
+  }
+]

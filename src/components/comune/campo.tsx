@@ -31,6 +31,7 @@ type Salva = (valore: string | null) => Promise<{ ok: true } | { ok: false; erro
 export function CampoTesto({
   id,
   etichetta,
+  etichettaNascosta,
   valore,
   aiuto,
   multiriga,
@@ -38,6 +39,10 @@ export function CampoTesto({
 }: {
   id: string;
   etichetta: string;
+  /** L'etichetta resta per i lettori di schermo e sparisce dallo schermo.
+   *  ⚠️ Non e' la stessa cosa di un'etichetta vuota: quella lascerebbe il campo senza
+   *  nome accessibile, ed e' un difetto gia' incontrato in questo progetto. */
+  etichettaNascosta?: boolean;
   valore: string | null;
   aiuto?: string;
   multiriga?: boolean;
@@ -66,9 +71,11 @@ export function CampoTesto({
   const Campo = multiriga ? Textarea : Input;
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} className="flex items-center gap-2">
+      <Label htmlFor={id} className={etichettaNascosta ? "sr-only" : "flex items-center gap-2"}>
         {etichetta}
-        {salvato && <span className="text-[11px] font-normal text-success">salvato</span>}
+        {salvato && !etichettaNascosta && (
+          <span className="text-[11px] font-normal text-success">salvato</span>
+        )}
       </Label>
       <Campo
         id={id}

@@ -101,6 +101,11 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "corpus.registro.elimina": "Registrazione eliminata",
   "billing.checkout.apri": "Pagamento avviato",
   "billing.abbonamento.aggiorna": "Abbonamento aggiornato",
+  // Implementazione del sistema di gestione ESG.
+  "sgesg.programma.create": "Programma ESG avviato",
+  "sgesg.programma.set": "Programma ESG aggiornato",
+  "sgesg.fase.set": "Fase del metodo ESG aggiornata",
+  "sgesg.fase.nota": "Nota su una fase del metodo ESG",
   "company.create": "Nuova azienda in portafoglio",
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",

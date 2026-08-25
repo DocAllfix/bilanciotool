@@ -71,7 +71,11 @@ export default function GuidaPage() {
             </h3>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
         {g.moduli.map((m) => {
-          const doc = DOCUMENTI[m.documenti[0]];
+          // Un percorso puo' non produrre ancora un documento: la guida lo DICE,
+          // invece di tacere. Una scheda che non nomina un'uscita, in mezzo ad altre
+          // undici che la nominano, si legge come una svista.
+          const principale = m.documenti[0];
+          const doc = principale ? DOCUMENTI[principale] : null;
           const Icona = m.icona;
           return (
             <div key={m.href} className="rounded-lg border p-4" data-modulo={m.href}>
@@ -88,7 +92,13 @@ export default function GuidaPage() {
                 </div>
               </div>
               <p className="mt-3 text-[13px]">
-                Produce <b>{doc.nome}</b>.
+                {doc ? (
+                  <>
+                    Produce <b>{doc.nome}</b>.
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">Non produce ancora un documento pubblicabile.</span>
+                )}
               </p>
               <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
                 {m.perEsercizio

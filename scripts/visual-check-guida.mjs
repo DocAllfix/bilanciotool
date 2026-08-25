@@ -44,7 +44,7 @@ await check("accesso e apertura della guida", async () => {
   if (!/Guida all/.test(await page.locator("h1").innerText())) throw new Error("non è la guida");
 });
 
-await check("ci sono tutti gli undici percorsi, con norma e documento prodotto", async () => {
+await check("ci sono tutti i percorsi, con norma e documento prodotto", async () => {
   const t = await page.locator("main").innerText();
   const attesi = [
     ["Inventario GHG", "ISO 14064-1", "Rapporto GHG"],
@@ -59,6 +59,16 @@ await check("ci sono tutti gli undici percorsi, con norma e documento prodotto",
     ["Modello 231", "231/2001", "Matrice reati-processi"],
     ["Gestione delle segnalazioni", "24/2023", "Relazione periodica sulle segnalazioni"],
   ];
+  // ⚠️ Un percorso puo' non produrre ancora un documento, e la guida deve DIRLO invece
+  // di tacere: una scheda che non nomina un'uscita, in mezzo ad altre che la nominano,
+  // si legge come una svista. Il sistema di gestione ESG e' in questo stato finche' i
+  // suoi quattro documenti non arrivano.
+  if (!t.includes("Implementazione del sistema di gestione ESG")) {
+    throw new Error("manca il percorso del sistema di gestione ESG");
+  }
+  if (!t.includes("Non produce ancora un documento pubblicabile")) {
+    throw new Error("un percorso senza documenti non lo dichiara");
+  }
   for (const [nome, norma, doc] of attesi) {
     for (const pezzo of [nome, norma, doc]) {
       if (!t.includes(pezzo)) throw new Error(`manca «${pezzo}» (percorso ${nome})`);
@@ -68,6 +78,9 @@ await check("ci sono tutti gli undici percorsi, con norma e documento prodotto",
   // numero fisso diventerebbe rosso al primo modulo aggiunto, per un motivo che col
   // prodotto non c'entra. Si verifica il FATTO che conta — che le due nature esistano
   // entrambe e che ogni percorso ne dichiari una.
+  // Il numero dei percorsi NON si scrive qui: si legge dagli ancoraggi, che vengono
+  // dal registro. Un percorso aggiunto si presenta da solo, e questo controllo non
+  // diventa rosso per un motivo che col prodotto non c'entra.
   const annuali = (t.match(/Si compila per esercizio/g) ?? []).length;
   const fotografie = (t.match(/fotografia dello stato corrente/g) ?? []).length;
   const percorsi = await page.locator("[data-percorsi] [data-modulo]").count();

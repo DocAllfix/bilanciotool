@@ -35,6 +35,10 @@ await sql`update org_entitlement set status='active', piano='studio', activated_
 await spegniTour(page);
 
 const [az] = await sql`select id from company where organization_id = ${orgId} limit 1`;
+// ⚠️ L'indirizzo dell'ESERCIZIO, non quello del percorso: `/sgesg` rimanda a
+// `/sgesg/<anno>`, e il ricaricamento con cui si applica il tema correrebbe contro
+// il rinvio. Si chiede al database qual e' l'anno invece di indovinarlo.
+const [pEsg] = await sql`select anno from sgesg_programma where company_id = ${az.id} order by anno desc limit 1`;
 
 /**
  * Il tema si sceglie con l'interruttore del prodotto: NON segue `prefers-color-scheme`.
@@ -69,6 +73,7 @@ const SUPERFICI = [
   ["dashboard", `${BASE}/dashboard`, "main"],
   ["fascicolo", `${BASE}/aziende/${az.id}`, "[data-percorsi]"],
   ["archivio", `${BASE}/documenti`, "main"],
+  ...(pEsg ? [["sgesg", `${BASE}/aziende/${az.id}/sgesg/${pEsg.anno}`, "[data-fasi]"]] : []),
   ["filiera", `${BASE}/aziende/${az.id}/filiera`, "main"],
   ["sa8000", `${BASE}/aziende/${az.id}/sa8000`, "main"],
   ["verifica", `${BASE}/verifica`, "main"],
