@@ -6,7 +6,7 @@ import { CampoTesto } from "@/components/comune/campo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Check, CircleDashed, FileText, Play } from "lucide-react";
+import { Check, CircleDashed, FileText, Link2, Play } from "lucide-react";
 import type { VistaProgramma } from "@/features/sgesg/programma";
 import type { StatoFase } from "@/lib/calc/sgesg/avanzamento";
 import { setCampoProgrammaAction, setNotaFaseAction, setStatoFaseAction } from "@/features/sgesg/actions";
@@ -43,6 +43,7 @@ export function VistaProgrammaEsg({
   nomeAzienda,
   vista,
   schede,
+  ponti,
   soloLettura,
 }: {
   companyId: string;
@@ -50,6 +51,8 @@ export function VistaProgrammaEsg({
   vista: VistaProgramma;
   /** Schede per fase: totali e completate. Viene dal riepilogo, in una lettura sola. */
   schede: Record<string, { totali: number; completate: number }>;
+  /** Le fasi che si lavorano in un percorso dedicato, col suo stato letto di la'. */
+  ponti: Record<string, { titolo: string; stato: string; testo: string }>;
   soloLettura?: boolean;
 }) {
   const router = useRouter();
@@ -302,6 +305,20 @@ export function VistaProgrammaEsg({
                       ? `${schede[f.key].completate}/${schede[f.key].totali} schede`
                       : "Schede"}
                   </Link>
+                  {/* Il segno del ponte sta QUI e non solo dentro la fase: e' nell'elenco
+                      che si decide dove andare, e sapere che una fase si lavora altrove
+                      cambia la decisione. */}
+                  {ponti[f.key] && (
+                    <span
+                      className="inline-flex items-center gap-1.5 text-[12.5px] text-muted-foreground"
+                      data-ponte-fase={f.key}
+                      data-ponte-stato={ponti[f.key].stato}
+                    >
+                      <Link2 className="size-3.5" aria-hidden />
+                      {ponti[f.key].titolo}
+                      <span className="text-foreground">· {ponti[f.key].testo}</span>
+                    </span>
+                  )}
                 </div>
 
                 {!soloLettura && (

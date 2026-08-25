@@ -1197,6 +1197,59 @@ IRO, Catalogo Iniziative, Ranking, Content Index…) hanno bisogno di schermate 
 dedicate. Non è un difetto nascosto: il prodotto lo dice all'utente, il server lo impone e
 il catalogo lo marca.
 
+**Fase 5 (2026-08-25) — i ponti: tre fasi su otto si lavorano nei percorsi che esistono già**
+
+PROC-02 chiede la doppia materialità, PROC-04 le emissioni e gli indicatori, PROC-06 i
+capitoli e la pubblicazione. Il prodotto le fa già, e le fa meglio di come le farebbe una
+scheda. Quindi la fase **mostra lo stato del percorso e ci porta dentro** — il dato resta
+dove nasce. È la stessa forma del ponte GHG → Bilancio, che dal 2026 è la fonte unica
+delle emissioni.
+
+**La tentazione opposta è concreta**, ed è scritta nel codice perché nessuno la ripercorra:
+copiare nella scheda della fase 02 i temi materiali «così il consulente li vede senza
+cambiare pagina». Il giorno dopo qualcuno corregge un punteggio nel Bilancio, la scheda
+mostra ancora il vecchio, e nessuno dei due sa quale sia quello buono. **Un dato in due
+posti è un dato in nessun posto.**
+
+**E il ponte NON avanza la fase.** Sarebbe comodo: la fase 04 «si conclude» se l'inventario
+è pubblicato. Ma lo stato della fase è una dichiarazione del consulente — «questo pezzo di
+lavoro l'ho chiuso» — e dedurla da un dato tecnico gli toglierebbe di mano un giudizio che
+è suo, e che nel documento finale comparirebbe come suo. Il ponte informa; chi decide è chi
+firma. La pagina lo dice a chiare lettere, e due controlli lo provano.
+
+**Un dettaglio che sembra pignoleria e non lo è**: un percorso che non esiste ha
+`dettaglio: null`, non «0 temi su 18». Zero direbbe «avviato e vuoto», che è un'altra cosa.
+E la materialità conta i temi con **almeno uno** dei due punteggi: pretenderli entrambi
+direbbe «non avviato» a chi ha finito metà del lavoro.
+
+**Regole nate qui:**
+- **La prova che un ponte non scrive è la fotografia del database prima e dopo.** «Non ci
+  sono errori» non è una prova: un ponte che scrivesse anche solo per «tenere allineato»
+  uno stato non darebbe nessun errore.
+- **Si aspetta la RIGA, non l'indirizzo.** `waitForURL` si risolve quando la navigazione
+  **comincia**, non quando l'azione che l'ha provocata ha finito: il collaudo interrogava
+  il database un istante troppo presto, non trovava l'inventario e **accusava il gesto** —
+  mentre la riga compariva un attimo dopo. Stessa famiglia di `networkidle`: la condizione
+  che interessa è il fatto, non il segnale che gli assomiglia.
+- **Un collaudo deve saper distinguere «il gesto non ha funzionato» da «la cosa sotto esame
+  non ha funzionato».** Ora guarda il database prima della pagina e lo dice: senza, la
+  diagnosi parte dalla parte sbagliata del sistema.
+- **Le asserzioni di confine si scrivono sull'entità giusta**, ed è la seconda volta in due
+  fasi: contare le fasi dello *studio* includeva quelle della dimostrativa, e il controllo
+  accusava il ponte di aver toccato quattro fasi che erano lì da prima.
+
+⚠️ **Scalato con la ragione detta**: la **tipizzazione I/R/O** e i **questionari a
+stakeholder** che il piano nomina dentro PROC-02 non sono in questa fase. Il primo è
+un'estensione della materialità del Bilancio; i secondi sono un sotto-sistema di raccolta
+verso persone **fuori dal prodotto**, che tocca la stessa questione di privacy della
+Fase 9 (persone fisiche che non sono utenti) e merita di starle accanto. Il ponte a
+PROC-02 funziona e porta nella materialità che c'è.
+
+Gate: typecheck · build · **1110 test** senza pipe · `qa -- sgesg-ponti` **9/9**, con la
+fotografia del database prima e dopo · `sgesg-schede` 14/14 · `sgesg-percorso` 20/20 ·
+regressioni `tutto-demo` 68/68, `demo-completa` 9/9, `guida` 7/7, `energetico` 40/40 ·
+foto guardate, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

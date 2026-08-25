@@ -7,6 +7,7 @@ import { company } from "@/lib/db/schema";
 import { can, getAccountStatus } from "@/features/entitlement";
 import { getProgramma } from "@/features/sgesg/programma";
 import { riepilogoSchede } from "@/features/sgesg/schede";
+import { pontiDelProgramma, testoPonte } from "@/features/sgesg/ponti";
 import { VistaProgrammaEsg } from "@/components/sgesg/vista-programma";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +36,13 @@ export default async function SgesgAnnoPage({
   // Il riepilogo delle schede in UNA lettura, non una per fase: otto query dentro la
   // stessa transazione sono otto viaggi in fila, e su questo database un viaggio costa
   // piu' della lettura.
-  const schede = Object.fromEntries(await riepilogoSchede(s.userId, s.orgId, vista.programma.id));
+  const [schede, elencoPonti] = await Promise.all([
+    riepilogoSchede(s.userId, s.orgId, vista.programma.id).then((m) => Object.fromEntries(m)),
+    pontiDelProgramma(s.userId, s.orgId, companyId, n),
+  ]);
+  const ponti = Object.fromEntries(
+    elencoPonti.map((x) => [x.faseKey, { titolo: x.titolo, stato: x.stato, testo: testoPonte(x.stato) }]),
+  );
 
   return (
     <VistaProgrammaEsg
@@ -43,6 +50,7 @@ export default async function SgesgAnnoPage({
       nomeAzienda={az.nome}
       vista={vista}
       schede={schede}
+      ponti={ponti}
       soloLettura={!can(stato, "write_data") || az.stato === "archived"}
     />
   );
