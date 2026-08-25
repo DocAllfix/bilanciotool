@@ -6,7 +6,6 @@ import { getPortfolioOverview, listCompaniesWithStats } from "@/features/compani
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
-import { radiciModuli } from "@/features/companies/radici";
 import { withTenant } from "@/lib/db/tenant";
 import { NuovaAziendaDialog } from "@/components/portfolio/nuova-azienda-dialog";
 import { AziendaAzioni } from "@/components/portfolio/azienda-azioni";
@@ -30,11 +29,11 @@ export default async function DashboardPage() {
   // stessa catena di chiamate (vedi `lib/db/tenant.ts`), quindi basta aprirla qui e le
   // funzioni dentro non cambiano di una riga.
   //
-  // ⚠️ Le radici dei moduli si chiedono PRIMA: aprono una transazione loro e devono
-  // farlo fuori da questa, altrimenti chiedono una connessione in piu' al pool. Con
-  // `cache()` di React la domanda vale per tutta la richiesta, quindi chi la rifa' dentro
-  // non paga niente.
-  await radiciModuli(s.userId, s.orgId);
+  // ⚠️ Tutto DENTRO l'unica transazione, radici comprese. Prima le radici si chiedevano
+  // fuori, perché aprivano la propria e annidarle esauriva il pool: da quando
+  // `withTenant` riusa quella aperta nella stessa catena di chiamate, l'annidamento è
+  // sicuro — e chiederle fuori costava una transazione intera, cioè ~300 ms su questo
+  // database.
   const [aziende, usage, quadro, scadenzario, stati] = await withTenant(
     { userId: s.userId, orgId: s.orgId },
     () =>
@@ -154,8 +153,19 @@ export default async function DashboardPage() {
                 {...(a.isDemo ? { "data-tour": "azienda-demo" } : {})}
               >
                 {/* L'intera card apre il FASCICOLO, non un modulo: con cinque
-                    percorsi mandare dritti al GHG era una scelta arbitraria. */}
-                <Link href={`/aziende/${a.id}`} aria-label={`Apri ${a.nome}`} className="absolute inset-0 z-0 rounded-xl" />
+                    percorsi mandare dritti al GHG era una scelta arbitraria.
+
+                    ⚠️ Il collegamento sta a `z-10`, SOPRA il testo della card, e i
+                    comandi veri salgono a `z-20`. Con `z-0` era sotto tutto: un clic sul
+                    nome dell'azienda colpiva il titolo — che non e' interattivo — e non
+                    succedeva niente. La card si annunciava cliccabile per intero e lo era
+                    solo negli spazi vuoti. Misurato con `elementFromPoint` su quattro
+                    punti: nessuno raggiungeva il collegamento.
+
+                    Il prezzo: il testo della card non si seleziona piu' col trascinamento.
+                    E' il compromesso normale di una card cliccabile, e qui il testo e'
+                    un nome e tre numeri che stanno tutti nel fascicolo. */}
+                <Link href={`/aziende/${a.id}`} aria-label={`Apri ${a.nome}`} className="absolute inset-0 z-10 rounded-xl" />
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -166,7 +176,7 @@ export default async function DashboardPage() {
                         {[a.settore, a.sede].filter(Boolean).join(" · ") || "profilo da completare"}
                       </p>
                     </div>
-                    <div className="relative z-10 flex shrink-0 items-center gap-1">
+                    <div className="relative z-20 flex shrink-0 items-center gap-1">
                       {a.isDemo && <Badge variant="outline">Demo</Badge>}
                       <AziendaAzioni companyId={a.id} nome={a.nome} archiviata={false} />
                     </div>
@@ -233,7 +243,7 @@ export default async function DashboardPage() {
                     «Fornitore: da avviare», perche' dichiara anche lo stato. Cercarla
                     per nome secco non trova niente, e i nomi cambiano quando cambia la
                     disposizione. La chiave del registro no. */}
-                <CardFooter data-percorsi="" className="relative z-10 flex flex-wrap gap-1 p-2">
+                <CardFooter data-percorsi="" className="relative z-20 flex flex-wrap gap-1 p-2">
                   {MODULI_AZIENDA.map((m) => {
                     const st = moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato";
                     return (

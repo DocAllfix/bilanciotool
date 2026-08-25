@@ -15,6 +15,20 @@ const client = postgres(env.DATABASE_URL, {
   max: 3,
   idle_timeout: 20,
   connect_timeout: 10,
+  // ⚠️ Strumento di misura, spento salvo che non lo si accenda con `DB_TRACCIA=1`.
+  //
+  // Serve perche' il costo di una pagina si misura in VIAGGI, e i viaggi non si contano
+  // leggendo il codice: cinque letture che sembrano indipendenti possono interrogare la
+  // stessa tabella cinque volte, e la duplicazione si vede solo guardando il traffico.
+  // Non e' un logger di produzione: stampa su stderr e va acceso a mano.
+  ...(process.env.DB_TRACCIA === "1"
+    ? {
+        debug: (_conn: number, query: string) => {
+          const q = query.replace(/\s+/g, " ").trim().slice(0, 110);
+          console.error("[sql] " + q);
+        },
+      }
+    : {}),
 });
 
 export const db = drizzle(client, { schema });

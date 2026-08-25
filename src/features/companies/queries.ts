@@ -1,4 +1,5 @@
 import { withTenant } from "@/lib/db/tenant";
+import { aziendeDelloStudio, documentiDelloStudio } from "./lettori-condivisi";
 import { auditLog, company, documentSnapshot, ghgActivityRow, ghgInventory, reportProject } from "@/lib/db/schema";
 import { computeInventory } from "@/lib/calc/ghg/totals";
 import { dec, toFixedStr } from "@/lib/calc/shared/decimal";
@@ -201,11 +202,8 @@ export type PortfolioOverview = {
 
 export async function listCompaniesWithStats(userId: string, orgId: string): Promise<CompanyCardStats[]> {
   return withTenant({ userId, orgId }, async (tx) => {
-    const aziende = await tx
-      .select()
-      .from(company)
-      .where(eq(company.organizationId, orgId))
-      .orderBy(desc(company.createdAt));
+    // ⚠️ Dal lettore condiviso: la dashboard chiedeva `company` quattro volte.
+    const aziende = await aziendeDelloStudio(userId, orgId);
     if (!aziende.length) return [];
 
     const inventari = await tx
@@ -242,10 +240,8 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
             .from(ghgActivityRow)
             .where(inArray(ghgActivityRow.inventoryId, invIds))
         : Promise.resolve([]),
-      tx
-        .select({ companyId: documentSnapshot.companyId })
-        .from(documentSnapshot)
-        .where(eq(documentSnapshot.organizationId, orgId)),
+      // Dal lettore condiviso: e' la terza volta che questa pagina chiedeva i documenti.
+      documentiDelloStudio(userId, orgId),
       tx
         .select({ companyId: reportProject.companyId })
         .from(reportProject)
@@ -301,18 +297,10 @@ export async function listCompaniesWithStats(userId: string, orgId: string): Pro
 export async function getPortfolioOverview(userId: string, orgId: string): Promise<PortfolioOverview> {
   return withTenant({ userId, orgId }, async (tx) => {
     const [docs, audit] = await Promise.all([
-      tx
-        .select({
-          id: documentSnapshot.id,
-          companyId: documentSnapshot.companyId,
-          tipo: documentSnapshot.tipo,
-          anno: documentSnapshot.anno,
-          versione: documentSnapshot.versione,
-          publishedAt: documentSnapshot.publishedAt,
-        })
-        .from(documentSnapshot)
-        .where(eq(documentSnapshot.organizationId, orgId))
-        .orderBy(desc(documentSnapshot.publishedAt)),
+      // ⚠️ Dal lettore condiviso.
+      // ⚠️ Dal lettore condiviso: le colonne sono esattamente queste, ed e' il chiamante
+      // piu' esigente — chi ne vuole meno ne ignora qualcuna, che e' gratis.
+      documentiDelloStudio(userId, orgId),
       tx
         .select({
           azione: auditLog.azione,

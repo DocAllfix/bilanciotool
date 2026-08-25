@@ -65,6 +65,7 @@ export async function withTenant<T>(ctx: TenantCtx, fn: (tx: Tx) => Promise<T>):
   const corrente = aperta.getStore();
   if (corrente && corrente.chiave === chiave) return fn(corrente.tx);
 
+  const inizio = process.env.DB_TRACCIA === "1" ? Date.now() : 0;
   return db.transaction(async (tx) => {
     if (FORCE_ROLE) await tx.execute(sql.raw(`SET LOCAL ROLE ${FORCE_ROLE}`));
     // ⚠️ Le tre GUC in UN'ISTRUZIONE SOLA. Erano tre `SELECT set_config(...)` separate,
@@ -76,7 +77,9 @@ export async function withTenant<T>(ctx: TenantCtx, fn: (tx: Tx) => Promise<T>):
       set_config('app.user_id', ${ctx.userId ?? ""}, true),
       set_config('app.org_id', ${ctx.orgId ?? ""}, true),
       set_config('app.platform_admin', ${ctx.platformAdmin ? "on" : ""}, true)`);
-    return aperta.run({ chiave, tx }, () => fn(tx));
+    const esito = await aperta.run({ chiave, tx }, () => fn(tx));
+    if (inizio) console.error(`[tx] ${Date.now() - inizio} ms`);
+    return esito;
   });
 }
 

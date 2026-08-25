@@ -1,5 +1,6 @@
 import { withTenant } from "@/lib/db/tenant";
 import { radiciPerModulo } from "./radici";
+import { aziendeAttive, documentiDelloStudio } from "./lettori-condivisi";
 import { company, documentSnapshot } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import type { StatoModulo } from "./fascicolo";
@@ -49,34 +50,28 @@ export type StatiPortafoglio = {
 export async function getStatiPortafoglio(userId: string, orgId: string): Promise<StatiPortafoglio> {
   // Ogni select porta il proprio filtro sull'organizzazione oltre alle policy
   // RLS: in sviluppo la connessione è privilegiata e le policy non scattano.
-  // ⚠️ FUORI dalla transazione: `radiciPerModulo` apre la propria, e annidarle esaurisce
-  // il pool di connessioni. Vedi il commento in `radici.ts` — la dashboard si bloccava.
-  const radici = await radiciPerModulo(userId, orgId);
+  // ⚠️ Le tre letture sono ora CONDIVISE: `cache()` di React le fa una volta per
+  // richiesta, e la dashboard le chiedeva da tre parti diverse. Misurato col tracciatore:
+  // `company` interrogata quattro volte, `document_snapshot` tre.
+  const [radici, aziende, docs] = await Promise.all([
+    radiciPerModulo(userId, orgId),
+    aziendeAttive(userId, orgId),
+    documentiDelloStudio(userId, orgId),
+  ]);
 
-  return withTenant({ userId, orgId }, async (tx) => {
-    // ⚠️ DUE interrogazioni, non tredici. Le undici radici dei moduli arrivano da
-    // `radiciModuli`, che le chiede in un viaggio solo con una UNION ALL — e che
-    // `scadenzario.ts` condivide, perche' faceva le stesse identiche undici. Vedi il
-    // commento in `radici.ts`: dentro una transazione `Promise.all` non parallelizza
-    // niente, e con undici moduli la dashboard era passata da un secondo a quattro-otto.
-    const [aziende, docs] = await Promise.all([
-      tx
-        .select({ id: company.id, nome: company.nome, isDemo: company.isDemo })
-        .from(company)
-        .where(and(eq(company.organizationId, orgId), eq(company.stato, "active")))
-        .orderBy(desc(company.createdAt)),
-      tx
-        .select({
-          companyId: documentSnapshot.companyId,
-          tipo: documentSnapshot.tipo,
-          anno: max(documentSnapshot.anno),
-        })
-        .from(documentSnapshot)
-        .where(eq(documentSnapshot.organizationId, orgId))
-        .groupBy(documentSnapshot.companyId, documentSnapshot.tipo),
-    ]);
-
-    const pubblicati = new Map(docs.map((d) => [`${d.companyId}|${d.tipo}`, d.anno ?? 0]));
+  // ⚠️ Le undici radici dei moduli arrivano da `radiciModuli`, che le chiede in un viaggio
+  // solo con una UNION ALL — e che `scadenzario.ts` condivide, perché faceva le stesse
+  // identiche undici. Vedi il commento in `radici.ts`: dentro una transazione
+  // `Promise.all` non parallelizza niente.
+  {
+    // L'anno più alto per azienda|tipo: si ricava dall'elenco già ordinato, invece di un
+    // `group by` che sarebbe un viaggio in più.
+    const pubblicati = new Map<string, number>();
+    for (const d of docs) {
+      const k = `${d.companyId}|${d.tipo}`;
+      const a = pubblicati.get(k);
+      if (a === undefined || d.anno > a) pubblicati.set(k, d.anno);
+    }
 
     const conStati: AziendaConStati[] = aziende.map((a) => ({
       id: a.id,
@@ -114,5 +109,5 @@ export async function getStatiPortafoglio(userId: string, orgId: string): Promis
     });
 
     return { aziende: conStati, servizi };
-  });
+  }
 }

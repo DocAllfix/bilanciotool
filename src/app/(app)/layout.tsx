@@ -5,6 +5,7 @@ import { getSessionOrNull } from "@/features/auth/guards";
 import { firstMembershipOrgId } from "@/features/auth/orgs";
 import { getAccountStatus } from "@/features/entitlement";
 import { listCompanyNames } from "@/features/companies/fascicolo";
+import { withTenant } from "@/lib/db/tenant";
 import { CollapsibleShell } from "@/components/app-shell/collapsible-shell";
 import { DemoBanner } from "@/components/app-shell/demo-banner";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
@@ -19,10 +20,20 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const orgId = session.activeOrganizationId ?? (await firstMembershipOrgId(session.userId));
   // Stato e nomi in parallelo: la navigazione contestuale vive sopra la rotta
   // dell'azienda, quindi i nomi non possono arrivarle da un contesto sottostante.
-  const [status, aziende] = await Promise.all([
-    orgId ? getAccountStatus(session.userId, orgId) : Promise.resolve("demo" as const),
-    orgId ? listCompanyNames(session.userId, orgId) : Promise.resolve([]),
-  ]);
+  //
+  // ⚠️ Dentro UNA transazione sola. Le due letture ne aprivano una ciascuna, e su questo
+  // database `BEGIN`, le GUC e `COMMIT` costano ~300 ms a testa: la barra
+  // dell'applicazione le pagava a OGNI pagina, non solo sulla dashboard. `withTenant`
+  // riusa quella aperta nella stessa catena di chiamate, quindi le due dentro non
+  // cambiano di una riga. Misurato: 426 + 443 ms diventano una transazione sola.
+  const [status, aziende] = orgId
+    ? await withTenant({ userId: session.userId, orgId }, () =>
+        Promise.all([
+          getAccountStatus(session.userId, orgId),
+          listCompanyNames(session.userId, orgId),
+        ]),
+      )
+    : (["demo", [] as { id: string; nome: string; stato: "active" | "archived" }[]] as const);
 
   return (
     <>

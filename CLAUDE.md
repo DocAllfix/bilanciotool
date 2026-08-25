@@ -885,6 +885,59 @@ motivo accanto, solo dove la domanda e' vuota.
 - **Un suggerimento porta il proprio motivo.** Una risposta comparsa da sola in un
   documento che qualcuno firma e' una risposta che nessuno ha dato.
 
+**Le prestazioni della dashboard, e il fatto che le ridimensiona (2026-08-25)**
+
+Da 3,3 a **2,18 secondi** in locale, e i viaggi al database da circa trenta a **sedici**.
+Ma il numero che conta di piu' e' un altro, misurato prima di ristrutturare qualcosa:
+
+| | senza letture | con 3 letture | costo di un viaggio |
+|---|---|---|---|
+| **produzione** | 250 ms | 270 ms | **~7 ms** |
+| **locale** | 37 ms | 470 ms | **~144 ms** |
+
+**Un viaggio al database costa venti volte di piu' dalla mia macchina che in
+produzione**, perche' li' le funzioni girano a `fra1`, nella stessa regione di Supabase,
+mentre in sviluppo si parla con Francoforte da casa attraverso il pooler pubblico. I 2,18
+secondi che si misurano in locale valgono **circa 85 ms di database** in produzione:
+ristrutturare la dashboard a riquadri per inseguirli sarebbe stato ottimizzare per il
+portatile di chi sviluppa.
+
+**Che cosa e' stato tolto davvero** (vale in entrambi gli ambienti, in proporzione):
+- `company` era interrogata **quattro volte** per apertura e `document_snapshot` **tre**.
+  Ora ci sono due lettori condivisi con `cache()` di React, e i chiamanti filtrano in
+  memoria: le aziende di uno studio sono al massimo venticinque, e filtrare una lista
+  corta costa zero mentre un viaggio costa 70÷144 ms.
+- Le undici query sulle radici dei moduli erano **ventidue**: undici in `stati-moduli` e
+  undici identiche in `scadenzario`. Ora sono **una** UNION ALL condivisa.
+- `getAccountStatus`, `getLimits` e `getLimitiEffettivi` sono memoizzate per richiesta:
+  `requireEntitlement` sta in cima a ogni pagina e a ogni azione.
+- La barra laterale apriva una transazione propria **su ogni pagina** dell'applicazione,
+  non solo sulla dashboard. Ora il layout ne apre una sola per se' e per la guardia.
+- Le transazioni per apertura: da **sei** a **due**.
+
+**Regole nate qui:**
+- **Il costo di una pagina si misura in VIAGGI, e i viaggi si contano solo guardandoli.**
+  `DB_TRACCIA=1` stampa ogni query e il tempo di ogni transazione. Cinque letture che
+  sembrano indipendenti chiedevano la stessa cosa: leggendo il codice non si vedeva.
+- **Prima di ottimizzare, misurare l'ambiente in cui il programma girera' davvero.** Il
+  confronto fra la stessa pagina con e senza letture, in locale e in produzione, ha
+  separato la latenza dello sviluppo dal costo vero — e ha fermato una ristrutturazione
+  che non serviva.
+- **Una query lenta e una query lontana si distinguono col piano di esecuzione.**
+  `explain analyze` dava 0,036 ms su una query che ne costava 85: non mancava nessun
+  indice, era tutta rete.
+
+⚠️ **E un difetto vero trovato dal collaudo che non riusciva a cliccare**: il collegamento
+che copre la card del portafoglio stava a `z-0`, cioe' **sotto il testo**. Un clic sul
+nome dell'azienda colpiva il titolo, che non e' interattivo, e non succedeva niente: la
+card si annunciava cliccabile per intero ed era cliccabile solo negli spazi vuoti.
+Misurato con `elementFromPoint` su quattro punti, nessuno raggiungeva il collegamento.
+Ora sta a `z-10` sopra il testo, e i comandi veri salgono a `z-20`.
+
+**La regola**: quando un collaudo non riesce a cliccare qualcosa che a occhio si clicca,
+la prima ipotesi da mettere alla prova e' che non si clicchi davvero. `elementFromPoint`
+lo dice in tre righe, e l'occhio no.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

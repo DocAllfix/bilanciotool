@@ -1,5 +1,6 @@
 import { withTenant } from "@/lib/db/tenant";
 import { radiciPerModulo } from "./radici";
+import { aziendeAttive, annoPiuAltoPerTipo } from "./lettori-condivisi";
 import { company, documentSnapshot } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, desc, eq, max } from "drizzle-orm";
@@ -53,38 +54,18 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
   // scattano: senza il filtro esplicito questa pagina mostrava le aziende di
   // TUTTI gli studi, e in produzione sarebbe passata inosservata perche li RLS
   // avrebbe coperto il difetto. La difesa deve stare in tutti e due gli strati.
-  // ⚠️ FUORI dalla transazione: `radiciPerModulo` apre la propria, e annidarle esaurisce
-  // il pool di connessioni. Vedi il commento in `radici.ts` — la dashboard si bloccava.
-  const radici = await radiciPerModulo(userId, orgId);
+  // ⚠️ Le stesse letture condivise di `stati-moduli.ts`: `cache()` di React le fa una
+  // volta per richiesta. Prima erano undici query sulle radici qui e undici là, più
+  // `company` e `document_snapshot` interrogate una seconda volta ciascuna.
+  const [aziende, radici, pubblicati] = await Promise.all([
+    aziendeAttive(userId, orgId),
+    radiciPerModulo(userId, orgId),
+    annoPiuAltoPerTipo(userId, orgId),
+  ]);
 
-  return withTenant({ userId, orgId }, async (tx) => {
-    const perCompany = <T extends { companyId: string }>(righe: T[]) => new Map(righe.map((r) => [r.companyId, r]));
-
-    // ⚠️ Le stesse radici che usa `stati-moduli.ts`, chieste UNA volta sola. Prima erano
-    // undici query qui e undici la', ventidue viaggi al database per la stessa domanda —
-    // e dentro una transazione `Promise.all` non ne parallelizza nessuna. Vedi
-    // `radici.ts`: `cache()` di React deduplica dentro la richiesta, e la dashboard le
-    // chiede da entrambe le parti.
-    const [aziende, docs] = await Promise.all([
-      tx
-        .select({ id: company.id, nome: company.nome, isDemo: company.isDemo })
-        .from(company)
-        .where(and(eq(company.organizationId, orgId), eq(company.stato, "active")))
-        .orderBy(desc(company.createdAt)),
-      tx
-        .select({
-          companyId: documentSnapshot.companyId,
-          tipo: documentSnapshot.tipo,
-          anno: max(documentSnapshot.anno),
-        })
-        .from(documentSnapshot)
-        .where(eq(documentSnapshot.organizationId, orgId))
-        .groupBy(documentSnapshot.companyId, documentSnapshot.tipo),
-    ]);
+  {
 
 
-    // Chiave `companyId|tipo` → anno massimo pubblicato.
-    const pubblicati = new Map(docs.map((d) => [`${d.companyId}|${d.tipo}`, d.anno ?? 0]));
 
     const voci: VoceScadenzario[] = [];
     for (const a of aziende) {
@@ -156,5 +137,5 @@ export async function getScadenzario(userId: string, orgId: string): Promise<Voc
         x.priorita - y.priorita ||
         x.companyNome.localeCompare(y.companyNome, "it"),
     );
-  });
+  }
 }

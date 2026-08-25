@@ -1,4 +1,5 @@
 import { withTenant } from "@/lib/db/tenant";
+import { aziendeAttive } from "./lettori-condivisi";
 import {
   company,
   documentSnapshot,
@@ -345,13 +346,17 @@ export async function listDocumentiAzienda(userId: string, orgId: string, compan
   );
 }
 
-/** Nomi delle aziende dello studio, per il selettore della sidebar contestuale. */
+/**
+ * Nomi delle aziende dello studio, per il selettore della sidebar contestuale.
+ *
+ * ⚠️ Dal lettore condiviso, e ordinati qui. Apriva una transazione sua — su questo
+ * database `BEGIN`, le GUC e `COMMIT` costano ~300 ms — per una domanda che la stessa
+ * pagina faceva gia' altrove. La barra laterale sta nel layout, quindi quella
+ * transazione la pagava OGNI pagina dell'applicazione, non solo la dashboard.
+ */
 export async function listCompanyNames(userId: string, orgId: string) {
-  return withTenant({ userId, orgId }, (tx) =>
-    tx
-      .select({ id: company.id, nome: company.nome, stato: company.stato })
-      .from(company)
-      .where(and(eq(company.organizationId, orgId), eq(company.stato, "active")))
-      .orderBy(company.nome),
-  );
+  const aziende = await aziendeAttive(userId, orgId);
+  return aziende
+    .map((a) => ({ id: a.id, nome: a.nome, stato: a.stato }))
+    .sort((x, y) => x.nome.localeCompare(y.nome, "it"));
 }

@@ -135,17 +135,22 @@ await agisci("«Altre azioni» si apre", async () => {
 
 await agisci("la card porta al fascicolo", async () => {
   await vai("/dashboard");
-  // ⚠️ Si clicca il NOME, non il centro della card. Il collegamento che copre la card
-  // e' sotto la griglia dei percorsi, e con undici moduli quella griglia occupa proprio
-  // il centro: cliccare li' apre il modulo su cui si e' finiti, che per un utente e' il
-  // comportamento giusto e per un collaudo e' un bersaglio diverso da quello che voleva.
+  // ⚠️ Si clicca il collegamento per il suo NOME ACCESSIBILE, non un punto della card.
+  // Quel collegamento copre la card ma sta SOTTO la griglia dei percorsi, e con undici
+  // moduli la griglia occupa il centro: cliccare al centro apre il modulo su cui si e'
+  // finiti — per un utente e' il comportamento giusto, per un collaudo e' un bersaglio
+  // diverso da quello che voleva. Playwright mira all'elemento e non a una coordinata,
+  // quindi il nome accessibile e' l'unico riferimento che non dipende dalla
+  // disposizione.
+  // ⚠️ Si mira all'INTESTAZIONE della card, non al centro. Playwright clicca il centro
+  // dell'elemento, e il centro di questa card cade sopra la griglia dei percorsi, che sta
+  // a `z-20` e intercetta: e' il comportamento giusto del prodotto — li' si apre quel
+  // modulo — ma non e' il bersaglio che questo controllo vuole. Sessanta pixel dal bordo
+  // e diciotto dall'alto sono sul nome dell'azienda.
   await page
-    .locator('[data-slot="card"]')
-    .filter({ has: page.locator(`a[href="${A}"]`) })
+    .getByRole("link", { name: /^Apri /, exact: false })
     .first()
-    .getByRole("heading")
-    .first()
-    .click();
+    .click({ position: { x: 60, y: 18 } });
   await page.waitForURL(`**${A}`, { timeout: 20_000 });
 });
 

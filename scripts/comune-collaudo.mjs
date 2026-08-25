@@ -12,8 +12,17 @@
 // fallimento all'utente, e un collaudo che non lo guarda dichiara verde una pagina
 // in cui non funziona niente.
 
-/** Indirizzi di terze parti che possono fallire senza che sia colpa nostra. */
-const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co)/;
+/**
+ * Indirizzi di terze parti che possono fallire senza che sia colpa nostra.
+ *
+ * ⚠️ `/monitoraggio` e' Sentry travestito da noi. E' il `tunnelRoute` — le segnalazioni
+ * passano dal nostro dominio per non farsi bloccare dai filtri pubblicitari — quindi
+ * l'indirizzo e' nostro ma il destinatario no. In locale, senza chiave, risponde 500: un
+ * 500 che non dice niente sul prodotto, e che faceva diventare rosso un collaudo per un
+ * servizio esterno non configurato. `sentry.io` era gia' in questo elenco: il tunnel e'
+ * la stessa cosa con un altro nome.
+ */
+const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co|\/monitoraggio)/;
 
 /**
  * Il server in ascolto sta servendo QUESTO build?
