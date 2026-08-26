@@ -66,8 +66,21 @@ await check("ci sono tutti i percorsi, con norma e documento prodotto", async ()
   if (!t.includes("Implementazione del sistema di gestione ESG")) {
     throw new Error("manca il percorso del sistema di gestione ESG");
   }
-  if (!t.includes("Non produce ancora un documento pubblicabile")) {
-    throw new Error("un percorso senza documenti non lo dichiara");
+  // ⚠️ Non si pretende che ESISTA un percorso senza documenti: ce n'era uno — il
+  // sistema di gestione ESG, prima che i suoi quattro documenti arrivassero — e questo
+  // controllo pretendeva la frase che lo dichiarava. Il giorno in cui quel percorso ha
+  // avuto i suoi documenti, il controllo e' diventato rosso per un motivo che col
+  // prodotto non c'entrava: era migliorato.
+  //
+  // Il fatto da verificare e' l'altro: che OGNI scheda dica che cosa produce, o dichiari
+  // di non produrre ancora niente. Nessuna deve tacere.
+  const schede = await page.locator("[data-percorsi] [data-modulo]").all();
+  for (const sch of schede) {
+    const testo = await sch.innerText();
+    if (!/Produce|Non produce ancora/.test(testo)) {
+      const nome = testo.slice(0, 40).replace(/\s+/g, " ");
+      throw new Error(`il percorso «${nome}» non dice che cosa produce`);
+    }
   }
   for (const [nome, norma, doc] of attesi) {
     for (const pezzo of [nome, norma, doc]) {

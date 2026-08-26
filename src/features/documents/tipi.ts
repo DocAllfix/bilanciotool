@@ -3,7 +3,10 @@
 // Il dispatch delle funzioni di pubblicazione e dei template vive dove serve, con
 // switch esaustivi: aggiungendo un tipo qui il compilatore segnala ogni punto scoperto.
 
-export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl"] as const;
+export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl",
+  // I quattro del metodo ESG (percorso `sgesg`). Vedi `features/sgesg/documenti.ts`:
+  // non hanno un template per uno, sono fatti del compilato delle schede.
+  "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -150,6 +153,38 @@ export const DOCUMENTI = {
     // ente di certificazione, e chi lo firma se ne assume la responsabilita'. Per questo
     // e' un tipo suo e non una sezione di un altro documento.
     mostraAnno: false,
+    haMedia: false,
+  },
+  // ─── i quattro del metodo ESG ──────────────────────────────────────────────
+  // ⚠️ `mostraAnno: true`: sono documenti di un esercizio, come il bilancio e
+  // l'inventario. Un'offerta del 2025 e una del 2026 sono due documenti, non due
+  // revisioni dello stesso — e il nome del file deve dirlo a chi lo archivia.
+  offerta_esg: {
+    nome: "Offerta professionale",
+    breve: "Offerta",
+    file: "offerta-professionale",
+    mostraAnno: true,
+    haMedia: false,
+  },
+  verbale_avvio: {
+    nome: "Verbale di avvio dell'incarico",
+    breve: "Verbale di avvio",
+    file: "verbale-avvio",
+    mostraAnno: true,
+    haMedia: false,
+  },
+  diagnosi_esg: {
+    nome: "Rapporto di diagnosi ESG",
+    breve: "Diagnosi ESG",
+    file: "diagnosi-esg",
+    mostraAnno: true,
+    haMedia: false,
+  },
+  dossier_finale: {
+    nome: "Dossier di chiusura dell'incarico",
+    breve: "Dossier di chiusura",
+    file: "dossier-chiusura",
+    mostraAnno: true,
     haMedia: false,
   },
   valutazione_ssl: {

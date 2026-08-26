@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuthError, ForbiddenError, requireConsultant } from "@/features/auth/guards";
 import { EntitlementError, requireEntitlement } from "@/features/entitlement";
+import { nomeFileDocumento } from "@/features/documents/tipi";
 import { getSnapshot } from "@/features/documents/snapshot";
 import { renderPdf } from "@/features/documents/pdf";
 import { uploadObject } from "@/lib/storage";
@@ -74,7 +75,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ snap
     return new NextResponse(new Uint8Array(pdf), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${snap.tipo}-${snap.anno}-v${snap.versione}.pdf"`,
+        // ⚠️ Il nome LEGGIBILE, dallo stesso posto da cui lo prende la barra del
+        // documento. L'intestazione portava `${snap.tipo}` — il nome macchina — quindi
+        // lo stesso PDF si chiamava `offerta_esg-2025-v1.pdf` scaricandolo dalla rotta e
+        // `offerta-professionale-2025-v1.pdf` premendo il pulsante, che imposta
+        // `download`. Due nomi per lo stesso file secondo la strada presa, e quello che
+        // arriva al cliente e' il primo ogni volta che il browser preferisce
+        // l'intestazione. Il nome di un documento si decide in UN posto.
+        "Content-Disposition": `attachment; filename="${nomeFileDocumento(snap.tipo, snap.anno, snap.versione)}"`,
         "Cache-Control": "private, no-store",
       },
     });

@@ -12,6 +12,7 @@ import {
   publishRiesameQasSnapshot,
   publishManualeSa8000Snapshot,
   publishDichiarazioneFilieraSnapshot,
+  publishSgesgSnapshot,
   publishAnalisiAmbientaleSnapshot,
   publishValutazioneSslSnapshot,
 } from "./snapshot";
@@ -57,6 +58,17 @@ export async function publishDocumentAction(
           return (u: string, o: string, c: string) => publishValutazioneSslSnapshot(u, o, c);
         case "dichiarazione_filiera":
           return (u: string, o: string, c: string) => publishDichiarazioneFilieraSnapshot(u, o, c);
+        // ⚠️ I quattro del metodo ESG passano da UNA funzione sola, che riceve anche il
+        // tipo: il contenuto di ciascuno e' il compilato di schede diverse, e cio' che
+        // cambia sta nel registro. Quattro `case` con quattro funzioni sarebbero quattro
+        // posti da tenere allineati.
+        case "offerta_esg":
+        case "verbale_avvio":
+        case "diagnosi_esg":
+        case "dossier_finale": {
+          const t = tipo;
+          return (u: string, o: string, c: string, a: number) => publishSgesgSnapshot(u, o, c, a, t);
+        }
         default: {
           const mai: never = tipo;
           throw new Error(`Tipo di documento non pubblicabile: ${String(mai)}`);

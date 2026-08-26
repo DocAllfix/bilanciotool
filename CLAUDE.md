@@ -1359,6 +1359,62 @@ cliente compreso · guardia strutturale messa in rosso rimettendo il difetto · 
 `agenda` 16/16, `tutto-demo` 68/68, `tutto-attivo` 30/30, `portafoglio-aggiorna` 5/5 ·
 foto guardate, console pulita.
 
+**Fase 8 (2026-08-26) — i quattro documenti del metodo ESG**
+
+Offerta professionale · Verbale di avvio · Rapporto di diagnosi ESG · Dossier di chiusura.
+Passano dalla strozzatura `salvaSnapshot`, quindi **ereditano marchio congelato, edizione
+dei contenuti, colophon e codice di verifica senza una riga di codice nuovo** — e il test
+lo prova cercando quelle cose nello snapshot, che è il modo di accorgersi se un domani
+qualcuno pubblicasse aggirandola.
+
+**Un template solo per quattro documenti, e una funzione sola per pubblicarli.** Il
+contenuto di ciascuno **è** il compilato di alcune schede: l'offerta è la 00E, il verbale
+è la 01B più altre due. Ciò che cambia sta in un registro (`features/sgesg/documenti.ts`),
+non in quattro file da tenere allineati. È la stessa decisione delle 63 schede e del
+corpus, per la terza volta.
+
+⚠️ **Ogni documento DICHIARA che cosa non contiene**, riquadrato e **in apertura**, non in
+fondo in corpo otto. Alcune fasi hanno registri a righe che il prodotto non compila ancora
+— il registro delle lacune, la matrice RACI — e un documento che li tacesse prometterebbe
+più di quanto porta. **Lo snapshot è immutabile: ciò che si scrive oggi resta scritto per
+sempre, e allora si scrive il vero.** Il documento dice anche quante delle informazioni
+previste risultano compilate, e le voci vuote si stampano come «non compilato» invece di
+sparire: chi firma deve accorgersene.
+
+⚠️ **Un difetto preesistente trovato dal collaudo, e riguardava tutti e diciannove i
+tipi.** La rotta del PDF metteva nel `Content-Disposition` il nome MACCHINA del tipo:
+lo stesso file si chiamava `offerta_esg-2025-v1.pdf` scaricandolo dalla rotta e
+`offerta-professionale-2025-v1.pdf` premendo il pulsante, che imposta `download`. Due nomi
+per lo stesso documento secondo la strada presa, e quello che arriva al cliente è il primo
+ogni volta che il browser preferisce l'intestazione. Ora il nome si decide **in un posto
+solo** (`nomeFileDocumento`).
+
+⚠️ **E i CHECK del database sull'anno.** `document_snapshot_anno_ck` divide i tipi annuali
+da quelli senza esercizio: dimenticare i quattro nuovi nel primo ramo li avrebbe fatti
+finire nel secondo, dove l'unicità è `(azienda, tipo, versione)` — e **la seconda offerta
+sarebbe diventata la versione 2 della prima**, con lo stesso nome di file.
+
+**Regole nate qui:**
+- **Un collaudo che muore a metà lascia righe dietro di sé, e la guardia successiva le
+  trova e accusa il prodotto.** `qa -- codice-documento` segnalava un documento senza
+  codice: era uno snapshot inserito con SQL grezzo da un mio collaudo crashato per un
+  nome di tabella sbagliato, che non aveva mai raggiunto la propria pulizia.
+- **Un controllo può diventare rosso perché il prodotto è MIGLIORATO.** `qa -- guida`
+  pretendeva la frase «non produce ancora un documento pubblicabile», che esisteva solo
+  finché un percorso ne era privo. Ora verifica il fatto giusto: che **ogni** scheda dica
+  che cosa produce, o dichiari di non produrre ancora niente. Nessuna deve tacere.
+- **I risultati si contano sui risultati.** Il controllo sull'archivio cercava il nome del
+  tipo nel testo della pagina, dove è scritto anche sulla pastiglia del filtro: lo avrebbe
+  trovato con zero documenti. Ancoraggi nuovi `data-risultati` e `data-doc`.
+- **Le chiavi dei campi si chiedono al catalogo, non si indovinano**: `validita_offerta`
+  non esiste, il campo si chiama `validita_gg`.
+
+Gate: typecheck · build · **1158 test** senza pipe · `qa -- sgesg-documenti` **10/10**, con
+PDF reale da **210 KB** verificato nei byte e nel nome · `codice-documento` 22/22 ·
+`guida` 7/7 · `documenti-spazi-pure` e `fascicolo-non-pubblicabile` invariati · regressioni
+`tutto-demo` 68/68, `demo-completa` 9/9, `sgesg-percorso` 20/20, `sgesg-schede` 14/14,
+`sgesg-ponti` 9/9, `compensi` 12/12 · console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

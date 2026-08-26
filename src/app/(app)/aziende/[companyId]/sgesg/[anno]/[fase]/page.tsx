@@ -5,6 +5,8 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getProgramma } from "@/features/sgesg/programma";
 import { elencaSchede } from "@/features/sgesg/schede";
 import { pontiDelProgramma, testoPonte } from "@/features/sgesg/ponti";
+import { documentiDellaFase } from "@/features/sgesg/documenti";
+import { PannelloPubblicazione } from "@/components/documento/pannello-pubblicazione";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -36,6 +38,11 @@ export default async function FaseSgesgPage({
   ]);
   const ponte = ponti.find((x) => x.faseKey === fase) ?? null;
   const completate = schede.filter((x) => x.stato === "completata").length;
+  // I documenti che questa fase produce. La percentuale di prontezza e' quella delle
+  // schede COMPLETATE, non dei campi riempiti: il pannello non deve incoraggiare a
+  // pubblicare un documento che il consulente non ha ancora dichiarato chiuso.
+  const documenti = documentiDellaFase(fase);
+  const prontezza = schede.length ? Math.round((completate / schede.length) * 100) : 0;
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -166,6 +173,24 @@ export default async function FaseSgesgPage({
           </li>
         ))}
       </ul>
+
+      {/* I documenti della fase. Passano dalla strozzatura `salvaSnapshot`, quindi
+          ereditano marchio congelato, edizione dei contenuti, colophon e codice di
+          verifica senza una riga di codice nuovo. */}
+      {documenti.length > 0 && (
+        <section className="mt-10" aria-labelledby="doc-fase" data-documenti-fase="">
+          <h2 id="doc-fase" className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {documenti.length === 1 ? "Il documento di questa fase" : "I documenti di questa fase"}
+          </h2>
+          <div className="mt-3 space-y-4">
+            {documenti.map((d) => (
+              <div key={d.tipo} data-documento={d.tipo}>
+                <PannelloPubblicazione companyId={companyId} tipo={d.tipo} anno={n} readyPct={prontezza} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

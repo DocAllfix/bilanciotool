@@ -19,7 +19,7 @@ export const documentSnapshot = pgTable(
     // alias di percorso dell'applicazione. La copia non puo' divergere in silenzio —
     // aggiungendo un tipo di la' e non di qua, il compilatore si ferma su ogni punto che
     // scrive o legge questa colonna. E' successo, e ci ha messo tre secondi.
-    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl"] }).notNull(),
+    tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl", "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale"] }).notNull(),
     anno: integer("anno").notNull(),
     versione: integer("versione").notNull(),
     dati: jsonb("dati").notNull(), // tutti i dati risolti + derivati calcolati alla pubblicazione

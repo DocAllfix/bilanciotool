@@ -192,11 +192,10 @@ export const MODULI_AZIENDA = [
     icona: Compass,
     area: "ecosostenibilita",
     colore: AREE.ecosostenibilita.colore,
-    // ⚠️ Vuoto: il percorso esiste, i suoi quattro documenti (offerta, verbale di
-    // avvio, rapporto di diagnosi, fascicolo finale) arrivano piu' avanti nel piano.
-    // Dichiarare qui un tipo senza template significherebbe rendere pubblicabile un
-    // documento vuoto, e un documento vuoto pubblicato e' immutabile per costruzione.
-    documenti: [],
+    // I quattro documenti del metodo. Il primo e' quello che rappresenta il percorso
+    // dove ne serve uno solo (scadenzario, fascicolo, stato): il dossier di chiusura,
+    // perche' e' cio' che dice che l'incarico e' finito.
+    documenti: ["dossier_finale", "offerta_esg", "verbale_avvio", "diagnosi_esg"],
     perEsercizio: true,
   },
   {

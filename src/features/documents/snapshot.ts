@@ -4,11 +4,14 @@ import {
   company, documentSnapshot,
   kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
   orgEntitlement, reportProject, user,
+  sgesgSchedaDef, sgesgSchedaDato,
 } from "@/lib/db/schema";
 import { assegnaCodice } from "./codice";
 import { marchioDaCongelare } from "./marchio";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
+import { getProgramma } from "@/features/sgesg/programma";
+import { documentoSgesg } from "@/features/sgesg/documenti";
 import { getResults } from "@/features/ghg/results";
 import { getWizardData } from "@/features/ghg/queries";
 import { getKpiWithDerived } from "@/features/report/kpi";
@@ -32,7 +35,7 @@ import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
 import { toFixedStr, type Decimal } from "@/lib/calc/shared/decimal";
 import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 // PUBBLICAZIONE: l'unico punto del sistema in cui i valori derivati vengono
@@ -875,6 +878,88 @@ export async function publishDichiarazioneFilieraSnapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, "dichiarazione_filiera", SENZA_ESERCIZIO, dati, d.programma.contentSetId);
+}
+
+// ---------------------------------------------- I quattro documenti del metodo ESG
+/**
+ * Pubblica uno dei quattro documenti del percorso `sgesg`.
+ *
+ * ⚠️ UNA funzione per quattro documenti, come il template e' uno solo: il contenuto di
+ * ciascuno E' il compilato di alcune schede, e cio' che cambia sta nel registro
+ * `features/sgesg/documenti.ts`. Quattro funzioni sarebbero quattro posti da tenere
+ * allineati, e la quarta resterebbe indietro.
+ *
+ * ⚠️ Le schede si leggono dal catalogo CONGELATO nel programma, non dall'ultimo seminato:
+ * un documento deve riportare le domande che il metodo faceva quando il lavoro e' stato
+ * svolto, non quelle che fa oggi.
+ */
+export async function publishSgesgSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  anno: number,
+  tipo: TipoDocumento,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const def = documentoSgesg(tipo);
+  if (!def) throw new Error("Questo documento non appartiene al metodo ESG");
+
+  const vista = await getProgramma(userId, orgId, companyId, anno);
+  if (!vista) throw new Error("Nessun programma ESG da pubblicare per questo esercizio");
+  const p = vista.programma;
+
+  const [az, defs, compilati] = await Promise.all([
+    withTenant({ userId, orgId }, async (tx) => (await tx.select().from(company).where(eq(company.id, companyId)))[0]!),
+    db
+      .select()
+      .from(sgesgSchedaDef)
+      .where(and(eq(sgesgSchedaDef.setId, p.contentSetId), inArray(sgesgSchedaDef.key, def.schede))),
+    withTenant({ userId, orgId }, (tx) =>
+      tx
+        .select()
+        .from(sgesgSchedaDato)
+        .where(and(eq(sgesgSchedaDato.programId, p.id), eq(sgesgSchedaDato.organizationId, orgId))),
+    ),
+  ]);
+
+  const perChiave = new Map(compilati.map((d) => [d.schedaKey, d]));
+  // ⚠️ L'ordine e' quello del REGISTRO, non quello in cui il database ha restituito le
+  // righe: un documento in cui le sezioni cambiano posto fra due versioni non si puo'
+  // confrontare con la precedente.
+  const schede = def.schede
+    .map((k) => defs.find((d) => d.key === k))
+    .filter((d): d is NonNullable<typeof d> => !!d)
+    .map((d) => {
+      const c = perChiave.get(d.key);
+      return {
+        key: d.key,
+        codice: d.codice,
+        titolo: d.titolo,
+        sottotitolo: d.sottotitolo,
+        sezioni: d.sezioni ?? [],
+        dati: (c?.dati ?? {}) as Record<string, unknown>,
+        stato: c?.stato ?? "non_aperta",
+      };
+    });
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    anno,
+    titolo: def.titolo,
+    kicker: def.kicker,
+    scopo: def.scopo,
+    avvertenza: def.avvertenza,
+    azienda: { id: az.id, nome: az.nome, settore: az.settore, sede: az.sede, piva: az.piva },
+    programma: {
+      standard: p.standard,
+      responsabile: p.responsabile,
+      dataInizio: p.dataInizio,
+      dataFine: p.dataFine,
+    },
+    schede,
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, tipo, anno, dati, p.contentSetId);
 }
 
 /** Il marchio del documento, deciso qui una volta sola. Vedi `marchio.ts`: leggerlo

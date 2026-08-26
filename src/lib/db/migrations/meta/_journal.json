@@ -372,6 +372,13 @@
       "when": 1787699049554,
       "tag": "0052_compensi",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1787703095190,
+      "tag": "0053_documenti_sgesg",
+      "breakpoints": true
     }
   ]
 }

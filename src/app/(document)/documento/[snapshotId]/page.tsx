@@ -15,6 +15,7 @@ import { DocumentoRelazionePc } from "@/components/documento/documento-relazione
 import { DocumentoMatricePc } from "@/components/documento/documento-matrice-pc";
 import { DocumentoMatrice231 } from "@/components/documento/documento-matrice-231";
 import { DocumentoRegistroFirmato } from "@/components/documento/documento-registro-firmato";
+import { DocumentoSgesg } from "@/components/documento/documento-sgesg";
 import { DocumentoDichiarazioneFiliera } from "@/components/documento/documento-dichiarazione-filiera";
 import { DocumentoManualeSa8000 } from "@/components/documento/documento-manuale-sa8000";
 import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qas";
@@ -129,6 +130,14 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
       return <DocumentoDichiarazioneFiliera dati={snap.dati as never} />;
     case "manuale_sa8000":
         return <DocumentoManualeSa8000 dati={dati} />;
+      // ⚠️ I quattro del metodo ESG condividono il template: il loro contenuto e' il
+      // compilato di schede diverse, gia' congelato nello snapshot con titolo, kicker e
+      // avvertenza. Il template non deve sapere quale dei quattro sta rendendo.
+      case "offerta_esg":
+      case "verbale_avvio":
+      case "diagnosi_esg":
+      case "dossier_finale":
+        return <DocumentoSgesg dati={snap.dati as never} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

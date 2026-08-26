@@ -154,9 +154,12 @@ export default async function DocumentiPage({
           )}
         </div>
       ) : (
-        <ul className="mt-6 divide-y rounded-xl border">
+        // ⚠️ `data-risultati` e `data-doc` sono ancoraggi per i collaudi: cercare il
+        // nome di un tipo nel testo della pagina lo trova SEMPRE, perche' e' scritto
+        // sulla pastiglia del filtro. I risultati si contano sui risultati.
+        <ul className="mt-6 divide-y rounded-xl border" data-risultati="">
           {documenti.map((d) => (
-            <li key={d.id}>
+            <li key={d.id} data-doc={d.tipo}>
               <a
                 href={`/documento/${d.id}`}
                 target="_blank"
