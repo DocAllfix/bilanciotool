@@ -72,7 +72,7 @@ function Modulo() {
         <p className="text-sm text-muted-foreground">Almeno {MINIMO} caratteri.</p>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <form method="post" onSubmit={onSubmit} className="space-y-4" noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="password">Nuova password</Label>
             <Input id="password" name="password" type="password" autoComplete="new-password" required />

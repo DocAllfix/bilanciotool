@@ -112,7 +112,7 @@ export function ModuloIscrizione({
         </p>
       </CardHeader>
       <CardContent className={senzaGuscio ? "px-0 pb-0" : undefined}>
-        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <form method="post" onSubmit={onSubmit} className="space-y-4" noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="nome">Nome e cognome</Label>
             <Input id="nome" name="nome" autoComplete="name" required />

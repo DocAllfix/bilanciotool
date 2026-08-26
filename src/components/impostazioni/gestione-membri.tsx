@@ -147,7 +147,7 @@ export function GestioneMembri({
       )}
 
       {puoGestire && (
-        <form onSubmit={invita} className="border-t pt-5">
+        <form method="post" onSubmit={invita} className="border-t pt-5">
           <label htmlFor="invita-email" className="text-sm font-medium">
             Invita un collega
           </label>

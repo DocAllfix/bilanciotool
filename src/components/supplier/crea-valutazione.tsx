@@ -37,7 +37,7 @@ export function CreaValutazione({ companyId }: { companyId: string }) {
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={crea} className="flex flex-wrap items-end gap-3">
+          <form method="post" onSubmit={crea} className="flex flex-wrap items-end gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="sr-crea-soglia">Soglia richiesta</Label>
               <Input

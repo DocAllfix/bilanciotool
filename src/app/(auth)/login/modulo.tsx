@@ -58,7 +58,7 @@ export function ModuloAccesso({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+    <form method="post" onSubmit={onSubmit} className="space-y-4" noValidate>
       <div className="space-y-1.5">
         <Label htmlFor={idEmail}>Email</Label>
         <Input id={idEmail} name="email" type="email" autoComplete="email" required />

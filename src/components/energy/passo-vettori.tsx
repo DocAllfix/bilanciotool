@@ -363,7 +363,7 @@ function DialogFattore({
           </DialogDescription>
         </DialogHeader>
         {vettore && (
-          <form onSubmit={salva} className="grid gap-4">
+          <form method="post" onSubmit={salva} className="grid gap-4">
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <Label htmlFor="ff-kwh">kWh per {vettore.um}</Label>

@@ -56,7 +56,7 @@ export function CreaInventario({ companyId }: { companyId: string }) {
           <p className="text-sm text-muted-foreground">Parti dal percorso guidato in 8 passi.</p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={crea} className="flex items-end gap-3">
+          <form method="post" onSubmit={crea} className="flex items-end gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="ci-anno">Periodo di rendicontazione</Label>
               <Input id="ci-anno" name="anno" type="number" defaultValue={annoScorso} min={1990} max={2100} className="w-32" data-slot="kpi" />

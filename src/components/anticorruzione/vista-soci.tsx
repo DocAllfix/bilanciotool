@@ -64,7 +64,7 @@ export function VistaSoci({ companyId, dati }: { companyId: string; dati: DatiAn
   return (
     <div className="grid gap-6 lg:grid-cols-[22rem_1fr]" data-tour="pc-soci">
       <div>
-        <form onSubmit={crea} className="flex gap-2">
+        <form method="post" onSubmit={crea} className="flex gap-2">
           <Input
             id="pc-nuovo-socio"
             value={nuovo}
