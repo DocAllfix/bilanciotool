@@ -26,6 +26,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 /** Generoso di proposito: il portafoglio è lento (vedi PRE-LAUNCH, debito 0-bis), e
@@ -47,7 +48,7 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 140)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 140)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 140)));
 
 console.log(`\nPortafoglio: si aggiorna senza ricaricare — ${BASE}\n`);

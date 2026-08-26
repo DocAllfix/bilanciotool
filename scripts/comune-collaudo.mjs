@@ -24,7 +24,11 @@
  */
 import { readFileSync } from "node:fs";
 
-const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co|\/monitoraggio)/;
+// ⚠️ `vercel.live` e' lo script del riquadro di commento che Vercel inietta da sola
+// nelle ANTEPRIME. La nostra CSP lo blocca — giustamente, non lo abbiamo messo noi —
+// e il browser stampa una violazione a ogni pagina. Non e' un difetto del prodotto e
+// in produzione non esiste: qui farebbe solo diventare rossi i collaudi sull'anteprima.
+const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co|vercel\.live|\/monitoraggio)/;
 
 /**
  * Il server in ascolto sta servendo QUESTO build?
@@ -84,6 +88,20 @@ export async function attraversaProtezione(page) {
 
   const contesto = page.context();
   const browser = contesto.browser?.();
+
+  // ⚠️ E SI BLOCCA IL RIQUADRO DI COMMENTO CHE VERCEL INIETTA DA SOLA.
+  //
+  // `vercel.live/_next-live/feedback/feedback.js` non lo abbiamo messo noi e in produzione
+  // non esiste: lo aggiunge l'host alle anteprime. La nostra CSP lo blocca — giustamente —
+  // e il browser stampa una violazione a ogni pagina. I collaudi che tengono un elenco
+  // proprio degli errori di console lo raccoglievano e uscivano rossi con tutti i controlli
+  // verdi: «SGI QAS: 32 ok, 0 ko» seguito da un errore di console che non e' del prodotto.
+  //
+  // Bloccarlo non e' nascondere un difetto: e' far comportare l'anteprima come la
+  // produzione, dove quello script non c'e'.
+  await contesto
+    .route(/vercel\.live/, (rotta) => rotta.abort())
+    .catch(() => {});
   // L'avvolgimento e' SINCRONO di proposito: chi chiama `strumenta` non puo' attendere,
   // e cio' che conta e' che i contesti successivi nascano gia' con l'intestazione.
   if (browser && !browser.__bypassAnteprima) {
@@ -93,6 +111,26 @@ export async function attraversaProtezione(page) {
     browser.__bypassAnteprima = true;
   }
   await contesto.setExtraHTTPHeaders(intestazione).catch(() => {});
+}
+
+/**
+ * Il messaggio viene dalla PIATTAFORMA e non dal prodotto?
+ *
+ * ⚠️ Vercel inietta nelle anteprime il suo riquadro di commento
+ * (`vercel.live/_next-live/feedback/feedback.js`). La nostra CSP lo blocca — giustamente,
+ * non lo abbiamo messo noi — e il browser stampa una violazione a ogni pagina. In
+ * produzione quello script non esiste.
+ *
+ * Non si puo' fermare intercettando la richiesta: la CSP protesta quando il TAG viene
+ * analizzato, prima che la richiesta parta. E i trentasette collaudi che tengono un
+ * elenco proprio degli errori di console lo raccoglievano, uscendo rossi con tutti i
+ * controlli verdi — «SGI QAS: 32 ok, 0 ko» seguito da un errore che non e' del prodotto.
+ *
+ * Sta QUI e non ricopiato in trentasette file: un elenco di rumore che vive in
+ * trentasette copie diverge alla prima aggiunta.
+ */
+export function rumoreDiPiattaforma(testo) {
+  return /vercel\.live|_next-live\/feedback/.test(String(testo));
 }
 
 export function strumenta(page, { ignora = [] } = {}) {

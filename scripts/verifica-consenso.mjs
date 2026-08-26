@@ -12,6 +12,7 @@
 //   BASE=https://evalisdeck.it node scripts/verifica-consenso.mjs
 
 import { chromium } from "@playwright/test";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const esiti = [];
@@ -29,7 +30,7 @@ async function visitatore() {
   const richieste = [];
   const erroriConsole = [];
   page.on("request", (r) => richieste.push(r.url()));
-  page.on("console", (m) => { if (m.type() === "error") erroriConsole.push(m.text()); });
+  page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) erroriConsole.push(m.text()); });
   page.on("pageerror", (e) => erroriConsole.push(String(e.message)));
   return {
     ctx,

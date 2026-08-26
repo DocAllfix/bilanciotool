@@ -13,6 +13,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-impostazioni";
@@ -28,7 +29,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errori.push(`[pageerror] ${e.message}`));
 
 // La connessione si apre PRIMA di chi la usa: `registraEEntra` legge dal database il

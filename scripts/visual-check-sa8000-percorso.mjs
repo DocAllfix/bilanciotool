@@ -13,6 +13,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-sa8000";
@@ -32,7 +33,7 @@ const verifica = (nome, cond, dettaglio = "") => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 

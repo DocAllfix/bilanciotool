@@ -6,6 +6,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { apriModulo } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-bilancio";
 mkdirSync(OUT, { recursive: true });
@@ -14,7 +15,7 @@ const errors = [];
 
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 const shot = (n) => page.screenshot({ path: `${OUT}/${n}.png` });

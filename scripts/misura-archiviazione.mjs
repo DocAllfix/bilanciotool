@@ -13,6 +13,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -24,7 +25,7 @@ const FINESTRA = Number(process.env.FINESTRA ?? 60_000);
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext()).newPage();
-page.on("console", (m) => { if (m.type() === "error") console.log("  console: " + m.text().slice(0, 120)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) console.log("  console: " + m.text().slice(0, 120)); });
 page.on("response", (r) => { if (r.status() >= 400) console.log(`  ${r.status()} ${r.url().replace(BASE, "")}`); });
 
 console.log(`\nMisura dell'archiviazione — ${BASE}\n`);

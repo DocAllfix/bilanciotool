@@ -12,6 +12,7 @@
 // sull'app. Serve un numero che deve tornare, non un'impressione.
 import { chromium, devices } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
 const OUT = process.env.SHOT_DIR ?? "./shots-mobile";
@@ -134,7 +135,7 @@ for (const schermo of SCHERMI) {
     }
   });
   const page = await ctx.newPage();
-  page.on("console", (m) => { if (m.type() === "error") erroriConsole.push(`[${schermo.nome} ${page.url()}] ${m.text().slice(0, 160)}`); });
+  page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) erroriConsole.push(`[${schermo.nome} ${page.url()}] ${m.text().slice(0, 160)}`); });
   page.on("pageerror", (e) => erroriConsole.push(`[${schermo.nome}] ${e.message.slice(0, 160)}`));
 
   for (const rotta of PUBBLICHE) {

@@ -28,6 +28,10 @@ import { attraversaProtezione } from "./comune-collaudo.mjs";// Registrazione pe
  *
  *     const { userId, orgId } = await registraEEntra(page, sql, { ... });
  */
+// Il progetto Supabase di PRODUZIONE. La stessa costante regge `guardia-database.mjs`:
+// e' il riferimento noto, e serve a distinguere «un ambiente nostro» da «quello vero».
+const RIFERIMENTO_PRODUZIONE = "hahtljrexrngtfsplbsz";
+
 export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   // Le anteprime di Vercel sono protette: senza segreto la registrazione
   // atterrerebbe sulla pagina di accesso di Vercel invece che sul prodotto.
@@ -45,7 +49,18 @@ export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   // NON si azzera contro un ambiente vero: là il freno è la difesa, e un collaudo che la
   // spegne per comodità la sta collaudando spenta. E `verifica-limiti` fa la propria
   // pulizia per conto suo, quindi questa non gli toglie niente.
-  if (/localhost|127\.0\.0\.1/.test(base)) {
+  //
+  // ⚠️ «AMBIENTE VERO» NON SIGNIFICA «NON LOCALHOST». Un deploy di ANTEPRIMA è nostro
+  // quanto localhost: gira sul database di sviluppo, e il freno lì frena noi. Legandolo
+  // all'indirizzo, una batteria di collaudi contro un'anteprima si è fermata al decimo —
+  // e i due referti dicevano «TimeoutError» aspettando «Controlla la tua posta», che è
+  // l'elemento a caso previsto dal commento qui sopra.
+  //
+  // Il criterio giusto non è dove PUNTA il browser ma QUALE DATABASE si sta toccando: la
+  // riga del freno vive lì. Se non è quello di produzione, azzerarla non tocca nessuna
+  // difesa vera. È lo stesso riferimento su cui si regge `guardia-database.mjs`.
+  const suProduzione = (process.env.DATABASE_URL ?? "").includes(RIFERIMENTO_PRODUZIONE);
+  if (!suProduzione) {
     await sql`delete from rate_limit where key like '%/sign-up/email' or key like '%/sign-in/email'`;
   }
 
@@ -57,7 +72,22 @@ export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
 
   // La schermata «controlla la posta» conferma che la registrazione è riuscita: senza
   // questa attesa si correrebbe a marcare verificato un utente non ancora creato.
-  await page.getByText(/Controlla la tua posta/i).waitFor({ timeout: 40_000 });
+  // ⚠️ Se non arriva, si guarda il FRENO prima di riferire un guasto: un collaudo che
+  // scade su «Controlla la tua posta» sembra accusare la registrazione, mentre il piu'
+  // delle volte sta solo dicendo che siamo stati frenati. Il messaggio giusto fa
+  // risparmiare la tornata che il commento qui sopra racconta di aver perso.
+  await page.getByText(/Controlla la tua posta/i).waitFor({ timeout: 40_000 }).catch(async (e) => {
+    const frenate = await sql`select key, count from rate_limit
+      where key like '%/sign-up/email' order by last_request desc limit 1`.catch(() => []);
+    if (frenate.length && Number(frenate[0].count) >= 10) {
+      throw new Error(
+        `SEI FRENATO, non e' un difetto del prodotto: ${frenate[0].count} iscrizioni ` +
+          `dallo stesso indirizzo (${frenate[0].key}). Il freno e' dieci all'ora. ` +
+          "Aspetta, oppure svuota `rate_limit` se il database non e' quello di produzione.",
+      );
+    }
+    throw e;
+  });
 
   const [u] = await sql`select id from "user" where email = ${email}`;
   if (!u) throw new Error("la registrazione non ha creato l'utente");

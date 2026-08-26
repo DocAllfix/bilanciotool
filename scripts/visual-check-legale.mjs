@@ -11,6 +11,7 @@
 // identificativo, security.txt. Chiaro, scuro, mobile, zero errori di console.
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-legale";
 mkdirSync(OUT, { recursive: true });
@@ -25,7 +26,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 // ------------------------------------------------ 1. il banner di consenso

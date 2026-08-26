@@ -14,6 +14,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { spegniTour } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = "./foto";
@@ -27,7 +28,7 @@ const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 const page = await ctx.newPage();
 const guasti = [];
-page.on("console", (m) => { if (m.type() === "error") guasti.push(m.text().slice(0, 140)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) guasti.push(m.text().slice(0, 140)); });
 
 console.log(`\nFoto delle superfici — ${BASE}\n`);
 const { orgId } = await registraEEntra(page, sql, { base: BASE, nome: "Studio Foto", email, pwd: PWD_COLLAUDO });

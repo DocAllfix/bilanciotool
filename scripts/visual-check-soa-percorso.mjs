@@ -10,6 +10,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { attendiCard, apriModulo } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa-percorso";
 mkdirSync(OUT, { recursive: true });
@@ -31,7 +32,7 @@ await ctx.addInitScript(() => {
   } catch {}
 });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 const shot = (n) => page.screenshot({ path: `${OUT}/${n}.png` });

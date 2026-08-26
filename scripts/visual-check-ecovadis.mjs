@@ -1,6 +1,7 @@
 // Collaudo del blocco EcoVadis: fascia, piede, FAQ, dati strutturati.
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = "./shots-ecovadis";
 mkdirSync(OUT, { recursive: true });
@@ -15,7 +16,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 await page.goto(BASE + "/", { waitUntil: "networkidle" });

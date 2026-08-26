@@ -7,6 +7,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-documento";
 mkdirSync(OUT, { recursive: true });
@@ -16,7 +17,7 @@ const errors = [];
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 1600 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 // 1. Utente attivo

@@ -7,6 +7,7 @@ import { spegniTour } from "./comune-collaudo.mjs";
 import { mkdirSync } from "node:fs";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
@@ -20,8 +21,7 @@ const errors = [];
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
-page.on("console", (m) => {
-  if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`);
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`);
 });
 page.on("pageerror", (e) => errors.push(`[pageerror ${page.url()}] ${e.message}`));
 
