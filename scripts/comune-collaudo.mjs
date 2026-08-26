@@ -61,7 +61,44 @@ export async function pretendiServerAggiornato(base) {
   }
 }
 
+/**
+ * Fa passare i collaudi attraverso la protezione delle ANTEPRIME di Vercel.
+ *
+ * ⚠️ Le anteprime di questo progetto sono protette (`ssoProtection:
+ * all_except_custom_domains`): senza il segreto una navigazione riceve un 302 verso la
+ * pagina di accesso di Vercel, e il collaudo misura QUELLA — riferendo difetti che non
+ * esistono su un prodotto che non ha nemmeno aperto. La firma e' inconfondibile: «il
+ * marchio non si comprime», «il banner non offre entrambe le scelte», «nessun comando
+ * visibile». Tutto assente, perche' e' un'altra pagina.
+ *
+ * ⚠️ SI APPLICA AL BROWSER, NON AL CONTESTO. Applicandolo al solo contesto della pagina
+ * ricevuta, i contesti che il collaudo crea DOPO — quelli delle prove da telefono, che
+ * aprono `browser.newContext()` per ogni larghezza — restavano scoperti: il grosso dei
+ * controlli passava e tre cadevano, e a occhio sembravano difetti del prodotto.
+ * Avvolgendo `newContext` il segreto vale anche per i contesti che non esistono ancora.
+ */
+export async function attraversaProtezione(page) {
+  const segreto = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (!segreto) return;
+  const intestazione = { "x-vercel-protection-bypass": segreto };
+
+  const contesto = page.context();
+  const browser = contesto.browser?.();
+  // L'avvolgimento e' SINCRONO di proposito: chi chiama `strumenta` non puo' attendere,
+  // e cio' che conta e' che i contesti successivi nascano gia' con l'intestazione.
+  if (browser && !browser.__bypassAnteprima) {
+    const originale = browser.newContext.bind(browser);
+    browser.newContext = (opzioni = {}) =>
+      originale({ ...opzioni, extraHTTPHeaders: { ...(opzioni.extraHTTPHeaders ?? {}), ...intestazione } });
+    browser.__bypassAnteprima = true;
+  }
+  await contesto.setExtraHTTPHeaders(intestazione).catch(() => {});
+}
+
 export function strumenta(page, { ignora = [] } = {}) {
+  // Il bypass si mette qui perche' `strumenta` e' la prima cosa che un collaudo
+  // fa con la pagina: un posto solo, e vale per tutti.
+  void attraversaProtezione(page);
   const problemi = [];
   const nuovi = () => problemi.splice(0, problemi.length);
 

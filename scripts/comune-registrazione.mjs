@@ -1,4 +1,5 @@
-// Registrazione per i collaudi, dopo l'accensione della verifica dell'indirizzo.
+
+import { attraversaProtezione } from "./comune-collaudo.mjs";// Registrazione per i collaudi, dopo l'accensione della verifica dell'indirizzo.
 //
 // Da quando la conferma dell'email è obbligatoria, iscriversi NON crea più la sessione:
 // la crea il clic sul collegamento che arriva per posta. Un collaudo non può aprire una
@@ -28,6 +29,9 @@
  *     const { userId, orgId } = await registraEEntra(page, sql, { ... });
  */
 export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
+  // Le anteprime di Vercel sono protette: senza segreto la registrazione
+  // atterrerebbe sulla pagina di accesso di Vercel invece che sul prodotto.
+  await attraversaProtezione(page);
   // ⚠️ Il freno sulle iscrizioni si azzera PRIMA di ogni registrazione di collaudo, e
   // solo in locale.
   //

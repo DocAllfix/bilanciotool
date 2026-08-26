@@ -9,7 +9,7 @@
 // significherebbe dimenticarne uno al primo giro di distrazione. Qui la cartella
 // è la fonte, e un collaudo nuovo si presenta da solo.
 
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -87,8 +87,19 @@ env.BASE = su ? su.replace(/\/+$/, "") : prod ? PROD : env.BASE || "http://local
 // ⚠️ Un'anteprima di Vercel puo' essere protetta: senza questo segreto il collaudo
 // riceve una pagina di accesso al posto del prodotto e riferisce difetti che non ci
 // sono. Se c'e', si passa ai collaudi che sanno usarlo.
-if (su && process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
-  env.VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+if (su) {
+  // Il segreto sta in `.env.vercel`, che nessuno carica: `dotenv` legge solo `.env`, e li'
+  // un token operativo non deve stare — lo caricherebbero tutti i trenta processi di
+  // collaudo. Qui lo si legge dal file solo quando serve, cioe' con `--su`.
+  let segreto = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (!segreto) {
+    try {
+      segreto = readFileSync(".env.vercel", "utf8").match(/^VERCEL_AUTOMATION_BYPASS_SECRET=(.*)$/m)?.[1]?.trim();
+    } catch {
+      /* niente file, niente segreto: se l'anteprima non e' protetta va bene lo stesso */
+    }
+  }
+  if (segreto) env.VERCEL_AUTOMATION_BYPASS_SECRET = segreto;
 }
 
 // IL BERSAGLIO SI DICHIARA SEMPRE, non solo con `--prod`.
