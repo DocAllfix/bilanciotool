@@ -303,12 +303,26 @@ verifica("La tabella riporta le motivazioni in sigle",
 await doc.setViewportSize({ width: 1280, height: 1400 });
 await doc.screenshot({ path: `${OUT}/08-documento.png` });
 
+// ⚠️ Se il file non arriva, il collaudo deve DIRE PERCHE'. «nessun download» manda a
+// cercare un difetto del pulsante, che in ogni prova manuale funziona: quello che serve
+// e' la risposta della rotta e l'eventuale avviso a schermo.
+const tracce = [];
+doc.on("response", async (r) => {
+  if (!/\/pdf/.test(r.url())) return;
+  // Il corpo, non solo il codice: un 500 nudo non dice da che parte guardare.
+  const corpo = r.status() >= 400 ? await r.text().catch(() => "") : "";
+  tracce.push(`rotta ${r.status()}${corpo ? " — " + corpo.replace(/\s+/g, " ").slice(0, 160) : ""}`);
+});
+doc.on("requestfailed", (r) => { if (/\/pdf/.test(r.url())) tracce.push(`richiesta fallita: ${r.failure()?.errorText}`); });
 const scarico = doc.waitForEvent("download", { timeout: 180000 }).catch(() => null);
 await doc.getByRole("button", { name: /Scarica PDF/ }).click();
 const file = await scarico;
+const avvisi = file ? [] : await doc.locator("[data-sonner-toast]").allInnerTexts().catch(() => []);
 verifica("Il PDF si scarica col nome giusto, senza anno",
   file !== null && (await file.suggestedFilename()) === "statement-of-applicability-v1.pdf",
-  file ? await file.suggestedFilename() : "nessun download");
+  file
+    ? await file.suggestedFilename()
+    : `nessun download · ${tracce.join(" | ") || "nessuna richiesta alla rotta"} · avvisi: ${avvisi.join(" / ") || "nessuno"}`);
 await doc.close();
 
 await page.reload();
