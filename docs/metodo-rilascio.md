@@ -22,8 +22,13 @@ percorsi comando per comando**, mezza giornata di anteprima ha trovato:
 | 🔴 i **PDF erano la pagina di accesso di Vercel** | il generatore apre il proprio indirizzo con Chromium, e in anteprima è protetto. Il PDF era valido e pesava 141 KB: passava «non è vuoto» |
 | il **freno sulle iscrizioni frenava noi** | si azzerava «solo in locale», legato all'indirizzo — ma un'anteprima è nostra quanto localhost |
 | 37 collaudi rossi con tutti i controlli verdi | Vercel inietta nelle anteprime uno script che la nostra CSP blocca |
+| 🔴 la **data resa dal server non coincideva con quella del browser** | `toLocaleDateString` dipende dall'ICU del runtime, e server e browser ne hanno due diversi. In locale è lo stesso Node: non può divergere |
+| ⚠️ **nove collaudi dichiaravano un bersaglio e ne misuravano un altro** | avevano l'indirizzo scritto a mano. Solo puntandoli a un deploy si scopre che non ascoltano |
 
-Nessuno dei quattro era raggiungibile da localhost. Non per sfortuna: **per costruzione**.
+Nessuno di questi era raggiungibile da localhost. Non per sfortuna: **per costruzione**.
+
+⚠️ E l'ultimo e' il piu' istruttivo, perche' non era nel prodotto: era nello **strumento di
+misura**. Un metodo va collaudato come il codice che collauda.
 
 ---
 
@@ -115,6 +120,20 @@ L'unica prova d'acquisto vera la fa **una persona**, una volta, con una carta pr
 ---
 
 ## Le regole che valgono sempre
+
+**Sul bersaglio — la lezione più cara**
+
+- ⚠️ **Non basta che il lanciatore dichiari il bersaglio: deve essere il collaudo ad
+  ascoltarlo.** Nove collaudi su cinquantotto avevano l'indirizzo scritto a mano, e
+  `qa.mjs` stampava l'anteprima mentre loro parlavano con localhost. Un'etichetta sbagliata
+  è peggio di un'etichetta assente: a quella ci si crede. Sono state ore di diagnosi su un
+  difetto che non esisteva dove lo cercavo, e i «33 su 34» che riferivo non dicevano niente
+  sul deploy. Guardia: `collaudi-bersaglio-pure`.
+- **`x-vercel-id` assente in una risposta è la firma di qualcosa che non viene da Vercel.**
+  L'indizio era lì dalla prima misura, e l'ho letto solo dopo.
+- **Prima di credere a un referto locale, confrontare l'ora del processo con quella del
+  build.** Un `next start` non rilegge il sorgente, e se muore con `EADDRINUSE` risponde
+  quello di prima.
 
 **Sul misurare**
 
