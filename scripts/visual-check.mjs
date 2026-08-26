@@ -6,6 +6,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { spegniTour, apriModulo } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots";
 mkdirSync(OUT, { recursive: true });
@@ -24,6 +25,12 @@ const shot = async (name) => page.screenshot({ path: `${OUT}/${name}.png`, fullP
 const go = async (url) => {
   await page.goto(BASE + url);
   await page.waitForLoadState("networkidle");
+  // ⚠️ I giri guidati si spengono a OGNI navigazione. Questo e' il collaudo piu' vecchio
+  // del progetto (Fase 3) e precede `spegniTour`: il velo di driver.js copre la pagina e
+  // taglia un buco solo sopra l'elemento in evidenza, quindi il primo clic passa e il
+  // secondo no. Moriva con «subtree intercepts pointer events», che accusa il prodotto di
+  // un difetto che e' del velo. I giri hanno un collaudo proprio (`qa -- benvenuto`).
+  await spegniTour(page).catch(() => {});
 };
 const tema = async (verso) => {
   await page.click(`button[aria-label*="${verso}"]`);
@@ -74,8 +81,14 @@ await tema("scuro");
 await shot("07-portfolio-dark");
 await tema("chiaro");
 
-await page.click("text=Inventario GHG");
-await page.waitForURL("**/ghg", { timeout: 15000 });
+// ⚠️ Dalla Fase 1 (25 agosto 2026, i tre gruppi) la card del portafoglio non nomina piu'
+// i singoli moduli — porta tre gruppi — e clicca verso il FASCICOLO dell'azienda, non
+// dritta dentro un percorso. Questo collaudo cercava «Inventario GHG» sulla card e
+// aspettava `**/ghg**` per quindici secondi: moriva con «TimeoutError», che non dice
+// niente. `apriModulo` conosce la strada, ed e' l'unico posto da aggiornare quando
+// cambiera' ancora.
+await apriModulo(page, "Meccanica Adriatica S.r.l.", "ghg");
+await page.waitForURL("**/ghg", { timeout: 20000 });
 await page.waitForLoadState("networkidle");
 await page.fill("#ci-anno", "2025");
 await page.click('button:has-text("Crea")');
@@ -99,9 +112,23 @@ await page.click('button:has-text("Salva voce")');
 // Attesa sull'esito reale (riga in tabella), non su un timeout arbitrario.
 await page.getByRole("cell", { name: "24,694" }).waitFor({ timeout: 20000 });
 await page.click('[data-tour="aggiungi-voce"]');
-await page.getByRole("combobox").first().click();
-await page.getByRole("option", { name: /Cat\. 2/ }).click();
-await page.waitForTimeout(500);
+// ⚠️ La scelta si cerca DENTRO il dialogo. `getByRole("combobox").first()` sulla pagina
+// intera prende il filtro per categoria della tabella, che nel DOM viene prima: si
+// cambiava il filtro invece della categoria della voce, e l'attesa sul totale scadeva
+// accusando il calcolo.
+await page.getByRole("dialog").waitFor({ timeout: 15000 });
+await page.getByRole("dialog").getByRole("combobox").first().click();
+await page.getByRole("option", { name: /Cat\. 2/ }).first().click();
+await page.waitForTimeout(600);
+// ⚠️ Il fattore si sceglie ESPLICITAMENTE. Cambiando categoria il prodotto precompila il
+// PRIMO fattore di quella categoria, e per la 2 non e' l'energia elettrica: e'
+// «Teleriscaldamento» (0,25). Il golden qui sotto vale per l'elettrica location-based
+// (0,2565), quindi appoggiarsi al valore predefinito legava un numero atteso a un
+// ordinamento implicito del catalogo — e quel numero e' l'unica cosa che questo controllo
+// dimostra.
+await page.getByRole("dialog").getByRole("combobox").nth(2).click();
+await page.getByRole("option", { name: /location-based/ }).first().click();
+await page.waitForTimeout(600);
 await page.fill("#v-q", "100000");
 await page.fill("#v-go", "40000");
 await page.click('button:has-text("Salva voce")');

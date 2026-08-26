@@ -72,8 +72,24 @@ for (const p of ["/", "/privacy", "/cookie", "/termini"]) {
 // I cinque documenti devono esserci tutti: la sezione è la promessa del prodotto.
 await page.setViewportSize({ width: 1440, height: 900 });
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
-const percorsi = await page.evaluate(() => (document.body.innerText.match(/PERCORSO [A-E]/g) ?? []).length);
-if (percorsi !== 5) errors.push(`percorsi in pagina: ${percorsi} invece di 5`);
+// ⚠️ Il numero non si scrive a mano, e nemmeno l'intervallo di lettere. Qui c'era
+// `/PERCORSO [A-E]/` con l'attesa fissa a 5: nato quando i percorsi erano cinque, sarebbe
+// diventato rosso a ogni modulo aggiunto per un motivo che col prodotto non c'entra.
+// L'attesa si chiede alla FONTE, cioe' al registro della vetrina.
+//
+// ⚠️ E si contano anche le lettere DISTINTE. Contare le sole occorrenze non vede il
+// difetto che questo controllo ha scoperto il 26 agosto 2026: le lettere si calcolavano
+// con un passo fisso di 3, le aree erano diventate 4+4+3, e le lettere D e G comparivano
+// DUE VOLTE su una pagina pubblica.
+const { readFileSync } = await import("node:fs");
+const attesi = (readFileSync("src/components/landing/percorsi-vetrina.ts", "utf8").match(/titolo:\s*"/g) ?? []).length;
+if (!attesi) errors.push("non riesco a contare i percorsi in percorsi-vetrina.ts: formato cambiato?");
+const etichette = await page.evaluate(() => document.body.innerText.match(/PERCORSO\s+[A-Z]/g) ?? []);
+if (etichette.length !== attesi) errors.push(`percorsi in pagina: ${etichette.length} invece di ${attesi}`);
+const distinte = new Set(etichette).size;
+if (distinte !== etichette.length) {
+  errors.push(`lettere RIPETUTE nella vetrina: ${etichette.length} etichette ma ${distinte} distinte`);
+}
 
 if (errors.length) {
   console.log("PROBLEMI:");

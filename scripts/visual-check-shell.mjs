@@ -13,7 +13,7 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const OUT = process.env.SHOT_DIR ?? "./shots-shell";
 mkdirSync(OUT, { recursive: true });
 const BASE = process.env.BASE ?? "http://localhost:3000";
-const EMAIL = process.env.QA_EMAIL ?? "demo@evalisdeck.it";
+const QA_EMAIL = process.env.QA_EMAIL ?? null;
 const PW = process.env.QA_PASSWORD ?? "EvalisDeck2026!";
 const errors = [];
 
@@ -41,19 +41,29 @@ await shot("01-landing-header");
 await go("/login");
 await shot("02-login-logo");
 
-// Accesso: login se l'account esiste, altrimenti registrazione al volo
-// (il signup crea lo studio demo con l'azienda d'esempio già pronta).
-await page.fill("#email", EMAIL);
-await page.fill("#password", PW);
-await page.click('button[type="submit"]');
-const esito = await page
-  .waitForURL("**/dashboard", { timeout: 15000 })
-  .then(() => "ok")
-  .catch(() => "no");
-if (esito !== "ok") {
+// Accesso: si REGISTRA sempre un conto nuovo (il signup crea lo studio demo con
+// l'azienda d'esempio gia' pronta).
+//
+// ⚠️ Prima si tentava l'accesso con un indirizzo indovinato e si ripiegava sulla
+// registrazione se non esisteva. Quel tentativo fallito e' un 401 vero sull'endpoint di
+// accesso, e questo collaudo raccoglie gli errori di console: si segnalava da solo, e su
+// un database pulito NON POTEVA essere verde. Un collaudo che non sa dove si trova non
+// deve indovinare: ci va.
+if (QA_EMAIL) {
+  // Solo se qualcuno passa esplicitamente un conto esistente (utile contro un ambiente
+  // popolato): in quel caso il fallimento e' un difetto e deve vedersi.
+  await page.fill("#email", QA_EMAIL);
+  await page.fill("#password", PW);
+  await page.click('button[type="submit"]');
+  await page.waitForURL("**/dashboard", { timeout: 30000 });
+} else {
   await go("/registrati");
-  const suffisso = Date.now();
-  await registraEEntra(page, sql, { base: BASE, nome: "QA Shell", email: `qa-shell-${suffisso}@example.com`, pwd: PW });
+  await registraEEntra(page, sql, {
+    base: BASE,
+    nome: "QA Shell",
+    email: `qa-shell-${Date.now()}@example.com`,
+    pwd: PW,
+  });
 }
 await silenziaTour();
 // ⚠️ `networkidle` pretende mezzo secondo di silenzio di rete, e la dashboard con undici
@@ -74,8 +84,16 @@ await shot("04-sidebar-compatta");
 await page.click('button[aria-label="Espandi la barra laterale"]');
 await page.waitForTimeout(450);
 
-// Card cliccabile: clic sul corpo della card demo → inventario
+// Card cliccabile: clic sul corpo della card demo → FASCICOLO → inventario.
+//
+// ⚠️ Dalla Fase 1 (25 agosto 2026, i tre gruppi) la card del portafoglio porta al
+// FASCICOLO dell'azienda, non piu' dritta a un modulo: dalla card non si salta piu'
+// dentro un singolo percorso, si passa di li'. Questo collaudo era rimasto alla
+// navigazione di prima e attendeva `**/ghg**` per sessanta secondi mentre il browser era
+// gia' fermo sul fascicolo — moriva con «TimeoutError», che non dice niente di utile.
 await page.locator('[data-tour="azienda-demo"] a[aria-label^="Apri"]').click();
+await page.waitForURL(/\/aziende\/[^/]+(\?|#|$)/, { timeout: 60000 });
+await page.locator('[data-percorsi] [data-modulo="ghg"] a').first().click();
 await page.waitForURL("**/ghg**", { timeout: 60000 });
 await page.waitForLoadState("networkidle");
 await page.getByText("avanzamento").waitFor({ timeout: 60000 });

@@ -9,7 +9,10 @@
 
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import postgres from "postgres";
+import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { registraEEntra } from "./comune-registrazione.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-impostazioni";
@@ -27,6 +30,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } })
 const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error") errori.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errori.push(`[pageerror] ${e.message}`));
+
+// La connessione si apre PRIMA di chi la usa: `registraEEntra` legge dal database il
+// token di verifica dell'indirizzo, e senza `sql` il primo controllo muore con
+// «registraEEntra is not defined» trascinandosi dietro tutti gli altri in cascata.
+const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
 const RUN = Date.now();
 const email = `imp-${RUN}@example.com`;

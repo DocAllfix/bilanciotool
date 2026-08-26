@@ -91,9 +91,17 @@ await check("il percorso di un'azienda e il documento pubblicato reggono", async
 await check("il pagamento raggiunge ancora Stripe", async () => {
   // La prova che una CSP troppo stretta romperebbe per prima, e in silenzio.
   await apri("/impostazioni/abbonamento");
-  const b = page.getByRole("button", { name: /Attiva/ }).first();
+  // ⚠️ Fra il pulsante e Stripe c'e' un DIALOGO dal 13 agosto: e' li' che si scelgono le
+  // estensioni e si vede il totale prima di uscire. `verifica-checkout` fu corretto per
+  // questo il 15 agosto; QUESTO file no, e da allora falliva aspettando una navigazione
+  // che con un dialogo in mezzo non poteva piu' arrivare. Stesso difetto, altro file:
+  // una correzione applicata a una copia sola.
+  const b = page.getByRole("button", { name: /^(Attiva|Passa a questo)$/ }).first();
   if (await b.count()) {
     await b.click();
+    const paga = page.getByRole("button", { name: /^Paga / });
+    await paga.waitFor({ timeout: 15_000 });
+    await paga.click();
     await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60_000 });
   }
   if (violazioni.length) throw new Error(violazioni[0]);

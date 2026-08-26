@@ -99,7 +99,19 @@ if (sm.stato !== 200) {
       ?? p.testo.match(/<link[^>]+href=["']([^"']+)["'][^>]*rel=["']canonical["']/i)?.[1];
     // Un indirizzo in sitemap il cui canonical punta altrove e' una contraddizione: la
     // sitemap dice «indicizza questo», la pagina dice «no, quell'altro».
-    if (canonical && canonical.replace(/\/$/, "") !== u.replace(/\/$/, ""))
+    //
+    // ⚠️ In LOCALE si confronta il solo PERCORSO. Il canonical nasce da `metadataBase`,
+    // che punta al dominio vero: e' cosi' che deve essere — un canonical verso localhost
+    // sarebbe il difetto. Confrontando l'indirizzo intero, questo controllo era rosso su
+    // ogni pagina ogni volta che lo si lanciava in locale, cioe' rumore da ignorare. E'
+    // lo stesso caso dell'immagine sociale, che in locale dichiara un indirizzo di
+    // produzione e va scaricata dall'ambiente in prova.
+    const soloPercorso = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
+    const normalizza = (x) => {
+      const senzaBarra = x.replace(/\/$/, "");
+      return soloPercorso ? new URL(senzaBarra, BASE).pathname : senzaBarra;
+    };
+    if (canonical && normalizza(canonical) !== normalizza(u))
       problemi.push(`${u}: canonical verso ${canonical}`);
 
     const meta = p.testo.match(/<meta[^>]+name=["']robots["'][^>]*content=["']([^"']+)["']/i)?.[1] ?? "";

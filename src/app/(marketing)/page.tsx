@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AREE_VETRINA, LETTERE } from "@/components/landing/percorsi-vetrina";
+
+// ⚠️ Le lettere dei percorsi si contano SOMMANDO le aree precedenti, non moltiplicando.
+// Qui c'era `LETTERE[iArea * 3 + i]`, con il passo fisso a 3: reggeva finche' ogni area
+// aveva esattamente tre percorsi, e ha smesso di reggere quando sono diventate 4+4+3.
+// Le lettere D e G comparivano DUE VOLTE, su una pagina pubblica, e nessun controllo
+// funzionale poteva vederlo — la pagina si apre e i collegamenti funzionano.
+// Trovato contando le etichette, non guardandole.
+const primaLettera = (iArea: number) =>
+  AREE_VETRINA.slice(0, iArea).reduce((n, a) => n + a.percorsi.length, 0);
 import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
 import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
@@ -225,7 +234,7 @@ export default function LandingPage() {
                     {area.percorsi.map((p, i) => (
                       <Reveal key={p.titolo} delay={i * 90}>
                         <Percorso
-                          indice={LETTERE[iArea * 3 + i] ?? "•"}
+                          indice={LETTERE[primaLettera(iArea) + i] ?? "•"}
                           titolo={p.titolo}
                           norma={p.norma}
                           passi={p.passi}

@@ -1599,6 +1599,71 @@ giusti · regressioni `tutto-demo` 68/68, `mog231-percorso` 20/20, `anticorruzio
 `scheda-cliente` 16/16, `agenda` 16/16, `compensi` 12/12, `guida` 7/7, `demo-completa` 9/9,
 `portafoglio-aggiorna` 5/5, `bilancio` (gate visivo) — console pulita ovunque.
 
+**I collaudi che nessuno rilanciava (2026-08-26)** — passata su TUTTI i controlli, non
+solo su quelli dei moduli. **Sei erano rossi da giorni o da settimane**, e nessuno se n'era
+accorto perche' nessuno li aveva piu' lanciati. Nessuno dei sei accusava il difetto vero:
+tutti riferivano un `TimeoutError` su un elemento a caso.
+
+| Collaudo | Da quando | Che cosa era successo |
+|---|---|---|
+| `impostazioni` | verifica dell'indirizzo (10 ago) | chiamava `registraEEntra` **senza importarla** e senza aprire `sql`: 11 controlli su 14 in cascata |
+| `shell` | Fase 1, tre gruppi (25 ago) | la card del portafoglio porta al **fascicolo**, non piu' dritta al modulo |
+| `design` | Fase 1 + tour | stessa navigazione, piu' il **velo di driver.js** che intercettava i clic (e' il collaudo piu' vecchio, precede `spegniTour`) |
+| `landing` | ogni modulo aggiunto | attesa fissa a `5` percorsi e regex `[A-E]` |
+| `csp` | dialogo estensioni (13 ago) | premeva un pulsante aspettando Stripe, col dialogo in mezzo |
+| `sitemap` | sempre, in locale | confrontava il canonical **intero**: in locale punta al dominio vero, ed e' giusto cosi' |
+
+⚠️ **E la landing aveva un difetto vero, trovato CONTANDO le etichette.** Le lettere dei
+percorsi si calcolavano con `LETTERE[iArea * 3 + i]` — passo **fisso a 3**. Reggeva finche'
+ogni area aveva tre percorsi; con i gruppi a **4+4+3** le lettere **D** e **G** comparivano
+**due volte** su una pagina pubblica. Nessun controllo funzionale poteva vederlo: la pagina
+si apre e i collegamenti funzionano. Ora l'offset e' progressivo, e il collaudo verifica
+anche che le etichette **distinte** siano tante quante le etichette.
+
+⚠️ **`csp` era la stessa correzione applicata a una copia sola.** Il 15 agosto
+`verifica-checkout` fu corretto per il dialogo delle estensioni, con tanto di commento che
+lo spiegava; `verifica-csp` fa lo stesso gesto e non fu toccato. E' la forma gia' vista
+nella passata DRY: la duplicazione conserva i difetti che una correzione ha tolto altrove.
+
+**Regole nate qui:**
+- **Un collaudo va rilanciato anche quando non l'hai toccato**, e questa e' la seconda
+  volta che questa riga si scrive. Sei su quaranta erano rossi, e cinque lo erano per
+  cambiamenti fatti **altrove** — navigazione, verifica dell'indirizzo, un dialogo in
+  mezzo. Chi cambia una superficie condivisa non sa quali collaudi la attraversano.
+- **Un collaudo che indovina non deve indovinare: deve andarci.** `shell` tentava
+  l'accesso con un indirizzo predefinito e ripiegava sulla registrazione: quel tentativo
+  fallito e' un 401 vero, e il collaudo lo raccoglieva fra gli errori di console
+  segnalandosi da solo. Su un database pulito **non poteva essere verde**.
+- **Un numero atteso non deve appoggiarsi a un valore predefinito implicito.** Il golden
+  `25,650` valeva per l'elettrica location-based, ma cambiando categoria il prodotto
+  precompila il **primo** fattore di quella categoria — che per la 2 e'
+  «Teleriscaldamento». Il fattore ora si sceglie esplicitamente: quel numero e' l'unica
+  cosa che quel controllo dimostra.
+- **`getByRole(...).first()` sulla PAGINA prende il primo del documento, non il primo che
+  interessa.** Nel passo dati la prima `combobox` e' il **filtro** della tabella, non la
+  categoria della voce: si cambiava il filtro e poi si accusava il calcolo. Si restringe
+  al dialogo.
+- **In locale il canonical punta al dominio vero, ed e' il comportamento giusto**: un
+  canonical verso `localhost` sarebbe il difetto. Si confronta il percorso.
+
+ⓘ **Osservazione per il committente, non corretta di mia iniziativa:** scegliendo la
+**categoria 2** il dialogo della voce precompila «Teleriscaldamento», che e' il primo
+fattore di quella categoria nel catalogo. La categoria 2 e' pero' in stragrande maggioranza
+energia elettrica acquistata. Il fattore e' scritto in chiaro nel dialogo e si cambia in un
+clic, ma un valore predefinito raro invita all'errore. Cambiarlo significa toccare
+l'ordinamento del catalogo seminato: e' una decisione sui contenuti, non sul codice.
+
+ⓘ `audit-mobile` segnala quattro aree toccabili piccole, tutte collegamenti **in linea**
+(«Preferenze cookie», «Non la ricordi?»). WCAG 2.5.8 esenta i bersagli in linea: rilievo
+consultivo, non un difetto.
+
+Gate: typecheck · **1178 test** · `impostazioni` 14/14 · `shell` OK · `design` OK ·
+`landing` OK · `csp` 6/6 · `sitemap` 9/9 · `estensioni` 10/10 · `recupero-password` 8/8 ·
+`invito` 14/14 · `attivazione` 6/6 · `limiti` 6/6 · `pdf-archivio` 5/5 ·
+`codice-documento` 22/22 · `corpus` 20/20 · `corpus-pdf` 11/11 · `documenti-qas` 18/18 ·
+`ecovadis` 10/10 · `marchio` 7/7 · `condivisione` 9/9 · `legale` 26/26 ·
+`tutto-pubblico` 37/37 · `tutto-attivo` 30/30 · `tutto-demo` 68/68 · console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
