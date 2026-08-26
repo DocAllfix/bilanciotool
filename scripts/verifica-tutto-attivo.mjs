@@ -207,6 +207,22 @@ await agisci("il filtro per tipo restringe l'elenco", async () => {
 });
 
 let url = null;
+
+// ⚠️ Il collegamento che il prodotto genera porta all'indirizzo CANONICO, non a quello su
+// cui gira: e' voluto, perche' si consegna a un cliente e vive fino a novanta giorni — da
+// un'anteprima porterebbe a un host che fra un'ora non esiste.
+//
+// Il collaudo pero' deve aprirlo SUL BERSAGLIO: seguendolo alla lettera finiva sul sito
+// vero, che non conosce quel gettone, e riferiva «l'azienda non compare» accusando la
+// condivisione. Stessa correzione gia' fatta in `visual-check-condivisione`: era stata
+// applicata a una copia sola.
+const sulBersaglio = (indirizzo) => {
+  try {
+    return BASE + new URL(indirizzo).pathname;
+  } catch {
+    return indirizzo;
+  }
+};
 await agisci("si genera il collegamento per il cliente", async () => {
   await vai(A);
   await page.locator("#cond-nota").fill("Amministrazione");
@@ -232,7 +248,7 @@ await agisci("il comando «Copia» mette l'indirizzo negli appunti", async () =>
 await agisci("il cliente apre il collegamento SENZA account", async () => {
   const anonimo = await browser.newContext();
   const p2 = await anonimo.newPage();
-  const r = await p2.goto(url, { waitUntil: "networkidle" });
+  const r = await p2.goto(sulBersaglio(url), { waitUntil: "networkidle" });
   if (!r || r.status() !== 200) throw new Error(`stato ${r?.status()}`);
   const t = await p2.locator("body").innerText();
   if (!/Meccanica Adriatica/.test(t)) throw new Error("l'azienda non compare");
@@ -247,7 +263,7 @@ await agisci("il cliente apre il collegamento SENZA account", async () => {
 await agisci("dal collegamento si scarica un PDF vero", async () => {
   const anonimo = await browser.newContext();
   const p2 = await anonimo.newPage();
-  await p2.goto(url, { waitUntil: "networkidle" });
+  await p2.goto(sulBersaglio(url), { waitUntil: "networkidle" });
   const href = await p2.locator("a[href*='/api/condivisione/']").first().getAttribute("href");
   const r = await p2.request.get(href.startsWith("http") ? href : `${BASE}${href}`, { timeout: 180_000 });
   if (r.status() !== 200) throw new Error(`stato ${r.status()}`);
@@ -283,7 +299,7 @@ await agisci("il collegamento si disattiva", async () => {
 await agisci("dopo la revoca il collegamento non apre piu'", async () => {
   const anonimo = await browser.newContext();
   const p2 = await anonimo.newPage();
-  const r = await p2.goto(url, { waitUntil: "domcontentloaded" });
+  const r = await p2.goto(sulBersaglio(url), { waitUntil: "domcontentloaded" });
   const t = await p2.locator("body").innerText();
   await anonimo.close();
   if (r.status() === 200 && /Meccanica Adriatica/.test(t)) throw new Error("i documenti si vedono ancora");
