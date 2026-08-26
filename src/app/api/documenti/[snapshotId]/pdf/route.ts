@@ -106,7 +106,31 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ snap
         cwd: process.cwd(),
       });
     }
-    console.error("[pdf] generazione fallita per lo snapshot", snapshotId, e);
-    return NextResponse.json({ errore: "Generazione del PDF non riuscita" }, { status: 500 });
+    // ⚠️ SI DISTINGUE CHI HA LANCIATO, come già fa `daErrore` per le server action.
+    //
+    // «Generazione del PDF non riuscita» e basta era il messaggio giusto per un errore di
+    // libreria — un frammento di query Postgres o il corpo di una risposta di Supabase non
+    // devono raggiungere il browser — ma sbagliato per i nostri: nel prodotto ci sono
+    // frasi scritte per il consulente, e questa rotta le buttava via tutte insieme alle
+    // altre. `e.constructor === Error` è vero solo per un `new Error(...)` nostro; le
+    // sottoclassi delle librerie cadono nel ramo generico.
+    //
+    // ⚠️ E un IDENTIFICATIVO DI CORRELAZIONE, in ogni caso. Senza, un cliente che segnala
+    // «il PDF non si scarica» non ci dà niente su cui cercare: il log della funzione ha
+    // migliaia di righe e nessun modo di legarne una alla sua telefonata. Non rivela
+    // niente — è un numero — e trasforma una segnalazione muta in una ricerca di un
+    // secondo. Il difetto che ha insegnato questa riga è stato proprio un 500 sulla
+    // generazione, riproducibile e con la causa leggibile solo nei log.
+    const riferimento = `pdf-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+    console.error(`[pdf][${riferimento}] generazione fallita per lo snapshot`, snapshotId, e);
+
+    const nostro = e instanceof Error && e.constructor === Error;
+    return NextResponse.json(
+      {
+        errore: nostro ? e.message : "Generazione del PDF non riuscita",
+        riferimento,
+      },
+      { status: 500 },
+    );
   }
 }

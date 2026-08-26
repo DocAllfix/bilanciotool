@@ -118,9 +118,44 @@ for (const [i, c] of daFare.entries()) {
   if (m && /ok,/.test(uscita)) riassunto = `${m[1]} ok, ${m[2]} ko`;
   else if (m) riassunto = `${m[1]}/${m[2]}`;
 
-  const ok = r.status === 0;
-  esiti.push({ nome: c.nome, ok, secondi, riassunto, uscita });
-  console.log(`${ok ? "  ok " : "  KO "} ${riassunto.padEnd(14)} ${secondi}s`);
+  let ok = r.status === 0;
+  let uscitaFinale = uscita;
+  let riassuntoFinale = riassunto;
+  let alSecondo = false;
+
+  // ⚠️ UN FALLITO SI RILANCIA UNA VOLTA, E LO SI DICE.
+  //
+  // Un giro di due ore mette sotto carico lo stesso database e la stessa funzione: nel
+  // secondo giro, quattro collaudi su sette sono passati rilanciati da soli. È contesa,
+  // non regressione — la stessa famiglia già annotata per l'`ENOTFOUND` a raffica e per il
+  // 503 durante una batteria concorrente.
+  //
+  // Ma un referto che segnala quattro falsi allarmi costringe a rilanciare a mano, e chi
+  // lo legge impara a non fidarsene. Il rilancio automatico toglie il rumore.
+  //
+  // ⚠️ E NON NASCONDE NIENTE: «al 2° tentativo» resta nella riga e nel riepilogo. Un
+  // collaudo che passa solo al secondo colpo è un'informazione, non un successo — «ha
+  // funzionato una volta» non distingue corretto da fortunato.
+  if (!ok) {
+    const r2 = spawnSync(process.execPath, [join(QUI, "qa.mjs"), c.nome, "--su", SU], {
+      encoding: "utf8",
+      env: process.env,
+      maxBuffer: 40 * 1024 * 1024,
+    });
+    const u2 = `${r2.stdout ?? ""}${r2.stderr ?? ""}`;
+    uscitaFinale = u2;
+    if (r2.status === 0) {
+      ok = true;
+      alSecondo = true;
+      const m2 =
+        u2.match(/(\d+)\s+ok,\s*(\d+)\s+(?:falliti|ko)/i) ?? u2.match(/PROVE:\s*(\d+)\/(\d+)/i)?.slice(0, 3);
+      if (m2) riassuntoFinale = /ok,/.test(u2) ? `${m2[1]} ok, ${m2[2]} ko` : `${m2[1]}/${m2[2]}`;
+    }
+  }
+
+  esiti.push({ nome: c.nome, ok, alSecondo, secondi, riassunto: riassuntoFinale, uscita: uscitaFinale });
+  const segno = ok ? (alSecondo ? "  ok*" : "  ok ") : "  KO ";
+  console.log(`${segno} ${riassuntoFinale.padEnd(14)} ${secondi}s${alSecondo ? "   (al 2° tentativo)" : ""}`);
 }
 
 // ── il referto ───────────────────────────────────────────────────────────────
@@ -130,6 +165,17 @@ console.log(
   `\n${esiti.length - falliti.length} passati · ${falliti.length} falliti · ` +
     `${Math.round((Date.now() - inizioTutto) / 60000)} minuti\n`,
 );
+
+// ⚠️ Chi passa solo al secondo colpo va DETTO, non assorbito nel verde: «ha funzionato
+// una volta» non distingue corretto da fortunato.
+const traballanti = esiti.filter((e) => e.ok && e.alSecondo);
+if (traballanti.length) {
+  console.log(
+    `⚠️  ${traballanti.length} passati solo al SECONDO tentativo: ` +
+      traballanti.map((t) => t.nome).join(", "),
+  );
+  console.log("   Sotto carico cedono. Non è un successo pieno: è un'informazione.\n");
+}
 
 if (falliti.length) {
   console.log("DA GUARDARE\n");
