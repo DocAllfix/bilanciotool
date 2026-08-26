@@ -14,7 +14,16 @@ import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-soa-percorso";
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://localhost:3000";
+// ⚠️ IL BERSAGLIO SI LEGGE DALL'AMBIENTE, sempre.
+//
+// Qui c'era `const BASE = "http://localhost:3000"` scritto a mano, e nove collaudi lo
+// facevano. Conseguenza: `npm run qa -- <nome> --su <anteprima>` stampava l'indirizzo
+// dell'anteprima e il collaudo parlava con localhost. Il referto DICHIARAVA un bersaglio
+// e ne misurava un altro — peggio di non dichiararlo affatto, perche' ci si crede.
+//
+// E' costato mezza giornata: tre collaudi «falliti sul pulsante PDF dell'anteprima» non
+// avevano mai toccato l'anteprima, e i loro «33 su 34» non dicevano niente sul deploy.
+const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const errors = [];
 const prove = [];
 
@@ -311,13 +320,30 @@ doc.on("response", async (r) => {
   if (!/\/pdf/.test(r.url())) return;
   // Il corpo, non solo il codice: un 500 nudo non dice da che parte guardare.
   const corpo = r.status() >= 400 ? await r.text().catch(() => "") : "";
-  tracce.push(`rotta ${r.status()}${corpo ? " — " + corpo.replace(/\s+/g, " ").slice(0, 160) : ""}`);
+  // ⚠️ `x-vercel-id` dice QUALE deployment e quale invocazione ha risposto: senza, un
+  // corpo che non corrisponde al codice distribuito lascia il dubbio se si stia parlando
+  // col build giusto — ed e' esattamente il dubbio in cui mi sono trovato.
+  const chi = r.headers()["x-vercel-id"] ?? "?";
+  tracce.push(`rotta ${r.status()} [${chi}]${corpo ? " — " + corpo.replace(/\s+/g, " ").slice(0, 200) : ""}`);
 });
 doc.on("requestfailed", (r) => { if (/\/pdf/.test(r.url())) tracce.push(`richiesta fallita: ${r.failure()?.errorText}`); });
 const scarico = doc.waitForEvent("download", { timeout: 180000 }).catch(() => null);
 await doc.getByRole("button", { name: /Scarica PDF/ }).click();
 const file = await scarico;
 const avvisi = file ? [] : await doc.locator("[data-sonner-toast]").allInnerTexts().catch(() => []);
+
+// ⚠️ Se il pulsante non ha prodotto niente, si chiede la ROTTA direttamente. Il `fetch`
+// del browser passa dalla cache e da tutto il resto; `page.request` no, e restituisce
+// intestazioni pulite — `x-vercel-id` compreso, che dice quale invocazione ha risposto.
+// Serve a distinguere «la rotta e' rotta» da «il pulsante non e' arrivato alla rotta».
+if (!file) {
+  const idSnap = doc.url().match(/documento\/([^/?#]+)/)?.[1];
+  if (idSnap) {
+    const diretta = await doc.request.get(`${BASE}/api/documenti/${idSnap}/pdf`, { timeout: 180_000 });
+    const corpoDiretto = diretta.status() >= 400 ? (await diretta.text()).slice(0, 220) : `${(await diretta.body()).length} byte`;
+    tracce.push(`diretta ${diretta.status()} [${diretta.headers()["x-vercel-id"] ?? "?"}] — ${corpoDiretto}`);
+  }
+}
 verifica("Il PDF si scarica col nome giusto, senza anno",
   file !== null && (await file.suggestedFilename()) === "statement-of-applicability-v1.pdf",
   file

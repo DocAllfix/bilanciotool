@@ -14,7 +14,16 @@ import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-energetico";
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://localhost:3000";
+// ⚠️ IL BERSAGLIO SI LEGGE DALL'AMBIENTE, sempre.
+//
+// Qui c'era `const BASE = "http://localhost:3000"` scritto a mano, e nove collaudi lo
+// facevano. Conseguenza: `npm run qa -- <nome> --su <anteprima>` stampava l'indirizzo
+// dell'anteprima e il collaudo parlava con localhost. Il referto DICHIARAVA un bersaglio
+// e ne misurava un altro — peggio di non dichiararlo affatto, perche' ci si crede.
+//
+// E' costato mezza giornata: tre collaudi «falliti sul pulsante PDF dell'anteprima» non
+// avevano mai toccato l'anteprima, e i loro «33 su 34» non dicevano niente sul deploy.
+const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const errors = [];
 const prove = [];
 
