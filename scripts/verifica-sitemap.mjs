@@ -45,8 +45,25 @@ if (sm.stato !== 200) {
   const doppi = indirizzi.filter((u, i) => indirizzi.indexOf(u) !== i);
   nota("nessun doppione", doppi.length === 0, doppi.length ? doppi.join(", ") : "ogni indirizzo compare una volta sola");
 
-  const fuori = indirizzi.filter((u) => !u.startsWith(`${BASE}/`) && u !== `${BASE}/`);
-  nota("dominio unico", fuori.length === 0, fuori.length ? fuori.join(", ") : `tutti su ${BASE}`);
+  // ⚠️ Contro un'ANTEPRIMA la sitemap porta i canonical della PRODUZIONE, ed e' il
+  // comportamento giusto: un canonical verso un host temporaneo insegna a Google un
+  // indirizzo che muore. Confrontandoli col bersaglio risultavano tutti «fuori dominio».
+  // La regola che conta e' che siano coerenti FRA LORO: una sitemap che mescola due
+  // domini e' il difetto vero.
+  const anteprimaSitemap = !/^https?:\/\/(localhost|127\.0\.0\.1|evalisdeck\.it)/.test(BASE);
+  const dominiDichiarati = [...new Set(indirizzi.map((u) => {
+    try { return new URL(u).origin; } catch { return u; }
+  }))];
+  const fuori = anteprimaSitemap
+    ? (dominiDichiarati.length > 1 ? dominiDichiarati : [])
+    : indirizzi.filter((u) => !u.startsWith(`${BASE}/`) && u !== `${BASE}/`);
+  nota(
+    "dominio unico",
+    fuori.length === 0,
+    fuori.length
+      ? fuori.join(", ")
+      : `tutti su ${dominiDichiarati[0] ?? BASE}${anteprimaSitemap ? " (canonico, non l'anteprima: corretto)" : ""}`,
+  );
 
   // --- 2. le date dichiarate devono essere vere ------------------------------------------
   // Una lastmod uguale all'istante della richiesta significa che il campo e' generato, non
@@ -91,9 +108,25 @@ if (sm.stato !== 200) {
 
   // --- 4. ogni indirizzo, aperto davvero -------------------------------------------------
   const problemi = [];
+  // Indirizzi canonici che la produzione non ha ancora: non sono difetti del ramo.
+  const indietro = [];
   for (const u of indirizzi) {
     const p = await prendi(u);
-    if (p.stato !== 200) { problemi.push(`${u} → ${p.stato || p.errore}${p.stato >= 300 && p.stato < 400 ? ` (${p.header.get("location")})` : ""}`); continue; }
+    if (p.stato !== 200) {
+      // ⚠️ Contro un'ANTEPRIMA la sitemap elenca indirizzi della PRODUZIONE, ed e' giusto:
+      // un canonical verso un host temporaneo insegna a Google un indirizzo che muore. Ma
+      // il sito vero puo' essere indietro rispetto al ramo — `/verifica` esiste dal 24
+      // agosto 2026 e non e' ancora distribuito. Un 404 li' non e' un collegamento rotto:
+      // e' la produzione che non ha ancora quella pagina.
+      const daAltrove = !u.startsWith(BASE);
+      const anteprima = !/^https?:\/\/(localhost|127\.0\.0\.1|evalisdeck\.it)/.test(BASE);
+      if (anteprima && daAltrove) {
+        indietro.push(`${u} → ${p.stato}`);
+        continue;
+      }
+      problemi.push(`${u} → ${p.stato || p.errore}${p.stato >= 300 && p.stato < 400 ? ` (${p.header.get("location")})` : ""}`);
+      continue;
+    }
 
     const canonical = p.testo.match(/<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1]
       ?? p.testo.match(/<link[^>]+href=["']([^"']+)["'][^>]*rel=["']canonical["']/i)?.[1];
@@ -135,7 +168,17 @@ if (sm.stato !== 200) {
   const mancanti = [];
   for (const percorso of collegati) {
     const u = percorso === "/" ? `${BASE}/` : `${BASE}${percorso}`;
-    if (indirizzi.includes(u)) continue;
+    // ⚠️ Sull'ANTEPRIMA la sitemap dichiara i canonical della PRODUZIONE, mentre i
+    // collegamenti in pagina sono dell'anteprima: confrontando gli indirizzi INTERI
+    // risultavano «dimenticate» cinque pagine che ci sono. Si confrontano i percorsi.
+    const percorsiInSitemap = indirizzi.map((x) => {
+      try {
+        return new URL(x).pathname.replace(/\/$/, "") || "/";
+      } catch {
+        return x;
+      }
+    });
+    if (indirizzi.includes(u) || percorsiInSitemap.includes(percorso)) continue;
     const p = await prendi(u);
     if (p.stato !== 200) continue; // non esiste o reindirizza: non e' un buco
     const meta = p.testo.match(/<meta[^>]+name=["']robots["'][^>]*content=["']([^"']+)["']/i)?.[1] ?? "";

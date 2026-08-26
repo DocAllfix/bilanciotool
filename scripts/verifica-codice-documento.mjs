@@ -103,7 +103,7 @@ await doc.close();
 // ─── la verifica pubblica, da un browser SENZA sessione ──────────────────────
 const anonimo = await (await browser.newContext()).newPage();
 const erroriAnonimo = [];
-anonimo.on("console", (m) => { if (m.type() === "error") erroriAnonimo.push(m.text().slice(0, 150)); });
+anonimo.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) erroriAnonimo.push(m.text().slice(0, 150)); });
 await anonimo.goto(`${BASE}/verifica?codice=${encodeURIComponent(k.codice)}`, {
   waitUntil: "domcontentloaded",
   timeout: 60_000,

@@ -11,7 +11,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 
 const QUI = dirname(fileURLToPath(import.meta.url));
@@ -125,7 +125,21 @@ const nota = locale
 console.log(`→ ${scelto}  (${bersaglio})${nota}\n`);
 // `--su <indirizzo>` non si passa al collaudo: il bersaglio viaggia in `BASE`.
 const perIlCollaudo = argomenti.filter((a, i) => a !== nome && i !== iSu && i !== iSu + 1);
-const esito = spawnSync(process.execPath, [join(QUI, scelto), ...perIlCollaudo], {
+
+// ⚠️ IL BYPASS SI PRECARICA, non si chiede a ogni collaudo di ricordarsene.
+//
+// Dodici collaudi su cinquantotto non chiamano ne' `strumenta()` ne' `registraEEntra()`,
+// e giravano scoperti contro un'anteprima protetta: ricevevano il login di Vercel e
+// misuravano quello. Aggiungere una riga a quei dodici avrebbe funzionato oggi e sarebbe
+// stato dimenticato dal tredicesimo. `--import` avvolge `chromium.launch` una volta, per
+// tutti, e solo quando c'e' un segreto da usare.
+const precarico =
+  // ⚠️ `--import` vuole un URL, non un percorso: su Windows `C:\…` gli fa dire
+  // ERR_UNSUPPORTED_ESM_URL_SCHEME, perche' legge `C:` come schema.
+  env.VERCEL_AUTOMATION_BYPASS_SECRET
+    ? ["--import", pathToFileURL(join(QUI, "precarica-anteprima.mjs")).href]
+    : [];
+const esito = spawnSync(process.execPath, [...precarico, join(QUI, scelto), ...perIlCollaudo], {
   stdio: "inherit",
   env,
 });

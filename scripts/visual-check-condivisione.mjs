@@ -41,6 +41,21 @@ const RUN = Date.now();
 const email = `cond-ui-${RUN}@example.com`;
 let collegamento = "";
 
+// ⚠️ Il collegamento che il prodotto genera porta all'indirizzo CANONICO, non a quello su
+// cui gira: e' voluto, perche' quel collegamento si consegna a un cliente e vive fino a
+// novanta giorni — da un'anteprima porterebbe a un host che fra un'ora non esiste.
+//
+// Il collaudo pero' deve aprirlo SUL BERSAGLIO: seguendolo alla lettera finiva sul sito
+// vero, che non conosce quel gettone, e riferiva «Collegamento non valido» accusando la
+// condivisione. Si tiene il percorso e si cambia l'origine.
+const sulBersaglio = (indirizzo) => {
+  try {
+    return BASE + new URL(indirizzo).pathname;
+  } catch {
+    return indirizzo;
+  }
+};
+
 await check("registrazione e attivazione dello studio", async () => {
   await registraEEntra(page, sql, { base: BASE, nome: "Marco Verdi", email: email, pwd: PWD_COLLAUDO });
   // Il banner del consenso sta in basso e in primo piano: finche' c'e', intercetta i clic
@@ -111,7 +126,7 @@ await check("il cliente apre il portale SENZA account e vede la sua azienda", as
   const anonimo = await browser.newContext();
   const p = await anonimo.newPage();
   p.on("pageerror", (e) => errori.push(`[portale] ${e.message}`));
-  await p.goto(collegamento, { waitUntil: "networkidle" });
+  await p.goto(sulBersaglio(collegamento), { waitUntil: "networkidle" });
   const t = await p.locator("main").innerText();
   if (!t.includes("Cliente Condiviso S.r.l.")) throw new Error("non mostra l'azienda: " + t.slice(0, 120));
   if (!/non ci sono ancora documenti/i.test(t)) throw new Error("stato vuoto assente");
@@ -122,7 +137,7 @@ await check("il cliente apre il portale SENZA account e vede la sua azienda", as
 
 await check("il portale resta fuori dagli indici", async () => {
   const p = await ctx.newPage();
-  await p.goto(collegamento, { waitUntil: "networkidle" });
+  await p.goto(sulBersaglio(collegamento), { waitUntil: "networkidle" });
   const robots = await p.locator('meta[name="robots"]').getAttribute("content");
   await p.close();
   if (!/noindex/i.test(robots ?? "")) throw new Error("meta robots: " + robots);
@@ -140,7 +155,7 @@ await check("la revoca chiude l'accesso all'istante, e lo dice con la parola giu
   await page.waitForTimeout(3500);
   const anonimo = await browser.newContext();
   const p = await anonimo.newPage();
-  await p.goto(collegamento, { waitUntil: "networkidle" });
+  await p.goto(sulBersaglio(collegamento), { waitUntil: "networkidle" });
   const t = await p.locator("main").innerText();
   await anonimo.close();
   if (!/disattivato/i.test(t)) throw new Error("non dice che e' stato disattivato: " + t.slice(0, 120));
