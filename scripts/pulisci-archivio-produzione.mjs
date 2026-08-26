@@ -87,7 +87,20 @@ if (collegate.length || n) {
 console.log("prova: 0 organizzazioni in produzione, 0 snapshot che le riferiscono → orfane\n");
 
 // ── cosa c'e' davvero da togliere ────────────────────────────────────────────
-const h = { Authorization: `Bearer ${P_KEY}`, apikey: P_KEY, "Content-Type": "application/json" };
+// ⚠️ DUE INSIEMI DI INTESTAZIONI, e la differenza costa un giro intero.
+//
+// La firma e' una POST con un corpo JSON; la cancellazione e' una DELETE SENZA corpo.
+// Riusando le stesse intestazioni per entrambe, Supabase riceve una DELETE che dichiara
+// `Content-Type: application/json` e non porta niente, e risponde:
+//
+//   400 «Body cannot be empty when content-type is set to 'application/json'»
+//
+// Tutte e 105 le cancellazioni sono fallite cosi', e il referto diceva solo «400».
+// Provato in sviluppo a variabile singola: stessa DELETE, con l'intestazione 400, senza
+// 200 «Successfully deleted».
+const hLettura = { Authorization: `Bearer ${P_KEY}`, apikey: P_KEY, "Content-Type": "application/json" };
+const hScrittura = { Authorization: `Bearer ${P_KEY}`, apikey: P_KEY };
+const h = hLettura;
 const presenti = [];
 for (const k of chiavi) {
   const r = await fetch(`${P_URL}/storage/v1/object/sign/media/${k}`, {
@@ -116,9 +129,14 @@ if (!CANCELLA) {
 let tolte = 0;
 const falliti = [];
 for (const k of presenti) {
-  const d = await fetch(`${P_URL}/storage/v1/object/media/${k}`, { method: "DELETE", headers: h });
+  const d = await fetch(`${P_URL}/storage/v1/object/media/${k}`, {
+    method: "DELETE",
+    headers: hScrittura,
+  });
   if (d.ok) tolte++;
-  else falliti.push(`${d.status} ${k}`);
+  // ⚠️ Il MOTIVO, non solo il codice. Un «400» nudo ripetuto 105 volte non dice da che
+  // parte guardare; il messaggio del server diceva esattamente qual era il difetto.
+  else falliti.push(`${d.status} ${(await d.text()).slice(0, 90)} — ${k}`);
 }
 
 // ⚠️ Si RIVERIFICA: la risposta di una DELETE dice che il server l'ha accettata, non che
