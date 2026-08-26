@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireActiveOrg } from "@/features/auth/guards";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
+import { TOURS } from "@/lib/tour/registry";
 
 export const dynamic = "force-dynamic";
 
@@ -50,8 +51,17 @@ export async function GET() {
   const TETTO = 6;
   const scelti = new Set<string>();
 
+  // ⚠️ Solo i moduli che hanno DAVVERO un tour. Il dodicesimo percorso — il sistema di
+  // gestione ESG — non ne ha ancora uno, e finora non finiva nell'itinerario soltanto
+  // per l'ordine in cui il registro elenca i moduli: bastava spostare una riga perché il
+  // giro guidato portasse il nuovo cliente su una pagina che non gli spiega niente, e il
+  // collaudo del benvenuto — che pretende un tour per ogni tappa — sarebbe diventato
+  // rosso per un motivo lontano da dove qualcuno stava lavorando.
+  const conTour = new Set(TOURS.map((t) => t.pageId));
+
   /** La tappa di un modulo, o `null` se non è visitabile. */
   const tappaDi = (m: (typeof MODULI_AZIENDA)[number]): Tappa | null => {
+    if (!conTour.has(m.href)) return null;
     const stato = demo?.moduli.find((x) => x.modulo === m.href);
     // Un modulo mai avviato non si visita: mostrerebbe la pagina di creazione, non il
     // modulo. La presentazione fa vedere il prodotto pieno, non i suoi vuoti.

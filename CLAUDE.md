@@ -1460,6 +1460,53 @@ Gate: typecheck · build · **1173 test** senza pipe · `qa -- legale` **26/26**
 `codice-documento` 22/22 · `tutto-pubblico` 37/37 · `tutto-demo` 68/68 · `tutto-attivo`
 30/30 · `sgesg-documenti` 10/10 · `scheda-cliente` 16/16 · `agenda` 16/16 · console pulita.
 
+**Fase 10 (2026-08-26) — chiusura del piano EvalisDeck × ESG Nexus**
+
+**La suite gira verde anche con `RLS_FORCE_ROLE=app_rls`**, che è come gira la produzione:
+**1173 test in entrambe le modalità**. È il gate che conta più di tutti, perché tutte le
+tabelle aggiunte in queste dieci fasi — contatti, programma ESG, fasi, schede, agenda,
+compensi, incassi — hanno policy nuove, e una policy che non scatta si scopre solo così: in
+sviluppo la connessione è privilegiata e le policy non si vedono mai.
+
+⚠️ **E il primo tentativo è fallito per un motivo che non era il codice**: 111 file su 111
+con «Vitest failed to find the runner» e «no tests». Girava insieme a un `npm run build`.
+Una suite che fallisce **tutti** i file in raccolta, senza eseguirne uno, sta dicendo che
+l'ambiente è in collisione — non che il prodotto è rotto. Stessa famiglia dell'`ENOTFOUND`
+a raffica: si verifica e si rilancia da soli, non si corregge.
+
+**Il giro di benvenuto salta i moduli senza tour, e ora è strutturale.** Il dodicesimo
+percorso non ha un tour: finora restava fuori dall'itinerario **soltanto per l'ordine in
+cui il registro elenca i moduli**, e bastava spostare una riga perché il giro portasse un
+cliente nuovo su una pagina che non gli spiega niente — facendo diventare rosso il collaudo
+del benvenuto per un motivo lontano da dove qualcuno stava lavorando. Ora l'itinerario
+chiede al registro dei tour chi ne ha uno.
+
+**`PRE-LAUNCH.md` dichiara i tre debiti aperti** invece di tacerli: le 21 schede-registro
+del metodo, la tipizzazione I/R/O coi questionari a stakeholder, e il tour mancante del
+dodicesimo percorso. Ciascuno con il modo di verificarlo.
+
+---
+
+**Il piano in dieci fasi è chiuso.** Il prodotto ha **dodici percorsi** in **tre gruppi**
+(Ecosostenibilità · Compliance · Sistemi di gestione), più un livello di studio che prima
+non esisteva: rubrica dei contatti, agenda, compensi e andamento. Diciannove tipi di
+documento, tutti dalla stessa strozzatura.
+
+⚠️ **Il cancello finale del piano diceva «tutti i collaudi in produzione», e NON è stato
+fatto** — per una ragione, non per dimenticanza: **niente di questo lavoro è stato
+distribuito**. Lanciare i collaudi contro la produzione oggi proverebbe il build vecchio, e
+quelli che scrivono creerebbero utenti e aziende veri nel database che incassa. Il rilascio
+è una decisione del committente. Tutto il resto del cancello è verde in locale, sul build
+di produzione.
+
+Gate finale: typecheck · build · **1173 test in entrambe le modalità** · `qa -- legale`
+26/26 · `codice-documento` 22/22 · `tutto-pubblico` 37/37 · `tutto-demo` 68/68 ·
+`tutto-attivo` 30/30 · `benvenuto` 12/12 · `demo-completa` 9/9 · `guida` 7/7 ·
+`portafoglio-aggiorna` 5/5 · `sgesg-percorso` 20/20 · `sgesg-schede` 14/14 · `sgesg-ponti`
+9/9 · `sgesg-documenti` 10/10 · `scheda-cliente` 16/16 · `agenda` 16/16 · `compensi` 12/12 ·
+`fornitore` 28/28 · foto in chiaro e scuro guardate, console pulita, zero sfondamento da
+telefono.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

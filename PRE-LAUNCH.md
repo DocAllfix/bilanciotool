@@ -275,6 +275,47 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0-esg. ⚠️ **APERTO — il metodo ESG (percorso 12) è completo a metà, e il prodotto lo dice.**
+
+   Le 63 schede del metodo sono in piedi, ma **ventuno** sono registri a righe — Risk
+   Register, Matrice RACI, Valutazione IRO, Catalogo Iniziative, Ranking, Content Index —
+   e non si compilano: sono tabelle, non insiemi di campi, e il modello dichiarativo non
+   le regge. Il prodotto **non lo nasconde**: la scheda dice «questa scheda è una tabella
+   di lavoro», il server rifiuta di scriverci, il catalogo le marca con `haLogica`, e i
+   documenti che ne discendono dichiarano in apertura che cosa non contengono.
+
+   Perché non è un difetto da correggere in fretta: uno snapshot è **immutabile**, quindi
+   un documento pubblicato oggi porterà per sempre la frase che dichiara ciò che manca —
+   ed è accurato. Quando i registri esisteranno, le versioni successive li includeranno.
+
+   → *verifica:* `npm run qa -- sgesg-schede` (le schede con logica si dichiarano e il
+   server le rifiuta) · `npm run qa -- sgesg-documenti` (il rapporto di diagnosi dichiara
+   di non portare il registro delle lacune) · `sgesg-documenti.db.test.ts`.
+
+0-septies. ⚠️ **APERTO — la tipizzazione I/R/O e i questionari a stakeholder.**
+
+   Il piano li collocava dentro la fase 02 del metodo (materialità). Il **ponte** a quella
+   fase funziona e porta nella doppia materialità che il prodotto ha già; mancano la
+   tipizzazione Impatto/Rischio/Opportunità con prospettiva, e la raccolta di questionari
+   presso stakeholder interni ed esterni.
+
+   Il secondo è il più delicato e va fatto **accanto** al lavoro legale, non prima: è un
+   sotto-sistema di raccolta verso **persone fuori dal prodotto**, cioè la stessa
+   questione di privacy dei contatti (persone fisiche che non sono utenti), che
+   l'informativa ha appena imparato a dichiarare.
+
+   → *verifica:* `npm run qa -- sgesg-ponti` — il ponte a PROC-02 c'è ed è verde.
+
+0-tour. ⚠️ **APERTO — il dodicesimo percorso non ha un giro guidato.**
+
+   Undici moduli su dodici hanno un tour; il sistema di gestione ESG no. Non è un guasto:
+   l'itinerario del benvenuto **salta da solo** i moduli senza tour, e la regola è
+   strutturale, non un caso di ordinamento — prima ci finiva fuori solo perché il registro
+   elencava altri moduli per primi, e bastava spostare una riga per portare un cliente
+   nuovo su una pagina che non gli spiega niente.
+
+   → *verifica:* `npm run qa -- benvenuto` — ogni tappa dell'itinerario ha un tour vero.
+
 0-sexies. ✅ **CHIUSE il 24 agosto 2026 — le tre decisioni A9, A11, A14.** Il fascicolo
    di una segnalazione si **stampa** e non si pubblica (la ragione decisiva: il
    collegamento del portale è per azienda e non per documento); la **parte generale** del
