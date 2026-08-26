@@ -25,6 +25,7 @@ import {
   contatore,
   attendi,
   pretendiServerAggiornato,
+  pretendiPdfVero,
 } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -340,9 +341,8 @@ await agisci("il PDF si genera e non e' vuoto", async () => {
   const r = await page.request.get(`${BASE}/api/documenti/${snapshotId}/pdf`);
   if (!r.ok()) throw new Error(`HTTP ${r.status()}`);
   const buf = await r.body();
-  if (buf.subarray(0, 4).toString() !== "%PDF") throw new Error("non e' un PDF");
-  if (buf.length < 40_000) throw new Error(`solo ${buf.length} byte`);
-  console.log(`       ${Math.round(buf.length / 1024)} KB`);
+  const { byte, pagine } = pretendiPdfVero(buf);
+  console.log(`       ${Math.round(byte / 1024)} KB · ${pagine} pagine`);
 });
 
 // ─── il confine di tenant ────────────────────────────────────────────────────

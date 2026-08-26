@@ -129,6 +129,41 @@ export async function attraversaProtezione(page) {
  * Sta QUI e non ricopiato in trentasette file: un elenco di rumore che vive in
  * trentasette copie diverge alla prima aggiunta.
  */
+/**
+ * Il PDF e' DAVVERO il documento, non una pagina qualunque stampata bene.
+ *
+ * ⚠️ Nasce da un difetto che i controlli non hanno visto per un giro intero. Il
+ * generatore apre il PROPRIO indirizzo con Chromium; su un'anteprima protetta riceveva
+ * la pagina di accesso di Vercel e stampava quella. Il risultato: un PDF valido, byte
+ * magici giusti, 141 KB — e passava «il PDF si genera e non e' vuoto» a occhi chiusi.
+ *
+ * Due documenti DIVERSI uscivano di 141.714 byte identici, ed e' li' che si e' visto.
+ *
+ * La domanda giusta non e' «quanto pesa» ma «quante pagine ha»: i documenti di questo
+ * prodotto sono tutti di piu' pagine, una pagina di accesso e' una sola. Il conteggio si
+ * legge dal PDF senza librerie, dal `/Count` dell'albero delle pagine.
+ */
+export function pagineDelPdf(buf) {
+  const t = buf.toString("latin1");
+  const conteggi = [...t.matchAll(/\/Count\s+(\d+)/g)].map((m) => Number(m[1]));
+  return conteggi.length ? Math.max(...conteggi) : 0;
+}
+
+/** Solleva se il PDF non e' un documento vero. */
+export function pretendiPdfVero(buf, { pagineMinime = 2, byteMinimi = 40_000 } = {}) {
+  if (buf.subarray(0, 4).toString() !== "%PDF") throw new Error("non e' un PDF");
+  if (buf.length < byteMinimi) throw new Error(`solo ${buf.length} byte`);
+  const pagine = pagineDelPdf(buf);
+  if (pagine < pagineMinime) {
+    throw new Error(
+      `${pagine} pagina/e: troppo poche per un documento. ` +
+        "Su un'anteprima protetta questo e' il sintomo di Chromium che ha stampato la " +
+        "pagina di accesso di Vercel invece del documento.",
+    );
+  }
+  return { byte: buf.length, pagine };
+}
+
 export function rumoreDiPiattaforma(testo) {
   return /vercel\.live|_next-live\/feedback/.test(String(testo));
 }
