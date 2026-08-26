@@ -17,8 +17,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Copy, Pencil, Plus, Trash2 } from "lucide-react";
+import { Copy, Pencil, Plus } from "lucide-react";
 import type { Catalogo, Inventario, InventarioBreve, Riga, StatoWizard } from "./types";
+import { BottoneElimina } from "@/components/comune/bottone-elimina";
 
 // Passo 3 — Dati di attività: una riga per sorgente e sito.
 // L'anteprima usa LE STESSE funzioni pure del server (src/lib/calc): mai
@@ -210,7 +211,12 @@ export function PassoDati({
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="icon" aria-label="Modifica" onClick={() => apriModifica(r)}><Pencil className="size-3.5" /></Button>
                         <Button variant="ghost" size="icon" aria-label="Duplica" onClick={async () => { await duplicateActivityRowAction(companyId, r.id); router.refresh(); }}><Copy className="size-3.5" /></Button>
-                        <Button variant="ghost" size="icon" aria-label="Elimina" onClick={async () => { if (confirm("Eliminare la voce?")) { await deleteActivityRowAction(companyId, r.id); router.refresh(); } }}><Trash2 className="size-3.5" /></Button>
+                        <BottoneElimina
+                          etichetta="Elimina"
+                          titolo="Eliminare questa voce?"
+                          descrizione={`«${r.descrizione || "voce senza descrizione"}» esce dall'inventario, e i totali si ricalcolano. I documenti già pubblicati non cambiano.`}
+                          onConferma={async () => { await deleteActivityRowAction(companyId, r.id); router.refresh(); }}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -252,7 +258,7 @@ export function PassoDati({
                       });
                     }}
                   >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger aria-label="Categoria"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {catalogo.categorie.map((c) => <SelectItem key={c.key} value={c.key}>Cat. {c.key} — {c.nome}</SelectItem>)}
                     </SelectContent>
@@ -261,7 +267,7 @@ export function PassoDati({
                 <div className="space-y-1.5">
                   <Label>Sorgente</Label>
                   <Select value={bozza.sourceTypeKey} onValueChange={(v) => setBozza({ ...bozza, sourceTypeKey: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger aria-label="Sorgente"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {sorgentiCat.map((s) => <SelectItem key={s.key} value={s.key}>{s.nome}</SelectItem>)}
                     </SelectContent>
@@ -271,7 +277,7 @@ export function PassoDati({
               <div className="space-y-1.5">
                 <Label>Fattore di emissione</Label>
                 <Select value={bozza.factorKey ?? "custom"} onValueChange={applicaFattore}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger aria-label="Fattore di emissione"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {gruppi.map((g) => (
                       <div key={g}>
@@ -335,7 +341,7 @@ export function PassoDati({
                 <div className="space-y-1.5">
                   <Label>Qualità del dato</Label>
                   <Select value={bozza.dq} onValueChange={(v) => setBozza({ ...bozza, dq: v as DqLevel })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger aria-label="Qualità del dato"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {(Object.keys(DQ_LEVELS) as DqLevel[]).map((k) => (
                         <SelectItem key={k} value={k}>{DQ_LEVELS[k].nome} — ±{DQ_LEVELS[k].inc}%</SelectItem>

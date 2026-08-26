@@ -124,7 +124,7 @@ export function PassoOrganizzazione({
                 router.refresh();
               }}
             >
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label="Standard adottato"><SelectValue /></SelectTrigger>
               <SelectContent>{STANDARDS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
             </Select>
           </div>

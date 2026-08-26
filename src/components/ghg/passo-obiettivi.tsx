@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2 } from "lucide-react";
 import type { Inventario, InventarioBreve, StatoWizard } from "./types";
+import { BottoneElimina } from "@/components/comune/bottone-elimina";
 
 // Passo 6 — Anno base e obiettivi di riduzione. L'anno base è il metro di ogni
 // confronto: si sceglie, si motiva e si fissa in anticipo la regola di ricalcolo.
@@ -70,7 +70,7 @@ export function PassoObiettivi({
                 router.refresh();
               }}
             >
-              <SelectTrigger data-slot="kpi"><SelectValue /></SelectTrigger>
+              <SelectTrigger data-slot="kpi" aria-label="Periodo di riferimento"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {[...new Set([inventario.annoBase, ...inventari.map((i) => i.anno)])].sort().map((a) => (
                   <SelectItem key={a} value={String(a)}>{a}</SelectItem>
@@ -112,7 +112,7 @@ export function PassoObiettivi({
               <div className="space-y-1.5">
                 <Label>Ambito</Label>
                 <Select name="ambito" defaultValue="12">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger aria-label="Ambito dell'obiettivo"><SelectValue /></SelectTrigger>
                   <SelectContent>{AMBITI.map((a) => <SelectItem key={a.v} value={a.v}>{a.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
@@ -150,12 +150,12 @@ export function PassoObiettivi({
                       {o.note ? ` · ${o.note}` : ""}
                     </p>
                   </div>
-                  <Button
-                    variant="ghost" size="icon" aria-label="Elimina obiettivo"
-                    onClick={async () => { if (confirm("Eliminare l'obiettivo?")) { await deleteTargetAction(companyId, o.id); router.refresh(); } }}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
+                  <BottoneElimina
+                    etichetta="Elimina obiettivo"
+                    titolo="Eliminare questo obiettivo?"
+                    descrizione={`«${o.nome}» sparisce dal percorso di riduzione. I documenti già pubblicati non cambiano.`}
+                    onConferma={async () => { await deleteTargetAction(companyId, o.id); router.refresh(); }}
+                  />
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div><dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Anno base</dt><dd className="text-lg font-semibold" data-slot="kpi">{o.base ? fmtNum(o.base, 1) : "—"}</dd></div>

@@ -5,7 +5,7 @@ import { user, organization, member, orgEntitlement, company, auditLog } from "@
 import { createReportProject, updateProfilo, setSoglia } from "@/features/report/projects";
 import { setTopicScore, getMateriality, getAtecoSuggestions } from "@/features/report/materiality";
 import { setKpiValue, getKpiWithDerived } from "@/features/report/kpi";
-import { setTopicManagement } from "@/features/report/policies";
+import { setTopicManagement, setTopicManagementField, listTopicManagement } from "@/features/report/policies";
 import { saveChapter, listChapters } from "@/features/report/chapters";
 import { getGapAnalysis } from "@/features/report/gap";
 import { getEmissionsBridge, checkCoherence } from "@/features/report/ghg-bridge";
@@ -72,6 +72,53 @@ describe.skipIf(!url)("modulo Bilancio — ciclo completo", () => {
     await expect(
       setTopicManagement(userId, orgId, projectId, { topicKey: "T03", politica: "x", azioni: "y" }),
     ).rejects.toThrow(/non è materiale/i);
+  });
+
+  it("⚠️ salvare un campo NON cancella gli altri cinque", async () => {
+    // QUARTA OCCORRENZA della regola più costosa di questo progetto: «mai rimandare la
+    // riga intera da props». Prima l'energetico (salvare il costo azzerava la quantità),
+    // poi la materialità (la rilevanza finanziaria azzerava l'impatto), poi i contatti
+    // (il secondo si dichiarava riferimento scalzando il primo). Qui il client leggeva la
+    // riga da props stantie, ci fondeva la modifica e la rimandava tutta: chi scriveva la
+    // politica e subito dopo le azioni — prima che il rinfresco fosse atterrato — si
+    // vedeva cancellare la politica appena scritta.
+    //
+    // Trovato dal collaudo per comando del Bilancio, il 26 agosto 2026: il modulo non ne
+    // aveva mai avuto uno, e il gate visivo della Fase 7 non preme questi campi.
+    // T01 porta già politica e azioni dal test precedente: scrivere un TERZO campo non
+    // deve toccarle. È la prova diretta, sui dati che ci sono davvero.
+    await setTopicManagementField(userId, orgId, projectId, { topicKey: "T01", campo: "responsabile", valore: "Direzione tecnica" });
+    await setTopicManagementField(userId, orgId, projectId, { topicKey: "T01", campo: "target", valore: "−30% al 2030" });
+
+    const righe = await listTopicManagement(userId, orgId, projectId);
+    const t01 = righe.find((r) => r.topicKey === "T01");
+    expect(t01?.responsabile).toBe("Direzione tecnica");
+    expect(t01?.target).toBe("−30% al 2030");
+    expect(t01?.politica).toBe("Politica energia");
+    expect(t01?.azioni).toBe("Fotovoltaico 200 kWp");
+  });
+
+  it("un campo si può svuotare, e svuota solo se stesso", async () => {
+    await setTopicManagementField(userId, orgId, projectId, { topicKey: "T01", campo: "azioni", valore: "" });
+    const righe = await listTopicManagement(userId, orgId, projectId);
+    const t01 = righe.find((r) => r.topicKey === "T01");
+    expect(t01?.azioni).toBeNull();
+    expect(t01?.politica).toBe("Politica energia");
+    expect(t01?.responsabile).toBe("Direzione tecnica");
+
+    // ⚠️ Si rimette com'era. I test di questo file condividono il fixture e girano in
+    // ordine: lasciare `azioni` vuoto faceva fallire la gap-analysis più sotto, che le
+    // conta fra le lacune. Un test che sporca il banco accusa il prodotto al posto suo.
+    await setTopicManagementField(userId, orgId, projectId, { topicKey: "T01", campo: "azioni", valore: "Fotovoltaico 200 kWp" });
+  });
+
+  it("il campo è un dominio chiuso: un nome inventato viene respinto", async () => {
+    // ⚠️ Il nome del campo finisce dentro `set({ [campo]: … })`: se arrivasse dal client
+    // senza un dominio chiuso, sarebbe il client a scegliere quale colonna scrivere.
+    await expect(
+      // @ts-expect-error — è esattamente ciò che il dominio chiuso deve impedire
+      setTopicManagementField(userId, orgId, projectId, { topicKey: "T01", campo: "organizationId", valore: "altro" }),
+    ).rejects.toThrow();
   });
 
   it("KPI doppio anno: i derivati coincidono col motore (golden)", async () => {

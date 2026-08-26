@@ -1507,6 +1507,98 @@ Gate finale: typecheck · build · **1173 test in entrambe le modalità** · `qa
 `fornitore` 28/28 · foto in chiaro e scuro guardate, console pulita, zero sfondamento da
 telefono.
 
+**Il giro con i DevTools su ogni comando (2026-08-26)** — il collaudo che il committente
+aveva chiesto **per ultimo**, dopo che tutti i prototipi fossero portati. Adesso lo sono.
+
+**Due moduli su dodici non erano mai stati percorsi comando per comando**, ed erano i due
+più vecchi: **GHG** e **Bilancio**. Il GHG aveva l'e2e col golden 24.694 e il golden del
+motore; il Bilancio aveva un gate *visivo* che fotografa i sei passi e semina i punteggi
+direttamente nel database «perché l'interazione UI è già coperta dall'e2e». Nessuno dei due
+guardava le tre spie a ogni gesto. È lo stesso scarto che tenne ISO 37001 scoperto per due
+fasi, e **si vede solo elencando i collaudi accanto ai moduli**, non leggendo il codice.
+
+Scritti `qa -- ghg-percorso` (24 controlli) e `qa -- bilancio-percorso` (20). Hanno trovato
+**quattro difetti veri**, tutti invisibili al compilatore e ai collaudi funzionali.
+
+1. ⚠️ **Salvare un campo delle politiche cancellava gli altri cinque** — quarta occorrenza
+   della regola più costosa di questo progetto. Il client leggeva la riga da
+   `gestionePer.get(topicKey)`, cioè **dalle props**, ci fondeva la modifica e la
+   rimandava tutta; il server scriveva tutti e sei i campi con quello che riceveva. Chi
+   scriveva la politica e passava subito alle azioni — prima che il rinfresco fosse
+   atterrato — si vedeva cancellare la politica appena salvata. Prima era stata la
+   quantità dell'energetico, poi l'impatto della materialità, poi il contatto di
+   riferimento. Ora `setTopicManagementField`: un campo per volta, dominio **chiuso**
+   (il nome finisce in `set({[campo]: …})`), e il valore precedente il browser non lo
+   conosce nemmeno. `setTopicManagement` resta perché la usa l'import del prototipo, che
+   la riga intera ce l'ha davvero.
+2. ⚠️ **Non c'era modo di ripristinare un fattore di emissione sovrascritto.** La
+   protezione anti-orfani, scritta per i fattori **custom**, valeva anche per gli
+   **override**: e si sovrascrive il fattore che si **usa** — è il motivo per cui lo si
+   sovrascrive — quindi «Ripristina valore di piattaforma» rispondeva «Fattore in uso:
+   non eliminabile», per sempre, senza alternative. Il commento nel codice diceva già la
+   ragione giusta («il riferimento resterebbe orfano»), che però vale solo per una chiave
+   che esiste **solo** in `ghg_org_factor`. La chiave di un override è quella di
+   piattaforma: togliendolo il riferimento continua a risolvere, e il `fe` applicato è
+   congelato sulla riga, quindi nessun numero già inserito cambia. ⚠️ **Il test
+   asseriva il difetto**, con un commento che lo spiegava: era passato per tredici fasi.
+3. ⚠️ **Quattro dialoghi nativi rimasti**, dopo che il 13 agosto erano stati tolti da un
+   gesto solo e dati per chiusi: tre `confirm()` (elimina voce e obiettivo del GHG,
+   elimina elemento del racconto) e un `alert()` sul fallimento della generazione del PDF
+   — cioè proprio dove il messaggio spiega perché il documento non è arrivato, e alcuni
+   browser l'`alert()` lo **sopprimono**. Ora un `BottoneElimina` unico col dialogo del
+   prodotto, che può anche **dire che cosa si perde**: un `confirm()` non lo poteva.
+4. ⚠️ **Nove comboboxes senza nome accessibile**, tutte in GHG e Bilancio. Un
+   `<Label>Categoria</Label>` messo **sopra** un `<Select>` è un'etichetta visibile e
+   nient'altro: niente `htmlFor`, il trigger è un `<button>` della libreria, e chi usa un
+   lettore di schermo sente annunciare il **valore**, non la domanda.
+
+**Regole nate qui:**
+- **Un collaudo che vuole cogliere un dialogo nativo NON deve registrare
+  `page.on("dialog")`.** Playwright li scarta da solo: senza gestore un `confirm()`
+  risponde sempre «no», la riga resta, e il controllo diventa rosso — che è esattamente
+  ciò che deve succedere. Registrare il gestore fa sparire il sintomo **insieme al
+  difetto**, ed è il motivo per cui quei tre erano sopravvissuti ai collaudi che li
+  attraversavano.
+- **Un test che asserisce il difetto lo protegge meglio di nessun test.** Il ripristino
+  del fattore era coperto, il comportamento sbagliato era scritto nero su bianco con la
+  sua motivazione, e nessuno l'ha più messo in discussione. Quando si restringe un
+  divieto, il ramo che resta va **riprovato con un caso che possa davvero scattare**:
+  togliendo `gas_smc`, il ramo «in uso» era rimasto senza un solo caso capace di farlo
+  fallire.
+- **Un test che sporca il banco accusa il prodotto al posto suo.** Svuotare `azioni` su
+  T01 faceva fallire la gap-analysis più sotto, che le conta fra le lacune: i test di quel
+  file condividono il fixture e girano in ordine. Si rimette com'era.
+- **Gli elenchi da tenere allineati a mano prima o poi non lo sono più.** `spegniTour`
+  portava le dodici chiavi dei tour ricopiate, con sopra un commento che diceva «questo
+  elenco DEVE crescere insieme al registro, e nulla lo obbliga». Ora le **legge** dal
+  registro e **solleva** se non ne trova: un banco di prova che si disarma da solo in
+  silenzio è peggio di uno che non parte.
+- **Un `next start` che muore con `EADDRINUSE` lascia rispondere quello di prima.** Terza
+  volta. `pretendiServerAggiornato` lo coglie chiedendo il manifesto del build corrente;
+  la porta va vista **libera** prima di riavviare, non presunta tale.
+- **Un heredoc di shell non regge un file fitto di apostrofi e template literal**: si usa
+  lo strumento di scrittura, invece di combattere il quoting.
+
+🔴 **E un reperto sull'ambiente, misurato e non dedotto: l'archivio dello sviluppo è
+quello della PRODUZIONE.** Vedi `PRE-LAUNCH.md`, voce `0-storage`. La Fase 0 del 22 agosto
+ha separato i database e ha lasciato indietro i file: `DATABASE_URL` punta a
+`dsjigmjvvrpifliqdgnx`, `SUPABASE_URL` a `hahtljrexrngtfsplbsz` — che è la produzione. In
+una sola sessione di collaudi locali sono finiti **15 PDF** nel secchio della produzione,
+verificati firmandone le chiavi (HTTP 200). Non è una fuga di dati — le chiavi sono sempre
+prefissate con l'organizzazione — ma è la stessa forma del reperto sulle chiavi Stripe:
+**l'ambiente non è quello che il documento dichiara**. Il rimedio richiede le chiavi del
+progetto di sviluppo, che in locale non ci sono: è una decisione del committente.
+
+Gate: typecheck · build · **1178 test** in entrambe le modalità, `RLS_FORCE_ROLE=app_rls`
+compresa · `qa -- ghg-percorso` **24/24** · `qa -- bilancio-percorso` **20/20** · le
+guardie nuove (`comandi-nativi-pure`) messe in rosso di proposito e viste fallire sui file
+giusti · regressioni `tutto-demo` 68/68, `mog231-percorso` 20/20, `anticorruzione-percorso`
+27/27, `segnalazioni-percorso` 47/47, `sgiqas-percorso` 32/32, `sa8000-percorso` 31/31,
+`filiera-percorso` 35/35, `soa-percorso` 34/34, `energetico` 40/40, `fornitore` 28/28,
+`sgesg-percorso` 20/20, `sgesg-schede` 14/14, `sgesg-ponti` 9/9, `sgesg-documenti` 10/10,
+`scheda-cliente` 16/16, `agenda` 16/16, `compensi` 12/12, `guida` 7/7, `demo-completa` 9/9,
+`portafoglio-aggiorna` 5/5, `bilancio` (gate visivo) — console pulita ovunque.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

@@ -120,14 +120,33 @@ export async function upsertOrgFactor(
 export async function deleteOrgFactor(userId: string, orgId: string, key: string): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
   await withTenant({ userId, orgId }, async (tx) => {
-    // Un fattore custom referenziato da voci esistenti non si elimina: le voci
-    // conservano fe congelato, ma il riferimento resterebbe orfano nella UI.
-    const inUso = await tx
-      .select({ id: ghgActivityRow.id })
-      .from(ghgActivityRow)
-      .where(and(eq(ghgActivityRow.organizationId, orgId), eq(ghgActivityRow.factorKey, key)))
+    // ⚠️ LA PROTEZIONE ANTI-ORFANI VALE SOLO PER I CUSTOM PURI.
+    //
+    // Un fattore custom ha una chiave che esiste SOLO qui: eliminandolo, il `factor_key`
+    // delle voci che lo citano punterebbe nel vuoto. Le voci conservano il `fe` congelato
+    // — quindi i numeri non cambiano — ma il riferimento resterebbe orfano nella UI.
+    //
+    // Un OVERRIDE e' un'altra cosa: la sua chiave e' quella di piattaforma. Togliendolo,
+    // il riferimento continua a risolvere e non si orfana niente. Applicare anche a lui
+    // questa protezione chiudeva l'unica via d'uscita — si sovrascrive il fattore che si
+    // USA, ed e' il motivo per cui lo si sovrascrive — e «Ripristina valore di
+    // piattaforma» rispondeva «non eliminabile» per sempre, senza alternative.
+    const [esistente] = await tx
+      .select({ baseFactorKey: ghgOrgFactor.baseFactorKey })
+      .from(ghgOrgFactor)
+      .where(and(eq(ghgOrgFactor.organizationId, orgId), eq(ghgOrgFactor.key, key)))
       .limit(1);
-    if (inUso.length) throw new Error("Fattore in uso in una o più voci: non eliminabile");
+    if (!esistente) throw new Error("Override inesistente");
+
+    if (esistente.baseFactorKey === null) {
+      const inUso = await tx
+        .select({ id: ghgActivityRow.id })
+        .from(ghgActivityRow)
+        .where(and(eq(ghgActivityRow.organizationId, orgId), eq(ghgActivityRow.factorKey, key)))
+        .limit(1);
+      if (inUso.length) throw new Error("Fattore in uso in una o più voci: non eliminabile");
+    }
+
     const deleted = await tx
       .delete(ghgOrgFactor)
       .where(and(eq(ghgOrgFactor.organizationId, orgId), eq(ghgOrgFactor.key, key)))

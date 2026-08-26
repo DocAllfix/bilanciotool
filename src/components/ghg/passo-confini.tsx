@@ -94,7 +94,7 @@ export function PassoConfini({ companyId, inventario }: { companyId: string; inv
             <div className="space-y-1.5">
               <Label>Approccio di consolidamento</Label>
               <Select defaultValue={b.consolidamento || CONSOLIDAMENTI[0]} onValueChange={(v) => salva({ consolidamento: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger aria-label="Approccio di consolidamento"><SelectValue /></SelectTrigger>
                 <SelectContent>{CONSOLIDAMENTI.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">Il criterio scelto va applicato in modo uniforme a tutte le unità e mantenuto negli anni.</p>
@@ -118,7 +118,7 @@ export function PassoConfini({ companyId, inventario }: { companyId: string; inv
             <div className="space-y-1.5">
               <Label>Stato della verifica</Label>
               <Select defaultValue={b.verifica || VERIFICHE[0]} onValueChange={(v) => salva({ verifica: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger aria-label="Stato della verifica"><SelectValue /></SelectTrigger>
                 <SelectContent>{VERIFICHE.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </div>

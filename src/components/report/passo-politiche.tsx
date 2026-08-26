@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setTopicManagementAction } from "@/features/report/actions";
+import { setTopicManagementFieldAction } from "@/features/report/actions";
+import type { CampoGestione } from "@/features/report/policies";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,19 +37,18 @@ export function PassoPolitiche({
     );
   }
 
-  async function salva(topicKey: string, patch: Record<string, string>) {
+  // ⚠️ UN CAMPO PER VOLTA. Qui prima si leggeva la riga da `gestionePer` — cioe' dalle
+  // PROPS — le si fondeva sopra la modifica e la si rimandava tutta. Chi scriveva la
+  // politica e passava subito alle azioni, prima che il rinfresco fosse atterrato, si
+  // vedeva cancellare la politica appena salvata: le props portavano ancora il vuoto.
+  //
+  // E' la quarta volta che questo progetto incontra lo stesso difetto (quantita'
+  // dell'energetico, impatto della materialita', contatto di riferimento). Il valore
+  // precedente non lo deve conoscere il browser: il database non tocca le colonne che
+  // nessuno ha nominato.
+  async function salva(topicKey: string, campo: CampoGestione, valore: string) {
     setErrore(null);
-    const attuale = gestionePer.get(topicKey);
-    const esito = await setTopicManagementAction(companyId, progetto.id, {
-      topicKey,
-      politica: attuale?.politica ?? "",
-      azioni: attuale?.azioni ?? "",
-      target: attuale?.target ?? "",
-      annoBase: attuale?.annoBase ?? "",
-      annoTarget: attuale?.annoTarget ?? "",
-      responsabile: attuale?.responsabile ?? "",
-      ...patch,
-    });
+    const esito = await setTopicManagementFieldAction(companyId, progetto.id, { topicKey, campo, valore });
     if (!esito.ok) return setErrore(esito.errore);
     router.refresh();
   }
@@ -76,7 +76,7 @@ export function PassoPolitiche({
                     className="min-h-20"
                     placeholder="Quale documento la contiene e cosa stabilisce"
                     defaultValue={g?.politica ?? ""}
-                    onBlur={(e) => { if (e.target.value !== (g?.politica ?? "")) salva(t.key, { politica: e.target.value }); }}
+                    onBlur={(e) => { if (e.target.value !== (g?.politica ?? "")) salva(t.key, "politica", e.target.value); }}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -86,7 +86,7 @@ export function PassoPolitiche({
                     className="min-h-20"
                     placeholder="Interventi, investimenti, iniziative concrete"
                     defaultValue={g?.azioni ?? ""}
-                    onBlur={(e) => { if (e.target.value !== (g?.azioni ?? "")) salva(t.key, { azioni: e.target.value }); }}
+                    onBlur={(e) => { if (e.target.value !== (g?.azioni ?? "")) salva(t.key, "azioni", e.target.value); }}
                   />
                 </div>
               </div>
@@ -105,7 +105,7 @@ export function PassoPolitiche({
                       id={`${campo}-${t.key}`}
                       placeholder={placeholder}
                       defaultValue={g?.[campo] ?? ""}
-                      onBlur={(e) => { if (e.target.value !== (g?.[campo] ?? "")) salva(t.key, { [campo]: e.target.value }); }}
+                      onBlur={(e) => { if (e.target.value !== (g?.[campo] ?? "")) salva(t.key, campo, e.target.value); }}
                     />
                   </div>
                 ))}

@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ImagePlus, Sparkles, Trash2 } from "lucide-react";
+import { ImagePlus, Sparkles } from "lucide-react";
 import { TiptapEditor } from "./tiptap-editor";
 import type { CatalogoReport, ProgettoReport, StatoReport } from "./types";
 import { fileADataUrl } from "@/lib/immagini-client";
+import { BottoneElimina } from "@/components/comune/bottone-elimina";
 
 // Passo 5 — Racconto: capitoli con editor, bozze template-based (rule-based,
 // niente AI) e apparato visivo (fotografie + diagrammi generati dai dati).
@@ -154,10 +155,13 @@ export function PassoRacconto({
                           <SelectItem value="half">Metà colonna</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Button variant="ghost" size="icon" className="ml-auto" aria-label="Elimina elemento"
-                        onClick={async () => { if (confirm("Eliminare l'elemento?")) { await removeMediaAction(companyId, m.id); router.refresh(); } }}>
-                        <Trash2 className="size-3.5" />
-                      </Button>
+                      <BottoneElimina
+                        className="ml-auto"
+                        etichetta="Elimina elemento"
+                        titolo="Eliminare questo elemento?"
+                        descrizione="L'immagine esce dal capitolo e dall'archivio. I documenti già pubblicati non cambiano."
+                        onConferma={async () => { await removeMediaAction(companyId, m.id); router.refresh(); }}
+                      />
                     </div>
                     <Input
                       placeholder="Didascalia — cosa mostra e perché è rilevante"

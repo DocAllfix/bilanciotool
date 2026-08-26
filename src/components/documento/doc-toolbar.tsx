@@ -5,6 +5,7 @@ import { etichettaDocumento, nomeFileDocumento, type TipoDocumento } from "@/fea
 import { ArrowLeft, FileDown, Printer } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function DocToolbar({
   snapshotId,
@@ -40,7 +41,10 @@ export function DocToolbar({
               const res = await fetch(`/api/documenti/${snapshotId}/pdf`);
               if (!res.ok) {
                 const j = (await res.json().catch(() => null)) as { errore?: string } | null;
-                alert(j?.errore ?? "Generazione PDF non riuscita");
+                // ⚠️ Non `alert()`: alcuni browser lo SOPPRIMONO, e un errore riferito
+                // cosi' puo' non arrivare mai a chi lo deve leggere — proprio qui, dove
+                // il messaggio spiega perche' il documento non e' arrivato.
+                toast.error(j?.errore ?? "Generazione PDF non riuscita");
                 return;
               }
               const blob = await res.blob();

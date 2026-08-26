@@ -22,6 +22,8 @@
  * servizio esterno non configurato. `sentry.io` era gia' in questo elenco: il tunnel e'
  * la stessa cosa con un altro nome.
  */
+import { readFileSync } from "node:fs";
+
 const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supabase\.co|\/monitoraggio)/;
 
 /**
@@ -310,13 +312,34 @@ export async function apriModulo(page, nome, modulo) {
 // del velo. E' successo a `verifica-tutto-attivo`, che era l'unico a non farlo.
 //
 // I giri hanno un collaudo proprio (`qa -- benvenuto`): qui vanno tolti di mezzo.
-export async function spegniTour(
-  page,
-  // ⚠️ Questo elenco DEVE crescere insieme a `src/lib/tour/registry.ts`, e nulla lo
-  // obbliga: aggiungendo il tour del Modello 231 il velo e' tornato a bloccare i clic,
-  // e il collaudo del modulo e' morto al primo gesto. Da qui il ripiego qui sotto.
-  chiavi = ["portfolio", "ghg", "bilancio", "energetico", "fornitore", "soa", "anticorruzione", "mog231", "segnalazioni", "sgiqas", "sa8000", "filiera"],
-) {
+/**
+ * Le chiavi dei tour, LETTE DAL REGISTRO invece che ricopiate.
+ *
+ * ⚠️ Qui c'era un elenco scritto a mano, con sopra un commento che diceva «questo elenco
+ * DEVE crescere insieme a `src/lib/tour/registry.ts`, e nulla lo obbliga». Era gia'
+ * successo: aggiungendo il tour del Modello 231 il velo e' tornato a bloccare i clic, e
+ * il collaudo di quel modulo e' morto al primo gesto — accusando il prodotto di un
+ * difetto che era del velo. Un elenco che va tenuto allineato a mano prima o poi non lo
+ * e' piu', e il giorno in cui succede il referto indica il posto sbagliato.
+ *
+ * Il registro e' TypeScript e questo file e' `.mjs`: non lo si importa, lo si legge —
+ * come fa `extract-seed.mjs` con le costanti dei prototipi. Se la lettura non trova
+ * niente si SOLLEVA, invece di ripiegare su un elenco vuoto: un banco di prova che si
+ * disarma da solo in silenzio e' peggio di uno che non parte.
+ */
+function chiaviDeiTour() {
+  const testo = readFileSync("src/lib/tour/registry.ts", "utf8");
+  const chiavi = [...testo.matchAll(/pageId:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+  if (!chiavi.length) {
+    throw new Error(
+      "Nessun pageId in src/lib/tour/registry.ts: il formato e' cambiato e spegniTour " +
+        "starebbe per lasciare aperti i veli dei giri guidati, che intercettano i clic.",
+    );
+  }
+  return chiavi;
+}
+
+export async function spegniTour(page, chiavi = chiaviDeiTour()) {
   await page.evaluate((ks) => {
     for (const k of ks) {
       try { localStorage.setItem(`evalisdeck-tour:${k}`, "1"); } catch {}

@@ -5,7 +5,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { createReportProject, setCompanyImage, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
 import { setTopicScoreField, getAtecoSuggestions } from "./materiality";
 import { setKpiValue } from "./kpi";
-import { setTopicManagement } from "./policies";
+import { setTopicManagement, setTopicManagementField, type CampoGestione } from "./policies";
 import { addMedia, removeMedia, saveChapter, updateMedia } from "./chapters";
 import { importBilancioFromJson, type BilancioImportEsito } from "./import";
 import { latestContentSetId } from "@/features/ghg/inventories";
@@ -114,6 +114,28 @@ export async function setKpiValueAction(
   try {
     const s = await requireConsultant();
     await setKpiValue(s.userId, s.orgId, companyId, input);
+    revalidatePath(percorso(companyId));
+    return { ok: true };
+  } catch (e) {
+    return daErrore(e);
+  }
+}
+
+/**
+ * ⚠️ UN CAMPO PER VOLTA, ed e' la forma che il client deve usare.
+ *
+ * `setTopicManagementAction` scrive tutti e sei i campi con quello che riceve: chiamata
+ * con una riga letta da props stantie, cancella cio' che e' stato salvato un istante
+ * prima. Resta perche' la usa l'import del prototipo, che la riga intera ce l'ha davvero.
+ */
+export async function setTopicManagementFieldAction(
+  companyId: string,
+  projectId: string,
+  input: { topicKey: string; campo: CampoGestione; valore: string },
+): Promise<ActionEsito> {
+  try {
+    const s = await requireConsultant();
+    await setTopicManagementField(s.userId, s.orgId, projectId, input);
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

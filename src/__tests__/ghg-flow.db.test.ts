@@ -141,9 +141,31 @@ describe.skipIf(!url)("modulo GHG — ciclo completo", () => {
     expect(dopo.find((f) => f.key === "gas_smc")).toMatchObject({ fe: "1.984", origine: "override" });
     expect(dopo.find((f) => f.key === "bioetanolo_e85")?.origine).toBe("custom");
 
-    // gas_smc è referenziato dalle voci → l'override non si elimina
-    await expect(deleteOrgFactor(userId, orgId, "gas_smc")).rejects.toThrow(/in uso/i);
-    await expect(deleteOrgFactor(userId, orgId, "bioetanolo_e85")).resolves.toBeUndefined();
+    // ⚠️ LA PROTEZIONE ANTI-ORFANI VALE SOLO PER I CUSTOM PURI, e per due fasi ha valso
+    // per tutti e due. La ragione sta scritta nel codice ed è giusta — «il riferimento
+    // resterebbe orfano nella UI» — ma vale per un fattore la cui chiave esiste SOLO in
+    // `ghg_org_factor`. La chiave di un override è quella di piattaforma: togliendolo, il
+    // `factor_key` delle voci continua a risolvere, e il `fe` applicato è congelato sulla
+    // riga, quindi nessun numero già inserito cambia.
+    //
+    // Applicata anche agli override, quella protezione chiudeva l'unica via d'uscita: si
+    // sovrascrive il fattore che si USA — è il motivo per cui lo si sovrascrive — e da lì
+    // in poi «Ripristina valore di piattaforma» rispondeva «non eliminabile», per sempre.
+    // Trovato dal collaudo per comando dell'inventario GHG (26 agosto 2026).
+    await expect(deleteOrgFactor(userId, orgId, "gas_smc")).resolves.toBeUndefined();
+    const ripristinati = await listFactors(userId, orgId, setId);
+    expect(ripristinati.find((f) => f.key === "gas_smc")?.origine).toBe("piattaforma");
+
+    // ⚠️ Il custom puro resta protetto, e va provato con un custom DAVVERO IN USO.
+    // Restringendo la protezione, il ramo «in uso» era rimasto senza un solo caso che
+    // potesse farlo scattare: `bioetanolo_e85` non e' citato da nessuna voce, quindi la
+    // sua eliminazione riesce comunque e non dimostra niente. Un controllo che non puo'
+    // mai diventare rosso non e' un controllo.
+    await addActivityRow(userId, orgId, invId, {
+      sourceTypeKey: "1b", categoryKey: "1", descrizione: "Bioetanolo flotta",
+      factorKey: "bioetanolo_e85", um: "litri", quantita: "500", fe: "1.1", dq: "C",
+    });
+    await expect(deleteOrgFactor(userId, orgId, "bioetanolo_e85")).rejects.toThrow(/in uso/i);
   });
 
   it("account expired: scrittura bloccata, lettura consentita", async () => {
