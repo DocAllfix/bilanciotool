@@ -1415,6 +1415,51 @@ PDF reale da **210 KB** verificato nei byte e nel nome · `codice-documento` 22/
 `tutto-demo` 68/68, `demo-completa` 9/9, `sgesg-percorso` 20/20, `sgesg-schede` 14/14,
 `sgesg-ponti` 9/9, `compensi` 12/12 · console pulita.
 
+**Fase 9 (2026-08-26) — anti-abuso e legale**
+
+**La privacy dichiara le persone che non sono utenti.** `company_contact` è il primo posto
+del prodotto in cui compaiono **persone fisiche senza account**: non usano la piattaforma,
+non ricevono nulla da noi, spesso non sanno che esistiamo. La base giuridica non può essere
+il loro consenso e il titolare non siamo noi — è lo studio che le inserisce, e Evalis è
+responsabile ex art. 28. L'informativa lo dice **prima** che la tabella riceva un dato
+vero, che era la scadenza scritta nello schema in Fase 2. Aggiunte anche le note d'agenda
+(testo libero che può contenere nomi) e i dati amministrativi dei compensi, con la
+dichiarazione che **non escono mai nei collegamenti consegnati al cliente**.
+
+**I Termini dicono che cosa NON è limitato**: percorsi, documenti, voci d'agenda e
+compensi non hanno tetto — si contano le aziende e gli utenti, non il lavoro che ci si fa
+sopra. Un limite taciuto è un limite che il cliente incontra il giorno in cui gli serve.
+
+**Il paywall sulle superfici nuove, provato sulla riga che non compare**
+(`paywall-superfici-nuove.db.test.ts`, 15 prove). Ogni fase di questo lavoro ha aggiunto
+posti in cui si scrive, e ognuno è un modo di aggirare l'abbonamento se qualcuno dimentica
+`requireEntitlement` — dimenticarlo non produce nessun errore, produce un prodotto che si
+usa senza pagare. È già successo con `archiveCompany`.
+
+⚠️ **E il test aveva torto, non il prodotto.** La mia prima versione pretendeva che
+l'account **in prova** non scrivesse niente. Ma la prova ha `write_data: true` **per
+decisione di prodotto**: si lavora sull'azienda dimostrativa pre-compilata, altrimenti non
+ci sarebbe niente da provare. Ciò che la prova non ha è `create_company` e `generate_pdf`.
+Il test ora afferma quella regola **esplicitamente**, con la ragione scritta, perché chi lo
+vedesse rosso d'istinto «aggiusterebbe» il prodotto rendendo la dimostrativa inutile.
+
+**Due difetti veri trovati, entrambi preesistenti:**
+1. **`qa -- legale` moriva su `networkidle`**, in **diciassette** punti. Le pagine
+   rispondono in 7 ms; il collaudo aspettava trenta secondi e riferiva un timeout,
+   accusando il prodotto di una lentezza inesistente. `networkidle` pretende mezzo secondo
+   di silenzio di rete, e Next prefetch-a i collegamenti di intestazione e piede.
+2. **Quattro paragrafi dei Termini avevano lo spazio mangiato dal JSX**: a schermo si
+   leggeva «e che cosa no.**I** documenti prodotti». Il sorgente lo spazio *ce l'aveva* —
+   è React a mangiarlo quando il testo prosegue su più righe dopo un tag in linea. Su una
+   pagina legale pubblicata. Ora è `{" "}`, come nel resto del file.
+
+ⓘ Il collaudo che il piano chiamava `qa -- verifica` si chiama **`codice-documento`**: già
+copre la pagina pubblica di verifica, ed è verde coi quattro tipi nuovi.
+
+Gate: typecheck · build · **1173 test** senza pipe · `qa -- legale` **26/26** ·
+`codice-documento` 22/22 · `tutto-pubblico` 37/37 · `tutto-demo` 68/68 · `tutto-attivo`
+30/30 · `sgesg-documenti` 10/10 · `scheda-cliente` 16/16 · `agenda` 16/16 · console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

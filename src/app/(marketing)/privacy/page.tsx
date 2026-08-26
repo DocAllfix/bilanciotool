@@ -72,6 +72,26 @@ export default function PrivacyPage() {
             redatti, immagini e loghi caricati. Sono i dati per i quali vale la sezione 2.
           </li>
           <li>
+            {/* ⚠️ LA VOCE PIU' DELICATA DI QUESTA INFORMATIVA, e la ragione per cui e'
+                stata aggiunta prima che la tabella ricevesse un dato vero: sono persone
+                che NON usano il prodotto, non ci hanno dato niente, e spesso non sanno
+                che esistiamo. La base giuridica non puo' essere il loro consenso, e il
+                titolare non siamo noi. */}
+            <strong>Dati di contatto di persone presso le aziende clienti</strong>: nome, ruolo, indirizzo email e
+            numero di telefono dei referenti che lo studio annota nella rubrica di ciascuna azienda, insieme alle
+            date e alle note che inserisce nella propria agenda. Sono <strong>persone fisiche che non sono utenti
+            della piattaforma</strong>: non hanno un account, non ricevono comunicazioni da noi e non interagiscono
+            con il servizio. Per questi dati vale la sezione 2: il titolare è lo studio che li inserisce,{" "}
+            {TITOLARE.ragioneSociale} è responsabile del trattamento ai sensi dell&apos;articolo 28 del GDPR, e non
+            li utilizza per finalità proprie.
+          </li>
+          <li>
+            <strong>Dati amministrativi dei rapporti fra studio e cliente</strong>: importi concordati, acconti
+            ricevuti, scadenze e note dei compensi. Restano nel perimetro dello studio e{" "}
+            <strong>non vengono mai esposti</strong>{" "}nei collegamenti con cui l&apos;azienda cliente scarica i
+            propri documenti.
+          </li>
+          <li>
             <strong>Dati tecnici</strong>: indirizzo IP, tipo di browser, data e ora delle richieste, registrati dai
             fornitori di infrastruttura per finalità di sicurezza e diagnostica.
           </li>
@@ -150,6 +170,8 @@ export default function PrivacyPage() {
         </ul>
       </Sezione>
 
+      {/* ⚠️ La conservazione dei dati di terzi si dice a parte: chi decide quanto a
+          lungo restano non siamo noi, ed e' esattamente il punto dell'art. 28. */}
       <Sezione n={6} titolo="Destinatari e responsabili esterni">
         <p>
           I dati sono accessibili al personale autorizzato del titolare e ai fornitori qui elencati, nominati

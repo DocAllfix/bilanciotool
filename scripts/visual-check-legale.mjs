@@ -1,3 +1,12 @@
+// ⚠️ NIENTE `networkidle` in questo file, e non e' una preferenza.
+//
+// Pretende mezzo secondo di silenzio di rete, e su queste pagine il silenzio non arriva:
+// Next prefetch-a i collegamenti dell'intestazione e del piede, e le richieste `_rsc` si
+// accavallano. Le pagine rispondono in 7 ms e il collaudo moriva dopo trenta secondi
+// dicendo «timeout», accusando il prodotto di una lentezza inesistente.
+//
+// La condizione che interessa e' che la pagina CI SIA — e ogni controllo qui sotto legge
+// comunque un contenuto, quindi Playwright aspetta da solo cio' che serve.
 // Collaudo del pacchetto legale: le tre pagine, l'informativa breve, il piede
 // identificativo, security.txt. Chiaro, scuro, mobile, zero errori di console.
 import { chromium } from "@playwright/test";
@@ -27,7 +36,7 @@ page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 const BANNER = { name: "Consenso ai cookie di misurazione" };
 
 await check("il banner compare al primo accesso e chiede una scelta vera", async () => {
-  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
   const nota = page.getByRole("dialog", BANNER);
   await nota.waitFor({ timeout: 15000 });
   const testo = await nota.innerText();
@@ -49,7 +58,7 @@ await check("«Rifiuta» chiude, viene ricordato, e non riapre cambiando pagina"
   await page.getByRole("button", { name: "Rifiuta", exact: true }).click();
   await page.waitForTimeout(400);
   if (await page.getByRole("dialog", BANNER).count()) throw new Error("non si chiude");
-  await page.goto(BASE + "/privacy", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/privacy", { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(800);
   if (await page.getByRole("dialog", BANNER).count()) throw new Error("ritorna dopo la navigazione");
   const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v1"));
@@ -57,7 +66,7 @@ await check("«Rifiuta» chiude, viene ricordato, e non riapre cambiando pagina"
 });
 
 await check("«Preferenze cookie» nel piede riapre la scelta", async () => {
-  await page.goto(BASE + "/cookie", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/cookie", { waitUntil: "domcontentloaded" });
   await page.getByRole("button", { name: /preferenze cookie/i }).first().click();
   await page.waitForTimeout(400);
   if (!(await page.getByRole("dialog", BANNER).count())) throw new Error("la revoca non riapre il riquadro");
@@ -86,7 +95,7 @@ const ATTESI = {
 
 for (const [rotta, atteso] of Object.entries(ATTESI)) {
   await check(`${rotta}: titolo, ${atteso.sezioni} sezioni numerate, data di aggiornamento`, async () => {
-    const r = await page.goto(BASE + rotta, { waitUntil: "networkidle" });
+    const r = await page.goto(BASE + rotta, { waitUntil: "domcontentloaded" });
     if (!r.ok()) throw new Error("HTTP " + r.status());
     const h1 = await page.locator("h1").first().innerText();
     if (h1.trim() !== atteso.titolo) throw new Error("titolo: " + h1);
@@ -133,7 +142,7 @@ await check("nessuna parola incollata a un tag inline (lo spazio mangiato dal JS
 });
 
 await check("le tre pagine si raggiungono l'una dall'altra", async () => {
-  await page.goto(BASE + "/privacy", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/privacy", { waitUntil: "domcontentloaded" });
   const nav = page.getByRole("navigation", { name: "Documenti legali" });
   const href = await nav.locator("a").evaluateAll((a) => a.map((x) => new URL(x.href).pathname));
   for (const atteso of ["/", "/privacy", "/cookie", "/termini"]) {
@@ -143,7 +152,7 @@ await check("le tre pagine si raggiungono l'una dall'altra", async () => {
 
 await check("i rimandi incrociati dentro i testi puntano a pagine vere", async () => {
   for (const rotta of ["/privacy", "/cookie", "/termini"]) {
-    await page.goto(BASE + rotta, { waitUntil: "networkidle" });
+    await page.goto(BASE + rotta, { waitUntil: "domcontentloaded" });
     const interni = await page.locator("main a[href^='/']").evaluateAll((a) => [...new Set(a.map((x) => new URL(x.href).pathname))]);
     for (const h of interni) {
       const res = await page.request.get(BASE + h);
@@ -154,7 +163,7 @@ await check("i rimandi incrociati dentro i testi puntano a pagine vere", async (
 
 // ------------------------------------------------ 3. piede e security.txt
 await check("il piede della landing identifica il prestatore", async () => {
-  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
   const t = await page.locator("footer").innerText();
   for (const s of ["Evalis S.r.l.", "04868330616", "Via Sandro Botticelli 25"]) {
     if (!t.includes(s)) throw new Error("manca: " + s);
@@ -179,7 +188,7 @@ await check("dentro l'app i legali sono raggiungibili dal piede", async () => {
     console.log("       (QA_EMAIL/QA_PASSWORD non impostate: controllo saltato)");
     return;
   }
-  await page.goto(BASE + "/login", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/login", { waitUntil: "domcontentloaded" });
   await page.fill("#email", process.env.QA_EMAIL);
   await page.fill("#password", process.env.QA_PASSWORD);
   await page.click('button[type="submit"]');
@@ -198,9 +207,9 @@ await check("l'informativa NON compare dentro un documento pubblicato", async ()
   if (!doc) { console.log("       (nessun documento pubblicato: controllo saltato)"); return; }
   const p2 = await ctx.newPage();
   await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1")).catch(() => {});
-  await p2.goto(BASE + doc, { waitUntil: "networkidle" });
+  await p2.goto(BASE + doc, { waitUntil: "domcontentloaded" });
   await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1"));
-  await p2.reload({ waitUntil: "networkidle" });
+  await p2.reload({ waitUntil: "domcontentloaded" });
   await p2.waitForTimeout(1200);
   const n = await p2.getByRole("dialog", BANNER).count();
   await p2.close();
@@ -208,11 +217,11 @@ await check("l'informativa NON compare dentro un documento pubblicato", async ()
 });
 
 // ------------------------------------------------------- 5. viste e temi
-await page.goto(BASE + "/privacy", { waitUntil: "networkidle" });
+await page.goto(BASE + "/privacy", { waitUntil: "domcontentloaded" });
 await page.screenshot({ path: `${OUT}/01-privacy.png`, fullPage: false });
-await page.goto(BASE + "/cookie", { waitUntil: "networkidle" });
+await page.goto(BASE + "/cookie", { waitUntil: "domcontentloaded" });
 await page.screenshot({ path: `${OUT}/02-cookie.png` });
-await page.goto(BASE + "/termini", { waitUntil: "networkidle" });
+await page.goto(BASE + "/termini", { waitUntil: "domcontentloaded" });
 await page.screenshot({ path: `${OUT}/03-termini.png` });
 await ctx.close();
 
@@ -221,7 +230,7 @@ await ctxDark.addInitScript(() => window.localStorage.setItem("theme", "dark"));
 const dark = await ctxDark.newPage();
 dark.on("console", (m) => { if (m.type() === "error") errors.push(`[dark] ${m.text()}`); });
 dark.on("pageerror", (e) => errors.push(`[dark pageerror] ${e.message}`));
-await dark.goto(BASE + "/cookie", { waitUntil: "networkidle" });
+await dark.goto(BASE + "/cookie", { waitUntil: "domcontentloaded" });
 await check("tema scuro applicato e banner leggibile", async () => {
   if (!(await dark.evaluate(() => document.documentElement.classList.contains("dark")))) throw new Error("tema scuro non applicato");
   await dark.getByRole("dialog", BANNER).waitFor({ timeout: 10000 });
@@ -235,13 +244,13 @@ m.on("console", (x) => { if (x.type() === "error") errors.push(`[mobile] ${x.tex
 m.on("pageerror", (e) => errors.push(`[mobile pageerror] ${e.message}`));
 await check("su mobile le pagine legali non sbordano e le tabelle scorrono da sole", async () => {
   for (const rotta of ["/privacy", "/cookie", "/termini"]) {
-    await m.goto(BASE + rotta, { waitUntil: "networkidle" });
+    await m.goto(BASE + rotta, { waitUntil: "domcontentloaded" });
     const sborda = await m.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
     if (sborda) throw new Error(rotta + " scorre in orizzontale");
   }
 });
 await check("su mobile i due pulsanti sono raggiungibili e di pari misura", async () => {
-  await m.goto(BASE + "/", { waitUntil: "networkidle" });
+  await m.goto(BASE + "/", { waitUntil: "domcontentloaded" });
   const rifiuta = m.getByRole("button", { name: "Rifiuta", exact: true });
   const accetta = m.getByRole("button", { name: "Accetta", exact: true });
   await rifiuta.waitFor({ timeout: 10000 });
@@ -254,7 +263,7 @@ await check("su mobile i due pulsanti sono raggiungibili e di pari misura", asyn
   await m.waitForTimeout(300);
   if (await m.getByRole("dialog", BANNER).count()) throw new Error("non si chiude");
 });
-await m.goto(BASE + "/termini", { waitUntil: "networkidle" });
+await m.goto(BASE + "/termini", { waitUntil: "domcontentloaded" });
 await m.screenshot({ path: `${OUT}/05-termini-mobile.png`, fullPage: false });
 await ctxM.close();
 await browser.close();
