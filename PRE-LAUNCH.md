@@ -297,6 +297,15 @@ Non bloccano il lancio, ma vanno saputi.
    e tutti in silenzio, perché una risorsa bloccata dalla CSP non produce nessun errore
    lato server. Ora l'origine si **ricava** da `SUPABASE_URL`.
 
+   ⚠️ **I 105 file gia' depositati sono stati tolti il 26 agosto 2026** con
+   `scripts/pulisci-archivio-produzione.mjs --cancella`: 105 tolte, **0 rimaste dopo la
+   riverifica**. Lo script rifà la prova di orfanezza a ogni esecuzione e ricontrolla dopo
+   la cancellazione, perché la risposta di un server dice che ha ricevuto, non che ha
+   eseguito — e infatti al primo tentativo tutte e 105 le DELETE erano fallite con 400
+   («Body cannot be empty when content-type is set to 'application/json'»: le intestazioni
+   della firma riusate su una richiesta senza corpo) e la riverifica lo disse invece di
+   dichiarare il lavoro fatto.
+
    → *verifica:* `npm run qa -- benvenuto` (il video si carica **dentro il riquadro**, non
    solo via rete) · `npm run qa -- pdf-archivio` · `npm run qa -- marchio` ·
    `npm run qa -- csp`. E il confronto fra il riferimento in `SUPABASE_URL` e quello in
