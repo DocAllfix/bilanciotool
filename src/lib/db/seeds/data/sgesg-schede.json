@@ -5,7 +5,7 @@
   "c": "FORM-00A",
   "t": "Primo Contatto",
   "s": "Scheda di primo contatto commerciale — compilare entro 4 ore lavorative dalla ricezione",
-  "i": "📌 Istruzione operativa: Compilare entro 4 ore lavorative dalla ricezione. Annotare verbatim la descrizione della necessità espressa dal contatto. Aprire scheda CRM con stato LEAD — In valutazione.",
+  "i": "Istruzione operativa: Compilare entro 4 ore lavorative dalla ricezione. Annotare verbatim la descrizione della necessità espressa dal contatto. Aprire scheda CRM con stato LEAD — In valutazione.",
   "z": [
    {
     "t": "Sezione 1 — Dati del contatto / Canale",
@@ -259,7 +259,7 @@
   "c": "FORM-00B",
   "t": "Questionario di Pre-Qualifica",
   "s": "Raccolta strutturata di informazioni strategiche, operative e di contesto ESG dell'azienda",
-  "i": "📋 Il questionario va inviato al referente cliente via email con link. Spiegare che le risposte sono riservate e utilizzate esclusivamente per configurare la proposta di consulenza.",
+  "i": "Il questionario va inviato al referente cliente via email con link. Spiegare che le risposte sono riservate e utilizzate esclusivamente per configurare la proposta di consulenza.",
   "z": [
    {
     "t": "Blocco A — Contesto strategico ESG",
@@ -535,7 +535,7 @@
   "c": "FORM-00C",
   "t": "Score di Pre-Qualifica",
   "s": "Griglia di valutazione per la decisione Go / No-Go",
-  "i": "⚠ USO INTERNO: da compilare esclusivamente dal Consulente Senior ESG. Non condividere con il cliente.",
+  "i": "USO INTERNO: da compilare esclusivamente dal Consulente Senior ESG. Non condividere con il cliente.",
   "z": [
    {
     "t": "Dati di riferimento",
@@ -615,7 +615,7 @@
   "c": "FORM-00D",
   "t": "Dichiarazione Conflitti di Interesse",
   "s": "Verifica obbligatoria prima della decisione Go/No-Go — firmata sotto responsabilità del consulente",
-  "i": "⚠ Obbligatoria prima della decisione Go/No-Go. Dichiarazione sotto responsabilità del consulente. In caso di conflitto bloccante → NO-GO AUTOMATICO.",
+  "i": "Obbligatoria prima della decisione Go/No-Go. Dichiarazione sotto responsabilità del consulente. In caso di conflitto bloccante → NO-GO AUTOMATICO.",
   "z": [
    {
     "t": "Dati della dichiarazione",
@@ -652,9 +652,9 @@
       "l": "",
       "t": "scelta",
       "o": [
-       "✓ NON esistono clienti attivi nello stesso settore con info riservate rilevanti",
-       "⚠ ESISTONO clienti nel medesimo settore",
-       "✓ Situazione valutata con il partner e ritenuta compatibile (motivazione allegata)"
+       "NON esistono clienti attivi nello stesso settore con info riservate rilevanti",
+       "ESISTONO clienti nel medesimo settore",
+       "Situazione valutata con il partner e ritenuta compatibile (motivazione allegata)"
       ]
      },
      {
@@ -672,9 +672,9 @@
       "l": "",
       "t": "scelta",
       "o": [
-       "✓ Nessuna relazione personale/familiare tra consulenti e management cliente",
-       "⚠ Relazione personale esistente — dichiarata al partner — non compromette obiettività",
-       "🛑 Situazione richiede assegnazione del progetto ad altro consulente"
+       "Nessuna relazione personale/familiare tra consulenti e management cliente",
+       "Relazione personale esistente — dichiarata al partner — non compromette obiettività",
+       "Situazione richiede assegnazione del progetto ad altro consulente"
       ]
      }
     ]
@@ -687,8 +687,8 @@
       "l": "",
       "t": "scelta",
       "o": [
-       "✓ Non detengo partecipazioni/interessi in aziende concorrenti del cliente",
-       "⚠ Detengo partecipazione dichiarata al partner"
+       "Non detengo partecipazioni/interessi in aziende concorrenti del cliente",
+       "Detengo partecipazione dichiarata al partner"
       ]
      },
      {
@@ -706,9 +706,9 @@
       "l": "",
       "t": "scelta",
       "o": [
-       "✓ Settore compatibile con la policy etica dello studio",
-       "⚠ Settore borderline — valutazione con partner necessaria",
-       "🛑 Settore NON compatibile — No-Go automatico"
+       "Settore compatibile con la policy etica dello studio",
+       "Settore borderline — valutazione con partner necessaria",
+       "Settore NON compatibile — No-Go automatico"
       ]
      }
     ]
@@ -721,9 +721,9 @@
       "l": "Esito manuale (conferma o sovrascrivi)",
       "t": "scelta",
       "o": [
-       "✅ Conflitti assenti — Procedi",
-       "⚠ Conflitti presenti gestiti — Procedi con cautela",
-       "🛑 Conflitti bloccanti — NO-GO automatico"
+       "Conflitti assenti — Procedi",
+       "Conflitti presenti gestiti — Procedi con cautela",
+       "Conflitti bloccanti — NO-GO automatico"
       ]
      },
      {
@@ -757,7 +757,7 @@
   "c": "FORM-00E",
   "t": "Offerta Commerciale",
   "s": "Da redigere solo dopo esito GO (FORM-00C) e KYC approvato (FORM-00F)",
-  "i": "📌 Da redigere solo dopo esito GO (FORM-00C) e KYC approvato (FORM-00F). Personalizzare sul contesto emerso in FORM-00A e 00B.",
+  "i": "Da redigere solo dopo esito GO (FORM-00C) e KYC approvato (FORM-00F). Personalizzare sul contesto emerso in FORM-00A e 00B.",
   "z": [
    {
     "t": "Intestazione offerta",
@@ -933,7 +933,7 @@
   "c": "FORM-00F",
   "t": "KYC / Adeguata Verifica Cliente",
   "s": "Verifica da completare prima della firma del contratto — documentazione da allegare al fascicolo",
-  "i": "📌 Da completare prima della firma del contratto. Allegare la documentazione verificata al fascicolo cliente.",
+  "i": "Da completare prima della firma del contratto. Allegare la documentazione verificata al fascicolo cliente.",
   "z": [
    {
     "t": "Tabella Verifiche KYC — 10 controlli",
@@ -974,7 +974,7 @@
   "c": "FORM-00G",
   "t": "Chiusura Fase 0 — LOG",
   "s": "Riepilogo decisioni e transizione a PROC-01",
-  "i": "📋 Verificare che TUTTI i form precedenti siano completati prima di procedere con questa chiusura. L'avvio di PROC-01 è condizionato alla decisione GO.",
+  "i": "Verificare che TUTTI i form precedenti siano completati prima di procedere con questa chiusura. L'avvio di PROC-01 è condizionato alla decisione GO.",
   "z": [
    {
     "t": "Riepilogo fase 0",
@@ -988,8 +988,8 @@
       "l": "Esito chiusura fase 0",
       "t": "scelta",
       "o": [
-       "✅ GO — Contratto firmato — Avvio PROC-01",
-       "🛑 NO-GO — Declinazione formale",
+       "GO — Contratto firmato — Avvio PROC-01",
+       "NO-GO — Declinazione formale",
        "⏸ SOSPESO — In attesa"
       ]
      },
@@ -1052,7 +1052,7 @@
   "c": "FORM-01A",
   "t": "Validazione Contratto",
   "s": "Verifica clausole essenziali del contratto di consulenza",
-  "i": "📌 Verificare ogni clausola del contratto rispetto all'offerta accettata. In caso di difformità CRITICA, bloccare l'avvio e contattare il partner.",
+  "i": "Verificare ogni clausola del contratto rispetto all'offerta accettata. In caso di difformità CRITICA, bloccare l'avvio e contattare il partner.",
   "z": [
    {
     "t": "Dati contratto",
@@ -1119,7 +1119,7 @@
   "c": "FORM-01B",
   "t": "Verbale Kick-off Meeting",
   "s": "Documento ufficiale della riunione di avvio progetto",
-  "i": "📋 Compilare durante o immediatamente dopo il kick-off. Inviare verbale firmato entro 48h dal meeting.",
+  "i": "Compilare durante o immediatamente dopo il kick-off. Inviare verbale firmato entro 48h dal meeting.",
   "z": [
    {
     "t": "Dettagli riunione",
@@ -1197,7 +1197,7 @@
   "c": "FORM-01C",
   "t": "Piano di Progetto — Milestone",
   "s": "Gantt semplificato con milestone principali del progetto",
-  "i": "📅 Aggiornare date effettive ad ogni milestone raggiunta. Le milestone in ritardo >7 giorni richiedono notifica al partner.",
+  "i": "Aggiornare date effettive ad ogni milestone raggiunta. Le milestone in ritardo >7 giorni richiedono notifica al partner.",
   "z": [
    {
     "t": "Milestone di progetto",
@@ -1216,7 +1216,7 @@
   "c": "FORM-01D",
   "t": "Matrice RACI",
   "s": "Responsabilità e accountability per ogni attività del progetto",
-  "i": "🎯 R = Responsible (esegue) · A = Accountable (risponde) · C = Consulted (consultato) · I = Informed (informato). Ogni riga deve avere esattamente 1 A e almeno 1 R.",
+  "i": "R = Responsible (esegue) · A = Accountable (risponde) · C = Consulted (consultato) · I = Informed (informato). Ogni riga deve avere esattamente 1 A e almeno 1 R.",
   "z": [
    {
     "t": "Assegnazione RACI",
@@ -1231,7 +1231,7 @@
   "c": "FORM-01E",
   "t": "Risk Register",
   "s": "Registro e piano di gestione dei rischi di progetto",
-  "i": "⚠️ Rischi CRITICI (score ≥ 15) richiedono approvazione partner e piano B definito. Aggiornare stato ad ogni SC mensile.",
+  "i": "Rischi CRITICI (score ≥ 15) richiedono approvazione partner e piano B definito. Aggiornare stato ad ogni SC mensile.",
   "z": [
    {
     "t": "Heatmap rischio (probabilità × impatto)",
@@ -1250,7 +1250,7 @@
   "c": "FORM-01F",
   "t": "Piano di Comunicazione",
   "s": "Governance della comunicazione e del reporting interno di progetto",
-  "i": "📢 Definire e comunicare il piano di reporting a tutti gli stakeholder entro il kick-off. Rispettare le scadenze dei report per mantenere fiducia del cliente.",
+  "i": "Definire e comunicare il piano di reporting a tutti gli stakeholder entro il kick-off. Rispettare le scadenze dei report per mantenere fiducia del cliente.",
   "z": [
    {
     "t": "Impostazioni generali",
@@ -1304,7 +1304,7 @@
   "c": "FORM-01G",
   "t": "Chiusura PROC-01 — Avvio Rapporto",
   "s": "Checklist di completamento e transizione a PROC-02",
-  "i": "✅ Prima di passare a PROC-02, tutte le voci della checklist devono essere spuntate. In caso contrario, bloccare la transizione e completare le attività mancanti.",
+  "i": "Prima di passare a PROC-02, tutte le voci della checklist devono essere spuntate. In caso contrario, bloccare la transizione e completare le attività mancanti.",
   "z": [
    {
     "t": "Checklist di chiusura PROC-01",
@@ -1383,8 +1383,8 @@
       "l": "Stato setup",
       "t": "scelta",
       "o": [
-       "✅ SETUP COMPLETATO — Tutti i punti verificati — Autorizzazione avvio PROC-02",
-       "⚠ SETUP PARZIALE — Punti mancanti documentati — Avvio condizionato"
+       "SETUP COMPLETATO — Tutti i punti verificati — Autorizzazione avvio PROC-02",
+       "SETUP PARZIALE — Punti mancanti documentati — Avvio condizionato"
       ]
      },
      {
@@ -1428,7 +1428,7 @@
   "c": "FORM-02A",
   "t": "Stakeholder Mapping",
   "s": "Identificazione e pianificazione del coinvolgimento degli stakeholder",
-  "i": "📌 Identificare tutti gli stakeholder rilevanti. Prioritizzare in base a dipendenza, influenza e impatto. Documentare il metodo di engagement per ogni gruppo.",
+  "i": "Identificare tutti gli stakeholder rilevanti. Prioritizzare in base a dipendenza, influenza e impatto. Documentare il metodo di engagement per ogni gruppo.",
   "z": [
    {
     "t": "Registro stakeholder",
@@ -1443,7 +1443,7 @@
   "c": "FORM-02B",
   "t": "Valutazione IRO — Doppia Materialità",
   "s": "Assessment Impatti, Rischi e Opportunità per prospettiva di impatto e finanziaria",
-  "i": "🎯 Doppia Materialità ESRS: valutare ogni IRO sia dalla prospettiva di IMPATTO (scala, scopo, irrimediabilità) che FINANZIARIA (probabilità, magnitudine). Le soglie configurate qui si applicano anche alla matrice in FORM-02C.",
+  "i": "Doppia Materialità ESRS: valutare ogni IRO sia dalla prospettiva di IMPATTO (scala, scopo, irrimediabilità) che FINANZIARIA (probabilità, magnitudine). Le soglie configurate qui si applicano anche alla matrice in FORM-02C.",
   "z": [
    {
     "t": "E — Ambiente",
@@ -1466,7 +1466,7 @@
   "c": "FORM-02C",
   "t": "Matrice di Materialità",
   "s": "Visualizzazione e validazione dei temi materiali identificati",
-  "i": "📊 La matrice riflette gli IRO e le soglie configurati in FORM-02B. Deve essere presentata al CdA per approvazione formale.",
+  "i": "La matrice riflette gli IRO e le soglie configurati in FORM-02B. Deve essere presentata al CdA per approvazione formale.",
   "z": [
    {
     "t": "Matrice di materialità — Score Impatto × Score Finanziario",
@@ -1494,7 +1494,7 @@
   "c": "FORM-02D",
   "t": "Perimetro Bilancio — Mapping IRO",
   "s": "Definizione del perimetro di rendicontazione per ogni tema materiale",
-  "i": "📋 Per ogni tema materiale definire: standard di riferimento, KPI previsti, referente interno, capitolo del bilancio. Documentare le esclusioni.",
+  "i": "Per ogni tema materiale definire: standard di riferimento, KPI previsti, referente interno, capitolo del bilancio. Documentare le esclusioni.",
   "z": [
    {
     "t": "Mapping temi materiali → bilancio",
@@ -1518,7 +1518,7 @@
   "c": "FORM-02E",
   "t": "Chiusura PROC-02 — Analisi di Materialità",
   "s": "Checklist di completamento e transizione a PROC-03",
-  "i": "⚠️ Completare tutte le voci obbligatorie prima di procedere a PROC-03.",
+  "i": "Completare tutte le voci obbligatorie prima di procedere a PROC-03.",
   "z": [
    {
     "t": "Checklist di chiusura PROC-02",
@@ -1784,7 +1784,7 @@
       "o": [
        "Bozza",
        "Condivisa in workshop",
-       "✓ Finale approvata"
+       "Finale approvata"
       ]
      },
      {
@@ -1799,7 +1799,7 @@
     "c": []
    },
    {
-    "t": "🔴 Temi ad alta materialità — Top 5",
+    "t": "Temi ad alta materialità — Top 5",
     "c": []
    },
    {
@@ -1820,9 +1820,9 @@
       "l": "Decisione",
       "t": "scelta",
       "o": [
-       "✅ Approvata — Autorizzazione avvio PROC-03 (Gap Analysis) e PROC-04 (Raccolta Dati)",
-       "⚠ Approvata con modifiche — dettaglio sotto",
-       "🛑 Respinta — ricondurre a FORM-02G con rettifiche"
+       "Approvata — Autorizzazione avvio PROC-03 (Gap Analysis) e PROC-04 (Raccolta Dati)",
+       "Approvata con modifiche — dettaglio sotto",
+       "Respinta — ricondurre a FORM-02G con rettifiche"
       ]
      },
      {

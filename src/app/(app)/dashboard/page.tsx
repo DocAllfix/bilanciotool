@@ -59,13 +59,32 @@ export default async function DashboardPage() {
   // «mai avviato»: un promemoria per ogni modulo mai toccato di ogni azienda
   // sarebbe rumore, non lavoro.
   const daFare = scadenzario.filter((v) => v.motivo !== "mai-avviato");
+
+  // ⚠️ LA DIMOSTRATIVA SI MOSTRA, MA NON SI CONTA.
+  //
+  // Lo scadenzario misura «cosa e' indietro», e i percorsi dell'azienda d'esempio lo
+  // sono davvero: hanno esercizi mai pubblicati. Tecnicamente il numero era corretto, e
+  // proprio per questo ingannava — un conto nuovo apriva il portafoglio e leggeva DODICI
+  // lavori in ritardo il primo giorno, tutti nostri.
+  //
+  // E non era un fastidio del primo giorno. Lo scadenzario ordinava gia' la dimostrativa
+  // per ultima (`scadenzario.ts`), segno che qualcuno si era accorto che pesava: ma
+  // metterla in fondo non la toglie dal totale. Quei dodici restano finche' lo studio non
+  // la archivia, e un consulente con otto clienti veri leggerebbe «26 da riprendere» di
+  // cui dodici non suoi. Il numero che dovrebbe guidargli la mattina diventa quello di
+  // cui diffidare.
+  //
+  // C'e' gia' un precedente esplicito: i limiti del piano ESCLUDONO la dimostrativa. La
+  // stessa azienda non puo' essere fuori da un conteggio e dentro un altro.
+  const daFareVeri = daFare.filter((v) => !v.isDemo);
+  const daFareDemo = daFare.filter((v) => v.isDemo);
   const statiPerAzienda = new Map(stati.aziende.map((a) => [a.id, a.moduli]));
   // La prima cosa da fare per ciascuna azienda, per la riga sotto i numeri.
   const prossimaPerAzienda = new Map<string, string>();
   for (const v of daFare) {
     if (!prossimaPerAzienda.has(v.companyId)) {
       const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
-      prossimaPerAzienda.set(v.companyId, `${m.etichetta}${v.anno ? ` ${v.anno}` : ""}: ${testoMotivo(v.motivo)}`);
+      prossimaPerAzienda.set(v.companyId, `${m.nome}${v.anno ? ` ${v.anno}` : ""}: ${testoMotivo(v.motivo)}`);
     }
   }
 
@@ -92,10 +111,10 @@ export default async function DashboardPage() {
         </div>
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi">
-            {daFare.length}
+            {daFareVeri.length}
           </dd>
           <dt className="text-[13px] text-muted-foreground">
-            {daFare.length === 1 ? "percorso da riprendere" : "percorsi da riprendere"}
+            {daFareVeri.length === 1 ? "percorso da riprendere" : "percorsi da riprendere"}
           </dt>
         </div>
         {/* ⚠️ L'AGENDA ACCANTO ai percorsi da riprendere, e con parole diverse. Sono
@@ -362,13 +381,15 @@ export default async function DashboardPage() {
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1fr_290px]">
         <section aria-label="Da riprendere">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Da riprendere</h2>
-          {daFare.length === 0 ? (
+          {daFareVeri.length === 0 ? (
             <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
-              Niente in sospeso: ogni percorso avviato è stato pubblicato.
+              {daFareDemo.length
+                ? "Niente in sospeso sulle tue aziende."
+                : "Niente in sospeso: ogni percorso avviato è stato pubblicato."}
             </p>
           ) : (
             <ul className="mt-3 space-y-1">
-              {daFare.slice(0, 6).map((v) => {
+              {daFareVeri.slice(0, 6).map((v) => {
                 const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
                 return (
                   <li key={`${v.companyId}-${v.modulo}`}>
@@ -381,8 +402,13 @@ export default async function DashboardPage() {
                         strokeWidth={1.75}
                       />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[13px] font-medium">
-                          {m.etichetta}
+                        {/* ⚠️ Va a capo, non tronca: il nome del modulo e' lo stesso
+                            che compare nel fascicolo e nella barra laterale, e due dei
+                            dodici sono lunghi. Una lista che va a capo su due voci non e'
+                            un problema — sotto c'e' spazio bianco — mentre un nome corto
+                            e DIVERSO da quello del resto del prodotto lo era. */}
+                        <span className="block text-[13px] font-medium leading-snug">
+                          {m.nome}
                           {v.anno !== null && <span className="text-muted-foreground"> · {v.anno}</span>}
                         </span>
                         <span className="block truncate text-[12px] text-muted-foreground">
@@ -395,7 +421,48 @@ export default async function DashboardPage() {
               })}
             </ul>
           )}
-          {daFare.length > 6 && <p className="mt-2 text-[11px] text-muted-foreground">e altri {daFare.length - 6}</p>}
+          {daFareVeri.length > 6 && (
+            <p className="mt-2 text-[11px] text-muted-foreground">e altri {daFareVeri.length - 6}</p>
+          )}
+
+          {/* ⚠️ La dimostrativa si mostra SOTTO, e dichiarata. Toglierla del tutto
+              avrebbe risolto il numero e perso il senso: quei percorsi esistono per far
+              vedere il prodotto pieno a chi si e' appena registrato. Il difetto non era
+              mostrarli, era CONTARLI come lavoro proprio. */}
+          {daFareDemo.length > 0 && (
+            <div className="mt-5 border-t pt-4" data-demo-scadenzario>
+              <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                Nell&apos;azienda dimostrativa
+              </p>
+              <ul className="mt-2 space-y-1">
+                {daFareDemo.slice(0, 3).map((v) => {
+                  const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
+                  return (
+                    <li key={`demo-${v.companyId}-${v.modulo}`}>
+                      <Link
+                        href={v.href}
+                        className="group -mx-2 flex items-start gap-2.5 rounded-md px-2 py-1.5 transition-colors hover:bg-accent"
+                      >
+                        <m.icona
+                          className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
+                          strokeWidth={1.75}
+                        />
+                        <span className="min-w-0 flex-1 text-[12px] leading-snug">
+                          {m.nome}
+                          {v.anno !== null && <span className="text-muted-foreground"> · {v.anno}</span>}
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              {daFareDemo.length > 3 && (
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
+                  e altri {daFareDemo.length - 3} percorsi da esplorare
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         <section aria-label="Documenti pubblicati">

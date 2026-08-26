@@ -22,6 +22,7 @@ import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qa
 import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Documento" };
@@ -35,7 +36,7 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
 
   const dati = snap.dati as never;
   const codice = await codiceDelloSnapshot(s.userId, s.orgId, snap.id);
-  const urlVerifica = `${(process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "")}/verifica`.replace(
+  const urlVerifica = `${indirizzoCanonico()}/verifica`.replace(
     /^https?:\/\//,
     "",
   );

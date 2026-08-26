@@ -15,8 +15,9 @@ import { ArrowLeft } from "lucide-react";
 import { Briciole } from "@/components/blog/briciole";
 import { bricioleArticolo } from "@/features/blog/tassonomia";
 import { jsonLd } from "@/features/blog/seo";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
-const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
+const APP = indirizzoCanonico();
 
 /** Un articolo pubblicato dopo l'ultima compilazione deve funzionare subito, non dare
  *  404: la pagina si genera alla prima richiesta e poi resta in cache. */

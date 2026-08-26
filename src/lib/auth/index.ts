@@ -8,12 +8,13 @@ import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail } from "@/lib/email";
 import { createStudioOrg, firstMembershipOrgId, hasPendingInvitation } from "@/features/auth/orgs";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // La verifica dell'indirizzo è ACCESA dal 2026-08-11, con il dominio Resend verificato.
 // Gli account creati prima sono stati marcati come verificati: una regola introdotta
 // dopo non può chiudere fuori chi si era iscritto quando non esisteva.
 export const auth = betterAuth({
-  baseURL: env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  baseURL: indirizzoCorrente(),
   secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg" }),
   emailAndPassword: {
@@ -117,7 +118,7 @@ export const auth = betterAuth({
       // pagato per averne di più — ed era esattamente il difetto di prima, con 5 fisso.
       membershipLimit: 100,
       sendInvitationEmail: async (data) => {
-        const url = `${env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/accept-invitation/${data.id}`;
+        const url = `${indirizzoCorrente()}/accept-invitation/${data.id}`;
         await sendOrgInvitationEmail(data.email, data.organization.name, url);
       },
     }),

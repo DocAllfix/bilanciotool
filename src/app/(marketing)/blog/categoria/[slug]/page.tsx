@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { PaginaArchivio } from "@/components/blog/pagina-archivio";
 import { articoliPerTermine, terminiBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
 import { archivioIndicizzabile } from "@/features/blog/tassonomia";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
-const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
+const APP = indirizzoCanonico();
 const TIPO = "categoria" as const;
 
 // Archivio per categoria.

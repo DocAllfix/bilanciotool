@@ -37,6 +37,7 @@ import type { TipoDocumento } from "./tipi";
 import { signedUrl } from "@/lib/storage";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 // PUBBLICAZIONE: l'unico punto del sistema in cui i valori derivati vengono
 // SCRITTI — dentro lo snapshot JSONB immutabile. Ripubblicare = nuova versione.
@@ -1090,7 +1091,7 @@ async function festeggiaIlPrimoDocumento(
       tx.select({ nome: company.nome }).from(company).where(eq(company.id, companyId)),
     );
 
-    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const base = indirizzoCanonico();
     const { sendPrimoDocumentoEmail } = await import("@/lib/email");
     await sendPrimoDocumentoEmail(persona.email, {
       nomeDocumento: DOCUMENTI[tipo].nome,

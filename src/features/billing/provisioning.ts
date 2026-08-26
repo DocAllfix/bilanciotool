@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
 import { PIANI, ESTENSIONI, chiavePiano, type PianoKey } from "@/lib/prezzi";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Da un abbonamento Stripe allo stato dell'account.
 //
@@ -235,7 +236,7 @@ async function avvisaSeCambiato(
   try {
     const destinatario = await titolareDelloStudio(orgId);
     if (!destinatario) return;
-    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const base = indirizzoCorrente();
     const email = await import("@/lib/email");
 
     if (adesso === "active" && piano) {

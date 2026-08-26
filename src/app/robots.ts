@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 // Aree applicative fuori dagli indici; crawler AI esplicitamente ammessi sul
 // contenuto pubblico (GEO: le risposte degli assistenti citano chi si fa leggere).
@@ -9,7 +10,7 @@ const PRIVATE = ["/dashboard", "/aziende/", "/documento/",
   "/documenti-cliente/", "/api/", "/impostazioni", "/guida", "/design"];
 
 export default function robots(): MetadataRoute.Robots {
-  const base = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const base =indirizzoCanonico();
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: PRIVATE },

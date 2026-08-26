@@ -3,6 +3,7 @@ import { env } from "@/lib/env";
 import { elencoBlog, terminiBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
 import { archivioIndicizzabile } from "@/features/blog/tassonomia";
 import { AGGIORNATO_AL } from "@/lib/legale";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 // La sitemap.
 //
@@ -15,7 +16,7 @@ import { AGGIORNATO_AL } from "@/lib/legale";
 // Il blog entra solo con `BLOG_VISIBILE_AI_MOTORI=1`: finché nel CMS c'è l'articolo di
 // prova, `/blog` risponde ma resta fuori dagli indici.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const base =indirizzoCanonico();
   const ora = new Date();
 
   // `lastModified` si dichiara solo dove la data la sappiamo davvero.

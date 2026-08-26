@@ -7,6 +7,7 @@ import { creaCollegamento, revocaCollegamento } from "./index";
 import { DURATE, DURATA_PREDEFINITA } from "./token";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { companyIdSchema } from "@/features/campi";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 // Server action del portale cliente. Come tutte le altre: il client riceve
 // `{ok} | {ok:false, errore, codice?}`, mai un'eccezione nuda.
@@ -44,7 +45,7 @@ export async function creaCollegamentoAction(
     revalidatePath(`/aziende/${p.data.companyId}`);
     // L'indirizzo si costruisce QUI e non nel browser: il client non deve indovinare il
     // dominio pubblico, che in produzione è diverso da quello su cui gira.
-    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const base = indirizzoCanonico();
     return { ok: true, dati: { url: `${base}/documenti-cliente/${token}`, scadeIl: scadeIl.toISOString() } };
   } catch (e) {
     return daErrore(e);

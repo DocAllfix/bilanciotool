@@ -6,6 +6,7 @@ import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
 import { env } from "@/lib/env";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Il checkout: si apre una sessione ospitata da Stripe e si manda lì il cliente.
 //
@@ -110,7 +111,7 @@ export async function creaSessioneCheckout(opts: {
   const prezzo = prezzoDiVendita(piano, "anno1");
   if (!prezzo) throw new Error("Piano senza prezzo acquistabile.");
 
-  const base = (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+  const base = indirizzoCorrente().replace(/\/+$/, "");
   const cliente = await clienteDelloStudio(opts.orgId, opts.email);
 
   const righe: { price: string; quantity: number }[] = [

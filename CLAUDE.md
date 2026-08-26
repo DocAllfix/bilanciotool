@@ -1698,6 +1698,103 @@ Prova: `qa -- benvenuto` **12/12** (il video si carica dentro il riquadro) · `p
 5/5 · `marchio` 7/7 · `csp` 6/6 · e i PDF archiviati dopo lo scambio firmano **contro il
 progetto di sviluppo**, verificato uno per uno.
 
+**I due nomi, la demo che contava, i pittogrammi e il doppio indirizzo (2026-08-26)**
+
+Passata di controllo qualità sull'interfaccia con la skill `impeccable`, e quattro
+correzioni che ne sono uscite.
+
+**Il rilevatore deterministico dà ZERO su `src/components`, e l'ho provato rompendolo**:
+su un file con `border-l-4`, gradient text e palette viola esce con exit 2 e tre rilievi.
+Lo zero è vero: nessuno schema di slop in tutto l'albero. Punteggio sulle dieci euristiche:
+**32/40**, con i due voti bassi su coerenza (2) ed efficienza (2).
+
+⚠️ **1 · Due nomi per la stessa cosa, a un clic di distanza.** Il registro portava
+`etichetta` (corta) accanto a `nome`, e il portafoglio usava la prima mentre fascicolo,
+barra laterale, guida e documenti usavano la seconda. Il guaio non era la lunghezza:
+**cinque etichette su dodici non erano un accorciamento del nome, erano un'altra parola** —
+`Fornitore` per «Autovalutazione ESG», `ISO 37001` per «Prevenzione della corruzione».
+Chi leggeva «Fornitore» nel portafoglio e lo cercava nella barra laterale **non lo
+trovava**: un fallimento di navigazione, invisibile a compilatore e collaudi funzionali
+perché entrambe le pagine si aprono e i collegamenti funzionano.
+
+La ragione per cui `etichetta` esisteva stava scritta nel registro: «per le caselle strette
+del portafoglio». Quelle caselle erano undici, larghe un quinto di card, e **dalla Fase 1
+non esistono più**. Il campo era un residuo, usato in due soli punti contro i sette di
+`nome`. **Non è stato corretto: è stato tolto.** Senza secondo nome, due nomi non possono
+divergere — un pericolo si evita, non si filtra.
+
+⚠️ **2 · «12 percorsi da riprendere» il primo giorno, tutti della dimostrativa.** Lo
+scadenzario misura ciò che è indietro, e i percorsi dell'azienda d'esempio lo sono davvero:
+il numero era tecnicamente corretto, ed è per questo che ingannava. E non era un fastidio
+del primo giorno — lo scadenzario ordinava già la demo per ultima, segno che qualcuno si
+era accorto che pesava, ma metterla in fondo non la toglie dal totale: quei dodici restano
+finché lo studio non la archivia, e un consulente con otto clienti veri leggerebbe «26 da
+riprendere» di cui dodici non suoi. C'era già un precedente esplicito: **i limiti del piano
+escludono la dimostrativa**. La stessa azienda non può essere fuori da un conteggio e
+dentro un altro.
+
+Ora il numero conta il lavoro vero e la dimostrativa si mostra **sotto, dichiarata**
+(«Nell'azienda dimostrativa»): toglierla del tutto avrebbe risolto il numero e perso il
+senso, perché quei percorsi esistono per far vedere il prodotto pieno a chi si è appena
+registrato. Il difetto non era mostrarli, era **contarli come lavoro proprio**.
+
+⚠️ **3 · Quarantotto pittogrammi nell'interfaccia**, contro `PRODUCT.md` che dice «niente
+emoji nel prodotto». Quarantadue nelle 63 schede del metodo, sei semafori in SA8000.
+Venivano dai prototipi ed erano entrati col seme. Nella scheda «Primo Contatto» la puntina
+📌 compariva **dentro un riquadro che disegna già la propria icona**: due icone per un
+avviso solo.
+
+Tolti **alla fonte**, in `extract-sgesg.mjs`: il JSON lo rigenera quel file, e una
+correzione a valle sparirebbe alla prima riesecuzione, in silenzio e coi conteggi ancora
+giusti. ⚠️ E il primo tentativo ne ha tolto **uno su quarantadue**, perché due punti
+prendono la stringa grezza dalle props e non passano da `testo()`: **una strozzatura che
+non è l'unica non è una strozzatura**. I sei semafori di SA8000, che stanno in un file
+curato a mano, sono diventati lettere — non per la regola sulle emoji, ma perché tre
+cerchi colorati **non sopravvivono al mezzo**: su un modulo fotocopiato in bianco e nero
+diventano tre pallini identici e la legenda non spiega più niente. Le **106 caselle di
+spunta restano**: sono l'affordance di un modulo da compilare, non decorazione.
+
+**4 · Due indirizzi, non uno.** `NEXT_PUBLIC_APP_URL` era letta in quattordici punti con
+**quattro ripieghi diversi**. Finché il prodotto è esistito in un posto solo non costava
+niente; su un deploy di anteprima costa subito e in due modi opposti. Ora ci sono
+`indirizzoCorrente()` — per chi **rimanda** l'utente: accesso, invito, ritorno da Stripe,
+e la pagina che Chromium apre per stampare un PDF — e `indirizzoCanonico()`, per chi
+**dichiara** un indirizzo permanente: canonical, sitemap, collegamento del portale
+cliente, e il codice di verifica **stampato dentro un documento immutabile**. Un PDF
+pubblicato da un'anteprima porterebbe al cliente un indirizzo che fra un'ora non esiste
+più, e resterebbe sbagliato per sempre.
+
+**Regole nate qui:**
+- **Un campo che sopravvive alla ragione per cui è nato diventa un difetto.** `etichetta`
+  ha perso il suo motivo con la Fase 1 e nessuno l'ha tolta: nei mesi successivi cinque
+  valori su dodici sono derivati fino a diventare parole diverse. La domanda da farsi
+  quando si riorganizza non è «cosa aggiungo», è **«cosa non serve più»**.
+- **Un numero tecnicamente corretto può ingannare più di uno sbagliato**, perché nessuno
+  lo mette in dubbio. «12 percorsi da riprendere» era vero e inutilizzabile.
+- **Una correzione fatta a valle di un generatore sparisce alla prima riesecuzione**, in
+  silenzio, coi conteggi ancora giusti. Si corregge dove il dato nasce.
+- **Un simbolo va scelto per il mezzo in cui finisce.** I semafori colorati funzionano a
+  schermo e muoiono in fotocopia, che è dove quel modulo va a finire.
+- **`.replace()` non fallisce**: una sostituzione che non trova niente non protesta. Due
+  delle mie non hanno trovato niente per un escape sbagliato, e me ne sono accorto solo
+  guardando l'uscita. Le sostituzioni si contano, non si sperano.
+
+⚠️ **Un residuo che disabilita un altro comando non è un residuo, è un guasto differito.**
+`verifica-estensioni` ripuliva l'abbonamento **all'inizio** invece che alla fine: ne
+lasciava sempre uno, e `guardia-database.mjs` si rifiuta di seminare su un database con
+abbonamenti Stripe. Quella riga sola ha bloccato `npm run db:seed` finché non l'ho
+cercata. Ora si ripulisce anche in coda.
+
+Gate: typecheck · build · **1178 test** · `tutto-demo` 68/68 · `demo-completa` 9/9 ·
+`portafoglio-aggiorna` 5/5 · `sgesg-schede` 14/14 · `sa8000-percorso` 31/31 · `guida` 7/7 ·
+`scheda-cliente` 16/16 · `agenda` 16/16 · `codice-documento` 22/22 · `condivisione` 9/9 ·
+`seed-counts` 22/22 dopo la riseminatura · portafoglio **guardato**: il numero dice zero e
+i nomi sono quelli del fascicolo.
+
+ⓘ **Restano aperti, per scelta**: il pulsante «Tour» che occlude «Dati ospitati
+nell'Unione Europea» (misurato con `elementFromPoint`), la tendina nativa nelle 63 schede
+del metodo, e l'assenza di scorciatoie da tastiera con dodici moduli.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

@@ -40,7 +40,7 @@ const prod = argomenti.includes("--prod");
 if (!nome) {
   console.log("Collaudi disponibili:\n");
   for (const [corto, f] of [...nomi].sort()) console.log(`  ${corto.padEnd(24)} ${f}`);
-  console.log("\n  npm run qa -- <nome> [--prod]");
+  console.log("\n  npm run qa -- <nome> [--prod | --su https://…]");
   process.exit(0);
 }
 
@@ -63,7 +63,33 @@ const env = { ...process.env };
 // Il difetto e' costato tre utenti e tre organizzazioni scritti nel database che incassa,
 // prima che si vedesse — e si e' visto solo perche' lo script cercava poi quell'utente sul
 // database di sviluppo e non lo trovava. Senza quel controllo sarebbe passato.
-env.BASE = prod ? PROD : env.BASE || "http://localhost:3000";
+// ⚠️ TRE BERSAGLI, NON DUE. `--prod` punta al sito vero, niente punta a localhost, e
+// `--su <indirizzo>` a qualunque altra cosa — in particolare a un deploy di ANTEPRIMA di
+// Vercel, il cui host e' assegnato al volo e non si puo' scrivere qui dentro.
+//
+// Senza questa terza via una preview si collauda solo a mano, cioe' non si collauda.
+const iSu = argomenti.indexOf("--su");
+const su = iSu >= 0 ? argomenti[iSu + 1] : null;
+if (iSu >= 0 && !su) {
+  console.error("  --su vuole un indirizzo: npm run qa -- <nome> --su https://…");
+  process.exit(1);
+}
+if (su && prod) {
+  console.error("  --su e --prod insieme non hanno senso: scegline uno.");
+  process.exit(1);
+}
+if (su && !/^https?:\/\//.test(su)) {
+  console.error(`  --su vuole un indirizzo intero (con https://), ricevuto: ${su}`);
+  process.exit(1);
+}
+env.BASE = su ? su.replace(/\/+$/, "") : prod ? PROD : env.BASE || "http://localhost:3000";
+
+// ⚠️ Un'anteprima di Vercel puo' essere protetta: senza questo segreto il collaudo
+// riceve una pagina di accesso al posto del prodotto e riferisce difetti che non ci
+// sono. Se c'e', si passa ai collaudi che sanno usarlo.
+if (su && process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+  env.VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+}
 
 // IL BERSAGLIO SI DICHIARA SEMPRE, non solo con `--prod`.
 //
@@ -76,8 +102,19 @@ env.BASE = prod ? PROD : env.BASE || "http://localhost:3000";
 // Un collaudo che non dice contro cosa ha parlato può essere verde sul bersaglio
 // sbagliato, ed è il modo più economico di credersi coperti senza esserlo.
 const bersaglio = env.BASE;
-console.log(`→ ${scelto}  (${bersaglio})${prod ? "" : "  ← locale: il server deve essere acceso E aggiornato"}\n`);
-const esito = spawnSync(process.execPath, [join(QUI, scelto), ...argomenti.filter((a) => a !== nome)], {
+// La nota accanto al bersaglio deve dire il vero anche ora che i bersagli sono TRE.
+// Legata a `--prod`, con `--su` scriveva «locale» accanto a un indirizzo remoto: e'
+// esattamente il difetto che queste righe esistono per non avere.
+const locale = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(bersaglio);
+const nota = locale
+  ? "  ← locale: il server deve essere acceso E aggiornato"
+  : su
+    ? "  ← anteprima"
+    : "";
+console.log(`→ ${scelto}  (${bersaglio})${nota}\n`);
+// `--su <indirizzo>` non si passa al collaudo: il bersaglio viaggia in `BASE`.
+const perIlCollaudo = argomenti.filter((a, i) => a !== nome && i !== iSu && i !== iSu + 1);
+const esito = spawnSync(process.execPath, [join(QUI, scelto), ...perIlCollaudo], {
   stdio: "inherit",
   env,
 });

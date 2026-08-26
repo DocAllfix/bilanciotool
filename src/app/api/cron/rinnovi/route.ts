@@ -6,6 +6,7 @@ import { titolareDelloStudio } from "@/features/billing/provisioning";
 import { sendPreavvisoRinnovoEmail } from "@/lib/email";
 import { withTenant } from "@/lib/db/tenant";
 import { bearerCoincide } from "@/lib/segreti";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Il preavviso di rinnovo, sette giorni prima dell'addebito.
 //
@@ -72,7 +73,7 @@ export async function GET(req: Request) {
     // seconda fase: dire l'importo del primo anno sarebbe un preavviso sbagliato, e
     // peggiore del silenzio.
     const prezzo = prezzoDiVendita(PIANI[piano], "rinnovo");
-    const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const base = indirizzoCorrente();
     try {
       const r = await sendPreavvisoRinnovoEmail(destinatario, {
         importo: prezzo ? euro(prezzo.importo) : "l'importo del tuo piano",

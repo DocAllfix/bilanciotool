@@ -18,6 +18,7 @@ import { blogVisibileAiMotori } from "@/features/blog/fonte";
 import { inviaAllarmeBlog } from "@/lib/email";
 import { segretoCoincide } from "@/lib/segreti";
 import { verificaConsentita } from "@/features/blog/freno";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       // questo giro no. Venti salvataggi in un minuto non devono produrre venti giri di
       // controlli e venti allarmi uguali.
       if (!(await verificaConsentita())) return;
-      const sito = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+      const sito = indirizzoCorrente();
       if (!sito) return;
       const esiti = await verificaBlog({
         sito,

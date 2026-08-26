@@ -182,12 +182,41 @@ const eNodo = (n) => n && typeof n === "object" && "type" in n;
 const eMarcato = (n, nome) => eNodo(n) && typeof n.type === "function" && n.type.__nome === nome;
 
 /** Il testo dentro un nodo, per le etichette che arrivano come frammenti. */
-function testo(n) {
+function testoGrezzo(n) {
   if (n === null || n === undefined || typeof n === "boolean") return "";
   if (typeof n === "string" || typeof n === "number") return String(n);
-  if (Array.isArray(n)) return n.map(testo).join("");
-  if (eNodo(n)) return testo(n.props?.children);
+  if (Array.isArray(n)) return n.map(testoGrezzo).join("");
+  if (eNodo(n)) return testoGrezzo(n.props?.children);
   return "";
+}
+
+// NIENTE PITTOGRAMMI NEL PRODOTTO, e lo dice PRODUCT.md: «niente emoji nel prodotto».
+//
+// I prototipi ne portavano 42 dentro le 63 schede del metodo — la puntina sulle
+// istruzioni, il triangolo e la spunta sulle opzioni rischiose e buone — ed erano entrati
+// col seme senza che nessuno li guardasse. Nella scheda «Primo Contatto» la puntina
+// compariva DENTRO un riquadro che disegna gia' la propria icona: due icone per un
+// avviso solo.
+//
+// Il significato non si perde, perche' non era nei simboli: «NON esistono clienti attivi»
+// e «ESISTONO clienti nel medesimo settore» dicono gia' tutto da sole, con le maiuscole a
+// fare il lavoro.
+//
+// Si toglie QUI e non nel JSON: `sgesg-schede.json` lo rigenera questo script, e una
+// correzione fatta a valle sparirebbe alla prima riesecuzione — in silenzio, coi conteggi
+// ancora giusti. E' gia' successo con tre file di SA8000.
+//
+// Le caselle di spunta (U+2610..U+2612) restano: non sono decorazione, sono le caselle di
+// un modulo da compilare.
+const PITTOGRAMMI =
+  /[\u{1F300}-\u{1FAFF}\u{2600}-\u{260F}\u{2613}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/gu;
+
+function senzaPittogrammi(t) {
+  return t.replace(PITTOGRAMMI, "").replace(/[ \t]{2,}/g, " ").trim();
+}
+
+function testo(n) {
+  return senzaPittogrammi(testoGrezzo(n));
 }
 
 const TIPO = {
@@ -230,7 +259,13 @@ function campiIn(nodo, dentro = []) {
         tipo = TIPO[nome](c.props ?? {});
         const o = c.props?.options;
         if (Array.isArray(o)) {
-          opzioni = o.map((x) => (typeof x === "string" ? x : (x?.label ?? x?.value ?? String(x)))).filter(Boolean);
+          // I due punti qui sotto prendono la stringa GREZZA dalle props e non passano
+          // da `testo()`: una strozzatura che non e' l'unica non e' una strozzatura, e
+          // infatti dei 42 pittogrammi ne era stato tolto UNO SOLO.
+          opzioni = o
+            .map((x) => (typeof x === "string" ? x : (x?.label ?? x?.value ?? String(x))))
+            .map((x) => senzaPittogrammi(String(x)))
+            .filter(Boolean);
         }
         try {
           c.props?.onChange?.("__estrazione__");
@@ -315,7 +350,7 @@ for (const cartella of cartelle) {
         c: w.props.formCode ?? null,
         t: testo(w.props.title).trim(),
         s: testo(w.props.subtitle).trim() || null,
-        i: typeof w.props.ruleBox === "string" ? w.props.ruleBox : null,
+        i: typeof w.props.ruleBox === "string" ? senzaPittogrammi(w.props.ruleBox) || null : null,
         z: sezioni,
       });
     } catch (e) {

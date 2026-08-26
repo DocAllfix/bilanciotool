@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { stripe } from "@/lib/stripe/client";
 import { env } from "@/lib/env";
 import { withTenant } from "@/lib/db/tenant";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Il portale clienti di Stripe: fatture, ricevute e metodo di pagamento.
 //
@@ -57,7 +58,7 @@ async function configurazione(): Promise<string> {
   return creata.id;
 }
 
-const base = () => (env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const base = () => indirizzoCorrente().replace(/\/+$/, "");
 
 /** L'indirizzo del portale per lo studio, o `null` se non ha mai pagato niente. */
 export async function urlPortale(orgId: string): Promise<string | null> {

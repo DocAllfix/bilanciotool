@@ -14,6 +14,7 @@ import { verificaBlog, riepilogo } from "@/features/blog/verifica";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
 import { inviaAllarmeBlog } from "@/lib/email";
 import { bearerCoincide } from "@/lib/segreti";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
     return new Response(null, { status: 404 });
   }
 
-  const sito = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+  const sito = indirizzoCorrente();
   if (!sito) return Response.json({ ok: false, motivo: "NEXT_PUBLIC_APP_URL mancante" });
 
   const esiti = await verificaBlog({

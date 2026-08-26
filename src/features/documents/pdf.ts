@@ -1,4 +1,5 @@
 import { env } from "@/lib/env";
+import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Generazione PDF: lo stesso template HTML del documento, "stampato" da un
 // Chromium headless che naviga la pagina AUTENTICATO (cookie di sessione
@@ -10,7 +11,7 @@ import { env } from "@/lib/env";
 const IS_SERVERLESS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 
 export async function renderPdf(path: string, cookieHeader: string): Promise<Buffer> {
-  const base = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const base = indirizzoCorrente();
   const url = `${base}${path}`;
 
   if (IS_SERVERLESS) {

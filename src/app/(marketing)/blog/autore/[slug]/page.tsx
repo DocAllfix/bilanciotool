@@ -7,8 +7,9 @@ import { SchedaArticolo } from "@/components/blog/scheda-articolo";
 import { autoreBlog, slugAutoriBlog, blogVisibileAiMotori } from "@/features/blog/fonte";
 import { ArrowLeft } from "lucide-react";
 import { jsonLd } from "@/features/blog/seo";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
-const APP = (process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").replace(/\/$/, "");
+const APP = indirizzoCanonico();
 
 // La pagina dell'autore.
 //

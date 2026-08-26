@@ -103,9 +103,23 @@ export const AREE = {
 export type VoceModulo = {
   /** Segmento di rotta sotto `/aziende/[companyId]/`. */
   href: ModuloAzienda;
-  /** Etichetta corta, per le caselle strette del portafoglio. */
-  etichetta: string;
-  /** Etichetta estesa, per titoli e menu. */
+  /** Il nome del modulo. **Uno solo**, e vale ovunque.
+   *
+   * ⚠️ Qui c'era anche `etichetta`, una versione corta «per le caselle strette del
+   * portafoglio». Quelle caselle erano undici, larghe un quinto di card, e dalla Fase 1
+   * (25 agosto 2026) non esistono piu': la card porta tre caselle di gruppo. Il campo e'
+   * sopravvissuto alla riorganizzazione come residuo, usato in due soli punti — e nel
+   * frattempo cinque etichette su dodici avevano smesso di essere un accorciamento del
+   * nome per diventare UN'ALTRA PAROLA: «Fornitore» per «Autovalutazione ESG»,
+   * «ISO 37001» per «Prevenzione della corruzione».
+   *
+   * Chi leggeva «Fornitore» nel portafoglio e lo cercava nella barra laterale non lo
+   * trovava. Non e' un dettaglio estetico: e' un fallimento di navigazione, e nessun
+   * collaudo funzionale poteva vederlo perche' entrambe le pagine si aprono e i
+   * collegamenti funzionano.
+   *
+   * Il campo non e' stato «corretto»: e' stato tolto. Un pericolo si evita, non si
+   * filtra — senza secondo nome, due nomi non possono divergere. */
   nome: string;
   /** Norma di riferimento, mostrata dove c'è spazio. */
   norma: string;
@@ -151,7 +165,6 @@ export const MODULI_AZIENDA = [
   // racconti, come ti valuti.
   {
     href: "ghg",
-    etichetta: "GHG",
     nome: "Inventario GHG",
     norma: "ISO 14064-1",
     icona: Factory,
@@ -162,7 +175,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "energetico",
-    etichetta: "Energia",
     nome: "Bilancio energetico",
     norma: "UNI CEI EN 16247",
     icona: Zap,
@@ -173,7 +185,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "bilancio",
-    etichetta: "Bilancio",
     nome: "Bilancio di sostenibilità e conformità ESG",
     norma: "GRI · ESRS VSME",
     icona: BookOpen,
@@ -184,7 +195,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "sgesg",
-    etichetta: "Sistema ESG",
     nome: "Implementazione del sistema di gestione ESG",
     // Non e' una norma: e' il metodo. Si dichiara verso quale standard il lavoro
     // rendicontera', perche' e' quello che il consulente cerca leggendo la riga.
@@ -200,7 +210,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "fornitore",
-    etichetta: "Fornitore",
     nome: "Autovalutazione ESG",
     norma: "ESRS · ISO 20400",
     icona: BadgeCheck,
@@ -220,7 +229,6 @@ export const MODULI_AZIENDA = [
   // committente, nel suo ordine.
   {
     href: "mog231",
-    etichetta: "231",
     nome: "Modello 231",
     norma: "D.Lgs. 231/2001",
     icona: Gavel,
@@ -234,7 +242,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "anticorruzione",
-    etichetta: "ISO 37001",
     nome: "Prevenzione della corruzione",
     norma: "UNI ISO 37001",
     icona: Scale,
@@ -248,7 +255,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "segnalazioni",
-    etichetta: "Segnalazioni",
     nome: "Gestione delle segnalazioni",
     norma: "D.Lgs. 24/2023",
     icona: Megaphone,
@@ -268,7 +274,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "filiera",
-    etichetta: "Filiera",
     nome: "Due diligence di filiera",
     norma: "Linee guida OCSE · CSDDD",
     icona: Network,
@@ -283,7 +288,6 @@ export const MODULI_AZIENDA = [
   // e questa e' la cosa che hanno in comune.
   {
     href: "sgiqas",
-    etichetta: "SGI QAS",
     nome: "Sistema di gestione integrato QAS",
     norma: "ISO 9001 · 14001 · 45001",
     icona: ClipboardCheck,
@@ -294,7 +298,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "sa8000",
-    etichetta: "SA8000/2026",
     nome: "Sistema di gestione SA8000/2026",
     // ⚠️ L'anno fa parte del nome, ed e' una richiesta esplicita del committente: le
     // norme si datano perche' si superano, e un sistema costruito sull'edizione
@@ -314,7 +317,6 @@ export const MODULI_AZIENDA = [
   },
   {
     href: "soa",
-    etichetta: "SoA",
     nome: "Statement of Applicability (SoA)",
     norma: "ISO/IEC 27001",
     icona: ShieldCheck,

@@ -310,6 +310,20 @@ await check("un collaboratore non apre il portale dello studio", async () => {
   if (!respinto) throw new Error("un collaboratore è entrato nel portale");
 });
 
+// SI RIPULISCE ANCHE ALLA FINE, non solo all'inizio.
+//
+// La pulizia c'era, ma stava in cima: il collaudo toglieva l'abbonamento della volta
+// PRIMA e lasciava il proprio. Uno solo, quindi sembrava innocuo — e invece bastava
+// quello: `scripts/guardia-database.mjs` si rifiuta di seminare su un database che ha
+// abbonamenti Stripe, e quella riga ha bloccato `npm run db:seed` finche' non l'ho
+// trovata. Un residuo che disabilita un altro comando non e' un residuo: e' un guasto
+// differito.
+if (orgId) {
+  await sql`delete from stripe_subscription where organization_id=${orgId}`;
+  await sql`update org_entitlement set status='demo', piano=null, aziende_extra=0, accessi_extra=0,
+    white_label=false, activated_at=null where organization_id=${orgId}`;
+}
+
 await sql.end();
 await browser.close();
 console.log(`\nControlli: ${ok} ok, ${ko} falliti`);
