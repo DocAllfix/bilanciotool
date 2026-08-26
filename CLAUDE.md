@@ -1579,8 +1579,9 @@ Scritti `qa -- ghg-percorso` (24 controlli) e `qa -- bilancio-percorso` (20). Ha
 - **Un heredoc di shell non regge un file fitto di apostrofi e template literal**: si usa
   lo strumento di scrittura, invece di combattere il quoting.
 
-🔴 **E un reperto sull'ambiente, misurato e non dedotto: l'archivio dello sviluppo è
-quello della PRODUZIONE.** Vedi `PRE-LAUNCH.md`, voce `0-storage`. La Fase 0 del 22 agosto
+✅ **Un reperto sull'ambiente, misurato e non dedotto — e CHIUSO lo stesso giorno:
+l'archivio dello sviluppo era quello della PRODUZIONE.** Vedi `PRE-LAUNCH.md`, voce
+`0-storage`. La Fase 0 del 22 agosto
 ha separato i database e ha lasciato indietro i file: `DATABASE_URL` punta a
 `dsjigmjvvrpifliqdgnx`, `SUPABASE_URL` a `hahtljrexrngtfsplbsz` — che è la produzione. In
 una sola sessione di collaudi locali sono finiti **15 PDF** nel secchio della produzione,
@@ -1663,6 +1664,39 @@ Gate: typecheck · **1178 test** · `impostazioni` 14/14 · `shell` OK · `desig
 `codice-documento` 22/22 · `corpus` 20/20 · `corpus-pdf` 11/11 · `documenti-qas` 18/18 ·
 `ecovadis` 10/10 · `marchio` 7/7 · `condivisione` 9/9 · `legale` 26/26 ·
 `tutto-pubblico` 37/37 · `tutto-attivo` 30/30 · `tutto-demo` 68/68 · console pulita.
+
+**Lo scambio dell'archivio, e il difetto che ha fatto emergere (2026-08-26)**
+
+`.env` ora punta al progetto di **sviluppo** anche per i file, non solo per il database.
+Secchio `media` creato là con la stessa configurazione della produzione — **privato**,
+senza limiti né filtri sui tipi: un secchio pubblico in sviluppo darebbe collaudi verdi su
+un comportamento che in produzione non esiste. Video di benvenuto copiato, 15,1 MB, stesso
+numero di byte.
+
+⚠️ **La CSP aveva l'host di Supabase scritto a mano in TRE direttive** (`img-src`,
+`connect-src`, `media-src`). Ha retto finché il progetto è stato uno solo; al primo
+cambio il browser ha bloccato il video di benvenuto — e con lui si sarebbero rotti loghi,
+copertine e caricamenti, **tutti insieme e tutti in silenzio**, perché una risorsa bloccata
+dalla CSP non produce nessun errore lato server. Ora l'origine si **ricava** da
+`SUPABASE_URL`, e se l'archivio non è configurato non si aggiunge: non c'è niente da
+permettere.
+
+**Regole nate qui:**
+- **Ciò che la CSP permette si ricava dall'ambiente, come tutto il resto.** Un host
+  ricopiato in tre direttive è una configurazione travestita da costante, e si scopre
+  rotta il giorno in cui l'ambiente cambia — cioè il giorno peggiore.
+- **Il collaudo del video ha fatto esattamente il mestiere per cui fu riscritto il 13
+  agosto**: un `<video>` non è una `fetch`, e caricarlo davvero nel riquadro è l'unico
+  modo di vedere la CSP. Il controllo «il file arriva via rete» era verde mentre il video
+  era bloccato — di nuovo, come allora.
+- **Un secchio assente risponde 400, non 404**: la condizione si scrive su «non ok», non
+  su un codice indovinato.
+- **Un ambiente di prova si crea uguale a quello vero**, non più permissivo: le
+  differenze comode sono quelle che fanno passare i collaudi e cadere la produzione.
+
+Prova: `qa -- benvenuto` **12/12** (il video si carica dentro il riquadro) · `pdf-archivio`
+5/5 · `marchio` 7/7 · `csp` 6/6 · e i PDF archiviati dopo lo scambio firmano **contro il
+progetto di sviluppo**, verificato uno per uno.
 
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.

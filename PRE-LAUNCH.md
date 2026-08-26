@@ -275,32 +275,32 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
-0-storage. 🔴 **APERTO — l'archivio dello sviluppo è quello della PRODUZIONE.**
+0-storage. ✅ **CHIUSA il 26 agosto 2026 — l'archivio dello sviluppo era quello della
+   PRODUZIONE.**
 
-   La Fase 0 del 22 agosto 2026 ha separato i **database** e ha lasciato indietro
-   l'**archivio dei file**. Nel `.env` locale `DATABASE_URL` punta al progetto di
-   sviluppo `dsjigmjvvrpifliqdgnx`, ma `SUPABASE_URL` punta a `hahtljrexrngtfsplbsz`,
-   che è la produzione: lo dice `.env.produzione`, dove compare la stessa stringa.
+   La Fase 0 del 22 agosto aveva separato i **database** e lasciato indietro l'**archivio
+   dei file**: `DATABASE_URL` puntava a `dsjigmjvvrpifliqdgnx`, `SUPABASE_URL` a
+   `hahtljrexrngtfsplbsz`, che è la produzione. Misurato e non dedotto: in una sola
+   sessione di collaudi locali erano finiti **15 PDF** nel secchio della produzione,
+   verificati firmandone le chiavi (HTTP 200).
 
-   **Misurato, non dedotto.** In una sola sessione di collaudi locali sono stati
-   pubblicati 19 documenti, **15 dei quali hanno una chiave d'archivio**; firmando quelle
-   chiavi contro `SUPABASE_URL` il server risponde **200**. I PDF dei collaudi locali
-   stanno nel secchio della produzione, e ci stanno da quando i due database sono stati
-   separati.
+   Ora `.env` punta al progetto di sviluppo per entrambi. Il secchio `media` è stato
+   creato là con la **stessa configurazione della produzione** — privato, senza limiti né
+   filtri sui tipi: un secchio pubblico in sviluppo darebbe collaudi verdi su un
+   comportamento che in produzione non esiste. Il video di benvenuto è stato copiato
+   (15,1 MB, stesso numero di byte).
 
-   Non è una fuga di dati: le chiavi sono sempre prefissate con l'organizzazione, quindi
-   nessun cliente vero vede quei file e il perimetro di tenant regge. È però la stessa
-   forma del reperto sulle chiavi Stripe del 13 agosto — l'ambiente non è quello che il
-   documento dichiara — e va chiusa prima che un difetto in un collaudo locale scriva su
-   una chiave della produzione. Il 14 agosto un `templateKey` non validato permetteva
-   proprio questo: sovrascrivere il video di benvenuto di tutti.
+   ⚠️ **E lo scambio ha fatto emergere un difetto vero nella CSP**: l'host di Supabase era
+   **scritto a mano in tre direttive** (`img-src`, `connect-src`, `media-src`). Ha retto
+   finché il progetto è stato uno solo; cambiandolo, il browser ha bloccato il video di
+   benvenuto — e con lui si sarebbero rotti loghi, copertine e caricamenti, tutti insieme
+   e tutti in silenzio, perché una risorsa bloccata dalla CSP non produce nessun errore
+   lato server. Ora l'origine si **ricava** da `SUPABASE_URL`.
 
-   Serve una decisione del committente, perché **il rimedio richiede le chiavi del
-   progetto di sviluppo** (`SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`), che in locale
-   non ci sono, e il video di benvenuto va copiato nel secchio nuovo.
-
-   → *verifica:* confrontare il riferimento in `SUPABASE_URL` con quello di
-   `DATABASE_URL`. Finché divergono, ogni PDF generato in locale finisce in produzione.
+   → *verifica:* `npm run qa -- benvenuto` (il video si carica **dentro il riquadro**, non
+   solo via rete) · `npm run qa -- pdf-archivio` · `npm run qa -- marchio` ·
+   `npm run qa -- csp`. E il confronto fra il riferimento in `SUPABASE_URL` e quello in
+   `DATABASE_URL`: devono essere lo stesso progetto.
 
 0-esg. ⚠️ **APERTO — il metodo ESG (percorso 12) è completo a metà, e il prodotto lo dice.**
 

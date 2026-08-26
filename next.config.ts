@@ -16,6 +16,22 @@ import { withSentryConfig } from "@sentry/nextjs";
 // usano — cioè butterebbe via la staticità di home, blog e articoli, riconquistata ieri
 // correggendo il 500. Finché quel compromesso resta, `script-src` protegge poco: tutto il
 // resto qui sotto protegge parecchio, e non costa niente.
+// ⚠️ L'ORIGINE DELL'ARCHIVIO SI RICAVA DALL'AMBIENTE, non si scrive a mano.
+//
+// Qui l'host di Supabase era ricopiato in tre direttive (`img-src`, `connect-src`,
+// `media-src`). Ha retto finche' il progetto e' stato uno solo; il 26 agosto 2026, quando
+// lo sviluppo ha smesso di puntare all'archivio della produzione, il browser ha bloccato
+// il video di benvenuto — e con lui si sarebbero rotti loghi, copertine e caricamenti,
+// tutti insieme e tutti in silenzio, perche' una risorsa bloccata dalla CSP non produce
+// nessun errore lato server.
+//
+// Se l'archivio non e' configurato l'origine non si aggiunge: non c'e' niente da
+// permettere, e `isStorageConfigured()` dice gia' che quelle funzioni sono spente.
+const ORIGINE_ARCHIVIO = process.env.SUPABASE_URL
+  ? new URL(process.env.SUPABASE_URL).origin
+  : null;
+const permessi = (...voci: (string | null)[]) => voci.filter(Boolean).join(" ");
+
 const CSP = [
   "default-src 'self'",
   // Nessuno può incorniciare le nostre pagine: difesa dal clickjacking, più forte di
@@ -34,8 +50,8 @@ const CSP = [
   // `googletagmanager` anche fra le IMMAGINI: Analytics manda una parte delle
   // misure come pixel, non come richiesta di rete. Previsto solo fra gli script,
   // il browser lo bloccava — e il collaudo l'ha visto, la lettura della regola no.
-  "img-src 'self' data: blob: https://cms.evalisdeck.it https://hahtljrexrngtfsplbsz.supabase.co https://www.googletagmanager.com https://*.google-analytics.com",
-  "connect-src 'self' https://hahtljrexrngtfsplbsz.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  permessi("img-src 'self' data: blob: https://cms.evalisdeck.it", ORIGINE_ARCHIVIO, "https://www.googletagmanager.com https://*.google-analytics.com"),
+  permessi("connect-src 'self'", ORIGINE_ARCHIVIO, "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com"),
   // Il video di benvenuto sta nell'archivio e la rotta rinvia a un indirizzo firmato di
   // Supabase: un'altra origine. Senza questa riga `media-src` ricadeva su `default-src
   // 'self'` e il browser lo BLOCCAVA — da telefono come da computer.
@@ -43,7 +59,7 @@ const CSP = [
   // Il collaudo diceva verde perché scaricava il file con una richiesta di rete, che
   // della CSP della pagina non sa niente. Un `<video>` non è una fetch: va provato
   // facendolo caricare davvero, ed è quello che ora fa `verifica-benvenuto`.
-  "media-src 'self' blob: https://hahtljrexrngtfsplbsz.supabase.co",
+  permessi("media-src 'self' blob:", ORIGINE_ARCHIVIO),
   "frame-src 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
