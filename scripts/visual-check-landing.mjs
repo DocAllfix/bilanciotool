@@ -85,7 +85,18 @@ const { readFileSync } = await import("node:fs");
 const attesi = (readFileSync("src/components/landing/percorsi-vetrina.ts", "utf8").match(/titolo:\s*"/g) ?? []).length;
 if (!attesi) errors.push("non riesco a contare i percorsi in percorsi-vetrina.ts: formato cambiato?");
 const etichette = await page.evaluate(() => document.body.innerText.match(/PERCORSO\s+[A-Z]/g) ?? []);
-if (etichette.length !== attesi) errors.push(`percorsi in pagina: ${etichette.length} invece di ${attesi}`);
+if (etichette.length !== attesi) {
+  // ⚠️ Contro un bersaglio REMOTO lo scarto non e' un difetto della pagina: e' il sito che
+  // sta servendo un build piu' vecchio del sorgente che ho sotto mano. Detto come «percorsi
+  // in pagina: 5 invece di 11» manda a cercare un guasto nella vetrina, che non c'e'.
+  const remoto = !/^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
+  errors.push(
+    remoto && etichette.length < attesi
+      ? `il sito serve ${etichette.length} percorsi, il sorgente ne dichiara ${attesi}: ` +
+        "quel build e' indietro rispetto a questo ramo (non e' un difetto della pagina)"
+      : `percorsi in pagina: ${etichette.length} invece di ${attesi}`,
+  );
+}
 const distinte = new Set(etichette).size;
 if (distinte !== etichette.length) {
   errors.push(`lettere RIPETUTE nella vetrina: ${etichette.length} etichette ma ${distinte} distinte`);
