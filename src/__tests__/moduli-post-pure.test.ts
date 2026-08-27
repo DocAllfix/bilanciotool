@@ -41,9 +41,25 @@ function tsx(dir: string): string[] {
 
 const FILE = RADICI.flatMap(tsx);
 
-/** I tag `<form …>` di un file, con i loro attributi. */
+/**
+ * I tag di modulo di un file, con i loro attributi.
+ *
+ * ⚠️ I COMMENTI SI TOLGONO PRIMA. Un commento che SPIEGA il difetto contiene la stringa
+ * che lo descrive, e questo controllo lo contava come un modulo scoperto: è successo il
+ * 27 agosto 2026 su una nota messa lì proprio per non rifare l'errore.
+ *
+ * Stessa famiglia dello scanner che cercava «azione:» senza confine di parola e trovava
+ * «consultazione:»: un controllo misura il CODICE, non la prosa che lo commenta. E il
+ * rimedio comodo — riscrivere il commento perché il controllo non scatti — sarebbe il
+ * verso sbagliato: si piegherebbe la documentazione a uno strumento difettoso.
+ */
 function moduli(testo: string): string[] {
-  return [...testo.matchAll(/<form\b([^>]*)>/g)].map((m) => m[1] ?? "");
+  const codice = testo
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .split("\n")
+    .map((r) => r.replace(/^\s*\/\/.*$/, ""))
+    .join("\n");
+  return [...codice.matchAll(/<form\b([^>]*)>/g)].map((m) => m[1] ?? "");
 }
 
 describe("i moduli non mettono i campi nell'indirizzo", () => {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { SiteHeader } from "@/components/landing/site-header";
 import { PiedeMarketing } from "@/components/landing/piede";
@@ -8,6 +8,7 @@ import { Reveal } from "@/components/landing/scroll-reveal";
 import { Faq } from "@/components/landing/faq";
 import { DOMANDE_PREZZI } from "@/components/landing/domande-prezzi";
 import { CalcolatoreRitorno } from "@/components/landing/calcolatore-ritorno";
+import { ModuloFondatori } from "@/components/landing/modulo-fondatori";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 import { Button } from "@/components/ui/button";
 import { CHIAVI_PIANO, ESTENSIONI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
@@ -348,12 +349,9 @@ export default function Prezzi() {
                   La testimonianza è dovuta solo in caso di effettiva soddisfazione: non chiediamo a nessuno di
                   dichiarare quello che non pensa.
                 </p>
-                <Button asChild variant="secondary" className="mt-7">
-                  <a href="mailto:info@evalisdeck.it?subject=Programma%20Fondatori%20EvalisDeck">
-                    Candidati al Programma
-                    <ArrowRight className="size-4" aria-hidden />
-                  </a>
-                </Button>
+                <div className="mt-8 max-w-xl">
+                  <ModuloFondatori />
+                </div>
               </div>
             </Reveal>
           </div>
