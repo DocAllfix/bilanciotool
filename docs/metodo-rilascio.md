@@ -183,6 +183,22 @@ L'unica prova d'acquisto vera la fa **una persona**, una volta, con una carta pr
 - **Un ambiente di prova si crea uguale a quello vero**, non più permissivo: le differenze
   comode sono quelle che fanno passare i collaudi e cadere la produzione.
 
+- **Il giro completo si lancia DA SOLO.** Il 27 agosto ho fatto girare migrazioni, seme e
+  collaudi di produzione mentre il giro era in corso, sullo stesso database di sviluppo:
+  cinque collaudi sono passati «al secondo tentativo», uno è caduto e uno si è piantato per
+  quattordici minuti. `corpus` era verde tre giri su tre ed è stato rosso solo in quello
+  disturbato — rilanciato da solo sulla stessa anteprima, 20 su 20. **La contesa si
+  presenta come un difetto, e il referto accusa il prodotto.** Stessa famiglia
+  dell'`ENOTFOUND` a raffica e del 503: si isola una variabile per volta e si rilancia,
+  non si corregge.
+- **Un collaudo lanciato con `qa.mjs` e `BASE=<anteprima>` parla con la pagina di accesso
+  di Vercel.** Il permesso di attraversare la protezione lo mette il preload, che monta
+  solo `qa-anteprima.mjs`: senza, il browser carica la schermata di Vercel e Playwright
+  riferisce «timeout in attesa di `#nome`» — cioè accusa il prodotto di aver perso un campo
+  che non è mai stato chiesto a lui. **Contro un'anteprima si passa sempre dal
+  lanciatore.** È la stessa forma dei PDF che erano la pagina di accesso: la protezione non
+  dà errore, restituisce un'altra pagina.
+
 ---
 
 ## Per la manutenzione e la caccia ai difetti
