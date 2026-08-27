@@ -12,7 +12,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -93,7 +93,7 @@ await vaiVista("programma", '[data-tour="fil-programma"]');
 await page.getByLabel("Responsabile della due diligence", { exact: true }).fill("Dott.ssa Chiara Petrosino");
 await page.keyboard.press("Tab");
 await attendi(async () => (await programma())?.responsabile === "Dott.ssa Chiara Petrosino",
-  { entro: 30_000, cosa: "il responsabile salvato" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il responsabile salvato" });
 verifica("Un campo del programma si salva sfocandosi", true);
 
 // ⚠️ Il riesame: nel prototipo il campo esisteva, bloccava la fase 4 sotto il 67% e
@@ -101,7 +101,7 @@ verifica("Un campo del programma si salva sfocandosi", true);
 await page.fill("#fil-riesame", "2026-06-30");
 await page.keyboard.press("Tab");
 await attendi(async () => (await programma())?.riesame_data === "2026-06-30",
-  { entro: 30_000, cosa: "la data del riesame" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la data del riesame" });
 verifica("⚠️ Il riesame si può registrare — nel prototipo il campo era morto", true);
 await page.screenshot({ path: `${OUT}/02-programma.png` });
 
@@ -132,7 +132,7 @@ await page.getByRole("button", { name: /^Governance e politiche: 4/ }).click();
 await attendi(async () => {
   const r = await sql`select count(*)::int n from chain_partner_score where partner_id = ${pa.id}`;
   return r[0].n === 3;
-}, { entro: 30_000, cosa: "i tre punteggi salvati" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "i tre punteggi salvati" });
 verifica("Un punteggio si assegna con un clic", true);
 
 await page.waitForTimeout(1200);
@@ -154,7 +154,7 @@ for (const n of ["Lavoro minorile e giovani lavoratori", "Lavoro forzato e reclu
 await attendi(async () => {
   const r = await sql`select count(*)::int n from chain_partner_score where partner_id = ${pa.id}`;
   return r[0].n === 6;
-}, { entro: 30_000, cosa: "le tre aree critiche valutate" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "le tre aree critiche valutate" });
 await page.waitForTimeout(1500);
 verifica("Valutandole davvero l'avviso sparisce",
   (await page.locator('[data-slot="avviso-critiche"]').count()) === 0);
@@ -165,7 +165,7 @@ await attendi(async () => {
   const r = await sql`select count(*)::int n from chain_partner_score
     where partner_id = ${pa.id} and genere='area' and chiave='gov'`;
   return r[0].n === 0;
-}, { entro: 30_000, cosa: "il punteggio annullato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il punteggio annullato" });
 verifica("⚠️ Ripremere annulla, e la riga sparisce invece di valere zero", true);
 await page.getByRole("button", { name: /^Governance e politiche: 4/ }).click();
 await page.waitForTimeout(900);
@@ -173,19 +173,19 @@ await page.waitForTimeout(900);
 // I fattori aggravanti: un interruttore, e l'array è atomico.
 await page.getByRole("switch", { name: "Provvedimento di autorità negli ultimi 36 mesi" }).click();
 await attendi(async () => (await partner("Zhengda Precision Components"))?.flag?.includes("f_prov"),
-  { entro: 30_000, cosa: "il fattore aggravante acceso" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il fattore aggravante acceso" });
 verifica("Un fattore aggravante si accende", true);
 
 await page.getByRole("switch", { name: "Provvedimento di autorità negli ultimi 36 mesi" }).click();
 await attendi(async () => !(await partner("Zhengda Precision Components"))?.flag?.length,
-  { entro: 30_000, cosa: "il fattore aggravante spento" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il fattore aggravante spento" });
 verifica("…e si spegne", true);
 
 // La spesa: è ciò su cui si misura la copertura.
 await page.getByLabel("Spesa annua (€)", { exact: true }).fill("310000");
 await page.keyboard.press("Tab");
 await attendi(async () => Number((await partner("Zhengda Precision Components"))?.spesa) === 310000,
-  { entro: 30_000, cosa: "la spesa salvata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la spesa salvata" });
 verifica("La spesa annua si salva", true);
 
 // ⚠️ Un campo per volta: salvare la spesa non deve aver toccato il paese.
@@ -202,7 +202,7 @@ await page.locator('[data-tour="fil-scheda"]').waitFor({ timeout: 30_000 });
 await page.getByLabel("Spesa annua (€)", { exact: true }).fill("5000000");
 await page.keyboard.press("Tab");
 await attendi(async () => Number((await partner("Ferriere Adriatiche cessato"))?.spesa) === 5000000,
-  { entro: 30_000, cosa: "la spesa del secondo partner" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la spesa del secondo partner" });
 const cess = await partner("Ferriere Adriatiche cessato");
 
 await page.goto(`${U}?vista=quadro`, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -216,7 +216,7 @@ await page.locator('[data-tour="fil-scheda"]').waitFor({ timeout: 30_000 });
 await page.getByLabel("Stato del rapporto", { exact: true }).click();
 await page.getByRole("option", { name: "Cessato", exact: true }).click();
 await attendi(async () => (await partner("Ferriere Adriatiche cessato"))?.stato === "Cessato",
-  { entro: 30_000, cosa: "il rapporto cessato" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il rapporto cessato" });
 
 await page.goto(`${U}?vista=quadro`, { waitUntil: "domcontentloaded", timeout: 60_000 });
 await page.locator('[data-tour="fil-copertura"]').waitFor({ timeout: 30_000 });

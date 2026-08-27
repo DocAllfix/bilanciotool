@@ -25,7 +25,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -75,7 +75,7 @@ await check("creare un'azienda porta al suo fascicolo", async () => {
   await attendi(async () => {
     const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME}`;
     return !!r;
-  }, { entro: 30_000, cosa: "l'azienda scritta nel database" });
+  }, { entro: 30_000 * fattoreAttesa(), cosa: "l'azienda scritta nel database" });
 
   // Si NAVIGA sul fascicolo dell'azienda creata. Vedi il commento in
   // `nuova-azienda-dialog.tsx`: su questa pagina l'aggiornamento non si applica, e la
@@ -107,7 +107,7 @@ await check("archiviare la fa sparire dalle attive senza ricaricare", async () =
   await attendi(async () => {
     const [r] = await sql`select stato from company where organization_id=${orgId} and nome=${NOME}`;
     return r?.stato === "archived";
-  }, { entro: 30_000, cosa: "l'azienda archiviata nel database" });
+  }, { entro: 30_000 * fattoreAttesa(), cosa: "l'azienda archiviata nel database" });
 
   // Archiviata, la card perde le caselle dei percorsi: è il segno che la pagina si è
   // rifatta. Cercare la sparizione del nome non servirebbe — il nome resta, in archivio.
@@ -124,7 +124,7 @@ await check("ripristinare la riporta fra le attive senza ricaricare", async () =
   await attendi(async () => {
     const [r] = await sql`select stato from company where organization_id=${orgId} and nome=${NOME}`;
     return r?.stato === "active";
-  }, { entro: 30_000, cosa: "l'azienda ripristinata nel database" });
+  }, { entro: 30_000 * fattoreAttesa(), cosa: "l'azienda ripristinata nel database" });
 
   await attendi(async () => (await card().locator("[data-gruppo]").count()) > 0, {
     entro: ENTRO,

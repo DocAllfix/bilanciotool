@@ -12,7 +12,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -63,7 +63,7 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const [r] = await sql`select direzione from chain_program where company_id = ${az.id}`;
   return r?.direzione === "Ing. Rosaria Del Vecchio";
-}, { entro: 30_000, cosa: "l'alta direzione salvata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "l'alta direzione salvata" });
 verifica("L'anagrafica che riempie i segnaposto si compila", true);
 
 // ─── la vista del documento offre la stampa ──────────────────────────────────

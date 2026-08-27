@@ -22,8 +22,7 @@ import {
   contatore,
   attendi,
   pretendiServerAggiornato,
-  pretendiPdfVero,
-} from "./comune-collaudo.mjs";
+  pretendiPdfVero, fattoreAttesa } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -240,7 +239,7 @@ await agisci("la bozza dai dati compila un capitolo", async () => {
   const bozza = page.locator('[data-tour^="bozza-"]').first();
   await bozza.waitFor({ timeout: 25_000 });
   await bozza.click();
-  await attendi(async () => (await capitoli()).length >= 1, { entro: 60_000, cosa: "capitolo scritto" });
+  await attendi(async () => (await capitoli()).length >= 1, { entro: 60_000 * fattoreAttesa(), cosa: "capitolo scritto" });
 });
 
 // ─── passo 6 · verifica ──────────────────────────────────────────────────────
@@ -261,7 +260,7 @@ await agisci("il Bilancio si pubblica e si congela", async () => {
       if (s) snapshotId = s.id;
       return !!s;
     },
-    { entro: 120_000, cosa: "snapshot pubblicato" },
+    { entro: 120_000 * fattoreAttesa(), cosa: "snapshot pubblicato" },
   );
 });
 

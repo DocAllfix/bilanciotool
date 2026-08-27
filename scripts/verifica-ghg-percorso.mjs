@@ -25,8 +25,7 @@ import {
   contatore,
   attendi,
   pretendiServerAggiornato,
-  pretendiPdfVero,
-} from "./comune-collaudo.mjs";
+  pretendiPdfVero, fattoreAttesa } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -326,7 +325,7 @@ await agisci("il Rapporto GHG si pubblica e si congela", async () => {
       if (s) snapshotId = s.id;
       return !!s;
     },
-    { entro: 90_000, cosa: "snapshot pubblicato" },
+    { entro: 90_000 * fattoreAttesa(), cosa: "snapshot pubblicato" },
   );
 });
 

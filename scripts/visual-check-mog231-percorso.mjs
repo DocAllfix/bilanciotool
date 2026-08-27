@@ -16,7 +16,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -92,7 +92,7 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const [m] = await sql`select organo_amministrativo from mog_model where company_id = ${az.id}`;
   return m?.organo_amministrativo === "Consiglio di amministrazione";
-}, { entro: 30_000, cosa: "l'organo amministrativo salvato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "l'organo amministrativo salvato" });
 verifica("Un campo dell'ente si salva sfocandosi", true);
 
 // ⚠️ La data IMPOSSIBILE non si prova da qui, e la ragione e' utile saperla: un
@@ -105,7 +105,7 @@ await page.getByLabel("Data della delibera di adozione", { exact: true }).fill("
 await attendi(async () => {
   const [m] = await sql`select data_delibera from mog_model where company_id = ${az.id}`;
   return m?.data_delibera === "2026-03-16";
-}, { entro: 30_000, cosa: "la data della delibera salvata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la data della delibera salvata" });
 verifica("Una data valida si salva al cambio", true);
 await shot("02-ente");
 
@@ -116,7 +116,7 @@ await attendi(async () => {
   const [a] = await sql`select applicabile from mog_crime_applicability
     where crime_key = '24' and model_id = (select id from mog_model where company_id = ${az.id})`;
   return a?.applicabile === "Sì";
-}, { entro: 30_000, cosa: "il reato 24 dichiarato applicabile" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il reato 24 dichiarato applicabile" });
 verifica("Un reato si dichiara applicabile", true);
 
 await page.getByRole("button", { name: "25: No", exact: true }).click();
@@ -139,7 +139,7 @@ await page.getByRole("button", { name: /^Aggiungi$/ }).click();
 await attendi(async () => {
   const [p] = await sql`select id from mog_process where model_id = (select id from mog_model where company_id = ${az.id})`;
   return !!p;
-}, { entro: 30_000, cosa: "il processo scritto nel database" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il processo scritto nel database" });
 await page.locator('[data-tour="mog-aggiungi-reato"]').waitFor({ timeout: 30_000 });
 verifica("Un processo sensibile si crea e apre la sua scheda", true);
 
@@ -166,9 +166,8 @@ await attendi(async () => {
   const [s] = await sql`select id from mog_scenario where process_id =
     (select id from mog_process where model_id = (select id from mog_model where company_id = ${az.id}) limit 1)`;
   return !!s;
-}, { entro: 30_000, cosa: "lo scenario scritto nel database" });
-await attendi(async () => (await page.locator("[data-scenario]").count()) > 0, {
-  entro: 30_000,
+}, { entro: 30_000 * fattoreAttesa(), cosa: "lo scenario scritto nel database" });
+await attendi(async () => (await page.locator("[data-scenario]").count()) > 0, { entro: 30_000 * fattoreAttesa(),
   cosa: "lo scenario visibile a schermo SENZA ricaricare",
 });
 verifica("Associare un reato lo mostra subito", true);
@@ -204,7 +203,7 @@ await attendi(async () => {
   const [r] = await sql`select stato from mog_requirement_state
     where requirement_key = 'P1.01' and model_id = (select id from mog_model where company_id = ${az.id})`;
   return r?.stato === "Presente ed efficace";
-}, { entro: 30_000, cosa: "il presidio P1.01 valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il presidio P1.01 valutato" });
 const dopoIdoneita = (await kpiPilastro().innerText()).trim();
 verifica("Un presidio dovuto e non valutato pesa zero: l'idoneità non salta a 100",
   dopoIdoneita !== "100%" && dopoIdoneita !== "0%", dopoIdoneita);

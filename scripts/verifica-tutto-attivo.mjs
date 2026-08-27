@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore, attendi, spegniTour } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi, spegniTour, fattoreAttesa } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
@@ -79,7 +79,7 @@ await agisci("si crea un'azienda propria", async () => {
   await attendi(async () => {
     const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME_AZIENDA}`;
     return !!r;
-  }, { entro: 40_000, cosa: "l'azienda creata" });
+  }, { entro: 40_000 * fattoreAttesa(), cosa: "l'azienda creata" });
   const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME_AZIENDA}`;
   mia = r.id;
 });

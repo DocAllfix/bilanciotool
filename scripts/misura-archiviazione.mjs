@@ -12,7 +12,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -45,7 +45,7 @@ await page.click('button[type="submit"]:has-text("Crea azienda")');
 await attendi(async () => {
   const [r] = await sql`select id from company where organization_id=${orgId} and nome=${NOME}`;
   return !!r;
-}, { entro: 30_000, cosa: "l'azienda creata dal dialogo" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "l'azienda creata dal dialogo" });
 const [az] = await sql`select id from company where organization_id=${orgId} and nome=${NOME}`;
 await page.locator("h1").filter({ hasText: NOME }).waitFor({ timeout: 60_000 });
 console.log("  creata dal dialogo, si è aperto il fascicolo");
@@ -67,7 +67,7 @@ await page.getByRole("button", { name: /^Archivia$/ }).click();
 await attendi(async () => {
   const [r] = await sql`select stato from company where id = ${az.id}`;
   return r?.stato === "archived";
-}, { entro: 30_000, cosa: "l'archiviazione nel database" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "l'archiviazione nel database" });
 console.log(`  ${Date.now() - t} ms — il database ha registrato l'archiviazione`);
 
 let visto = false;
@@ -97,7 +97,7 @@ const t2 = Date.now();
 await attendi(async () => {
   const [r] = await sql`select stato from company where id = ${az.id}`;
   return r?.stato === "active";
-}, { entro: 30_000, cosa: "il ripristino nel database" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il ripristino nel database" });
 console.log(`  ${Date.now() - t2} ms — il database ha registrato il ripristino`);
 
 let tornata = false;

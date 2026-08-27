@@ -327,7 +327,24 @@ export function contatore(page, sonda) {
  * e sei secondi bastavano quasi sempre — «quasi» è la parola che rende un collaudo
  * rumore da ignorare.
  */
-export async function attendi(condizione, { entro = 45000, ogni = 500, cosa = "condizione" } = {}) {
+/**
+ * Quanto vale un'attesa, dato dove si sta guardando.
+ *
+ * ⚠️ Le attese di questi collaudi sono tarate su LOCALHOST, dove un viaggio al database
+ * costa 7 ms e una pagina si rende in 40. Contro un deploy remoto lo stesso viaggio ne
+ * costa 70÷144 — è il rapporto già misurato il 25 agosto 2026 — e le stesse attese
+ * diventano marginali: nel giro definitivo tre collaudi su quarantasette hanno ceduto e
+ * poi sono passati da soli, e a ogni ripetizione cedeva un collaudo diverso.
+ *
+ * Alzare i numeri uno per uno sarebbe stato indovinare. Il fattore sta QUI, in un posto
+ * solo, e si applica quando il bersaglio è remoto: un'attesa che scade contro un deploy
+ * lento dice qualcosa sulla rete, non sul prodotto.
+ */
+export const fattoreAttesa = () => FATTORE_ATTESA;
+
+const FATTORE_ATTESA = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(process.env.BASE ?? "") ? 1 : 3;
+
+export async function attendi(condizione, { entro = 45000 * FATTORE_ATTESA, ogni = 500, cosa = "condizione" } = {}) {
   const scade = Date.now() + entro;
   for (;;) {
     if (await condizione()) return;

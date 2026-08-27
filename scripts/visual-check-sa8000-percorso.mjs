@@ -12,7 +12,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -99,7 +99,7 @@ await page.getByLabel("Contratto collettivo applicato", { exact: true })
   .fill("CCNL Tessile Abbigliamento Moda Industria");
 await page.keyboard.press("Tab");
 await attendi(async () => (await sistema())?.ccnl?.startsWith("CCNL Tessile"),
-  { entro: 30_000, cosa: "il contratto collettivo salvato" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il contratto collettivo salvato" });
 verifica("Un campo dell'anagrafica si salva sfocandosi", true);
 
 // ⚠️ Il campo dell'anagrafica E' un segnaposto delle procedure: il cliente deve
@@ -139,7 +139,7 @@ await attendi(async () => {
   const r = await sql`select stato from sa_criterion_state
     where system_id = ${s0.id} and criterion_key = ${primo.key}`;
   return r[0]?.stato === "ok";
-}, { entro: 30_000, cosa: "il criterio valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il criterio valutato" });
 verifica("Un criterio si valuta con un clic", true, primo.key);
 
 await bottoneCriterio.click();
@@ -147,7 +147,7 @@ await attendi(async () => {
   const r = await sql`select stato from sa_criterion_state
     where system_id = ${s0.id} and criterion_key = ${primo.key}`;
   return r[0]?.stato === null;
-}, { entro: 30_000, cosa: "la valutazione annullata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la valutazione annullata" });
 verifica("Ripremere lo stesso stato annulla", true);
 
 // ⚠️ «Parziale» pesa ZERO, non meta': un criterio sociale attuato a meta' non
