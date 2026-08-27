@@ -14,6 +14,7 @@ import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-impostazioni";
@@ -61,21 +62,43 @@ await check("il banner demo porta all'abbonamento, non a una pagina vuota", asyn
   if (!/demo/i.test(testo)) throw new Error("non dichiara lo stato demo");
 });
 
-await check("chi non ha un piano vede il listino, con i tre livelli e le estensioni", async () => {
+await check("chi non ha un piano vede il listino, con tutte le fasce e le estensioni", async () => {
+  // ⚠️ Nomi e importi si DERIVANO. Scritti a mano — «Professional», «1.200 €» — questo
+  // controllo e' diventato rosso al cambio di listino del 27 agosto 2026 dicendo «manca
+  // dal listino: Professional», che manda a cercare un difetto nella pagina invece che
+  // nel collaudo: la pagina mostrava le fasce nuove, correttamente.
   const t = await page.locator("main").innerText();
-  for (const atteso of ["Professional", "Studio Plus", "1.200 €", "2.900 €", "5.400 €", "900 €", "600 €"]) {
-    if (!t.includes(atteso)) throw new Error("manca dal listino: " + atteso);
+  for (const k of CHIAVI_PIANO) {
+    const p = PIANI[k];
+    if (!t.includes(p.nome)) throw new Error(`manca la fascia «${p.nome}»`);
+    const v = prezzoDiVendita(p, "anno1");
+    if (v && !t.includes(euro(v.importo))) throw new Error(`manca il prezzo di «${p.nome}»`);
   }
+  if (!t.includes(euro(ESTENSIONI.bloccoAziende.prezzo))) throw new Error("manca il prezzo dei blocchi");
 });
 
-await check("il listino NON compare sul sito pubblico", async () => {
+await check("gli importi stanno sulla pagina prezzi, non sulla HOME", async () => {
+  // ⚠️ Il controllo era «il listino NON compare sul sito pubblico», e fino al 27 agosto
+  // 2026 era giusto: i prezzi non si pubblicavano affatto. Ora si pubblicano, ma in un
+  // posto solo. Sulla home nessuna cifra — il numero da solo ancora la lettura sul costo
+  // prima che si sia capito cosa si compra — e su /prezzi tutte, col contesto del ritorno.
   const p = await ctx.newPage();
-  await p.goto(`${BASE}/`, { waitUntil: "networkidle" });
-  const t = await p.locator("body").innerText();
-  await p.close();
-  for (const prezzo of ["1.200", "2.900", "5.400"]) {
-    if (t.includes(prezzo)) throw new Error(`il prezzo ${prezzo} e' finito sulla landing`);
+
+  await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  const home = await p.locator("body").innerText();
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && home.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} e' finito sulla home`);
   }
+  if (!/href="\/prezzi"/.test(await p.content())) throw new Error("la home non rimanda ai prezzi");
+
+  await p.goto(`${BASE}/prezzi`, { waitUntil: "domcontentloaded" });
+  const prezzi = await p.locator("body").innerText();
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && !prezzi.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} manca da /prezzi`);
+  }
+  await p.close();
 });
 
 await check("nessuna parola incollata a un importo (lo spazio mangiato dal JSX)", async () => {

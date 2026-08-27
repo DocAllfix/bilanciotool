@@ -47,6 +47,13 @@ async function prodotto(chiaveInterna, nome, descrizione) {
 }
 
 async function prezzo(productId, lookupKey, importo, ricorrente) {
+  // ⚠️ Una chiave o un importo assenti significano «questa variante non esiste piu' nel
+  // listino», non «crea qualcosa». Dal 27 agosto 2026 i piani non hanno prezzi di lancio:
+  // senza questa uscita, lo script chiederebbe a Stripe un prezzo `undefined` da
+  // `undefined` centesimi — e Stripe risponderebbe con un errore che sembra un guasto
+  // della connessione invece di un dato che non c'e'.
+  if (!lookupKey || importo === undefined || importo === null) return null;
+
   const trovati = await stripe.prices.list({ lookup_keys: [lookupKey], limit: 1 });
   const esistente = trovati.data[0];
 
@@ -111,6 +118,9 @@ for (const [nome, e] of Object.entries(ESTENSIONI)) {
   const ricorrente = nome !== "avvioAssistito";
   await prezzo(prod.id, e.lookup, importo, ricorrente);
   await prezzo(prod.id, e.lookupLancio, e.prezzoLancio ?? e.minLancio, ricorrente);
+  // ⚠️ Le estensioni RITIRATE non si ricreano e non si toccano: i loro prezzi restano su
+  // Stripe, vivi, perche' gli abbonamenti in corso ci puntano. Archiviarli dal cruscotto
+  // e' una scelta separata, e comunque non spezza un abbonamento esistente.
 }
 
 function etichetta(k) {

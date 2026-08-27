@@ -14,6 +14,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
 async function entra(page, sql, base, email) {
@@ -358,8 +359,11 @@ await agisci("impostazioni: la scheda Membri mostra il limite", async () => {
 await agisci("impostazioni: l'abbonamento propone i piani a chi non ne ha", async () => {
   await vai("/impostazioni/abbonamento");
   const t = await page.locator("main").innerText();
-  for (const atteso of ["1.450 €", "2.900 €", "600 €"]) {
-    if (!t.includes(atteso)) throw new Error(`manca ${atteso}`);
+  // Gli importi si DERIVANO dal listino: scritti a mano invecchiano al primo cambio di
+  // fasce, e il collaudo accusa il prodotto di un difetto che non ha.
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && !t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
 });
 

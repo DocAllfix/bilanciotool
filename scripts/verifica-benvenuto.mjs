@@ -14,6 +14,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -175,14 +176,24 @@ await check("il giro attraversa tutte le tappe fino all'offerta", async () => {
   await page.getByRole("heading", { name: /Ora puoi usarlo davvero/i }).waitFor({ timeout: 25_000 });
 });
 
-await check("l'offerta mostra i prezzi di lancio col listino barrato", async () => {
+await check("l'offerta mostra i prezzi del listino, senza barrati inventati", async () => {
+  // ⚠️ Gli importi si DERIVANO dal listino. Scritti a mano, questo controllo e' diventato
+  // rosso il 27 agosto 2026 al cambio di fasce, per un motivo che col prodotto non
+  // c'entrava: il prodotto mostrava i prezzi giusti, era il collaudo a ricordare i vecchi.
   const t = await page.locator("body").innerText();
-  for (const atteso of ["1.450 €", "2.900 €", "600 €", "2.700 €"]) {
-    if (!t.includes(atteso)) throw new Error(`manca ${atteso}`);
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (!v) continue;
+    if (!t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
+  // ⚠️ E NESSUN BARRATO, perche' oggi non c'e' promozione: un listino barrato accanto a
+  // un prezzo che nessuno ha mai scontato e' pubblicita' ingannevole, vietata anche fra
+  // professionisti. Il barrato torna il giorno che i dati avranno di nuovo un prezzo di
+  // lancio, e allora questo controllo lo pretendera' da solo.
+  const inPromozione = CHIAVI_PIANO.some((k) => prezzoDiVendita(PIANI[k], "anno1")?.listino !== undefined);
   const barrati = await page.locator(".line-through").count();
-  if (barrati < 3) throw new Error(`solo ${barrati} prezzi barrati`);
-  if (!/Prezzi di lancio, validi fino al/.test(t)) throw new Error("la scadenza non e' dichiarata");
+  if (inPromozione && barrati < 1) throw new Error("promozione attiva ma nessun listino barrato");
+  if (!inPromozione && barrati > 0) throw new Error(`${barrati} prezzi barrati senza nessuno sconto vero`);
   if (!/Quattordici giorni per ripensarci/.test(t)) throw new Error("il rimborso non e' dichiarato");
   if (/Enterprise/.test(t)) throw new Error("Enterprise non si compra da qui: si tratta");
 });

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { user, organization, member, orgEntitlement, auditLog, stripeCustomer, stripeSubscription, stripeProcessedEvent } from "@/lib/db/schema";
 import { prendiInCarico, rilascia } from "@/features/billing/idempotenza";
 import { applicaAbbonamento, capacitaDaAbbonamento, statoDaStripe } from "@/features/billing/provisioning";
-import { PIANI, ESTENSIONI } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, LOOKUP_STORICHE } from "@/lib/prezzi";
 import { eq } from "drizzle-orm";
 
 // Provisioning e idempotenza: la parte del pagamento in cui un difetto costa un cliente.
@@ -63,7 +63,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
   });
 
   it("un pagamento sblocca l'account col piano comprato", async () => {
-    await applicaAbbonamento(abbonamento({ lookups: [{ lookup: PIANI.studio.lookupAnno1Lancio! }] }), orgId);
+    await applicaAbbonamento(abbonamento({ lookups: [{ lookup: LOOKUP_STORICHE.studio[2] }] }), orgId);
     const [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     expect(e.status).toBe("active");
     expect(e.piano).toBe("studio");
@@ -71,21 +71,41 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
     expect(e.currentPeriodEnd).not.toBeNull();
   });
 
-  it("il prezzo di LANCIO e quello di listino comprano lo stesso piano", async () => {
-    // Sono lo stesso prodotto a due prezzi: riconoscerne uno solo significherebbe che
-    // alla scadenza della promozione i nuovi clienti pagano e non ottengono niente.
-    for (const lookup of [PIANI.studio.lookupAnno1, PIANI.studio.lookupAnno1Lancio, PIANI.studio.lookupRinnovo, PIANI.studio.lookupRinnovoLancio]) {
-      expect(capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] })).piano).toBe("studio");
+  it("⚠️ tutte le chiavi dello stesso piano lo comprano, comprese quelle dei listini vecchi", async () => {
+    // Sono lo stesso prodotto a prezzi diversi: riconoscerne uno solo significherebbe che
+    // chi ha pagato con la chiave che non riconosciamo resta senza capacita'. E siccome i
+    // prezzi Stripe sono immutabili, «la chiave che non riconosciamo» e' quella di ogni
+    // cliente attivo il giorno in cui si cambia listino.
+    const tutte = [PIANI.studio.lookupAnno1, PIANI.studio.lookupRinnovo, ...LOOKUP_STORICHE.studio];
+    for (const lookup of tutte) {
+      expect(capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] })).piano, lookup).toBe("studio");
     }
+  });
+
+  it("⚠️ un piano qualsiasi porta con se' il marchio dello studio", async () => {
+    // Il white-label era un'estensione da 600 €/anno ed e' diventato parte
+    // dell'abbonamento: e' l'unico modo di rendere vero «tutto incluso» sulla pagina
+    // prezzi. Chi ha un piano lo ottiene senza chiedere, e senza comprare niente.
+    for (const lookup of [PIANI.professional.lookupAnno1, PIANI.studio.lookupAnno1, ...LOOKUP_STORICHE.studio_plus]) {
+      expect(capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] })).whiteLabel, lookup).toBe(true);
+    }
+  });
+
+  it("senza piano il marchio resta il nostro", async () => {
+    // Il ramo che conta al contrario: un abbonamento con la sola estensione blocchi e
+    // nessun piano non deve regalare il marchio.
+    const solaEstensione = abbonamento({ lookups: [{ lookup: ESTENSIONI.bloccoAziende.lookup }] });
+    expect(capacitaDaAbbonamento(solaEstensione).piano).toBeNull();
+    expect(capacitaDaAbbonamento(solaEstensione).whiteLabel).toBe(false);
   });
 
   it("le estensioni si sommano, e i blocchi diventano aziende", async () => {
     const sub = abbonamento({
       lookups: [
-        { lookup: PIANI.studio.lookupAnno1Lancio! },
-        { lookup: ESTENSIONI.bloccoAziende.lookupLancio, quantity: 3 },
-        { lookup: ESTENSIONI.accesso.lookupLancio, quantity: 4 },
-        { lookup: ESTENSIONI.whiteLabel.lookupLancio },
+        { lookup: LOOKUP_STORICHE.studio[2] },
+        { lookup: ESTENSIONI_RITIRATE.bloccoAziendeV1.lookupLancio, quantity: 3 },
+        { lookup: ESTENSIONI_RITIRATE.accesso.lookupLancio, quantity: 4 },
+        { lookup: ESTENSIONI_RITIRATE.whiteLabel.lookupLancio },
       ],
     });
     const c = capacitaDaAbbonamento(sub);
@@ -103,7 +123,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
   it("un evento su sole estensioni non azzera il piano comprato", async () => {
     // Gli eventi arrivano fuori ordine: uno che descrive solo un'estensione non deve
     // cancellare il piano, o l'account cadrebbe in sola lettura senza motivo.
-    await applicaAbbonamento(abbonamento({ lookups: [{ lookup: ESTENSIONI.accesso.lookup }] }), orgId);
+    await applicaAbbonamento(abbonamento({ lookups: [{ lookup: ESTENSIONI_RITIRATE.accesso.lookup }] }), orgId);
     const [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     expect(e.piano).toBe("studio");
   });
@@ -120,7 +140,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
 
   it("una disdetta riporta l'account in sola lettura", async () => {
     await applicaAbbonamento(
-      abbonamento({ lookups: [{ lookup: PIANI.studio.lookupAnno1Lancio! }], status: "canceled" }),
+      abbonamento({ lookups: [{ lookup: LOOKUP_STORICHE.studio[2] }], status: "canceled" }),
       orgId,
     );
     const [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));

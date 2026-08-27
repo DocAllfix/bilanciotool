@@ -31,6 +31,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const prodotto: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
+    // ⚠️ «Quanto costa EvalisDeck» e' una domanda che si fa a un motore di ricerca, e da
+    // qualche tempo a un modello linguistico. Se la risposta non sta su una nostra pagina
+    // la costruisce qualcun altro, o non arriva. Priorita' alta: e' la seconda pagina del
+    // sito per intenzione d'acquisto.
+    //
+    // ⚠️ NESSUN `lastModified`: non lo conosciamo. Un valore generato a ogni richiesta
+    // dice «modificata adesso» per sempre, e Google impara a ignorare il campo — anche
+    // quando poi diciamo il vero.
+    { url: `${base}/prezzi`, changeFrequency: "monthly", priority: 0.9 },
     // ⚠️ La verifica sta in sitemap perche' e' una pagina che vogliamo si TROVI: chi
     // riceve un documento non sa che esiste, e la cerca. Non espone niente finche' non
     // le si da' un codice, quindi non ha la riserva del portale cliente.

@@ -10,7 +10,9 @@ import { ImageResponse } from "next/og";
 // cambio di nome o di promessa, e la prima volta che diverge dal sito nessuno se ne
 // accorge — perché chi la vede non è chi la controlla.
 
-export const alt = "EvalisDeck — undici documenti di conformità, un solo strumento";
+// ⚠️ Senza conteggio: un testo che dipende da quanti moduli ci sono invecchia a ogni
+// modulo, e questo lo legge chi usa un lettore di schermo su un link condiviso.
+export const alt = "EvalisDeck · dalla raccolta dati al documento firmato, un solo strumento";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

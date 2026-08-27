@@ -193,3 +193,39 @@ export async function sendPreavvisoRinnovoEmail(
     }),
   );
 }
+
+/**
+ * Una candidatura al Programma Fondatori, che arriva a noi.
+ *
+ * ⚠️ Va alla casella che LEGGIAMO, non al mittente: `evalisdeck.it` non riceve posta, e
+ * un'email mandata li' si perderebbe senza che nessuno se ne accorga — meno che mai chi
+ * l'ha scritta. Il `reply_to` lo mette `send`, quindi rispondere apre la conversazione
+ * con la persona giusta.
+ */
+export async function inviaCandidaturaFondatori(d: {
+  nome: string;
+  studio: string;
+  email: string;
+  telefono: string;
+  messaggio: string;
+}): Promise<{ sent: boolean }> {
+  const destinatario = process.env.RESEND_REPLY_TO;
+  if (!destinatario) return { sent: false };
+
+  const righe = ([
+    ["Nome", d.nome],
+    ["Studio", d.studio],
+    ["Email", d.email],
+    ["Telefono", d.telefono],
+  ] as [string, string][])
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<strong>${esc(k)}:</strong> ${esc(v)}`);
+
+  const html = renderEmail({
+    previewText: `Candidatura di ${esc(d.nome)} al Programma Fondatori`,
+    heading: "Candidatura al Programma Fondatori",
+    body: [...righe, ...(d.messaggio ? [esc(d.messaggio)] : [])],
+    nota: "Rispondendo a questa email si scrive direttamente a chi si e' candidato.",
+  });
+  return send(destinatario, `Programma Fondatori — ${d.nome}`, html);
+}

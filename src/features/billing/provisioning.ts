@@ -4,7 +4,7 @@ import { orgEntitlement, stripeCustomer, stripeSubscription, entitlementEvent, m
 import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
-import { PIANI, ESTENSIONI, chiavePiano, type PianoKey } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, chiavePiano, type PianoKey } from "@/lib/prezzi";
 import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Da un abbonamento Stripe allo stato dell'account.
@@ -48,15 +48,39 @@ export function capacitaDaAbbonamento(sub: Stripe.Subscription): Capacita {
       piano = trovato;
       continue;
     }
-    if (lookup === ESTENSIONI.bloccoAziende.lookup || lookup === ESTENSIONI.bloccoAziende.lookupLancio) {
+    // ⚠️ Si riconoscono anche le lookup RITIRATE. Una lookup che non si riconosce piu' non
+    // produce un errore: produce una capacita' piu' piccola, in silenzio, a un cliente che
+    // quelle righe le ha pagate.
+    const BLOCCHI: string[] = [
+      ESTENSIONI.bloccoAziende.lookup,
+      ESTENSIONI_RITIRATE.bloccoAziendeV1.lookup,
+      ESTENSIONI_RITIRATE.bloccoAziendeV1.lookupLancio,
+    ];
+    const ACCESSI: string[] = [ESTENSIONI_RITIRATE.accesso.lookup, ESTENSIONI_RITIRATE.accesso.lookupLancio];
+    const MARCHIO: string[] = [ESTENSIONI_RITIRATE.whiteLabel.lookup, ESTENSIONI_RITIRATE.whiteLabel.lookupLancio];
+
+    if (BLOCCHI.includes(lookup)) {
       // In `aziendeExtra` finiscono le AZIENDE, non i blocchi: cinque per blocco.
       aziendeExtra += quantita * ESTENSIONI.bloccoAziende.aziende;
-    } else if (lookup === ESTENSIONI.accesso.lookup || lookup === ESTENSIONI.accesso.lookupLancio) {
+    } else if (ACCESSI.includes(lookup)) {
       accessiExtra += quantita;
-    } else if (lookup === ESTENSIONI.whiteLabel.lookup || lookup === ESTENSIONI.whiteLabel.lookupLancio) {
+    } else if (MARCHIO.includes(lookup)) {
       whiteLabel = true;
     }
   }
+
+  // ⚠️ IL MARCHIO DELLO STUDIO E' COMPRESO IN OGNI FASCIA.
+  //
+  // Era un'estensione da 600 €/anno, ed e' diventato parte dell'abbonamento: e' l'unico
+  // modo di rendere vero «tutto incluso» sulla pagina prezzi. Chi l'aveva comprata lo
+  // tiene comunque (il ramo sopra continua a riconoscerla), e chi ha un piano lo ottiene
+  // senza chiedere.
+  //
+  // Il marchio si sceglie una volta sola ALLA PUBBLICAZIONE e si congela nello snapshot:
+  // i documenti gia' pubblicati non cambiano, e non e' un difetto — portano il marchio di
+  // quando furono generati.
+  if (piano) whiteLabel = true;
+
   return { piano, aziendeExtra, accessiExtra, whiteLabel };
 }
 

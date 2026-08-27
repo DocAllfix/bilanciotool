@@ -28,7 +28,7 @@ const { db } = await import("@/lib/db");
 const { user, organization, member, orgEntitlement, auditLog, stripeCustomer, stripeSubscription } =
   await import("@/lib/db/schema");
 const { applicaAbbonamento } = await import("@/features/billing/provisioning");
-const { PIANI } = await import("@/lib/prezzi");
+const { PIANI, LOOKUP_STORICHE } = await import("@/lib/prezzi");
 const { eq } = await import("drizzle-orm");
 
 const url = process.env.DATABASE_URL;
@@ -47,7 +47,11 @@ function abbonamento(status: string): Stripe.Subscription {
     items: {
       data: [
         {
-          price: { lookup_key: PIANI.studio.lookupAnno1Lancio },
+          // ⚠️ Una chiave del listino VECCHIO, di proposito: e' quella che porta ogni
+          // cliente gia' attivo il giorno in cui si cambia listino. Se non venisse
+          // riconosciuta come piano, il cambio di stato non scatterebbe e chi ha appena
+          // pagato non riceverebbe il benvenuto — senza nessun errore da nessuna parte.
+          price: { lookup_key: LOOKUP_STORICHE.studio[2] },
           quantity: 1,
           current_period_end: Math.floor(Date.now() / 1000) + 86_400 * 365,
         },
@@ -81,7 +85,9 @@ describe.skipIf(!url)("email al cambio di stato dell'abbonamento", () => {
 
     const [destinatario, dati] = benvenuto.mock.calls[0] as unknown as [string, Record<string, unknown>];
     expect(destinatario).toBe(`mail-${RUN}@example.com`);
-    expect(dati.piano).toBe("Studio");
+    // Il NOME del piano si deriva: e' testo di listino e cambia. Cio' che va provato e'
+    // che l'email nomini il piano giusto, non che quel piano si chiami in un certo modo.
+    expect(dati.piano).toBe(PIANI.studio.nome);
     // Le capacità servono a dire cosa è cambiato: senza, è un ringraziamento generico.
     expect(dati.aziende).toBe(PIANI.studio.aziende);
 

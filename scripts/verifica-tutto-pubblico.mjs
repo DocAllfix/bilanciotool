@@ -9,6 +9,7 @@
 import { chromium } from "@playwright/test";
 import "dotenv/config";
 import { strumenta, contatore } from "./comune-collaudo.mjs";
+import { PIANI, CHIAVI_PIANO, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 
@@ -56,9 +57,21 @@ await agisci("la vetrina dice COME si acquista", async () => {
   for (const atteso of [/abbonamento/i, /annuale/i, /bonifico|preventivo/i, /rimborso/i, /disdice/i]) {
     if (!atteso.test(t)) throw new Error(`la sezione non parla di ${atteso}`);
   }
-  // Deve dire ANCHE perché gli importi non sono qui: tacere il come, oltre al quanto,
-  // fa sembrare che non si venda affatto.
-  if (!/si vedono appena entri/i.test(t)) throw new Error("non spiega dove si vedono gli importi");
+  // ⚠️ Deve dire ANCHE dove sono gli importi. Fino al 27 agosto 2026 la home diceva «si
+  // vedono appena entri», cioe' metteva un PEDAGGIO davanti a una domanda legittima: per
+  // sapere quanto costa bisognava registrarsi. Ora c'e' una pagina, e la home ci rimanda.
+  //
+  // Nessuna cifra qui, ed e' voluto: il numero da solo ancora la lettura sul costo prima
+  // che si sia capito cosa si compra, e il contesto che lo rende leggibile — il ritorno —
+  // sta sulla pagina prezzi.
+  if (!(await page.locator('main a[href="/prezzi"], footer a[href="/prezzi"]').count())) {
+    throw new Error("nessun rimando alla pagina dei prezzi");
+  }
+  if (/si vedono appena entri/i.test(t)) throw new Error("la home nasconde ancora gli importi");
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && t.includes(euro(v.importo))) throw new Error(`la home mostra una cifra (${euro(v.importo)})`);
+  }
 });
 
 await agisci("il menu e il piede portano alla sezione acquisto", async () => {

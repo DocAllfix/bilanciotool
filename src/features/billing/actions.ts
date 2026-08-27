@@ -20,11 +20,11 @@ const schema = z.object({
   // accettava 500 aziende e 200 accessi mentre il client si fermava a 10 blocchi e 20
   // accessi. Due verita' sullo stesso limite, e quella che decide non era quella scritta.
   aziendeExtra: z.coerce.number().int().min(0).max(MAX_BLOCCHI_AZIENDE * ESTENSIONI.bloccoAziende.aziende).optional(),
-  accessiExtra: z.coerce.number().int().min(0).max(MAX_ACCESSI_EXTRA).optional(),
-  // `z.boolean()` e NON `z.coerce.boolean()`: con `coerce`, la stringa "false" diventa
-  // `true` e aggiunge una riga a pagamento. Dal dialogo arriva un booleano vero, ma un
-  // client diverso — o un modulo codificato — no.
-  whiteLabel: z.boolean().optional(),
+  // ⚠️ `accessiExtra` e `whiteLabel` NON si comprano piu': gli accessi sono inclusi in
+  // ogni fascia e il marchio dello studio pure. Accettarli qui e ignorarli nel checkout
+  // sarebbe peggio che rifiutarli — un campo che il server prende e non usa fa credere
+  // che qualcosa sia stato comprato. Le loro chiavi Stripe restano riconosciute in
+  // `ESTENSIONI_RITIRATE`, per chi le aveva gia'.
 });
 
 export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ url: string }>> {
@@ -55,8 +55,6 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
       email: s.email,
       piano,
       aziendeExtra: p.data.aziendeExtra,
-      accessiExtra: p.data.accessiExtra,
-      whiteLabel: p.data.whiteLabel,
     });
     return { ok: true, dati: { url } };
   } catch (e) {

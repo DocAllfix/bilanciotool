@@ -180,9 +180,10 @@ export default async function AbbonamentoPage() {
                   basta dire che ci sono, con quanto costano. Ripetere il listino in
                   due posti significa aggiornarne uno solo, prima o poi. */}
               <p>
-                Servono più aziende, più accessi o i documenti col tuo marchio? Si aggiungono al piano
-                nella stessa schermata di pagamento, da{" "}
-                {euro(prezzoEstensione(ESTENSIONI.accesso).importo)}{" "}l&apos;anno.
+                Gli accessi per il tuo studio e i documenti col tuo marchio sono compresi in ogni
+                fascia. Servono più aziende? Si aggiungono al piano nella stessa schermata di
+                pagamento, {euro(prezzoEstensione(ESTENSIONI.bloccoAziende).importo)}{" "}l&apos;anno
+                ogni {ESTENSIONI.bloccoAziende.aziende}.
               </p>
               <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
             </div>
@@ -218,13 +219,20 @@ export default async function AbbonamentoPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Le estensioni si sommano al piano e seguono la stessa scadenza.
             </p>
+            {/* ⚠️ Detto anche a chi ha GIA' un piano, e non solo a chi deve comprarlo.
+                Questa scheda elencava i soli blocchi di aziende: un cliente attivo che
+                si chiede quanti accessi ha, o se il marchio si paga, qui non trovava
+                risposta e la cercava altrove. Trovato dal collaudo sull'anteprima. */}
+            <p className="mt-2 text-sm text-muted-foreground">
+              Gli accessi per le persone del tuo studio e i documenti col tuo marchio sono{" "}
+              <strong className="font-medium text-foreground">compresi</strong> nel piano: non si comprano a
+              parte.
+            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="grid gap-2 sm:grid-cols-3">
               {[
                 [`+${ESTENSIONI.bloccoAziende.aziende} aziende`, prezzoEstensione(ESTENSIONI.bloccoAziende)],
-                ["+1 accesso", prezzoEstensione(ESTENSIONI.accesso)],
-                ["Documenti col tuo marchio", prezzoEstensione(ESTENSIONI.whiteLabel)],
               ].map(([etichetta, p]) => (
                 <li key={etichetta as string} className="rounded-lg border p-3">
                   <p className="text-sm font-medium">{etichetta as string}</p>
