@@ -28,7 +28,34 @@ type EventoSentry = {
   extra?: Record<string, unknown>;
   tags?: Record<string, unknown>;
   contexts?: Record<string, Record<string, unknown> | undefined>;
+  exception?: { values?: { type?: string }[] };
 };
+
+/**
+ * Gli errori che sono CONTROLLO DI FLUSSO, non guasti.
+ *
+ * ⚠️ `AuthError` la lancia la guardia di una pagina quando non c'è sessione. Per chi
+ * guarda non succede niente di male: il layout del gruppo `(app)` fa `redirect("/login")`
+ * e la persona atterra dove deve. Ma in Next il layout e la pagina rendono **in
+ * parallelo**, quindi la guardia della pagina lancia lo stesso, e `captureRequestError` la
+ * manda a Sentry come eccezione non gestita.
+ *
+ * Il 27 agosto 2026 erano **161 eventi** su tre righe — «Non autenticato» su `/dashboard`,
+ * su `/impostazioni` — in un cruscotto che ne conteneva cinque in tutto. Una parte li
+ * generavano i nostri stessi collaudi, che aprono le pagine protette da anonimi per
+ * verificare che rimandino.
+ *
+ * ⚠️ Perché toglierli è giusto e non è nascondere: vale la regola già scritta in
+ * `CLAUDE.md` — **un allarme che arriva ogni mattina si smette di leggerlo**. Con una
+ * regola d'avviso attiva, il primo messaggio sarebbe questo, e il secondo, e il terzo:
+ * il canale nascerebbe già da spegnere. E se l'autenticazione si rompesse davvero, il
+ * segnale non sarebbe «un anonimo ha aperto una pagina protetta»: sarebbe che nessuno
+ * riesce più a entrare.
+ *
+ * Si distingue per TIPO e non per messaggio: il tipo lo scriviamo noi (`this.name`), il
+ * messaggio è una frase che qualcuno può cambiare.
+ */
+const CONTROLLO_DI_FLUSSO = new Set(["AuthError"]);
 
 export const configurazioneComune = {
   // `process.env` e NON `env` di `@/lib/env`: questo file gira anche nel browser
@@ -46,8 +73,12 @@ export const configurazioneComune = {
   // intestazione, nessun corpo di richiesta, salvo ciò che serve a capire il guasto.
   sendDefaultPii: false,
 
-  beforeSend<T>(evento: T): T {
+  beforeSend<T>(evento: T): T | null {
     const e = evento as EventoSentry;
+    // ⚠️ Prima di tutto: cio' che non e' un guasto non entra. Restituire `null` dice a
+    // Sentry di scartare l'evento — è il modo previsto, e non rompe niente perché
+    // l'evento non viene ricostruito.
+    if (e.exception?.values?.some((v) => v.type && CONTROLLO_DI_FLUSSO.has(v.type))) return null;
     mascheraQui(e.request?.headers);
     mascheraQui(e.extra);
     mascheraQui(e.tags);
