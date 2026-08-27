@@ -1866,6 +1866,79 @@ Guardia: `collaudi-bersaglio-pure`.
 Gate: typecheck · **1188 test** · giro definitivo sull'anteprima **44 su 47**, dove dei tre
 falliti due erano contesa (passano da soli) e uno era il difetto del fuso.
 
+**Il listino pubblico e la vetrina a dodici percorsi (2026-08-27)** — la landing era ferma
+a undici moduli, e il listino si vedeva solo dopo la registrazione.
+
+**Due difetti vivi in produzione, invisibili a ogni collaudo.** Il dodicesimo percorso non
+era in vetrina dal 25 agosto, e l'autovalutazione si chiamava «Autovalutazione ESG del
+fornitore» sulla landing e «Autovalutazione ESG» nell'app. La causa era la stessa:
+`visual-check-landing` contava i percorsi **leggendo il file della vetrina**, cioè
+verificava la pagina contro se stessa. Due copie della stessa cosa sono sempre d'accordo.
+Ora la vetrina si **deriva** da `MODULI_PER_AREA` e la completezza la pretende il
+**compilatore** (`RACCONTO` è un `Record<ModuloAzienda, …>`): aggiungere un modulo senza
+dargli un testo non compila. E «undici» era scritto a mano in **dieci punti**, fra cui il
+`<title>` della home, il piede site-wide e tre risposte FAQ che alimentano il `FAQPage`
+dei dati strutturati.
+
+**La sezione percorsi ora è organizzata sui tre gruppi.** Il blocco è il gruppo, non la
+scheda: con le schede in due colonne il dodicesimo avrebbe prodotto **due orfane**, ed è la
+storia della card del portafoglio dove ogni volta si cambiava il numero di colonne
+rimandando il problema al modulo dopo. Gli otto passi restano tutti ma su una riga sola,
+separati da punti. Via le lettere A÷L.
+
+**Listino nuovo e pubblico**: fasce **5 / 15 / 30** aziende a **590 / 1.290 / 2.190 €**,
+rinnovo −20%, accessi (15/30/60) e **white-label inclusi**, blocco di 5 aziende a 350 €.
+Pagina `/prezzi` statica con calcolatore, tabella, Programma Fondatori e `Offer` coi prezzi
+veri. Sulla home **nessuna cifra**, solo un rimando: la frase «gli importi si vedono appena
+entri» metteva un pedaggio davanti a una domanda legittima.
+
+⚠️ **Il difetto peggiore è stato intercettato prima di causarlo.** `chiavePiano` traduceva
+una chiave Stripe nel piano che rappresenta guardando **solo** il listino corrente.
+Sostituendolo con le `_v2`, le righe dei clienti già paganti — che puntano alle `_v1` per
+sempre, perché su Stripe i prezzi sono immutabili — sarebbero diventate irriconoscibili:
+`ricostruisciCapacita` avrebbe restituito **nessun piano**, cioè sola lettura a chi paga, e
+`vociDelRinnovo` avrebbe portato avanti la riga del piano **insieme** al rinnovo nuovo, cioè
+**due piani sulla stessa fattura**, fra dodici mesi, senza un errore da nessuna parte. Ora
+c'è `LOOKUP_STORICHE`, con cinque prove.
+
+**Regole nate qui:**
+- **Un elenco confrontato con la propria copia è sempre d'accordo.** Un controllo che legge
+  l'attesa dallo stesso file che rende non è un controllo: si chiede al registro dell'app.
+- **Quando la misura e l'ipotesi non tornano, si guarda la cosa.** `{jsonLd(OFFERTE)}`
+  stampava il JSON come TESTO in fondo alla pagina (quella funzione restituisce una
+  stringa), e la pagina sfondava di 601px da telefono. Il collaudo l'aveva misurato subito e
+  correttamente; sei esperimenti sono serviti a smentire l'ipotesi sbagliata, e la foto l'ha
+  detto al primo sguardo. Tolta la trappola con `<DatiStrutturati>` invece della sola riga.
+- ⚠️ **`whitespace-nowrap` senza spazi VERI fra gli span non protegge la parola: salda
+  l'intera riga.** Otto passi diventavano una sequenza indivisibile da 909px.
+- **Le chiavi Stripe si CREANO e non si correggono, e una chiave storica non esce mai dal
+  codice.** Prima dei prezzi vivi si verifica che le vecchie siano tutte attive con gli
+  importi attesi: è la prova che il rinnovo di chi paga continuerà a funzionare.
+- **Prima i prezzi, poi il codice.** Se il build arriva prima, `idPrezzo` non risolve e
+  nessuno può comprare. Stesso disaccoppiamento delle migrazioni.
+- ⚠️ **`.env.produzione` NON contiene la chiave Stripe viva**: è di prova, identica a
+  quella di `.env`. Le variabili «sensitive» di Vercel non si rileggono nemmeno con
+  `decrypt=true`, verificato. Chi lanciasse uno script «di produzione» leggendo quel file
+  parlerebbe con la sandbox credendo il contrario.
+- **Un collaudo rosso al cambio di listino non è un difetto del prodotto**, ed è il momento
+  di farlo **derivare** invece di riscriverne i numeri. Ma tre andavano *ripensati*: il
+  controllo sul barrato è stato **rovesciato** (oggi zero barrati, perché un listino barrato
+  senza sconto vero è pubblicità ingannevole) e si riadatta da solo se torna una promozione.
+- **Un controllo misura il codice, non la prosa che lo commenta.** `moduli-post-pure`
+  trovava `<form onSubmit>` dentro il commento che spiegava il pericolo: si è corretto lo
+  strumento, non il commento.
+- **`method="post"` su ogni modulo**: prima dell'idratazione l'invio è nativo, e un `<form>`
+  GET mette nome, email e telefono nella barra degli indirizzi.
+
+⚠️ **Aperto, e non blocca**: lo sconto Fondatori è ambiguo nella lettera d'intenti — «20%
+sul prezzo di listino dei rinnovi» vale 825,60 € o 1.032 € (cioè quanto tutti). Va deciso
+dal committente prima di creare il prezzo Stripe, che è immutabile. Il primo anno a 300 €
+è tra parentesi quadre nella lettera.
+
+Gate: typecheck · build con `/prezzi` statica · **1208 test** · giro completo
+sull'anteprima **47 su 47** · in produzione `tutto-pubblico` 37/37, `sitemap` 9/9,
+`legale` 26/26 · 48 studi recuperati sul marchio, zero scoperti.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
