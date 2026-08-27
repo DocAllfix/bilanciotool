@@ -124,6 +124,44 @@ const nota = locale
     : "";
 console.log(`→ ${scelto}  (${bersaglio})${nota}\n`);
 // `--su <indirizzo>` non si passa al collaudo: il bersaglio viaggia in `BASE`.
+// ⚠️ QUATTRO BERSAGLI, NON TRE: c'e' anche il DATABASE, e puo' divergere dal sito.
+//
+// I collaudi che scrivono guidano il prodotto via HTTP **e** interrogano il database
+// direttamente, perche' la prova di un divieto e' la riga che non compare. Ma la
+// connessione la prendono da `.env` con `dotenv`, mentre il sito lo prendono da `BASE`:
+// sono due assi indipendenti, e nessuno finora li confrontava.
+//
+// Lanciato con `--prod` mentre `.env` punta allo sviluppo, un collaudo registrerebbe un
+// utente VERO nel database che incassa e poi lo cercherebbe in quello di sviluppo: il
+// verdetto non direbbe niente sul prodotto, e nel frattempo avrebbe scritto dove non
+// doveva. E' la stessa famiglia dei nove collaudi che parlavano con localhost mentre il
+// lanciatore stampava l'indirizzo dell'anteprima — un bersaglio dichiarato e un altro
+// usato — solo su un asse che nessuno guardava.
+//
+// L'override esiste ed e' esplicito, perche' un giorno servira' davvero collaudare la
+// produzione contro la produzione.
+const RIF_PRODUZIONE = "hahtljrexrngtfsplbsz";
+{
+  // ⚠️ Solo per i collaudi che il database lo APRONO davvero. Un controllo in sola
+  // lettura — la vetrina, i testi legali, la sitemap — non ha due bersagli e non ha
+  // niente da far divergere: bloccarlo sarebbe un cancello che nasce a sproposito, e
+  // quelli si imparano a scavalcare. Il fatto si legge dal sorgente del collaudo, non
+  // da un elenco di nomi che qualcuno dovrebbe ricordarsi di aggiornare.
+  const tocca = /postgres\(/.test(readFileSync(join(QUI, scelto), "utf8"));
+  const dbProduzione = (process.env.DATABASE_URL ?? "").includes(RIF_PRODUZIONE);
+  const sitoProduzione = /evalisdeck\.(it|com)/.test(bersaglio);
+  if (tocca && dbProduzione !== sitoProduzione && !process.env.SO_CHE_I_BERSAGLI_DIVERGONO) {
+    console.error("\n🛑 IL SITO E IL DATABASE NON SONO LO STESSO AMBIENTE.\n");
+    console.error(`   sito     : ${bersaglio}  (${sitoProduzione ? "PRODUZIONE" : "non produzione"})`);
+    console.error(`   database : ${dbProduzione ? "PRODUZIONE" : "non produzione"}  (da .env)\n`);
+    console.error("   Un collaudo che scrive guiderebbe un ambiente e verificherebbe");
+    console.error("   nell'altro: il verdetto non direbbe niente, e le righe resterebbero");
+    console.error("   dove non dovevano.\n");
+    console.error("   Se e' voluto: SO_CHE_I_BERSAGLI_DIVERGONO=1\n");
+    process.exit(1);
+  }
+}
+
 const perIlCollaudo = argomenti.filter((a, i) => a !== nome && i !== iSu && i !== iSu + 1);
 
 // ⚠️ IL BYPASS SI PRECARICA, non si chiede a ogni collaudo di ricordarsene.
