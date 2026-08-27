@@ -219,6 +219,15 @@ export default async function AbbonamentoPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Le estensioni si sommano al piano e seguono la stessa scadenza.
             </p>
+            {/* ⚠️ Detto anche a chi ha GIA' un piano, e non solo a chi deve comprarlo.
+                Questa scheda elencava i soli blocchi di aziende: un cliente attivo che
+                si chiede quanti accessi ha, o se il marchio si paga, qui non trovava
+                risposta e la cercava altrove. Trovato dal collaudo sull'anteprima. */}
+            <p className="mt-2 text-sm text-muted-foreground">
+              Gli accessi per le persone del tuo studio e i documenti col tuo marchio sono{" "}
+              <strong className="font-medium text-foreground">compresi</strong> nel piano: non si comprano a
+              parte.
+            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="grid gap-2 sm:grid-cols-3">

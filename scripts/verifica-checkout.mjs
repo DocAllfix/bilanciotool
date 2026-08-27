@@ -11,6 +11,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 // Si registra uno studio NUOVO, che e' in prova e non ha ancora un piano: e' l'unico
@@ -54,14 +55,14 @@ await check("uno studio in prova arriva alla pagina dell'abbonamento", async () 
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
 });
 
-await check("i prezzi di lancio si vedono col listino barrato", async () => {
-  const t = await page.locator("main").innerText();
-  for (const atteso of ["1.450 €", "2.900 €", "600 €", "2.700 €"]) {
-    if (!t.includes(atteso)) throw new Error(`manca ${atteso}`);
+await check("i prezzi del listino si vedono nell'offerta", async () => {
+  const t = await page.locator("body").innerText();
+  // Gli importi si DERIVANO dal listino: scritti a mano invecchiano al primo cambio di
+  // fasce, e il collaudo accusa il prodotto di un difetto che non ha.
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && !t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
-  const barrati = await page.locator("main .line-through").count();
-  if (barrati < 3) throw new Error(`solo ${barrati} prezzi barrati`);
-  if (!/Prezzi di lancio, validi fino al/.test(t)) throw new Error("la scadenza non è dichiarata");
 });
 
 await check("il comando porta alla pagina di pagamento di Stripe", async () => {

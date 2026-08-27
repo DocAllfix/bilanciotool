@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -85,7 +86,12 @@ await check("confermato l'indirizzo, la pagina dei piani accoglie e vende", asyn
 
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
   const t = await page.locator("main").innerText();
-  if (!/1\.450|2\.900|5\.400/.test(t)) throw new Error("i piani non compaiono");
+  // I piani si riconoscono dai loro NOMI e dai loro prezzi, presi dal listino: le cifre
+  // scritte a mano qui hanno reso rosso questo controllo al cambio di fasce.
+  for (const k of CHIAVI_PIANO) {
+    const v = prezzoDiVendita(PIANI[k], "anno1");
+    if (v && !t.includes(euro(v.importo))) throw new Error(`il piano ${PIANI[k].nome} non compare`);
+  }
   if (await page.locator("video").count()) throw new Error("qui parte il video di benvenuto");
 });
 

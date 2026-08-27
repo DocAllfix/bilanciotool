@@ -13,6 +13,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi, spegniTour, fattoreAttesa } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, limitiEffettivi } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const PWD = PWD_COLLAUDO;
@@ -53,7 +54,12 @@ if (process.env.CONTO) {
   ({ orgId } = await registraEEntra(page, sql, { base: BASE, nome: "Studio Attivo", email: EMAIL, pwd: PWD }));
 }
 // Piano Studio, con il marchio dello studio acceso: cosi' si prova anche il white-label.
-await sql`update org_entitlement set status='active', piano='studio', activated_at=now(), white_label=true
+// ⚠️ Il piano del conto di collaudo sta in UNA costante: il nome compare nella query
+// che lo attiva e nelle asserzioni sulla capienza, e due copie divergono al primo
+// cambio di listino — che e' esattamente quello che e' successo il 27 agosto 2026.
+const PIANO_DEL_CONTO = "studio";
+
+await sql`update org_entitlement set status='active', piano=${PIANO_DEL_CONTO}, activated_at=now(), white_label=true
   where organization_id=${orgId}`;
 await spegniTour(page);
 const [demo] = await sql`select id from company where organization_id=${orgId} and is_demo=true`;
@@ -95,7 +101,10 @@ const aziendeAttive = async () => {
 await agisci("il conteggio della capacita' si aggiorna", async () => {
   await vai("/dashboard");
   const t = await page.locator("body").innerText();
-  const atteso = `${await aziendeAttive()} di 10`;
+  // ⚠️ La capienza si DERIVA dal piano con cui il conto e' stato attivato. Il «10»
+  // scritto a mano ha reso rosso questo controllo al cambio di fasce, e il messaggio
+  // «il contatore non segna 1 di 10» manda a cercare un difetto nel contatore.
+  const atteso = `${await aziendeAttive()} di ${PIANI[PIANO_DEL_CONTO].aziende}`;
   if (!t.includes(atteso)) throw new Error(`il contatore non segna «${atteso}»`);
 });
 
@@ -309,9 +318,12 @@ console.log("\n— abbonamento, membri, archiviazione —");
 await agisci("l'abbonamento mostra il piano e la capacita' usata", async () => {
   await vai("/impostazioni/abbonamento");
   const t = await page.locator("main").innerText();
-  if (!/Studio/.test(t)) throw new Error("il piano non compare");
+  if (!t.includes(PIANI[PIANO_DEL_CONTO].nome)) throw new Error("il piano non compare");
   if (!/Attivo/.test(t)) throw new Error("lo stato non compare");
-  const atteso = `${await aziendeAttive()} di 10`;
+  // ⚠️ La capienza si DERIVA dal piano con cui il conto e' stato attivato. Il «10»
+  // scritto a mano ha reso rosso questo controllo al cambio di fasce, e il messaggio
+  // «il contatore non segna 1 di 10» manda a cercare un difetto nel contatore.
+  const atteso = `${await aziendeAttive()} di ${PIANI[PIANO_DEL_CONTO].aziende}`;
   if (!t.includes(atteso)) throw new Error(`la capacita' usata non dice «${atteso}»`);
 });
 
@@ -323,8 +335,18 @@ await agisci("chi ha un piano vede le estensioni e come ottenerle", async () => 
   await vai("/impostazioni/abbonamento");
   const t = await page.locator("main").innerText();
   if (!/Aggiungere capacità/i.test(t)) throw new Error("nessuna sezione per aggiungere capacita'");
-  for (const atteso of ["+5 aziende", "+1 accesso", "Documenti col tuo marchio"]) {
-    if (!t.includes(atteso)) throw new Error(`manca l'estensione «${atteso}»`);
+  // ⚠️ L'unica estensione ricorrente in vendita e' il blocco di aziende: accessi e
+  // marchio dello studio sono INCLUSI in ogni fascia dal 27 agosto 2026. Questo
+  // controllo pretendeva ancora «+1 accesso» e «Documenti col tuo marchio», cioe' due
+  // cose che il prodotto ha smesso di vendere apposta.
+  if (!t.includes(`+${ESTENSIONI.bloccoAziende.aziende} aziende`)) {
+    throw new Error("manca l'estensione dei blocchi di aziende");
+  }
+  if (/\+1 accesso|marchio del tuo studio.*€/i.test(t)) {
+    throw new Error("la pagina vende ancora accessi o marchio, che ora sono inclusi");
+  }
+  if (!/access[io].*(compres|inclus)/i.test(t)) {
+    throw new Error("non dice che gli accessi sono compresi");
   }
   if (!/fattur/i.test(t)) throw new Error("non dice come avere le fatture");
   if (!/disdi/i.test(t)) throw new Error("non dice come disdire");
