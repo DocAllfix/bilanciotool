@@ -180,9 +180,10 @@ export default async function AbbonamentoPage() {
                   basta dire che ci sono, con quanto costano. Ripetere il listino in
                   due posti significa aggiornarne uno solo, prima o poi. */}
               <p>
-                Servono più aziende, più accessi o i documenti col tuo marchio? Si aggiungono al piano
-                nella stessa schermata di pagamento, da{" "}
-                {euro(prezzoEstensione(ESTENSIONI.accesso).importo)}{" "}l&apos;anno.
+                Gli accessi per il tuo studio e i documenti col tuo marchio sono compresi in ogni
+                fascia. Servono più aziende? Si aggiungono al piano nella stessa schermata di
+                pagamento, {euro(prezzoEstensione(ESTENSIONI.bloccoAziende).importo)}{" "}l&apos;anno
+                ogni {ESTENSIONI.bloccoAziende.aziende}.
               </p>
               <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
             </div>
@@ -223,8 +224,6 @@ export default async function AbbonamentoPage() {
             <ul className="grid gap-2 sm:grid-cols-3">
               {[
                 [`+${ESTENSIONI.bloccoAziende.aziende} aziende`, prezzoEstensione(ESTENSIONI.bloccoAziende)],
-                ["+1 accesso", prezzoEstensione(ESTENSIONI.accesso)],
-                ["Documenti col tuo marchio", prezzoEstensione(ESTENSIONI.whiteLabel)],
               ].map(([etichetta, p]) => (
                 <li key={etichetta as string} className="rounded-lg border p-3">
                   <p className="text-sm font-medium">{etichetta as string}</p>

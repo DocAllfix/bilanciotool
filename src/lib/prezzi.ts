@@ -45,74 +45,95 @@ export type Piano = {
 export const PIANI: Record<PianoKey, Piano> = {
   professional: {
     key: "professional",
-    nome: "Professional",
-    descrizione: "Per il consulente singolo che segue poche aziende.",
-    aziende: 3,
-    accessi: 2,
-    primoAnno: 120000,
-    rinnovo: 90000,
-    primoAnnoLancio: 60000,
-    rinnovoLancio: 45000,
-    lookupAnno1: "evalisdeck_professional_anno1_v1",
-    lookupRinnovo: "evalisdeck_professional_rinnovo_v1",
-    lookupAnno1Lancio: "evalisdeck_professional_anno1_lancio_v1",
-    lookupRinnovoLancio: "evalisdeck_professional_rinnovo_lancio_v1",
+    nome: "Fino a 5 aziende",
+    descrizione: "Per chi parte: i primi mandati, tutto gia' incluso.",
+    aziende: 5,
+    accessi: 15,
+    primoAnno: 59000,
+    rinnovo: 47200,
+    lookupAnno1: "evalisdeck_professional_anno1_v2",
+    lookupRinnovo: "evalisdeck_professional_rinnovo_v2",
   },
   studio: {
     key: "studio",
-    nome: "Studio",
-    descrizione: "Il piano dello studio di consulenza con un portafoglio avviato.",
-    aziende: 10,
-    accessi: 5,
-    primoAnno: 290000,
-    rinnovo: 220000,
-    primoAnnoLancio: 145000,
-    rinnovoLancio: 110000,
-    lookupAnno1: "evalisdeck_studio_anno1_v1",
-    lookupRinnovo: "evalisdeck_studio_rinnovo_v1",
-    lookupAnno1Lancio: "evalisdeck_studio_anno1_lancio_v1",
-    lookupRinnovoLancio: "evalisdeck_studio_rinnovo_lancio_v1",
+    nome: "Fino a 15 aziende",
+    descrizione: "Per lo studio avviato che segue un portafoglio.",
+    aziende: 15,
+    accessi: 30,
+    primoAnno: 129000,
+    rinnovo: 103200,
+    lookupAnno1: "evalisdeck_studio_anno1_v2",
+    lookupRinnovo: "evalisdeck_studio_rinnovo_v2",
   },
   studio_plus: {
     key: "studio_plus",
-    nome: "Studio Plus",
-    descrizione: "Per chi rendiconta molte aziende e lavora in squadra.",
-    aziende: 25,
-    accessi: 10,
-    primoAnno: 540000,
-    rinnovo: 420000,
-    primoAnnoLancio: 270000,
-    rinnovoLancio: 210000,
-    lookupAnno1: "evalisdeck_studio_plus_anno1_v1",
-    lookupRinnovo: "evalisdeck_studio_plus_rinnovo_v1",
-    lookupAnno1Lancio: "evalisdeck_studio_plus_anno1_lancio_v1",
-    lookupRinnovoLancio: "evalisdeck_studio_plus_rinnovo_lancio_v1",
+    nome: "Fino a 30 aziende",
+    descrizione: "Per lo studio strutturato, con piu' collaboratori al lavoro.",
+    aziende: 30,
+    accessi: 60,
+    primoAnno: 219000,
+    rinnovo: 175200,
+    lookupAnno1: "evalisdeck_studio_plus_anno1_v2",
+    lookupRinnovo: "evalisdeck_studio_plus_rinnovo_v2",
   },
   enterprise: {
     key: "enterprise",
-    nome: "Enterprise",
-    descrizione: "Reti e gruppi: capacità e condizioni concordate.",
+    nome: "Oltre 30 aziende",
+    descrizione: "Reti di studi e mandati di filiera: capacita' e condizioni concordate.",
     // La base è quella del piano più capiente, e il negoziato si scrive nelle estensioni.
-    // Così non servono capacità «nulle» da gestire ovunque, e l'accordo resta leggibile:
-    // Studio Plus più i blocchi che sono stati concordati.
-    aziende: 25,
-    accessi: 10,
+    // Così non servono capacità «nulle» da gestire ovunque, e l'accordo resta leggibile.
+    aziende: 30,
+    accessi: 60,
     primoAnno: 0,
     rinnovo: 0,
     trattativa: true,
   },
 };
 
+/* ⚠️ LE CHIAVI DEI PIANI NON CAMBIANO MAI.
+ *
+ * `org_entitlement.piano` contiene `professional | studio | studio_plus | enterprise` per
+ * chi ha gia' pagato: rinominarle sarebbe una migrazione su dati vivi per guadagnare
+ * un'etichetta. Cambia `nome`, che e' testo mostrato, e cambiano le capienze — che
+ * SALGONO, quindi nessun abbonato in corso ci perde: il limite si legge da
+ * `PIANI[piano].aziende`, e chi aveva dieci aziende ne trova quindici.
+ *
+ * ⚠️ E LE `lookup` SONO NUOVE (`_v2`). Su Stripe i prezzi sono immutabili: un importo
+ * diverso e' un prezzo diverso. Le `_v1` restano su Stripe, archiviate ma vive, perche'
+ * gli abbonamenti in corso ci puntano e `vociDelRinnovo` se le porta dietro nella fase 2
+ * dello Schedule. Toglierle spezzerebbe il rinnovo di chi ha gia' pagato.
+ */
+
 export const ESTENSIONI = {
   /** Unità di VENDITA: un blocco vale cinque aziende. In `aziendeExtra` finiscono le
-   *  aziende (cinque per blocco), non i blocchi. */
-  bloccoAziende: { aziende: 5, prezzo: 90000, prezzoLancio: 45000, lookup: "evalisdeck_blocco_aziende_v1", lookupLancio: "evalisdeck_blocco_aziende_lancio_v1" },
-  /** Un accesso in più per lo studio. */
-  accesso: { prezzo: 15000, prezzoLancio: 7500, lookup: "evalisdeck_accesso_v1", lookupLancio: "evalisdeck_accesso_lancio_v1" },
-  /** I documenti escono col marchio dello studio invece del nostro. */
-  whiteLabel: { prezzo: 60000, prezzoLancio: 30000, lookup: "evalisdeck_white_label_v1", lookupLancio: "evalisdeck_white_label_lancio_v1" },
+   *  aziende (cinque per blocco), non i blocchi.
+   *
+   *  ⚠️ Resta in vendita, ed e' importante: il CAMBIO FASCIA non esiste, quindi questo e'
+   *  l'unico modo di crescere oltre la capienza senza disdire. Prezzato in modo che non
+   *  convenga mai piu' della fascia superiore — chi cresce deve salire, non accumulare
+   *  blocchi. */
+  bloccoAziende: { aziende: 5, prezzo: 35000, lookup: "evalisdeck_blocco_aziende_v2" },
   /** Formazione e configurazione iniziale: una tantum, importo concordato entro la forbice. */
-  avvioAssistito: { min: 50000, max: 80000, minLancio: 25000, maxLancio: 40000, lookup: "evalisdeck_avvio_assistito_v1", lookupLancio: "evalisdeck_avvio_assistito_lancio_v1" },
+  avvioAssistito: { min: 50000, max: 80000, lookup: "evalisdeck_avvio_assistito_v1" },
+} as const;
+
+/* ⚠️ NON PIU' IN VENDITA, MA ANCORA RICONOSCIUTE.
+ *
+ * Gli accessi ora sono inclusi (15/30/60, tetti che nessuno studio vero raggiunge) e il
+ * marchio dello studio e' compreso in ogni fascia: entrambe le estensioni spariscono dal
+ * dialogo d'acquisto e dal checkout.
+ *
+ * Ma NON si cancellano da qui. `ricostruisciCapacita` in `provisioning.ts` ricava la
+ * capacita' di un abbonamento LEGGENDO LE LOOKUP delle sue righe: una lookup che non
+ * riconosce piu' non produce un errore, produce una capacita' piu' piccola — in silenzio,
+ * al prossimo evento Stripe, a un cliente che quelle righe le ha pagate.
+ *
+ * Un pericolo si evita, non si filtra: restano qui, e chi le ha continua ad averle.
+ */
+export const ESTENSIONI_RITIRATE = {
+  accesso: { prezzo: 15000, prezzoLancio: 7500, lookup: "evalisdeck_accesso_v1", lookupLancio: "evalisdeck_accesso_lancio_v1" },
+  whiteLabel: { prezzo: 60000, prezzoLancio: 30000, lookup: "evalisdeck_white_label_v1", lookupLancio: "evalisdeck_white_label_lancio_v1" },
+  bloccoAziendeV1: { aziende: 5, prezzo: 90000, prezzoLancio: 45000, lookup: "evalisdeck_blocco_aziende_v1", lookupLancio: "evalisdeck_blocco_aziende_lancio_v1" },
 } as const;
 
 /**
@@ -123,6 +144,48 @@ export const ESTENSIONI = {
  * abbonamento e a chi costruisce le fasi del rinnovo: due copie divergerebbero al
  * primo listino nuovo, e la copia che diverge decide quanto paga qualcuno.
  */
+/**
+ * Le chiavi Stripe dei listini PRECEDENTI, per piano.
+ *
+ * ⚠️ SENZA QUESTE, CHI HA GIA' PAGATO PERDE L'ABBONAMENTO. Su Stripe i prezzi sono
+ * immutabili: cambiare un importo significa creare una chiave nuova, e gli abbonamenti in
+ * corso continuano a puntare alla vecchia per sempre. `chiavePiano` traduce una chiave nel
+ * piano che rappresenta, ed e' la traduzione da cui dipendono due cose che non possono
+ * sbagliare:
+ *
+ *   · `ricostruisciCapacita` ricava il piano dalle righe dell'abbonamento. Chiave non
+ *     riconosciuta = nessun piano = capacita' azzerata, al prossimo evento Stripe, a un
+ *     cliente che paga regolarmente;
+ *   · `vociDelRinnovo` SOSTITUISCE la riga del piano col prezzo di rinnovo e porta avanti
+ *     tutto il resto. Una riga di piano non riconosciuta verrebbe trattata come
+ *     un'estensione e portata avanti INSIEME al rinnovo nuovo: due piani sulla stessa
+ *     fattura.
+ *
+ * Quindi una chiave entra qui e non esce mai piu'. Cambiare listino significa aggiungere
+ * le nuove a `PIANI` e spostare le vecchie qui, non sostituirle.
+ */
+export const LOOKUP_STORICHE: Record<PianoKey, readonly string[]> = {
+  professional: [
+    "evalisdeck_professional_anno1_v1",
+    "evalisdeck_professional_rinnovo_v1",
+    "evalisdeck_professional_anno1_lancio_v1",
+    "evalisdeck_professional_rinnovo_lancio_v1",
+  ],
+  studio: [
+    "evalisdeck_studio_anno1_v1",
+    "evalisdeck_studio_rinnovo_v1",
+    "evalisdeck_studio_anno1_lancio_v1",
+    "evalisdeck_studio_rinnovo_lancio_v1",
+  ],
+  studio_plus: [
+    "evalisdeck_studio_plus_anno1_v1",
+    "evalisdeck_studio_plus_rinnovo_v1",
+    "evalisdeck_studio_plus_anno1_lancio_v1",
+    "evalisdeck_studio_plus_rinnovo_lancio_v1",
+  ],
+  enterprise: [],
+};
+
 export function chiavePiano(lookup: string | null | undefined): PianoKey | null {
   if (!lookup) return null;
   return (
@@ -132,7 +195,9 @@ export function chiavePiano(lookup: string | null | undefined): PianoKey | null 
         lookup === p.lookupAnno1 ||
         lookup === p.lookupRinnovo ||
         lookup === p.lookupAnno1Lancio ||
-        lookup === p.lookupRinnovoLancio
+        lookup === p.lookupRinnovoLancio ||
+        // ⚠️ Anche i listini precedenti: chi ha pagato l'anno scorso punta ancora a quelli.
+        LOOKUP_STORICHE[k].includes(lookup)
       );
     }) ?? null
   );
@@ -252,10 +317,13 @@ export function prezzoDiVendita(
 
 /** Come sopra, per le estensioni: stessa regola, stessa scadenza. */
 export function prezzoEstensione(
-  e: { prezzo: number; prezzoLancio: number; lookup: string; lookupLancio: string },
+  e: { prezzo: number; prezzoLancio?: number; lookup: string; lookupLancio?: string },
   quando: Date = new Date(),
 ): PrezzoDiVendita {
-  return lancioAttivo(quando)
+  // ⚠️ Il lancio e' FACOLTATIVO, come gia' per i piani: le estensioni in vendita oggi non
+  // ne hanno, e senza promozione si vende il listino senza barrato. Il meccanismo resta
+  // per una promozione futura invece di essere smontato e riscritto.
+  return lancioAttivo(quando) && e.prezzoLancio !== undefined && e.lookupLancio !== undefined
     ? { importo: e.prezzoLancio, lookup: e.lookupLancio, listino: e.prezzo }
     : { importo: e.prezzo, lookup: e.lookup };
 }

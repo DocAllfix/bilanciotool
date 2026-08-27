@@ -6,11 +6,18 @@ import { ChevronDown } from "lucide-react";
 import { DOMANDE } from "./domande";
 
 
-export function Faq() {
+/**
+ * L'elenco si puo' passare: la home usa `DOMANDE`, la pagina prezzi le sue.
+ *
+ * ⚠️ Il valore predefinito resta `DOMANDE` perche' il comportamento di chi la usava
+ * prima non deve cambiare — e perche' le stesse risposte alimentano i dati strutturati,
+ * quindi devono uscire da UN elenco solo, non da una copia.
+ */
+export function Faq({ domande = DOMANDE }: { domande?: [string, string][] } = {}) {
   const [aperta, setAperta] = useState<number | null>(0);
   return (
     <div className="divide-y rounded-2xl border bg-card px-6">
-      {DOMANDE.map(([q, a], i) => (
+      {domande.map(([q, a], i) => (
         <div key={q}>
           <button
             type="button"

@@ -102,8 +102,6 @@ export async function creaSessioneCheckout(opts: {
   piano: PianoKey;
   /** Estensioni acquistate insieme al piano, come quantità. */
   aziendeExtra?: number;
-  accessiExtra?: number;
-  whiteLabel?: boolean;
 }): Promise<EsitoCheckout> {
   const piano = PIANI[opts.piano];
   if (piano.trattativa) throw new Error("Il piano Enterprise si concorda, non si acquista online.");
@@ -125,12 +123,9 @@ export async function creaSessioneCheckout(opts: {
       quantity: Math.ceil(opts.aziendeExtra / ESTENSIONI.bloccoAziende.aziende),
     });
   }
-  if (opts.accessiExtra) {
-    righe.push({ price: await idPrezzo(prezzoEstensione(ESTENSIONI.accesso).lookup), quantity: opts.accessiExtra });
-  }
-  if (opts.whiteLabel) {
-    righe.push({ price: await idPrezzo(prezzoEstensione(ESTENSIONI.whiteLabel).lookup), quantity: 1 });
-  }
+  // ⚠️ Accessi e marchio non si vendono piu': gli accessi sono inclusi in ogni fascia e il
+  // marchio dello studio pure. Le loro chiavi Stripe restano riconosciute in
+  // `ESTENSIONI_RITIRATE`, ma nessuna sessione nuova puo' piu' crearle.
 
   const sessione = await stripe().checkout.sessions.create({
     mode: "subscription",

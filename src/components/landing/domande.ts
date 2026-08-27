@@ -13,7 +13,7 @@ export const DOMANDE: [string, string][] = [
   ],
   [
     "Come si acquista? E quanto costa?",
-    "L'abbonamento è annuale e si sottoscrive per studio: comprende tutti i percorsi, i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori e gli accessi per il tuo team. Si attiva in due minuti con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Gli importi dipendono da quante aziende segui e da quanti accedono, e si vedono appena entri, nella pagina Abbonamento: la registrazione è gratuita e non chiede la carta, quindi puoi guardare il listino prima di decidere qualsiasi cosa. Dal secondo anno il rinnovo costa meno del primo.",
+    "L'abbonamento è annuale e si sottoscrive per studio, non per documento e non per utente: comprende tutti i percorsi, i documenti che pubblichi senza limite di numero, gli accessi delle persone che lavorano con te, i documenti col marchio del tuo studio e gli aggiornamenti dei fattori. L'unica cosa che scegli è la capienza: quante aziende gestisci in portafoglio. Si attiva con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Le fasce e gli importi stanno nella pagina Prezzi.",
   ],
   [
     "Serve essere consulenti per usarlo?",

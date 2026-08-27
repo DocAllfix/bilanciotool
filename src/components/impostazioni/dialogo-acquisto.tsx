@@ -98,12 +98,10 @@ export function DialogoAcquisto({
   const anno1 = prezzoDiVendita(p, "anno1")!;
   const rinnovo = prezzoDiVendita(p, "rinnovo")!;
   const pBlocco = prezzoEstensione(ESTENSIONI.bloccoAziende);
-  const pAccesso = prezzoEstensione(ESTENSIONI.accesso);
-  const pMarchio = prezzoEstensione(ESTENSIONI.whiteLabel);
 
   // Le estensioni costano uguale il primo anno e al rinnovo: si portano dietro con il
   // prezzo a cui sono state comprate, esattamente come il piano tiene il suo ridotto.
-  const estensioni = blocchi * pBlocco.importo + accessi * pAccesso.importo + (marchio ? pMarchio.importo : 0);
+  const estensioni = blocchi * pBlocco.importo;
   const totaleAnno1 = anno1.importo + estensioni;
   const totaleRinnovo = rinnovo.importo + estensioni;
 
@@ -113,8 +111,6 @@ export function DialogoAcquisto({
       piano,
       // Il server conta AZIENDE, non blocchi: il blocco è un'unità di vendita.
       aziendeExtra: blocchi * ESTENSIONI.bloccoAziende.aziende,
-      accessiExtra: accessi,
-      whiteLabel: marchio,
     });
     if (!esito.ok) {
       setInCorso(false);
@@ -154,38 +150,13 @@ export function DialogoAcquisto({
             massimo={MAX_BLOCCHI}
             prezzo={pBlocco.importo}
           />
-          <Contatore
-            etichetta="Accessi aggiuntivi"
-            dettaglio="Una persona in più nello studio"
-            valore={accessi}
-            imposta={setAccessi}
-            massimo={MAX_ACCESSI}
-            prezzo={pAccesso.importo}
-          />
-          <button
-            type="button"
-            onClick={() => setMarchio(!marchio)}
-            aria-pressed={marchio}
-            className={
-              "flex w-full items-center justify-between gap-4 rounded-lg border p-3 text-left transition-colors " +
-              (marchio ? "border-primary/50 bg-accent" : "hover:bg-muted/50")
-            }
-          >
-            <span className="min-w-0">
-              <span className="block text-sm font-medium">Documenti col marchio del tuo studio</span>
-              <span className="block text-[12.5px] leading-relaxed text-muted-foreground">
-                I documenti escono col tuo nome · {euro(pMarchio.importo)} l&apos;anno
-              </span>
-            </span>
-            <span
-              className={
-                "flex size-5 shrink-0 items-center justify-center rounded border " +
-                (marchio ? "border-primary bg-primary text-primary-foreground" : "border-input")
-              }
-            >
-              {marchio && <Check className="size-3.5" />}
-            </span>
-          </button>
+          {/* ⚠️ Qui c'erano «Accessi aggiuntivi» e «Documenti col marchio del tuo studio».
+              Non si vendono piu': gli accessi sono inclusi in ogni fascia (15/30/60, tetti
+              che nessuno studio vero raggiunge) e il marchio dello studio e' compreso.
+              Toglierli dal dialogo e' meta' del lavoro — l'altra meta' e' che il server
+              continui a RICONOSCERE le lookup di chi le aveva comprate, in
+              `ricostruisciCapacita`, altrimenti al primo evento Stripe la loro capacita'
+              si rimpicciolirebbe in silenzio. */}
         </div>
 
         <div className="rounded-lg border bg-muted/40 p-3">

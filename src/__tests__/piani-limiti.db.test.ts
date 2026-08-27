@@ -5,6 +5,7 @@ import { organization, member, orgEntitlement, company, auditLog, platformConfig
 import { createCompany } from "@/features/companies";
 import { getCompanyUsage, getLimitiEffettivi, assertSeatAvailable } from "@/features/entitlement";
 import { eq } from "drizzle-orm";
+import { PIANI, ESTENSIONI, sogliaAvviso } from "@/lib/prezzi";
 
 // La capacità comprata, applicata sui fatti del database.
 //
@@ -57,49 +58,75 @@ describe.skipIf(!url)("piani: la capacità comprata è quella che vale", () => {
     }
   });
 
+  // ⚠️ I NUMERI SI DERIVANO DAL LISTINO, non si scrivono qui.
+  //
+  // Prima erano fissati a mano — «3 aziende, 2 accessi» — ed erano quelli del listino di
+  // allora. Il 27 agosto 2026 le fasce sono passate a 5/15/30 e questo file e' diventato
+  // rosso in cinque punti, per un motivo che col prodotto non c'entrava: il prodotto
+  // funzionava benissimo, era il test a ricordare un listino che non esiste piu'.
+  //
+  // Cio' che va provato non e' «tre», e' che il limite applicato sia QUELLO DEL PIANO e
+  // non quello di riserva, e che l'azienda dopo l'ultima venga respinta.
+  const CAPIENZA = PIANI.professional.aziende;
+  const ACCESSI = PIANI.professional.accessi;
+
   it("i limiti letti sono quelli del piano, non quelli di riserva", async () => {
     const l = await getLimitiEffettivi(orgId, userId);
-    expect(l.maxActiveCompanies, "Professional vale 3 aziende, non le 99 di riserva").toBe(3);
-    expect(l.maxMembers).toBe(2);
+    expect(l.maxActiveCompanies, "vale la capienza del piano, non le 99 di riserva").toBe(CAPIENZA);
+    expect(l.maxMembers).toBe(ACCESSI);
+    expect(l.maxActiveCompanies).not.toBe(RISERVA.maxActiveCompanies);
   });
 
   it("senza sessione la lettura regge lo stesso (è il caso dell'aggancio sugli inviti)", async () => {
     // Stessa domanda, ma senza userId: sotto app_rls questa è la chiamata che tornerebbe
     // zero righe se la valvola platformAdmin non ci fosse.
     const l = await getLimitiEffettivi(orgId);
-    expect(l.maxActiveCompanies).toBe(3);
-    expect(l.maxMembers).toBe(2);
+    expect(l.maxActiveCompanies).toBe(CAPIENZA);
+    expect(l.maxMembers).toBe(ACCESSI);
   });
 
-  it("il piano Professional si ferma alla terza azienda", async () => {
-    await createCompany(userId, orgId, { nome: "Cliente 1" });
-    await createCompany(userId, orgId, { nome: "Cliente 2" });
-    const a2 = await getCompanyUsage(userId, orgId);
-    expect(a2.nearLimit, "con 3 di capacità l'avviso scatta a 2").toBe(true);
-    await createCompany(userId, orgId, { nome: "Cliente 3" });
-    await expect(createCompany(userId, orgId, { nome: "Cliente 4" })).rejects.toMatchObject({
+  it("il piano si ferma all'ultima azienda della sua capienza", async () => {
+    for (let n = 1; n <= CAPIENZA; n++) {
+      await createCompany(userId, orgId, { nome: `Cliente ${n}` });
+      if (n === sogliaAvviso(CAPIENZA)) {
+        const a = await getCompanyUsage(userId, orgId);
+        expect(a.nearLimit, `con ${CAPIENZA} di capacità l'avviso scatta a ${n}`).toBe(true);
+      }
+    }
+    await expect(createCompany(userId, orgId, { nome: "Una di troppo" })).rejects.toMatchObject({
       code: "limit_companies",
     });
   });
 
-  it("i blocchi comprati allargano la capacità, e la quarta azienda passa", async () => {
-    await db.update(orgEntitlement).set({ aziendeExtra: 5 }).where(eq(orgEntitlement.organizationId, orgId));
+  it("i blocchi comprati allargano la capacità, e l'azienda successiva passa", async () => {
+    const extra = ESTENSIONI.bloccoAziende.aziende;
+    await db.update(orgEntitlement).set({ aziendeExtra: extra }).where(eq(orgEntitlement.organizationId, orgId));
     const l = await getLimitiEffettivi(orgId, userId);
-    expect(l.maxActiveCompanies, "3 del piano + 5 comprate").toBe(8);
-    await expect(createCompany(userId, orgId, { nome: "Cliente 4" })).resolves.toBeTypeOf("string");
+    expect(l.maxActiveCompanies, `${CAPIENZA} del piano + ${extra} comprate`).toBe(CAPIENZA + extra);
+    await expect(createCompany(userId, orgId, { nome: "Una di troppo" })).resolves.toBeTypeOf("string");
   });
 
-  it("gli accessi seguono il piano: Professional ne vale 2", async () => {
-    // Un solo membro: c'è posto.
-    await expect(assertSeatAvailable(orgId)).resolves.toBeUndefined();
-    const altro = `${userId}-b`;
-    await db.insert(user).values({ id: altro, name: "Collega", email: `piani-${RUN}-b@example.com` });
-    await db.insert(member).values({ id: randomUUID(), organizationId: orgId, userId: altro, role: "member" });
+  it("gli accessi seguono il piano, e oltre la capienza il posto si chiude", async () => {
+    // Si riempie il piano fino all'ultimo posto: il primo membro c'e' gia'.
+    const aggiunti: string[] = [];
+    for (let n = 1; n < ACCESSI; n++) {
+      const id = `${userId}-${n}`;
+      await db.insert(user).values({ id, name: `Collega ${n}`, email: `piani-${RUN}-${n}@example.com` });
+      await db.insert(member).values({ id: randomUUID(), organizationId: orgId, userId: id, role: "member" });
+      aggiunti.push(id);
+    }
+    // Pieno esatto: il posto successivo non c'e'.
     await expect(assertSeatAvailable(orgId)).rejects.toMatchObject({ code: "limit_members" });
-    // e un accesso comprato riapre il posto
+
+    // ⚠️ E un accesso comprato riapre il posto. L'estensione non si vende piu' — gli
+    // accessi sono inclusi — ma chi l'aveva comprata deve continuare ad averla: e'
+    // esattamente il ramo che si sarebbe rotto togliendo la lookup dal codice.
     await db.update(orgEntitlement).set({ accessiExtra: 1 }).where(eq(orgEntitlement.organizationId, orgId));
     await expect(assertSeatAvailable(orgId)).resolves.toBeUndefined();
-    await db.delete(member).where(eq(member.userId, altro));
-    await db.delete(user).where(eq(user.id, altro));
+
+    for (const id of aggiunti) {
+      await db.delete(member).where(eq(member.userId, id));
+      await db.delete(user).where(eq(user.id, id));
+    }
   });
 });

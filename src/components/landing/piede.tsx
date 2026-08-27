@@ -39,6 +39,11 @@ export function PiedeMarketing() {
                 Il metodo
               </Link>
             </li>
+            <li>
+              <Link href="/prezzi" className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">
+                Prezzi
+              </Link>
+            </li>
             {blogVisibileAiMotori() && (
               <li>
                 <Link href="/blog" className="tocco-comodo text-muted-foreground transition-colors hover:text-foreground">

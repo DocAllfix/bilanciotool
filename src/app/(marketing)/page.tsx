@@ -15,7 +15,7 @@ import { DOMANDE } from "@/components/landing/domande";
 import { PiedeMarketing } from "@/components/landing/piede";
 import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
-import { jsonLd } from "@/features/blog/seo";
+import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
 export const metadata: Metadata = {
   // `absolute` perché il layout radice accoda «· EvalisDeck» a ogni titolo, e qui il
@@ -92,15 +92,8 @@ const DOMANDE_STRUTTURATE = {
 export default function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <script
-        type="application/ld+json"
-        // Contenuto nostro, costante e serializzato: nessun input esterno.
-        dangerouslySetInnerHTML={{ __html: jsonLd(DATI_STRUTTURATI) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(DOMANDE_STRUTTURATE) }}
-      />
+      <DatiStrutturati dato={DATI_STRUTTURATI} />
+      <DatiStrutturati dato={DOMANDE_STRUTTURATE} />
       <SiteHeader />
       <main className="flex-1">
         {/* ============================================================ HERO */}
@@ -403,13 +396,24 @@ export default function LandingPage() {
                 Un abbonamento solo, annuale, tutto incluso.
               </h2>
               <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti i percorsi,
-                i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori di emissione
-                e gli accessi per chi lavora con te.
+                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti i percorsi, i
+                documenti che pubblichi senza limite di numero, gli accessi delle persone che lavorano con te, i
+                documenti col marchio del tuo studio e gli aggiornamenti dei fattori.
               </p>
               <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Gli importi si vedono appena entri, nella pagina Abbonamento: dipendono da quante aziende
-                segui e da quante persone accedono. La registrazione &egrave; gratuita e non chiede la carta.
+                {/* ⚠️ Qui c'era: «Gli importi si vedono appena entri, nella pagina Abbonamento:
+                    dipendono da quante aziende segui e da quante persone accedono.»
+                    Due difetti in una frase. Metteva un PEDAGGIO davanti a una domanda
+                    legittima — per sapere quanto costa bisognava registrarsi — e da quando
+                    gli accessi sono inclusi la seconda meta' sarebbe anche diventata falsa.
+                    Nessuna cifra sulla home per scelta: il numero da solo ancora la lettura
+                    sul costo prima che si sia capito cosa si compra, e il contesto che lo
+                    rende leggibile (il ritorno) sta sulla pagina prezzi. */}
+                L&apos;unica cosa che scegli &egrave; la capienza: quante aziende gestisci in portafoglio.{" "}
+                <Link href="/prezzi" className="font-medium text-foreground underline underline-offset-4">
+                  Vedi le fasce
+                </Link>
+                . La registrazione &egrave; gratuita e non chiede la carta.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button size="lg" asChild data-tour="cta-acquisto">
