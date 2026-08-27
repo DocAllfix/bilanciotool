@@ -137,6 +137,11 @@ for (const [i, c] of daFare.entries()) {
   // collaudo che passa solo al secondo colpo è un'informazione, non un successo — «ha
   // funzionato una volta» non distingue corretto da fortunato.
   if (!ok) {
+    // ⚠️ SI ASPETTA PRIMA DI RILANCIARE. Un rilancio immediato non sfugge alla contesa che
+    // ha causato il fallimento: nel giro definitivo, `condivisione` e `sgesg-documenti`
+    // sono caduti due volte di fila e poi sono passati da soli, a mente fredda. Venti
+    // secondi costano niente su un giro di due ore, e cambiano il significato del referto.
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20_000);
     const r2 = spawnSync(process.execPath, [join(QUI, "qa.mjs"), c.nome, "--su", SU], {
       encoding: "utf8",
       env: process.env,
@@ -187,7 +192,14 @@ if (falliti.length) {
       .filter((r) => /^\s*(KO|FAIL|✗)|Error:|TimeoutError|🛑|non riuscit/i.test(r))
       .slice(0, 6);
     for (const r of righe) console.log("   " + r.trim().slice(0, 200));
-    if (!righe.length) console.log("   (nessuna riga esplicita: guarda il referto completo)");
+    // ⚠️ Quando NON c'è una riga rossa, il caso è quello che mi ha lasciato cieco due
+    // volte: tutti i controlli verdi e l'uscita rossa — un errore di console, una
+    // richiesta fallita, un'eccezione dopo l'ultimo controllo. «Guarda il referto
+    // completo» non aiuta chi legge un giro di due ore: si mostra la coda.
+    if (!righe.length) {
+      console.log("   nessun controllo rosso, ma uscita non-zero. Ultime righe:");
+      for (const r of f.uscita.trim().split("\n").slice(-6)) console.log("     " + r.trim().slice(0, 180));
+    }
     console.log("");
   }
 }

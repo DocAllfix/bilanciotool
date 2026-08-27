@@ -27,16 +27,48 @@ export type DatiVoce = {
   companyId?: string | null;
 };
 
-/** Oggi in ISO, secondo il calendario di chi guarda. Un solo posto dove si decide. */
+/**
+ * L'ora legale italiana è in vigore in un dato istante?
+ *
+ * Dall'ultima domenica di marzo alle 01:00 UTC all'ultima domenica di ottobre alle 01:00
+ * UTC. La regola è europea e fissa: si calcola, non si chiede a nessuno.
+ */
+function oraLegaleItaliana(istante: Date): boolean {
+  const anno = istante.getUTCFullYear();
+  // L'ultima domenica di un mese: si parte dall'ultimo giorno e si torna indietro.
+  const ultimaDomenica = (mese: number) => {
+    const ultimo = new Date(Date.UTC(anno, mese + 1, 0));
+    return ultimo.getUTCDate() - ultimo.getUTCDay();
+  };
+  const inizio = Date.UTC(anno, 2, ultimaDomenica(2), 1); // marzo, 01:00 UTC
+  const fine = Date.UTC(anno, 9, ultimaDomenica(9), 1); // ottobre, 01:00 UTC
+  const t = istante.getTime();
+  return t >= inizio && t < fine;
+}
+
+/** Oggi in ISO, secondo il calendario ITALIANO. Un solo posto dove si decide. */
 export function oggiIso(adesso = new Date()): string {
-  // ⚠️ In ora LOCALE e non UTC. Le voci d'agenda le scrive e le legge una persona in
-  // Italia: alle 00:30 del quindici, `toISOString()` direbbe ancora il quattordici, e
-  // «le scadenze di oggi» mostrerebbe quelle di ieri. Sui termini di legge vale la
-  // regola opposta (UTC), e i due casi non si contraddicono: li' conta il termine, qui
-  // conta il giorno in cui uno si trova.
-  const a = adesso.getFullYear();
-  const m = String(adesso.getMonth() + 1).padStart(2, "0");
-  const g = String(adesso.getDate()).padStart(2, "0");
+  // ⚠️ IL GIORNO ITALIANO, non quello del fuso in cui gira il processo.
+  //
+  // Qui c'era `getFullYear/getMonth/getDate`, cioè il fuso LOCALE, con accanto un commento
+  // giusto per metà: «le voci d'agenda le scrive e le legge una persona in Italia». Vero
+  // per chi guarda — ma questo codice gira sul SERVER, e le funzioni di Vercel hanno il
+  // fuso UTC. Fra mezzanotte e le due, ora italiana d'estate, il server stava ancora a
+  // ieri: l'agenda proponeva la data del giorno prima e «le voci di oggi» erano quelle di
+  // ieri. In locale non si vede mai, perché lì il processo è già a Roma.
+  //
+  // Sui termini di legge vale la regola opposta (UTC), e i due casi non si contraddicono:
+  // là conta il termine, qui conta il giorno in cui la persona si trova.
+  //
+  // ⚠️ Non si risolve impostando `TZ` sull'ambiente: funzionerebbe, e tornerebbe a
+  // rompersi in silenzio nel primo ambiente che non ce l'ha. E nemmeno con `Intl`, che
+  // dipende dai dati ICU del runtime — il difetto gemello trovato lo stesso giorno sulle
+  // date del pannello di condivisione.
+  const scarto = oraLegaleItaliana(adesso) ? 2 : 1;
+  const italiano = new Date(adesso.getTime() + scarto * 3_600_000);
+  const a = italiano.getUTCFullYear();
+  const m = String(italiano.getUTCMonth() + 1).padStart(2, "0");
+  const g = String(italiano.getUTCDate()).padStart(2, "0");
   return `${a}-${m}-${g}`;
 }
 
