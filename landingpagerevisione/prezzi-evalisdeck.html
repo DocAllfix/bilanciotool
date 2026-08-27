@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prezzi · EvalisDeck — Un abbonamento solo, tre fasce</title>
+<meta name="description" content="Abbonamento annuale per studio, tutto incluso: tutti i percorsi, documenti senza limite, aggiornamenti dei fattori. Fasce a capienza: fino a 5, 15 o 30 aziende gestite.">
+<style>
+:root{
+  --navy:#1F4E78;
+  --navy-deep:#163A5C;
+  --ink:#1A2430;
+  --grey:#5B6B7C;
+  --line:#DDE5EE;
+  --paper:#FFFFFF;
+  --wash:#F4F7FB;
+  --accent:#2E7D5B;
+  --accent-soft:#E7F3EE;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;font-size:16px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+a{color:var(--navy);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--navy);outline-offset:2px;border-radius:4px}
+
+/* Header */
+header{border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:10}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.logo{font-weight:800;font-size:1.15rem;color:var(--navy);letter-spacing:-.01em}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:22px;align-items:center;font-size:.92rem}
+.btn{display:inline-block;padding:11px 22px;border-radius:999px;font-weight:600;font-size:.95rem;border:1.5px solid var(--navy);cursor:pointer;transition:background .15s,color .15s}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-deep);text-decoration:none}
+.btn-ghost{background:transparent;color:var(--navy)}
+.btn-ghost:hover{background:var(--wash);text-decoration:none}
+
+/* Hero */
+.hero{padding:72px 0 48px;text-align:left}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+h1{font-size:clamp(2rem,4.5vw,3.1rem);line-height:1.12;letter-spacing:-.02em;font-weight:800;color:var(--navy);max-width:16ch}
+.hero p{max-width:58ch;color:var(--grey);margin-top:18px;font-size:1.08rem}
+
+/* Cards */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:44px 0 12px}
+.tier{border:1.5px solid var(--line);border-radius:var(--radius);padding:28px 26px;background:var(--paper);display:flex;flex-direction:column;position:relative}
+.tier.featured{border-color:var(--navy);box-shadow:0 12px 32px rgba(31,78,120,.12)}
+.badge{position:absolute;top:-13px;left:26px;background:var(--navy);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.tier h3{font-size:1.2rem;color:var(--navy);letter-spacing:-.01em}
+.tier .who{font-size:.9rem;color:var(--grey);min-height:2.7em;margin-top:4px}
+.price{margin:18px 0 4px;display:flex;align-items:baseline;gap:6px}
+.price .n{font-size:2.3rem;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.price .per{font-size:.9rem;color:var(--grey)}
+.iva{font-size:.78rem;color:var(--grey);margin-bottom:18px}
+.tier ul{list-style:none;margin:0 0 22px;flex:1}
+.tier li{padding:7px 0 7px 26px;position:relative;font-size:.93rem;border-top:1px solid var(--wash)}
+.tier li:first-child{border-top:none}
+.tier li::before{content:"";position:absolute;left:2px;top:14px;width:14px;height:14px;border-radius:50%;background:var(--accent-soft)}
+.tier li::after{content:"";position:absolute;left:6px;top:19px;width:6px;height:3px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+.tier .btn{text-align:center}
+.tiers-note{font-size:.85rem;color:var(--grey);margin-bottom:8px}
+.tiers-note strong{color:var(--ink)}
+
+/* Conto */
+.conto{background:var(--navy);color:#fff;border-radius:var(--radius);padding:44px 40px;margin:56px 0}
+.conto .eyebrow{color:#9FD4BC}
+.conto h2{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;letter-spacing:-.015em;max-width:24ch}
+.conto p.intro{color:#C7D6E6;max-width:58ch;margin-top:10px;font-size:.98rem}
+.conto-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:30px;align-items:start}
+.field{margin-bottom:22px}
+.field label{display:block;font-size:.85rem;font-weight:600;color:#C7D6E6;margin-bottom:8px}
+.field select{width:100%;padding:11px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font-size:.95rem}
+.field select option{color:var(--ink)}
+.field input[type=range]{width:100%;accent-color:#9FD4BC}
+.range-val{font-size:1.6rem;font-weight:800;color:#fff}
+.risultato{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:26px}
+.risultato .voce{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:.93rem;color:#C7D6E6}
+.risultato .voce b{color:#fff;font-weight:700}
+.risultato .verdetto{margin-top:18px;font-size:1.05rem}
+.risultato .verdetto .big{font-size:2rem;font-weight:800;color:#9FD4BC;display:block;letter-spacing:-.02em}
+.conto .fine{font-size:.78rem;color:#8FA6BC;margin-top:22px}
+
+/* Tabella confronto */
+section.confronto{margin:56px 0}
+h2.sec{font-size:clamp(1.3rem,2.8vw,1.8rem);font-weight:800;color:var(--navy);letter-spacing:-.015em;margin-bottom:8px}
+.sec-sub{color:var(--grey);max-width:60ch;margin-bottom:26px;font-size:.97rem}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);border-bottom:2px solid var(--navy)}
+thead th:not(:first-child),td:not(:first-child){text-align:center}
+td:first-child{font-weight:600}
+.si{color:var(--accent);font-weight:700}
+.no{color:#B7C2CE}
+tbody tr:nth-child(odd){background:var(--wash)}
+
+/* Fondatori */
+.fondatori{border:1.5px dashed var(--navy);border-radius:var(--radius);padding:32px 30px;margin:56px 0;display:flex;gap:26px;align-items:center;flex-wrap:wrap;background:var(--wash)}
+.fondatori .txt{flex:1;min-width:280px}
+.fondatori h2{font-size:1.35rem;color:var(--navy);font-weight:800;letter-spacing:-.01em}
+.fondatori p{color:var(--grey);font-size:.95rem;margin-top:8px;max-width:60ch}
+
+/* FAQ */
+.faq{margin:56px 0}
+details{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;background:var(--paper)}
+summary{padding:16px 18px;font-weight:700;cursor:pointer;color:var(--navy);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.3rem;font-weight:400;color:var(--grey);transition:transform .15s}
+details[open] summary::after{transform:rotate(45deg)}
+details .body{padding:0 18px 16px;color:var(--grey);font-size:.95rem}
+
+/* CTA finale + footer */
+.cta-fin{text-align:center;padding:56px 0 64px;border-top:1px solid var(--line);margin-top:24px}
+.cta-fin h2{font-size:clamp(1.4rem,3vw,2rem);color:var(--navy);font-weight:800;letter-spacing:-.015em}
+.cta-fin p{color:var(--grey);margin:12px auto 26px;max-width:52ch}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:.8rem;color:var(--grey)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+@media (max-width:860px){
+  .tiers{grid-template-columns:1fr}
+  .conto-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hero{padding:48px 0 32px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="https://evalisdeck.it/">Evalis<span>Deck</span></a>
+    <nav class="nav-links">
+      <a href="https://evalisdeck.it/#percorsi">Percorsi</a>
+      <a href="https://evalisdeck.it/#metodo">Metodo</a>
+      <a href="https://evalisdeck.it/#faq">Domande</a>
+      <a class="btn btn-ghost" href="https://evalisdeck.it/login">Accedi</a>
+      <a class="btn btn-primary" href="https://evalisdeck.it/registrati">Prova la demo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Prezzi · abbonamento per studio</div>
+    <h1>Un abbonamento solo. Tre fasce.</h1>
+    <p>Si sottoscrive per studio e comprende sempre tutto: tutti i percorsi, presenti e futuri, gli utenti che ti servono, i documenti pubblicati senza limite, gli aggiornamenti dei fattori. L’unica cosa che scegli è la capienza: quante aziende gestisci in portafoglio.</p>
+  </section>
+
+  <section aria-label="Piani di abbonamento">
+    <div class="tiers">
+
+      <div class="tier">
+        <h3>Fino a 5 aziende</h3>
+        <div class="who">Per chi parte: i primi mandati, tutto già incluso.</div>
+        <div class="price"><span class="n">€ 590</span><span class="per">/anno</span></div>
+        <div class="iva">IVA esclusa · dal secondo anno € 472</div>
+        <ul>
+          <li>5 aziende in portafoglio</li>
+          <li>Tutti i percorsi, presenti e futuri</li>
+          <li>Documenti pubblicati senza limite</li>
+          <li>Utenti dello studio inclusi</li>
+          <li>Portale di consultazione per i clienti</li>
+          <li>Aggiornamenti annuali dei fattori</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://evalisdeck.it/attiva">Attiva questa fascia</a>
+      </div>
+
+      <div class="tier featured">
+        <div class="badge">La più scelta</div>
+        <h3>Fino a 15 aziende</h3>
+        <div class="who">Per lo studio avviato che segue un portafoglio.</div>
+        <div class="price"><span class="n">€ 1.290</span><span class="per">/anno</span></div>
+        <div class="iva">IVA esclusa · dal secondo anno € 1.032</div>
+        <ul>
+          <li>15 aziende in portafoglio</li>
+          <li>Tutti i percorsi, presenti e futuri</li>
+          <li>Documenti pubblicati senza limite</li>
+          <li>Utenti dello studio inclusi</li>
+          <li>Portale di consultazione per i clienti</li>
+          <li>Aggiornamenti annuali dei fattori</li>
+        </ul>
+        <a class="btn btn-primary" href="https://evalisdeck.it/attiva">Attiva questa fascia</a>
+      </div>
+
+      <div class="tier">
+        <h3>Fino a 30 aziende</h3>
+        <div class="who">Per lo studio strutturato, con più collaboratori al lavoro.</div>
+        <div class="price"><span class="n">€ 2.190</span><span class="per">/anno</span></div>
+        <div class="iva">IVA esclusa · dal secondo anno € 1.752</div>
+        <ul>
+          <li>30 aziende in portafoglio</li>
+          <li>Tutti i percorsi, presenti e futuri</li>
+          <li>Documenti pubblicati senza limite</li>
+          <li>Utenti dello studio inclusi</li>
+          <li>Portale di consultazione per i clienti</li>
+          <li>Aggiornamenti annuali dei fattori</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://evalisdeck.it/attiva">Attiva questa fascia</a>
+      </div>
+
+    </div>
+    <p class="tiers-note"><strong>Oltre 30 aziende</strong> (reti di studi, mandati di filiera, capofila con molti fornitori): <a href="mailto:info@evalisdeck.it?subject=Preventivo%20oltre%2030%20aziende">scrivici</a> e prepariamo un preventivo su misura.</p>
+    <p class="tiers-note"><strong>Cambio di fascia quando vuoi:</strong> il passaggio a una fascia superiore è immediato con conguaglio proporzionale; il passaggio a una fascia inferiore avviene al rinnovo. Se non rinnovi, l’account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili.</p>
+  </section>
+
+  <section class="conto" aria-label="Calcolo del ritorno">
+    <div class="eyebrow">Il conto da fare prima di decidere</div>
+    <h2>Quanti documenti servono per ripagare l’abbonamento?</h2>
+    <p class="intro">Meno di uno. Imposta cosa prevedi di vendere nel primo anno e confronta il ricavo con il costo della piattaforma: il conto si aggiorna da solo.</p>
+    <div class="conto-grid">
+      <div>
+        <div class="field">
+          <label for="docTipo">Il documento che vendi più spesso</label>
+          <select id="docTipo">
+            <option value="3250" data-nome="Inventario GHG">Inventario GHG — media € 3.250</option>
+            <option value="6000" data-nome="Bilancio di sostenibilità" selected>Bilancio di sostenibilità — media € 6.000</option>
+            <option value="4500" data-nome="Bilancio energetico">Bilancio energetico — media € 4.500</option>
+            <option value="3750" data-nome="Statement of Applicability">Statement of Applicability — media € 3.750</option>
+            <option value="9000" data-nome="MOG 231">MOG 231 — media € 9.000</option>
+            <option value="11500" data-nome="SGI Qualità/Ambiente/Sicurezza">SGI Qualità / Ambiente / Sicurezza — media € 11.500</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="docN">Documenti che prevedi di vendere nel primo anno: <span class="range-val" id="docNVal">4</span></label>
+          <input type="range" id="docN" min="1" max="20" value="4" step="1">
+        </div>
+        <div class="field">
+          <label for="pianoSel">La tua fascia</label>
+          <select id="pianoSel">
+            <option value="590">Fino a 5 aziende — € 590/anno</option>
+            <option value="1290" selected>Fino a 15 aziende — € 1.290/anno</option>
+            <option value="2190">Fino a 30 aziende — € 2.190/anno</option>
+          </select>
+        </div>
+      </div>
+      <div class="risultato" aria-live="polite">
+        <div class="voce"><span>Ricavo stimato dai documenti</span><b id="rRicavo">€ 24.000</b></div>
+        <div class="voce"><span>Costo abbonamento primo anno</span><b id="rCosto">€ 1.290</b></div>
+        <div class="voce"><span>Incidenza sul fatturato generato</span><b id="rInc">7,0%</b></div>
+        <div class="verdetto">
+          <span class="big" id="rMulti">14×</span>
+          <span id="rFrase">L’abbonamento si ripaga con il primo documento venduto.</span>
+        </div>
+      </div>
+    </div>
+    <p class="fine">Valori medi indicativi per PMI italiane, IVA esclusa. I prezzi al cliente finale sono liberi: il listino consigliato completo è riservato agli abbonati, nel kit commerciale.</p>
+  </section>
+
+  <section class="confronto">
+    <h2 class="sec">Tutto incluso, in ogni fascia</h2>
+    <p class="sec-sub">Nessun modulo a pagamento separato, nessuna funzione riservata alle fasce superiori: il contenuto è identico per tutti. Cambia una cosa sola — quante aziende puoi gestire.</p>
+    <table>
+      <thead>
+        <tr><th>Fascia</th><th>Aziende in portafoglio</th><th>Primo anno</th><th>Dal secondo anno (−20%)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Fino a 5</td><td>5</td><td>€ 590</td><td>€ 472</td></tr>
+        <tr><td>Fino a 15</td><td>15</td><td>€ 1.290</td><td>€ 1.032</td></tr>
+        <tr><td>Fino a 30</td><td>30</td><td>€ 2.190</td><td>€ 1.752</td></tr>
+        <tr><td>Oltre 30</td><td>Su misura</td><td>Preventivo</td><td>Preventivo</td></tr>
+      </tbody>
+    </table>
+    <p class="sec-sub" style="margin-top:26px;margin-bottom:14px"><strong style="color:var(--ink)">Cosa comprende ogni fascia, sempre:</strong></p>
+    <table>
+      <tbody>
+        <tr><td>Tutti i percorsi disponibili</td><td class="si">✓</td><td>I nuovi percorsi in arrivo entrano nell’abbonamento senza sovrapprezzo</td></tr>
+        <tr><td>Documenti pubblicati</td><td class="si">✓</td><td>Senza limite di numero, con versioni immutabili e archivio</td></tr>
+        <tr><td>Utenti dello studio</td><td class="si">✓</td><td>Gli accessi per chi lavora con te sono compresi</td></tr>
+        <tr><td>Portale di consultazione clienti</td><td class="si">✓</td><td>Ogni tuo cliente consulta e scarica i propri documenti</td></tr>
+        <tr><td>Aggiornamenti dei fattori</td><td class="si">✓</td><td>Librerie ISPRA, DEFRA, IPCC versionate: mai riscritti gli inventari pubblicati</td></tr>
+        <tr><td>Import dei lavori esistenti</td><td class="si">✓</td><td>Migrazione da strumenti precedenti</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="fondatori">
+    <div class="txt">
+      <h2>Programma Fondatori — posti limitati</h2>
+      <p>Selezioniamo un numero ristretto di studi che lavorano su mandati reali nella fase di lancio: dodici mesi di piano Studio a condizioni simboliche, sconto permanente sui rinnovi e voce diretta sulla priorità dei prossimi percorsi. In cambio: riscontri operativi e, se soddisfatti, una testimonianza.</p>
+    </div>
+    <a class="btn btn-primary" href="mailto:info@evalisdeck.it?subject=Candidatura%20Programma%20Fondatori">Candidati al Programma</a>
+  </section>
+
+  <section class="faq">
+    <h2 class="sec">Le domande sui prezzi</h2>
+    <details open>
+      <summary>Ci sono costi per documento o per percorso?</summary>
+      <div class="body">No. L’abbonamento comprende tutti i percorsi e i documenti che pubblichi, senza contatori. Anche i percorsi che rilasceremo durante il tuo abbonamento entrano senza sovrapprezzo.</div>
+    </details>
+    <details>
+      <summary>Come pago? Serve la carta per guardare?</summary>
+      <div class="body">La registrazione è gratuita e non chiede la carta: la demo con l’azienda d’esempio è percorribile per intero. All’attivazione paghi con carta, Satispay, Klarna o Amazon Pay; se ti serve l’ordine d’acquisto e il bonifico, scrivici e ti mandiamo il preventivo.</div>
+    </details>
+    <details>
+      <summary>Cosa succede se supero le aziende della mia fascia?</summary>
+      <div class="body">La piattaforma te lo segnala e passi alla fascia superiore con conguaglio proporzionale sui mesi restanti: nessun lavoro si blocca e nulla va rifatto.</div>
+    </details>
+    <details>
+      <summary>E se non rinnovo?</summary>
+      <div class="body">L’account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili. Non cancelliamo il lavoro di nessuno. Fino alla pubblicazione del primo documento, e comunque entro quattordici giorni dall’attivazione, il rimborso è integrale.</div>
+    </details>
+  </section>
+
+  <section class="cta-fin">
+    <h2>Prima guardi, poi decidi.</h2>
+    <p>L’azienda d’esempio è già compilata e i percorsi sono percorribili per intero. Quando hai visto come lavora, attivi da dentro: niente da rifare.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://evalisdeck.it/registrati">Prova la demo guidata</a>
+      <a class="btn btn-ghost" href="https://evalisdeck.it/attiva">Attiva il servizio</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 EvalisDeck · Evalis S.r.l. · Via Sandro Botticelli 25, 81031 Aversa (CE) · P.IVA 04868330616</div>
+    <div><a href="https://evalisdeck.it/privacy">Privacy</a> · <a href="https://evalisdeck.it/termini">Termini</a> · <a href="https://evalisdeck.it/cookie">Cookie</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var docTipo = document.getElementById('docTipo');
+  var docN = document.getElementById('docN');
+  var docNVal = document.getElementById('docNVal');
+  var pianoSel = document.getElementById('pianoSel');
+  var rRicavo = document.getElementById('rRicavo');
+  var rCosto = document.getElementById('rCosto');
+  var rInc = document.getElementById('rInc');
+  var rMulti = document.getElementById('rMulti');
+  var rFrase = document.getElementById('rFrase');
+
+  function euro(n){
+    return '\u20ac ' + Math.round(n).toLocaleString('it-IT');
+  }
+  function aggiorna(){
+    var prezzoDoc = parseFloat(docTipo.value);
+    var n = parseInt(docN.value, 10);
+    var costo = parseFloat(pianoSel.value);
+    var ricavo = prezzoDoc * n;
+    var multi = ricavo / costo;
+    var inc = (costo / ricavo) * 100;
+
+    docNVal.textContent = n;
+    rRicavo.textContent = euro(ricavo);
+    rCosto.textContent = euro(costo);
+    rInc.textContent = inc.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1}) + '%';
+    rMulti.textContent = (multi >= 10 ? Math.round(multi) : multi.toLocaleString('it-IT', {maximumFractionDigits:1})) + '\u00d7';
+
+    if (prezzoDoc >= costo) {
+      rFrase.textContent = 'L\u2019abbonamento si ripaga con il primo documento venduto.';
+    } else if (ricavo >= costo) {
+      rFrase.textContent = 'L\u2019abbonamento si ripaga entro i primi documenti dell\u2019anno.';
+    } else {
+      rFrase.textContent = 'Con questi volumi conviene la fascia da 5 aziende: il conto torna comunque.';
+    }
+  }
+  docTipo.addEventListener('change', aggiorna);
+  docN.addEventListener('input', aggiorna);
+  pianoSel.addEventListener('change', aggiorna);
+  aggiorna();
+})();
+</script>
+
+</body>
+</html>

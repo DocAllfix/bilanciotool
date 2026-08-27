@@ -9,18 +9,18 @@
 export const DOMANDE: [string, string][] = [
   [
     "Come funziona la demo guidata?",
-    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti gli undici moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
+    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
   ],
   [
     "Come si acquista? E quanto costa?",
-    "L'abbonamento è annuale e si sottoscrive per studio: comprende tutti e undici i percorsi, i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori e gli accessi per il tuo team. Si attiva in due minuti con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Gli importi dipendono da quante aziende segui e da quanti accedono, e si vedono appena entri, nella pagina Abbonamento: la registrazione è gratuita e non chiede la carta, quindi puoi guardare il listino prima di decidere qualsiasi cosa. Dal secondo anno il rinnovo costa meno del primo.",
+    "L'abbonamento è annuale e si sottoscrive per studio: comprende tutti i percorsi, i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori e gli accessi per il tuo team. Si attiva in due minuti con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Gli importi dipendono da quante aziende segui e da quanti accedono, e si vedono appena entri, nella pagina Abbonamento: la registrazione è gratuita e non chiede la carta, quindi puoi guardare il listino prima di decidere qualsiasi cosa. Dal secondo anno il rinnovo costa meno del primo.",
   ],
   [
     "Serve essere consulenti per usarlo?",
     "No, ma è pensato per chi la rendicontazione la fa di mestiere: studi, consulenti HSE/ESG, responsabili qualità. Una PMI può usarlo in autonomia, perché le guide di valutazione tema per tema spiegano cosa guardare e dove trovare i dati in azienda.",
   ],
   [
-    "Devo comprarli tutti e undici?",
+    "Devo comprarli tutti?",
     "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono il bilancio energetico, la Dichiarazione di Applicabilità o il Modello 231 quando arriva il cliente che li chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
   ],
   [

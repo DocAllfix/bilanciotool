@@ -83,25 +83,43 @@ await page.goto(BASE + "/", { waitUntil: "networkidle" });
 // con un passo fisso di 3, le aree erano diventate 4+4+3, e le lettere D e G comparivano
 // DUE VOLTE su una pagina pubblica.
 const { readFileSync } = await import("node:fs");
-const attesi = (readFileSync("src/components/landing/percorsi-vetrina.ts", "utf8").match(/titolo:\s*"/g) ?? []).length;
-if (!attesi) errors.push("non riesco a contare i percorsi in percorsi-vetrina.ts: formato cambiato?");
-const etichette = await page.evaluate(() => document.body.innerText.match(/PERCORSO\s+[A-Z]/g) ?? []);
-if (etichette.length !== attesi) {
+
+// ⚠️ L'ATTESA SI CHIEDE AL REGISTRO DELL'APP, non alla vetrina.
+//
+// Prima si contavano i `titolo:` dentro `percorsi-vetrina.ts`, cioe' si verificava la
+// pagina contro il file che la pagina rende: due copie della stessa cosa sono sempre
+// d'accordo. E' il motivo per cui questo controllo era verde il 27 agosto 2026 mentre la
+// vetrina mostrava UNDICI percorsi su dodici — il dodicesimo era nel prodotto da due
+// giorni e non era mai arrivato sulla pagina pubblica.
+//
+// `MODULI` e' l'elenco che l'app usa davvero: se la vetrina resta indietro, si vede.
+const registro = readFileSync("src/features/companies/moduli.ts", "utf8");
+const riga = registro.match(/export const MODULI = \[([^\]]+)\]/);
+if (!riga) errors.push("non riesco a leggere MODULI dal registro: formato cambiato?");
+const attesi = riga ? (riga[1].match(/"/g) ?? []).length / 2 : 0;
+
+const resi = await page.evaluate(() => document.querySelectorAll("#percorsi article").length);
+if (attesi && resi !== attesi) {
   // ⚠️ Contro un bersaglio REMOTO lo scarto non e' un difetto della pagina: e' il sito che
-  // sta servendo un build piu' vecchio del sorgente che ho sotto mano. Detto come «percorsi
-  // in pagina: 5 invece di 11» manda a cercare un guasto nella vetrina, che non c'e'.
+  // serve un build piu' vecchio del sorgente. Detto come «percorsi in pagina: 5 invece di
+  // 12» manda a cercare un guasto nella vetrina, che non c'e'.
   const remoto = !/^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
   errors.push(
-    remoto && etichette.length < attesi
-      ? `il sito serve ${etichette.length} percorsi, il sorgente ne dichiara ${attesi}: ` +
-        "quel build e' indietro rispetto a questo ramo (non e' un difetto della pagina)"
-      : `percorsi in pagina: ${etichette.length} invece di ${attesi}`,
+    remoto && resi < attesi
+      ? `il sito serve ${resi} percorsi, il registro ne dichiara ${attesi}: quel build e' ` +
+        "indietro rispetto a questo ramo (non e' un difetto della pagina)"
+      : `percorsi in pagina: ${resi} invece dei ${attesi} del registro`,
   );
 }
-const distinte = new Set(etichette).size;
-if (distinte !== etichette.length) {
-  errors.push(`lettere RIPETUTE nella vetrina: ${etichette.length} etichette ma ${distinte} distinte`);
+
+// I tre gruppi devono esserci tutti, e ciascuno col proprio tratto di colore: un gruppo
+// senza tinta e' il difetto delle classi costruite a stringa, che il compilatore non vede.
+const gruppi = riga ? (registro.match(/export const AREE_MODULI = \[([^\]]+)\]/)?.[1].match(/"/g) ?? []).length / 2 : 0;
+const intestazioni = await page.evaluate(() => document.querySelectorAll("#percorsi h3.font-display span[class*='bg-area-']").length);
+if (gruppi && intestazioni !== gruppi) {
+  errors.push(`gruppi con tratto di colore in pagina: ${intestazioni} invece di ${gruppi}`);
 }
+
 
 if (errors.length) {
   console.log("PROBLEMI:");

@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AREE_VETRINA, LETTERE } from "@/components/landing/percorsi-vetrina";
+import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 
-// ⚠️ Le lettere dei percorsi si contano SOMMANDO le aree precedenti, non moltiplicando.
-// Qui c'era `LETTERE[iArea * 3 + i]`, con il passo fisso a 3: reggeva finche' ogni area
-// aveva esattamente tre percorsi, e ha smesso di reggere quando sono diventate 4+4+3.
-// Le lettere D e G comparivano DUE VOLTE, su una pagina pubblica, e nessun controllo
-// funzionale poteva vederlo — la pagina si apre e i collegamenti funzionano.
-// Trovato contando le etichette, non guardandole.
-const primaLettera = (iArea: number) =>
-  AREE_VETRINA.slice(0, iArea).reduce((n, a) => n + a.percorsi.length, 0);
+/** Tutti i percorsi in fila, per i testi che li elencano. */
+const TUTTI_I_PERCORSI = AREE_VETRINA.flatMap((a) => a.percorsi);
+
 import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
 import { Reveal, Contatore } from "@/components/landing/scroll-reveal";
@@ -28,7 +23,7 @@ export const metadata: Metadata = {
   // titolo che Google mostra per il nome del prodotto, quindi il marchio ripetuto si
   // mangiava i sessanta caratteri utili proprio nel posto che conta di più.
   title: {
-    absolute: "EvalisDeck · Undici documenti di conformità, un solo strumento",
+    absolute: "EvalisDeck · I documenti di conformità, un solo strumento",
   },
   description:
     "Inventario GHG ISO 14064-1, bilancio di sostenibilità e conformità ESG, bilancio energetico UNI CEI EN 16247, autovalutazione ESG dei fornitori e Statement of Applicability ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
@@ -72,8 +67,10 @@ const DATI_STRUTTURATI = {
       "@type": "SoftwareApplication",
       name: "EvalisDeck",
       applicationCategory: "BusinessApplication",
-      description:
-        "Percorsi guidati ISO 14064-1 e GRI/ESRS-VSME per studi di consulenza e PMI: inventario GHG, bilancio di sostenibilità e conformità ESG, bilancio energetico, autovalutazione fornitori, Statement of Applicability ISO 27001.",
+      // ⚠️ L'elenco si DERIVA dal registro. Scritto a mano ne nominava cinque su dodici,
+      // e a leggerlo sembrava il catalogo completo: e' la forma peggiore di dato stantio,
+      // perche' non e' falso in nulla di cio' che dice — e' falso in cio' che tace.
+      description: `Percorsi guidati per studi di consulenza e PMI: ${TUTTI_I_PERCORSI.map((p) => p.titolo).join(", ")}.`,
     },
   },
 };
@@ -122,7 +119,7 @@ export default function LandingPage() {
                 Un solo strumento.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Undici percorsi guidati, dall&apos;inventario GHG al Modello 231: ogni passo sa
+                Percorsi guidati, dall&apos;inventario GHG al Modello 231: ogni passo sa
                 cosa chiede la norma, i calcoli si fanno da soli, e quello che ne esce è un documento impaginato che
                 regge la verifica.
               </p>
@@ -209,10 +206,11 @@ export default function LandingPage() {
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                   <span className="h-px w-8 bg-primary" aria-hidden />
-                  Undici percorsi, un solo archivio
+                  {QUANTI_PERCORSI} percorsi, un solo archivio
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
-                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, undici percorsi in tre gruppi.
+                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, {QUANTI_PERCORSI} percorsi in{" "}
+                  {AREE_VETRINA.length} gruppi.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
                   Alcuni si redigono per esercizio e seguono il calendario. Altri sono fotografie che si aggiornano
@@ -221,25 +219,34 @@ export default function LandingPage() {
               </div>
             </Reveal>
 
-            <div className="mt-16 space-y-16">
-              {AREE_VETRINA.map((area, iArea) => (
+            {/* ⚠️ IL BLOCCO E' IL GRUPPO, NON LA SCHEDA.
+                Prima erano schede in `md:grid-cols-2` dentro ciascun gruppo: con 4/4/3
+                percorsi facevano 2+2, 2+2, 2+1 — una scheda orfana — e col dodicesimo ne
+                sarebbero diventate due. E' la storia della card del portafoglio, dove a
+                ogni modulo nuovo si cambiava il numero di colonne rimandando il problema
+                al modulo dopo. Con le righe il numero di percorsi per gruppo smette di
+                essere una variabile di disposizione: 4+4+3 oggi, 5+4+3 domani, uguale. */}
+            <div className="mt-16 space-y-14">
+              {AREE_VETRINA.map((area) => (
                 <div key={area.nome}>
                   <Reveal delay={40}>
-                    <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                      <span className={`h-px w-6 ${area.tratto}`} aria-hidden />
-                      {area.nome}
-                    </p>
+                    <div className="border-b pb-5">
+                      <h3 className="font-display flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[15px] font-bold uppercase tracking-[0.16em]">
+                        <span className={`h-2 w-8 shrink-0 self-center ${area.tratto}`} aria-hidden />
+                        {area.nome}
+                        <span className="font-mono text-[11.5px] font-normal normal-case tracking-normal text-muted-foreground" data-slot="kpi">
+                          {area.percorsi.length} percorsi
+                        </span>
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
+                        {area.perche}
+                      </p>
+                    </div>
                   </Reveal>
-                  <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-12">
+                  <div>
                     {area.percorsi.map((p, i) => (
-                      <Reveal key={p.titolo} delay={i * 90}>
-                        <Percorso
-                          indice={LETTERE[primaLettera(iArea) + i] ?? "•"}
-                          titolo={p.titolo}
-                          norma={p.norma}
-                          passi={p.passi}
-                          punto={p.punto}
-                        />
+                      <Reveal key={p.titolo} delay={40 + i * 40}>
+                        <Percorso titolo={p.titolo} norma={p.norma} passi={p.passi} punto={p.punto} />
                       </Reveal>
                     ))}
                   </div>
@@ -396,7 +403,7 @@ export default function LandingPage() {
                 Un abbonamento solo, annuale, tutto incluso.
               </h2>
               <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti e undici i percorsi,
+                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti i percorsi,
                 i documenti che pubblichi senza limite di numero, gli aggiornamenti dei fattori di emissione
                 e gli accessi per chi lavora con te.
               </p>
@@ -517,24 +524,44 @@ Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
 }
 
 // ---------------------------------------------------------------- componenti
-function Percorso({ indice, titolo, norma, passi, punto }: { indice: string; titolo: string; norma: string; passi: string[]; punto: string }) {
+function Percorso({ titolo, norma, passi, punto }: { titolo: string; norma: string; passi: string[]; punto: string }) {
   return (
-    <div className="flex h-full flex-col border-t-2 border-foreground pt-6">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="font-display text-[13px] font-bold uppercase tracking-[0.18em] text-primary">Percorso {indice}</p>
-        <span className="font-mono text-[12px] text-muted-foreground">{norma}</span>
+    <article className="grid gap-x-10 gap-y-3 border-b py-7 md:grid-cols-[minmax(0,19.5rem)_1fr]">
+      <div>
+        <h3 className="font-display text-[19px] font-semibold leading-tight tracking-[-0.01em]">{titolo}</h3>
+        <p className="mt-1.5 font-mono text-[11.5px] leading-snug text-muted-foreground">{norma}</p>
       </div>
-      <h3 className="font-display mt-2 text-[26px] font-bold tracking-[-0.01em]">{titolo}</h3>
-      <ol className="mt-6 grid grid-cols-1 gap-y-1.5">
-        {passi.map((p, i) => (
-          <li key={p} className="flex items-baseline gap-3 text-[13.5px]">
-            <span className="w-5 shrink-0 text-right font-mono text-[11px] text-muted-foreground" data-slot="kpi">{i + 1}</span>
-            {p}
-          </li>
-        ))}
-      </ol>
-      <p className="mt-6 border-t pt-4 text-[13px] leading-relaxed text-muted-foreground">{punto}</p>
-    </div>
+      <div>
+        {/* La TRACCIA dei passi, in linea e non in colonna.
+            Gli otto passi sono la prova migliore che il metodo c'e', e restano tutti: ma
+            dodici percorsi per otto righe erano ottantasei righe di elenco, cioe' uno
+            scorrimento interminabile proprio nella sezione che deve convincere. Letti in
+            orizzontale sono un percorso, che e' esattamente cio' che sono. */}
+        <p className="text-[13px] leading-relaxed text-muted-foreground">
+          {/* ⚠️ Ogni passo e' indivisibile, ma FRA un passo e l'altro ci vuole uno spazio VERO.
+              Senza, il browser legge gli otto passi come un'unica sequenza che non puo'
+              andare a capo: su un telefono da 360px la riga diventava larga 909 e la
+              pagina sfondava di 795. Con `whitespace-nowrap` su ciascuno e nessuno spazio
+              in mezzo, `nowrap` non protegge il passo — salda l'intera traccia.
+              E senza `nowrap` del tutto si va a capo DENTRO il nome: «Dati / di attivita'»,
+              e il punto separatore smette di dire dove finisce un passo. */}
+          {passi.map((passo, i) => (
+            <span key={passo}>
+              {i > 0 && (
+                <>
+                  {" "}
+                  <span className="text-border" aria-hidden>
+                    ·
+                  </span>{" "}
+                </>
+              )}
+              <span className="whitespace-nowrap">{passo}</span>
+            </span>
+          ))}
+        </p>
+        <p className="mt-3.5 border-t border-dotted pt-3 text-[14.5px] leading-relaxed text-foreground">{punto}</p>
+      </div>
+    </article>
   );
 }
 

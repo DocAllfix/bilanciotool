@@ -21,7 +21,7 @@ export function PiedeMarketing() {
         <div>
           <LogoOrizzontale className="h-10" />
           <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
-            Undici documenti di conformità e rendicontazione per le PMI, con il metodo incorporato.
+            Documenti di conformità e rendicontazione per le PMI, con il metodo incorporato.
           </p>
           {/* 68 px: sotto questa misura "Sustainability Rating" e la data non si leggono più. */}
           <BadgeEcoVadis dimensione={68} className="mt-5" />
