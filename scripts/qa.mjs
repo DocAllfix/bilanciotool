@@ -9,9 +9,9 @@
 // significherebbe dimenticarne uno al primo giro di distrazione. Qui la cartella
 // è la fonte, e un collaudo nuovo si presenta da solo.
 
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 
 const QUI = dirname(fileURLToPath(import.meta.url));
@@ -87,8 +87,19 @@ env.BASE = su ? su.replace(/\/+$/, "") : prod ? PROD : env.BASE || "http://local
 // ⚠️ Un'anteprima di Vercel puo' essere protetta: senza questo segreto il collaudo
 // riceve una pagina di accesso al posto del prodotto e riferisce difetti che non ci
 // sono. Se c'e', si passa ai collaudi che sanno usarlo.
-if (su && process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
-  env.VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+if (su) {
+  // Il segreto sta in `.env.vercel`, che nessuno carica: `dotenv` legge solo `.env`, e li'
+  // un token operativo non deve stare — lo caricherebbero tutti i trenta processi di
+  // collaudo. Qui lo si legge dal file solo quando serve, cioe' con `--su`.
+  let segreto = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (!segreto) {
+    try {
+      segreto = readFileSync(".env.vercel", "utf8").match(/^VERCEL_AUTOMATION_BYPASS_SECRET=(.*)$/m)?.[1]?.trim();
+    } catch {
+      /* niente file, niente segreto: se l'anteprima non e' protetta va bene lo stesso */
+    }
+  }
+  if (segreto) env.VERCEL_AUTOMATION_BYPASS_SECRET = segreto;
 }
 
 // IL BERSAGLIO SI DICHIARA SEMPRE, non solo con `--prod`.
@@ -114,7 +125,21 @@ const nota = locale
 console.log(`→ ${scelto}  (${bersaglio})${nota}\n`);
 // `--su <indirizzo>` non si passa al collaudo: il bersaglio viaggia in `BASE`.
 const perIlCollaudo = argomenti.filter((a, i) => a !== nome && i !== iSu && i !== iSu + 1);
-const esito = spawnSync(process.execPath, [join(QUI, scelto), ...perIlCollaudo], {
+
+// ⚠️ IL BYPASS SI PRECARICA, non si chiede a ogni collaudo di ricordarsene.
+//
+// Dodici collaudi su cinquantotto non chiamano ne' `strumenta()` ne' `registraEEntra()`,
+// e giravano scoperti contro un'anteprima protetta: ricevevano il login di Vercel e
+// misuravano quello. Aggiungere una riga a quei dodici avrebbe funzionato oggi e sarebbe
+// stato dimenticato dal tredicesimo. `--import` avvolge `chromium.launch` una volta, per
+// tutti, e solo quando c'e' un segreto da usare.
+const precarico =
+  // ⚠️ `--import` vuole un URL, non un percorso: su Windows `C:\…` gli fa dire
+  // ERR_UNSUPPORTED_ESM_URL_SCHEME, perche' legge `C:` come schema.
+  env.VERCEL_AUTOMATION_BYPASS_SECRET
+    ? ["--import", pathToFileURL(join(QUI, "precarica-anteprima.mjs")).href]
+    : [];
+const esito = spawnSync(process.execPath, [...precarico, join(QUI, scelto), ...perIlCollaudo], {
   stdio: "inherit",
   env,
 });

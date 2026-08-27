@@ -103,7 +103,7 @@ export function PassoObiettivi({
       <Card>
         <CardHeader><h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Nuovo obiettivo di riduzione</h2></CardHeader>
         <CardContent>
-          <form onSubmit={aggiungi} className="space-y-3">
+          <form method="post" onSubmit={aggiungi} className="space-y-3">
             <div className="space-y-1.5">
               <Label htmlFor="ob-nome">Descrizione</Label>
               <Input id="ob-nome" name="nome" placeholder="Riduzione delle emissioni dirette e da energia importata" />

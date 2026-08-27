@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#geist-skip-nav"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "Vercel logo":
+        - /url: /home
+        - button "Vercel Logo":
+          - img "Vercel Logo"
+      - navigation [ref=e5]:
+        - navigation [ref=e6]:
+          - link [ref=e7] [cursor=pointer]:
+            - /url: /signup?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fevalisdeck-rdy9sd5e0-docallfixs-projects.vercel.app%252F%253Fx-vercel-set-bypass-cookie%253Dtrue%2526x-vercel-protection-bypass%253D9mjw0ruWd5XJu9nyLdRO8t6P8HtT3ERv%26nonce%3Dbf617060ec360d785bf1ae0e82888cf80506b3b3031f66dda2ce3e4cbcd7612a
+            - paragraph [ref=e9]: Sign Up
+    - main [ref=e10]:
+      - generic [ref=e12]:
+        - heading "Log in to Vercel" [level=1] [ref=e15]
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - textbox "Email Address" [ref=e19]
+            - button "Continue with Email" [ref=e20] [cursor=pointer]
+          - generic [ref=e23]:
+            - button "Continue with Google" [ref=e24] [cursor=pointer]:
+              - generic [ref=e28]:
+                - generic [ref=e29]: Continue with
+                - text: Google
+            - button "Continue with GitHub" [ref=e30] [cursor=pointer]:
+              - generic [ref=e34]:
+                - generic [ref=e35]: Continue with
+                - text: GitHub
+            - button "Continue with ChatGPT" [ref=e36] [cursor=pointer]:
+              - generic [ref=e40]:
+                - generic [ref=e41]: Continue with
+                - text: ChatGPT
+            - button "Continue with SAML SSO" [ref=e43] [cursor=pointer]
+            - button "Continue with Passkey" [ref=e48] [cursor=pointer]
+            - button "Show other options" [ref=e53] [cursor=pointer]
+        - paragraph [ref=e56]:
+          - text: Don't have an account?
+          - link "Sign Up" [ref=e57] [cursor=pointer]:
+            - /url: /signup?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fevalisdeck-rdy9sd5e0-docallfixs-projects.vercel.app%252F%253Fx-vercel-set-bypass-cookie%253Dtrue%2526x-vercel-protection-bypass%253D9mjw0ruWd5XJu9nyLdRO8t6P8HtT3ERv%26nonce%3Dbf617060ec360d785bf1ae0e82888cf80506b3b3031f66dda2ce3e4cbcd7612a
+      - generic [ref=e60]:
+        - link "Terms" [ref=e61] [cursor=pointer]:
+          - /url: /legal/terms
+        - link "Privacy Policy" [ref=e62] [cursor=pointer]:
+          - /url: /legal/privacy-policy
+  - alert [ref=e63]

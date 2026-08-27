@@ -17,7 +17,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-segnalazioni";
@@ -37,7 +38,7 @@ const verifica = (nome, cond, dettaglio = "") => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => {
   if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`);
@@ -107,7 +108,7 @@ await interruttori.nth(0).click();
 await attendi(async () => {
   const r = await sql`select count(*)::int n from wb_channel where system_id = ${a0.id} and attiva = true`;
   return r[0].n === 1;
-}, { entro: 30_000, cosa: "la prima forma accesa" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la prima forma accesa" });
 verifica("Un interruttore accende una modalità", true);
 
 // ⚠️ Con una forma su tre il canale resta NON conforme: le tre sono cumulative, ed è
@@ -123,7 +124,7 @@ await interruttori.nth(2).click();
 await attendi(async () => {
   const r = await sql`select count(*)::int n from wb_channel where system_id = ${a0.id} and attiva = true`;
   return r[0].n === 3;
-}, { entro: 30_000, cosa: "tutte e tre le forme accese" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "tutte e tre le forme accese" });
 await page.reload({ waitUntil: "domcontentloaded" });
 await page.locator('[data-slot="canale-esito"]').waitFor({ timeout: 30_000 });
 verifica(
@@ -137,14 +138,14 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const r = await sql`select count(*)::int n from wb_channel where system_id = ${a0.id} and descrizione is not null`;
   return r[0].n === 1;
-}, { entro: 30_000, cosa: "la descrizione del canale salvata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la descrizione del canale salvata" });
 verifica("La descrizione di una modalità si salva sfocandosi", true, idCanale);
 
 await page.getByLabel("Attiva dal", { exact: true }).first().fill("2026-02-01");
 await attendi(async () => {
   const r = await sql`select count(*)::int n from wb_channel where system_id = ${a0.id} and attivato_il = '2026-02-01'`;
   return r[0].n === 1;
-}, { entro: 30_000, cosa: "la data di attivazione salvata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la data di attivazione salvata" });
 verifica("La data di attivazione si salva", true);
 await shot("02-canale");
 
@@ -159,7 +160,7 @@ verifica(
 await vaiVista("assetto", '[data-tour="wb-assetto"]');
 await page.getByLabel("Consultazione sindacale effettuata il", { exact: true }).fill("2026-03-01");
 await attendi(async () => (await assetto())?.consultazione_sindacale === "2026-03-01",
-  { entro: 30_000, cosa: "la consultazione sindacale salvata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la consultazione sindacale salvata" });
 await vaiVista("canale", '[data-slot="consultazione"]');
 verifica(
   "⚠️ Consultazione DOPO l'attivazione: dichiarata tardiva",
@@ -169,7 +170,7 @@ verifica(
 await vaiVista("assetto", '[data-tour="wb-assetto"]');
 await page.getByLabel("Consultazione sindacale effettuata il", { exact: true }).fill("2026-01-10");
 await attendi(async () => (await assetto())?.consultazione_sindacale === "2026-01-10",
-  { entro: 30_000, cosa: "la consultazione anticipata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la consultazione anticipata" });
 await vaiVista("canale", '[data-slot="consultazione"]');
 verifica(
   "Consultazione PRIMA dell'attivazione: nessun rilievo",
@@ -181,13 +182,13 @@ await vaiVista("assetto", '[data-tour="wb-assetto"]');
 await page.getByLabel("Gestore", { exact: true }).fill("Organismo di Vigilanza");
 await page.keyboard.press("Tab");
 await attendi(async () => (await assetto())?.gestore === "Organismo di Vigilanza",
-  { entro: 30_000, cosa: "il gestore salvato" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il gestore salvato" });
 verifica("Un campo dell'assetto si salva sfocandosi", true);
 
 await page.getByLabel("Media dei lavoratori subordinati nell'ultimo anno", { exact: true }).fill("1.200");
 await page.keyboard.press("Tab");
 await attendi(async () => (await assetto())?.addetti === "1.200",
-  { entro: 30_000, cosa: "il numero di addetti salvato" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il numero di addetti salvato" });
 verifica("Il numero di addetti accetta la forma italiana", true, "1.200");
 await shot("03-assetto");
 
@@ -222,7 +223,7 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const [r] = await sql`select codice from wb_report where id = ${f1}`;
   return r?.codice === "CI-2026-001";
-}, { entro: 30_000, cosa: "il codice salvato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il codice salvato" });
 verifica("Un campo del fascicolo si salva sfocandosi", true);
 
 // I termini calcolati dalle stesse funzioni pure del server: il 25 marzo è il caso in
@@ -255,7 +256,7 @@ await page.getByRole("option", { name: "Sì", exact: true }).click();
 await attendi(async () => {
   const [r] = await sql`select amm_non_personale from wb_report where id = ${f1}`;
   return r?.amm_non_personale === "Sì";
-}, { entro: 30_000, cosa: "il quinto elemento salvato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il quinto elemento salvato" });
 await page.waitForTimeout(800);
 verifica(
   "Con tutti e cinque gli elementi l'esito è «Ammissibile»",
@@ -282,7 +283,7 @@ await page.getByRole("option", { name: "No", exact: true }).click();
 await attendi(async () => {
   const [r] = await sql`select rit_gia_esposto from wb_report where id = ${f1}`;
   return r?.rit_gia_esposto === "No";
-}, { entro: 30_000, cosa: "il sesto fattore salvato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il sesto fattore salvato" });
 await page.waitForTimeout(800);
 const pannelloRit = await page.locator('[data-slot="pannello-esito"]').last().innerText();
 verifica("Con tutti e sei il livello è «Medio» e il monitoraggio è dovuto",
@@ -305,7 +306,7 @@ await attendi(async () => {
   const [r] = await sql`select stato from wb_requirement_state
     where system_id = ${a0.id} and requirement_key = 'A.01'`;
   return r?.stato === "Conforme";
-}, { entro: 30_000, cosa: "il requisito A.01 valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il requisito A.01 valutato" });
 verifica("Un requisito si valuta con un clic", true);
 
 // Ripremere annulla: la stessa convenzione dell'autovalutazione fornitore.
@@ -314,7 +315,7 @@ await attendi(async () => {
   const [r] = await sql`select stato from wb_requirement_state
     where system_id = ${a0.id} and requirement_key = 'A.01'`;
   return r?.stato === null;
-}, { entro: 30_000, cosa: "il requisito riportato a non valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il requisito riportato a non valutato" });
 verifica("Ripremere lo stesso stato annulla la valutazione", true);
 await shot("07-conformita");
 
@@ -333,7 +334,7 @@ await page.waitForURL("**vista=registro**", { timeout: 30_000 });
 await attendi(async () => {
   const [r] = await sql`select count(*)::int n from wb_report where id = ${f2}`;
   return r.n === 0;
-}, { entro: 30_000, cosa: "il secondo fascicolo eliminato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il secondo fascicolo eliminato" });
 verifica("Un fascicolo si elimina, e la conferma distingue eliminazione da cancellazione", true);
 
 const f3 = await apriFascicolo("2026-04-10");

@@ -26,7 +26,22 @@ export async function renderPdf(path: string, cookieHeader: string): Promise<Buf
     });
     try {
       const page = await browser.newPage();
-      await page.setExtraHTTPHeaders({ cookie: cookieHeader });
+      // ⚠️ E IL SEGRETO DI BYPASS, quando c'e'.
+      //
+      // Questo generatore apre il PROPRIO indirizzo con Chromium. Su un deploy di
+      // ANTEPRIMA quell'indirizzo e' protetto da Vercel: senza il segreto, Chromium
+      // riceve la pagina di accesso di Vercel e stampa QUELLA. Il risultato e' un PDF
+      // vero, di una pagina, identico per ogni documento — e passa qualunque controllo
+      // che si accontenti dei byte magici e della dimensione.
+      //
+      // In produzione la variabile non c'e' e non serve: il dominio con certificato
+      // proprio non e' protetto. Qui non allarga niente, perche' il segreto lo conosce
+      // gia' chi puo' leggerlo dall'ambiente.
+      const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+      await page.setExtraHTTPHeaders({
+        cookie: cookieHeader,
+        ...(bypass ? { "x-vercel-protection-bypass": bypass } : {}),
+      });
       await page.goto(url, { waitUntil: "networkidle0", timeout: 60_000 });
       const pdf = await page.pdf({ format: "a4", printBackground: true, preferCSSPageSize: true });
       return Buffer.from(pdf);

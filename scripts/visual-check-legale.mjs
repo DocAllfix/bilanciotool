@@ -11,6 +11,7 @@
 // identificativo, security.txt. Chiaro, scuro, mobile, zero errori di console.
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = process.env.SHOT_DIR ?? "./shots-legale";
 mkdirSync(OUT, { recursive: true });
@@ -25,7 +26,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 // ------------------------------------------------ 1. il banner di consenso
@@ -228,7 +229,7 @@ await ctx.close();
 const ctxDark = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 await ctxDark.addInitScript(() => window.localStorage.setItem("theme", "dark"));
 const dark = await ctxDark.newPage();
-dark.on("console", (m) => { if (m.type() === "error") errors.push(`[dark] ${m.text()}`); });
+dark.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[dark] ${m.text()}`); });
 dark.on("pageerror", (e) => errors.push(`[dark pageerror] ${e.message}`));
 await dark.goto(BASE + "/cookie", { waitUntil: "domcontentloaded" });
 await check("tema scuro applicato e banner leggibile", async () => {
@@ -240,7 +241,7 @@ await ctxDark.close();
 
 const ctxM = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const m = await ctxM.newPage();
-m.on("console", (x) => { if (x.type() === "error") errors.push(`[mobile] ${x.text()}`); });
+m.on("console", (x) => { if (x.type() === "error" && !rumoreDiPiattaforma(x.text())) errors.push(`[mobile] ${x.text()}`); });
 m.on("pageerror", (e) => errors.push(`[mobile pageerror] ${e.message}`));
 await check("su mobile le pagine legali non sbordano e le tabelle scorrono da sole", async () => {
   for (const rotta of ["/privacy", "/cookie", "/termini"]) {

@@ -47,7 +47,7 @@ export function CreaDichiarazione({ companyId }: { companyId: string }) {
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={crea} className="grid gap-4">
+          <form method="post" onSubmit={crea} className="grid gap-4">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div>
                 <Label htmlFor="soa-crea-privacy">Ruolo nel trattamento dei dati personali</Label>

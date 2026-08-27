@@ -1795,6 +1795,77 @@ i nomi sono quelli del fascicolo.
 nell'Unione Europea» (misurato con `elementFromPoint`), la tendina nativa nelle 63 schede
 del metodo, e l'assenza di scorciatoie da tastiera con dodici moduli.
 
+**Il giro sull'anteprima (2026-08-26/27) — sette difetti che localhost non poteva vedere**
+
+Il committente ha chiesto un metodo «ripetibile, efficiente, funzionale, sicuro» per il
+futuro. Il metodo sta in `docs/metodo-rilascio.md` e in `scripts/qa-anteprima.mjs`; questa
+voce racconta perché serviva.
+
+**Il principio**: *i collaudi verdi in locale non sono un permesso di rilascio, sono la
+condizione per meritarsi l'anteprima.* Con **1178 test verdi in entrambe le modalità** e
+dodici moduli percorsi comando per comando, il primo giro su un deploy vero ha trovato
+sette cose. Nessuna era raggiungibile da localhost — non per sfortuna, **per costruzione**.
+
+🔴 **La password nella barra degli indirizzi.** Un `<form onSubmit>` senza `method` è un
+modulo **GET**: finché React è attivo `preventDefault` ferma tutto, ma **prima
+dell'idratazione** l'invio è quello nativo e i campi finiscono nella query string —
+`/login?email=…&password=…`. Da lì la password entra nella cronologia, nei log di ogni
+proxy e nel `Referer`. In locale l'idratazione è istantanea: **il difetto non esiste**.
+Sedici moduli corretti, guardia `moduli-post-pure`.
+
+🔴 **I PDF erano la pagina di accesso di Vercel.** Il generatore apre il *proprio*
+indirizzo con Chromium, e su un'anteprima è protetto. Usciva un PDF valido, byte magici
+giusti, 141 KB — e passava «il PDF si genera e non è vuoto». Si è visto solo confrontando
+**due documenti diversi**: 141.714 byte identici, una pagina, zero font. Ora `pdf.ts`
+inoltra il bypass, e il controllo chiede **quante pagine ha**, non quanto pesa.
+
+🔴 **La data resa dal server non coincideva con quella del browser.** `toLocaleDateString`
+dipende dai dati **ICU del runtime**, e server e browser ne hanno due diversi: React
+rispondeva `#418` e buttava via l'HTML del server. Questo progetto l'aveva **predetto** il
+giorno prima, a proposito del denaro. Mesi scritti a mano in `fmtDataEstesa`/`fmtDataBreve`,
+guardia `formattazione-idratabile-pure`.
+
+🔴 **L'agenda proponeva ieri.** `oggiIso` usava il fuso locale *del processo*, e le funzioni
+Vercel girano in **UTC**: fra mezzanotte e le due, ora italiana, il server stava a ieri. Ora
+il giorno italiano si calcola, con le regole europee dell'ora legale — non con `TZ`
+sull'ambiente (tornerebbe a rompersi nel primo ambiente che non ce l'ha) né con `Intl`.
+Sei test provati **rossi sotto `TZ=UTC`** e verdi sotto tre fusi.
+
+⚠️ **La CSP dipendeva dal dominio.** Le immagini degli articoli arrivano da
+`evalisdeck.it/wp-content/`: in produzione le copre `'self'`, da qualunque altro dominio
+no. Non è un difetto di produzione — è una **dipendenza taciuta**.
+
+⚠️ **Il freno sulle iscrizioni frenava noi**, perché si azzerava «solo in locale», legato
+all'indirizzo. Un'anteprima è nostra quanto localhost: il criterio giusto non è dove punta
+il browser ma **quale database si tocca**.
+
+⚠️ **E il difetto più caro non era nel prodotto: era nello strumento di misura.** Nove
+collaudi su cinquantotto avevano `const BASE = "http://localhost:3000"` scritto a mano e
+ignoravano l'ambiente. `qa.mjs` stampava l'indirizzo dell'anteprima e loro parlavano con
+localhost. **Un'etichetta sbagliata è peggio di un'etichetta assente: a quella ci si
+crede.** Ore di diagnosi su un 500 «dell'anteprima» che veniva da un `next start` locale
+vecchio di ore, e numeri riferiti al committente come se fossero del deploy. L'indizio era
+nella prima misura: **`x-vercel-id` assente**, cioè una risposta che non viene da Vercel.
+Guardia: `collaudi-bersaglio-pure`.
+
+**Regole nate qui:**
+- **Non basta che il lanciatore dichiari il bersaglio: deve essere il collaudo ad
+  ascoltarlo.** La regola del 15 agosto copriva un capo solo.
+- **Un'asserzione sulla dimensione di un file non dice niente su cosa c'è dentro.** Due
+  documenti diversi che pesano uguale sono la domanda da farsi.
+- **Un presupposto sull'ambiente localhost lo conferma sempre.** Fuso, ICU, idratazione,
+  dominio: quattro difetti su sette erano questo.
+- **Un rilancio immediato non sfugge alla contesa** che ha causato il fallimento.
+- **Un collaudo che passa solo al secondo tentativo va dichiarato**, non assorbito nel
+  verde.
+- **`--import` vuole un URL**: su Windows un percorso `C:\…` diventa
+  `ERR_UNSUPPORTED_ESM_URL_SCHEME`, perché `C:` viene letto come schema.
+- **Il marcatore `[skip ci]` non è una garanzia**: Vercel ha costruito lo stesso, e il
+  build è stato fermato solo perché ho chiesto all'API se fosse partito.
+
+Gate: typecheck · **1188 test** · giro definitivo sull'anteprima **44 su 47**, dove dei tre
+falliti due erano contesa (passano da soli) e uno era il difetto del fuso.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

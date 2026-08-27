@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { Membro, InvitoPendente } from "@/features/studio/queries";
+import { fmtDataBreve } from "@/lib/format";
 
 // Inviti, revoche e rimozioni.
 //
@@ -21,7 +22,7 @@ import type { Membro, InvitoPendente } from "@/features/studio/queries";
 // versioni della stessa frase che prima o poi si contraddicono.
 
 const data = (d: Date | string) =>
-  new Date(d).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" });
+  fmtDataBreve(d);
 
 export function GestioneMembri({
   organizationId,
@@ -147,7 +148,7 @@ export function GestioneMembri({
       )}
 
       {puoGestire && (
-        <form onSubmit={invita} className="border-t pt-5">
+        <form method="post" onSubmit={invita} className="border-t pt-5">
           <label htmlFor="invita-email" className="text-sm font-medium">
             Invita un collega
           </label>

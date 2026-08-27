@@ -40,7 +40,7 @@ export function CreaBilancioEnergetico({ companyId }: { companyId: string }) {
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={crea} className="flex flex-wrap items-end gap-3">
+          <form method="post" onSubmit={crea} className="flex flex-wrap items-end gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="ce-anno">Esercizio</Label>
               <Input id="ce-anno" name="anno" type="number" defaultValue={annoScorso} min={1990} max={2100} className="w-32" data-slot="kpi" />

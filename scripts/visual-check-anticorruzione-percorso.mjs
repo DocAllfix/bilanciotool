@@ -16,7 +16,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-anticorruzione";
@@ -36,7 +37,7 @@ const verifica = (nome, cond, dettaglio = "") => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 1100 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 
@@ -95,7 +96,7 @@ await page.getByLabel("Funzione per la prevenzione della corruzione", { exact: t
   .fill("Dott. Rocco Sabino, responsabile conformità");
 await page.keyboard.press("Tab");
 await attendi(async () => (await sistema())?.funzione_pc?.startsWith("Dott. Rocco Sabino"),
-  { entro: 30_000, cosa: "la funzione di conformità salvata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la funzione di conformità salvata" });
 verifica("Un campo dell'organizzazione si salva sfocandosi", true);
 await page.screenshot({ path: `${OUT}/02-organizzazione.png` });
 
@@ -106,7 +107,7 @@ verifica("Il registro dei soci parte vuoto", (await page.locator("[data-socio]")
 const NOME_SOCIO = "Subappalti Meridionali S.r.l.";
 await page.fill("#pc-nuovo-socio", NOME_SOCIO);
 await page.getByRole("button", { name: "Aggiungi", exact: true }).click();
-await attendi(async () => Boolean(await socio(NOME_SOCIO)), { entro: 30_000, cosa: "il socio creato" });
+await attendi(async () => Boolean(await socio(NOME_SOCIO)), { entro: 30_000 * fattoreAttesa(), cosa: "il socio creato" });
 verifica("Un socio in affari si aggiunge", true);
 // La scheda si apre da sola, ma solo quando il refresh ha portato la riga nuova nelle
 // props: prima di allora il socio selezionato non esiste ancora nell'elenco reso.
@@ -124,7 +125,7 @@ const valutate = async () => {
   return DIM_COL.map((c) => r[c]).filter((v) => v !== null);
 };
 await attendi(async () => (await valutate()).includes(4),
-  { entro: 30_000, cosa: "la prima dimensione valutata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la prima dimensione valutata" });
 await page.waitForTimeout(1200);
 verifica("Una dimensione si valuta con un clic", true, dimensioni[0].etichetta);
 
@@ -139,7 +140,7 @@ verifica("⚠️ UNA sola dimensione a 4 dà già Critico, non si divide per qua
 // Ripremere lo stesso gradino annulla la valutazione.
 await page.getByRole("button", { name: new RegExp(`^${dimensioni[0].etichetta}: 4`) }).click();
 await attendi(async () => (await valutate()).length === 0,
-  { entro: 30_000, cosa: "la valutazione annullata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "la valutazione annullata" });
 verifica("Ripremere lo stesso gradino annulla", true);
 
 // ⚠️ I precedenti per corruzione portano SEMPRE a Critico, qualunque sia la media.
@@ -149,7 +150,7 @@ await page.getByRole("button", { name: new RegExp(`^${dimensioni[0].etichetta}: 
 await page.waitForTimeout(900);
 await page.getByLabel(prec.etichetta, { exact: true }).check();
 await attendi(async () => (await socio(NOME_SOCIO))?.flag_precedenti === true,
-  { entro: 30_000, cosa: "il fattore acceso" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "il fattore acceso" });
 await page.reload({ waitUntil: "domcontentloaded" });
 await page.locator("[data-socio]").first().click();
 await page.locator("#so-nome").waitFor({ timeout: 30_000 });
@@ -180,7 +181,7 @@ await attendi(async () => {
   const r = await sql`select stato from bribery_requirement_state
     where system_id = ${s0.id} and requirement_key = ${primo.key}`;
   return r[0]?.stato === "Conforme";
-}, { entro: 30_000, cosa: "il requisito valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il requisito valutato" });
 verifica("Un requisito si valuta con un clic", true, primo.key);
 
 await page.getByRole("button", { name: `${primo.key}: Conforme`, exact: true }).click();
@@ -188,7 +189,7 @@ await attendi(async () => {
   const r = await sql`select stato from bribery_requirement_state
     where system_id = ${s0.id} and requirement_key = ${primo.key}`;
   return r[0]?.stato === null;
-}, { entro: 30_000, cosa: "la valutazione annullata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la valutazione annullata" });
 verifica("Ripremere lo stesso stato annulla", true);
 await page.screenshot({ path: `${OUT}/04-requisiti.png` });
 

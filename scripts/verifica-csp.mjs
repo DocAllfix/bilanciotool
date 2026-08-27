@@ -12,6 +12,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import postgres from "postgres";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
@@ -33,6 +34,11 @@ const page = await ctx.newPage();
 // Le violazioni arrivano come errori di console con un testo riconoscibile.
 page.on("console", (m) => {
   const t = m.text();
+  // ⚠️ La violazione su `vercel.live` e' vera e non e' nostra: e' lo script che Vercel
+  // inietta nelle ANTEPRIME, e la nostra CSP fa esattamente il suo mestiere bloccandolo.
+  // In produzione non esiste. Contarla qui significherebbe dichiarare rotta una difesa
+  // proprio nel momento in cui funziona.
+  if (rumoreDiPiattaforma(t)) return;
   if (/Content Security Policy|Refused to (load|execute|connect|apply)/i.test(t)) {
     violazioni.push(`[${page.url()}] ${t.slice(0, 180)}`);
   }

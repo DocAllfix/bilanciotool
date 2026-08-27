@@ -14,7 +14,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-corpus";
@@ -34,7 +35,7 @@ const verifica = (nome, cond, dettaglio = "") => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 
@@ -132,7 +133,7 @@ await attendi(async () => {
   const r = await sql`select count(*)::int n from corpus_block_override
     where company_id = ${az.id} and block_id = ${chiaveBlocco}`;
   return r[0].n === 1;
-}, { entro: 30_000, cosa: "la personalizzazione scritta" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la personalizzazione scritta" });
 verifica("Un blocco si personalizza, e punta alla CHIAVE non alla posizione", true, chiaveBlocco);
 
 // Il ripristino: svuotare non scrive una stringa vuota, cancella la riga.
@@ -141,7 +142,7 @@ await attendi(async () => {
   const r = await sql`select count(*)::int n from corpus_block_override
     where company_id = ${az.id} and block_id = ${chiaveBlocco}`;
   return r[0].n === 0;
-}, { entro: 30_000, cosa: "la personalizzazione rimossa" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la personalizzazione rimossa" });
 verifica("⚠️ Ripristinare CANCELLA la riga, non scrive un testo vuoto", true);
 
 // ─── il registro: riga, campo, eliminazione ──────────────────────────────────
@@ -165,7 +166,7 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const r = await sql`select dati from corpus_register_row where id = ${riga.id}`;
   return JSON.stringify(r[0]?.dati ?? {}).includes("Valore di collaudo");
-}, { entro: 30_000, cosa: "il campo salvato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il campo salvato" });
 verifica("Un campo della registrazione si salva sfocandosi", true);
 
 await page.locator('[data-slot="scheda-riga"]').getByRole("button", { name: "Elimina", exact: true }).first().click();
@@ -173,7 +174,7 @@ await page.locator('[data-slot="scheda-riga"]').getByRole("button", { name: "Eli
 await attendi(async () => {
   const r = await sql`select count(*)::int n from corpus_register_row where id = ${riga.id}`;
   return r[0].n === 0;
-}, { entro: 30_000, cosa: "la registrazione eliminata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la registrazione eliminata" });
 verifica("Una registrazione si elimina, con conferma", true);
 await page.screenshot({ path: `${OUT}/registro.png` });
 

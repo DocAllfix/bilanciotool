@@ -30,6 +30,24 @@ import { withSentryConfig } from "@sentry/nextjs";
 const ORIGINE_ARCHIVIO = process.env.SUPABASE_URL
   ? new URL(process.env.SUPABASE_URL).origin
   : null;
+
+// ⚠️ E L'ORIGINE CANONICA, per le immagini degli articoli.
+//
+// Le immagini del blog arrivano da `evalisdeck.it/wp-content/...`. In produzione le copre
+// `'self'`, perche' la pagina e' servita da li'. Su un'ANTEPRIMA — o da qualunque altro
+// dominio — sono un'altra origine, e il browser le blocca: le pagine del blog uscivano
+// senza immagini e cinque controlli della CSP diventavano rossi.
+//
+// Non e' un difetto di produzione, ma e' una dipendenza taciuta: la nostra CSP funzionava
+// solo perche' il dominio era quello. Dichiararla costa una riga e vale il giorno in cui
+// il prodotto verra' servito da un indirizzo diverso.
+const ORIGINE_CANONICA = (() => {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").origin;
+  } catch {
+    return "https://evalisdeck.it";
+  }
+})();
 const permessi = (...voci: (string | null)[]) => voci.filter(Boolean).join(" ");
 
 const CSP = [
@@ -50,7 +68,7 @@ const CSP = [
   // `googletagmanager` anche fra le IMMAGINI: Analytics manda una parte delle
   // misure come pixel, non come richiesta di rete. Previsto solo fra gli script,
   // il browser lo bloccava — e il collaudo l'ha visto, la lettura della regola no.
-  permessi("img-src 'self' data: blob: https://cms.evalisdeck.it", ORIGINE_ARCHIVIO, "https://www.googletagmanager.com https://*.google-analytics.com"),
+  permessi("img-src 'self' data: blob: https://cms.evalisdeck.it", ORIGINE_CANONICA, ORIGINE_ARCHIVIO, "https://www.googletagmanager.com https://*.google-analytics.com"),
   permessi("connect-src 'self'", ORIGINE_ARCHIVIO, "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com"),
   // Il video di benvenuto sta nell'archivio e la rotta rinvia a un indirizzo firmato di
   // Supabase: un'altra origine. Senza questa riga `media-src` ricadeva su `default-src

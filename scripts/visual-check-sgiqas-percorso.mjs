@@ -12,7 +12,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-sgiqas";
@@ -32,7 +33,7 @@ const verifica = (nome, cond, dettaglio = "") => {
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 } })).newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 
@@ -90,7 +91,7 @@ for (const nome of ["ISO 14001 nel perimetro", "ISO 45001 nel perimetro"]) {
   await page.getByRole("switch", { name: nome }).click();
   await page.waitForTimeout(700);
 }
-await attendi(async () => String((await sistema())?.norme) === "Q", { entro: 30_000, cosa: "il perimetro ridotto alla Qualità" });
+await attendi(async () => String((await sistema())?.norme) === "Q", { entro: 30_000 * fattoreAttesa(), cosa: "il perimetro ridotto alla Qualità" });
 verifica("⚠️ Il perimetro si restringe a una norma sola", true);
 
 await page.waitForTimeout(800);
@@ -118,14 +119,14 @@ for (const nome of ["ISO 14001 nel perimetro", "ISO 45001 nel perimetro"]) {
   await page.getByRole("switch", { name: nome }).click();
   await page.waitForTimeout(600);
 }
-await attendi(async () => String((await sistema())?.norme).length === 5, { entro: 30_000, cosa: "il perimetro ripristinato" });
+await attendi(async () => String((await sistema())?.norme).length === 5, { entro: 30_000 * fattoreAttesa(), cosa: "il perimetro ripristinato" });
 verifica("Rimettere una norma non ha perso niente", true);
 
 // ─── anagrafica ──────────────────────────────────────────────────────────────
 await page.getByLabel("Alta direzione", { exact: true }).fill("Consiglio di amministrazione");
 await page.keyboard.press("Tab");
 await attendi(async () => (await sistema())?.direzione === "Consiglio di amministrazione",
-  { entro: 30_000, cosa: "l'alta direzione salvata" });
+  { entro: 30_000 * fattoreAttesa(), cosa: "l'alta direzione salvata" });
 verifica("Un campo dell'anagrafica si salva sfocandosi", true);
 
 // ─── requisiti ───────────────────────────────────────────────────────────────
@@ -136,7 +137,7 @@ await attendi(async () => {
   const r = await sql`select stato from qas_requirement_state
     where system_id = ${s0.id} and requirement_key = ${primo.key}`;
   return r[0]?.stato === "Conforme";
-}, { entro: 30_000, cosa: "il requisito valutato" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il requisito valutato" });
 verifica("Un requisito si valuta con un clic", true, primo.key);
 
 await page.getByRole("button", { name: `${primo.key}: Conforme`, exact: true }).click();
@@ -144,7 +145,7 @@ await attendi(async () => {
   const r = await sql`select stato from qas_requirement_state
     where system_id = ${s0.id} and requirement_key = ${primo.key}`;
   return r[0]?.stato === null;
-}, { entro: 30_000, cosa: "la valutazione annullata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la valutazione annullata" });
 verifica("Ripremere lo stesso stato annulla", true);
 await page.screenshot({ path: `${OUT}/03-requisiti.png` });
 
@@ -155,7 +156,7 @@ const [base] = await sql`select count(*)::int n from qas_indicator_default where
 await attendi(async () => {
   const r = await sql`select count(*)::int n from qas_indicator where system_id = ${s0.id}`;
   return r[0].n === base.n;
-}, { entro: 40_000, cosa: "gli indicatori di partenza caricati" });
+}, { entro: 40_000 * fattoreAttesa(), cosa: "gli indicatori di partenza caricati" });
 verifica("I venti indicatori di partenza si caricano", true, `${base.n}`);
 
 // ⚠️ Ripremere non duplica: il gesto si puo' ripetere senza pensarci.
@@ -186,7 +187,7 @@ await page.click('[data-tour="qas-aggiungi-rilevazione"]');
 await attendi(async () => {
   const r = await sql`select count(*)::int n from qas_measurement where indicator_id = ${idSenza[0].id}`;
   return r[0].n === 2;
-}, { entro: 30_000, cosa: "la seconda rilevazione" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "la seconda rilevazione" });
 verifica("Una rilevazione si registra", true);
 await page.screenshot({ path: `${OUT}/04-indicatori.png` });
 

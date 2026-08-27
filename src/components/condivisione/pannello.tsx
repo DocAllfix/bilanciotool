@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { creaCollegamentoAction, revocaCollegamentoAction } from "@/features/condivisione/actions";
 import { DURATE, DURATA_PREDEFINITA } from "@/features/condivisione/token";
 import type { Collegamento } from "@/features/condivisione";
+import { fmtDataBreve } from "@/lib/format";
 
 // Il pannello con cui lo studio genera e revoca i collegamenti per il cliente.
 //
@@ -18,7 +19,7 @@ import type { Collegamento } from "@/features/condivisione";
 // mentre lo si mostra evita la telefonata del giorno dopo.
 
 const data = (d: Date | string) =>
-  new Date(d).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" });
+  fmtDataBreve(d);
 
 const ETICHETTA = {
   valido: { testo: "Attivo", variante: "default" as const },

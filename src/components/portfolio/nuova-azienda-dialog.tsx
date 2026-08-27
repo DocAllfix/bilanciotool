@@ -103,7 +103,7 @@ export function NuovaAziendaDialog({
           <DialogTitle>Nuova azienda</DialogTitle>
           <DialogDescription>Aggiungi un&apos;azienda cliente al portafoglio dello studio.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form method="post" onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="na-nome">Denominazione *</Label>
             <Input id="na-nome" name="nome" placeholder="Alfa S.r.l." required />

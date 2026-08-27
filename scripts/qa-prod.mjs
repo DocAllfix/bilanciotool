@@ -8,6 +8,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = process.argv[2] ?? "https://evalisdeck.vercel.app";
 const OUT = process.env.SHOT_DIR ?? "./shots-qa";
@@ -29,7 +30,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(`[${sezione}] ${m.text().slice(0, 200)}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) consoleErrors.push(`[${sezione}] ${m.text().slice(0, 200)}`); });
 page.on("pageerror", (e) => consoleErrors.push(`[${sezione}] pageerror: ${e.message.slice(0, 200)}`));
 // Un solo gestore dei dialoghi, per tutta la sessione. Con `page.once` per ogni
 // conferma bastava un dialogo in più (o uno già chiuso in automatico da

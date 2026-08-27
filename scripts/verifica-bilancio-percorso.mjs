@@ -22,7 +22,7 @@ import {
   contatore,
   attendi,
   pretendiServerAggiornato,
-} from "./comune-collaudo.mjs";
+  pretendiPdfVero, fattoreAttesa } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -239,7 +239,7 @@ await agisci("la bozza dai dati compila un capitolo", async () => {
   const bozza = page.locator('[data-tour^="bozza-"]').first();
   await bozza.waitFor({ timeout: 25_000 });
   await bozza.click();
-  await attendi(async () => (await capitoli()).length >= 1, { entro: 60_000, cosa: "capitolo scritto" });
+  await attendi(async () => (await capitoli()).length >= 1, { entro: 60_000 * fattoreAttesa(), cosa: "capitolo scritto" });
 });
 
 // ─── passo 6 · verifica ──────────────────────────────────────────────────────
@@ -260,7 +260,7 @@ await agisci("il Bilancio si pubblica e si congela", async () => {
       if (s) snapshotId = s.id;
       return !!s;
     },
-    { entro: 120_000, cosa: "snapshot pubblicato" },
+    { entro: 120_000 * fattoreAttesa(), cosa: "snapshot pubblicato" },
   );
 });
 
@@ -293,9 +293,8 @@ await agisci("il PDF si genera e non e' vuoto", async () => {
   const r = await page.request.get(`${BASE}/api/documenti/${snapshotId}/pdf`);
   if (!r.ok()) throw new Error(`HTTP ${r.status()}`);
   const buf = await r.body();
-  if (buf.subarray(0, 4).toString() !== "%PDF") throw new Error("non e' un PDF");
-  if (buf.length < 40_000) throw new Error(`solo ${buf.length} byte`);
-  console.log(`       ${Math.round(buf.length / 1024)} KB`);
+  const { byte, pagine } = pretendiPdfVero(buf);
+  console.log(`       ${Math.round(byte / 1024)} KB · ${pagine} pagine`);
 });
 
 // ─── il confine di tenant ────────────────────────────────────────────────────

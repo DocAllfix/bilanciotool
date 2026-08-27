@@ -1,6 +1,7 @@
 // Collaudo del blocco EcoVadis: fascia, piede, FAQ, dati strutturati.
 import { chromium } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const OUT = "./shots-ecovadis";
 mkdirSync(OUT, { recursive: true });
@@ -15,7 +16,7 @@ const check = async (nome, fn) => {
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errors.push(`[${page.url()}] ${m.text()}`); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
@@ -122,7 +123,7 @@ await ctx.close();
 const ctxDark = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 await ctxDark.addInitScript(() => window.localStorage.setItem("theme", "dark"));
 const dark = await ctxDark.newPage();
-dark.on("console", (m) => { if (m.type() === "error") errors.push(`[dark] ${m.text()}`); });
+dark.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errors.push(`[dark] ${m.text()}`); });
 dark.on("pageerror", (e) => errors.push(`[dark pageerror] ${e.message}`));
 await dark.goto(BASE + "/", { waitUntil: "networkidle" });
 if (!(await dark.evaluate(() => document.documentElement.classList.contains("dark")))) {
@@ -152,7 +153,7 @@ await ctxDark.close();
 // Mobile.
 const ctxM = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const m = await ctxM.newPage();
-m.on("console", (x) => { if (x.type() === "error") errors.push(`[mobile] ${x.text()}`); });
+m.on("console", (x) => { if (x.type() === "error" && !rumoreDiPiattaforma(x.text())) errors.push(`[mobile] ${x.text()}`); });
 m.on("pageerror", (e) => errors.push(`[mobile pageerror] ${e.message}`));
 await m.goto(BASE + "/", { waitUntil: "networkidle" });
 await check("su mobile la fascia impila e non sborda", async () => {

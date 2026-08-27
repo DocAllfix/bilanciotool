@@ -53,7 +53,7 @@ export function VistaProcessi({ companyId, dati }: { companyId: string; dati: Da
   return (
     <div className="grid gap-6 lg:grid-cols-[20rem_1fr]" data-tour="mog-processi">
       <div>
-        <form onSubmit={crea} className="flex gap-2">
+        <form method="post" onSubmit={crea} className="flex gap-2">
           <Input
             id="mog-nuovo-processo"
             value={nuovo}

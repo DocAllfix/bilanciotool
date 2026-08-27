@@ -12,7 +12,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore, attendi } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
@@ -245,8 +245,7 @@ await agisci("Fornitore: cambiare una risposta si salva", async () => {
       where s.company_id = ${az.id} and a.question_key = 'B1'`;
     return x?.risposta ?? null;
   };
-  await attendi(async () => (await rispostaB1()) === "parziale", {
-    entro: 30000,
+  await attendi(async () => (await rispostaB1()) === "parziale", { entro: 30000 * fattoreAttesa(),
     cosa: "la risposta B1 salvata come «parziale»",
   });
   await page.getByRole("button", { name: "B1: Sì", exact: true }).click();
@@ -341,7 +340,7 @@ await agisci("impostazioni: rinominare lo studio si salva", async () => {
       const [o] = await sql`select name from organization where id = ${orgId}`;
       return o?.name === NUOVO_NOME;
     },
-    { entro: 30000, cosa: `il nome dello studio salvato come «${NUOVO_NOME}»` },
+    { entro: 30000 * fattoreAttesa(), cosa: `il nome dello studio salvato come «${NUOVO_NOME}»` },
   );
   // E poi che l'interfaccia lo mostri: sono due fatti diversi, e questo collaudo li
   // vuole entrambi — il database dice che e' stato scritto, la pagina che si vede.

@@ -13,7 +13,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-verifica";
@@ -34,7 +35,7 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 
@@ -84,7 +85,7 @@ await doc.waitForLoadState("networkidle", { timeout: 120_000 });
 const [k] = await attendi(async () => {
   const r = await sql`select * from document_codice where organization_id = ${orgId}`;
   return r.length ? r : false;
-}, { entro: 30_000, cosa: "il codice assegnato alla pubblicazione" }).then(() =>
+}, { entro: 30_000 * fattoreAttesa(), cosa: "il codice assegnato alla pubblicazione" }).then(() =>
   sql`select * from document_codice where organization_id = ${orgId}`);
 
 verifica("Pubblicare assegna un codice", Boolean(k?.codice), k?.codice);
@@ -102,7 +103,7 @@ await doc.close();
 // ─── la verifica pubblica, da un browser SENZA sessione ──────────────────────
 const anonimo = await (await browser.newContext()).newPage();
 const erroriAnonimo = [];
-anonimo.on("console", (m) => { if (m.type() === "error") erroriAnonimo.push(m.text().slice(0, 150)); });
+anonimo.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) erroriAnonimo.push(m.text().slice(0, 150)); });
 await anonimo.goto(`${BASE}/verifica?codice=${encodeURIComponent(k.codice)}`, {
   waitUntil: "domcontentloaded",
   timeout: 60_000,
@@ -128,7 +129,7 @@ await anonimo.screenshot({ path: `${OUT}/02-verificato.png` });
 await attendi(async () => {
   const r = await sql`select verifiche from document_codice where codice = ${k.codice}`;
   return r[0]?.verifiche >= 1;
-}, { entro: 20_000, cosa: "il contatore delle verifiche" });
+}, { entro: 20_000 * fattoreAttesa(), cosa: "il contatore delle verifiche" });
 verifica("Il contatore delle verifiche si incrementa", true);
 
 // Un codice ben formato ma inesistente: «non trovato», senza fantasia.

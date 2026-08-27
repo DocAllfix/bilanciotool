@@ -12,7 +12,8 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, attendi, pretendiServerAggiornato, fattoreAttesa } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-corpus-pdf";
@@ -33,7 +34,7 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 const page = await ctx.newPage();
-page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 150)); });
+page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 150)); });
 page.on("pageerror", (e) => errori.push("pageerror: " + e.message.slice(0, 150)));
 page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
 
@@ -62,7 +63,7 @@ await page.keyboard.press("Tab");
 await attendi(async () => {
   const [r] = await sql`select direzione from chain_program where company_id = ${az.id}`;
   return r?.direzione === "Ing. Rosaria Del Vecchio";
-}, { entro: 30_000, cosa: "l'alta direzione salvata" });
+}, { entro: 30_000 * fattoreAttesa(), cosa: "l'alta direzione salvata" });
 verifica("L'anagrafica che riempie i segnaposto si compila", true);
 
 // ─── la vista del documento offre la stampa ──────────────────────────────────

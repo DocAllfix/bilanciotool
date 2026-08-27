@@ -48,7 +48,7 @@ export function CreaProgrammaEsg({ companyId }: { companyId: string }) {
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={crea} className="space-y-5">
+          <form method="post" onSubmit={crea} className="space-y-5">
             <div className="max-w-40 space-y-1.5">
               <Label htmlFor="cp-anno">Esercizio</Label>
               <Input

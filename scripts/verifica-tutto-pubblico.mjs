@@ -372,10 +372,23 @@ await agisci("la sitemap elenca solo indirizzi che rispondono", async () => {
   const xml = await (await page.request.get(`${BASE}/sitemap.xml`)).text();
   const loc = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   if (!loc.length) throw new Error("sitemap vuota");
+  // ⚠️ Su un'ANTEPRIMA la sitemap dichiara i canonical della PRODUZIONE, ed e' giusto
+  // cosi': un canonical verso un host temporaneo insegnerebbe a Google un indirizzo che
+  // muore. Ma il controllo poi segue quei collegamenti e finisce sul sito vero, che puo'
+  // essere indietro rispetto al ramo — `/verifica` esiste dal 24 agosto 2026 e non e'
+  // ancora distribuito. Un 404 li' non e' un collegamento rotto: e' la produzione che non
+  // ha ancora quella pagina, e lo si dice invece di far cercare un guasto che non c'e'.
+  const anteprima = !/^https?:\/\/(localhost|127\.0\.0\.1|evalisdeck\.it)/.test(BASE);
   const rotti = [];
+  const nonAncoraInProduzione = [];
   for (const u of loc.slice(0, 25)) {
     const r = await page.request.get(u, { maxRedirects: 3 });
-    if (r.status() >= 400) rotti.push(`${u} -> ${r.status()}`);
+    if (r.status() < 400) continue;
+    if (anteprima && !u.startsWith(BASE)) nonAncoraInProduzione.push(`${u} -> ${r.status()}`);
+    else rotti.push(`${u} -> ${r.status()}`);
+  }
+  if (nonAncoraInProduzione.length) {
+    console.log(`       (${nonAncoraInProduzione.length} indirizzi canonici non ancora in produzione: ${nonAncoraInProduzione.join(", ")})`);
   }
   if (rotti.length) throw new Error(rotti.join(" | "));
 });

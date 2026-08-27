@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PIANI, CHIAVI_PIANO, euro, prezzoDiVendita, lancioAttivo, FINE_LANCIO } from "@/lib/prezzi";
 import { apriCheckoutAction } from "@/features/billing/actions";
 import type { PianoKey } from "@/lib/prezzi";
+import { fmtDataEstesa } from "@/lib/format";
 
 // L'offerta, alla fine del giro guidato.
 //
@@ -60,7 +61,7 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
         {lancioAttivo() && (
           <p className="mt-4 inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12.5px] font-medium text-primary">
             Prezzi di lancio, validi fino al{" "}
-            {FINE_LANCIO.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+            {fmtDataEstesa(FINE_LANCIO)}
           </p>
         )}
 

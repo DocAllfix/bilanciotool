@@ -66,7 +66,20 @@ const DA_SCRIVERE = [
   ["SUPABASE_SERVICE_ROLE_KEY", dal("SUPABASE_SERVICE_ROLE_KEY")],
   ["STRIPE_SECRET_KEY", dal("STRIPE_SECRET_KEY")],
   ["STRIPE_WEBHOOK_SECRET", dal("STRIPE_WEBHOOK_SECRET")],
+  // ⚠️ Il generatore PDF apre il PROPRIO indirizzo con Chromium, e su un'anteprima quel
+  // indirizzo e' protetto: senza questo segreto Chromium stampa la pagina di accesso di
+  // Vercel. Un PDF vero, di una pagina, identico per ogni documento — e indistinguibile
+  // da uno buono per chi guarda solo i byte magici e la dimensione.
+  ["VERCEL_AUTOMATION_BYPASS_SECRET", bypassDaFile()],
 ];
+
+function bypassDaFile() {
+  try {
+    return readFileSync(".env.vercel", "utf8").match(/^VERCEL_AUTOMATION_BYPASS_SECRET=(.*)$/m)?.[1]?.trim();
+  } catch {
+    return undefined;
+  }
+}
 
 const mancanti = DA_SCRIVERE.filter(([, v]) => !v).map(([k]) => k);
 if (mancanti.length) {
