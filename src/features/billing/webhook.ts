@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { stripe, idPrezzo } from "@/lib/stripe/client";
-import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
+import { PIANI, rinnovoPerLeRighe, type PianoKey } from "@/lib/prezzi";
 import { applicaAbbonamento, organizzazioneDelCliente } from "./provisioning";
 import { vociDelRinnovo } from "./fasi";
 
@@ -36,7 +36,12 @@ export type EsitoEvento = { fatto: boolean; nota: string };
  */
 async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Promise<void> {
   if (sub.schedule) return; // già fatto: l'evento è arrivato due volte
-  const rinnovo = prezzoDiVendita(PIANI[piano], "rinnovo");
+
+  // ⚠️ Il prezzo di rinnovo si chiede alle RIGHE, non al solo piano. Un Fondatore ha la
+  // fascia «studio» ma non il suo rinnovo di listino: se la fase 2 portasse quello, al
+  // tredicesimo mese tornerebbe a pagare come tutti — in silenzio, su un accordo firmato.
+  const lookups = sub.items.data.map((i) => i.price.lookup_key ?? null);
+  const rinnovo = rinnovoPerLeRighe(lookups, piano);
   if (!rinnovo) return;
 
   const schedule = await stripe().subscriptionSchedules.create({ from_subscription: sub.id });

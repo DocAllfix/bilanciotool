@@ -18,7 +18,7 @@
 
 import Stripe from "stripe";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
+import { PIANI, ESTENSIONI, FONDATORI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
 
 const APPLICA = process.argv.includes("--applica");
 const chiave = process.env.STRIPE_SECRET_KEY;
@@ -108,6 +108,21 @@ for (const piano of Object.values(PIANI)) {
   await prezzo(prod.id, piano.lookupRinnovo, piano.rinnovo, true);
   await prezzo(prod.id, piano.lookupAnno1Lancio, piano.primoAnnoLancio, true);
   await prezzo(prod.id, piano.lookupRinnovoLancio, piano.rinnovoLancio, true);
+}
+
+console.log("");
+console.log("Programma Fondatori");
+{
+  // ⚠️ Due prezzi, e il secondo conta piu' del primo: la fase 2 dello Schedule deve
+  // portare QUELLO, altrimenti al tredicesimo mese il Fondatore torna a pagare come
+  // tutti — in silenzio, su un accordo firmato.
+  const prod = await prodotto(
+    "programma_fondatori",
+    "EvalisDeck — Programma Fondatori",
+    `Dodici mesi in fascia «${PIANI[FONDATORI.piano].nome}» a condizioni riservate, poi rinnovo scontato a vita.`,
+  );
+  await prezzo(prod.id, FONDATORI.lookupAnno1, FONDATORI.primoAnno, true);
+  await prezzo(prod.id, FONDATORI.lookupRinnovo, FONDATORI.rinnovo, true);
 }
 
 console.log("\nEstensioni");

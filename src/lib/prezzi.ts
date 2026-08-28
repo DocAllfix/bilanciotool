@@ -145,6 +145,38 @@ export const ESTENSIONI_RITIRATE = {
  * primo listino nuovo, e la copia che diverge decide quanto paga qualcuno.
  */
 /**
+ * IL PROGRAMMA FONDATORI.
+ *
+ * Dodici mesi in fascia «fino a 15 aziende» a un corrispettivo simbolico, poi uno sconto
+ * che resta per tutta la vita dell'abbonamento. In cambio il Fondatore usa la piattaforma
+ * su mandati reali, dà riscontri, e — se soddisfatto — una testimonianza.
+ *
+ * ⚠️ LO SCONTO SI CALCOLA SUL PREZZO DI RINNOVO, NON SUL LISTINO PIENO. La lettera dice
+ * «20% sul prezzo di listino dei rinnovi», e il rinnovo di listino è già il primo anno
+ * meno 20%: leggendo la clausola sull'importo pieno il Fondatore pagherebbe 1.032 €, cioè
+ * esattamente quanto chiunque altro, e la clausola non promettterebbe nulla. Sarebbe una
+ * contropartita vuota per una videochiamata al mese, una testimonianza con nome e
+ * fotografia e un caso studio. Deciso dal committente il 27 agosto 2026.
+ *
+ * ⚠️ E IL PERMANENTE NON RICHIEDE CODICE, purché la fase 2 dello Schedule porti QUESTO
+ * prezzo. Lo Schedule ha `end_behavior: "release"`: finita la seconda fase si stacca, e
+ * dal terzo anno Stripe rinnova con il prezzo che trova sull'abbonamento — che è quello
+ * della fase 2. Se invece la fase 2 portasse il rinnovo di listino, al TREDICESIMO MESE
+ * il Fondatore tornerebbe a pagare come tutti, in silenzio: è lo stesso difetto che il 13
+ * agosto faceva sparire le estensioni al rinnovo, e si vedrebbe solo fra un anno.
+ */
+export const FONDATORI = {
+  /** La fascia che il Programma concede: capienza e capacità sono quelle. */
+  piano: "studio" as PianoKey,
+  /** Centesimi. Dodici mesi al corrispettivo simbolico. */
+  primoAnno: 30000,
+  /** Centesimi. Il rinnovo di listino della fascia, meno il 20% del Fondatore. */
+  rinnovo: 82560,
+  lookupAnno1: "evalisdeck_fondatori_anno1_v1",
+  lookupRinnovo: "evalisdeck_fondatori_rinnovo_v1",
+} as const;
+
+/**
  * Le chiavi Stripe dei listini PRECEDENTI, per piano.
  *
  * ⚠️ SENZA QUESTE, CHI HA GIA' PAGATO PERDE L'ABBONAMENTO. Su Stripe i prezzi sono
@@ -197,7 +229,11 @@ export function chiavePiano(lookup: string | null | undefined): PianoKey | null 
         lookup === p.lookupAnno1Lancio ||
         lookup === p.lookupRinnovoLancio ||
         // ⚠️ Anche i listini precedenti: chi ha pagato l'anno scorso punta ancora a quelli.
-        LOOKUP_STORICHE[k].includes(lookup)
+        LOOKUP_STORICHE[k].includes(lookup) ||
+        // ⚠️ E le chiavi del Programma Fondatori, che concedono la loro fascia: senza,
+        // `ricostruisciCapacita` non troverebbe nessun piano e un Fondatore si
+        // ritroverebbe l'account in sola lettura al primo evento Stripe.
+        (k === FONDATORI.piano && (lookup === FONDATORI.lookupAnno1 || lookup === FONDATORI.lookupRinnovo))
       );
     }) ?? null
   );
@@ -253,11 +289,22 @@ export function limitiEffettivi(
  *  `useGrouping` esplicito: lasciato in automatico, l'italiano non separa le migliaia sui
  *  numeri di quattro cifre, e «2900 €» accanto a «5.400 €» si legge come una svista. */
 export function euro(centesimi: number): string {
-  const v = centesimi / 100;
-  return `${v.toLocaleString("it-IT", {
-    useGrouping: true,
-    maximumFractionDigits: Number.isInteger(v) ? 0 : 2,
-  })} €`;
+  // ⚠️ NIENTE `toLocaleString`. Dipende dai dati ICU del runtime, e server e browser ne
+  // hanno due diversi: lo stesso importo si stamperebbe in due modi nella stessa pagina,
+  // React butterebbe via l'HTML del server con l'errore #418, e su una cifra di denaro non
+  // è una questione estetica. La regola è già scritta per i compensi, dove `toLocaleString`
+  // in Node restituiva `1234` invece di `1.234`; qui era rimasta.
+  //
+  // ⚠️ E ora conta davvero: `euro()` gira anche NEL BROWSER, dentro il calcolatore della
+  // pagina prezzi. Finché la usava solo il server il difetto non si poteva vedere.
+  //
+  // I centesimi si mostrano solo quando ci sono, e allora si mostrano ENTRAMBI: «825,60 €»
+  // e non «825,6 €», perché un importo con un decimale solo non è una cifra di denaro.
+  const segno = centesimi < 0 ? "-" : "";
+  const n = Math.abs(Math.round(centesimi));
+  const intero = String(Math.floor(n / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const cent = n % 100;
+  return `${segno}${intero}${cent ? "," + String(cent).padStart(2, "0") : ""} €`;
 }
 
 /* ────────────────────────────── promozione di lancio ──────────────────────────────
@@ -341,3 +388,16 @@ export function prezzoEstensione(
  */
 export const MAX_BLOCCHI_AZIENDE = 10;
 export const MAX_ACCESSI_EXTRA = 20;
+
+/**
+ * Che cosa si addebita al rinnovo, viste le righe dell'abbonamento in corso.
+ *
+ * ⚠️ Il piano da solo non basta a rispondere: un Fondatore ha la fascia «studio» ma non
+ * il suo prezzo di rinnovo. La domanda si fa alle RIGHE, che sono l'unica cosa che
+ * distingue un abbonamento del Programma da uno normale.
+ */
+export function rinnovoPerLeRighe(lookups: readonly (string | null)[], piano: PianoKey): PrezzoDiVendita | null {
+  const fondatore = lookups.some((l) => l === FONDATORI.lookupAnno1 || l === FONDATORI.lookupRinnovo);
+  if (fondatore) return { importo: FONDATORI.rinnovo, lookup: FONDATORI.lookupRinnovo };
+  return prezzoDiVendita(PIANI[piano], "rinnovo");
+}
