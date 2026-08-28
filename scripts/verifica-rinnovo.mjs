@@ -24,7 +24,7 @@ import postgres from "postgres";
 import Stripe from "stripe";
 import { randomUUID, createHmac } from "node:crypto";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione } from "../src/lib/prezzi.ts";
+import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, FONDATORI, euro, prezzoDiVendita, prezzoEstensione, rinnovoPerLeRighe } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
@@ -88,11 +88,23 @@ async function consegna(tipo, oggetto) {
   if (!r.ok) throw new Error(`il webhook ha risposto ${r.status}: ${(await r.text()).slice(0, 160)}`);
 }
 
-const piano = PIANI.studio;
-const pAnno1 = prezzoDiVendita(piano, "anno1");
-const pRinnovo = prezzoDiVendita(piano, "rinnovo");
+// ⚠️ CON `--fondatore` si esercita un abbonamento del Programma. E' il caso in cui lo
+// sconto puo' perdersi: un Fondatore ha la fascia «studio» ma NON il suo prezzo di
+// rinnovo, e se la fase 2 dello Schedule portasse quello, al tredicesimo mese tornerebbe
+// a pagare come tutti — in silenzio, su un accordo firmato, visibile solo fra un anno.
+const FONDATORE = process.argv.includes("--fondatore");
+
+const piano = PIANI[FONDATORE ? FONDATORI.piano : "studio"];
+const pAnno1 = FONDATORE
+  ? { importo: FONDATORI.primoAnno, lookup: FONDATORI.lookupAnno1 }
+  : prezzoDiVendita(piano, "anno1");
+// Il rinnovo si chiede alla STESSA funzione che usa il webhook. Perche' il collaudo non
+// finisca d'accordo con un difetto, piu' sotto c'e' anche un'asserzione indipendente.
+const pRinnovo = rinnovoPerLeRighe([pAnno1.lookup], piano.key);
 const pBlocco = prezzoEstensione(ESTENSIONI.bloccoAziende);
-const pAccesso = prezzoEstensione(ESTENSIONI.accesso);
+// ⚠️ L'estensione degli accessi non si vende piu', ma un abbonamento in corso puo'
+// averla: si esercita quella RITIRATA, che e' cio' che un cliente vero ha davvero.
+const pAccesso = prezzoEstensione(ESTENSIONI_RITIRATE.accesso);
 const estensioni = BLOCCHI * pBlocco.importo + ACCESSI * pAccesso.importo;
 const ATTESO_RINNOVO = pRinnovo.importo + estensioni;
 
@@ -102,6 +114,16 @@ const idDi = async (lookup) => {
   return l.data[0].id;
 };
 
+// ⚠️ L'attesa NON viene solo dalla funzione in prova: per il Fondatore si ricalcola dalla
+// clausola — rinnovo di listino della fascia meno il 20% — cosi' un errore dentro
+// `rinnovoPerLeRighe` non puo' passare inosservato perche' sbaglia in due posti uguali.
+if (FONDATORE) {
+  const atteso = Math.round(prezzoDiVendita(piano, "rinnovo").importo * 0.8);
+  if (pRinnovo.importo !== atteso) {
+    throw new Error(`lo sconto Fondatore vale ${euro(pRinnovo.importo)}, la clausola dice ${euro(atteso)}`);
+  }
+}
+console.log(`  modo: ${FONDATORE ? "PROGRAMMA FONDATORI" : "abbonamento normale"}`);
 console.log(`\n  atteso al rinnovo: ${euro(ATTESO_RINNOVO)}`);
 console.log(`  (piano ${euro(pRinnovo.importo)} + ${BLOCCHI} blocchi + ${ACCESSI} accessi)\n`);
 
@@ -152,7 +174,7 @@ try {
         { price: await idDi(pBlocco.lookup), quantity: BLOCCHI },
         { price: await idDi(pAccesso.lookup), quantity: ACCESSI },
       ],
-      metadata: { organizationId: orgId, piano: "studio" },
+      metadata: { organizationId: orgId, piano: piano.key },
     });
     subId = sub.id;
 
@@ -166,7 +188,7 @@ try {
     const [e] = await sql`select status, piano, aziende_extra, accessi_extra from org_entitlement
                           where organization_id=${orgId}`;
     if (e.status !== "active") throw new Error(`stato ${e.status}`);
-    if (e.piano !== "studio") throw new Error(`piano ${e.piano}`);
+    if (e.piano !== piano.key) throw new Error(`piano ${e.piano}`);
     const azienderAttese = BLOCCHI * ESTENSIONI.bloccoAziende.aziende;
     if (e.aziende_extra !== azienderAttese) throw new Error(`aziende extra ${e.aziende_extra}`);
     if (e.accessi_extra !== ACCESSI) throw new Error(`accessi extra ${e.accessi_extra}`);
@@ -250,7 +272,7 @@ try {
     const [e] = await sql`select status, piano, aziende_extra, accessi_extra, current_period_end
                           from org_entitlement where organization_id=${orgId}`;
     if (e.status !== "active") throw new Error(`l'account è finito in «${e.status}» dopo il rinnovo`);
-    if (e.piano !== "studio") throw new Error(`il piano è diventato «${e.piano}»`);
+    if (e.piano !== piano.key) throw new Error(`il piano è diventato «${e.piano}»`);
     if (e.accessi_extra !== ACCESSI) throw new Error(`gli accessi extra sono ${e.accessi_extra}`);
     if (e.aziende_extra !== BLOCCHI * ESTENSIONI.bloccoAziende.aziende) {
       throw new Error(`le aziende extra sono ${e.aziende_extra}`);

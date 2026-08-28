@@ -18,7 +18,7 @@
 
 import Stripe from "stripe";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
+import { PIANI, ESTENSIONI, FONDATORI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
 
 const APPLICA = process.argv.includes("--applica");
 const chiave = process.env.STRIPE_SECRET_KEY;
@@ -35,13 +35,32 @@ if (/_live_/.test(chiave) && !process.argv.includes("--sono-sicuro-che-e-produzi
 }
 
 const stripe = new Stripe(chiave);
-let creati = 0, gia = 0, problemi = 0;
+let creati = 0, gia = 0, problemi = 0, rinominati = 0;
 
 /** Il prodotto, riconosciuto per metadata invece che per nome: il nome è testo che
  *  qualcuno cambierà dal cruscotto, la chiave no. */
 async function prodotto(chiaveInterna, nome, descrizione) {
   const trovati = await stripe.products.search({ query: `metadata['chiave']:'${chiaveInterna}'`, limit: 1 });
-  if (trovati.data[0]) return trovati.data[0];
+  const esistente = trovati.data[0];
+
+  if (esistente) {
+    // ⚠️ IL NOME SI AGGIORNA, al contrario del prezzo. I prezzi Stripe sono immutabili e
+    // un importo diverso e' un prezzo diverso; il nome del PRODOTTO invece si cambia, e va
+    // cambiato — perche' e' quello che il cliente legge sulla fattura e nel portale.
+    //
+    // Trovato il 28 agosto 2026 leggendo il portale durante un collaudo: diceva
+    // «EvalisDeck — Studio» mentre il sito diceva «Fino a 15 aziende». Due nomi per la
+    // stessa cosa, stavolta su un documento fiscale, ed e' il difetto che questo progetto
+    // ha gia' pagato tre volte altrove. Il prodotto resta lo STESSO — si riconosce dai
+    // metadata, non dal nome — quindi gli abbonamenti in corso non si accorgono di niente.
+    if (esistente.name !== nome || esistente.description !== descrizione) {
+      console.log(`  ~  ${chiaveInterna}: nome «${esistente.name}» → «${nome}»`);
+      if (APPLICA) await stripe.products.update(esistente.id, { name: nome, description: descrizione });
+      rinominati++;
+    }
+    return esistente;
+  }
+
   if (!APPLICA) return { id: `(da creare: ${chiaveInterna})` };
   return stripe.products.create({ name: nome, description: descrizione, metadata: { chiave: chiaveInterna } });
 }
@@ -110,6 +129,21 @@ for (const piano of Object.values(PIANI)) {
   await prezzo(prod.id, piano.lookupRinnovoLancio, piano.rinnovoLancio, true);
 }
 
+console.log("");
+console.log("Programma Fondatori");
+{
+  // ⚠️ Due prezzi, e il secondo conta piu' del primo: la fase 2 dello Schedule deve
+  // portare QUELLO, altrimenti al tredicesimo mese il Fondatore torna a pagare come
+  // tutti — in silenzio, su un accordo firmato.
+  const prod = await prodotto(
+    "programma_fondatori",
+    "EvalisDeck — Programma Fondatori",
+    `Dodici mesi in fascia «${PIANI[FONDATORI.piano].nome}» a condizioni riservate, poi rinnovo scontato a vita.`,
+  );
+  await prezzo(prod.id, FONDATORI.lookupAnno1, FONDATORI.primoAnno, true);
+  await prezzo(prod.id, FONDATORI.lookupRinnovo, FONDATORI.rinnovo, true);
+}
+
 console.log("\nEstensioni");
 for (const [nome, e] of Object.entries(ESTENSIONI)) {
   const importo = e.prezzo ?? e.min;
@@ -141,7 +175,7 @@ function descrizione(k) {
 }
 
 console.log(
-  `\n${creati} da creare o creati · ${gia} già presenti · ${problemi} da sistemare a mano` +
+  `\n${creati} da creare o creati · ${gia} già presenti · ${rinominati} rinominati · ${problemi} da sistemare a mano` +
     (APPLICA ? "" : "\n\nNiente è stato modificato."),
 );
 process.exitCode = problemi > 0 ? 1 : 0;

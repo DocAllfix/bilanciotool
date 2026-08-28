@@ -26,8 +26,10 @@ const EMAIL = process.env.CONTO ?? `estensioni-${Date.now()}@example.com`;
 // Che cosa si compra in questa prova. Numeri diversi fra loro: due quantità uguali
 // nasconderebbero uno scambio fra blocchi e accessi.
 const BLOCCHI = 2;
-const ACCESSI = 3;
-const MARCHIO = true;
+// ⚠️ Accessi e marchio NON si comprano piu': sono inclusi in ogni fascia dal 27 agosto
+// 2026. Restano qui come attese — quante persone il piano concede, e che il marchio
+// arrivi — perche' e' proprio quello che questo collaudo deve verificare adesso: che si
+// ottengano SENZA comprarli.
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -74,9 +76,7 @@ const piano = PIANI.studio;
 const pAnno1 = prezzoDiVendita(piano, "anno1");
 const pRinnovo = prezzoDiVendita(piano, "rinnovo");
 const pBlocco = prezzoEstensione(ESTENSIONI.bloccoAziende);
-const pAccesso = prezzoEstensione(ESTENSIONI.accesso);
-const pMarchio = prezzoEstensione(ESTENSIONI.whiteLabel);
-const estensioni = BLOCCHI * pBlocco.importo + ACCESSI * pAccesso.importo + (MARCHIO ? pMarchio.importo : 0);
+const estensioni = BLOCCHI * pBlocco.importo;
 const ATTESO_ANNO1 = pAnno1.importo + estensioni;
 const ATTESO_RINNOVO = pRinnovo.importo + estensioni;
 console.log(`  atteso: primo anno ${euro(ATTESO_ANNO1)} · rinnovo ${euro(ATTESO_RINNOVO)}\n`);
@@ -116,15 +116,18 @@ await check("uno studio in prova arriva alla scelta del piano", async () => {
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
 });
 
-await check("il dialogo di acquisto si apre e offre le tre estensioni", async () => {
+await check("il dialogo di acquisto si apre e offre la sola estensione in vendita", async () => {
   await page.getByRole("button", { name: /^Attiva$/ }).nth(1).click(); // Studio è il secondo
   await page.waitForTimeout(800);
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("nessun dialogo");
   const t = await d.innerText();
   if (!/Blocchi da 5 aziende/.test(t)) throw new Error("manca il blocco aziende");
-  if (!/Accessi aggiuntivi/.test(t)) throw new Error("mancano gli accessi");
-  if (!/marchio del tuo studio/i.test(t)) throw new Error("manca il white-label");
+  // ⚠️ E le altre due NON devono esserci. Erano estensioni a pagamento fino al 27 agosto
+  // 2026; ora sono incluse in ogni fascia, e un comando che le vendesse farebbe pagare
+  // due volte una cosa che il piano gia' comprende.
+  if (/Accessi aggiuntivi/.test(t)) throw new Error("vende ancora gli accessi, che sono inclusi");
+  if (/marchio del tuo studio/i.test(t)) throw new Error("vende ancora il marchio, che e' incluso");
 });
 
 await check("il totale mostrato cambia con quello che si sceglie", async () => {
@@ -132,8 +135,14 @@ await check("il totale mostrato cambia con quello che si sceglie", async () => {
   const prima = await d.innerText();
   if (!prima.includes(euro(pAnno1.importo))) throw new Error("il totale iniziale non è il prezzo del piano");
   for (let i = 0; i < BLOCCHI; i++) await d.getByRole("button", { name: /^Aggiungi: Blocchi/ }).click();
-  for (let i = 0; i < ACCESSI; i++) await d.getByRole("button", { name: /^Aggiungi: Accessi/ }).click();
-  if (MARCHIO) await d.getByRole("button", { name: /marchio del tuo studio/i }).click();
+  // ⚠️ E i comandi per accessi e marchio NON devono esserci: sono inclusi, e un pulsante
+  // che li vendesse farebbe pagare due volte una cosa gia' compresa nel piano.
+  if (await d.getByRole("button", { name: /^Aggiungi: Accessi/ }).count()) {
+    throw new Error("il dialogo vende ancora accessi, che sono inclusi");
+  }
+  if (await d.getByRole("button", { name: /marchio del tuo studio/i }).count()) {
+    throw new Error("il dialogo vende ancora il marchio, che e' incluso");
+  }
   await page.waitForTimeout(400);
   const dopo = await d.innerText();
   if (!dopo.includes(euro(ATTESO_ANNO1))) {
@@ -143,7 +152,7 @@ await check("il totale mostrato cambia con quello che si sceglie", async () => {
   // La capacità dichiarata deve corrispondere a quello che si sta comprando.
   const aziende = piano.aziende + BLOCCHI * ESTENSIONI.bloccoAziende.aziende;
   if (!dopo.includes(`${aziende} aziende`)) throw new Error(`non dichiara ${aziende} aziende`);
-  if (!dopo.includes(`${piano.accessi + ACCESSI} accessi`)) throw new Error("non dichiara gli accessi giusti");
+  if (!dopo.includes(`${piano.accessi} accessi`)) throw new Error("non dichiara gli accessi del piano");
 });
 
 let sessionId = null;
@@ -159,8 +168,9 @@ await check("si arriva a Stripe, e la sessione porta le righe giuste", async () 
   const trova = (lookup) => righe.find((r) => r.lookup === lookup);
   if (!trova(pAnno1.lookup)) throw new Error(`manca il piano: ${JSON.stringify(righe)}`);
   if (trova(pBlocco.lookup)?.q !== BLOCCHI) throw new Error(`blocchi: ${JSON.stringify(righe)}`);
-  if (trova(pAccesso.lookup)?.q !== ACCESSI) throw new Error(`accessi: ${JSON.stringify(righe)}`);
-  if (MARCHIO && !trova(pMarchio.lookup)) throw new Error("manca il white-label");
+  // ⚠️ E NESSUNA riga per accessi o marchio: sono inclusi, e una riga in piu' sarebbe un
+  // addebito per qualcosa che il cliente ha gia'.
+  if (righe.length !== 2) throw new Error(`righe inattese nella sessione: ${JSON.stringify(righe)}`);
   // L'invariante che conta: si mostra ciò che si addebita.
   if (s.amount_total !== ATTESO_ANNO1) {
     throw new Error(`Stripe addebiterebbe ${euro(s.amount_total)} invece di ${euro(ATTESO_ANNO1)}`);
@@ -211,8 +221,11 @@ await check("si paga davvero e l'account si sblocca con le estensioni", async ()
   if (e.status !== "active") throw new Error("dopo un minuto è ancora " + e.status);
   const attesoAziende = BLOCCHI * ESTENSIONI.bloccoAziende.aziende;
   if (e.aziende_extra !== attesoAziende) throw new Error(`aziende extra: ${e.aziende_extra} invece di ${attesoAziende}`);
-  if (e.accessi_extra !== ACCESSI) throw new Error(`accessi extra: ${e.accessi_extra} invece di ${ACCESSI}`);
-  if (e.white_label !== MARCHIO) throw new Error(`white label: ${e.white_label}`);
+  // Nessun accesso comprato, perche' non si comprano piu'.
+  if (e.accessi_extra !== 0) throw new Error(`accessi extra: ${e.accessi_extra}, ma non se ne comprano`);
+  // ⚠️ E IL MARCHIO C'E' LO STESSO, senza averlo comprato: e' l'asserzione che prova
+  // «tutto incluso» fino in fondo alla catena, passando davvero da Stripe e dal webhook.
+  if (e.white_label !== true) throw new Error("il piano non ha portato il marchio dello studio");
 });
 
 await check("la capacità sulla pagina rispecchia quello che è stato comprato", async () => {
@@ -220,7 +233,7 @@ await check("la capacità sulla pagina rispecchia quello che è stato comprato",
   const t = await page.locator("main").innerText();
   const aziende = piano.aziende + BLOCCHI * ESTENSIONI.bloccoAziende.aziende;
   if (!t.includes(`di ${aziende}`)) throw new Error(`non dichiara ${aziende} aziende totali`);
-  if (!t.includes(`di ${piano.accessi + ACCESSI}`)) throw new Error("non dichiara gli accessi totali");
+  if (!t.includes(`di ${piano.accessi}`)) throw new Error("non dichiara gli accessi del piano");
   if (!/Documenti col marchio del tuo studio/i.test(t)) throw new Error("non elenca il white-label acquistato");
 });
 
@@ -257,8 +270,9 @@ await check("IL RINNOVO PORTA ANCORA LE ESTENSIONI", async () => {
   const trova = (lookup) => prezzi.find((p) => p.lookup === lookup);
   if (!trova(pRinnovo.lookup)) throw new Error(`la fase 2 non ha il rinnovo: ${JSON.stringify(prezzi)}`);
   if (trova(pBlocco.lookup)?.q !== BLOCCHI) throw new Error(`la fase 2 perde i blocchi: ${JSON.stringify(prezzi)}`);
-  if (trova(pAccesso.lookup)?.q !== ACCESSI) throw new Error(`la fase 2 perde gli accessi: ${JSON.stringify(prezzi)}`);
-  if (MARCHIO && !trova(pMarchio.lookup)) throw new Error("la fase 2 perde il white-label");
+  // ⚠️ E nella fase 2 nessuna riga per accessi o marchio: al rinnovo non deve comparire
+  // un addebito per qualcosa che il piano gia' comprende.
+  if (prezzi.length !== 2) throw new Error(`la fase 2 ha righe inattese: ${JSON.stringify(prezzi)}`);
 
   const totale = prezzi.reduce((s, p) => s + p.importo * p.q, 0);
   if (totale !== ATTESO_RINNOVO) {
@@ -282,6 +296,20 @@ await check("il portale offre fatture e carta, e NON il cambio piano", async () 
   // Senza questa riga il controllo leggerebbe la pagina precedente e passerebbe anche
   // quando il portale non si è mai aperto: un verde falso è peggio di un rosso.
   if (!urlPortale) throw new Error("il portale non si è aperto: niente da verificare");
+
+  // ⚠️ SI ASPETTA IL CONTENUTO, non il caricamento. Il portale di Stripe rende
+  // intestazione e piede subito e il resto dopo: letto troppo presto restituisce
+  // «Sandbox EvalisDeck — il tuo abbonamento … Powered by Termini Privacy» e basta, e il
+  // controllo riferisce «non mostra le fatture» su un portale che le mostra benissimo un
+  // istante dopo. E' la stessa regola di `networkidle`: si aspetta il fatto, non il
+  // segnale che gli assomiglia.
+  await page
+    .locator("body")
+    .filter({ hasText: /fattur|ricevut|storico|invoice|billing history/i })
+    .first()
+    .waitFor({ timeout: 30_000 })
+    .catch(() => {});
+
   const t = await page.locator("body").innerText();
   console.log("       portale dice: " + t.replace(/\s+/g, " ").slice(0, 200));
   if (!/(fattur|ricevut|storico|invoice|billing history)/i.test(t)) throw new Error("non mostra le fatture");
