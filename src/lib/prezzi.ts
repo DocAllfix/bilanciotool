@@ -168,6 +168,24 @@ export const ESTENSIONI_RITIRATE = {
 export const FONDATORI = {
   /** La fascia che il Programma concede: capienza e capacità sono quelle. */
   piano: "studio" as PianoKey,
+  /**
+   * Quanti se ne accettano.
+   *
+   * ⚠️ STA QUI E NON NELLE PAGINE, perche' il numero compare sulla home e su `/prezzi`:
+   * scritto due volte, prima o poi diverge — ed e' il difetto che questa sessione ha
+   * inseguito tutto il giorno, dalla vetrina ferma a undici percorsi ai nomi dei piani
+   * diversi fra sito e fattura.
+   *
+   * ⚠️ E VA RISPETTATO. Il numero regge l'inquadratura del Programma: non e' uno sconto,
+   * e' una selezione — ed e' cio' che permette di nominarlo sulla pagina piu' vista senza
+   * insegnare a nessuno che il prezzo vero e' un altro. Accettarne quindici dopo averne
+   * dichiarati dieci rende la pagina bugiara da sola, come un listino barrato senza
+   * sconto vero.
+   *
+   * Dieci sono anche l'impegno che la lettera d'intenti mette a carico nostro: una
+   * videochiamata al mese per tre mesi, per ciascuno.
+   */
+  posti: 10,
   /** Centesimi. Dodici mesi al corrispettivo simbolico. */
   primoAnno: 30000,
   /** Centesimi. Il rinnovo di listino della fascia, meno il 20% del Fondatore. */

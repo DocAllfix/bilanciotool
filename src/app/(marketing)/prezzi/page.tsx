@@ -11,7 +11,7 @@ import { CalcolatoreRitorno } from "@/components/landing/calcolatore-ritorno";
 import { ModuloFondatori } from "@/components/landing/modulo-fondatori";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 import { Button } from "@/components/ui/button";
-import { CHIAVI_PIANO, ESTENSIONI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
+import { CHIAVI_PIANO, ESTENSIONI, FONDATORI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
 import { indirizzoCanonico } from "@/lib/indirizzo";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
@@ -327,22 +327,22 @@ export default function Prezzi() {
         </section>
 
         {/* ======================================================== I FONDATORI */}
-        <section className="border-b bg-sidebar text-sidebar-foreground">
+        <section id="fondatori" className="scroll-mt-20 border-b bg-sidebar text-sidebar-foreground">
           <div className="mx-auto w-full max-w-6xl px-5 py-20">
             <Reveal>
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-sidebar-primary">
                   <span className="h-px w-8 bg-sidebar-primary" aria-hidden />
-                  Posti limitati
+                  {FONDATORI.posti} posti
                 </p>
                 <h2 className="font-display mt-4 text-[28px] font-bold leading-tight tracking-[-0.02em] text-white md:text-[34px]">
                   Programma Fondatori
                 </h2>
                 <p className="mt-5 text-[15px] leading-relaxed text-sidebar-foreground/80">
-                  Selezioniamo un numero ristretto di studi che useranno la piattaforma su mandati reali in
-                  questa fase. Dodici mesi a condizioni riservate, uno sconto che resta per tutta la vita
-                  dell&apos;abbonamento, un canale diretto con chi sviluppa e voce sulla priorità dei prossimi
-                  percorsi. In cambio chiediamo riscontri operativi e, se il servizio convince, una
+                  Selezioniamo {FONDATORI.posti} studi che useranno la piattaforma su mandati reali in
+                  questa fase di lancio. Dodici mesi a condizioni riservate, uno sconto che resta per tutta la
+                  vita dell&apos;abbonamento, un canale diretto con chi sviluppa e voce sulla priorità dei
+                  prossimi percorsi. In cambio chiediamo riscontri operativi e, se il servizio convince, una
                   testimonianza.
                 </p>
                 <p className="mt-4 text-[13.5px] leading-relaxed text-sidebar-foreground/60">

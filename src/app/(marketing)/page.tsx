@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
+import { FONDATORI } from "@/lib/prezzi";
 
 /** Tutti i percorsi in fila, per i testi che li elencano. */
 const TUTTI_I_PERCORSI = AREE_VETRINA.flatMap((a) => a.percorsi);
@@ -386,7 +387,7 @@ export default function LandingPage() {
           sembrare che non si venda affatto.
         */}
         <section id="acquisto" className="scroll-mt-20 border-b bg-muted/30">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-24 md:grid-cols-[1fr_1.15fr]">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pb-12 pt-24 md:grid-cols-[1fr_1.15fr]">
             <Reveal>
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                 <span className="h-px w-8 bg-primary" aria-hidden />
@@ -463,6 +464,50 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
+            </Reveal>
+          </div>
+
+          {/* ⚠️ IL PROGRAMMA SI PRESENTA COME UNA SELEZIONE, NON COME UNO SCONTO.
+              Il primo anno costa 300 euro contro i 1.290 di listino: il 77% in meno.
+              Detto come «condizioni simboliche» sulla pagina piu' vista, quello DIVENTA il
+              prezzo, e chi arriva smette di comprare a listino per candidarsi. Detto come
+              «selezioniamo dieci studi» e' un invito a una cosa per cui bisogna essere
+              scelti, e non insegna un'aspettativa di prezzo a nessuno.
+
+              Nessuna cifra qui, per la stessa ragione. Il numero dei posti invece si': e'
+              cio' che rende la selezione concreta invece che una formula di marketing, e
+              per questo va rispettato — accettarne quindici dopo averne dichiarati dieci
+              rende la pagina bugiarda da sola.
+
+              ⚠️ Una FASCIA e non una sezione, e sorella della griglia e non dentro: le
+              sezioni scure della home sono gia' tre e una quarta diluirebbe i momenti
+              firmati di DESIGN.md, e il menu ha gia' cinque voci — a 768px si e' gia'
+              stretto una volta. */}
+          <div className="mx-auto w-full max-w-6xl px-5 pb-24">
+            <Reveal delay={140}>
+              <div className="border-t pt-8 md:flex md:items-baseline md:justify-between md:gap-10">
+                <div className="max-w-xl">
+                  <h3 className="font-display flex flex-wrap items-baseline gap-x-3 text-[17px] font-semibold tracking-[-0.01em]">
+                    Programma Fondatori
+                    <span className="text-[12px] font-normal uppercase tracking-[0.16em] text-primary">
+                      selezione aperta
+                    </span>
+                  </h3>
+                  <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">
+                    Selezioniamo {FONDATORI.posti} studi che useranno la piattaforma su mandati reali in questa
+                    fase. In cambio chiediamo riscontri operativi e, se il servizio convince, una testimonianza.
+                  </p>
+                </div>
+                {/* ⚠️ Il collegamento porta il PERCORSO e non la sola ancora: la stessa
+                    intestazione compare su pagine che quella sezione non ce l'hanno. */}
+                <Link
+                  href="/prezzi#fondatori"
+                  className="mt-4 inline-flex shrink-0 items-center gap-2 text-[14px] font-medium underline underline-offset-4 hover:text-primary md:mt-0"
+                >
+                  Come funziona
+                  <ArrowRight className="size-3.5" aria-hidden />
+                </Link>
+              </div>
             </Reveal>
           </div>
         </section>
