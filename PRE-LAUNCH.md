@@ -342,15 +342,15 @@ Non bloccano il lancio, ma vanno saputi.
 
    → *verifica:* `npm run qa -- sgesg-ponti` — il ponte a PROC-02 c'è ed è verde.
 
-0-tour. ⚠️ **APERTO — il dodicesimo percorso non ha un giro guidato.**
+0-tour. ✅ **CHIUSO il 1 settembre 2026 — il dodicesimo percorso ha il suo giro guidato.**
 
-   Undici moduli su dodici hanno un tour; il sistema di gestione ESG no. Non è un guasto:
-   l'itinerario del benvenuto **salta da solo** i moduli senza tour, e la regola è
-   strutturale, non un caso di ordinamento — prima ci finiva fuori solo perché il registro
-   elencava altri moduli per primi, e bastava spostare una riga per portare un cliente
-   nuovo su una pagina che non gli spiega niente.
+   Tre tappe (avanzamento, programma, fasi) con gli agganci sulla vista del programma. E
+   l'assenza non era neutra come si credeva: fino a quel giorno il pulsante «Formazione»
+   veniva dal tour, quindi su quella pagina non compariva né l'uno né l'altro. Ora il
+   percorso si ricava dall'indirizzo, e il corso non dipende più da chi ha scritto un tour.
 
-   → *verifica:* `npm run qa -- benvenuto` — ogni tappa dell'itinerario ha un tour vero.
+   → *verifica:* `npm run qa -- formazione` — il comando c'è su tutti e dodici i percorsi ·
+   `npm run qa -- benvenuto` — ogni tappa dell'itinerario ha un tour vero.
 
 0-sexies. ✅ **CHIUSE il 24 agosto 2026 — le tre decisioni A9, A11, A14.** Il fascicolo
    di una segnalazione si **stampa** e non si pubblica (la ragione decisiva: il

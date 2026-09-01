@@ -4,6 +4,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getCompanyUsage } from "@/features/entitlement";
 import { getPortfolioOverview, listCompaniesWithStats } from "@/features/companies/queries";
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
+import { ScadenzarioViste } from "@/components/dashboard/scadenzario-viste";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
 import { conteggioDaFare, oggiIso } from "@/features/agenda";
@@ -388,41 +389,11 @@ export default async function DashboardPage() {
                 : "Niente in sospeso: ogni percorso avviato è stato pubblicato."}
             </p>
           ) : (
-            <ul className="mt-3 space-y-1">
-              {daFareVeri.slice(0, 6).map((v) => {
-                const m = MODULI_AZIENDA.find((x) => x.href === v.modulo)!;
-                return (
-                  <li key={`${v.companyId}-${v.modulo}`}>
-                    <Link
-                      href={v.href}
-                      className="group -mx-2 flex items-start gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-accent"
-                    >
-                      <m.icona
-                        className="mt-0.5 size-4 shrink-0 text-muted-foreground group-hover:text-accent-foreground"
-                        strokeWidth={1.75}
-                      />
-                      <span className="min-w-0 flex-1">
-                        {/* ⚠️ Va a capo, non tronca: il nome del modulo e' lo stesso
-                            che compare nel fascicolo e nella barra laterale, e due dei
-                            dodici sono lunghi. Una lista che va a capo su due voci non e'
-                            un problema — sotto c'e' spazio bianco — mentre un nome corto
-                            e DIVERSO da quello del resto del prodotto lo era. */}
-                        <span className="block text-[13px] font-medium leading-snug">
-                          {m.nome}
-                          {v.anno !== null && <span className="text-muted-foreground"> · {v.anno}</span>}
-                        </span>
-                        <span className="block truncate text-[12px] text-muted-foreground">
-                          {v.companyNome} · {testoMotivo(v.motivo)}
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          {daFareVeri.length > 6 && (
-            <p className="mt-2 text-[11px] text-muted-foreground">e altri {daFareVeri.length - 6}</p>
+            /* ⚠️ Tre viste sullo STESSO elenco: per urgenza, per cliente, per ambito.
+               Nessuna query in piu' — l'area si ricava dal registro e il raggruppamento
+               avviene in memoria. La dashboard e' la pagina piu' lenta del prodotto: un
+               viaggio costa 70÷144 ms, filtrare qualche decina di voci non costa niente. */
+            <ScadenzarioViste voci={daFareVeri} />
           )}
 
           {/* ⚠️ La dimostrativa si mostra SOTTO, e dichiarata. Toglierla del tutto

@@ -3,6 +3,7 @@ import { radiciPerModulo } from "./radici";
 import { aziendeAttive, annoPiuAltoPerTipo } from "./lettori-condivisi";
 import { company, documentSnapshot } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
+import type { MotivoScadenza, VoceScadenzario } from "./scadenzario-voce";
 import { and, desc, eq, max } from "drizzle-orm";
 
 // Che cosa resta da fare, sul portafoglio intero.
@@ -19,31 +20,10 @@ import { and, desc, eq, max } from "drizzle-orm";
 // e nessun motore di calcolo eseguito. Questa pagina serve a scegliere dove
 // andare, non a calcolare.
 
-export type MotivoScadenza = "mai-avviato" | "da-pubblicare" | "esercizio-mancante";
-
-export type VoceScadenzario = {
-  companyId: string;
-  companyNome: string;
-  isDemo: boolean;
-  modulo: ModuloAzienda;
-  moduloNome: string;
-  motivo: MotivoScadenza;
-  /** Esercizio a cui si riferisce la voce, per i moduli annuali. */
-  anno: number | null;
-  href: string;
-  /** Più basso = più urgente. */
-  priorita: number;
-};
-
-const MOTIVO_TESTO: Record<MotivoScadenza, string> = {
-  "esercizio-mancante": "ultimo esercizio da aprire",
-  "da-pubblicare": "avviato, mai pubblicato",
-  "mai-avviato": "mai avviato",
-};
-
-export function testoMotivo(m: MotivoScadenza): string {
-  return MOTIVO_TESTO[m];
-}
+// La forma della voce e le sue etichette stanno in `scadenzario-voce.ts`: le usa anche
+// il componente client delle tre viste, e questo file apre il database.
+export type { MotivoScadenza, VoceScadenzario } from "./scadenzario-voce";
+export { testoMotivo } from "./scadenzario-voce";
 
 export async function getScadenzario(userId: string, orgId: string): Promise<VoceScadenzario[]> {
   // L'esercizio che ci si aspetta di trovare chiuso: quello scorso.

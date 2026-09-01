@@ -28,7 +28,7 @@ export type GapResult = {
 
 // Un capitolo si considera scritto oltre questa soglia (contratto: testo > 80
 // caratteri nel prototipo; qui in parole, la UI passa il conteggio che preferisce).
-const PAROLE_MINIME = 15;
+export const PAROLE_MINIME = 15;
 
 const filled = (v: string | undefined) => Boolean(v?.toString().trim());
 const has = (rec: Record<string, string>, k: string) => rec[k] !== undefined && rec[k] !== "";

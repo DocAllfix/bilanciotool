@@ -87,6 +87,11 @@ const SUPERFICI = [
   ["sa8000", `${BASE}/aziende/${az.id}/sa8000`, "main"],
   ["verifica", `${BASE}/verifica`, "main"],
   ["guida", `${BASE}/guida`, "main"],
+  // La formazione: l'indice, un corso di percorso e quello trasversale. Sono pagine da
+  // LEGGERE, quindi la cosa da guardare è la misura del testo e la gerarchia, non i comandi.
+  ["formazione", `${BASE}/formazione`, "[data-formazione]"],
+  ["formazione-corso", `${BASE}/formazione/energetico`, "[data-sezioni]"],
+  ["formazione-mestiere", `${BASE}/formazione/corso/avviare-attivita`, "[data-sezioni]"],
 ];
 
 for (const [nome, url, ancora] of SUPERFICI) {

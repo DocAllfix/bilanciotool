@@ -56,14 +56,27 @@ export function avviaTour(tour: TourDef, alTermine?: (completato: boolean) => vo
   const steps = tour.steps
     .filter((s) => !s.element || document.querySelector(s.element))
     .map((s) => ({ element: s.element, popover: { title: s.title, description: s.description } }));
+  // ⚠️ NESSUN BERSAGLIO IN PAGINA: il tour non è stato completato, non è nemmeno esistito.
+  //
+  // Qui c'era `alTermine?.(true)`, ed è passato inosservato finché il seguito di un tour
+  // non faceva niente. Il collaudo della formazione l'ha colto al primo colpo: su una
+  // pagina più lenta dell'attesa di chi avvia, nessuno dei bersagli è montato, il tour si
+  // salta in silenzio — e chi sta a valle riceve «arrivato in fondo» per un giro che
+  // l'utente non ha mai visto. Nel caso di oggi voleva dire proporre un corso da venti
+  // minuti a qualcuno a cui non era stato mostrato niente.
+  //
+  // `false` è anche la risposta giusta per chi incatena più tappe: non si prosegue su un
+  // passo che non si è potuto fare.
   if (!steps.length) {
-    alTermine?.(true);
+    alTermine?.(false);
     return;
   }
 
   // `hasNextStep()` va letto PRIMA di distruggere: dopo, driver.js ha già dimenticato
   // dov'era. È l'unico modo per sapere se l'utente ha premuto Fine o ha interrotto.
   let completato = false;
+  // ⚠️ Il seguito si chiama una volta sola: `onDestroyStarted` può rientrare.
+  let seguitoFatto = false;
 
   const d: Driver = driver({
     showProgress: true,
@@ -77,12 +90,26 @@ export function avviaTour(tour: TourDef, alTermine?: (completato: boolean) => vo
     progressText: "{{current}} di {{total}}",
     steps,
     onCloseClick: () => d.destroy(),
+    // ⚠️ IL SEGUITO SI CHIAMA QUI, NON IN `onDestroyed`.
+    //
+    // `onDestroyed` non veniva raggiunto MAI. Nel sorgente installato la `destroy` legge
+    // `onDestroyStarted` e, se c'è, lo chiama e **esce**: tutto ciò che sta dopo — fra cui
+    // l'invocazione di `onDestroyed` — non viene eseguito. Chi definisce il primo hook
+    // rinuncia al secondo senza che niente lo dica.
+    //
+    // È rimasto invisibile finché il seguito non faceva niente: la sequenza di benvenuto
+    // se ne accorgeva perché incatena le tappe da sé, e nessun altro lo usava. L'ha colto
+    // il collaudo della formazione, con una spia dentro il richiamo — e ha colto anche il
+    // fatto che il controllo sul tour INTERROTTO passava per il motivo sbagliato: un
+    // richiamo che non parte mai supera qualunque prova che si aspetti «non deve partire».
     onDestroyStarted: () => {
       completato = !d.hasNextStep();
       segnaTourVisto(tour.pageId);
       d.destroy();
+      if (seguitoFatto) return;
+      seguitoFatto = true;
+      alTermine?.(completato);
     },
-    onDestroyed: () => alTermine?.(completato),
   });
   d.drive();
 }

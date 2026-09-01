@@ -4,6 +4,7 @@ import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { DOCUMENTI } from "@/features/documents/tipi";
 import { RipetiTour } from "@/components/guida/ripeti-tour";
 import { Badge } from "@/components/ui/badge";
+import { GraduationCap } from "lucide-react";
 
 export const metadata: Metadata = { title: "Guida" };
 
@@ -105,6 +106,17 @@ export default function GuidaPage() {
                   ? "Si compila per esercizio: un lavoro distinto per ogni anno, con confronto sull'anno precedente."
                   : "È una fotografia dello stato corrente: non ha esercizi, e le revisioni formano una serie unica."}
               </p>
+              {/* ⚠️ Il rimando al corso sta QUI, dove uno si sta gia' chiedendo come
+                  funziona un percorso. La guida risponde alle domande frequenti, la
+                  formazione insegna a condurre il lavoro: sono due cose, e tenerle
+                  separate ma collegate vale piu' che fonderle in una pagina sola. */}
+              <Link
+                href={`/formazione/${m.href}`}
+                className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-medium underline underline-offset-4 hover:text-primary"
+              >
+                <GraduationCap className="size-3.5" aria-hidden />
+                Formazione su questo percorso
+              </Link>
             </div>
           );
         })}

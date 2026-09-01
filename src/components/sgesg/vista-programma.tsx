@@ -103,7 +103,7 @@ export function VistaProgrammaEsg({
       </p>
 
       {/* ── avanzamento ─────────────────────────────────────────────────────── */}
-      <dl className="mt-5 flex flex-wrap items-baseline gap-x-8 gap-y-3 border-y py-4">
+      <dl className="mt-5 flex flex-wrap items-baseline gap-x-8 gap-y-3 border-y py-4" data-tour="sgesg-avanzamento">
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi" data-avanzamento={av.percentuale}>
             {av.percentuale}%
@@ -143,7 +143,7 @@ export function VistaProgrammaEsg({
       )}
 
       {/* ── scheda del programma ────────────────────────────────────────────── */}
-      <section className="mt-8" aria-labelledby="prog-scheda">
+      <section className="mt-8" aria-labelledby="prog-scheda" data-tour="sgesg-programma">
         <h2 id="prog-scheda" className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Il programma
         </h2>
@@ -227,7 +227,7 @@ export function VistaProgrammaEsg({
       </section>
 
       {/* ── le otto fasi ────────────────────────────────────────────────────── */}
-      <section className="mt-8" aria-labelledby="prog-fasi">
+      <section className="mt-8" aria-labelledby="prog-fasi" data-tour="sgesg-fasi">
         <h2 id="prog-fasi" className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Le fasi del metodo
         </h2>

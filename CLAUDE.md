@@ -1939,6 +1939,86 @@ Gate: typecheck · build con `/prezzi` statica · **1208 test** · giro completo
 sull'anteprima **47 su 47** · in produzione `tutto-pubblico` 37/37, `sitemap` 9/9,
 `legale` 26/26 · 48 studi recuperati sul marchio, zero scoperti.
 
+**Formazione, tredici corsi (2026-09-01)** — dai due corsi HTML del committente, poi dal
+pacchetto completo di altri nove più quello sul mestiere.
+
+Un corso è **dato**, non una pagina: un renderer solo per tutti, come il corpus (447
+documenti) e le 63 schede. Metà del contenuto — interfaccia, salvataggio, esercizio,
+verifica, pubblicazione, errori tipici — è **identica fra i dodici percorsi** e scritta una
+volta; il resto sta in `src/features/formazione/corsi/*.ts`.
+
+**Il metodo dei corsi regge, il prodotto no.** Preso com'era, quel materiale avrebbe
+insegnato il falso a un cliente pagante: «tutto resta sul dispositivo, nessun server,
+nessun account», «il backup è l'esportazione JSON», «pulizia della cronologia = dati
+persi», «stampa dal browser, Salva come PDF», «modalità solo browser». Qui non esiste
+nessuno di quei comandi. Riscritto per intero il contenuto di prodotto, tenuto quello di
+metodo — che è accurato e vale il grosso del valore.
+
+- **Nessun numero scritto a mano**: `numeri.ts` li deriva dai file del seme (letti in fase
+  di build, nessun viaggio al database). La guardia li cerca in **tutti** i file di corso
+  e fallisce nominando file e numero. Tre forme si escludono per REGOLA e non per
+  eccezione, perché non sono mai conteggi: un numero attaccato a un trattino o a una barra
+  è un riferimento normativo, uno seguito da `%` è una quota, uno seguito da un mese è una
+  data. Le poche eccezioni residue sono legate alla **frase intera**, così scadono da sole
+  quando qualcuno la riscrive.
+- **Il corso «Avviare e far crescere l'attività»** è trasversale: non ha un
+  `ModuloAzienda`, sta in `TRASVERSALI` con rotta propria e una sezione sua nell'indice, e
+  **dichiara in apertura di non insegnare a usare i percorsi**.
+- Voce **in fondo** alla barra laterale, dopo la Guida: la guida risponde a una domanda che
+  hai adesso, il corso è un'ora che ti prendi quando puoi.
+
+**Tre difetti veri, tutti nel prodotto, tutti trovati dal collaudo:**
+
+1. ⚠️ **`alTermine` di `avviaTour` non veniva chiamato MAI.** Nel driver.js installato la
+   `destroy` legge `onDestroyStarted` e, se c'è, lo chiama e **esce**: `onDestroyed` non
+   viene mai raggiunto. Chi definisce il primo hook rinuncia al secondo senza che niente lo
+   dica. È rimasto invisibile perché il seguito non faceva niente. **E la prova «il tour
+   interrotto non propone il corso» passava per il motivo sbagliato**: un richiamo che non
+   parte mai supera qualunque prova che si aspetti che non parta — le mie prime due
+   controprove non riuscivano a metterla in rosso, ed era quello il segnale.
+2. ⚠️ **Un tour senza bersagli in pagina si dichiarava «completato».** `HelpButton`
+   aspettava 1100 ms fissi invece del primo bersaglio; su una pagina più lenta nessun
+   elemento è montato, `avviaTour` si salta in silenzio e a valle arriva «arrivato in
+   fondo» per un giro mai visto. Ora aspetta l'elemento (la funzione esisteva dal giorno
+   del benvenuto, con un chiamante solo) e, se non arriva, **non parte**. E ricontrolla
+   «già visto» DOPO l'attesa: fra la decisione e la partenza possono passare secondi, e chi
+   nel frattempo preme «Tour» e finisce si vedrebbe aprire un secondo velo.
+3. ⚠️ **Sul dodicesimo percorso il pulsante «Formazione» non compariva affatto**, perché
+   veniva dal `pageId` del tour e quel percorso non ne aveva uno. Ora il percorso si ricava
+   dall'indirizzo confrontandolo col registro dei moduli. (Il tour ora c'è: debito `0-tour`
+   chiuso.)
+
+**Più due mancanze scoperte strada facendo:** non esisteva una **pagina di «non trovato»**
+per il gruppo `(app)` — una ventina di punti chiamano `notFound()` e rendevano il guscio
+con dentro il nulla, che si legge «è rotto» e non «non c'è» — e il budget di registrazione
+dei collaudi era 40 s contro i **27 s misurati** di una registrazione vera su questa
+macchina, dove un viaggio al database costa venti volte quello che costa in produzione.
+
+**Regole nate qui:**
+- **Un controllo che non è mai riuscito a diventare rosso non è un controllo.** Due
+  controprove di fila non hanno prodotto il rosso atteso e ho continuato a cercare la causa
+  nel banco di prova: era il prodotto, e il fatto che la prova non potesse fallire ERA il
+  reperto. Quando una controprova non morde, la prima ipotesi da mettere alla prova è che
+  la cosa sotto esame non venga eseguita affatto.
+- **Una spia dentro il codice chiude in tre minuti quello che le ipotesi non chiudono in
+  trenta.** Cinque teorie plausibili sul perché l'invito non comparisse; un `console.warn`
+  dentro il richiamo ha detto che il richiamo non partiva mai.
+- **Lo stato del mondo può cambiare durante un'attesa.** Sostituire un ritardo fisso con
+  un'attesa vera è quasi sempre giusto, e apre una finestra in cui la condizione che
+  avevi verificato smette di valere: si rilegge dopo.
+- **Dodici schede con la stessa frase sotto non sono un sommario**, sono rumore nello
+  spazio in cui il lettore cercava la differenza. Ora ci sono i titoli delle sezioni
+  proprie, derivati.
+- **Un `.db` che si auto-salta non è verde.** Una suite con 156 test saltati e
+  `ENOTFOUND` sul pooler dice che la rete è caduta, non che il codice regge: si verifica la
+  raggiungibilità con qualche sonda e si rilancia.
+
+Gate: typecheck · build · **1223 test, 121 file, exit 0** (nessun `.db` saltato) · `qa --
+formazione` **12/12** · `benvenuto` 12/12 · `guida` 7/7 · `tutto-demo` 68/68 ·
+`sgesg-percorso` 20/20 · `portafoglio-aggiorna` 5/5 · `ghg-percorso` 24/24 · `energetico`
+40/40 · foto in chiaro e scuro **guardate** (e il fondo campionato a colore: la lettura a
+occhio di uno screenshot può ingannare), console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

@@ -317,6 +317,35 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    // ⚠️ Il dodicesimo percorso è rimasto senza giro guidato più a lungo degli altri, e
+    // l'assenza non era neutra: fino a poco fa il pulsante della formazione veniva dal
+    // tour, quindi su questa pagina non compariva niente. Ora il pulsante non ne dipende
+    // più, ma il giro serve lo stesso — è il percorso che un cliente nuovo capisce meno
+    // al primo sguardo, perché non è uno stepper e non lo sembra.
+    pageId: "sgesg",
+    pathPattern: /^\/aziende\/[^/]+\/sgesg\/\d+/,
+    steps: [
+      {
+        element: '[data-tour="sgesg-avanzamento"]',
+        title: "L'avanzamento delle otto fasi",
+        description:
+          "Una fase dovuta e non conclusa pesa zero: tre fasi su otto non fanno cento. Il numero dice a che punto è il lavoro, non quanto bene è stato fatto.",
+      },
+      {
+        element: '[data-tour="sgesg-programma"]',
+        title: "Il programma",
+        description:
+          "Standard di riferimento e stato del lavoro. Lo standard decide l'indice dei contenuti del documento finale, quindi si sceglie prima di scrivere.",
+      },
+      {
+        element: '[data-tour="sgesg-fasi"]',
+        title: "Le fasi, avanti e indietro",
+        description:
+          "Non è un percorso a passi obbligati: la materialità si riapre quando la diagnosi trova qualcosa. Tre fasi si lavorano dentro gli altri percorsi, e da qui ci si arriva.",
+      },
+    ],
+  },
+  {
     pageId: "soa",
     pathPattern: /^\/aziende\/[^/]+\/soa/,
     steps: [

@@ -76,7 +76,15 @@ export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   // scade su «Controlla la tua posta» sembra accusare la registrazione, mentre il piu'
   // delle volte sta solo dicendo che siamo stati frenati. Il messaggio giusto fa
   // risparmiare la tornata che il commento qui sopra racconta di aver perso.
-  await page.getByText(/Controlla la tua posta/i).waitFor({ timeout: 40_000 }).catch(async (e) => {
+  // ⚠️ NOVANTA SECONDI, e il numero e' misurato, non scelto per far passare il collaudo.
+  // Una registrazione crea l'utente, lo studio, l'azienda dimostrativa e i DODICI percorsi
+  // che le stanno dentro: dalla macchina di sviluppo, dove un viaggio al database costa
+  // 85-140 ms contro i ~7 ms della produzione, sono 27 secondi misurati con una POST
+  // diretta a `/api/auth/sign-up/email`, e sotto carico di piu'. Con 40 secondi il
+  // collaudo perdeva la scommessa a intermittenza e riferiva un guasto della
+  // registrazione, che e' l'accusa sbagliata: il tempo se ne va nella LATENZA
+  // dell'ambiente di sviluppo, non nel prodotto.
+  await page.getByText(/Controlla la tua posta/i).waitFor({ timeout: 90_000 }).catch(async (e) => {
     const frenate = await sql`select key, count from rate_limit
       where key like '%/sign-up/email' order by last_request desc limit 1`.catch(() => []);
     if (frenate.length && Number(frenate[0].count) >= 10) {
@@ -97,7 +105,7 @@ export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   await page.fill("#email", email);
   await page.fill("#password", pwd);
   await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard", { timeout: 40_000 });
+  await page.waitForURL("**/dashboard", { timeout: 90_000 });
 
   // Il banner del consenso sta in basso e in primo piano: finché c'è, intercetta i clic
   // sui comandi in fondo alla pagina. Una persona lo chiude, e così fa il collaudo.

@@ -29,9 +29,9 @@ export type EnergyProgress = {
   totPct: number;
 };
 
-const PROFILO_ATTESI = 7;
-const DRIVER_ATTESI = 8;
-const INTERVENTI_ATTESI = 3;
+export const PROFILO_ATTESI = 7;
+export const DRIVER_ATTESI = 8;
+export const INTERVENTI_ATTESI = 3;
 
 const quota = (fatto: number, totale: number) => (totale > 0 ? Math.min(1, fatto / totale) : 0);
 

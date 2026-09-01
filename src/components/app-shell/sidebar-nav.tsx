@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, CalendarDays, ChevronLeft, FileStack, HelpCircle, Settings2, Wallet } from "lucide-react";
+import { Briefcase, CalendarDays, ChevronLeft, FileStack, GraduationCap, HelpCircle, Settings2, Wallet } from "lucide-react";
 
 // Navigazione della shell, in due modi.
 //
@@ -27,6 +27,10 @@ const VOCI = [
   { href: "/compensi", label: "Compensi", icon: Wallet, tour: "nav-compensi" },
   { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
   { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
+  // ⚠️ In fondo, dopo la guida: la guida risponde a una domanda che hai adesso, la
+  // formazione è un'ora che ti prendi quando puoi. Metterla prima la fa sembrare un
+  // passaggio obbligato per usare il prodotto, che non è.
+  { href: "/formazione", label: "Formazione", icon: GraduationCap, tour: "nav-formazione" },
 ] as const;
 
 /** `/aziende/<id>/...` → l'id, altrimenti null. */

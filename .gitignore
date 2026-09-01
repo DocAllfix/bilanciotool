@@ -71,3 +71,5 @@ shot-*
 # Foto delle superfici: si rigenerano con `node scripts/foto-superfici.mjs`.
 /foto/
 /.referti/
+formazionepacchetocompleto/
+landingpagerevisione/
