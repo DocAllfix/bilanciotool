@@ -150,6 +150,22 @@ await agisci("⚠️ le tre viste raccontano lo STESSO lavoro, raggruppato diver
   if (conte.cliente > nomi.length) throw new Error(`${conte.cliente} clienti in ritardo su ${nomi.length} aziende`);
 });
 
+await agisci("⚠️ le tre viste hanno un nome accessibile e dichiarano quale è aperta", async () => {
+  // Un interruttore che cambia ciò che si vede ma non dice quale è attivo lascia chi usa
+  // un lettore di schermo senza sapere dove si trova. E due dichiarate attive insieme sono
+  // peggio di nessuna: descrivono uno stato che non esiste.
+  await vaiAllaDashboard();
+  for (const n of ["Per urgenza", "Per cliente", "Per ambito"]) {
+    const t = page.getByRole("tab", { name: n });
+    if (!(await t.count())) throw new Error(`nessuna vista «${n}»`);
+    await t.click();
+    await page.waitForTimeout(250);
+    if ((await t.getAttribute("aria-selected")) !== "true") throw new Error(`«${n}» non si dichiara selezionata`);
+    const attive = await page.locator('[role="tab"][aria-selected="true"]').count();
+    if (attive !== 1) throw new Error(`${attive} viste dichiarate attive insieme`);
+  }
+});
+
 await agisci("ogni riga porta a un posto dove lavorare", async () => {
   await page.getByRole("tab", { name: "Per urgenza" }).click();
   await page.waitForTimeout(300);
