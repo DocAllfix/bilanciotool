@@ -2013,8 +2013,26 @@ macchina, dove un viaggio al database costa venti volte quello che costa in prod
   `ENOTFOUND` sul pooler dice che la rete è caduta, non che il codice regge: si verifica la
   raggiungibilità con qualche sonda e si rilancia.
 
-Gate: typecheck · build · **1223 test, 121 file, exit 0** (nessun `.db` saltato) · `qa --
-formazione` **12/12** · `benvenuto` 12/12 · `guida` 7/7 · `tutto-demo` 68/68 ·
+**Scadenzario a tre viste** — per urgenza (com'era), **per cliente**, **per ambito**. È
+presentazione: il raggruppamento avviene in memoria su una lista corta, e cambiando vista la
+dashboard **non si ricarica** — provato guardando le richieste, e guardando quelle verso la
+dashboard e non «qualunque richiesta», perché Next prefetcha i collegamenti che compaiono e
+contarli accusava il prodotto di un comportamento del router. Le tre viste non sono tre
+copie: per cliente e per ambito c'è una riga per gruppo, col conto e la cosa più urgente.
+
+⚠️ **Lo scadenzario e l'agenda restano due cose, e lo difende un controllo strutturale.**
+Stanno accanto e si somigliano; uno si chiude lavorandoci, l'altro spuntandolo. Provare
+dall'interfaccia che spuntare una voce non muove il conteggio dimostra il comportamento di
+oggi: `scadenzario-agenda-pure` impedisce che domani qualcuno le colleghi «per comodità»,
+che è il momento in cui il danno si crea.
+
+⚠️ **E il collaudo ha dovuto imparare che un'azienda appena creata non è «indietro»**: lo
+scadenzario esclude i percorsi mai avviati, quindi tre aziende nuove davano un elenco vuoto
+e il controllo sarebbe passato misurando il nulla. Ora ne apre uno per ciascuna.
+
+Gate: typecheck · build · **1225 test, 122 file, exit 0** (nessun `.db` saltato) · `qa --
+formazione` **12/12** · `qa -- scadenzario` **6/6**, con la dimostrativa rimessa nel
+conteggio per vederlo fallire · `benvenuto` 12/12 · `guida` 7/7 · `tutto-demo` 68/68 ·
 `sgesg-percorso` 20/20 · `portafoglio-aggiorna` 5/5 · `ghg-percorso` 24/24 · `energetico`
 40/40 · foto in chiaro e scuro **guardate** (e il fondo campionato a colore: la lettura a
 occhio di uno screenshot può ingannare), console pulita.
