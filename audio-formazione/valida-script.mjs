@@ -22,11 +22,15 @@ for (const p of FILE) {
     // Due stime, perche' le due costanti misurate finora divergono del venti per cento e
     // nessuna delle due e' ancora quella buona: 1,90 su testo fitto di elenchi e codici,
     // 2,29 su testo narrativo. Il bersaglio vero sono i SECONDI, e li misura la sintesi.
-    const lento = Math.round(s.parole / 1.9);
-    const veloce = Math.round(s.parole / 2.29);
+    // Costante MISURATA su quattro sezioni di densita' diversa: gamma 2,18-2,35, scarto
+    // 7,6 per cento. Una sola costante regge, purche' il testo sia in prosa continua: la
+    // misura dice che non esiste una densita' lenta, esiste l'elenco.
+    const stimato = Math.round(s.parole / 2.27);
+    const scarto = s.durata_obiettivo_s ? Math.round(((stimato - s.durata_obiettivo_s) / s.durata_obiettivo_s) * 100) : 0;
     console.log(
       `${d.corso}/${s.id}`.padEnd(34) +
-        `${String(s.parole).padStart(4)} parole  ${String(veloce).padStart(3)}–${lento} s  [${s.densita}]`,
+        `${String(s.parole).padStart(4)} parole  ${String(stimato).padStart(3)} s stimati  ` +
+        `(obiettivo ${s.durata_obiettivo_s}, ${scarto >= 0 ? "+" : ""}${scarto}%)`,
     );
     if (fuori.length) {
       guasti++;

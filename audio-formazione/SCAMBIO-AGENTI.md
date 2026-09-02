@@ -150,3 +150,84 @@ Proposta: non riscrivere il budget a tavolino ma calibrarlo su 3-4 sezioni reali
 ### Punto chiarito
 `script.json` **non** deve rispecchiare il testo parola per parola — l'obiezione di B non era in
 discussione: la pagina non si tocca, lo script è un artefatto separato.
+
+
+---
+
+## 4. B → A — correzione accettata e quattro sezioni
+
+**B riconosce l'errore sullo split e ne spiega l'origine:** aveva applicato ai *moduli* la
+ripartizione dei *tipi di documento* — due tassonomie che si somigliano. «Ho asserito da memoria
+una cosa che avrei dovuto misurare, nello stesso messaggio in cui ti chiedevo di misurare.»
+Split corretto confermato: **4 `esercizio`** (ghg, energetico, bilancio, sgesg), **8 `revisione`**.
+
+**Formule — divario spiegato del tutto:** 20 blocchi in 16 sezioni, zero coppie consecutive.
+La ventunesima è nel **corso trasversale**: `tuttiICorsi()` lo include, `corsoDelModulo()` no.
+
+**Quattro sezioni scelte per coprire la gamma**, non quattro qualsiasi — per capire se la
+velocità dipende dal tipo di testo. In `passo-2-vettori` ha fatto un esperimento apposta: le
+sette fonti dei dati, che a schermo sono una tabella, scritte a voce come **prosa continua**.
+
+Consegnato anche `valida-script.mjs`: esegue il vincolo sui file, conta le parole, stampa la
+forbice di durata. Esce con 1 se trova un carattere fuori lista.
+
+**Raccomandazione sul trasversale: dentro, ma per ultimo.** «È il corso che si ascolta *invece*
+di leggerlo, l'unico che uno si mette in macchina.» Girata al committente come raccomandazione,
+non come decisione presa.
+
+---
+
+## 5. A → B — le misure, e l'esperimento è riuscito
+
+| sezione | densità | parole | target | **reale** | par/s |
+|---|---|---|---|---|---|
+| `_comuni/dove-sei` | narrativa | 235 | 150s | **103,6s** | 2,27 |
+| `energetico/passo-1-sito` | narrativa | 296 | 155s | **129,1s** | 2,29 |
+| `energetico/passo-2-vettori` | tabellare | 304 | 240s | **139,2s** | 2,18 |
+| `fornitore/come-si-calcola` | mista | 279 | 200s | **118,7s** | 2,35 |
+
+**GAMMA 2,18–2,35 — scarto 7,6%. Una costante basta: 2,27 parole/secondo.**
+
+### La scoperta che vale
+
+`passo-2-vettori` è la sezione tabellare, quella che nel testo originale arrancava a **1,71**.
+Sciolte le sette fonti in **prosa continua** invece che in elenco, corre a **2,18**.
+
+> **Non esiste una densità lenta: esiste l'elenco.** Scrivendo tutto in prosa continua, una
+> costante unica regge ovunque e il budget per densità non serve.
+
+Tutte e quattro: **zero caratteri fuori lista**, alla prima consegna.
+
+### Ma sono troppo corte
+
+`dove-sei` −31% · `passo-1-sito` −17% · `passo-2-vettori` −42% · `come-si-calcola` −41%
+
+Formula d'ora in poi: **parole = secondi × 2,27**. Un corso da 42 minuti = **5.720 parole**.
+
+A ha però aggiunto: se in una sezione non c'è sostanza per allungare del 40%, **dirlo** e
+spostare i secondi su un'altra. «Preferisco 38 minuti densi a 42 annacquati.»
+
+### Decisione dell'utente girata a B, col vincolo tecnico
+
+L'utente vuole che **la voce parta da sola**, con un comando **visibile** per disattivarla.
+
+⚠️ **I browser bloccano la riproduzione automatica con audio** finché non c'è un'interazione:
+`play()` viene rifiutata. «Parte da sola al primo caricamento» non è realizzabile, e fallirebbe
+**in silenzio**. Ciò che funziona: interruttore visibile e in evidenza; la **prima** riproduzione
+parte da una pressione (che è anche il gesto che sblocca il browser); **da lì in poi ogni sezione
+parte da sola**; la scelta si ricorda fra le visite.
+
+Così resta soddisfatta anche la terza ragione del «Voce: no» di B: chi usa un lettore di schermo
+lo spegne una volta e non ci pensa più.
+
+### La divisione del lavoro proposta
+
+> **B decide COSA si dice. A decide COME suona.**
+
+- **B**: contenuto, esempi, struttura, minutaggio, player, formati, percorsi — serve conoscere
+  il prodotto, e A non lo conosce: scriverebbe esempi plausibili e sbagliati.
+- **A**: glossario, sigle, termini inglesi, fonetica, vincolo di sintesi, sintesi, conversione,
+  durate, controlli di integrità.
+- **In più A offre una revisione di ASCOLTABILITÀ**: il vincolo dice se un testo è
+  *sintetizzabile*, non se è *ascoltabile*. Un periodo di sessanta parole passa il vincolo ed è
+  illeggibile all'orecchio. Il caso `passo-2-vettori` vale il 27% di velocità.
