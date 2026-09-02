@@ -1,0 +1,20 @@
+{
+  "corso": "_comuni",
+  "nome": "Le sezioni comuni a tutti i percorsi",
+  "nota": "SETTE sezioni, non sei: esercizio e revisione sono due sezioni distinte, non due varianti della stessa. Quattro percorsi sono annuali e prendono esercizio; otto sono fotografie dello stato corrente e prendono revisione. Verificato eseguendo il registro dei moduli: ghg, energetico, bilancio, sgesg da una parte; fornitore, mog231, anticorruzione, segnalazioni, filiera, sgiqas, sa8000, soa dall'altra.",
+  "campione": true,
+  "termini_nuovi": [],
+  "sezioni": [
+    {
+      "id": "dove-sei",
+      "ordine": 1,
+      "titolo": "Dove sei, e come ci si muove",
+      "minuti_schermo": 3,
+      "durata_obiettivo_s": 150,
+      "densita": "narrativa generica",
+      "riferimento_visivo": "La barra laterale scura a sinistra con le voci dello studio. Al centro il portafoglio, con una scheda per azienda. Aprendone una, la barra cambia e mostra il nome dell'azienda con sotto i suoi dodici percorsi raggruppati in tre aree colorate.",
+      "script": "Prima di entrare in un percorso conviene sapere come e' fatto il prodotto, perche' e' sempre lo stesso ordine e impararlo una volta serve per tutti e dodici. Ci sono tre livelli. Il primo e' il portafoglio: l'elenco delle aziende che segui. Il secondo e' il fascicolo di un'azienda: si apre cliccando la sua scheda, e raccoglie i dodici percorsi disponibili divisi in tre gruppi. Il terzo e' il percorso vero e proprio, quello su cui lavori. La barra laterale segue questa struttura. Quando sei nello studio mostra le voci generali: portafoglio, documenti, agenda, compensi. Quando entri in un'azienda cambia e mostra il nome di quell'azienda con sotto i suoi percorsi, cosi' puoi passare dal bilancio alla dichiarazione di applicabilita' dello stesso cliente senza tornare indietro. Una cosa che vale la pena dire subito, perche' spaventa chi apre il fascicolo per la prima volta: un'azienda ha dodici percorsi disponibili, non dodici percorsi da fare. Si aprono quelli che servono a quel cliente. Gli altri restano nel fascicolo, spenti, e non compaiono nello scadenzario: non ti guardano male dalla lista. E il colore ha un significato preciso. Ogni gruppo ha la sua tinta, e ogni percorso la sua icona: il colore ti dice di che materia si parla, l'icona quale lavoro stai facendo. Non e' decorazione, e' il modo piu' rapido per capire dove sei quando hai otto clienti aperti e le schermate cominciano a somigliarsi.",
+      "parole": 235
+    }
+  ]
+}

@@ -73,3 +73,13 @@ shot-*
 /.referti/
 formazionepacchetocompleto/
 landingpagerevisione/
+
+# L'audio dei corsi: il TESTO si versiona, il SUONO no.
+#
+# ⚠️ 67 MB di WAV sono comparsi nell'albero di lavoro, ed e' esattamente il caso per cui
+# il video di benvenuto sta su Supabase Storage e non qui: un binario entrato in git ci
+# resta per sempre, anche se lo si cancella al commit dopo. Gli script parlati e il
+# validatore sono testo e si versionano; i WAV e gli MP3 vivono nell'archivio.
+audio-formazione/**/*.wav
+audio-formazione/**/*.mp3
+audio-formazione/_campione/

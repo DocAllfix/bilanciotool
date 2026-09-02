@@ -1,0 +1,21 @@
+{
+  "corso": "fornitore",
+  "nome": "Autovalutazione ESG",
+  "minuti_obiettivo": 42,
+  "campione": true,
+  "nota": "Una sola sezione, ed e' quella che contiene l'UNICA formula del corpus senza prosa accanto. Serve a provare che il criterio si puo' dire a parole senza il formalismo: e' il criterio con cui il piano ordina le azioni, cioe' il cuore di questo corso.",
+  "termini_nuovi": [],
+  "sezioni": [
+    {
+      "id": "come-si-calcola",
+      "ordine": 9,
+      "titolo": "Come si calcola l'indice",
+      "minuti_schermo": 7,
+      "durata_obiettivo_s": 200,
+      "densita": "mista, con criteri di calcolo",
+      "riferimento_visivo": "Il quadro di sintesi: una barra orizzontale con l'indice complessivo e una tacca nera che segna la soglia chiesta dal committente. Sotto, cinque righe, una per area, ciascuna col proprio punteggio e la propria fascia.",
+      "script": "L'indice si costruisce in tre passaggi, e vale la pena capirli perche' spiegano perche' certe azioni fanno salire il punteggio e altre quasi no. Primo passaggio: il punteggio di ogni area. Si sommano i pesi delle domande a cui hai risposto, ciascuna moltiplicata per quanto vale la risposta, e si divide per il massimo che quelle stesse domande potrebbero dare. Le domande non applicabili escono dal conto, e quelle senza risposta pure. Secondo passaggio: l'indice complessivo e' la media delle aree, pesata. Le aree non hanno tutte lo stesso peso: tre valgono un quarto ciascuna, il governo della sostenibilita' un decimo, la catena di fornitura il resto. E la media si calcola solo sulle aree che hai valutato. Un'area lasciata in bianco esce dalla ponderazione invece di entrarci come zero, perche' chi ha compilato una sola area non deve risultare bocciato sulle altre quattro: sarebbe un giudizio su un lavoro non ancora fatto. Terzo passaggio: la fascia di prontezza, che e' l'etichetta che il committente legge per prima. Poi c'e' un quarto numero, ed e' quello che governa il piano. Per ogni domanda ancora aperta il prodotto calcola quanti punti dell'indice complessivo guadagneresti portandola a soddisfatta. Non e' il peso della domanda: e' il peso della domanda dentro la sua area, moltiplicato per quanto pesa quell'area sul totale. Ecco perche' dieci punti guadagnati in ambiente valgono due volte e mezzo dieci punti guadagnati nel governo. Il piano ordina le azioni con quel numero, diviso per le giornate che ciascuna richiede: mette in cima quelle che rendono di piu' per il tempo che costano. Se vuoi avvicinarti alla soglia in fretta, lavora dall'alto di quella lista e non per aree.",
+      "parole": 279
+    }
+  ]
+}
