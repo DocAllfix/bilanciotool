@@ -57,6 +57,20 @@ export const FORNITORE: Sezione[] = [
         ],
       },
       {
+        tipo: "interfaccia",
+        titolo: "Come si presenta una domanda",
+        vista: {
+          genere: "stati",
+          voci: [
+            { testo: "Politica di sostenibilità approvata dalla direzione", stato: "ok" },
+            { testo: "Referente ESG interno nominato", stato: "parziale" },
+            { testo: "Temi rilevanti individuati con un'analisi di materialità", stato: "no" },
+            { testo: "Prelievi idrici monitorati", stato: "na" },
+          ],
+        },
+        nota: "Accanto a ogni domanda c'è l'evidenza documentale attesa. Ripremere la stessa risposta la annulla, e una domanda senza risposta resta fuori dal conteggio: non è un «no», è una lacuna.",
+      },
+      {
         tipo: "avviso",
         tono: "errore",
         titolo: "«Non risposta» e «non applicabile» sono due cose diverse",

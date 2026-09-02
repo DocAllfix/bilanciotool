@@ -23,6 +23,23 @@ export const BILANCIO: Sezione[] = [
     sommario: "Chi rendiconta, con quale perimetro, secondo quale standard.",
     blocchi: [
       {
+        tipo: "interfaccia",
+        titolo: "Dove ti trovi",
+        vista: {
+          genere: "passi",
+          passi: [
+            { nome: "Organizzazione", stato: "corso" },
+            { nome: "Materialità", stato: "vuoto" },
+            { nome: "Indicatori", stato: "vuoto" },
+            { nome: "Politiche", stato: "vuoto" },
+            { nome: "Racconto", stato: "vuoto" },
+            { nome: "Verifica", stato: "vuoto" },
+            { nome: "Bilancio", stato: "vuoto" },
+          ],
+        },
+        nota: "Il passo 4 mostra le schede solo per i temi risultati materiali al passo 2, e i diagrammi del passo 5 si costruiscono sui dati del passo 3: saltare i passi produce sezioni vuote più avanti.",
+      },
+      {
         tipo: "prosa",
         testo:
           "È la carta d'identità che finisce in copertina e in nota metodologica: forma giuridica, sede, settore, codice ATECO, siti operativi, mercati serviti, referente per il bilancio.",

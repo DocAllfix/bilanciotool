@@ -16,7 +16,7 @@ import { AVVIARE_ATTIVITA } from "./corsi/avviare-attivita";
 import { minutiTotali, type Corso, type Sezione } from "./tipi";
 
 export { NUMERI } from "./numeri";
-export type { Blocco, Sezione, Tono } from "./tipi";
+export type { Blocco, Sezione, Tono, VistaFinta } from "./tipi";
 
 /**
  * I corsi con sezioni PROPRIE.

@@ -5,6 +5,7 @@ import { ArrowLeft, Clock } from "lucide-react";
 
 import { corsoTrasversale, esisteCorsoTrasversale } from "@/features/formazione";
 import { SezioneCorso } from "@/components/formazione/corso";
+import { IndiceCorso } from "@/components/formazione/indice";
 
 type Props = { params: Promise<{ chiave: string }> };
 
@@ -21,7 +22,7 @@ export default async function CorsoTrasversalePage({ params }: Props) {
   const c = corsoTrasversale(chiave);
 
   return (
-    <div className="mx-auto w-full max-w-4xl pb-20">
+    <div className="mx-auto w-full max-w-6xl pb-24">
       <Link
         href="/formazione"
         className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
@@ -46,27 +47,13 @@ export default async function CorsoTrasversalePage({ params }: Props) {
         </p>
       </div>
 
-      <nav aria-label="Sezioni del corso" className="mt-8 rounded-xl border bg-card p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">In questo corso</p>
-        <ol className="mt-2.5 space-y-1.5">
+      <div className="mt-8 gap-10 lg:flex lg:items-start">
+        <IndiceCorso sezioni={c.sezioni.map((s) => ({ id: s.id, titolo: s.titolo, minuti: s.minuti }))} />
+        <div className="mt-8 min-w-0 flex-1 space-y-12 lg:mt-0" data-sezioni="">
           {c.sezioni.map((s, i) => (
-            <li key={s.id} className="flex items-baseline gap-3 text-[13.5px]">
-              <span className="w-5 shrink-0 text-right font-mono text-[11px] text-muted-foreground" data-slot="kpi">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <a href={`#${s.id}`} className="transition-colors hover:text-primary">
-                {s.titolo}
-              </a>
-              <span className="ml-auto shrink-0 font-mono text-[11px] text-muted-foreground">{s.minuti} min</span>
-            </li>
+            <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
           ))}
-        </ol>
-      </nav>
-
-      <div className="mt-10 space-y-10" data-sezioni="">
-        {c.sezioni.map((s, i) => (
-          <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
-        ))}
+        </div>
       </div>
     </div>
   );

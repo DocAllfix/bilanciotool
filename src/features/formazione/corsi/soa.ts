@@ -65,6 +65,20 @@ export const SOA: Sezione[] = [
         ],
       },
       {
+        tipo: "interfaccia",
+        titolo: "Una sezione del registro dei controlli",
+        vista: {
+          genere: "stati",
+          voci: [
+            { testo: "5.1 · Politiche per la sicurezza delle informazioni", stato: "ok" },
+            { testo: "5.7 · Threat intelligence", stato: "parziale" },
+            { testo: "8.12 · Prevenzione della fuga di dati", stato: "no" },
+            { testo: "7.4 · Sorveglianza della sicurezza fisica", stato: "na" },
+          ],
+        },
+        nota: "L'ultimo è escluso, e un'esclusione senza giustificazione è una non conformità già scritta. Il terzo è applicabile e non attuato: pesa zero, non viene ignorato.",
+      },
+      {
         tipo: "avviso",
         tono: "nota",
         titolo: "Le motivazioni sono un insieme, non una scelta",

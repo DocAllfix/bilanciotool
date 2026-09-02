@@ -2037,6 +2037,86 @@ conteggio per vederlo fallire · `benvenuto` 12/12 · `guida` 7/7 · `tutto-demo
 40/40 · foto in chiaro e scuro **guardate** (e il fondo campionato a colore: la lettura a
 occhio di uno screenshot può ingannare), console pulita.
 
+**Il velo sopra il video, e la formazione come sezione (2026-09-02)**
+
+Segnalato dal committente: «il tour parte dentro al video», la X del video non chiude più
+il video e il pulsante della formazione fa altro.
+
+**Riprodotto e misurato prima di toccare niente** (`qa -- benvenuto-velo`): alla velocità
+normale **93 istanti** con video e giro guidato aperti insieme, e `elementFromPoint` sulla
+X risponde **«il velo del tour»**. Non «non risponde»: risponde qualcun altro, ed è la
+distinzione che l'occhio non sa fare.
+
+**La causa, in `benvenuto-demo.tsx`.** In `iniziaGiro` fra `setFase("nulla")` e la
+scrittura dello stato del giro c'è una chiamata al server. Nel mezzo l'effetto si
+ri-esegue — `fase` è una sua dipendenza — e trova: nessun giro in corso, percorso
+dashboard, fase «nulla». Quindi **riprogramma il video** con un `setTimeout(…, 900)` che
+nessuno annulla, perché scrivere in `sessionStorage` non è un fatto reattivo. Il tour parte,
+e 900 ms dopo il video gli riappare sopra.
+
+**Due difese, e la controprova ha mostrato che coprono tempi diversi**: il segno
+`giroChiesto` impedisce la riprogrammazione (caso veloce), e il **cancello in `avviaTour`**
+— non si apre un tour se c'è già un velo o un `[data-modale]` — copre il caso lento. Col
+difetto rimesso, il caso veloce fallisce e quello lento resta verde: ognuna delle due regge
+da sola dove l'altra non arriverebbe.
+
+⚠️ **E due difetti nuovi trovati dalla misura, non cercati:**
+- **Chiudendo un tour con la X non scattava NIENTE**: né hook né seguito. `onCloseClick`
+  faceva `d.destroy()`, che è la via che *salta* `onDestroyStarted`. Chi incatena tappe
+  restava appeso, e chi aspettava l'invito al corso aspettava per sempre. Ora tutte e tre
+  le uscite passano da una funzione sola.
+- **Due tour possono girare insieme**: nello scenario «arrivo in fondo» si sono chiusi due
+  giri distinti, il primo ancora al passo 1. Il cancello chiude anche questo.
+
+⚠️ **Sul richiamo di fine tour mi sono sbagliato DUE VOLTE nello stesso giorno, in versi
+opposti.** Prima ho concluso che `alTermine` non partisse mai; poi, leggendo il sorgente
+minificato di driver.js (`destroy: () => h(!1)` e `h(e=!0)` che esce prima solo se `e`),
+ho concluso il contrario e ho scritto che la prima diagnosi era sbagliata. **Erano sbagliate
+le letture.** La spia dentro i due hook, su tutti e tre i modi di chiudere, dice che
+`onDestroyed` non scatta mai. **Quando il codice e il comportamento non concordano, vince il
+comportamento.**
+
+**La formazione diventa una sezione.** Terzo registro ma *contenuto*, come chiesto: si
+stacca per ritmo — più aria, colonna di lettura più larga, il colore dell'area come filo
+verticale — non per decorazione. Restano fuori le bande a piena larghezza e i numeri
+giganti, che `PRODUCT.md` nomina fra le anti-reference.
+
+- **Blocco `interfaccia`**: riproduzioni dell'interfaccia dichiarate come DATO e disegnate
+  coi token veri. Quattro generi soltanto — passi, riga che si calcola, stati dichiarati,
+  elenco della verifica — perché sono i quattro modi in cui questo prodotto mostra
+  qualcosa. ⚠️ **Non immagini**: un file statico diverge dal prodotto e nessuno se ne
+  accorge, non segue il tema e non si stringe su un telefono. È la lezione dell'immagine
+  sociale, e il precedente giusto è il Deck della vetrina.
+- **Selettore dei corsi** raggruppato per le tre aree, col percorso corrente marcato: non
+  dodici pastiglie in fila, che sarebbero la griglia identica vietata e in cui non si trova
+  niente.
+- **Indice che segue la lettura** con `IntersectionObserver`, appiccicato a lato sulle
+  larghezze grandi. Un `scroll` che confronta posizioni farebbe rimisurare il documento
+  decine di volte al secondo su una pagina lunga apposta.
+- **Un accesso dal fascicolo dell'azienda**, fuori dalle card: ogni percorso è già un
+  collegamento che copre tutta la riga, e un secondo collegamento dentro sarebbe HTML non
+  valido e una trappola al clic.
+
+**Regole nate qui:**
+- **Quando il sorgente e il comportamento non concordano, vince il comportamento.** Ho
+  letto un bundle minificato e ne ho tratto la conclusione opposta al vero, due volte in
+  un giorno. Una spia dentro il codice chiude in tre minuti quello che le ipotesi non
+  chiudono in trenta.
+- **Una controprova che non morde va verificata sull'INIEZIONE, non sul prodotto.** La mia
+  prima rimozione del rimedio non era andata a segno — la riga era ancora lì — e il verde
+  che ne è uscito stava per farmi credere che la guardia fosse debole. Ora le sostituzioni
+  portano un'asserzione: se non trovano il testo, si fermano.
+- **Due difese si provano su condizioni diverse.** Rimettendo il difetto, il caso veloce è
+  tornato rosso e quello lento è restato verde: è la prova che non sono la stessa difesa
+  scritta due volte.
+- **Un'uscita che non avvisa nessuno è peggio di un'uscita che non funziona**, perché
+  sembra funzionare. Vale per la X di un tour come per qualunque comando che chiude.
+
+Gate: typecheck · build · **1225 test** · `qa -- benvenuto-velo` 3/3, messo in rosso
+rimettendo il difetto (92 istanti sovrapposti, sull'asserzione giusta) · `benvenuto` 12/12 ·
+`formazione` 12/12 · `formazione-comandi` **17/17** (selettore, indice che segue,
+riproduzioni che non sono immagini) · foto in chiaro e scuro **guardate**, console pulita.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

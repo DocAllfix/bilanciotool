@@ -170,6 +170,48 @@ async function faiComparireInvito() {
   await page.waitForSelector('a:has-text("Apri la formazione")', { timeout: 15_000 });
 }
 
+await agisci("⚠️ il selettore porta a un ALTRO corso, e segna dove sei", async () => {
+  await apri(`${BASE}/formazione/energetico`, "[data-selettore-corsi]");
+  const qui = page.locator('[data-selettore-corsi] [aria-current="page"]');
+  if ((await qui.count()) !== 1) throw new Error(`${await qui.count()} voci marcate come corrente`);
+  if ((await qui.getAttribute("data-corso-scelta")) !== "energetico") {
+    throw new Error("il selettore segna un corso che non è quello aperto");
+  }
+  // Tutti e dodici raggiungibili da qui: se ne mancasse uno, ci si accorgerebbe solo
+  // cercandolo, cioè quando serve.
+  const voci = await page.locator("[data-selettore-corsi] [data-corso-scelta]").count();
+  if (voci !== MODULI_AZIENDA.length) throw new Error(`${voci} corsi nel selettore invece di ${MODULI_AZIENDA.length}`);
+
+  await page.click('[data-selettore-corsi] [data-corso-scelta="soa"]');
+  await page.waitForURL(/\/formazione\/soa$/, { timeout: 30_000 });
+  await page.waitForSelector("[data-sezioni]");
+});
+
+await agisci("⚠️ l'indice segue la lettura invece di restare fermo", async () => {
+  await apri(`${BASE}/formazione/energetico`, "[data-indice-corso]");
+  const attiva = () => page.locator('[data-indice-corso] a[aria-current="true"]').first().getAttribute("href");
+  const prima = await attiva();
+  // Si scorre fino a una sezione lontana e si guarda se l'indice se ne accorge. Un indice
+  // che non segue non è rotto in modo visibile: è semplicemente inutile, e l'unico modo di
+  // saperlo è misurarlo.
+  const ultima = page.locator("[data-sezioni] section").last();
+  await ultima.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(900);
+  const dopo = await attiva();
+  if (!prima || !dopo) throw new Error("l'indice non marca nessuna sezione come corrente");
+  if (prima === dopo) throw new Error(`l'indice è rimasto su «${prima}» dopo essere scorsi in fondo`);
+});
+
+await agisci("le riproduzioni dell'interfaccia sono rese, e non sono immagini", async () => {
+  await apri(`${BASE}/formazione/energetico`, "[data-sezioni]");
+  const figure = await page.locator("[data-sezioni] figure").count();
+  if (figure < 2) throw new Error(`solo ${figure} riproduzioni rese`);
+  // ⚠️ La prova che NON sono immagini: se lo fossero, si staccherebbero dal prodotto senza
+  // che nessuno se ne accorga, e non seguirebbero il tema.
+  const immagini = await page.locator("[data-sezioni] figure img").count();
+  if (immagini) throw new Error(`${immagini} immagini dentro le riproduzioni: devono essere costruite coi token`);
+});
+
 await agisci("⚠️ la X dell'invito lo chiude", async () => {
   await faiComparireInvito();
   await page.getByRole("button", { name: "Chiudi il suggerimento" }).click();

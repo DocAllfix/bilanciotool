@@ -124,9 +124,18 @@ describe("i numeri della formazione", () => {
       const codice = senzaCommenti(readFileSync(f, "utf8"));
       // Solo dentro le stringhe: `minuti: 3` è un dato della sezione, non testo per chi legge.
       for (const stringa of codice.match(/`[^`]*`|"[^"]*"/g) ?? []) {
-        if (stringa.includes("NUMERI.")) continue;
         const nudo = stringa.slice(1, -1);
         if (ECCEZIONI.some(([frase]) => frase === nudo)) continue;
+        // ⚠️ SI TOLGONO LE ESPRESSIONI, NON SI SALTA LA FRASE.
+        //
+        // Qui c'era `if (stringa.includes("NUMERI.")) continue`, e apriva un buco che la
+        // controprova ha scoperto: una frase con dentro ANCHE un solo numero derivato
+        // usciva interamente dal controllo, quindi un numero scritto a mano accanto a uno
+        // derivato passava indisturbato. Ed è il caso più probabile di tutti — le frasi
+        // che citano conteggi ne citano quasi sempre due.
+        //
+        // Togliendo le sole espressioni resta il testo, e il testo si controlla.
+        const daControllare = nudo.replace(/\$\{[^}]*\}/g, " ");
         for (const [valore, nomi] of derivabili) {
           // \\b nel sorgente TS: dentro un template literal un solo \b e' un BACKSPACE,
           // e la guardia non potrebbe mai scattare. Uno strumento che non sa segnare rosso
@@ -135,10 +144,21 @@ describe("i numeri della formazione", () => {
           // conteggi: un numero attaccato a un trattino o a una barra fa parte di un
           // riferimento normativo («ESRS S1-14», «S1-13/16», «25-octies»); un numero
           // seguito dal segno di percento è una quota; un numero seguito da un mese è una
-          // data. I conteggi del seme sono sempre numeri di cose, e queste tre distinzioni
-          // tengono la guardia utile invece di riempirla di eccezioni scritte a mano.
-          const comeConteggio = new RegExp(`(?<![\\d\\-/])${valore}(?![\\d\\-/%])(?! ${MESI})`, "u");
-          if (comeConteggio.test(stringa)) {
+          // data; e un numero incollato a un'altra cifra da un punto o da una virgola fa
+          // parte di un numero più lungo o di un codice — «34.850 €» non contiene un 34, e
+          // «8.12» è un controllo della norma, non otto di qualcosa.
+          //
+          // I conteggi del seme sono sempre numeri di COSE. Una regola copre anche la
+          // frase che nessuno ha ancora scritto; un'eccezione a mano copre solo quella.
+          //
+          // ⚠️ I `\\d` sono DOPPI di proposito, ed è la trappola scritta qui sotto: dentro
+          // un template literal un solo `\d` è la lettera «d», e la guardia smetterebbe di
+          // scattare senza dirlo. Ci sono ricascato scrivendo proprio questa riga.
+          const comeConteggio = new RegExp(
+            `(?<![\\d\\-/])(?<![\\d][.,])${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})`,
+            "u",
+          );
+          if (comeConteggio.test(daControllare)) {
             const scelte = nomi.map((n) => "${NUMERI." + n + "}").join(" oppure ");
             const file = f.split(/[\\\\\\/]/).pop();
             colpe.push(`${file}: «${valore}» scritto a mano — usa ${scelte}`);

@@ -187,6 +187,20 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
             );
           })}
         </div>
+
+        {/* ⚠️ Un collegamento SOLO, e fuori dalle card. Ogni percorso è già un `Link` che
+            copre tutta la riga: un secondo collegamento dentro sarebbe annidato — HTML non
+            valido e una trappola al clic, perché il bersaglio dipenderebbe dal pixel. Qui
+            sta sotto, dove uno guarda dopo aver letto l'elenco e essersi chiesto come si
+            conduce. */}
+        <p className="mt-5 border-t pt-4 text-[13px] text-muted-foreground">
+          Non sai da dove cominciare?{" "}
+          <Link href="/formazione" className="underline underline-offset-4 hover:text-primary">
+            La formazione
+          </Link>{" "}
+          spiega ogni percorso: dove si prendono i dati, che cosa controlla la verifica, che cosa
+          succede quando si pubblica.
+        </p>
       </div>
 
       {/* Compare da solo quando c'è qualcosa da mostrare: con una sola versione

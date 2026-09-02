@@ -26,6 +26,24 @@ export const ENERGETICO: Sezione[] = [
     sommario: "Chi rendiconta, quale stabilimento, con quale confine e quale unità di produzione.",
     blocchi: [
       {
+        tipo: "interfaccia",
+        titolo: "Dove ti trovi",
+        vista: {
+          genere: "passi",
+          passi: [
+            { nome: "Sito", stato: "corso" },
+            { nome: "Vettori", stato: "vuoto" },
+            { nome: "Usi finali", stato: "vuoto" },
+            { nome: "Indicatori", stato: "vuoto" },
+            { nome: "Interventi", stato: "vuoto" },
+            { nome: "Racconto", stato: "vuoto" },
+            { nome: "Verifica", stato: "vuoto" },
+            { nome: "Bilancio", stato: "vuoto" },
+          ],
+        },
+        nota: "Ci si muove liberamente, ma l'ordine ha una ragione: la ripartizione del passo 3 lavora sui vettori del passo 2, e gli interventi del passo 5 prendono il prezzo medio dai costi del passo 2.",
+      },
+      {
         tipo: "prosa",
         testo:
           "Il passo 1 identifica il soggetto e lo stabilimento oggetto del bilancio. Non è un modulo anagrafico: tre delle scelte fatte qui condizionano tutti i numeri che verranno dopo.",
@@ -103,6 +121,17 @@ export const ENERGETICO: Sezione[] = [
         tipo: "prosa",
         testo:
           "Dal costo annuo il prodotto ricava il prezzo medio in euro per kWh, che userà al passo 5 per valorizzare i risparmi degli interventi. Non è un dato accessorio: senza costo, il ritorno di un intervento non si calcola.",
+      },
+      {
+        tipo: "interfaccia",
+        titolo: "Una riga del registro dei vettori",
+        vista: {
+          genere: "riga",
+          intestazioni: ["Vettore", "Quantità", "Unità", "Costo annuo"],
+          celle: ["Gas naturale", "42.500", "Smc", "34.850 €"],
+          risultato: { etichetta: "Il prodotto calcola", valore: "451.775 kWh" },
+        },
+        nota: "La quantità e il costo li metti tu; i kWh, i tep e le tonnellate li calcola il prodotto dai fattori del vettore. Dal costo ricava anche il prezzo medio che servirà a valorizzare i risparmi al passo 5.",
       },
       {
         tipo: "elenco",

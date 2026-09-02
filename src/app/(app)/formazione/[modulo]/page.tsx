@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock } from "lucide-react";
 
 import { corsoDelModulo, esisteCorso } from "@/features/formazione";
+import { MODULI_AZIENDA, AREE } from "@/features/companies/moduli";
 import { SezioneCorso } from "@/components/formazione/corso";
-import { Badge } from "@/components/ui/badge";
+import { SelettoreCorsi } from "@/components/formazione/selettore";
+import { IndiceCorso } from "@/components/formazione/indice";
 
 type Props = { params: Promise<{ modulo: string }> };
 
@@ -22,9 +24,17 @@ export default async function CorsoPage({ params }: Props) {
   if (!esisteCorso(modulo)) notFound();
 
   const c = corsoDelModulo(modulo);
+  const m = MODULI_AZIENDA.find((x) => x.href === modulo)!;
+  const area = AREE[m.area];
 
   return (
-    <div className="mx-auto w-full max-w-4xl pb-20">
+    // ⚠️ IL TERZO REGISTRO, MA CONTENUTO. Il prodotto ne ha già due — l'app densa e il
+    // documento editoriale — e DESIGN.md dice che il contrasto fra i due è il lusso. La
+    // formazione è il terzo, e si stacca per RITMO: più aria fra le sezioni, una colonna
+    // di lettura più larga, il colore dell'area come filo. Niente bande a piena larghezza
+    // né numeri giganti: sarebbe il template generico che PRODUCT.md nomina fra le
+    // anti-reference, e il committente ha chiesto esplicitamente che non stacchi troppo.
+    <div className="mx-auto w-full max-w-6xl pb-24">
       <Link
         href="/formazione"
         className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
@@ -33,62 +43,67 @@ export default async function CorsoPage({ params }: Props) {
         Formazione
       </Link>
 
-      <h1 className="font-display mt-4 text-[28px] font-bold tracking-[-0.02em]">{c.nome}</h1>
-      <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
-        <span className="font-mono">{c.norma}</span>
-        <span className="flex items-center gap-1.5">
-          <Clock className="size-3.5" aria-hidden />
-          <span data-slot="kpi">{c.minuti}</span> minuti
-        </span>
-      </p>
+      <header className="mt-4 flex gap-4">
+        {/* Il filo del colore d'area: dice la materia senza colorare mezza pagina. */}
+        <span className={`mt-1 w-0.5 shrink-0 rounded-full ${area.colore.tratto}`} aria-hidden />
+        <div className="min-w-0">
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <m.icona className="size-3.5" strokeWidth={2} aria-hidden />
+            {area.nome}
+          </p>
+          <h1 className="font-display mt-1 text-[30px] font-bold leading-tight tracking-[-0.02em]">{c.nome}</h1>
+          <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
+            <span className="font-mono">{c.norma}</span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="size-3.5" aria-hidden />
+              <span data-slot="kpi">{c.minuti}</span> minuti
+            </span>
+            <span>
+              <span data-slot="kpi">{c.sezioni.length}</span> sezioni
+            </span>
+          </p>
+        </div>
+      </header>
 
-      {/* ⚠️ Lo dice in cima, non in fondo: chi legge deve sapere SUBITO che cosa troverà,
-          non scoprirlo dopo aver scorso sei sezioni cercando la parte che gli serviva. */}
+      <SelettoreCorsi corrente={c.modulo} />
+
       {!c.completo && (
         <div className="mt-6 max-w-prose rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3">
           <p className="text-[13px] font-semibold text-warning">La parte specifica è in preparazione</p>
           <p className="mt-1 text-[14px] leading-relaxed text-foreground/85">
             Questo corso spiega come si usa il prodotto: dove sei, come si salva, che cosa controlla la
             verifica e che cosa succede quando pubblichi. Le sezioni sul metodo di questo percorso non
-            ci sono ancora. Nel frattempo la <Link href="/guida" className="underline underline-offset-4">guida</Link>{" "}
+            ci sono ancora. Nel frattempo la{" "}
+            <Link href="/guida" className="underline underline-offset-4">
+              guida
+            </Link>{" "}
             e il tour della pagina restano a disposizione.
           </p>
         </div>
       )}
 
-      {/* Indice: le sezioni sono lunghe, e chi torna una seconda volta cerca una cosa sola. */}
-      <nav aria-label="Sezioni del corso" className="mt-8 rounded-xl border bg-card p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">In questo corso</p>
-        <ol className="mt-2.5 space-y-1.5">
+      {/* ⚠️ L'indice sta A LATO sulle larghezze grandi e SOPRA sulle piccole, e segue la
+          lettura. Un corso è lungo: sapere dove si è e quanto manca è la differenza fra
+          leggere e scorrere, e su un telefono una colonna laterale sarebbe mezza pagina
+          di sommario prima della prima riga di testo. */}
+      <div className="mt-8 gap-10 lg:flex lg:items-start">
+        <IndiceCorso sezioni={c.sezioni.map((s) => ({ id: s.id, titolo: s.titolo, minuti: s.minuti }))} />
+
+        <div className="mt-8 min-w-0 flex-1 space-y-12 lg:mt-0" data-sezioni="">
           {c.sezioni.map((s, i) => (
-            <li key={s.id} className="flex items-baseline gap-3 text-[13.5px]">
-              <span className="w-5 shrink-0 text-right font-mono text-[11px] text-muted-foreground" data-slot="kpi">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <a href={`#${s.id}`} className="transition-colors hover:text-primary">
-                {s.titolo}
-              </a>
-              <span className="ml-auto shrink-0 font-mono text-[11px] text-muted-foreground">{s.minuti} min</span>
-            </li>
+            <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
           ))}
-        </ol>
-      </nav>
 
-      <div className="mt-10 space-y-10" data-sezioni="">
-        {c.sezioni.map((s, i) => (
-          <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
-        ))}
-      </div>
-
-      <div className="mt-12 border-t pt-6">
-        <p className="text-[13.5px] text-muted-foreground">
-          Per le domande che non trovano risposta qui, la{" "}
-          <Link href="/guida" className="underline underline-offset-4 hover:text-primary">
-            guida all&apos;uso
-          </Link>{" "}
-          raccoglie le più frequenti.{" "}
-          {c.completo && <Badge variant="outline" className="align-middle text-[10.5px]">corso completo</Badge>}
-        </p>
+          <div className="border-t pt-6">
+            <p className="text-[13.5px] text-muted-foreground">
+              Per le domande che non trovano risposta qui, la{" "}
+              <Link href="/guida" className="underline underline-offset-4 hover:text-primary">
+                guida all&apos;uso
+              </Link>{" "}
+              raccoglie le più frequenti.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

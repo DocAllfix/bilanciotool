@@ -37,7 +37,13 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
+    <div
+      // ⚠️ Dichiarata come finestra: il cancello di `avviaTour` la vede e non apre un giro
+      // guidato sopra l'offerta. Non è decorazione — un velo sopra i prezzi si prende i
+      // clic destinati al pulsante che porta al pagamento.
+      data-modale="offerta"
+      className="fixed inset-0 z-70 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
+    >
       <div className="my-auto w-full max-w-4xl rounded-xl border bg-card p-6 shadow-2xl sm:p-8">
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -1,4 +1,5 @@
 import type { Blocco, Sezione, Tono } from "@/features/formazione";
+import { Interfaccia } from "./interfaccia";
 
 /**
  * Il renderer della formazione: uno solo, per tutti i corsi.
@@ -93,6 +94,10 @@ function BloccoReso({ b }: { b: Blocco }) {
         </table>
       </div>
     );
+  }
+
+  if (b.tipo === "interfaccia") {
+    return <Interfaccia vista={b.vista} titolo={b.titolo} nota={b.nota} />;
   }
 
   const t = TONI[b.tono];

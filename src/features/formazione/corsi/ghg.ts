@@ -298,6 +298,20 @@ export const GHG: Sezione[] = [
           "Il Rapporto GHG è costruito sui contenuti minimi del punto 9.3.1, e i testi mancanti compaiono come segnaposto invece di sparire: il vuoto dichiarato è informazione, il vuoto silenzioso è un documento che promette più di quanto porta.",
       },
       {
+        tipo: "interfaccia",
+        titolo: "Come si legge la verifica",
+        vista: {
+          genere: "verifica",
+          voci: [
+            { testo: "Confini organizzativi definiti", esito: "ok" },
+            { testo: "Criteri di significatività dichiarati", esito: "ok" },
+            { testo: "Due sorgenti escluse senza motivazione", esito: "manca" },
+            { testo: "Anno base fissato e giustificato", esito: "manca" },
+          ],
+        },
+        nota: "Non è un voto: è un elenco di posti dove andare. Ogni lacuna porta al punto da sistemare.",
+      },
+      {
         tipo: "avviso",
         tono: "attenzione",
         titolo: "Verde non vuol dire corretto",

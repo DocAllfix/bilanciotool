@@ -15,7 +15,34 @@ export type Blocco =
   | { tipo: "elenco"; voci: string[] }
   | { tipo: "tabella"; intestazioni: string[]; righe: string[][] }
   | { tipo: "avviso"; tono: Tono; titolo?: string; testo: string }
-  | { tipo: "formula"; testo: string };
+  | { tipo: "formula"; testo: string }
+  | { tipo: "interfaccia"; titolo?: string; nota?: string; vista: VistaFinta };
+
+/**
+ * Una riproduzione dell'interfaccia, dichiarata come DATO e disegnata coi token veri.
+ *
+ * ⚠️ NON UNO SCREENSHOT, e la ragione questo progetto l'ha gia' pagata. L'immagine sociale
+ * della vetrina si genera dal codice apposta: un file statico diverge dal prodotto e «la
+ * prima volta che diverge non se ne accorge nessuno, perche' chi la vede non e' chi la
+ * controlla». In piu' un'immagine non segue il tema chiaro/scuro, non si stringe su un
+ * telefono e va rifatta a ogni ritocco.
+ *
+ * Il precedente giusto e' il Deck della vetrina: mini-interfacce vere che si
+ * rimpiccioliscono identiche a se' stesse.
+ *
+ * ⚠️ Quattro generi e non di piu'. Sono i quattro modi in cui questo prodotto mostra
+ * qualcosa: un percorso a passi, una riga che si calcola, uno stato dichiarato, un elenco
+ * di lacune. Un quinto genere sarebbe una figura senza una domanda dietro.
+ */
+export type VistaFinta =
+  /** Il percorso a passi, com'e' in cima a ogni modulo per esercizio. */
+  | { genere: "passi"; passi: { nome: string; stato: "fatto" | "corso" | "vuoto" }[] }
+  /** Una riga di tabella con il numero che il prodotto calcola da solo. */
+  | { genere: "riga"; intestazioni: string[]; celle: string[]; risultato?: { etichetta: string; valore: string } }
+  /** Le scelte possibili su una domanda o un requisito, con quella scelta in evidenza. */
+  | { genere: "stati"; voci: { testo: string; stato: "ok" | "parziale" | "no" | "na" }[] }
+  /** L'elenco della verifica: che cosa c'e' e che cosa manca. */
+  | { genere: "verifica"; voci: { testo: string; esito: "ok" | "manca" }[] };
 
 /**
  * ⚠️ Tre toni e non di più.

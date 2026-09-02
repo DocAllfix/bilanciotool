@@ -36,6 +36,26 @@ export function BenvenutoDemo({ inProva }: { inProva: boolean }) {
   // sta nella shell e sopravvive alle navigazioni, quindi un interruttore acceso una
   // volta bloccherebbe tutte le tappe successive.
   const condotta = useRef<string | null>(null);
+  /**
+   * Il giro è stato chiesto: da qui in poi il video non si riapre.
+   *
+   * ⚠️ È LA CAUSA DEL DIFETTO DEL 2 SETTEMBRE, misurata: fra `setFase("nulla")` e la
+   * scrittura dello stato del giro c'è una chiamata al server, e nel mezzo questo effetto
+   * si ri-esegue — `fase` è una sua dipendenza. In quel momento non c'è ancora un giro in
+   * corso, il percorso è la dashboard e la fase è «nulla»: così **riprogrammava il video**
+   * con un timer da 900 ms che nessuno annullava, perché scrivere in `sessionStorage` non
+   * è un fatto reattivo e la pulizia scatta solo quando l'effetto si ri-esegue.
+   *
+   * Risultato: il tour partiva e subito dopo il video riappariva sopra. Alla velocità
+   * normale sono 93 istanti con tutti e due aperti, e `elementFromPoint` sulla X del video
+   * rispondeva «il velo del tour».
+   *
+   * Un `useRef` e non uno stato: deve valere SUBITO, prima del prossimo render, ed è
+   * proprio la ri-esecuzione dell'effetto che va fermata.
+   */
+  const giroChiesto = useRef(false);
+  /** Il timer del video, per poterlo spegnere da fuori dell'effetto che l'ha acceso. */
+  const timerVideo = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const allOfferta = useCallback(() => {
     chiudiPresentazione();
@@ -84,13 +104,24 @@ export function BenvenutoDemo({ inProva }: { inProva: boolean }) {
 
     // Nessun giro in corso: si comincia, ma solo dalla dashboard. È dove si atterra
     // dopo l'accesso, ed è l'unico punto in cui il video non interrompe un lavoro.
+    if (giroChiesto.current) return;
     if (pathname !== "/dashboard" || fase !== "nulla") return;
     const t = setTimeout(() => setFase("video"), 900);
+    timerVideo.current = t;
     return () => clearTimeout(t);
   }, [inProva, pathname, fase, conduci, allOfferta]);
 
   /** Fine del video: si chiede l'itinerario al server e si parte. */
   async function iniziaGiro() {
+    // ⚠️ PRIMA di qualunque attesa. Due difese e non una: il segno impedisce all'effetto
+    // di riprogrammare il video, e lo spegnimento del timer chiude quello eventualmente
+    // già acceso. Una sola delle due basterebbe oggi; due bastano anche domani, quando
+    // qualcuno cambierà l'ordine delle righe qui sotto.
+    giroChiesto.current = true;
+    if (timerVideo.current) {
+      clearTimeout(timerVideo.current);
+      timerVideo.current = null;
+    }
     setFase("nulla");
     let tappe: Tappa[] = [];
     try {
@@ -113,7 +144,10 @@ export function BenvenutoDemo({ inProva }: { inProva: boolean }) {
   if (fase !== "video") return null;
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+    <div
+      data-modale="benvenuto"
+      className="fixed inset-0 z-70 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+    >
       <div className="w-full max-w-4xl overflow-hidden rounded-xl bg-card shadow-2xl">
         <div className="flex items-center justify-between border-b px-5 py-3">
           <p className="text-sm font-medium">Benvenuto in EvalisDeck</p>
