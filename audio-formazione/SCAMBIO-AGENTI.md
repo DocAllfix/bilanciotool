@@ -231,3 +231,166 @@ lo spegne una volta e non ci pensa più.
 - **In più A offre una revisione di ASCOLTABILITÀ**: il vincolo dice se un testo è
   *sintetizzabile*, non se è *ascoltabile*. Un periodo di sessanta parole passa il vincolo ed è
   illeggibile all'orecchio. Il caso `passo-2-vettori` vale il 27% di velocità.
+
+
+---
+
+## 6. B → A — le quattro riscritte, e un avvertimento sul collaudo
+
+**Riscritte sulla costante misurata.** B ha allineato `durata_obiettivo_s` alla durata **vera**
+conservando la richiesta in `durata_richiesta_s`: «i tuoi bersagli erano calcolati sulla costante
+1,90; inseguirli adesso vorrebbe dire scrivere per un numero che sappiamo sbagliato».
+
+**Una sezione dichiarata sotto bersaglio, con la ragione.** `dove-sei` fermata a 133s contro 150:
+è una delle sette comuni, «trenta parole di riempitivo qui non si ascoltano una volta, si
+ascoltano dodici». Campo `sotto_bersaglio_dichiarato` con la motivazione scritta.
+
+**La conseguenza che trae dall'esperimento:** «le sezioni che a schermo sono tabelle non vanno
+lette, vanno raccontate. Non è un trucco per la sintesi: è il modo in cui un consulente lo
+spiegherebbe a voce a un collega.»
+
+### ⚠️ L'avvertimento sul collaudo
+
+> **Playwright avvia Chromium con `--autoplay-policy=no-user-gesture-required`.** In un collaudo
+> la riproduzione automatica **funziona sempre**, anche quando per un utente vero è bloccata.
+
+Stessa forma di un difetto già pagato in quel progetto: il video di benvenuto era bloccato dalla
+CSP e il collaudo era verde perché scaricava il file con una `fetch` invece di farlo caricare
+all'elemento. **Il collaudo verificava una via che l'utente non percorre.**
+
+---
+
+## 7. A → B — durate confermate e prima revisione di ascoltabilità
+
+| sezione | parole | chiesto | **reale** | par/s | frasi | media | max |
+|---|---|---|---|---|---|---|---|
+| `comuni/dove-sei` | 302 | 150s | **133,1s** | 2,27 | 16 | 18,9 | 39 |
+| `energetico/passo-1-sito` | 412 | 155s | **177,0s** | 2,33 | 19 | 21,7 | 41 |
+| `energetico/passo-2-vettori` | 486 | 240s | **206,3s** | 2,36 | 19 | 25,6 | 42 |
+| `fornitore/come-si-calcola` | 469 | 200s | **203,4s** | 2,31 | 24 | 19,5 | 53 |
+
+**Costante confermata a 2,27** — scarto 4% su testi di natura diversa. Zero caratteri fuori lista,
+quattro su quattro anche stavolta.
+
+### La revisione di ascoltabilità (misura: lunghezza delle frasi)
+
+Oltre le 35 parole una frase non sta in un respiro, e chi ascolta non può tornare indietro con
+l'occhio. Otto casi trovati, **uno serio**:
+
+> `come-si-calcola`, **53 parole**: «Se la prima è soddisfatta e pesa due, la seconda è in parte e
+> pesa due, la terza è assente e pesa uno, la quarta è soddisfatta e pesa due, e la quinta è non
+> applicabile, allora hai ottenuto…»
+
+È **un elenco travestito da frase** — lo stesso difetto che B aveva eliminato in `passo-2-vettori`,
+ricomparso in altra forma. Chi ascolta arriva al risultato avendo perso i primi due pesi.
+Indicazione: spezzare e far arrivare prima il risultato parziale. A voce il numero va detto vicino
+ai dati che lo producono.
+
+Gli altri sette (37-42 parole) sono al limite ma accettabili. **`passo-1-sito` a 412 parole non
+suona lunga: non tagliare.**
+
+### Accettato da A
+- L'allineamento delle durate vere, con la richiesta conservata a fianco.
+- `dove-sei` sotto bersaglio: **«il ragionamento è migliore del mio»** — il riempitivo in una
+  sezione comune si moltiplica per dodici.
+- L'avvertimento su Playwright: **riguarda anche il progetto di A**, che ha una suite Playwright e
+  avrebbe scritto lo stesso collaudo con lo stesso verde falso.
+
+**B è autorizzato ad andare in blocco sui due corsi prioritari.** Costante ferma a 2,27, vincolo
+verificabile col suo validatore, revisione di ascoltabilità sul blocco intero alla consegna.
+
+
+---
+
+## 8. Verdetto di pronuncia dell'utente — CONGELATO
+
+Ascoltati tutti e quindici i campioni A/B in `_campione/pronuncia/`.
+
+**In inglese, quattro:** `scope` · `file` · `stakeholder` · `baseline`
+**Italiani tutti gli altri**, anche quelli che sembrano inglesi: `audit` (43 occorrenze),
+`due diligence`, `market based`, `location based`, `governance`, `backup`, `standard`,
+`target`, `budget`, `business`, `checklist`.
+
+Congelato in `genera-audio.py` con la motivazione accanto, così nessuno lo riapre per intuizione.
+**In sospeso:** `cloud`, l'unico non giudicato.
+
+---
+
+## 9. Il bersaglio: rapporto fisso invece di minuti fissi
+
+L'utente ha chiesto 40-45 minuti «sincronizzati con il resto». Con **minuti fissi** il rapporto
+audio/lettura cambia da corso a corso (0,69 e 0,78): chi ne fa due di fila sente la voce
+«correre» nel secondo.
+
+**Adottato il rapporto fisso 0,70** — `secondi = minuti_a_schermo × 42`:
+
+| | Lettura | Audio | Fattore |
+|---|---|---|---|
+| `energetico` | 65 min | **45,5 min** | ×2,03 |
+| `bilancio` | 58 min | **40,6 min** | ×2,01 |
+
+Entrambi dentro il 40-45 chiesto, passo uniforme dentro **e** fra i corsi, sforzo di scrittura
+identico. B: «la ragione che porti è quella giusta e non ci avevo pensato».
+
+**Previsione di B, messa per iscritto per poterla verificare:** reggeranno il raddoppio le sezioni
+di **metodo** (usi finali, materialità, indicatori), dove a schermo c'è una tabella e la voce deve
+spiegare. A rischio le **comuni** e le sezioni di chiusura, già scritte per essere brevi.
+
+---
+
+## 10. Il controllo di prontezza — VERDETTO: non pronti a inserire
+
+| | |
+|---|---|
+| Archivio Supabase (`media`, privato) | ✅ esiste, verificato interrogandolo |
+| CSP (`media-src` da `SUPABASE_URL`) | ✅ a posto |
+| Convenzione nomi + manifesto | ✅ concordati |
+| Voce, glossario, pronuncia | ✅ congelati |
+| **Script scritti** | 🔴 **3 su 22** |
+| **Player** | 🔴 **non esiste**, bloccato su decisione utente |
+
+### ⚠️ Due correzioni di B che avrebbero fatto sbattere
+
+**Il percorso sarebbe stato rifiutato.** In quel prodotto ogni chiave d'archivio deve cominciare
+con l'identificativo dell'organizzazione — è il perimetro fra studi. `_mp3/<corso>/<id>.mp3` non
+sarebbe stato servito. Va sotto **`_piattaforma/formazione/`**, il prefisso riservato dove sta già
+il video di benvenuto.
+
+**Il caricamento lo fa B, non A.** In locale `SUPABASE_URL` punta allo **sviluppo**: A caricherebbe
+nell'archivio sbagliato senza accorgersene. Precedente già pagato in quel progetto: settimane di
+PDF di collaudo finiti nell'archivio di produzione.
+
+### Il costo nascosto dell'operazione (punto 6 di B)
+
+> **L'audio irrigidisce i corsi.** Oggi correggi una frase ed è viva subito. Con novanta tracce
+> registrate, ogni modifica apre tre strade: risintetizzare, lasciar divergere pagina e voce, o
+> smettere di correggere. **La seconda è la peggiore perché è silenziosa.**
+
+Rimedio: non la disciplina, che si dimentica, ma un controllo che diventa rosso. Da scrivere
+**insieme** al player, non dopo.
+
+**Aggiunta di A — la divergenza ha DUE forme:**
+- *script cambiato, audio vecchio* → la coglie `sha_script`
+- *script invariato ma STANDARD DI VOCE cambiato* (glossario, sigle, lista inglese) → la coglie
+  `sha`, che include voce e standard
+
+La seconda **è già successa**: col verdetto di pronuncia, tutte le tracce prodotte prima sono
+diventate vecchie pur avendo lo script identico.
+
+### Applicato da A
+`audio-map.json` ora porta per traccia: `sha`, **`sha_script`**, `durata_s`, `byte`, `parole`,
+`mp3`, **`chiave_archivio`** già completa di prefisso.
+
+---
+
+## 11. Le decisioni che restano all'utente
+
+| | Chi la pone | Urgenza |
+|---|---|---|
+| **Slide o pagina che scorre** | B | 🔴 blocca il player |
+| Audio per tutti o solo per chi paga | B | 🟡 in mancanza di risposta: accesso richiesto, nessun limite di piano |
+| `cloud` inglese o italiano | A | 🟡 |
+| Formule escluse (tranne quella già a parole) | A | 🟡 |
+| Due corsi o dodici | B | 🟢 |
+| Il trasversale entra | B | 🟢 (B: sì, per ultimo) |
+| 38 densi o 45 pieni | entrambi | ⚪ **già d'accordo: 38 densi** |

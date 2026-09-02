@@ -1,38 +1,42 @@
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
-
+import { Headphones } from "lucide-react";
 
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import type { SchedaCorso } from "@/features/formazione";
-import { Badge } from "@/components/ui/badge";
+import { minutiDiVoce } from "@/features/formazione/audio";
+import { tempoDaDedicare, formattaDurata } from "@/features/formazione/tempo";
 import { cn } from "@/lib/utils";
 
 /**
  * La scheda di un corso nell'indice.
  *
- * ⚠️ NASCE DA UN RILIEVO DEL COMMITTENTE: dodici schede identiche, «troppo spoglia». Ed
- * era vero due volte — la griglia di card uguali è nominata fra le anti-reference di
- * PRODUCT.md, e soprattutto quelle schede non dicevano NIENTE di sé: cambiava il titolo,
- * il resto era la stessa forma dodici volte.
+ * ⚠️ RIFATTA DUE VOLTE, E LA SECONDA PER TOGLIERE. La prima versione erano dodici schede
+ * identiche — la griglia di card uguali che PRODUCT.md nomina fra le anti-reference. La
+ * seconda diceva troppe cose: i minuti comparivano DUE volte, la barra spezzava il corso in
+ * quattordici slivere illeggibili, e in fondo c'era «Apri il corso» con la freccia su ogni
+ * scheda, mentre la scheda intera è già un collegamento. Dodici richiami identici a un
+ * gesto che si fa cliccando ovunque sono rumore, non aiuto.
  *
- * ⚠️ La differenza non si è cercata nella decorazione ma in un DATO. Un corso è fatto di
- * una parte comune a tutti e dodici — interfaccia, salvataggio, verifica, pubblicazione —
- * e di una parte che esiste solo per quel percorso. È la distinzione che il prodotto ha
- * già dentro, ed è quella che interessa a chi sceglie cosa leggere: la barra mostra le due
- * porzioni in proporzione ai minuti, quindi ogni corso ha una forma sua e la forma
- * significa qualcosa.
+ * ⚠️ La differenza fra un corso e l'altro si cerca in un DATO, non nella decorazione. Un
+ * corso è una parte comune a tutti e dodici — interfaccia, salvataggio, verifica,
+ * pubblicazione — più una parte che esiste solo per quel percorso. La barra mostra QUELLE
+ * DUE, non le quattordici sezioni: due segmenti si leggono, quattordici no.
  *
- * L'icona e il colore vengono dal registro: «un'area un colore, un modulo un'icona» è la
- * regola scritta in DESIGN.md, e in questa pagina non era usata.
+ * ⚠️ E NIENTE QUADRATINO COLORATO CON L'ICONA DENTRO, tolto al terzo giro. È la forma
+ * più riconoscibile della card SaaS generica — icona in un riquadro pieno, titolo,
+ * paragrafo, ripetuta dodici volte — ed è nominata così com'è fra le anti-reference di
+ * PRODUCT.md. Qui non portava nemmeno informazione: l'area la dichiara l'intestazione del
+ * gruppo, il colore lo porta già la barra, e l'icona del modulo si vede nella barra
+ * laterale quando ci sei dentro. Restava un bollo colorato per riempire l'angolo.
  */
 export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
   const m = MODULI_AZIENDA.find((x) => x.href === corso.modulo)!;
-  const Icona = m.icona;
 
-  // Le sezioni proprie stanno in fondo: il corso è «comuni, poi proprie».
-  const quanteProprie = corso.argomenti.length;
-  const primaPropria = corso.sezioni.length - quanteProprie;
-  const minutiTotali = corso.sezioni.reduce((n, s) => n + s.minuti, 0);
+  const minutiComuni = corso.sezioni
+    .filter((s) => corso.idComuni.includes(s.id))
+    .reduce((n, s) => n + s.minuti, 0);
+  const minutiProprie = corso.minuti - minutiComuni;
+  const voce = minutiDiVoce(corso.modulo, corso.sezioni, corso.idComuni);
 
   return (
     <Link
@@ -40,64 +44,58 @@ export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
       data-corso={corso.modulo}
       className="group flex flex-col rounded-xl border bg-card p-4 transition-all hover:border-foreground/15 hover:shadow-md"
     >
-      <div className="flex items-start gap-3">
-        <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", m.colore.pieno)}>
-          <Icona className="size-4" strokeWidth={2} aria-hidden />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold leading-tight tracking-tight group-hover:text-primary">
-            {corso.nome}
-          </p>
-          <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{corso.norma}</p>
-        </div>
-        <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-muted-foreground">
-          <Clock className="size-3.5" aria-hidden />
-          <span data-slot="kpi">{corso.minuti}</span> min
-        </span>
-      </div>
-
-      {/* ⚠️ La barra è INFORMAZIONE, non ornamento: ogni segmento è una sezione, e la sua
-          larghezza sono i suoi minuti. Le sezioni proprie del percorso sono nel colore
-          dell'area, le comuni in grigio — così a colpo d'occhio si vede quanto di quel
-          corso riguarda quel percorso e quanto è il mestiere di base, che si legge una
-          volta sola. `aria-hidden` perché la riga sotto dice le stesse cose a parole. */}
-      <div className="mt-4 flex h-1.5 gap-px overflow-hidden rounded-full" aria-hidden>
-        {corso.sezioni.map((s, i) => (
-          <span
-            key={s.id}
-            style={{ flexGrow: s.minuti }}
-            className={cn(
-              "block",
-              i >= primaPropria && quanteProprie > 0 ? m.colore.tratto : "bg-muted-foreground/25",
-            )}
-          />
-        ))}
-      </div>
-
-      <p className="mt-2.5 text-[12px] text-muted-foreground">
-        <span data-slot="kpi">{corso.sezioni.length}</span> sezioni ·{" "}
-        <span data-slot="kpi">{minutiTotali}</span> minuti di lettura
+      {/* La norma sopra il nome, in mono: è la riga con cui un consulente riconosce un
+          corso prima ancora di leggerne il titolo, ed è l'unico elemento che distingue
+          davvero una scheda dall'altra. Sta in alto perché è quello che si cerca. */}
+      <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">{corso.norma}</p>
+      <p className="mt-1 text-[16px] font-semibold leading-tight tracking-tight group-hover:text-primary">
+        {corso.nome}
       </p>
 
-      <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-muted-foreground">
-        {corso.completo ? (
+      {/* ⚠️ DUE segmenti, non quattordici. La domanda a cui questa barra risponde è una
+          sola: quanto di questo corso riguarda QUESTO percorso, e quanto è il mestiere di
+          base che si legge una volta per tutte. Con una sliverina per sezione la risposta
+          c'era e non si vedeva. `aria-hidden` perché la riga sotto la dice a parole. */}
+      <div className="mt-4 flex h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
+        <span style={{ flexGrow: minutiComuni }} className="block bg-muted-foreground/30" />
+        {minutiProprie > 0 && <span style={{ flexGrow: minutiProprie }} className={cn("block", m.colore.tratto)} />}
+      </div>
+
+      <p className="mt-2.5 text-[12.5px] text-muted-foreground">
+        {minutiProprie > 0 ? (
           <>
-            {corso.argomenti.slice(0, 3).join(" · ")}
-            {corso.argomenti.length > 3 ? " …" : ""}
+            <span data-slot="kpi">{formattaDurata(tempoDaDedicare(minutiProprie))}</span> su questo percorso, più{" "}
+            <span data-slot="kpi">{formattaDurata(tempoDaDedicare(minutiComuni))}</span> comuni a tutti
           </>
         ) : (
-          <Badge variant="outline" className="align-middle text-[10.5px]">
+          <>
+            <span data-slot="kpi">{formattaDurata(tempoDaDedicare(minutiComuni))}</span> sull&apos;uso del prodotto ·
             parte specifica in preparazione
-          </Badge>
+          </>
         )}
       </p>
 
-      <span className="mt-3 flex items-center gap-1 text-[12.5px] font-medium text-muted-foreground transition-colors group-hover:text-primary">
-        Apri il corso
-        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-      </span>
+      {corso.completo && (
+        <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-foreground/70">
+          {corso.argomenti.slice(0, 3).join(" · ")}
+          {corso.argomenti.length > 3 ? " …" : ""}
+        </p>
+      )}
+
+      {/* La voce è l'unica cosa che davvero distingue un corso pronto da uno da leggere, e
+          finora la scheda non la nominava: chi apriva sperando di ascoltare lo scopriva
+          dentro. Compare solo dove c'è, invece di un «senza audio» su tutti gli altri. */}
+      {voce.totale > 0 && (
+        <p className="mt-3 flex items-center gap-1.5 text-[12px] font-medium text-primary">
+          <Headphones className="size-3.5" aria-hidden />
+          <span data-slot="kpi">{voce.totale}</span> min di voce
+          {!voce.completa && (
+            <span className="font-normal text-muted-foreground">
+              {voce.proprie === 0 ? "sulla parte comune" : "in parte"}
+            </span>
+          )}
+        </p>
+      )}
     </Link>
   );
 }
-
-

@@ -55,6 +55,15 @@ export type SchedaCorso = {
   sezioni: Sezione[];
   /** I titoli delle sezioni PROPRIE: è ciò che distingue un corso dall'altro. */
   argomenti: string[];
+  /**
+   * Gli id delle sezioni COMUNI di questo corso.
+   *
+   * ⚠️ Serve a sapere dove sta la traccia audio: le comuni sono un file solo riusato da
+   * tutti e dodici i corsi, le proprie stanno sotto il corso. Dedurlo dalla posizione —
+   * «le ultime N sono proprie» — reggerebbe finché nessuno cambia l'ordine, e il giorno
+   * in cui cambia le tracce finirebbero sulla sezione sbagliata senza un errore.
+   */
+  idComuni: string[];
 };
 
 /** Il corso di un percorso: sezioni comuni più, se ci sono, quelle sue. */
@@ -63,7 +72,8 @@ export function corsoDelModulo(modulo: ModuloAzienda): SchedaCorso {
   if (!m) throw new Error(`Percorso sconosciuto: ${modulo}`);
 
   const corso: Corso = { modulo, proprie: PROPRIE[modulo] ?? [] };
-  const sezioni = [...sezioniComuni(modulo), ...corso.proprie];
+  const comuni = sezioniComuni(modulo);
+  const sezioni = [...comuni, ...corso.proprie];
 
   return {
     modulo,
@@ -73,6 +83,7 @@ export function corsoDelModulo(modulo: ModuloAzienda): SchedaCorso {
     minuti: minutiTotali(sezioni),
     sezioni,
     argomenti: corso.proprie.map((s) => s.titolo),
+    idComuni: comuni.map((s) => s.id),
   };
 }
 

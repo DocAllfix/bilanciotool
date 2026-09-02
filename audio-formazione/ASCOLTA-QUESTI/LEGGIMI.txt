@@ -1,0 +1,40 @@
+ASCOLTA IN QUEST'ORDINE. In tutto: 40 secondi + 7 minuti.
+
+--- I PRIMI CINQUE: 8 secondi ciascuno, 40 secondi in tutto ---
+In ognuno senti la stessa frase due volte:
+   VERSIONE A = pronuncia all'italiana
+   VERSIONE B = pronuncia in inglese
+Devi solo dirmi quale preferisci per ognuno.
+
+1-PRONUNCIA-audit          43 volte nei corsi, il piu' frequente di tutti.
+                           Gli auditor italiani dicono "audit" all'italiana.
+2-PRONUNCIA-file           25 volte. All'italiana diventa "fi-le" come una
+                           fila di persone.
+3-PRONUNCIA-scope          poche volte ma e' terminologia esatta del bilancio
+                           GHG. All'italiana suona "sco-pe".
+4-PRONUNCIA-standard       il caso OPPOSTO: serve a controllare che non stiamo
+                           mettendo in inglese cose che in italiano vanno bene.
+5-PRONUNCIA-market-based   termine tecnico, va sempre in coppia con
+                           "location based".
+
+Rispondi cosi': "inglese: file, scope, market based. italiano: audit, standard."
+Gli altri dieci termini stanno in _campione\pronuncia\ se vuoi essere preciso.
+
+--- GLI ULTIMI DUE: servono a giudicare il TONO, non la pronuncia ---
+
+6-TONO-tabella-raccontata (3 min 26)
+   E' la prova piu' importante. A schermo questa sezione e' una TABELLA con
+   sette fonti di dati. A voce e' stata riscritta come sette frasi che si
+   tengono, perche' un elenco letto ad alta voce e' faticosissimo da seguire.
+   Se questo ti suona naturale, tutto il resto del corso funzionera'.
+
+7-TONO-esempio-numerico (3 min 23)
+   C'e' un esempio numerico condotto passo per passo: e' il modo giusto di
+   dire una formula a voce, senza formalismo.
+   ATTENZIONE: verso la fine c'e' una frase di 53 parole che ho gia' segnalato
+   da correggere. Probabilmente la senti arrancare. Serve a farti capire che
+   cosa intendo quando dico che un testo e' "sintetizzabile ma non
+   ascoltabile".
+
+--- SE HAI SOLO UN MINUTO ---
+Ascolta 1-PRONUNCIA-audit e i primi 30 secondi di 6-TONO-tabella-raccontata.
