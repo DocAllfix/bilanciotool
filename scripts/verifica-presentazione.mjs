@@ -17,7 +17,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { strumenta, contatore, pretendiServerAggiornato, attendi } from "./comune-collaudo.mjs";
+import { strumenta, contatore, pretendiServerAggiornato, attendi, attraversaProtezione } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -30,6 +30,11 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1500, height: 1000 } });
 const sonda = strumenta(page);
 const { agisci, riepilogo } = contatore(page, sonda);
+
+// ⚠️ Su un'anteprima protetta ogni pagina e' la schermata di accesso di Vercel, e il
+// collaudo riferisce difetti che non esistono: qui si fermava sul campo del nome della
+// registrazione, che era il campo di Vercel. Va chiamata PRIMA di qualunque navigazione.
+await attraversaProtezione(page);
 
 const { orgId } = await registraEEntra(page, sql, {
   base: BASE,

@@ -25,7 +25,7 @@ import {
   contatore,
   attendi,
   pretendiServerAggiornato,
-  pretendiPdfVero, fattoreAttesa } from "./comune-collaudo.mjs";
+  pretendiPdfVero, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -39,6 +39,7 @@ await pretendiServerAggiornato(BASE);
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1500, height: 1000 } });
+await attraversaProtezione(page);
 const sonda = strumenta(page);
 const { agisci, respinto, riepilogo } = contatore(page, sonda);
 

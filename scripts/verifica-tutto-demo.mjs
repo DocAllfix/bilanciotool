@@ -12,7 +12,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore, attendi, fattoreAttesa } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
@@ -47,6 +47,7 @@ await ctx.addInitScript(() => {
   } catch {}
 });
 const page = await ctx.newPage();
+await attraversaProtezione(page);
 const sonda = strumenta(page);
 const { agisci, respinto, riepilogo } = contatore(page, sonda);
 
