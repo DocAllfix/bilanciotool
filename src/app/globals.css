@@ -205,6 +205,20 @@
    desktop, dove il puntatore e preciso. Qui si allarga soltanto l'area
    SENSIBILE, con uno pseudo-elemento invisibile, e solo dove il puntatore e
    grossolano (dito). Il testo resta esattamente dov'e. */
+/**
+ * Una barra di scorrimento discreta, per le colonne che devono scorrere senza gridarlo.
+ *
+ * ⚠️ Serve alla barra laterale, che dentro un'azienda porta dodici percorsi e su uno
+ * schermo da portatile deve scorrere. La barra di sistema, chiara e larga, su un fondo
+ * scuro si vede più del contenuto: qui si assottiglia e prende i colori della sidebar.
+ * Resta però una barra VERA — non si nasconde: una colonna che scorre senza dirlo è un
+ * pezzo di prodotto che gli utenti non trovano.
+ */
+@utility scorri-sobrio {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, currentColor 22%, transparent) transparent;
+}
+
 @utility tocco-comodo {
   @media (pointer: coarse) {
     position: relative;

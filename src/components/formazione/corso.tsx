@@ -111,11 +111,28 @@ function BloccoReso({ b }: { b: Blocco }) {
   );
 }
 
-export function SezioneCorso({ sezione, indice }: { sezione: Sezione; indice: number }) {
+export function SezioneCorso({
+  sezione,
+  indice,
+  tinta,
+}: {
+  sezione: Sezione;
+  indice: number;
+  /** Le classi del colore dell'area, dal registro dei moduli. */
+  tinta?: { tratto: string; testo: string };
+}) {
   return (
     <section id={sezione.id} className="scroll-mt-24 border-t pt-8">
+      {/* ⚠️ Il numero della sezione porta il colore dell'AREA, non un colore suo. È il
+          modo in cui questo prodotto colora: la tinta dice la materia, e ripeterla qui
+          lega il corso al percorso di cui parla senza aggiungere niente da decidere. */}
       <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        <span className="font-mono" data-slot="kpi">
+        <span
+          className={`flex size-6 items-center justify-center rounded-md font-mono text-[10.5px] ${
+            tinta ? `${tinta.tratto} text-white` : "bg-muted text-muted-foreground"
+          }`}
+          data-slot="kpi"
+        >
           {String(indice).padStart(2, "0")}
         </span>
         {sezione.minuti} min

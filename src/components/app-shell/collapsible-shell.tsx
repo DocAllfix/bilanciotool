@@ -63,7 +63,21 @@ export function CollapsibleShell({
             )}
           </Link>
         </div>
-        <SidebarNav compatta={compatta} aziende={aziende} />
+        {/* ⚠️ LO SCORRIMENTO STA QUI, E SERVONO DUE COSE INSIEME.
+            `overflow-y-auto` da solo non fa NIENTE: questo è un figlio flex, e un figlio
+            flex ha `min-height: auto`, cioè si rifiuta di rimpicciolirsi sotto il proprio
+            contenuto. Senza `min-h-0` la barra continuerebbe a traboccare esattamente come
+            prima, e la correzione sembrerebbe applicata.
+
+            ⚠️ E non era «non si scorre»: dentro un'azienda la barra mostra il nome, il
+            fascicolo e DODICI percorsi, e su uno schermo da portatile il contenuto usciva
+            dal riquadro fisso portandosi via anche ciò che sta sotto — il menu
+            dell'account e l'interruttore del tema diventavano irraggiungibili. Il comando
+            «Comprimi» e il piede restano FUORI da questa area apposta: sono controlli, non
+            contenuto, e devono essere raggiungibili anche a metà elenco. */}
+        <div className="min-h-0 flex-1 overflow-y-auto scorri-sobrio">
+          <SidebarNav compatta={compatta} aziende={aziende} />
+        </div>
         <button
           type="button"
           onClick={commuta}

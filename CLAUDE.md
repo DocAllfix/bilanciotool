@@ -2117,6 +2117,63 @@ rimettendo il difetto (92 istanti sovrapposti, sull'asserzione giusta) · `benve
 `formazione` 12/12 · `formazione-comandi` **17/17** (selettore, indice che segue,
 riproduzioni che non sono immagini) · foto in chiaro e scuro **guardate**, console pulita.
 
+**La barra che non scorreva, e la formazione più curata (2026-09-02, seconda tornata)**
+
+⚠️ **Dentro un'azienda la barra laterale perdeva il piede.** Segnalato dal committente come
+«non mi permette di scorrere», ed era peggio: la `<aside>` è `fixed` a tutta altezza e in
+colonna, e il `<nav>` non aveva né `flex-1` né `overflow`. Con 14 voci — nome, fascicolo e
+dodici percorsi — su uno schermo da portatile il contenuto usciva dal riquadro **portandosi
+via ciò che sta sotto**: menu dell'account e interruttore del tema irraggiungibili.
+
+**Il perché preciso, e la ragione per cui una correzione superficiale non avrebbe
+funzionato**: `overflow-y-auto` da solo non fa niente su un figlio flex, perché
+`min-height: auto` gli impedisce di rimpicciolirsi sotto il proprio contenuto. Serve
+`min-h-0`. Senza, la correzione sembrerebbe applicata e la barra continuerebbe a
+traboccare. Misurato: l'ultima voce stava **47px sotto lo schermo**, ora il contenitore
+scorre di 173px, l'ultima voce è raggiungibile e cliccabile e il menu dell'account è
+visibile.
+
+Lo scorrimento sta sull'`aside` e non sul `nav`, che è condiviso col menu del telefono: là
+la pagina scorre già da sé, e mettere un'altezza vincolata su un componente che non sa dove
+vive è il modo di romperlo altrove. «Comprimi» e il piede restano **fuori** dall'area che
+scorre: sono controlli, non contenuto.
+
+**La formazione, dopo il rilievo «troppo spoglia».** Dodici schede identiche non dicevano
+niente di sé — ed è la griglia di card uguali che l'anti-reference vieta. La differenza si
+è cercata in un **dato**, non nella decorazione: ogni corso è una parte comune a tutti e
+dodici più una parte che esiste solo per quel percorso, e la barra della scheda mostra le
+due porzioni in proporzione ai minuti. Ogni corso ha una forma sua, e la forma significa
+qualcosa. Più l'icona nel colore dell'area — la regola «un'area un colore, un modulo
+un'icona» era scritta in `DESIGN.md` e su quella pagina non era usata.
+
+Più colore, coi colori del registro e in tre punti soltanto: le intestazioni dei gruppi
+(con un filo che lega le schede sotto), l'icona della scheda, e il numero di sezione dentro
+il corso. **Ordine della barra come deciso dal committente**: formazione, guida,
+impostazioni.
+
+⚠️ **Due difetti dei collaudi, non del prodotto, dichiarati invece che assorbiti:**
+- `qa -- guida` è caduto **1 su 7** e poi passato **7 su 7**: l'avevo lanciato nove secondi
+  dopo `npm run start`, e `networkidle` su un server che sta ancora compilando la rotta
+  scade. **Dopo un avvio il server va scaldato prima di misurare.**
+- `visual-check-shell` stampava «OK» e **non usciva mai**: lasciava aperta la connessione al
+  database. Da solo si nota poco; dentro un lotto blocca tutti quelli dopo, ed è il motivo
+  per cui due esecuzioni di fila sono andate in timeout facendo sembrare rotto ciò che era
+  soltanto in attesa.
+
+**Regole nate qui:**
+- **`overflow` su un figlio flex non fa niente senza `min-h-0`.** È la ragione per cui
+  questo difetto può essere «corretto» due volte senza cambiare niente.
+- **Un collaudo che non chiude le proprie risorse non fallisce: appende**, e chi guarda
+  vede un timeout e accusa il prodotto.
+- **Quando una superficie sembra spoglia, la cura si cerca in un dato che già esiste**, non
+  in un ornamento: la barra delle sezioni distingue le dodici schede perché dice una cosa
+  vera di ciascuna.
+
+Gate: typecheck · build · **1225 test** (il primo giro caduto su `ENOTFOUND`: verificata la
+raggiungibilità e rilanciato) · `formazione` 12/12 · `formazione-comandi` 17/17 · `guida`
+7/7 a server caldo · `shell` esce con 0 · `tutto-demo` 68/68 · barra misurata su schermo
+basso · foto in chiaro e scuro guardate.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

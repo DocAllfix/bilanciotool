@@ -91,7 +91,12 @@ export default async function CorsoPage({ params }: Props) {
 
         <div className="mt-8 min-w-0 flex-1 space-y-12 lg:mt-0" data-sezioni="">
           {c.sezioni.map((s, i) => (
-            <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
+            <SezioneCorso
+              key={s.id}
+              sezione={s}
+              indice={i + 1}
+              tinta={{ tratto: area.colore.tratto, testo: m.colore.tenue }}
+            />
           ))}
 
           <div className="border-t pt-6">

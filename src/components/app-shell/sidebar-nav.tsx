@@ -25,12 +25,12 @@ const VOCI = [
   // collegamento del portale cliente e' per azienda, e tutto cio' che vive in una
   // pagina dell'azienda e' materiale che un giorno qualcuno potrebbe includerci.
   { href: "/compensi", label: "Compensi", icon: Wallet, tour: "nav-compensi" },
-  { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
-  { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
-  // ⚠️ In fondo, dopo la guida: la guida risponde a una domanda che hai adesso, la
-  // formazione è un'ora che ti prendi quando puoi. Metterla prima la fa sembrare un
-  // passaggio obbligato per usare il prodotto, che non è.
+  // ⚠️ Ordine deciso dal committente: formazione, guida, impostazioni. Le tre code della
+  // barra vanno dalla più «lavoro» alla più «configurazione», e la formazione apre il
+  // gruppo perché è la sola che insegna qualcosa invece di rispondere o di regolare.
   { href: "/formazione", label: "Formazione", icon: GraduationCap, tour: "nav-formazione" },
+  { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
+  { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
 ] as const;
 
 /** `/aziende/<id>/...` → l'id, altrimenti null. */
