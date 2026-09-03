@@ -227,5 +227,27 @@ for (const corso of daFare) {
 console.log(`\n${traccePartite} tracce riprodotte davvero. Le altre ${tracceAttese - traccePartite} sono coperte da tracce-pure.test.ts, che le prova tutte in due secondi.`);
 const esito = riepilogo("Tracce audio");
 await browser.close();
+
+// ⚠️ SI RIPULISCE SEMPRE, e su produzione e' la ragione per cui questo collaudo si puo'
+// lanciare li'. Un conto di collaudo lasciato in un database che incassa e' uno studio
+// fantasma con l'abbonamento attivo: falsa i conteggi, compare negli elenchi, e fra sei
+// mesi nessuno sa piu' che cosa fosse. Si toglie l'organizzazione e l'utente, in
+// transazione, e si verifica che siano spariti invece di sperarlo.
+try {
+  await sql.begin(async (t) => {
+    await t`delete from organization where id = ${orgId}`;
+    await t`delete from "user" where email = ${`tracce-${RUN}@example.com`}`;
+  });
+  const [{ n: utenti }] = await sql`select count(*)::int as n from "user" where email = ${`tracce-${RUN}@example.com`}`;
+  const [{ n: org }] = await sql`select count(*)::int as n from organization where id = ${orgId}`;
+  console.log(
+    utenti === 0 && org === 0
+      ? "conto di collaudo rimosso: zero utenti, zero organizzazioni."
+      : `⚠️ PULIZIA INCOMPLETA: ${utenti} utenti, ${org} organizzazioni ancora presenti.`,
+  );
+} catch (e) {
+  console.log("⚠️ PULIZIA FALLITA, il conto e' rimasto:", e?.message ?? e);
+}
+
 await sql.end();
 process.exit(esito ? 0 : 1);

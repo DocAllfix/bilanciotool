@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Play } from "lucide-react";
+import { ArrowLeft, Clock, Headphones, Play } from "lucide-react";
 
 import { corsoDelModulo, esisteCorso } from "@/features/formazione";
 import { MODULI_AZIENDA, AREE } from "@/features/companies/moduli";
@@ -9,6 +9,7 @@ import { SezioneCorso } from "@/components/formazione/corso";
 import { SelettoreCorsi } from "@/components/formazione/selettore";
 import { IndiceCorso } from "@/components/formazione/indice";
 import { tempoDaDedicare, formattaDurata } from "@/features/formazione/tempo";
+import { minutiDiVoce } from "@/features/formazione/audio";
 
 type Props = { params: Promise<{ modulo: string }> };
 
@@ -27,6 +28,7 @@ export default async function CorsoPage({ params }: Props) {
   const c = corsoDelModulo(modulo);
   const m = MODULI_AZIENDA.find((x) => x.href === modulo)!;
   const area = AREE[m.area];
+  const voce = minutiDiVoce(c.modulo, c.sezioni, c.idComuni);
 
   return (
     // ⚠️ IL TERZO REGISTRO, MA CONTENUTO. Il prodotto ne ha già due — l'app densa e il
@@ -62,6 +64,12 @@ export default async function CorsoPage({ params }: Props) {
             <span>
               <span data-slot="kpi">{c.sezioni.length}</span> sezioni
             </span>
+            {voce.totale > 0 && (
+              <span className="flex items-center gap-1.5 font-medium text-primary">
+                <Headphones className="size-3.5" aria-hidden />
+                <span data-slot="kpi">{voce.totale}</span> minuti di voce
+              </span>
+            )}
           </p>
         </div>
       </header>

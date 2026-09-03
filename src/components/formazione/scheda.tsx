@@ -68,9 +68,17 @@ export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
         {voce.totale > 0 && (
           <>
             <span aria-hidden>·</span>
+            {/* ⚠️ QUI NON VA IL NUMERO DEI MINUTI DI VOCE, e non è una dimenticanza.
+                Fra un corso e l'altro va da trentuno a quarantaquattro, e tredici numeri
+                sparpagliati su una griglia si leggono come disordine invece che come
+                informazione. La tentazione opposta — arrotondarli tutti verso l'alto per
+                farli sembrare uguali — sarebbe scrivere una durata che il corso non ha, su
+                una pagina che legge chi paga: un numero falso costa più del disordine che
+                risolve. Il minutaggio vero sta DENTRO il corso, dove serve a decidere se
+                cominciare adesso; qui basta sapere che si può ascoltare. */}
             <span className="flex items-center gap-1.5 font-medium text-primary">
               <Headphones className="size-3.5" aria-hidden />
-              <span data-slot="kpi">{voce.totale}</span> min di voce
+              con la voce
               {!voce.completa && <span className="font-normal text-muted-foreground">in parte</span>}
             </span>
           </>
