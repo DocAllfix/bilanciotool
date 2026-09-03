@@ -5,6 +5,8 @@ import { Clock, Compass } from "lucide-react";
 import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { corsoDelModulo, TRASVERSALI, corsoTrasversale } from "@/features/formazione";
 import { SchedaFormazione } from "@/components/formazione/scheda";
+import { RISULTATO_TRASVERSALE } from "@/features/formazione/risultati";
+import { tempoDaDedicare, formattaDurata } from "@/features/formazione/tempo";
 
 export const metadata: Metadata = { title: "Formazione" };
 
@@ -18,10 +20,16 @@ export const metadata: Metadata = { title: "Formazione" };
 export default function FormazionePage() {
   return (
     <div className="mx-auto w-full max-w-6xl pb-16">
-      <h1 className="text-2xl font-semibold tracking-tight">Formazione</h1>
-      <p className="mt-1 max-w-prose text-sm text-muted-foreground">
-        Un corso per percorso: come si usa, dove si prendono i dati, che cosa controlla la verifica e
-        che cosa succede quando si pubblica. Si legge a pezzi, e riprende da dove eri rimasto.
+      {/* ⚠️ L'apertura dice il RITORNO, non l'argomento, ed è la stessa leva delle schede.
+          «Un corso per percorso» descrive l'inventario; dire che si ascoltano mentre si
+          lavora, e che si può cominciare da metà, dice a chi legge che cosa ci guadagna.
+          Niente banda a piena larghezza né numeri giganti: il registro resta quello del
+          prodotto, cambia il ritmo. */}
+      <h1 className="font-display text-[30px] font-bold leading-tight tracking-[-0.02em]">Formazione</h1>
+      <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-foreground/75">
+        Un corso per ogni percorso, scritto da chi lo ha costruito: dove si prendono i dati, che cosa
+        chiede chi verifica, e gli errori che costano una settimana. Si possono <strong className="font-semibold text-foreground">ascoltare</strong>{" "}
+        mentre lavori, e si comincia anche da metà.
       </p>
 
       <div className="mt-8 space-y-7" data-formazione="">
@@ -70,11 +78,11 @@ export default function FormazionePage() {
                   <p className="font-medium leading-tight">{c.nome}</p>
                   <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-muted-foreground">
                     <Clock className="size-3.5" aria-hidden />
-                    <span data-slot="kpi">{c.minuti}</span> min
+                    <span data-slot="kpi">{formattaDurata(tempoDaDedicare(c.minuti))}</span>
                   </span>
                 </div>
-                <p className="mt-2 max-w-prose text-[12.5px] leading-relaxed text-muted-foreground">
-                  {c.sottotitolo}
+                <p className="mt-2 max-w-[70ch] text-[13.5px] leading-relaxed text-foreground/75">
+                  {RISULTATO_TRASVERSALE[c.chiave] ?? c.sottotitolo}
                 </p>
               </Link>
             );

@@ -277,3 +277,12 @@
 .evalisdeck-popover .driver-popover-arrow-side-right { border-right-color: var(--popover); }
 .evalisdeck-popover .driver-popover-arrow-side-top { border-top-color: var(--popover); }
 .evalisdeck-popover .driver-popover-arrow-side-bottom { border-bottom-color: var(--popover); }
+
+/* L'entrata di una slide nella presentazione: sale di poco e si rivela.
+   ⚠️ Curva in uscita e nessun rimbalzo — DESIGN.md lo dice per tutto il prodotto, e qui
+   conta doppio: una schermata che cambia ogni venti secondi con un rimbalzo diventa un
+   tic. E niente proprietà di disposizione animate: solo opacità e spostamento. */
+@keyframes slideEntra {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

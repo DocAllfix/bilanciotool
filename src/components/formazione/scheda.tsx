@@ -1,103 +1,106 @@
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
-
+import { Headphones, Play } from "lucide-react";
 
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import type { SchedaCorso } from "@/features/formazione";
-import { Badge } from "@/components/ui/badge";
+import { minutiDiVoce } from "@/features/formazione/audio";
+import { RISULTATO } from "@/features/formazione/risultati";
+import { tempoDaDedicare, formattaDurata } from "@/features/formazione/tempo";
 import { cn } from "@/lib/utils";
 
 /**
  * La scheda di un corso nell'indice.
  *
- * ⚠️ NASCE DA UN RILIEVO DEL COMMITTENTE: dodici schede identiche, «troppo spoglia». Ed
- * era vero due volte — la griglia di card uguali è nominata fra le anti-reference di
- * PRODUCT.md, e soprattutto quelle schede non dicevano NIENTE di sé: cambiava il titolo,
- * il resto era la stessa forma dodici volte.
+ * ⚠️ RIFATTA TRE VOLTE, E OGNI VOLTA PER TOGLIERE. Prima erano dodici schede identiche —
+ * la griglia di card uguali che PRODUCT.md nomina fra le anti-reference. Poi dicevano
+ * troppo: i minuti due volte, una barra spezzata in quattordici slivere illeggibili, e un
+ * «Apri il corso» con la freccia su una scheda che è già tutta un collegamento. Poi c'era
+ * ancora il quadratino colorato con l'icona dentro, che è la forma più riconoscibile della
+ * card SaaS generica.
  *
- * ⚠️ La differenza non si è cercata nella decorazione ma in un DATO. Un corso è fatto di
- * una parte comune a tutti e dodici — interfaccia, salvataggio, verifica, pubblicazione —
- * e di una parte che esiste solo per quel percorso. È la distinzione che il prodotto ha
- * già dentro, ed è quella che interessa a chi sceglie cosa leggere: la barra mostra le due
- * porzioni in proporzione ai minuti, quindi ogni corso ha una forma sua e la forma
- * significa qualcosa.
+ * ⚠️ QUELLO CHE FA APRIRE UN CORSO NON È IL DISEGNO: È SAPERE CHE COSA SAPRAI FARE DOPO.
+ * Il titolo dice la materia, e chi legge la conosce già. La riga di risultato dice il
+ * ritorno, ed è quella che decide se qualcuno spende quaranta minuti. Sta sotto il nome ed
+ * è la cosa più grande della scheda dopo il titolo.
  *
- * L'icona e il colore vengono dal registro: «un'area un colore, un modulo un'icona» è la
- * regola scritta in DESIGN.md, e in questa pagina non era usata.
+ * ⚠️ E IL CALORE VIENE DALLE PAROLE, NON DAI COLORI. Questo prodotto ha una palette fredda
+ * per scelta, e la tentazione davanti a una pagina che «non invita» è aggiungere tinte.
+ * Chi produce corsi da anni, con una palette calda a disposizione, ha scaldato le proprie
+ * schede cambiando le stringhe: e' la leva che costa meno e regge di piu'.
  */
 export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
   const m = MODULI_AZIENDA.find((x) => x.href === corso.modulo)!;
-  const Icona = m.icona;
 
-  // Le sezioni proprie stanno in fondo: il corso è «comuni, poi proprie».
-  const quanteProprie = corso.argomenti.length;
-  const primaPropria = corso.sezioni.length - quanteProprie;
-  const minutiTotali = corso.sezioni.reduce((n, s) => n + s.minuti, 0);
+  const minutiComuni = corso.sezioni
+    .filter((s) => corso.idComuni.includes(s.id))
+    .reduce((n, s) => n + s.minuti, 0);
+  const voce = minutiDiVoce(corso.modulo, corso.sezioni, corso.idComuni);
 
   return (
     <Link
       href={`/formazione/${corso.modulo}`}
       data-corso={corso.modulo}
-      className="group flex flex-col rounded-xl border bg-card p-4 transition-all hover:border-foreground/15 hover:shadow-md"
+      className="group relative flex flex-col overflow-hidden rounded-xl border bg-card p-5 transition-all hover:border-foreground/15 hover:shadow-md"
     >
-      <div className="flex items-start gap-3">
-        <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", m.colore.pieno)}>
-          <Icona className="size-4" strokeWidth={2} aria-hidden />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold leading-tight tracking-tight group-hover:text-primary">
-            {corso.nome}
-          </p>
-          <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{corso.norma}</p>
-        </div>
-        <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-muted-foreground">
-          <Clock className="size-3.5" aria-hidden />
-          <span data-slot="kpi">{corso.minuti}</span> min
-        </span>
-      </div>
-
-      {/* ⚠️ La barra è INFORMAZIONE, non ornamento: ogni segmento è una sezione, e la sua
-          larghezza sono i suoi minuti. Le sezioni proprie del percorso sono nel colore
-          dell'area, le comuni in grigio — così a colpo d'occhio si vede quanto di quel
-          corso riguarda quel percorso e quanto è il mestiere di base, che si legge una
-          volta sola. `aria-hidden` perché la riga sotto dice le stesse cose a parole. */}
-      <div className="mt-4 flex h-1.5 gap-px overflow-hidden rounded-full" aria-hidden>
-        {corso.sezioni.map((s, i) => (
-          <span
-            key={s.id}
-            style={{ flexGrow: s.minuti }}
-            className={cn(
-              "block",
-              i >= primaPropria && quanteProprie > 0 ? m.colore.tratto : "bg-muted-foreground/25",
-            )}
-          />
-        ))}
-      </div>
-
-      <p className="mt-2.5 text-[12px] text-muted-foreground">
-        <span data-slot="kpi">{corso.sezioni.length}</span> sezioni ·{" "}
-        <span data-slot="kpi">{minutiTotali}</span> minuti di lettura
-      </p>
-
-      <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-muted-foreground">
-        {corso.completo ? (
-          <>
-            {corso.argomenti.slice(0, 3).join(" · ")}
-            {corso.argomenti.length > 3 ? " …" : ""}
-          </>
-        ) : (
-          <Badge variant="outline" className="align-middle text-[10.5px]">
-            parte specifica in preparazione
-          </Badge>
+      {/* Il filo del colore d'area lungo il bordo ALTO, che si accende passandoci sopra.
+          Dice la materia senza colorare il riquadro, e senza diventare la banda laterale
+          spessa che l'anti-reference vieta per iscritto. */}
+      <span
+        className={cn(
+          "absolute inset-x-0 top-0 h-0.5 opacity-40 transition-opacity group-hover:opacity-100",
+          m.colore.tratto,
         )}
-      </p>
+        aria-hidden
+      />
 
-      <span className="mt-3 flex items-center gap-1 text-[12.5px] font-medium text-muted-foreground transition-colors group-hover:text-primary">
-        Apri il corso
-        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-      </span>
+      <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">{corso.norma}</p>
+      <p className="mt-1.5 text-[17px] font-semibold leading-tight tracking-[-0.01em] group-hover:text-primary">
+        {corso.nome}
+      </p>
+      <p className="mt-2 text-[13.5px] leading-relaxed text-foreground/75">{RISULTATO[corso.modulo]}</p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-muted-foreground">
+        <span data-slot="kpi">{formattaDurata(tempoDaDedicare(corso.minuti))}</span>
+        <span aria-hidden>·</span>
+        <span>
+          <span data-slot="kpi">{corso.sezioni.length}</span> sezioni
+        </span>
+        {voce.totale > 0 && (
+          <>
+            <span aria-hidden>·</span>
+            <span className="flex items-center gap-1.5 font-medium text-primary">
+              <Headphones className="size-3.5" aria-hidden />
+              <span data-slot="kpi">{voce.totale}</span> min di voce
+              {!voce.completa && <span className="font-normal text-muted-foreground">in parte</span>}
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* ⚠️ LE SEZIONI PROPRIE SI VEDONO, e non è ornamento. Un corso da quaranta minuti è
+          un impegno che si rimanda; sette sezioni da sei minuti sono sette cose che si
+          cominciano. Gli id sono stabili e la presentazione avanza per sezione, quindi chi
+          ha già fatto il passo uno può entrare al passo tre.
+          Le comuni non si elencano: sono le stesse su tutti e dodici i corsi, e ripeterle
+          dodici volte è rumore che copre proprio la parte che distingue. */}
+      {corso.argomenti.length > 0 && (
+        <p className="mt-3 flex-1 text-[12.5px] leading-relaxed text-muted-foreground">
+          {corso.argomenti.slice(0, 4).join(" · ")}
+          {corso.argomenti.length > 4 ? ` · e altre ${corso.argomenti.length - 4}` : ""}
+        </p>
+      )}
+
+      {voce.totale > 0 ? (
+        <span className="mt-4 flex items-center gap-1.5 text-[12.5px] font-medium text-muted-foreground transition-colors group-hover:text-primary">
+          <Play className="size-3.5" strokeWidth={2.5} aria-hidden />
+          Si può seguire ascoltando
+        </span>
+      ) : (
+        <span className="mt-4 text-[12.5px] text-muted-foreground">
+          <span data-slot="kpi">{minutiComuni}</span> min sull&apos;uso del prodotto · parte specifica in
+          preparazione
+        </span>
+      )}
     </Link>
   );
 }
-
-

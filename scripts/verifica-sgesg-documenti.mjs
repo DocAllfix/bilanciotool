@@ -12,7 +12,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, strumenta, attendi, pretendiServerAggiornato } from "./comune-collaudo.mjs";
+import { spegniTour, strumenta, attendi, pretendiServerAggiornato, attraversaProtezione } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 
@@ -40,6 +40,7 @@ if (!/^https?:\/\/localhost/.test(BASE)) await pretendiServerAggiornato(BASE);
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+await attraversaProtezione(page);
 const guasti = strumenta(page);
 
 const { orgId } = await registraEEntra(page, sql, { base: BASE, nome: "Studio Doc", email, pwd: PWD_COLLAUDO });

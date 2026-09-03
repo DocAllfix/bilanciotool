@@ -92,6 +92,10 @@ const SUPERFICI = [
   ["formazione", `${BASE}/formazione`, "[data-formazione]"],
   ["formazione-corso", `${BASE}/formazione/energetico`, "[data-sezioni]"],
   ["formazione-mestiere", `${BASE}/formazione/corso/avviare-attivita`, "[data-sezioni]"],
+  // ⚠️ La presentazione e' a schermo intero e sovrappone tutto: e' la superficie in cui
+  // un difetto di disposizione non lo vede nessun collaudo funzionale, perche' i comandi
+  // rispondono lo stesso mentre una tabella sfonda o il piede copre il contenuto.
+  ["formazione-presentazione", `${BASE}/formazione/energetico/presentazione`, "[data-presentazione]"],
 ];
 
 for (const [nome, url, ancora] of SUPERFICI) {

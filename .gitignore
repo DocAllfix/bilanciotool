@@ -83,3 +83,7 @@ landingpagerevisione/
 audio-formazione/**/*.wav
 audio-formazione/**/*.mp3
 audio-formazione/_campione/
+audio-formazione/__pycache__/
+# Le marche parola per parola sono un intermedio: si rigenerano sintetizzando, e il
+# manifesto porta gia' quelle per paragrafo, che sono le uniche che il prodotto legge.
+audio-formazione/**/*.words.json

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Play } from "lucide-react";
 
 import { corsoDelModulo, esisteCorso } from "@/features/formazione";
 import { MODULI_AZIENDA, AREE } from "@/features/companies/moduli";
 import { SezioneCorso } from "@/components/formazione/corso";
 import { SelettoreCorsi } from "@/components/formazione/selettore";
 import { IndiceCorso } from "@/components/formazione/indice";
+import { tempoDaDedicare, formattaDurata } from "@/features/formazione/tempo";
 
 type Props = { params: Promise<{ modulo: string }> };
 
@@ -56,7 +57,7 @@ export default async function CorsoPage({ params }: Props) {
             <span className="font-mono">{c.norma}</span>
             <span className="flex items-center gap-1.5">
               <Clock className="size-3.5" aria-hidden />
-              <span data-slot="kpi">{c.minuti}</span> minuti
+              <span data-slot="kpi">{formattaDurata(tempoDaDedicare(c.minuti))}</span> da dedicare
             </span>
             <span>
               <span data-slot="kpi">{c.sezioni.length}</span> sezioni
@@ -64,6 +65,22 @@ export default async function CorsoPage({ params }: Props) {
           </p>
         </div>
       </header>
+
+      {/* ⚠️ La presentazione e' una SECONDA vista, non un'alternativa che sostituisce
+          questa. La pagina che scorre resta l'ingresso normale perche' dalla seconda volta
+          in poi si cerca una cosa sola, e in una presentazione non si cerca. */}
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <Link
+          href={`/formazione/${c.modulo}/presentazione`}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-[14.5px] font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow"
+        >
+          <Play className="size-4" strokeWidth={2.5} aria-hidden />
+          Segui la presentazione
+        </Link>
+        <p className="text-[13px] text-muted-foreground">
+          Una schermata per volta, con la voce che spiega. Qui sotto lo stesso corso, da leggere.
+        </p>
+      </div>
 
       <SelettoreCorsi corrente={c.modulo} />
 

@@ -12,7 +12,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import postgres from "postgres";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma, attraversaProtezione } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
@@ -31,6 +31,7 @@ await ctx.addInitScript(() => {
   }
 });
 const page = await ctx.newPage();
+await attraversaProtezione(page);
 // Le violazioni arrivano come errori di console con un testo riconoscibile.
 page.on("console", (m) => {
   const t = m.text();

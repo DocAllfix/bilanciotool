@@ -148,6 +148,10 @@ export const ENERGETICO: Sezione[] = [
         testo:
           "Il gasolio da riscaldamento e quello per autotrazione sono due righe distinte: non vanno sommati. E l'energia immessa in rete dal fotovoltaico non è consumo del sito: conta solo l'autoconsumo.",
       },
+      {
+        tipo: "prosa",
+        testo: "Due parole sui dodici mesi, perché è la colonna che si salta più volentieri e in cambio dà il numero più utile di tutto il bilancio. Compilando i mesi almeno per l'elettrico e per il gas ottieni la stagionalità, e dalla stagionalità si legge il carico di base: l'energia che il sito consuma anche quando non produce niente. Si stima guardando i mesi di fermata, tipicamente agosto e le due settimane di fine anno, e su molti stabilimenti vale fra il quindici e il venticinque per cento del totale. È quasi sempre il primo intervento che ripaga, perché è energia che esce dal contatore senza produrre nulla: illuminazione che resta accesa, compressori che vanno a vuoto, cicli di mantenimento che nessuno ha mai rimesso in discussione. Sul gas la stagionalità serve a un'altra cosa: separa il processo dal riscaldamento quando lo stesso contatore serve tutti e due, perché d'estate il riscaldamento non c'è e quello che resta è processo.",
+      },
     ],
   },
 
@@ -274,6 +278,10 @@ export const ENERGETICO: Sezione[] = [
         testo:
           "Resta vuoto. È una scelta deliberata e diversa dal prototipo, che restituiva zero: uno zero in colonna si legge come un risultato eccellente, e su un documento firmato sarebbe la peggiore lettura possibile di un dato mancante.",
       },
+      {
+        tipo: "prosa",
+        testo: "Ultima cosa, ed è un modo di leggere più che una funzione del prodotto. Quando un indicatore peggiora, le cause possibili sono due e vanno separate prima di scriverlo nel documento. Può essere calato il denominatore, cioè hai prodotto meno a parità di consumi fissi, e allora il consumo specifico sale senza che nessuno abbia sprecato niente: è l'effetto volume, e si riconosce perché il consumo assoluto è fermo o in calo mentre lo specifico sale. Oppure è salito il numeratore a parità di produzione, e allora è un problema di efficienza vero. Sono due storie opposte da raccontare al committente, e chi legge il documento non può distinguerle da solo: il capitolo di lettura dei dati deve dirlo. Il modo più rapido di capirlo è guardare il consumo assoluto e il driver principale uno accanto all'altro prima di guardare l'indicatore.",
+      },
     ],
   },
 
@@ -309,6 +317,10 @@ export const ENERGETICO: Sezione[] = [
         titolo: "Un ritorno senza risparmio non è zero: non c'è",
         testo:
           "Se al passo 2 manca il costo del vettore, il risparmio economico non si può calcolare e il tempo di ritorno resta vuoto invece di comparire come zero. È voluto: uno zero si legge come «rientra subito», che è l'opposto del vero. Prima i costi, poi gli interventi.",
+      },
+      {
+        tipo: "prosa",
+        testo: "Un consiglio su come presentare il programma, che non è una funzione del prodotto ma decide se gli interventi vengono fatti. Il tempo di ritorno è il numero che la direzione guarda, ma da solo ordina male: mette in cima le cose piccole che rientrano in otto mesi e in fondo quelle che spostano il bilancio. Conviene presentarli in due gruppi. Prima gli interventi a ritorno breve e investimento basso, che si fanno subito e servono a costruire fiducia, e spesso sono regolazione e spegnimenti più che macchine nuove. Poi quelli strutturali, che vanno messi in bilancio l'anno prossimo e vanno accompagnati dal risparmio assoluto, non dal tempo di ritorno. Il documento li elenca tutti; la sintesi per la direzione dice quali tre fare per primi, ed è quella la pagina che verrà letta.",
       },
     ],
   },
@@ -375,6 +387,10 @@ export const ENERGETICO: Sezione[] = [
         tipo: "prosa",
         testo:
           "Che cosa succede al passo 8 lo spiega la sezione «Pubblicare» di questo corso: qui basta ricordare che il documento si costruisce sull'esercizio su cui stai lavorando, e che una volta pubblicato quella versione non cambia più.",
+      },
+      {
+        tipo: "prosa",
+        testo: "Vale la pena sapere che cosa chiede davvero un verificatore, perché sono tre domande e nessuna delle tre è fra i sette controlli. La prima è che cosa avete escluso dal perimetro e perché: l'ha già vista al passo uno e la confronta con i vettori del passo due. La seconda è su quali usi finali avete misurato invece di stimare, ed è il motivo per cui il metodo dichiarato conta quanto il numero. La terza è come avete ottenuto i gradi giorno e i driver dell'anno base. Se queste tre risposte stanno nel capitolo metodologico, la diagnosi regge anche dove le stime sono grossolane, perché è dichiarato che lo sono. Se non ci stanno, non regge nemmeno dove i numeri sono ottimi, perché nessuno può verificarlo.",
       },
     ],
   },
@@ -449,6 +465,10 @@ export const ENERGETICO: Sezione[] = [
             "Sono due righe: restano due righe",
           ],
         ],
+      },
+      {
+        tipo: "prosa",
+        testo: "Un caso che merita due parole a parte è quello dell'energia elettrica coperta da garanzie d'origine. Se una quota della fornitura ne è coperta, servono due letture distinte, e il documento le tiene separate. La lettura di localizzazione usa il fattore medio della rete nazionale e risponde alla domanda quanta anidride carbonica si è emessa fisicamente per alimentare questo sito. La lettura di mercato usa il fattore contrattuale per la quota certificata e il residual mix per il resto, e risponde a una domanda diversa: che cosa ha comprato l'azienda. Non sono due opinioni, sono due misure di due cose, e la seconda senza la prima è la scorciatoia con cui un sito comparirebbe quasi a zero emissioni continuando a prelevare dalla stessa rete. Nel documento vanno riportate entrambe, e va detto quale delle due si usa nel confronto con l'anno base.",
       },
     ],
   },

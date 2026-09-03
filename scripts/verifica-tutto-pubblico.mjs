@@ -8,7 +8,7 @@
 
 import { chromium } from "@playwright/test";
 import "dotenv/config";
-import { strumenta, contatore } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PIANI, CHIAVI_PIANO, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
@@ -16,6 +16,7 @@ const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1500, height: 1000 } });
 const page = await ctx.newPage();
+await attraversaProtezione(page);
 // Il 401 sull'accesso NON e' un guasto: e' il prodotto che rifiuta credenziali
 // sbagliate, ed e' proprio quello che si vuole vedere. Un rilevatore che lo conta come
 // difetto insegna a ignorare i rossi.

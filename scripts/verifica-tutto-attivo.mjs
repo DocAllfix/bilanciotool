@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { strumenta, contatore, attendi, spegniTour, fattoreAttesa } from "./comune-collaudo.mjs";
+import { strumenta, contatore, attendi, spegniTour, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, limitiEffettivi } from "../src/lib/prezzi.ts";
 
@@ -31,6 +31,7 @@ await ctx.addInitScript(() => {
   } catch {}
 });
 const page = await ctx.newPage();
+await attraversaProtezione(page);
 // I dialoghi nativi del browser Playwright li scarta da solo: senza questo, una
 // conferma `confirm()` risponde sempre «no» e l'azione non parte mai — e il collaudo
 // legge «non ha funzionato» dove invece non e' stato nemmeno chiesto.

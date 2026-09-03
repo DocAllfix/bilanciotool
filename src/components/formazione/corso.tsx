@@ -39,18 +39,59 @@ function conGrassetto(testo: string) {
   );
 }
 
-function BloccoReso({ b }: { b: Blocco }) {
+/**
+ * Le due misure in cui un blocco puo' comparire.
+ *
+ * ⚠️ Un solo renderer per la pagina e per la presentazione, non due. Sono le stesse
+ * tabelle e gli stessi avvisi: duplicarli per farli piu' grandi significherebbe che al
+ * primo ritocco la presentazione mostra una cosa e la pagina un'altra, ed e' la
+ * divergenza silenziosa che questo progetto paga da sempre. Cambia la misura, non il
+ * contenuto, e le classi sono scritte per esteso perche' Tailwind scandisce il testo.
+ */
+const MISURE = {
+  pagina: {
+    larghezza: "max-w-prose",
+    prosa: "text-[14.5px]",
+    elenco: "text-[14.5px]",
+    formula: "px-4 py-3 text-[13px]",
+    tabella: "text-[13.5px]",
+    cella: "px-3 py-2.5",
+    avviso: "px-4 py-3",
+    avvisoTitolo: "text-[13px]",
+    avvisoTesto: "text-[14px]",
+  },
+  grande: {
+    // ⚠️ In presentazione il blocco riempie la colonna: `max-w-prose` a 19px e' piu'
+    // stretto del contenitore, e il riquadro galleggiava a sinistra dentro il vuoto. Su
+    // una schermata intera la composizione si vede, e uno squilibrio si legge come un
+    // difetto anche quando il contenuto e' giusto.
+    larghezza: "max-w-none",
+    prosa: "text-[19px]",
+    elenco: "text-[19px]",
+    formula: "px-6 py-5 text-[17px]",
+    tabella: "text-[17px]",
+    cella: "px-5 py-4",
+    avviso: "px-6 py-5",
+    avvisoTitolo: "text-[17px]",
+    avvisoTesto: "text-[18px]",
+  },
+} as const;
+
+export type Misura = keyof typeof MISURE;
+
+export function BloccoReso({ b, misura = "pagina" }: { b: Blocco; misura?: Misura }) {
+  const m = MISURE[misura];
   if (b.tipo === "prosa") {
     // ⚠️ La prosa e' testo PRIMARIO, non secondario. Era `text-muted-foreground` e il corpo
     // del corso risultava piu' chiaro dei riquadri d'avviso: su una pagina il cui unico
     // scopo e' essere letta, il testo principale deve essere la cosa piu' leggibile. Si vede
     // solo guardando: nessun collaudo funzionale distingue un grigio da un altro.
-    return <p className="max-w-prose text-[14.5px] leading-relaxed text-foreground/90">{conGrassetto(b.testo)}</p>;
+    return <p className={`leading-relaxed text-foreground/90 ${m.larghezza} ${m.prosa}`}>{conGrassetto(b.testo)}</p>;
   }
 
   if (b.tipo === "elenco") {
     return (
-      <ul className="max-w-prose list-disc space-y-1.5 pl-5 text-[14.5px] leading-relaxed text-foreground/90">
+      <ul className={`list-disc space-y-1.5 pl-5 leading-relaxed text-foreground/90 ${m.larghezza} ${m.elenco}`}>
         {b.voci.map((v) => (
           <li key={v}>{conGrassetto(v)}</li>
         ))}
@@ -60,7 +101,7 @@ function BloccoReso({ b }: { b: Blocco }) {
 
   if (b.tipo === "formula") {
     return (
-      <p className="rounded-lg border bg-muted/40 px-4 py-3 font-mono text-[13px] text-foreground">{b.testo}</p>
+      <p className={`whitespace-pre-line rounded-lg border bg-muted/40 font-mono text-foreground ${m.formula}`}>{b.testo}</p>
     );
   }
 
@@ -70,11 +111,11 @@ function BloccoReso({ b }: { b: Blocco }) {
       // telefono da 360px tre colonne di testo non ci stanno, e una pagina che sfonda in
       // orizzontale si legge come un difetto anche quando il contenuto è giusto.
       <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full min-w-[36rem] border-collapse text-[13.5px]">
+        <table className={`w-full min-w-[36rem] border-collapse ${m.tabella}`}>
           <thead>
             <tr className="border-b bg-muted/40 text-left">
               {b.intestazioni.map((h) => (
-                <th key={h} scope="col" className="px-3 py-2.5 font-semibold">
+                <th key={h} scope="col" className={`font-semibold ${m.cella}`}>
                   {h}
                 </th>
               ))}
@@ -84,7 +125,7 @@ function BloccoReso({ b }: { b: Blocco }) {
             {b.righe.map((r) => (
               <tr key={r.join("|")} className="border-b last:border-0 align-top">
                 {r.map((c, i) => (
-                  <td key={i} className="px-3 py-2.5 leading-relaxed text-foreground/85">
+                  <td key={i} className={`leading-relaxed text-foreground/85 ${m.cella}`}>
                     {conGrassetto(c)}
                   </td>
                 ))}
@@ -102,9 +143,9 @@ function BloccoReso({ b }: { b: Blocco }) {
 
   const t = TONI[b.tono];
   return (
-    <div className={`max-w-prose rounded-lg border px-4 py-3 ${t.riquadro}`}>
-      {b.titolo && <p className={`text-[13px] font-semibold ${t.titolo}`}>{b.titolo}</p>}
-      <p className={`text-[14px] leading-relaxed text-foreground/85 ${b.titolo ? "mt-1" : ""}`}>
+    <div className={`rounded-lg border ${m.larghezza} ${m.avviso} ${t.riquadro}`}>
+      {b.titolo && <p className={`font-semibold ${m.avvisoTitolo} ${t.titolo}`}>{b.titolo}</p>}
+      <p className={`leading-relaxed text-foreground/85 ${m.avvisoTesto} ${b.titolo ? "mt-1" : ""}`}>
         {conGrassetto(b.testo)}
       </p>
     </div>

@@ -208,6 +208,14 @@ export const BILANCIO: Sezione[] = [
         testo:
           "I derivati che il prodotto calcola comprendono l'energia totale e la quota rinnovabile, l'intensità di emissione per milione di euro di ricavi e i kWh per ora lavorata. Se un derivato sembra sbagliato non si corregge a mano, perché non si può: si verificano i dati grezzi, cioè le unità e i doppi conteggi fra flotta e riscaldamento, e poi i fattori nell'inventario.",
       },
+      {
+        tipo: "prosa",
+        testo: "Una parola su come si raccolgono davvero questi dati, perché è la parte che costa più tempo e non è tecnica. Le otto sezioni sembrano otto richieste da fare al cliente, e fatte così diventano otto telefonate in tre settimane. Conviene invece raggrupparle per interlocutore, che sono tre. Al commercialista chiedi il bilancio d'esercizio, i partitari fornitori e la certificazione unica: coprono valore economico, fornitori e divario retributivo. Al consulente del lavoro o all'ufficio del personale chiedi il libro unico, l'organico al trentuno dicembre, il prospetto disabili e le ore lavorate: coprono persone, sicurezza e formazione. All'ufficio tecnico o alla proprietà chiedi bollette, formulari, MUD e le letture dei contatori: coprono energia, acqua e rifiuti. Tre richieste invece di otto, e ciascuna a qualcuno che ha già quei documenti in un posto solo.",
+      },
+      {
+        tipo: "prosa",
+        testo: "E c'è un ordine che conviene rispettare dentro il passo. Compila prima le sezioni che alimentano i derivati che userai al passo quattro per scrivere gli obiettivi: energia, persone e valore economico. I chilowattora per ora lavorata e l'intensità di emissione per milione di euro di ricavi sono i due numeri su cui si costruiscono quasi tutti gli obiettivi misurabili di una piccola impresa, e averli sotto gli occhi mentre scrivi la politica energetica cambia quello che scrivi. Le altre sezioni si possono chiudere dopo, perché entrano nel documento ma non reggono nessuna decisione.",
+      },
     ],
   },
 
@@ -262,6 +270,10 @@ export const BILANCIO: Sezione[] = [
         testo:
           "Scrivendo la politica e passando subito alle azioni non si perde niente: ogni campo si salva per conto suo. È stato un difetto vero, per quattro volte in punti diversi del prodotto, e il rimedio è strutturale: il browser non rimanda mai la riga intera.",
       },
+      {
+        tipo: "prosa",
+        testo: "Un'ultima cosa, che riguarda il lavoro col cliente più che il prodotto. Su molti temi materiali l'azienda ti dirà che una politica formale non ce l'ha, e sarà vero. Non è un vicolo cieco e non va riempito con una frase generica: quello che quasi sempre esiste è una prassi consolidata che nessuno ha mai messo per iscritto, oppure un impegno preso dentro un altro documento, un sistema di gestione certificato, il modello duecentotrentuno, il codice etico, un contratto con un cliente che imponeva requisiti. Il tuo lavoro qui è trovarlo e citarlo. Scrivere che la politica è in corso di adozione è meglio che inventarne una, e molto meglio che lasciare il campo vuoto: dichiara una posizione vera, e l'anno dopo diventa un obiettivo con una scadenza.",
+      },
     ],
   },
 
@@ -299,6 +311,14 @@ export const BILANCIO: Sezione[] = [
         titolo: "Quando un capitolo si considera scritto",
         testo: `Oltre le **${NUMERI.paroleMinimeCapitolo} parole**. È una soglia tecnica dell'avanzamento, non un giudizio editoriale: distingue un capitolo scritto da un campo toccato, e un capitolo credibile è molto più lungo.`,
       },
+      {
+        tipo: "prosa",
+        testo: "Due cose sul come si scrivono, perché il prodotto ti dà la struttura e non ti dà la voce. La lettera agli stakeholder è credibile quando nomina una cosa andata male: un obiettivo mancato, un infortunio, un fornitore perso. Una lettera tutta positiva si riconosce a colpo d'occhio e sposta il lettore in modalità diffidente per tutte le pagine successive. E il capitolo sul modello di business è quello che degenera più facilmente in brochure: la domanda a cui deve rispondere non è che cosa vendete, è come si genera valore e chi lo riceve, che è una domanda scomoda e per questo interessante.",
+      },
+      {
+        tipo: "prosa",
+        testo: "La nota metodologica merita un discorso a parte, perché è il capitolo che nessuno vuole scrivere e che regge tutto il resto. Deve dire il perimetro, il periodo, gli standard e i criteri di calcolo, comprese le scelte che hai fatto quando un dato non c'era. È il capitolo che un revisore legge per primo e il lettore comune non legge mai, e ha una proprietà utile: un bilancio con dati imperfetti ma con una nota metodologica onesta regge la verifica, mentre un bilancio con dati ottimi e nessuna nota non la regge, perché nessuno può ricostruire come ci sei arrivato. Se hai poco tempo, toglilo agli altri capitoli.",
+      },
     ],
   },
 
@@ -330,6 +350,10 @@ export const BILANCIO: Sezione[] = [
         titolo: "Verde non vuol dire pronto da pubblicare",
         testo:
           "La verifica controlla la completezza, non la correttezza: un dato sbagliato ma presente risulta a posto. La quadratura con il bilancio d'esercizio e con il MUD, e la coerenza dei delta da un anno all'altro, restano lavoro del consulente.",
+      },
+      {
+        tipo: "prosa",
+        testo: "Vale la pena sapere che cosa guarda chi riceve il bilancio, perché sono tre cose e nessuna delle tre sta fra i cinque controlli. La prima è la coerenza fra il numero di addetti e i dati che ne dipendono: le ore lavorate, la formazione, gli infortuni. Se non tornano fra loro, si capisce che vengono da fonti diverse e non sono stati confrontati. La seconda è che i temi dichiarati materiali abbiano davvero una politica, delle azioni e un indicatore che li misura: un tema materiale senza un numero accanto è la lacuna più visibile di un bilancio, perché dichiara che è importante e poi non dice come va. La terza è il confronto con l'anno prima su tre o quattro voci a campione. Se reggono queste tre, il documento regge.",
       },
     ],
   },
