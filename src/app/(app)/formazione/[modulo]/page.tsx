@@ -72,13 +72,13 @@ export default async function CorsoPage({ params }: Props) {
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <Link
           href={`/formazione/${c.modulo}/presentazione`}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-[14.5px] font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow"
         >
-          <Play className="size-3.5" strokeWidth={2.5} aria-hidden />
+          <Play className="size-4" strokeWidth={2.5} aria-hidden />
           Segui la presentazione
         </Link>
         <p className="text-[13px] text-muted-foreground">
-          Una schermata per volta. Qui sotto lo stesso corso, da leggere.
+          Una schermata per volta, con la voce che spiega. Qui sotto lo stesso corso, da leggere.
         </p>
       </div>
 

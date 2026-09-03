@@ -4214,5 +4214,325 @@
   ],
   "marche_parole": 495,
   "chiave_archivio": "_piattaforma/formazione/soa/documento-soa.mp3"
+ },
+ "sgiqas/anagrafica-qas": {
+  "sha": "84bf9da407024c8d88a882be9449e0d94275e3d6ebdda1898b80879a16f63295",
+  "sha_script": "3f08e371af8edf9d724dcb2ad6bc47c9a00a00a6fd2f375259714a71f0a9c1a3",
+  "durata_s": 197.4,
+  "byte": 1579629,
+  "parole": 520,
+  "mp3": "_mp3/sgiqas/anagrafica-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 12.61
+   },
+   {
+    "p": 2,
+    "s": 47.02
+   },
+   {
+    "p": 3,
+    "s": 68.42
+   },
+   {
+    "p": 4,
+    "s": 107.9
+   },
+   {
+    "p": 5,
+    "s": 135.06
+   },
+   {
+    "p": 6,
+    "s": 158.01
+   },
+   {
+    "p": 7,
+    "s": 178.12
+   }
+  ],
+  "marche_parole": 517,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/anagrafica-qas.mp3"
+ },
+ "sgiqas/indicatori-qas": {
+  "sha": "19e061533791c5b5e8be6cccce5fa030dbab6f2f8d6e0bc2d24393bb75fdeb92",
+  "sha_script": "63b4bcb75b0740285b2977e4345ee692c2a1432817db4241e3aff62db558647c",
+  "durata_s": 234.9,
+  "byte": 1880301,
+  "parole": 609,
+  "mp3": "_mp3/sgiqas/indicatori-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 8.97
+   },
+   {
+    "p": 2,
+    "s": 49.14
+   },
+   {
+    "p": 3,
+    "s": 86.56
+   },
+   {
+    "p": 4,
+    "s": 130.21
+   },
+   {
+    "p": 5,
+    "s": 167.2
+   },
+   {
+    "p": 6,
+    "s": 183.45
+   },
+   {
+    "p": 7,
+    "s": 214.68
+   }
+  ],
+  "marche_parole": 609,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/indicatori-qas.mp3"
+ },
+ "sgiqas/registri-qas": {
+  "sha": "90d396e4d591c1e14a314aa93bddf0995670eecfd357d4445de50f1d7107b9c6",
+  "sha_script": "1bc1fe6eecbebefc60cbdd02715262154d708e874ddef2fccbfc7e4b0e39fcad",
+  "durata_s": 224.9,
+  "byte": 1799853,
+  "parole": 587,
+  "mp3": "_mp3/sgiqas/registri-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 16.46
+   },
+   {
+    "p": 2,
+    "s": 53.96
+   },
+   {
+    "p": 3,
+    "s": 80.11
+   },
+   {
+    "p": 4,
+    "s": 107.64
+   },
+   {
+    "p": 5,
+    "s": 141.72
+   },
+   {
+    "p": 6,
+    "s": 179.05
+   },
+   {
+    "p": 7,
+    "s": 209.01
+   }
+  ],
+  "marche_parole": 587,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/registri-qas.mp3"
+ },
+ "sgiqas/motori-qas": {
+  "sha": "819bef2c8b93fc247b2e84e48f9a2974e3e5c433bc9f1e1686cce0ff24d47112",
+  "sha_script": "d26bc616dfb3baf5983f536da5b48a78571385a52859e3f91b4d12884304eef6",
+  "durata_s": 233.9,
+  "byte": 1872045,
+  "parole": 617,
+  "mp3": "_mp3/sgiqas/motori-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 10.8
+   },
+   {
+    "p": 2,
+    "s": 27.29
+   },
+   {
+    "p": 3,
+    "s": 69.21
+   },
+   {
+    "p": 4,
+    "s": 101.81
+   },
+   {
+    "p": 5,
+    "s": 116.24
+   },
+   {
+    "p": 6,
+    "s": 154.89
+   },
+   {
+    "p": 7,
+    "s": 181.47
+   },
+   {
+    "p": 8,
+    "s": 211.22
+   }
+  ],
+  "marche_parole": 617,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/motori-qas.mp3"
+ },
+ "sgiqas/conformita-qas": {
+  "sha": "77e7429907047f5c9635b8d51e6bdd13b1d014f9da055ad557e3cd723384bce4",
+  "sha_script": "0201f1daf8dde3b1f1c8a5524c751b02d3350392932cfe72872f6f7a08652a57",
+  "durata_s": 169.8,
+  "byte": 1359405,
+  "parole": 431,
+  "mp3": "_mp3/sgiqas/conformita-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 14.76
+   },
+   {
+    "p": 2,
+    "s": 35.58
+   },
+   {
+    "p": 3,
+    "s": 60.08
+   },
+   {
+    "p": 4,
+    "s": 81.95
+   },
+   {
+    "p": 5,
+    "s": 106.17
+   },
+   {
+    "p": 6,
+    "s": 121.81
+   },
+   {
+    "p": 7,
+    "s": 147.74
+   }
+  ],
+  "marche_parole": 431,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/conformita-qas.mp3"
+ },
+ "sgiqas/documenti-qas": {
+  "sha": "57b1284e5247d398a3a9dddc8379d0f37d849f857cb5d4b34a9b5a638eb94981",
+  "sha_script": "35779afe94ba37d43c99f3644bfd07ab106689c24a99fa046efb2d1a658ec9b5",
+  "durata_s": 158.2,
+  "byte": 1266093,
+  "parole": 400,
+  "mp3": "_mp3/sgiqas/documenti-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 16.09
+   },
+   {
+    "p": 2,
+    "s": 41.35
+   },
+   {
+    "p": 3,
+    "s": 46.73
+   },
+   {
+    "p": 4,
+    "s": 60.01
+   },
+   {
+    "p": 5,
+    "s": 82.7
+   },
+   {
+    "p": 6,
+    "s": 93.46
+   },
+   {
+    "p": 7,
+    "s": 117.2
+   },
+   {
+    "p": 8,
+    "s": 132.76
+   }
+  ],
+  "marche_parole": 400,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/documenti-qas.mp3"
+ },
+ "sgiqas/errori-qas": {
+  "sha": "6e5c4288295e8def478916f583548f81a32ce83a9a1eecf4910daecbc0202f3d",
+  "sha_script": "1f086f08a931c13c609a217038075e15446306a782b9a9afc5c6adb88d69bfeb",
+  "durata_s": 191.0,
+  "byte": 1528557,
+  "parole": 459,
+  "mp3": "_mp3/sgiqas/errori-qas.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.2
+   },
+   {
+    "p": 2,
+    "s": 49.17
+   },
+   {
+    "p": 3,
+    "s": 56.56
+   },
+   {
+    "p": 4,
+    "s": 71.38
+   },
+   {
+    "p": 5,
+    "s": 93.34
+   },
+   {
+    "p": 6,
+    "s": 118.71
+   },
+   {
+    "p": 7,
+    "s": 132.18
+   },
+   {
+    "p": 8,
+    "s": 156.12
+   }
+  ],
+  "marche_parole": 459,
+  "chiave_archivio": "_piattaforma/formazione/sgiqas/errori-qas.mp3"
  }
 }

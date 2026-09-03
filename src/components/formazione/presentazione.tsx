@@ -113,6 +113,12 @@ export function Presentazione({
   if (!corrente) return null;
 
   const ultima = i === slide.length - 1;
+
+  // Quante sezioni ha il corso, e a quale siamo: si contano le slide che ne aprono una,
+  // che è già l'informazione che il costruttore delle slide porta con sé.
+  const aperture = slide.filter((s) => s.apreSezione);
+  const totaleSezioni = aperture.length;
+  const numeroSezione = slide.slice(0, i + 1).filter((s) => s.apreSezione).length;
   const conAudio = pista.some((p) => p.src);
 
   return (
@@ -170,43 +176,79 @@ export function Presentazione({
           È la stessa cosa che DESIGN.md dice del prodotto — il contrasto fra i registri è
           il lusso — applicata dentro la presentazione. */}
       <div
-        className={`flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6 py-8 transition-colors sm:px-12 ${
+        // ⚠️ Il contenuto si ANCORA IN ALTO, non si centra verticalmente. Centrato, una slide
+        // con un avviso solo galleggia a metà schermo con trecento pixel di vuoto sopra e
+        // sotto, e in una vista a schermo intero quel vuoto non si legge come respiro: si
+        // legge come una pagina che non ha finito di caricarsi. Ancorata in alto la
+        // composizione è la stessa su tutte e trecentootto, corte e lunghe.
+        className={`flex min-h-0 flex-1 items-start overflow-y-auto px-6 pb-10 pt-12 transition-colors duration-300 sm:px-12 sm:pt-16 ${
           corrente.apreSezione ? "bg-card" : "bg-background"
         }`}
       >
-        <div className="w-full max-w-3xl">
-          {corrente.apreSezione && (
-            <>
-              {/* Sulla slide che apre, il titolo c'è anche nel corpo: l'intestazione è
-                  piccola e serve a orientarsi, questo è il momento in cui la sezione
-                  comincia e va annunciata. */}
+        {/* ⚠️ IL MOVIMENTO STA QUI E NON SULLA PAGINA. La chiave sul numero di slide fa
+            rimontare questo blocco a ogni cambio, quindi l'animazione riparte da sola senza
+            uno stato che la governi. Curva in uscita e nessun rimbalzo, come chiede
+            DESIGN.md: il rimbalzo su una schermata che cambia ogni venti secondi diventa
+            un tic. E `motion-reduce` la spegne per chi ha chiesto meno movimento. */}
+        <div
+          key={corrente.numero}
+          className="mx-auto w-full max-w-6xl motion-safe:animate-[slideEntra_360ms_cubic-bezier(0.16,1,0.3,1)_both]"
+        >
+          <div className="grid items-start gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+            {/* COLONNA SINISTRA: dove sei. Resta anche sulle slide di continuazione, così
+                la sequenza non sparisce appena si comincia a guardare il contenuto. */}
+            <div className="lg:sticky lg:top-0">
               <p className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 <span className={`h-px w-8 ${tinta.tratto}`} aria-hidden />
-                {corrente.sezione.minuti} min
+                sezione <span data-slot="kpi">{numeroSezione}</span> di{" "}
+                <span data-slot="kpi">{totaleSezioni}</span>
               </p>
-              <h2 className="font-display mt-3 text-[28px] font-bold leading-tight tracking-[-0.02em] sm:text-[34px]">
+              <h2 className="font-display mt-3 text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[32px]">
                 {corrente.sezione.titolo}
               </h2>
-              <p className="mt-3 text-[17px] leading-relaxed text-muted-foreground sm:text-[19px]">
+              <p className="mt-3 max-w-[46ch] text-[15px] leading-relaxed text-muted-foreground sm:text-[16px]">
                 {corrente.sezione.sommario}
               </p>
-            </>
-          )}
 
-          {/* ⚠️ Una sezione tutta prosa NON viene saltata: la voce la sta leggendo, e
-              saltarla farebbe vedere la slide dopo mentre si sente quella prima. Qui la
-              schermata resta sul titolo e sul sommario, che è quanto c'è da guardare. */}
-          {corrente.blocchi.length > 0 && (
-            <div className={corrente.apreSezione ? "mt-8 space-y-5" : "space-y-5"}>
-              {corrente.blocchi.map((b, k) =>
-                b.tipo === "interfaccia" ? (
-                  <Interfaccia key={k} vista={b.vista} titolo={b.titolo} nota={b.nota} />
-                ) : (
-                  <BloccoReso key={k} b={b} misura="grande" />
-                ),
+              {/* ⚠️ LA SEQUENZA DELLE SEZIONI, e non è ornamento: è l'informazione che chi
+                  segue un corso perde per prima. Su quaranta minuti di voce, sapere di
+                  essere alla quinta di quattordici cambia completamente la disposizione di
+                  chi ascolta. Si deriva dai dati del corso, quindi non costa contenuto. */}
+              <ol className="mt-6 hidden gap-1.5 lg:flex lg:flex-wrap" aria-hidden>
+                {Array.from({ length: totaleSezioni }, (_, k) => (
+                  <li
+                    key={k}
+                    className={`h-1 w-5 rounded-full transition-colors ${
+                      k + 1 < numeroSezione
+                        ? "bg-muted-foreground/40"
+                        : k + 1 === numeroSezione
+                          ? tinta.tratto
+                          : "bg-muted"
+                    }`}
+                  />
+                ))}
+              </ol>
+            </div>
+
+            {/* COLONNA DESTRA: che cosa si guarda. */}
+            <div className="min-w-0 space-y-6">
+              {corrente.blocchi.length > 0 ? (
+                corrente.blocchi.map((b, k) =>
+                  b.tipo === "interfaccia" ? (
+                    <Interfaccia key={k} vista={b.vista} titolo={b.titolo} nota={b.nota} />
+                  ) : (
+                    <BloccoReso key={k} b={b} misura="grande" />
+                  ),
+                )
+              ) : (
+                // ⚠️ Una sezione tutta prosa NON viene saltata: la voce la sta leggendo, e
+                // saltarla farebbe vedere la slide dopo mentre si sente quella prima.
+                <p className="text-[15px] italic text-muted-foreground">
+                  Questa parte si ascolta: non c&apos;è altro da guardare.
+                </p>
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
 
