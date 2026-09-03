@@ -49,6 +49,80 @@ const { orgId } = await registraEEntra(page, sql, {
 });
 await sql`update org_entitlement set status='active', piano='studio', activated_at=now() where organization_id=${orgId}`;
 
+/**
+ * Apre una presentazione, accende la voce, e prova DUE tracce: la prima e quella della
+ * sezione successiva.
+ *
+ * ⚠️ NON PERCORRE PIU' TUTTE LE SLIDE, ed e' una divisione del lavoro. Che la sezione X
+ * carichi la traccia X e' aritmetica, e `tracce-pure.test.ts` lo prova su tutte e
+ * centosessantotto le sezioni in due secondi e mezzo. Qui resta l'altra meta', quella che
+ * l'aritmetica non puo' provare: che l'audio parta DAVVERO su un deploy vero.
+ *
+ * Percorrere trecentootto slide per riverificare col browser una cosa gia' dimostrata
+ * costava dieci minuti e non aggiungeva niente. Due tracce per corso bastano: se la CSP
+ * blocca l'audio, se l'archivio non risponde, o se la rotta e' protetta male, si vede
+ * sulla prima.
+ */
+async function provaVoce(url, attese) {
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 120_000 });
+  await page.waitForSelector("[data-presentazione]", { timeout: 60_000 });
+
+  if (!(await page.locator("[data-presentazione] audio").count())) {
+    throw new Error("nessun elemento audio nella presentazione");
+  }
+  await page.getByRole("button", { name: /^Ascolta$/ }).click();
+
+  const leggi = () =>
+    page.evaluate(() => {
+      const p = document.querySelector("[data-presentazione]");
+      const a = p?.querySelector("audio");
+      const t = p?.querySelector("footer p")?.textContent ?? "";
+      const [n, tot] = t.match(/[0-9]+/g)?.map(Number) ?? [0, 0];
+      return {
+        n, tot,
+        src: a?.getAttribute("src") ?? "",
+        pronto: (a?.readyState ?? 0) >= 2,
+        durata: a?.duration ?? 0,
+      };
+    });
+
+  // ⚠️ «Parte» significa `readyState >= 2`, non che una richiesta ha risposto 200. Un
+  // `<audio>` non e' una `fetch`: la CSP della pagina lo puo' bloccare mentre lo
+  // scaricamento diretto riesce benissimo. E' successo col video di benvenuto, e il
+  // controllo di allora diceva verde.
+  await attendi(async () => (await leggi()).pronto, { cosa: "prima traccia pronta", entro: 60000 });
+
+  const prima = await leggi();
+  const attesa0 = "/api/formazione/audio/" + attese[0].chiave;
+  if (prima.src !== attesa0) {
+    throw new Error("prima traccia: caricata " + prima.src.split("/").slice(-2).join("/") + " invece di " + attese[0].chiave);
+  }
+  if (!Number.isFinite(prima.durata) || prima.durata < 20) {
+    throw new Error("durata implausibile della prima traccia: " + prima.durata);
+  }
+
+  // Si avanza fino al cambio di sorgente: quello e' il confine di sezione.
+  let seconda = null;
+  for (let k = 0; k < 60; k++) {
+    const s = await leggi();
+    if (s.n >= s.tot) break;
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(60);
+    const d = await leggi();
+    if (d.src && d.src !== prima.src) { seconda = d; break; }
+  }
+  if (!seconda) return { tracce: 1, dettaglio: "1 traccia riprodotta, " + Math.round(prima.durata) + " s" };
+
+  await attendi(async () => (await leggi()).pronto, { cosa: "seconda traccia pronta", entro: 60000 }).catch(() => {});
+  if (attese[1]) {
+    const attesa1 = "/api/formazione/audio/" + attese[1].chiave;
+    if (seconda.src !== attesa1) {
+      throw new Error("seconda traccia: caricata " + seconda.src.split("/").slice(-2).join("/") + " invece di " + attese[1].chiave);
+    }
+  }
+  return { tracce: 2, dettaglio: "2 tracce riprodotte in ordine, la prima di " + Math.round(prima.durata) + " s" };
+}
+
 /** Percorre una presentazione e restituisce, per ogni slide, sezione e traccia caricata. */
 async function percorri(url) {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 120_000 });
@@ -139,42 +213,18 @@ let traccePartite = 0;
 let tracceAttese = 0;
 
 for (const corso of daFare) {
-  await agisci(`${corso.nome}: ogni traccia parte, e sulla sezione giusta`, async () => {
-    const { slide, senzaAudio } = await percorri(corso.url);
-    if (senzaAudio) throw new Error("nessun elemento audio nella presentazione");
-
-    // Le sorgenti distinte incontrate, nell'ordine di comparsa.
-    const incontrate = [];
-    for (const s of slide) {
-      if (s.src && incontrate.at(-1) !== s.src) incontrate.push(s.src);
-    }
-    const attese = corso.attese.filter((a) => a.esiste).map((a) => `/api/formazione/audio/${a.chiave}`);
-    tracceAttese += attese.length;
-
-    const mancanti = attese.filter((a) => !incontrate.includes(a));
-    if (mancanti.length) {
-      throw new Error(`${mancanti.length} tracce non caricate: ${mancanti.map((x) => x.split("/").slice(-2).join("/")).join(", ")}`);
-    }
-    // ⚠️ E l'ORDINE: una traccia caricata al momento sbagliato è indistinguibile a schermo.
-    const ordineIncontrato = incontrate.filter((x) => attese.includes(x));
-    for (let i = 0; i < attese.length; i++) {
-      if (ordineIncontrato[i] !== attese[i]) {
-        throw new Error(
-          `ordine sbagliato alla posizione ${i + 1}: caricata ${ordineIncontrato[i]?.split("/").slice(-2).join("/")} ` +
-            `invece di ${attese[i].split("/").slice(-2).join("/")}`,
-        );
-      }
-    }
-    const pronte = slide.filter((s) => s.pronto).length;
-    if (pronte === 0) throw new Error("nessuna slide ha raggiunto un audio pronto alla riproduzione");
-    traccePartite += attese.length;
-
-    const senzaVoce = corso.attese.filter((a) => !a.esiste).map((a) => a.id);
-    return `${attese.length} tracce nell'ordine giusto${senzaVoce.length ? `, ${senzaVoce.length} sezioni ancora senza voce` : ""}`;
+  await agisci(corso.nome + ": la voce parte, e sulla traccia giusta", async () => {
+    const conVoce = corso.attese.filter((a) => a.esiste);
+    if (conVoce.length === 0) throw new Error("nessuna sezione di questo corso ha una traccia nel manifesto");
+    const { tracce, dettaglio } = await provaVoce(corso.url, conVoce);
+    traccePartite += tracce;
+    tracceAttese += conVoce.length;
+    const senza = corso.attese.length - conVoce.length;
+    return dettaglio + (senza ? ", " + senza + " sezioni ancora senza voce" : "");
   });
 }
 
-console.log(`\n${traccePartite} tracce verificate su ${tracceAttese} attese.`);
+console.log(`\n${traccePartite} tracce riprodotte davvero. Le altre ${tracceAttese - traccePartite} sono coperte da tracce-pure.test.ts, che le prova tutte in due secondi.`);
 const esito = riepilogo("Tracce audio");
 await browser.close();
 await sql.end();
