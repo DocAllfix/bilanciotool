@@ -20,7 +20,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { spegniTour, strumenta, contatore, pretendiServerAggiornato, attraversaProtezione } from "./comune-collaudo.mjs";
+import { spegniTour, strumenta, contatore, pretendiServerAggiornato, attraversaProtezione, vaiA } from "./comune-collaudo.mjs";
 import { MODULI_AZIENDA } from "../src/features/companies/moduli.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -176,7 +176,7 @@ const INVITO = 'a:has-text("Apri la formazione")';
 
 /** Apre la pagina del percorso col tour automatico SPENTO, e preme il pulsante «Tour». */
 async function apriIlTourDalPulsante() {
-  await page.goto(PAGINA_MODULO, { waitUntil: "domcontentloaded" });
+  await vaiA(page, PAGINA_MODULO);
   // ⚠️ Prima la PAGINA, poi il tour: sono due guasti diversi con due rimedi diversi, e un
   // solo `waitForSelector` sul riquadro li confonde. «La pagina del percorso non si è
   // aperta» e «il tour non è partito» arrivavano al referto con lo stesso messaggio, e la
@@ -260,7 +260,7 @@ await agisci("⚠️ alla prima visita il tour parte DA SOLO, e da solo soltanto
   // sia isolato: su questa macchina un viaggio al database costa venti volte quello che
   // costa in produzione, e la pagina di un percorso può metterci parecchi secondi. Se
   // fallisce QUI e non sopra, il guasto è nell'avvio automatico, non nel seguito del tour.
-  await page.goto(PAGINA_MODULO, { waitUntil: "domcontentloaded" });
+  await vaiA(page, PAGINA_MODULO);
   await page.waitForSelector('[data-tour="ghg-passo-1"]', { timeout: 90_000 });
   await page.evaluate(() => {
     for (const k of Object.keys(localStorage)) {
@@ -291,7 +291,7 @@ await agisci("⚠️ il pulsante «Formazione» c'è su TUTTI i percorsi, tour o
   const [az] = await sql`select id from company where organization_id = ${orgId} and is_demo limit 1`;
   const senza = [];
   for (const m of MODULI_AZIENDA) {
-    await page.goto(`${BASE}/aziende/${az.id}/${m.href}`, { waitUntil: "domcontentloaded" });
+    await vaiA(page, `${BASE}/aziende/${az.id}/${m.href}`);
     const trovato = await page
       .waitForSelector(`a[href="/formazione/${m.href}"]`, { timeout: 30_000 })
       .then(() => true)
@@ -302,7 +302,7 @@ await agisci("⚠️ il pulsante «Formazione» c'è su TUTTI i percorsi, tour o
 });
 
 await agisci("dal percorso si raggiunge la formazione anche a tour spento", async () => {
-  await page.goto(PAGINA_MODULO, { waitUntil: "domcontentloaded" });
+  await vaiA(page, PAGINA_MODULO);
   await spegniTour(page);
   await page.reload({ waitUntil: "domcontentloaded" });
   const link = page.locator('a[href="/formazione/ghg"]');

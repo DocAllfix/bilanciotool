@@ -495,3 +495,29 @@ export async function spegniTour(page, chiavi = chiaviDeiTour()) {
     await page.waitForTimeout(400);
   }
 }
+
+
+/**
+ * `page.goto` su una rotta che RIMANDA, senza farsi ingannare dalla corsa.
+ *
+ * ⚠️ Quattro percorsi su dodici hanno una radice che rimanda all'esercizio
+ * (`/aziende/X/energetico` -> `/aziende/X/energetico/2025`). Su un deploy freddo il
+ * rimando arriva mentre la navigazione e' ancora in corso, e Playwright la considera
+ * sostituita: `net::ERR_ABORTED`, oppure «interrotta da un'altra navigazione allo stesso
+ * indirizzo». Il referto accusa il prodotto di non aprire una pagina che si apre benissimo.
+ *
+ * La condizione che interessa non e' «la navigazione e' andata a buon fine»: e' «la pagina
+ * c'e'». Quindi si riprova una volta, e poi si guarda il corpo invece del verbale.
+ */
+export async function vaiA(page, url, opzioni = {}) {
+  for (let tentativo = 0; tentativo < 3; tentativo++) {
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000, ...opzioni });
+      return;
+    } catch (e) {
+      const corsa = /ERR_ABORTED|interrupted by another navigation/i.test(String(e?.message ?? e));
+      if (!corsa || tentativo === 2) throw e;
+      await page.waitForTimeout(500);
+    }
+  }
+}
