@@ -100,11 +100,11 @@
   "chiave_archivio": "_piattaforma/formazione/energetico/passo-2-vettori.mp3"
  },
  "fornitore/come-si-calcola": {
-  "sha": "3e8e5cd46e1d7e5c9b1609f57e534e6fbef1cdd23d61fa55b9132250a2c81d91",
-  "sha_script": "9b81212fa29b2cbbd1522ea8d5fbf12bfd55ab8dbab8f769700b94f2c213c6f5",
-  "durata_s": 193.0,
-  "byte": 1544493,
-  "parole": 487,
+  "sha": "2ad7d8acff45fa510887f403a1490235c62c002360adb960934c842d1b7b197a",
+  "sha_script": "e9830604aecb28094f9521ae6d51eec15e9f85db8da37d2c91e7bbe8e519d5cc",
+  "durata_s": 223.8,
+  "byte": 1790829,
+  "parole": 565,
   "mp3": "_mp3/fornitore/come-si-calcola.mp3",
   "marche": [
    {
@@ -134,9 +134,13 @@
    {
     "p": 6,
     "s": 172.97
+   },
+   {
+    "p": 7,
+    "s": 192.72
    }
   ],
-  "marche_parole": 486,
+  "marche_parole": 564,
   "chiave_archivio": "_piattaforma/formazione/fornitore/come-si-calcola.mp3"
  },
  "comuni/come-si-salva": {
@@ -348,11 +352,11 @@
   "chiave_archivio": "_piattaforma/formazione/energetico/passo-3-usi.mp3"
  },
  "energetico/passo-4-indicatori": {
-  "sha": "61f8ba1bbd1ed73af8cb2f6eb0f86ee465ccbb5cede1554333ca8484d2940d6e",
-  "sha_script": "dfcce4ce94bdd4c31d6d6543bb07bda19754056c9532cfbf644c66d3d1e4876e",
-  "durata_s": 226.6,
-  "byte": 1813485,
-  "parole": 587,
+  "sha": "dd5e3295531d16b5849dc427ead8a35869eb8515b2d3a6dd1caa618af1600755",
+  "sha_script": "47e396a341a101cb6edd94973b0ee389769d63719335ba937ce72bd6f27a3106",
+  "durata_s": 228.3,
+  "byte": 1826733,
+  "parole": 586,
   "mp3": "_mp3/energetico/passo-4-indicatori.mp3",
   "marche": [
    {
@@ -369,18 +373,18 @@
    },
    {
     "p": 3,
-    "s": 102.81
+    "s": 104.49
    },
    {
     "p": 4,
-    "s": 136.82
+    "s": 138.5
    },
    {
     "p": 5,
-    "s": 172.99
+    "s": 174.66
    }
   ],
-  "marche_parole": 587,
+  "marche_parole": 586,
   "chiave_archivio": "_piattaforma/formazione/energetico/passo-4-indicatori.mp3"
  },
  "energetico/passo-5-interventi": {
@@ -916,11 +920,11 @@
   "chiave_archivio": "_piattaforma/formazione/ghg/passo-4-fattori.mp3"
  },
  "ghg/passo-5-risultati": {
-  "sha": "a5b09adb1c791d17f2d262e93dc657d4ca8f22831f6dcd7c2eb8c301ab10599d",
-  "sha_script": "d626c4375e7a8c16c9ec5ec8563fdd4ad31304f5fbd4be0081ed0a7e6a995229",
-  "durata_s": 230.2,
-  "byte": 1842093,
-  "parole": 597,
+  "sha": "bdf3c1570875d34978df8546e7415924052b59e2a4841f4abfda5854a9d7ca1a",
+  "sha_script": "8602afadd68d18f26c64081f1e2ec25121ea9184f23f541998ea74335f17f498",
+  "durata_s": 229.8,
+  "byte": 1838829,
+  "parole": 595,
   "mp3": "_mp3/ghg/passo-5-risultati.mp3",
   "marche": [
    {
@@ -956,7 +960,7 @@
     "s": 201.57
    }
   ],
-  "marche_parole": 596,
+  "marche_parole": 594,
   "chiave_archivio": "_piattaforma/formazione/ghg/passo-5-risultati.mp3"
  },
  "ghg/passo-6-anno-base": {
@@ -1036,11 +1040,11 @@
   "chiave_archivio": "_piattaforma/formazione/ghg/verifica-e-rapporto.mp3"
  },
  "ghg/errori-ghg": {
-  "sha": "9003e0b87a7b0160a7ac654e9a07399ef374026927e0047c35e6a9c184c3ccf3",
-  "sha_script": "1a79d109b23797174b70b3d5632f835df29e8dffdc0e235a48e437556fd30612",
-  "durata_s": 173.9,
-  "byte": 1392237,
-  "parole": 426,
+  "sha": "e14d0e1b966fc98e983ccd14e996392065ec6b9def913118944bdec083400cad",
+  "sha_script": "bb98cc43f054d36666fe8b2a2ef4c4b8b7ea20aeb161cd06f2e9f4dabb861e36",
+  "durata_s": 173.8,
+  "byte": 1391277,
+  "parole": 425,
   "mp3": "_mp3/ghg/errori-ghg.mp3",
   "marche": [
    {
@@ -1072,15 +1076,15 @@
     "s": 143.86
    }
   ],
-  "marche_parole": 426,
+  "marche_parole": 425,
   "chiave_archivio": "_piattaforma/formazione/ghg/errori-ghg.mp3"
  },
  "soa/contesto-e-ambito": {
-  "sha": "a50dca53b676d0d60c658ad2ca5957fbeb970c5daa02a56a8f01e231f8e470d3",
-  "sha_script": "8d696a50b1f3cecd3cae0486478201d5e9512eb972a8c3b76ec30869be2255b1",
-  "durata_s": 200.0,
-  "byte": 1600749,
-  "parole": 511,
+  "sha": "21480c6c7722a175fb711bcb06bacb0a2482ca7072bc14f227264251ae2b41dc",
+  "sha_script": "7fb464ff70f24a73c282734695b4e86f186fe30ddf7d7160a43aa7c5606b6bbd",
+  "durata_s": 260.6,
+  "byte": 2085741,
+  "parole": 681,
   "mp3": "_mp3/soa/contesto-e-ambito.mp3",
   "marche": [
    {
@@ -1106,17 +1110,25 @@
    {
     "p": 5,
     "s": 170.3
+   },
+   {
+    "p": 6,
+    "s": 199.8
+   },
+   {
+    "p": 7,
+    "s": 230.25
    }
   ],
-  "marche_parole": 511,
+  "marche_parole": 680,
   "chiave_archivio": "_piattaforma/formazione/soa/contesto-e-ambito.mp3"
  },
  "sgesg/che-cosa-e": {
-  "sha": "698f15620101308dc1ba378269832c97673a59fbaac376aef30651414afc1171",
-  "sha_script": "cc64147c7cf52d213fb7faa372bfb02be90599a9cfbbaebcdfa7cd5185e0113c",
-  "durata_s": 140.0,
-  "byte": 1120941,
-  "parole": 368,
+  "sha": "3a7a37264a38168fafe81354f5ef4beb50034da9cef78da41a5db48aa980db15",
+  "sha_script": "283474b03ded195a6a33afa23937ee033bdd20d5af41b8598b5e7b3454600c45",
+  "durata_s": 238.9,
+  "byte": 1911981,
+  "parole": 631,
   "mp3": "_mp3/sgesg/che-cosa-e.mp3",
   "marche": [
    {
@@ -1138,17 +1150,29 @@
    {
     "p": 4,
     "s": 106.4
+   },
+   {
+    "p": 5,
+    "s": 139.72
+   },
+   {
+    "p": 6,
+    "s": 181.86
+   },
+   {
+    "p": 7,
+    "s": 209.15
    }
   ],
-  "marche_parole": 368,
+  "marche_parole": 631,
   "chiave_archivio": "_piattaforma/formazione/sgesg/che-cosa-e.mp3"
  },
  "sgesg/le-fasi": {
-  "sha": "f904353b0ab4ee445a7c38ac1e23270f4f13a35565c6b414743ea967af9633cf",
-  "sha_script": "7d4fe8d229845ebb162d5c540aca8eec960fa82624e27c34dc105902871c81dd",
-  "durata_s": 153.3,
-  "byte": 1227117,
-  "parole": 423,
+  "sha": "0dfc92c6af368846fe967fd3f0139a39b720226449047f5798fa74e9543484d0",
+  "sha_script": "f14e3135d7ec3ea174b7a9dcee88f88d87066f015e5ffa6db860de3729c07190",
+  "durata_s": 246.0,
+  "byte": 1968429,
+  "parole": 678,
   "mp3": "_mp3/sgesg/le-fasi.mp3",
   "marche": [
    {
@@ -1174,17 +1198,29 @@
    {
     "p": 5,
     "s": 114.3
+   },
+   {
+    "p": 6,
+    "s": 153.05
+   },
+   {
+    "p": 7,
+    "s": 185.76
+   },
+   {
+    "p": 8,
+    "s": 215.24
    }
   ],
-  "marche_parole": 423,
+  "marche_parole": 678,
   "chiave_archivio": "_piattaforma/formazione/sgesg/le-fasi.mp3"
  },
  "sgesg/le-schede": {
-  "sha": "48655cc0a25a7ae7259692f25c1023129031cb6173dc81cccb440b570aac1e27",
-  "sha_script": "0dfe918f262448cfe56e0b0f6818e3432ffed8f6714fdfe7224584bb992b11e1",
-  "durata_s": 163.0,
-  "byte": 1305069,
-  "parole": 446,
+  "sha": "c6a34b1e28047151b8cd48d40b938c57a1994ce4c1f63aa497cfc7ea3d6c9757",
+  "sha_script": "f0ee251600edc8c5e1019ad07ac930ffe7dbf04ba5bf617c4f6cf9beb4101a5f",
+  "durata_s": 261.1,
+  "byte": 2089389,
+  "parole": 702,
   "mp3": "_mp3/sgesg/le-schede.mp3",
   "marche": [
    {
@@ -1210,17 +1246,29 @@
    {
     "p": 5,
     "s": 132.2
+   },
+   {
+    "p": 6,
+    "s": 162.79
+   },
+   {
+    "p": 7,
+    "s": 199.51
+   },
+   {
+    "p": 8,
+    "s": 224.91
    }
   ],
-  "marche_parole": 446,
+  "marche_parole": 702,
   "chiave_archivio": "_piattaforma/formazione/sgesg/le-schede.mp3"
  },
  "sgesg/i-ponti": {
-  "sha": "7fd4922e8ead5849d3bd49fba290e9486a199240249f61c0b22e0ef4f89f8a01",
-  "sha_script": "179ad7f8464c360fefb87e03ac458bfe46f9e95d610f880ff8d38c91b402d674",
-  "durata_s": 145.6,
-  "byte": 1165293,
-  "parole": 384,
+  "sha": "dd849a73de6ec32a746308623819743009cfde369122c3fac99d48b4efd05732",
+  "sha_script": "c6690bf8a64c5026b4c404785db3a1be7b3a57698fee440d2785a52c9b9d5d5a",
+  "durata_s": 230.1,
+  "byte": 1841901,
+  "parole": 631,
   "mp3": "_mp3/sgesg/i-ponti.mp3",
   "marche": [
    {
@@ -1246,17 +1294,29 @@
    {
     "p": 5,
     "s": 111.96
+   },
+   {
+    "p": 6,
+    "s": 145.29
+   },
+   {
+    "p": 7,
+    "s": 173.89
+   },
+   {
+    "p": 8,
+    "s": 198.74
    }
   ],
-  "marche_parole": 384,
+  "marche_parole": 631,
   "chiave_archivio": "_piattaforma/formazione/sgesg/i-ponti.mp3"
  },
  "sgesg/documenti-sgesg": {
-  "sha": "8f386ccc32730a9828dd1317150f1d9526dc9bd4092b6cc705576fe7d6aa8301",
-  "sha_script": "90123c096f773faf59f18742e97b10740870e7612e01b68045ef9f2809eb845f",
-  "durata_s": 165.2,
-  "byte": 1322349,
-  "parole": 450,
+  "sha": "3534115ec2c510b3a641d237a94cc649e70600435f27233678ade057e0ba5073",
+  "sha_script": "9e11ee3197fe80d1a3e5b6bce24f9ab6c2fca569be9db915953b077b95488591",
+  "durata_s": 254.2,
+  "byte": 2034669,
+  "parole": 707,
   "mp3": "_mp3/sgesg/documenti-sgesg.mp3",
   "marche": [
    {
@@ -1285,18 +1345,30 @@
    },
    {
     "p": 6,
-    "s": 151.3
+    "s": 151.04
+   },
+   {
+    "p": 7,
+    "s": 164.7
+   },
+   {
+    "p": 8,
+    "s": 197.2
+   },
+   {
+    "p": 9,
+    "s": 225.51
    }
   ],
-  "marche_parole": 450,
+  "marche_parole": 707,
   "chiave_archivio": "_piattaforma/formazione/sgesg/documenti-sgesg.mp3"
  },
  "fornitore/anagrafica-e-richiesta": {
-  "sha": "9430d7d8c85548d33754c1f10c9d522b28e69a19fb42b24575abcb6d1a31a7dc",
-  "sha_script": "a68ef308457370f6b83d92a617ef4992148222c6808e5769ce96259975dd9790",
-  "durata_s": 130.1,
-  "byte": 1041645,
-  "parole": 330,
+  "sha": "c1157a94ebff6b2b940d3bb6ea2d3ed4d2b2be46e4a734cb2186e66b1eec06c3",
+  "sha_script": "570ddd6fd1536fc5997cccfe3aea019e3f3532392c5ac5175f43439ad616cbff",
+  "durata_s": 183.3,
+  "byte": 1467117,
+  "parole": 474,
   "mp3": "_mp3/fornitore/anagrafica-e-richiesta.mp3",
   "marche": [
    {
@@ -1318,17 +1390,25 @@
    {
     "p": 4,
     "s": 102.14
+   },
+   {
+    "p": 5,
+    "s": 129.8
+   },
+   {
+    "p": 6,
+    "s": 153.99
    }
   ],
-  "marche_parole": 330,
+  "marche_parole": 474,
   "chiave_archivio": "_piattaforma/formazione/fornitore/anagrafica-e-richiesta.mp3"
  },
  "fornitore/questionario": {
-  "sha": "d4f3fa409401307a5a2ac682c04e4291d559829aab5e5a31430da1dcdef01c8b",
-  "sha_script": "40e8b4505265c83a0379505c6f4c75f64cd55ef9160f8328863111b82912b695",
-  "durata_s": 207.3,
-  "byte": 1659501,
-  "parole": 536,
+  "sha": "b495b813195afebe5aa444f1c6dfb831677707abc1e4782888c6ffae83bb4c7a",
+  "sha_script": "0dbafe080dc8ea2ace62463d65a9af73b6dd13e2e43e78b11c7f2be4dc15cb6d",
+  "durata_s": 297.7,
+  "byte": 2381997,
+  "parole": 766,
   "mp3": "_mp3/fornitore/questionario.mp3",
   "marche": [
    {
@@ -1358,17 +1438,29 @@
    {
     "p": 6,
     "s": 182.74
+   },
+   {
+    "p": 7,
+    "s": 207.16
+   },
+   {
+    "p": 8,
+    "s": 246.28
+   },
+   {
+    "p": 9,
+    "s": 272.2
    }
   ],
-  "marche_parole": 532,
+  "marche_parole": 762,
   "chiave_archivio": "_piattaforma/formazione/fornitore/questionario.mp3"
  },
  "fornitore/piano-fornitore": {
-  "sha": "2824cc1d65f1049ed8b3b80910f1e04e210e776f9a8b16a0f9e51b597a4b705b",
-  "sha_script": "65aa49cc0735f0d83208d7e0e1517e94edba1fb1875647182c76d8b0e7bdc301",
-  "durata_s": 139.3,
-  "byte": 1114989,
-  "parole": 378,
+  "sha": "578a200139d2d4fac18f401c668cf2b87140062078bf8751b18fd4f9dac0f692",
+  "sha_script": "4ef5597e8d763b244cd4c131aa69d323e19109ffe84765629e903531519d76e4",
+  "durata_s": 191.5,
+  "byte": 1532973,
+  "parole": 515,
   "mp3": "_mp3/fornitore/piano-fornitore.mp3",
   "marche": [
    {
@@ -1394,17 +1486,25 @@
    {
     "p": 5,
     "s": 116.76
+   },
+   {
+    "p": 6,
+    "s": 139.0
+   },
+   {
+    "p": 7,
+    "s": 162.91
    }
   ],
-  "marche_parole": 378,
+  "marche_parole": 515,
   "chiave_archivio": "_piattaforma/formazione/fornitore/piano-fornitore.mp3"
  },
  "fornitore/evidenze-e-attestato": {
-  "sha": "3540de97e3683d19d5caf311515f130e3deb49ea4bca8f753f9b08991f3064e7",
-  "sha_script": "658511fa69526491ae8daffc2151b2597edfe193cd94b114fdc4abdac86cd44d",
-  "durata_s": 154.2,
-  "byte": 1234605,
-  "parole": 385,
+  "sha": "f288da5ba042184bbdc97fc541bd74669c1b88506bb59114186d2aa48f255215",
+  "sha_script": "7913dc350197c9b48865f5af45136aee1c512a5089b2d2f5ab68fe3eaa430865",
+  "durata_s": 208.5,
+  "byte": 1668717,
+  "parole": 531,
   "mp3": "_mp3/fornitore/evidenze-e-attestato.mp3",
   "marche": [
    {
@@ -1426,17 +1526,25 @@
    {
     "p": 4,
     "s": 124.39
+   },
+   {
+    "p": 5,
+    "s": 153.99
+   },
+   {
+    "p": 6,
+    "s": 179.62
    }
   ],
-  "marche_parole": 384,
+  "marche_parole": 530,
   "chiave_archivio": "_piattaforma/formazione/fornitore/evidenze-e-attestato.mp3"
  },
  "fornitore/errori-fornitore": {
-  "sha": "09ae0c4cef7e7d624a49d3ceb1e0f60c347d04554575e57dfcbe3820923b65d3",
-  "sha_script": "209d0fe9c5f8db6444896ee6e7e6eb8c02400c11d1b980ef5390f1503305ebbd",
-  "durata_s": 142.9,
-  "byte": 1143981,
-  "parole": 362,
+  "sha": "3fbf776bb79ba0db717ed1045647fe4bfbbd7dd545d7a4f6d4d82060c5e3dace",
+  "sha_script": "7258ec41658ac9bd7fcc39b4d5fa923c93867e656b52bd72cbf9d93520a38135",
+  "durata_s": 205.7,
+  "byte": 1646637,
+  "parole": 542,
   "mp3": "_mp3/fornitore/errori-fornitore.mp3",
   "marche": [
    {
@@ -1458,17 +1566,25 @@
    {
     "p": 4,
     "s": 114.09
+   },
+   {
+    "p": 5,
+    "s": 142.66
+   },
+   {
+    "p": 6,
+    "s": 169.97
    }
   ],
-  "marche_parole": 361,
+  "marche_parole": 541,
   "chiave_archivio": "_piattaforma/formazione/fornitore/errori-fornitore.mp3"
  },
  "mog231/anagrafica-231": {
-  "sha": "543afd85e22fab78331b0bf7913ca426e3af6079c76651a5130471a8f36ef62a",
-  "sha_script": "a7ebb9dae2cfc4b939e03825f04d708eef8220a37d52cbe74e7858619bed20a0",
-  "durata_s": 148.5,
-  "byte": 1188717,
-  "parole": 356,
+  "sha": "cc03d231cc4437157fc4613f09a1ef3a205128527bc09f29810c10fe8675eeba",
+  "sha_script": "b6e95198fd32b7fa8c5a930c13ac22ddb7628e14bd8b91b2edccafa2250a5232",
+  "durata_s": 221.0,
+  "byte": 1768365,
+  "parole": 538,
   "mp3": "_mp3/mog231/anagrafica-231.mp3",
   "marche": [
    {
@@ -1494,17 +1610,25 @@
    {
     "p": 5,
     "s": 128.36
+   },
+   {
+    "p": 6,
+    "s": 148.25
+   },
+   {
+    "p": 7,
+    "s": 187.78
    }
   ],
-  "marche_parole": 356,
+  "marche_parole": 538,
   "chiave_archivio": "_piattaforma/formazione/mog231/anagrafica-231.mp3"
  },
  "mog231/catalogo-reati": {
-  "sha": "ad8a4dcda7814a2f3a7cd524156db521570cad8a9c59828087d8b7aea566ea1c",
-  "sha_script": "65d2cc1dd6e93228c628b4ae6988a93c1447eef8a905d4b042b4c4877a0c2043",
-  "durata_s": 119.6,
-  "byte": 957357,
-  "parole": 305,
+  "sha": "2015c66fba539288ea63af794c260d9419bf7aa1d837f3405c3c1cf69b9e7948",
+  "sha_script": "af86e1b4502fe04408d3d1cdb6569c3f60bf557121b60090e62b15ef46e624b5",
+  "durata_s": 217.9,
+  "byte": 1744173,
+  "parole": 549,
   "mp3": "_mp3/mog231/catalogo-reati.mp3",
   "marche": [
    {
@@ -1530,17 +1654,29 @@
    {
     "p": 5,
     "s": 101.66
+   },
+   {
+    "p": 6,
+    "s": 119.28
+   },
+   {
+    "p": 7,
+    "s": 158.43
+   },
+   {
+    "p": 8,
+    "s": 191.2
    }
   ],
-  "marche_parole": 305,
+  "marche_parole": 549,
   "chiave_archivio": "_piattaforma/formazione/mog231/catalogo-reati.mp3"
  },
  "mog231/processi-sensibili": {
-  "sha": "98f8212f0441db40afd9fd7fe80ee1b3dc993ae7d24263f1c62e63231d1c4c71",
-  "sha_script": "4dde1f79e5dce9c0a2915302a1c807f0284ea0b1a0ecd6b52bc8f3bcc61797ea",
-  "durata_s": 157.9,
-  "byte": 1264173,
-  "parole": 396,
+  "sha": "8dce1fff7058166b1a681b7b253184bc7e6e01dca73a7f2ce885f4bd3332f580",
+  "sha_script": "5b4ee1768740160229a3fa2c43d95531ae0ff79c2110aa765ed37fa0f578cacd",
+  "durata_s": 256.2,
+  "byte": 2050029,
+  "parole": 662,
   "mp3": "_mp3/mog231/processi-sensibili.mp3",
   "marche": [
    {
@@ -1566,17 +1702,29 @@
    {
     "p": 5,
     "s": 130.51
+   },
+   {
+    "p": 6,
+    "s": 157.66
+   },
+   {
+    "p": 7,
+    "s": 195.71
+   },
+   {
+    "p": 8,
+    "s": 229.16
    }
   ],
-  "marche_parole": 396,
+  "marche_parole": 662,
   "chiave_archivio": "_piattaforma/formazione/mog231/processi-sensibili.mp3"
  },
  "mog231/motore-rischio-231": {
-  "sha": "3e2b3617620eedc9b089759a361b895927f33274bb707238a982631f9c9c305a",
-  "sha_script": "da1082935eaaa5e036eeba95d6d0e393bc5b1c5d1ee4ad13884eb6acdb4335f6",
-  "durata_s": 174.3,
-  "byte": 1394925,
-  "parole": 441,
+  "sha": "d5cfdfe4f1c38119a98aa9361519891eacd7941e02012517cec09e777fcc1e02",
+  "sha_script": "07856864da6e82868597ee06da5db2e3ee4c10d796ab83807d39fcb224c08e3d",
+  "durata_s": 272.9,
+  "byte": 2183853,
+  "parole": 700,
   "mp3": "_mp3/mog231/motore-rischio-231.mp3",
   "marche": [
    {
@@ -1606,17 +1754,29 @@
    {
     "p": 6,
     "s": 145.86
+   },
+   {
+    "p": 7,
+    "s": 174.0
+   },
+   {
+    "p": 8,
+    "s": 212.68
+   },
+   {
+    "p": 9,
+    "s": 241.64
    }
   ],
-  "marche_parole": 441,
+  "marche_parole": 700,
   "chiave_archivio": "_piattaforma/formazione/mog231/motore-rischio-231.mp3"
  },
  "mog231/registri-231": {
-  "sha": "b23c4dcad1af2c92b8dd211199135453786835d62b9ba6f6a5440eba427a637d",
-  "sha_script": "507faeda104037e6a05639d973cc3c92892d78b272cb8d6ecd2dd5b89555995b",
-  "durata_s": 146.4,
-  "byte": 1172013,
-  "parole": 366,
+  "sha": "02e0e4ff313113eac75bb35f8c4733b17451bedf0569e3509735b83806abbd5e",
+  "sha_script": "17a44ced31c9689509bd56c43864af895ea3f94622aea82a938e05c1fbcd7005",
+  "durata_s": 238.7,
+  "byte": 1910637,
+  "parole": 619,
   "mp3": "_mp3/mog231/registri-231.mp3",
   "marche": [
    {
@@ -1642,17 +1802,29 @@
    {
     "p": 5,
     "s": 116.35
+   },
+   {
+    "p": 6,
+    "s": 146.12
+   },
+   {
+    "p": 7,
+    "s": 175.86
+   },
+   {
+    "p": 8,
+    "s": 209.17
    }
   ],
-  "marche_parole": 366,
+  "marche_parole": 619,
   "chiave_archivio": "_piattaforma/formazione/mog231/registri-231.mp3"
  },
  "mog231/idoneita-231": {
-  "sha": "ee40a27b1f87f63e5828499c2b316880d80b4f631ac77c78a66639d15cc636cd",
-  "sha_script": "fcb5d4fc2726e9c2464de906b3a2b1aacba39961087e25aab8ee95454966f0cf",
-  "durata_s": 171.1,
-  "byte": 1369197,
-  "parole": 417,
+  "sha": "8cd0bd81c34cbd4a9dc3e796ed00375a24fca704178f7305e9c9d5bc7971579f",
+  "sha_script": "aab0318089e4cecc292e707db0f1abca46d33844f64e9108138550fad9fcad68",
+  "durata_s": 256.0,
+  "byte": 2049069,
+  "parole": 631,
   "mp3": "_mp3/mog231/idoneita-231.mp3",
   "marche": [
    {
@@ -1678,17 +1850,29 @@
    {
     "p": 5,
     "s": 153.7
+   },
+   {
+    "p": 6,
+    "s": 170.81
+   },
+   {
+    "p": 7,
+    "s": 199.21
+   },
+   {
+    "p": 8,
+    "s": 230.49
    }
   ],
-  "marche_parole": 417,
+  "marche_parole": 631,
   "chiave_archivio": "_piattaforma/formazione/mog231/idoneita-231.mp3"
  },
  "mog231/corpus-231": {
-  "sha": "022b795e15f7208c18fd9572f2053d35d4cafc914ffc4f4b7711e8ad8b23f5e9",
-  "sha_script": "6803e2c4694d70b7ea61c0bebb4c09b8592a1092e2a3e180649e089c010cd7ea",
-  "durata_s": 113.6,
-  "byte": 909165,
-  "parole": 280,
+  "sha": "1a506a9ac3cd69cd18c2660c79ba7dd569ec5a518ffbe060d9acd47425aa2e03",
+  "sha_script": "299cc3bdb81db0ecf42973ad7f0561133a315bcd8da8fe5fba4f53ebf66dee98",
+  "durata_s": 199.5,
+  "byte": 1596717,
+  "parole": 494,
   "mp3": "_mp3/mog231/corpus-231.mp3",
   "marche": [
    {
@@ -1710,17 +1894,29 @@
    {
     "p": 4,
     "s": 84.67
+   },
+   {
+    "p": 5,
+    "s": 113.24
+   },
+   {
+    "p": 6,
+    "s": 143.19
+   },
+   {
+    "p": 7,
+    "s": 169.2
    }
   ],
-  "marche_parole": 280,
+  "marche_parole": 494,
   "chiave_archivio": "_piattaforma/formazione/mog231/corpus-231.mp3"
  },
  "mog231/errori-231": {
-  "sha": "502d9fa45e3cc36887ec7a987ede654e97fbba9242e91a90491c5d06c6c96a66",
-  "sha_script": "8779115f4674950b0f8efc8a633ab5ba10cf790b4593be98b14943d26099f080",
-  "durata_s": 148.6,
-  "byte": 1189869,
-  "parole": 368,
+  "sha": "bea50604d74cce5777e4eef44225dc917dee8542fcbc740eca671bfdf7b05a64",
+  "sha_script": "19e997488297d65fb9e5088b1cf9dcb7e06246587109a56eb6e287d1fc23bc91",
+  "durata_s": 213.3,
+  "byte": 1707117,
+  "parole": 545,
   "mp3": "_mp3/mog231/errori-231.mp3",
   "marche": [
    {
@@ -1746,17 +1942,25 @@
    {
     "p": 5,
     "s": 120.34
+   },
+   {
+    "p": 6,
+    "s": 148.35
+   },
+   {
+    "p": 7,
+    "s": 181.54
    }
   ],
-  "marche_parole": 368,
+  "marche_parole": 545,
   "chiave_archivio": "_piattaforma/formazione/mog231/errori-231.mp3"
  },
  "anticorruzione/anagrafica-37001": {
-  "sha": "cfb89cccecb952ba84b90a2ecbda3a91d4a5dbcfd18aec7375bb1591a42e9245",
-  "sha_script": "88902b0f5c31701fea70f17a8d877ae64164711b0b8d8e9b122a73c0d6da1ab6",
-  "durata_s": 143.6,
-  "byte": 1149357,
-  "parole": 369,
+  "sha": "699061551e43276bbf3d2ffe70ab7b9b69a9b1caf5f48d6070f94777812129ae",
+  "sha_script": "275c0054cefbb6876e35e08fa9bceb777ed4742d864607f97a519131fbc4e1d4",
+  "durata_s": 234.8,
+  "byte": 1878765,
+  "parole": 613,
   "mp3": "_mp3/anticorruzione/anagrafica-37001.mp3",
   "marche": [
    {
@@ -1790,17 +1994,29 @@
    {
     "p": 7,
     "s": 122.31
+   },
+   {
+    "p": 8,
+    "s": 143.31
+   },
+   {
+    "p": 9,
+    "s": 174.28
+   },
+   {
+    "p": 10,
+    "s": 207.19
    }
   ],
-  "marche_parole": 369,
+  "marche_parole": 613,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/anagrafica-37001.mp3"
  },
  "anticorruzione/soci-in-affari": {
-  "sha": "5e1ad9e4e2b9703ea8bd74305a8d7f2dedf575d4cc2622c701c1c08b57b57457",
-  "sha_script": "a7b169c26365cd28d5b93d976fa0ca86afce1808df93c4b430d39e4b47ffb250",
-  "durata_s": 154.1,
-  "byte": 1233261,
-  "parole": 371,
+  "sha": "295e4bfd4cf59a22928570b7378db2930b66b56cf3f655b88fb1184ea3fd76bd",
+  "sha_script": "a72d1b2a4a22d1c2a74728eae1371fd0badd71e9ab3f5584dcdfa58c9483ab09",
+  "durata_s": 270.7,
+  "byte": 2166381,
+  "parole": 655,
   "mp3": "_mp3/anticorruzione/soci-in-affari.mp3",
   "marche": [
    {
@@ -1834,17 +2050,33 @@
    {
     "p": 7,
     "s": 134.14
+   },
+   {
+    "p": 8,
+    "s": 153.8
+   },
+   {
+    "p": 9,
+    "s": 186.56
+   },
+   {
+    "p": 10,
+    "s": 211.01
+   },
+   {
+    "p": 11,
+    "s": 241.68
    }
   ],
-  "marche_parole": 371,
+  "marche_parole": 655,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/soci-in-affari.mp3"
  },
  "anticorruzione/rischio-e-obblighi": {
-  "sha": "ec7fe8a6296d7f2e057d6ec12f65270e7406018a785f661012e89d2d9ff866e6",
-  "sha_script": "b3d3d0d2730756ea232b9cc014984707443d3e918218e51b6e03d755576c0107",
-  "durata_s": 212.4,
-  "byte": 1700205,
-  "parole": 505,
+  "sha": "e10bfb74726c739485b1891d1f1e55097528d3ece73833ec005ed308250b3509",
+  "sha_script": "e27d510e46b5445bfa45eb86dbb74aa72706ad5a76557ee26ab3f97dfe0165b5",
+  "durata_s": 327.4,
+  "byte": 2620269,
+  "parole": 797,
   "mp3": "_mp3/anticorruzione/rischio-e-obblighi.mp3",
   "marche": [
    {
@@ -1882,17 +2114,33 @@
    {
     "p": 8,
     "s": 192.96
+   },
+   {
+    "p": 9,
+    "s": 212.19
+   },
+   {
+    "p": 10,
+    "s": 245.4
+   },
+   {
+    "p": 11,
+    "s": 265.2
+   },
+   {
+    "p": 12,
+    "s": 297.48
    }
   ],
-  "marche_parole": 505,
+  "marche_parole": 797,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/rischio-e-obblighi.mp3"
  },
  "anticorruzione/registri-37001": {
-  "sha": "ecb2004c2cd31a8db0f2744525ad277b5279635463a50d8bdc2f11cc24392138",
-  "sha_script": "69e45f1b1732b059bf33edb3330a64b8b4a94f6bd8d01f60217224d0e77c2999",
-  "durata_s": 171.7,
-  "byte": 1374189,
-  "parole": 418,
+  "sha": "103835004c29eddf889324fc519fd8faf34bdb65f9a6e0222a2dc3179e1e4eb2",
+  "sha_script": "c05f36a74e546fd295736e084f889093889de8fbf6e28fdc26aecb46ada1d40a",
+  "durata_s": 290.9,
+  "byte": 2327661,
+  "parole": 724,
   "mp3": "_mp3/anticorruzione/registri-37001.mp3",
   "marche": [
    {
@@ -1922,17 +2170,33 @@
    {
     "p": 6,
     "s": 146.18
+   },
+   {
+    "p": 7,
+    "s": 171.41
+   },
+   {
+    "p": 8,
+    "s": 198.59
+   },
+   {
+    "p": 9,
+    "s": 224.66
+   },
+   {
+    "p": 10,
+    "s": 255.47
    }
   ],
-  "marche_parole": 418,
+  "marche_parole": 724,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/registri-37001.mp3"
  },
  "anticorruzione/conformita-37001": {
-  "sha": "1a0f3bd5149ad908e7bf80c1da6ec12773b23d2a444ac6a0326a0a4a835f8c8e",
-  "sha_script": "dcdb2ebc1ec429db2ac39acc0e9596fd6f62aa85a30e899ecd04667293794f0e",
-  "durata_s": 122.5,
-  "byte": 980973,
-  "parole": 307,
+  "sha": "10ea6305d4ac48dd73405289f378d7733160644210ba0d963e306cc88a8f19fd",
+  "sha_script": "feec7f3c267744b6bc32b6e31612b6c411ac948e1175c1af7e1be6570aa6f37e",
+  "durata_s": 201.4,
+  "byte": 1611693,
+  "parole": 507,
   "mp3": "_mp3/anticorruzione/conformita-37001.mp3",
   "marche": [
    {
@@ -1958,17 +2222,29 @@
    {
     "p": 5,
     "s": 95.33
+   },
+   {
+    "p": 6,
+    "s": 122.22
+   },
+   {
+    "p": 7,
+    "s": 145.94
+   },
+   {
+    "p": 8,
+    "s": 172.36
    }
   ],
-  "marche_parole": 307,
+  "marche_parole": 507,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/conformita-37001.mp3"
  },
  "anticorruzione/indicatori-37001": {
-  "sha": "4a2d9ea626f48b80225a15fb73514a661a4345e715d36cff1cfb7cd49a01025d",
-  "sha_script": "b24fd357a6abe88bf3da9b61204ba27469d797ebce332d6bd4b85b22b1a31acb",
-  "durata_s": 133.2,
-  "byte": 1066605,
-  "parole": 304,
+  "sha": "abc9723a9ba5e6b168d8837b8aad8e97af1e89774fb02942004e778d61ba7c7d",
+  "sha_script": "ad2bc1627c709761a070402d36cdac8183d3d96c72d7b4aefcb92fa45074e30c",
+  "durata_s": 221.4,
+  "byte": 1771821,
+  "parole": 531,
   "mp3": "_mp3/anticorruzione/indicatori-37001.mp3",
   "marche": [
    {
@@ -1998,17 +2274,29 @@
    {
     "p": 6,
     "s": 111.84
+   },
+   {
+    "p": 7,
+    "s": 132.97
+   },
+   {
+    "p": 8,
+    "s": 158.79
+   },
+   {
+    "p": 9,
+    "s": 194.18
    }
   ],
-  "marche_parole": 304,
+  "marche_parole": 531,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/indicatori-37001.mp3"
  },
  "anticorruzione/corpus-37001": {
-  "sha": "1a24194e00c66d82f1819bd97cbab6dad923cdc45604d0e83b3ea120e330827c",
-  "sha_script": "bfbb83d940a43f2c492162a6ccef263699b48d971b331d86be7bac5de78a4cb4",
-  "durata_s": 124.7,
-  "byte": 998445,
-  "parole": 306,
+  "sha": "4a10ddb931cd3ab934c21e5496b35cb1a1bb0d5ed562eb1e0d422861371983ef",
+  "sha_script": "994416a1a4b4d564a3c6ad2f842f52c2e8a6c4e077c41e36d458ea298ea97500",
+  "durata_s": 208.5,
+  "byte": 1668717,
+  "parole": 551,
   "mp3": "_mp3/anticorruzione/corpus-37001.mp3",
   "marche": [
    {
@@ -2034,17 +2322,29 @@
    {
     "p": 5,
     "s": 100.45
+   },
+   {
+    "p": 6,
+    "s": 124.41
+   },
+   {
+    "p": 7,
+    "s": 152.9
+   },
+   {
+    "p": 8,
+    "s": 178.21
    }
   ],
-  "marche_parole": 306,
+  "marche_parole": 551,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/corpus-37001.mp3"
  },
  "anticorruzione/errori-37001": {
-  "sha": "5bf359e2ae50b4c929d16d49f71f31ef279d9e1e5f42125cb36699cb6aa626d1",
-  "sha_script": "4f6969238d8321e1645e39bf051e0ba00bb1d63893ce8012e07167e83978851c",
-  "durata_s": 145.4,
-  "byte": 1163757,
-  "parole": 374,
+  "sha": "5a5bea5e73c5eb225d43d00c95fa89e83805f760109ef49e8810dbf824ed1278",
+  "sha_script": "3d1112743e75a3b1c806bc259c3cbf83ee5df6dc34258df2ae45b8d8b47f7d65",
+  "durata_s": 224.1,
+  "byte": 1793325,
+  "parole": 600,
   "mp3": "_mp3/anticorruzione/errori-37001.mp3",
   "marche": [
    {
@@ -2074,17 +2374,29 @@
    {
     "p": 6,
     "s": 117.16
+   },
+   {
+    "p": 7,
+    "s": 145.1
+   },
+   {
+    "p": 8,
+    "s": 171.78
+   },
+   {
+    "p": 9,
+    "s": 195.78
    }
   ],
-  "marche_parole": 374,
+  "marche_parole": 600,
   "chiave_archivio": "_piattaforma/formazione/anticorruzione/errori-37001.mp3"
  },
  "segnalazioni/assetto-canale": {
-  "sha": "81b97cadafdc4dbd1f3b5fc13514ec21df7ba993aa69962165984c60ac404176",
-  "sha_script": "9e013688c31cd141131358ecf231db86d58b3eb96952ee0d566f9ca551cca0d2",
-  "durata_s": 162.7,
-  "byte": 1302573,
-  "parole": 392,
+  "sha": "9fd53c8f7fb01c95afb86433e89da3dcec3e5dd6600deda5d90798573136f7c1",
+  "sha_script": "1904d073fa4c0a139f33f75adf4d0f07debccd7e7675135cd0164af62c8aa3b4",
+  "durata_s": 254.7,
+  "byte": 2038125,
+  "parole": 625,
   "mp3": "_mp3/segnalazioni/assetto-canale.mp3",
   "marche": [
    {
@@ -2118,17 +2430,29 @@
    {
     "p": 7,
     "s": 131.0
+   },
+   {
+    "p": 8,
+    "s": 162.49
+   },
+   {
+    "p": 9,
+    "s": 199.06
+   },
+   {
+    "p": 10,
+    "s": 225.05
    }
   ],
-  "marche_parole": 390,
+  "marche_parole": 623,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/assetto-canale.mp3"
  },
  "segnalazioni/fascicolo": {
-  "sha": "a209fbfafc02fdcdcb446b4fb06318aa9ec85733729e9e7387ccae0aaa33e433",
-  "sha_script": "9ebfde5e429c4a1422387293a195ac198baa3d88e2ced867933145662a551181",
-  "durata_s": 168.1,
-  "byte": 1345773,
-  "parole": 391,
+  "sha": "4ebbd98237146520e588d8f28a654a7b3f1faf4cdb466d99297804b6713c853a",
+  "sha_script": "cc66e90a0a26898058f1f1d0666791a6189bc9e396702840f9df2e23fedf78b6",
+  "durata_s": 259.5,
+  "byte": 2076909,
+  "parole": 624,
   "mp3": "_mp3/segnalazioni/fascicolo.mp3",
   "marche": [
    {
@@ -2162,17 +2486,29 @@
    {
     "p": 7,
     "s": 136.59
+   },
+   {
+    "p": 8,
+    "s": 167.86
+   },
+   {
+    "p": 9,
+    "s": 200.45
+   },
+   {
+    "p": 10,
+    "s": 233.8
    }
   ],
-  "marche_parole": 391,
+  "marche_parole": 624,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/fascicolo.mp3"
  },
  "segnalazioni/termini": {
-  "sha": "0091dd345085adf4688afd672e8d19138dcc964f476ab721d3feb0cdca642ba6",
-  "sha_script": "b056ededb4b3eea33557c087996789760b241791d01c46697f1db68cfed52495",
-  "durata_s": 185.4,
-  "byte": 1483437,
-  "parole": 443,
+  "sha": "71b1f8b803f57732c34a58f603f7e359006913311b581033e0f2227f93b69ac1",
+  "sha_script": "def176242179cff054f0ab4d9b917114989ad9919fb857b0396c61f2867ecb7a",
+  "durata_s": 274.6,
+  "byte": 2197485,
+  "parole": 674,
   "mp3": "_mp3/segnalazioni/termini.mp3",
   "marche": [
    {
@@ -2206,17 +2542,29 @@
    {
     "p": 7,
     "s": 155.4
+   },
+   {
+    "p": 8,
+    "s": 185.15
+   },
+   {
+    "p": 9,
+    "s": 212.3
+   },
+   {
+    "p": 10,
+    "s": 243.41
    }
   ],
-  "marche_parole": 442,
+  "marche_parole": 672,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/termini.mp3"
  },
  "segnalazioni/istruttoria-tutele": {
-  "sha": "4251d7e84d8daff6bef6584f2184570dce118a68dc66fc6c76cb3bfcf1febf9a",
-  "sha_script": "d716f8fe15e3ce266c23f8d38c542d5f266f84d3fa20fe12d5424d644ef3930c",
-  "durata_s": 153.8,
-  "byte": 1231533,
-  "parole": 359,
+  "sha": "904741e969e008df24c474b5beb0b6b8ae462f9192afb563c58abb2c41293ceb",
+  "sha_script": "ec17d636c300f58eef3946a706828e64129fa30d296475630efdcfeccf5734ac",
+  "durata_s": 249.3,
+  "byte": 1995117,
+  "parole": 587,
   "mp3": "_mp3/segnalazioni/istruttoria-tutele.mp3",
   "marche": [
    {
@@ -2246,17 +2594,29 @@
    {
     "p": 6,
     "s": 126.58
+   },
+   {
+    "p": 7,
+    "s": 153.65
+   },
+   {
+    "p": 8,
+    "s": 185.59
+   },
+   {
+    "p": 9,
+    "s": 216.24
    }
   ],
-  "marche_parole": 359,
+  "marche_parole": 587,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/istruttoria-tutele.mp3"
  },
  "segnalazioni/registri-wb": {
-  "sha": "eee4eacb5e222bd287076adb4c1875b74bcf94ccd18bb8399de77587c2e8c46f",
-  "sha_script": "e4cfd16878c857ca6b60c46eac119d3c5b720cf780ed3f17ac37a8fcb5ea15db",
-  "durata_s": 138.3,
-  "byte": 1107117,
-  "parole": 315,
+  "sha": "684ea0a4451dbcb769453d6ae0deac841d552ca95aed49af6069151beed47482",
+  "sha_script": "4eac548139d3fe6c94d77a11167fde04c3a1de08f312c8366db0b48bec2c4736",
+  "durata_s": 198.5,
+  "byte": 1588845,
+  "parole": 465,
   "mp3": "_mp3/segnalazioni/registri-wb.mp3",
   "marche": [
    {
@@ -2286,17 +2646,25 @@
    {
     "p": 6,
     "s": 112.28
+   },
+   {
+    "p": 7,
+    "s": 138.05
+   },
+   {
+    "p": 8,
+    "s": 168.85
    }
   ],
-  "marche_parole": 315,
+  "marche_parole": 465,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/registri-wb.mp3"
  },
  "segnalazioni/conformita-wb": {
-  "sha": "262190f4aa5691b519a361280fa3c4351af184862128f4697aaccaeb51046e79",
-  "sha_script": "29faf373b10777d9fa35e4b208e4d886dbb437e31484850ece5c52b2c3e2507d",
-  "durata_s": 119.1,
-  "byte": 953709,
-  "parole": 291,
+  "sha": "2b4e61a838c1eff53fe75cc96cf052fe2a5fd45d2906ad4749add2137ff20683",
+  "sha_script": "f0733eb0332d827ea84522e3e74fc8fc59ff0a3d26b4aad590d78aff0c3e4c0e",
+  "durata_s": 150.3,
+  "byte": 1203501,
+  "parole": 374,
   "mp3": "_mp3/segnalazioni/conformita-wb.mp3",
   "marche": [
    {
@@ -2322,17 +2690,21 @@
    {
     "p": 5,
     "s": 95.2
+   },
+   {
+    "p": 6,
+    "s": 118.86
    }
   ],
-  "marche_parole": 291,
+  "marche_parole": 374,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/conformita-wb.mp3"
  },
  "segnalazioni/relazione-wb": {
-  "sha": "a7257c2a7fb162cfa23d0d366e29f92849a15dde9a953a0d7dee3100bb9e850b",
-  "sha_script": "426ecd06d9a0802c167837f767e6fe59a56821fee1aa0e6b2a1cb5d27af36d55",
-  "durata_s": 124.8,
-  "byte": 998829,
-  "parole": 301,
+  "sha": "86049db09ab2fcee805e9a66a677ba7281e5d5bcaf1b0ed8b5b4ee970c17d855",
+  "sha_script": "0c7f7c4f1944ba92d32dba1005db85a62001eca0225164e8f960ccc1329fa1c8",
+  "durata_s": 196.8,
+  "byte": 1575405,
+  "parole": 466,
   "mp3": "_mp3/segnalazioni/relazione-wb.mp3",
   "marche": [
    {
@@ -2362,17 +2734,25 @@
    {
     "p": 6,
     "s": 99.4
+   },
+   {
+    "p": 7,
+    "s": 124.46
+   },
+   {
+    "p": 8,
+    "s": 158.84
    }
   ],
-  "marche_parole": 301,
+  "marche_parole": 466,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/relazione-wb.mp3"
  },
  "segnalazioni/errori-wb": {
-  "sha": "b1a5d70c863c64620aeacc20351a3d9b31ffcb39210fcf591a321dd7ee11ffa3",
-  "sha_script": "587d8ef7f930e97b64b43efd2d16836af36c55de662810a1c3af3c39459a4108",
-  "durata_s": 131.5,
-  "byte": 1052973,
-  "parole": 310,
+  "sha": "42bbb6c7d6c1a40cf8f733b550210ec67221566a73f44f9f012290a07a34dab7",
+  "sha_script": "7c151f6d2eb63facaca90c34aadb9e67f26a404d03ff8456ed62b385eebf2c02",
+  "durata_s": 191.6,
+  "byte": 1533549,
+  "parole": 477,
   "mp3": "_mp3/segnalazioni/errori-wb.mp3",
   "marche": [
    {
@@ -2402,9 +2782,1437 @@
    {
     "p": 6,
     "s": 106.51
+   },
+   {
+    "p": 7,
+    "s": 131.28
+   },
+   {
+    "p": 8,
+    "s": 161.01
    }
   ],
-  "marche_parole": 310,
+  "marche_parole": 477,
   "chiave_archivio": "_piattaforma/formazione/segnalazioni/errori-wb.mp3"
+ },
+ "avviare-attivita/perche-adesso": {
+  "sha": "5edc2cc4041c7b15968a76e20ea8e07d4bee75e018e535f6933981c7c25bde7b",
+  "sha_script": "be67fbc4e08422f51f36be4096c4ad7a21f80ce7773ef866475721fd9edd91e9",
+  "durata_s": 155.6,
+  "byte": 1245357,
+  "parole": 361,
+  "mp3": "_mp3/avviare-attivita/perche-adesso.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 10.94
+   },
+   {
+    "p": 2,
+    "s": 30.26
+   },
+   {
+    "p": 3,
+    "s": 44.81
+   },
+   {
+    "p": 4,
+    "s": 61.09
+   },
+   {
+    "p": 5,
+    "s": 85.89
+   },
+   {
+    "p": 6,
+    "s": 107.97
+   },
+   {
+    "p": 7,
+    "s": 122.84
+   },
+   {
+    "p": 8,
+    "s": 143.88
+   }
+  ],
+  "marche_parole": 361,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/perche-adesso.mp3"
+ },
+ "avviare-attivita/posizionamento": {
+  "sha": "b4202df32280a09697ba88ed9627d4f917133ee2c98255476974f00a6ead23df",
+  "sha_script": "9fca91b6aee58d07e13f2a4ce3c5a9b3fa4db715e64f9c09c8ae0fcab6089950",
+  "durata_s": 148.4,
+  "byte": 1188141,
+  "parole": 355,
+  "mp3": "_mp3/avviare-attivita/posizionamento.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 14.53
+   },
+   {
+    "p": 2,
+    "s": 28.79
+   },
+   {
+    "p": 3,
+    "s": 62.08
+   },
+   {
+    "p": 4,
+    "s": 91.91
+   },
+   {
+    "p": 5,
+    "s": 113.35
+   },
+   {
+    "p": 6,
+    "s": 136.26
+   }
+  ],
+  "marche_parole": 352,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/posizionamento.mp3"
+ },
+ "avviare-attivita/dove-sono-i-clienti": {
+  "sha": "c6c874b928d4f0df0d66825f826feb1364586722939d628ee9c3eee54086253e",
+  "sha_script": "c7fb9a4891c7ff4283a885e652b197ec2a8e232cd165d6a84ef31cd6f8abb477",
+  "durata_s": 156.3,
+  "byte": 1250733,
+  "parole": 396,
+  "mp3": "_mp3/avviare-attivita/dove-sono-i-clienti.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 12.64
+   },
+   {
+    "p": 2,
+    "s": 26.71
+   },
+   {
+    "p": 3,
+    "s": 37.81
+   },
+   {
+    "p": 4,
+    "s": 59.04
+   },
+   {
+    "p": 5,
+    "s": 85.46
+   },
+   {
+    "p": 6,
+    "s": 92.7
+   },
+   {
+    "p": 7,
+    "s": 119.74
+   },
+   {
+    "p": 8,
+    "s": 138.35
+   }
+  ],
+  "marche_parole": 396,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/dove-sono-i-clienti.mp3"
+ },
+ "avviare-attivita/canali": {
+  "sha": "502b0f8131a0381bb9cd3cbb0f317f5ec1288324a8bd0afbb107cf42884154db",
+  "sha_script": "d3bf4c190e4985034862aa6f62d4a034bf07ee8a6a5e6e5835b8e2071c25d303",
+  "durata_s": 176.0,
+  "byte": 1408749,
+  "parole": 435,
+  "mp3": "_mp3/avviare-attivita/canali.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 13.15
+   },
+   {
+    "p": 2,
+    "s": 34.77
+   },
+   {
+    "p": 3,
+    "s": 55.59
+   },
+   {
+    "p": 4,
+    "s": 83.7
+   },
+   {
+    "p": 5,
+    "s": 113.6
+   },
+   {
+    "p": 6,
+    "s": 151.22
+   }
+  ],
+  "marche_parole": 435,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/canali.mp3"
+ },
+ "avviare-attivita/primo-incontro": {
+  "sha": "c9d77f4643778ac3b66a127d26e280fec8ccbf17bd2255b0f453484312802b1f",
+  "sha_script": "25c372a922dd5d30fb8cca9283ed2882360e29f6b7f181298555fd4b87bbff3b",
+  "durata_s": 153.1,
+  "byte": 1225389,
+  "parole": 397,
+  "mp3": "_mp3/avviare-attivita/primo-incontro.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 15.39
+   },
+   {
+    "p": 2,
+    "s": 42.79
+   },
+   {
+    "p": 3,
+    "s": 62.09
+   },
+   {
+    "p": 4,
+    "s": 86.56
+   },
+   {
+    "p": 5,
+    "s": 102.08
+   },
+   {
+    "p": 6,
+    "s": 119.74
+   }
+  ],
+  "marche_parole": 397,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/primo-incontro.mp3"
+ },
+ "avviare-attivita/proposta": {
+  "sha": "a79940a2bca0b32e7d700c9d299956ccfab4750009580ee8d08fa435ac6b2389",
+  "sha_script": "8bff0b9b443897efe3830db0fa9c31f332f2ef3263e3ac12f1be3e873d6513a9",
+  "durata_s": 168.3,
+  "byte": 1347309,
+  "parole": 418,
+  "mp3": "_mp3/avviare-attivita/proposta.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 4.75
+   },
+   {
+    "p": 2,
+    "s": 44.69
+   },
+   {
+    "p": 3,
+    "s": 73.69
+   },
+   {
+    "p": 4,
+    "s": 96.97
+   },
+   {
+    "p": 5,
+    "s": 101.72
+   },
+   {
+    "p": 6,
+    "s": 128.57
+   },
+   {
+    "p": 7,
+    "s": 150.0
+   }
+  ],
+  "marche_parole": 418,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/proposta.mp3"
+ },
+ "avviare-attivita/prezzo": {
+  "sha": "e08666e264d751f45af155704490c003b5ad6079ac71ac2b29891720bd5782f1",
+  "sha_script": "93e3a47a663d9c6b192a58622866a941b09cfd70a679ff1103b00fff8e39a0b0",
+  "durata_s": 149.0,
+  "byte": 1192941,
+  "parole": 394,
+  "mp3": "_mp3/avviare-attivita/prezzo.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 13.62
+   },
+   {
+    "p": 2,
+    "s": 33.48
+   },
+   {
+    "p": 3,
+    "s": 58.58
+   },
+   {
+    "p": 4,
+    "s": 79.83
+   },
+   {
+    "p": 5,
+    "s": 90.81
+   },
+   {
+    "p": 6,
+    "s": 95.64
+   },
+   {
+    "p": 7,
+    "s": 112.88
+   },
+   {
+    "p": 8,
+    "s": 129.74
+   }
+  ],
+  "marche_parole": 393,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/prezzo.mp3"
+ },
+ "avviare-attivita/obiezioni": {
+  "sha": "f3a8182787784338eb7444f2e32e0cc1454a27e49716f5a694b9955f9fa37d31",
+  "sha_script": "ef745ad957bb99cf03320ed7567a28d73e5bc97b9b63baa6b0563b1c3a49d6ca",
+  "durata_s": 159.0,
+  "byte": 1272429,
+  "parole": 394,
+  "mp3": "_mp3/avviare-attivita/obiezioni.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 11.11
+   },
+   {
+    "p": 2,
+    "s": 40.25
+   },
+   {
+    "p": 3,
+    "s": 62.31
+   },
+   {
+    "p": 4,
+    "s": 81.06
+   },
+   {
+    "p": 5,
+    "s": 109.84
+   },
+   {
+    "p": 6,
+    "s": 126.79
+   }
+  ],
+  "marche_parole": 394,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/obiezioni.mp3"
+ },
+ "avviare-attivita/metodo-progetto": {
+  "sha": "92bca37cde1eadeb749116c3cfc36fa283471b101d5d1720cd19e66de5751efa",
+  "sha_script": "01bcd7e9ddafca607c26b555d2ba15a58d64702a2080131dc51ac5a3837b44a2",
+  "durata_s": 186.2,
+  "byte": 1490157,
+  "parole": 434,
+  "mp3": "_mp3/avviare-attivita/metodo-progetto.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 10.06
+   },
+   {
+    "p": 2,
+    "s": 40.08
+   },
+   {
+    "p": 3,
+    "s": 66.99
+   },
+   {
+    "p": 4,
+    "s": 82.26
+   },
+   {
+    "p": 5,
+    "s": 104.45
+   },
+   {
+    "p": 6,
+    "s": 119.69
+   },
+   {
+    "p": 7,
+    "s": 150.1
+   },
+   {
+    "p": 8,
+    "s": 168.2
+   }
+  ],
+  "marche_parole": 434,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/metodo-progetto.mp3"
+ },
+ "avviare-attivita/verso-la-verifica": {
+  "sha": "90d89aa885923f7b9d228bbd114a343322a73138182d8b8ca613c7d7fcb2602b",
+  "sha_script": "edf6e9985bcfa8a9b5f4265cbfde26533e7dfc3a8c3aecf0023e741409e0878a",
+  "durata_s": 160.6,
+  "byte": 1285869,
+  "parole": 416,
+  "mp3": "_mp3/avviare-attivita/verso-la-verifica.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.42
+   },
+   {
+    "p": 2,
+    "s": 34.95
+   },
+   {
+    "p": 3,
+    "s": 60.95
+   },
+   {
+    "p": 4,
+    "s": 81.64
+   },
+   {
+    "p": 5,
+    "s": 106.21
+   },
+   {
+    "p": 6,
+    "s": 125.54
+   },
+   {
+    "p": 7,
+    "s": 141.91
+   }
+  ],
+  "marche_parole": 416,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/verso-la-verifica.mp3"
+ },
+ "avviare-attivita/mantenimento": {
+  "sha": "c1bcbc4cca39a0200e4c3aa53fc9f276335849e4723c365ca2e05a4d13e4dcbf",
+  "sha_script": "b38135526c33ee483ab1580b5c4f81772132a8d71484013ffb3d5923555042b5",
+  "durata_s": 176.8,
+  "byte": 1414893,
+  "parole": 421,
+  "mp3": "_mp3/avviare-attivita/mantenimento.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 11.99
+   },
+   {
+    "p": 2,
+    "s": 46.15
+   },
+   {
+    "p": 3,
+    "s": 68.76
+   },
+   {
+    "p": 4,
+    "s": 82.11
+   },
+   {
+    "p": 5,
+    "s": 111.5
+   },
+   {
+    "p": 6,
+    "s": 139.49
+   },
+   {
+    "p": 7,
+    "s": 151.72
+   }
+  ],
+  "marche_parole": 421,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/mantenimento.mp3"
+ },
+ "avviare-attivita/organizzare-lo-studio": {
+  "sha": "52adba6d151f03408eaee1b232619cfbeafe979a1acbb39cda83847dc460e86b",
+  "sha_script": "ae32b7a8ca5d3273f1348f48c6bdbe5271431b718a46a6723bae71076b3b140a",
+  "durata_s": 171.0,
+  "byte": 1368621,
+  "parole": 440,
+  "mp3": "_mp3/avviare-attivita/organizzare-lo-studio.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 6.3
+   },
+   {
+    "p": 2,
+    "s": 27.02
+   },
+   {
+    "p": 3,
+    "s": 58.15
+   },
+   {
+    "p": 4,
+    "s": 77.08
+   },
+   {
+    "p": 5,
+    "s": 96.15
+   },
+   {
+    "p": 6,
+    "s": 127.92
+   },
+   {
+    "p": 7,
+    "s": 150.53
+   }
+  ],
+  "marche_parole": 440,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/organizzare-lo-studio.mp3"
+ },
+ "avviare-attivita/crescere": {
+  "sha": "5f07294ea7a6e6f825ebb2b717a5dff2101a37f4188dfa1f18c4fbbbcba2926b",
+  "sha_script": "2ca1e800bb3fe98fae3ca3aaf21be2b56f13d23319760fd7cdc1e2d53a3b9e8c",
+  "durata_s": 161.4,
+  "byte": 1292205,
+  "parole": 426,
+  "mp3": "_mp3/avviare-attivita/crescere.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 10.78
+   },
+   {
+    "p": 2,
+    "s": 34.0
+   },
+   {
+    "p": 3,
+    "s": 56.27
+   },
+   {
+    "p": 4,
+    "s": 73.38
+   },
+   {
+    "p": 5,
+    "s": 98.86
+   },
+   {
+    "p": 6,
+    "s": 117.97
+   },
+   {
+    "p": 7,
+    "s": 140.51
+   }
+  ],
+  "marche_parole": 426,
+  "chiave_archivio": "_piattaforma/formazione/avviare-attivita/crescere.mp3"
+ },
+ "filiera/anagrafica-filiera": {
+  "sha": "61f6114e2481832ac0dc341308d10801158d4a339973d6fecf3fa7536aca6f64",
+  "sha_script": "e75ba812ae39d6771d2c224768c621e2cc732317dc9556eecbd2adf3d794acb2",
+  "durata_s": 166.0,
+  "byte": 1329069,
+  "parole": 425,
+  "mp3": "_mp3/filiera/anagrafica-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 12.22
+   },
+   {
+    "p": 2,
+    "s": 36.73
+   },
+   {
+    "p": 3,
+    "s": 56.99
+   },
+   {
+    "p": 4,
+    "s": 67.4
+   },
+   {
+    "p": 5,
+    "s": 97.6
+   },
+   {
+    "p": 6,
+    "s": 111.66
+   },
+   {
+    "p": 7,
+    "s": 136.75
+   }
+  ],
+  "marche_parole": 425,
+  "chiave_archivio": "_piattaforma/formazione/filiera/anagrafica-filiera.mp3"
+ },
+ "filiera/filiera-e-partner": {
+  "sha": "a6a5a4b080f8d5c94bcfcdff6c2461111ae459d4fd1edb8562a75a1ec21c1e31",
+  "sha_script": "5f8052a94742d0adbc1866585de9df5267dfafc2af49ae14298c2db36d057c11",
+  "durata_s": 196.2,
+  "byte": 1570605,
+  "parole": 488,
+  "mp3": "_mp3/filiera/filiera-e-partner.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 13.94
+   },
+   {
+    "p": 2,
+    "s": 43.99
+   },
+   {
+    "p": 3,
+    "s": 47.83
+   },
+   {
+    "p": 4,
+    "s": 65.47
+   },
+   {
+    "p": 5,
+    "s": 95.35
+   },
+   {
+    "p": 6,
+    "s": 119.79
+   },
+   {
+    "p": 7,
+    "s": 131.55
+   },
+   {
+    "p": 8,
+    "s": 155.18
+   },
+   {
+    "p": 9,
+    "s": 170.64
+   }
+  ],
+  "marche_parole": 488,
+  "chiave_archivio": "_piattaforma/formazione/filiera/filiera-e-partner.mp3"
+ },
+ "filiera/motore-rischio-filiera": {
+  "sha": "0c5dbcc384753d7f4c8234d47df06a1895bede89ded5c7325761e30898fa56f4",
+  "sha_script": "32a48528074d31457f8f650d23000ff34a737abb4275b9d7845d4a16e9ec5d10",
+  "durata_s": 249.5,
+  "byte": 1996461,
+  "parole": 643,
+  "mp3": "_mp3/filiera/motore-rischio-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.33
+   },
+   {
+    "p": 2,
+    "s": 36.61
+   },
+   {
+    "p": 3,
+    "s": 64.76
+   },
+   {
+    "p": 4,
+    "s": 86.72
+   },
+   {
+    "p": 5,
+    "s": 104.06
+   },
+   {
+    "p": 6,
+    "s": 128.34
+   },
+   {
+    "p": 7,
+    "s": 164.3
+   },
+   {
+    "p": 8,
+    "s": 176.51
+   },
+   {
+    "p": 9,
+    "s": 198.72
+   },
+   {
+    "p": 10,
+    "s": 231.1
+   }
+  ],
+  "marche_parole": 643,
+  "chiave_archivio": "_piattaforma/formazione/filiera/motore-rischio-filiera.mp3"
+ },
+ "filiera/registri-filiera": {
+  "sha": "40c10cbe01017e16aa67b2cfe44172c70ee1c28942de62aef299d8f149f8a620",
+  "sha_script": "9f5646d25f1da6029d10e224be860abe651a799cc414cdbda84d590744719794",
+  "durata_s": 201.0,
+  "byte": 1608813,
+  "parole": 500,
+  "mp3": "_mp3/filiera/registri-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 19.68
+   },
+   {
+    "p": 2,
+    "s": 34.91
+   },
+   {
+    "p": 3,
+    "s": 62.4
+   },
+   {
+    "p": 4,
+    "s": 80.95
+   },
+   {
+    "p": 5,
+    "s": 97.31
+   },
+   {
+    "p": 6,
+    "s": 124.15
+   },
+   {
+    "p": 7,
+    "s": 156.56
+   },
+   {
+    "p": 8,
+    "s": 181.76
+   }
+  ],
+  "marche_parole": 500,
+  "chiave_archivio": "_piattaforma/formazione/filiera/registri-filiera.mp3"
+ },
+ "filiera/indicatori-filiera": {
+  "sha": "26be05a97ac275b5a1705ef6a74546321a5e0cd44bc9eae3736947fdb9519a04",
+  "sha_script": "95be7de0cd5d824f79e8fb2c6f1b97509ac14d554037966e8533ae619d59fb8f",
+  "durata_s": 142.7,
+  "byte": 1142061,
+  "parole": 355,
+  "mp3": "_mp3/filiera/indicatori-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.19
+   },
+   {
+    "p": 2,
+    "s": 22.14
+   },
+   {
+    "p": 3,
+    "s": 35.35
+   },
+   {
+    "p": 4,
+    "s": 58.86
+   },
+   {
+    "p": 5,
+    "s": 75.85
+   },
+   {
+    "p": 6,
+    "s": 96.06
+   },
+   {
+    "p": 7,
+    "s": 114.3
+   }
+  ],
+  "marche_parole": 355,
+  "chiave_archivio": "_piattaforma/formazione/filiera/indicatori-filiera.mp3"
+ },
+ "filiera/corpus-filiera": {
+  "sha": "1d5856b119eac2453d8d69919154f0abebb498a9aea4f04391bbf0a8a427cea6",
+  "sha_script": "4a3b2d3e2c99f1bfca1da3a8af7d1d7c4ac8e3f973c622f0ca0d63409288871d",
+  "durata_s": 170.7,
+  "byte": 1366125,
+  "parole": 425,
+  "mp3": "_mp3/filiera/corpus-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 26.26
+   },
+   {
+    "p": 2,
+    "s": 46.67
+   },
+   {
+    "p": 3,
+    "s": 59.65
+   },
+   {
+    "p": 4,
+    "s": 79.35
+   },
+   {
+    "p": 5,
+    "s": 87.42
+   },
+   {
+    "p": 6,
+    "s": 104.6
+   },
+   {
+    "p": 7,
+    "s": 128.49
+   },
+   {
+    "p": 8,
+    "s": 149.53
+   }
+  ],
+  "marche_parole": 425,
+  "chiave_archivio": "_piattaforma/formazione/filiera/corpus-filiera.mp3"
+ },
+ "filiera/errori-filiera": {
+  "sha": "1f1c174d2e60c98f28cfdfba9d938c88dc24d4d87adf3a63fb05b5379da70db3",
+  "sha_script": "f9fc49248a91f0da30d61992e3a2a63ebf812af94bf32e60d1770d579f97ee2c",
+  "durata_s": 156.4,
+  "byte": 1251693,
+  "parole": 415,
+  "mp3": "_mp3/filiera/errori-filiera.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.99
+   },
+   {
+    "p": 2,
+    "s": 50.76
+   },
+   {
+    "p": 3,
+    "s": 57.21
+   },
+   {
+    "p": 4,
+    "s": 77.39
+   },
+   {
+    "p": 5,
+    "s": 90.6
+   },
+   {
+    "p": 6,
+    "s": 108.01
+   },
+   {
+    "p": 7,
+    "s": 125.19
+   }
+  ],
+  "marche_parole": 415,
+  "chiave_archivio": "_piattaforma/formazione/filiera/errori-filiera.mp3"
+ },
+ "sa8000/anagrafica-sa8000": {
+  "sha": "b3d4d4e5613ff14a38f4a2f4a127875de76e4b25698d69120237cc0aa6a4f080",
+  "sha_script": "17b9b487127871d48be0739c51e305499807c365f6b6bcf301cc831c715a32f7",
+  "durata_s": 219.6,
+  "byte": 1757421,
+  "parole": 553,
+  "mp3": "_mp3/sa8000/anagrafica-sa8000.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 9.24
+   },
+   {
+    "p": 2,
+    "s": 41.56
+   },
+   {
+    "p": 3,
+    "s": 52.75
+   },
+   {
+    "p": 4,
+    "s": 75.88
+   },
+   {
+    "p": 5,
+    "s": 98.01
+   },
+   {
+    "p": 6,
+    "s": 109.72
+   },
+   {
+    "p": 7,
+    "s": 136.25
+   },
+   {
+    "p": 8,
+    "s": 155.57
+   },
+   {
+    "p": 9,
+    "s": 189.47
+   }
+  ],
+  "marche_parole": 553,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/anagrafica-sa8000.mp3"
+ },
+ "sa8000/criteri-sa8000": {
+  "sha": "7de1318d63dddaffbb1acd3a2fe8e1ef0e28abb450c859c8e3931149b6726d10",
+  "sha_script": "6dbb172e3ba926065ca82161dfe7b1bbc1e3b127c41fe31ee81e8de3fa96763d",
+  "durata_s": 244.8,
+  "byte": 1959213,
+  "parole": 625,
+  "mp3": "_mp3/sa8000/criteri-sa8000.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 17.29
+   },
+   {
+    "p": 2,
+    "s": 40.65
+   },
+   {
+    "p": 3,
+    "s": 55.01
+   },
+   {
+    "p": 4,
+    "s": 84.16
+   },
+   {
+    "p": 5,
+    "s": 92.22
+   },
+   {
+    "p": 6,
+    "s": 119.55
+   },
+   {
+    "p": 7,
+    "s": 130.31
+   },
+   {
+    "p": 8,
+    "s": 157.34
+   },
+   {
+    "p": 9,
+    "s": 188.24
+   },
+   {
+    "p": 10,
+    "s": 216.09
+   }
+  ],
+  "marche_parole": 625,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/criteri-sa8000.mp3"
+ },
+ "sa8000/registri-sa8000": {
+  "sha": "cfa50ae297d6ddfad2b0084c7c85250c604d89b737e7cacc925e0e7d417127f0",
+  "sha_script": "6ba22b71cf6495651d3c47ab001c305b3b6b47975d36811cde7cb840026eb8b5",
+  "durata_s": 220.3,
+  "byte": 1763181,
+  "parole": 546,
+  "mp3": "_mp3/sa8000/registri-sa8000.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 24.12
+   },
+   {
+    "p": 2,
+    "s": 29.09
+   },
+   {
+    "p": 3,
+    "s": 51.31
+   },
+   {
+    "p": 4,
+    "s": 78.04
+   },
+   {
+    "p": 5,
+    "s": 100.58
+   },
+   {
+    "p": 6,
+    "s": 121.3
+   },
+   {
+    "p": 7,
+    "s": 154.26
+   },
+   {
+    "p": 8,
+    "s": 190.06
+   }
+  ],
+  "marche_parole": 546,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/registri-sa8000.mp3"
+ },
+ "sa8000/rischi-reclami-rimedio": {
+  "sha": "98945e1cafc2c2b01544e0d0f181b6386a34be69026e45ec744a22409323accf",
+  "sha_script": "71fcf137b2573a6b03c7094fc98cd55cc36be100aee1c3d8d0d5cdac7141360f",
+  "durata_s": 242.1,
+  "byte": 1937517,
+  "parole": 626,
+  "mp3": "_mp3/sa8000/rischi-reclami-rimedio.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.62
+   },
+   {
+    "p": 2,
+    "s": 28.51
+   },
+   {
+    "p": 3,
+    "s": 42.09
+   },
+   {
+    "p": 4,
+    "s": 69.97
+   },
+   {
+    "p": 5,
+    "s": 85.85
+   },
+   {
+    "p": 6,
+    "s": 109.15
+   },
+   {
+    "p": 7,
+    "s": 126.72
+   },
+   {
+    "p": 8,
+    "s": 151.75
+   },
+   {
+    "p": 9,
+    "s": 176.71
+   },
+   {
+    "p": 10,
+    "s": 209.96
+   }
+  ],
+  "marche_parole": 626,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/rischi-reclami-rimedio.mp3"
+ },
+ "sa8000/manuale-sa8000": {
+  "sha": "1c5fd4a204bd4ea3cd2e0b9a204b5da362e394fc427c2e0806dd11901a4007c1",
+  "sha_script": "a62465668b4a291a0a3a784cfe6827a5651be1864bc369d274265a25582b68cd",
+  "durata_s": 207.1,
+  "byte": 1657581,
+  "parole": 532,
+  "mp3": "_mp3/sa8000/manuale-sa8000.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 17.86
+   },
+   {
+    "p": 2,
+    "s": 46.26
+   },
+   {
+    "p": 3,
+    "s": 58.38
+   },
+   {
+    "p": 4,
+    "s": 78.14
+   },
+   {
+    "p": 5,
+    "s": 95.09
+   },
+   {
+    "p": 6,
+    "s": 127.72
+   },
+   {
+    "p": 7,
+    "s": 148.91
+   },
+   {
+    "p": 8,
+    "s": 177.53
+   }
+  ],
+  "marche_parole": 531,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/manuale-sa8000.mp3"
+ },
+ "sa8000/errori-sa8000": {
+  "sha": "9addff9bd4f56cdbffbf4b2e7d641d73e79f2ea8b9d37ac37ef86822d76e4b60",
+  "sha_script": "e407664e55397e7fcd6015ad7781f1ce7e51b7413c7d6a3253a3bef00c596560",
+  "durata_s": 220.0,
+  "byte": 1761069,
+  "parole": 566,
+  "mp3": "_mp3/sa8000/errori-sa8000.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 4.72
+   },
+   {
+    "p": 2,
+    "s": 40.7
+   },
+   {
+    "p": 3,
+    "s": 47.39
+   },
+   {
+    "p": 4,
+    "s": 63.79
+   },
+   {
+    "p": 5,
+    "s": 73.4
+   },
+   {
+    "p": 6,
+    "s": 96.78
+   },
+   {
+    "p": 7,
+    "s": 122.79
+   },
+   {
+    "p": 8,
+    "s": 148.34
+   },
+   {
+    "p": 9,
+    "s": 173.64
+   },
+   {
+    "p": 10,
+    "s": 187.05
+   }
+  ],
+  "marche_parole": 566,
+  "chiave_archivio": "_piattaforma/formazione/sa8000/errori-sa8000.mp3"
+ },
+ "soa/i-controlli": {
+  "sha": "566085986734730a02f5f12d31a6f8b4e5b81e53b58325e022b4156538fa2440",
+  "sha_script": "a24bad7ad85fc53fe3e000eaa1b5fdfde4e45412a9ed218895a68aea81bba66b",
+  "durata_s": 319.1,
+  "byte": 2553261,
+  "parole": 827,
+  "mp3": "_mp3/soa/i-controlli.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 9.16
+   },
+   {
+    "p": 2,
+    "s": 47.45
+   },
+   {
+    "p": 3,
+    "s": 86.89
+   },
+   {
+    "p": 4,
+    "s": 120.06
+   },
+   {
+    "p": 5,
+    "s": 142.89
+   },
+   {
+    "p": 6,
+    "s": 164.88
+   },
+   {
+    "p": 7,
+    "s": 182.91
+   },
+   {
+    "p": 8,
+    "s": 232.56
+   },
+   {
+    "p": 9,
+    "s": 265.11
+   },
+   {
+    "p": 10,
+    "s": 294.55
+   }
+  ],
+  "marche_parole": 827,
+  "chiave_archivio": "_piattaforma/formazione/soa/i-controlli.mp3"
+ },
+ "soa/calcolo-soa": {
+  "sha": "7bb5054698459d22166046b914f711b5734f7ab61e0e7f09953760cb18374dc6",
+  "sha_script": "16f7b01faa5e27fa7cf2d5c45150e2f159870b7b6bd5d88a3b0ab7dd9fa3830f",
+  "durata_s": 261.5,
+  "byte": 2093037,
+  "parole": 692,
+  "mp3": "_mp3/soa/calcolo-soa.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 20.95
+   },
+   {
+    "p": 2,
+    "s": 68.53
+   },
+   {
+    "p": 3,
+    "s": 80.71
+   },
+   {
+    "p": 4,
+    "s": 103.99
+   },
+   {
+    "p": 5,
+    "s": 148.47
+   },
+   {
+    "p": 6,
+    "s": 200.3
+   },
+   {
+    "p": 7,
+    "s": 232.24
+   }
+  ],
+  "marche_parole": 692,
+  "chiave_archivio": "_piattaforma/formazione/soa/calcolo-soa.mp3"
+ },
+ "soa/verifiche-soa": {
+  "sha": "1033d82a8cf28a734e59edd9ddc13480b402836583f83633d6157499644327f8",
+  "sha_script": "16d01928124356777c3b0b32f5f52290cf7f6fabac2b4904997a3842842af034",
+  "durata_s": 204.8,
+  "byte": 1639341,
+  "parole": 548,
+  "mp3": "_mp3/soa/verifiche-soa.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 16.19
+   },
+   {
+    "p": 2,
+    "s": 23.0
+   },
+   {
+    "p": 3,
+    "s": 42.24
+   },
+   {
+    "p": 4,
+    "s": 62.0
+   },
+   {
+    "p": 5,
+    "s": 82.2
+   },
+   {
+    "p": 6,
+    "s": 96.53
+   },
+   {
+    "p": 7,
+    "s": 112.14
+   },
+   {
+    "p": 8,
+    "s": 129.0
+   },
+   {
+    "p": 9,
+    "s": 156.64
+   },
+   {
+    "p": 10,
+    "s": 178.65
+   }
+  ],
+  "marche_parole": 548,
+  "chiave_archivio": "_piattaforma/formazione/soa/verifiche-soa.mp3"
+ },
+ "soa/documento-soa": {
+  "sha": "e78c26b6abf6fe7c0000ae4b2d63883dba489bdee7bbd91b90f1c0f48a18bcd1",
+  "sha_script": "53be45225c96107d389de736227885b7af5e21ab6c3730d0dcd93beedc24c28b",
+  "durata_s": 179.7,
+  "byte": 1438509,
+  "parole": 495,
+  "mp3": "_mp3/soa/documento-soa.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 7.88
+   },
+   {
+    "p": 2,
+    "s": 43.5
+   },
+   {
+    "p": 3,
+    "s": 79.74
+   },
+   {
+    "p": 4,
+    "s": 103.12
+   },
+   {
+    "p": 5,
+    "s": 134.94
+   },
+   {
+    "p": 6,
+    "s": 154.56
+   }
+  ],
+  "marche_parole": 495,
+  "chiave_archivio": "_piattaforma/formazione/soa/documento-soa.mp3"
  }
 }
