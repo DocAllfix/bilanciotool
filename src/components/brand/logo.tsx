@@ -15,22 +15,44 @@ export function Monogramma({ suScuro = false, className }: { suScuro?: boolean; 
   return <img src={suScuro ? SRC.chiaro : SRC.scuro} alt="" aria-hidden className={cn("block", className)} />;
 }
 
+/**
+ * Un lockup che cambia con il tema.
+ *
+ * ⚠️ DUE FILE E NON UNO, e la ragione e' che un `<img>` non eredita il colore. Le quattro
+ * superfici che portano un lockup — accesso, intestazione e piede della vetrina, portale
+ * cliente — usano tutte `bg-background`, che si rovescia col tema: in scuro la parola
+ * «DECK» in petrolio su fondo quasi nero non si legge. L'oro del monogramma regge su
+ * entrambi i fondi e non cambia; cambia solo la parola.
+ *
+ * Si rendono tutti e due e se ne nasconde uno con le classi, invece di scegliere in
+ * JavaScript: leggere il tema nel client vorrebbe dire un lampeggio al primo caricamento,
+ * ed e' proprio la pagina d'accesso — la prima che si vede.
+ */
+function Lockup({ chiaro, scuro, className }: { chiaro: string; scuro: string; className?: string }) {
+  return (
+    <>
+      <img src={chiaro} alt="EvalisDeck" className={cn("block w-auto dark:hidden", className)} />
+      <img src={scuro} alt="" aria-hidden className={cn("hidden w-auto dark:block", className)} />
+    </>
+  );
+}
+
 export function LogoOrizzontale({ className }: { className?: string }) {
   return (
-    <img
-      src="/brand/derivati/logo-orizzontale.svg"
-      alt="EvalisDeck"
-      className={cn("block w-auto", className)}
+    <Lockup
+      chiaro="/brand/derivati/logo-orizzontale.svg"
+      scuro="/brand/derivati/logo-orizzontale-suscuro.svg"
+      className={className}
     />
   );
 }
 
 export function LogoVerticale({ className }: { className?: string }) {
   return (
-    <img
-      src="/brand/derivati/logo-verticale.svg"
-      alt="EvalisDeck"
-      className={cn("block w-auto", className)}
+    <Lockup
+      chiaro="/brand/derivati/logo-verticale.svg"
+      scuro="/brand/derivati/logo-verticale-suscuro.svg"
+      className={className}
     />
   );
 }
