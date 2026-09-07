@@ -393,6 +393,13 @@
       "when": 1788763427553,
       "tag": "0055_nis2_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1788763427554,
+      "tag": "0056_documenti_nis2",
+      "breakpoints": true
     }
   ]
 }

@@ -40,6 +40,9 @@ export const RISULTATO: Record<ModuloAzienda, string> = {
     "Tenere insieme più norme in un sistema solo, con il perimetro che decide che cosa conta davvero.",
   sa8000:
     "Arrivare alla visita con un sistema vissuto invece che documentato, a partire dal gruppo e dai canali di reclamo.",
+  nis2: "Determinare se un'azienda rientra nel decreto e a quale titolo, e misurare quanto le manca — con un numero che regge davanti all'Autorità.",
+  sgnis2:
+    "Portare un ente dalla comunicazione dell'ACN a un sistema che si tiene in piedi: sessantotto controlli, cinque fasi, e le scadenze che non si possono mancare.",
   soa: "Dichiarare l'applicabilità di ogni controllo con una motivazione che si difende, e sapere quali sono i cardine.",
 };
 

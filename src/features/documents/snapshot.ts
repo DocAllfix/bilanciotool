@@ -9,6 +9,8 @@ import {
 import { assegnaCodice } from "./codice";
 import { marchioDaCongelare } from "./marchio";
 import { logAudit } from "@/lib/audit";
+import { getQuadro as getQuadroNis2 } from "@/features/nis2/profilo";
+import { getSistema as getSistemaNis2 } from "@/features/sgnis2/sistema";
 import { requireEntitlement } from "@/features/entitlement";
 import { getProgramma } from "@/features/sgesg/programma";
 import { documentoSgesg } from "@/features/sgesg/documenti";
@@ -1141,4 +1143,142 @@ export async function resolveSnapshotImages(orgId: string, dati: { azienda?: { l
     }),
   );
   return urls;
+}
+
+// ------------------------------------------------------- I tre documenti NIS2
+//
+// ⚠️ TUTTI E TRE PASSANO DA `salvaSnapshot`, che e' la strozzatura comune ai ventidue tipi.
+// Da li' ereditano senza una riga di codice nuovo: il marchio dello studio congelato,
+// l'edizione dei contenuti, il colophon e il codice di verifica. Chi ne aggiungesse un
+// ventitreesimo aggirandola si porterebbe dietro un documento senza codice, e il codice
+// non si puo' aggiungere dopo — lo snapshot e' immutabile.
+
+/**
+ * La Relazione sul livello di conformita' (percorso `nis2`).
+ *
+ * ⚠️ Congela la CLASSIFICAZIONE D'AMBITO, che nel dato vivo non esiste: si calcola da
+ * settore, dimensione e criteri. Nel documento invece deve restare quella del giorno in
+ * cui e' stato firmato — se un domani il consulente corregge la dimensione, la relazione
+ * gia' consegnata non deve cambiare conclusione sotto le mani di chi l'ha ricevuta.
+ */
+export async function publishConformitaNis2Snapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const q = await getQuadroNis2(userId, orgId, companyId, "autovalutazione");
+  if (!q?.profilo) throw new Error("Nessuna autovalutazione NIS2 da pubblicare per questa azienda");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: q.azienda,
+    profilo: {
+      settore: q.profilo.settore,
+      dimensione: q.profilo.dimensione,
+      criteri: q.profilo.criteri,
+      organo: q.profilo.organo,
+      responsabile: q.profilo.responsabile,
+      sostituto: q.profilo.sostituto,
+      puntoContatto: q.profilo.puntoContatto,
+      comunicazioneIl: q.profilo.comunicazioneIl,
+      registrazioneIl: q.profilo.registrazioneIl,
+      obiettivo: q.profilo.obiettivo,
+    },
+    ambito: q.ambito,
+    criteriCatalogo: q.criteri.map((c) => ({ key: c.key, testo: c.testo, classe: c.classe })),
+    conformita: q.conformita,
+    requisiti: q.requisiti.map((r) => ({
+      key: r.key,
+      capitolo: r.chapterKey,
+      rif: r.rif,
+      critico: r.critico,
+      testo: r.testo,
+      livello: r.stato?.livello ?? null,
+      nonApplicabile: r.stato?.nonApplicabile ?? false,
+      evidenza: r.stato?.evidenza ?? null,
+    })),
+  };
+
+  return salvaSnapshot(
+    userId,
+    orgId,
+    companyId,
+    "conformita_nis2",
+    SENZA_ESERCIZIO,
+    dati,
+    q.profilo.contentSetId,
+  );
+}
+
+/**
+ * I due del sistema di gestione (percorso `sgnis2`), da una funzione sola.
+ *
+ * ⚠️ Come i quattro del metodo ESG: cio' che cambia fra la Relazione e il Catalogo dei
+ * controlli e' quale parte dello stesso stato si stampa, non da dove viene. Due funzioni
+ * sarebbero due posti da tenere allineati, e il giorno che si aggiunge un campo se ne
+ * aggiornerebbe uno solo.
+ *
+ * ⚠️ Congela lo STATO EFFETTIVO dei controlli, non quello dichiarato. E' la sola cosa che
+ * un documento debba riportare: «attuato» con la verifica scaduta e' «da verificare», e
+ * il giorno dopo la pubblicazione un altro controllo puo' scadere — ma questa relazione
+ * dice cio' che era vero quando e' stata firmata.
+ */
+export async function publishSistemaNis2Snapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: "relazione_nis2" | "controlli_nis2",
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  const s = await getSistemaNis2(userId, orgId, companyId);
+  if (!s?.sistema) throw new Error("Nessun sistema di gestione NIS2 da pubblicare per questa azienda");
+  const q = await getQuadroNis2(userId, orgId, companyId, "sistema");
+  if (!q?.profilo) throw new Error("Profilo NIS2 mancante");
+
+  const dati = {
+    generatoIl: new Date().toISOString(),
+    azienda: s.azienda,
+    ambito: q.ambito,
+    profilo: {
+      organo: q.profilo.organo,
+      responsabile: q.profilo.responsabile,
+      comunicazioneIl: q.profilo.comunicazioneIl,
+      registrazioneIl: q.profilo.registrazioneIl,
+    },
+    attuazione: s.attuazione,
+    conformita: q.conformita,
+    controlli: s.controlli.map((c) => ({
+      key: c.id,
+      capitolo: c.capitolo,
+      nome: c.nome,
+      descrizione: c.descrizione,
+      critico: c.critico,
+      frequenza: c.frequenza,
+      dichiarato: c.dichiarato,
+      effettivo: c.effettivo,
+      responsabile: c.stato?.responsabile ?? null,
+      evidenza: c.stato?.evidenza ?? null,
+      ultimaVerifica: c.ultimaVerifica,
+      prossima: c.prossima,
+    })),
+    roadmap: s.roadmap,
+    indicatori: s.indicatori.map((i) => ({
+      codice: i.codice,
+      nome: i.nome,
+      ambito: i.ambito,
+      tipo: i.tipo,
+      unita: i.unita,
+      frequenza: i.frequenza,
+      target: i.target,
+      soglia: i.soglia,
+      verso: i.verso,
+      ultima: i.ultima,
+      stato: i.statoCalcolato,
+      andamento: i.andamento,
+      scostamento: i.scostamento,
+    })),
+  };
+
+  return salvaSnapshot(userId, orgId, companyId, tipo, SENZA_ESERCIZIO, dati, s.sistema.contentSetId);
 }

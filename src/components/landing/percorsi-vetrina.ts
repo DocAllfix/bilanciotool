@@ -226,6 +226,32 @@ const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = {
     punto:
       "Un criterio attuato parzialmente pesa zero, non metà: un criterio sociale applicato a metà non protegge a metà un lavoratore, e il punteggio non deve suggerire il contrario.",
   },
+  nis2: {
+    norma: "D.Lgs. 138/2024 · Direttiva (UE) 2022/2555",
+    passi: [
+      "Settore, dimensione, criteri specifici",
+      "Essenziale, importante o fuori ambito",
+      "126 requisiti su 12 capi, scala 0÷4",
+      "Scostamenti e piano di adeguamento",
+      "Registro degli incidenti e dei termini",
+      "Relazione sul livello di conformità",
+    ],
+    punto:
+      "La prima domanda non è «quanto siamo conformi», è «rientriamo». Il decreto la decide con settore, dimensione e otto criteri che prescindono da entrambi, e dalla risposta dipendono gli obblighi e un tetto sanzionatorio che arriva a dieci milioni. Qui la classificazione si calcola e porta scritto da dove viene.",
+  },
+  sgnis2: {
+    norma: "D.Lgs. 138/2024 · determinazioni ACN",
+    passi: [
+      "Roadmap in cinque fasi",
+      "68 controlli con la loro frequenza",
+      "Scadenzario degli adempimenti",
+      "19 indicatori di attuazione ed efficacia",
+      "Verifica di conformità e piano",
+      "Relazione all'organo di amministrazione",
+    ],
+    punto:
+      "Un controllo dichiarato attuato e mai più verificato non è attuato: qui torna «da verificare» da solo, alla scadenza della sua frequenza. È la differenza fra un sistema che esiste e uno che sta scritto, e l'ispezione la trova in dieci minuti chiedendo l'ultima evidenza.",
+  },
   soa: {
     norma: "ISO/IEC 27001:2022 §6.1.3 d)",
     passi: [

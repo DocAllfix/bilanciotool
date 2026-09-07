@@ -38,6 +38,10 @@ const RADICI: Record<ModuloAzienda, { tabella: string; anno: string | null }> = 
   anticorruzione: { tabella: "bribery_system", anno: null },
   mog231: { tabella: "mog_model", anno: null },
   segnalazioni: { tabella: "wb_system", anno: null },
+  // ⚠️ DUE radici distinte per un catalogo solo: aprire il sistema di gestione non deve
+  // accendere anche l'autovalutazione nel portafoglio. Vedi `schema/nis2.ts`.
+  nis2: { tabella: "nis2_assessment", anno: null },
+  sgnis2: { tabella: "nis2_system", anno: null },
 };
 
 export type Radice = { modulo: ModuloAzienda; companyId: string; anno: number | null };
