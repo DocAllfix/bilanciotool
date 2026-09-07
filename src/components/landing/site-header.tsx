@@ -24,7 +24,7 @@ export function SiteHeader() {
             e cede in silenzio. A 768px era ridotto a una scaglia di quattordici pixel.
             Ora a cedere sono gli spazi, e se non basta il difetto si vede. */}
         <Link href="/" className="tocco-comodo flex shrink-0 items-center" aria-label="EvalisDeck">
-          <LogoOrizzontale className="h-10" />
+          <LogoOrizzontale className="text-[18px]" />
         </Link>
         <nav className="hidden items-center gap-5 text-[13px] font-medium text-muted-foreground md:flex" aria-label="Sezioni">
           {/* `<Link>` e non `<a>`: le àncore portano il percorso perché la stessa

@@ -21,7 +21,7 @@ function Cornice({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="border-b">
         <div className="mx-auto w-full max-w-3xl px-5 py-4">
-          <LogoOrizzontale className="h-9" />
+          <LogoOrizzontale className="text-[16px]" />
         </div>
       </header>
       <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-12">{children}</main>

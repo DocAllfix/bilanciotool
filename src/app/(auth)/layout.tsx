@@ -22,7 +22,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-4 py-10">
       <Link href="/" className="mb-7" aria-label="EvalisDeck">
-        <LogoVerticale className="h-24" />
+        {/* ⚠️ Era `h-24`, che con la composizione impilata voleva dire un marchio alto
+            novantasei pixel. A destra invece la parola cresce con l'altezza: novantasei
+            pixel di simbolo darebbero un nome da sessanta, che su una scheda di accesso
+            larga quattrocento urla. Cinquantasei e' la misura in cui il marchio guida
+            senza coprire il modulo, che e' la cosa per cui si e' li'. */}
+        <LogoVerticale className="text-[25px]" />
       </Link>
       {/* `main` e non `div`: e' il punto di riferimento con cui una tecnologia
           assistiva salta direttamente al contenuto. Il resto del prodotto ce l'ha,
