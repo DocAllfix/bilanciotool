@@ -14,6 +14,8 @@ import { anagraficaCorpus231 } from "@/features/mog231/anagrafica-corpus";
 import { anagraficaCorpusSa } from "@/features/sa8000/anagrafica-corpus";
 import { anagraficaCorpus } from "@/features/segnalazioni/anagrafica-corpus";
 import { anagraficaCorpusQas } from "@/features/sgiqas/anagrafica-corpus";
+import { anagraficaCorpusNis2 } from "@/features/nis2/anagrafica-corpus";
+import { getQuadro as getQuadroNis2 } from "@/features/nis2/profilo";
 
 // L'anagrafica che riempie i segnaposto, per edizione del corpus.
 //
@@ -36,6 +38,14 @@ type Caricatore = (
 const uno = <T,>(righe: T[]): T | null => righe[0] ?? null;
 
 export const ANAGRAFICHE_CORPUS: Record<string, Caricatore> = {
+  // ⚠️ NIS2 e' l'unico set condiviso da DUE percorsi, e l'anagrafica e' quella del
+  // profilo — che e' comune. La stampa di una procedura porta gli stessi dati che si
+  // aprano dall'autovalutazione o dal sistema di gestione, ed e' giusto: e' la stessa
+  // organizzazione, con lo stesso responsabile.
+  "nis2-v1": async (userId, orgId, companyId) => {
+    const q = await getQuadroNis2(userId, orgId, companyId, "sistema");
+    return q ? anagraficaCorpusNis2(q) : null;
+  },
   "iso37001-v1": async (userId, orgId, companyId) => {
     const r = uno(
       await withTenant({ userId, orgId }, (tx) =>
