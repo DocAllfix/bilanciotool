@@ -19,6 +19,11 @@ const LAVORI = [
   ["monogrammasufondoscuro.svg", "monogramma-chiaro.svg", true, 2],
   ["tilefavicon.svg", "icona.svg", true, 0],
   ["logosoloorizzontale.svg", "logo-orizzontale.svg", true, 2],
+  // Le due varianti per fondo scuro: stesso disegno, la sola parola in chiaro. Servono
+  // perche' le quattro superfici che portano un lockup usano `bg-background`, che si
+  // rovescia col tema, e il petrolio su fondo quasi nero non si legge.
+  ["lockupprincipale-suscuro.svg", "logo-verticale-suscuro.svg", true, 2],
+  ["logosoloorizzontale-suscuro.svg", "logo-orizzontale-suscuro.svg", true, 2],
 ];
 
 const senzaSfondo = (svg) =>
