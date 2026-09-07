@@ -227,34 +227,11 @@ const MARGINE = 24;
   );
 }
 
-// ── 6 e 7 · Le due varianti per FONDO SCURO ──────────────────────────────────
+// ⚠️ QUI C'ERANO DUE VARIANTI PER FONDO SCURO, e non servono piu'.
 //
-// ⚠️ Non e' un vezzo: le quattro superfici che portano un lockup — accesso, intestazione
-// e piede della vetrina, portale cliente — usano `bg-background`, che si ROVESCIA col
-// tema. In tema scuro la parola «DECK» in petrolio `#3B5A56` su fondo quasi nero non si
-// legge: guardata a schermo, sparisce.
-//
-// Il difetto c'era gia' prima di questo marchio — il lockup orizzontale precedente aveva
-// lettere `#15242E`, ancora piu' scure — e nessuno l'aveva visto perche' nessuno aveva
-// guardato quelle quattro pagine in tema scuro. Si chiude adesso che costa una riga.
-//
-// L'ORO NON SI TOCCA: sta a meta' luminanza e regge su entrambi i fondi. Cambia solo la
-// parola, che passa a un grigio chiaro appena freddo — non bianco puro, che accanto a un
-// oro caldo stona.
-const PAROLA_SU_SCURO = "#DCE4E2";
+// Servivano finche' la parola era DISEGNATA dentro il vettore: in petrolio su fondo quasi
+// nero non si leggeva, e l'unico modo era un secondo file con la parola chiara. Ora la
+// parola e' testo (`src/components/brand/logo.tsx`) e prende `text-primary`, che il tema
+// rovescia da solo. Due file in meno da tenere allineati.
 
-for (const [da, a] of [
-  ["lockupprincipale.svg", "lockupprincipale-suscuro.svg"],
-  ["logosoloorizzontale.svg", "logosoloorizzontale-suscuro.svg"],
-]) {
-  const originale = readFileSync(join(OUT, da), "utf8");
-  const chiaro = originale.split(PETROLIO).join(PAROLA_SU_SCURO);
-  if (chiaro === originale) {
-    console.error(`${da}: nessuna sostituzione — la parola non e' piu' in ${PETROLIO}?`);
-    process.exit(1);
-  }
-  writeFileSync(join(OUT, a), chiaro);
-  console.log(`  ${a}`);
-}
-
-console.log("\nsette originali riscritti da un'unica sorgente.");
+console.log("\ncinque originali riscritti da un'unica sorgente.");

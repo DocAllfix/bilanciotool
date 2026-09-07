@@ -19,7 +19,7 @@ export function PiedeMarketing() {
     <footer className="border-t bg-background">
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 sm:grid-cols-2 md:grid-cols-4">
         <div>
-          <LogoOrizzontale className="h-10" />
+          <LogoOrizzontale className="text-[18px]" />
           <p className="mt-2 max-w-[28ch] text-xs leading-relaxed text-muted-foreground">
             Documenti di conformità e rendicontazione per le PMI, con il metodo incorporato.
           </p>
