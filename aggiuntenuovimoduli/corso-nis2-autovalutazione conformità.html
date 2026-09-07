@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corso — Uso della piattaforma di verifica di conformità NIS2 (D.Lgs. 138/2024)</title>
+<style>
+:root{
+  --navy:#1F4E78; --navy-dk:#153A5B; --navy-lt:#E8EFF6;
+  --gold:#B98C4E; --gold-lt:#F5EDE0;
+  --ink:#16202A; --ink2:#48565F; --ink3:#7C8992;
+  --bg:#FAFAF8; --card:#fff; --line:#E3E4E0; --line2:#F0F0EC;
+  --green:#2E7D32; --green-lt:#E8F3E9;
+  --red:#B3261E; --red-lt:#FBEAE8;
+  --amber:#B06E00; --amber-lt:#FDF2DF;
+  --blue:#1F5F8B; --blue-lt:#E7F0F6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55}
+.app{display:flex;min-height:100vh}
+.side{width:280px;flex:0 0 280px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:18px;border-bottom:2px solid var(--navy)}
+.brand b{display:block;font-size:16px;color:var(--navy)}
+.brand span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px}
+.navgrp{padding:14px 14px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink2);font-size:13.5px}
+.nav:hover{background:var(--line2);color:var(--ink)}
+.nav.on{background:var(--navy);color:#fff;font-weight:600}
+.nav.lock{opacity:.45;cursor:not-allowed}
+.nav .st{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3)}
+.nav.on .st{border-color:rgba(255,255,255,.55);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .mm{margin-left:auto;font-size:10.5px;color:var(--ink3)}
+.nav.on .mm{color:rgba(255,255,255,.8)}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line2);font-size:11px;color:var(--ink3)}
+.pbar{height:6px;background:var(--line2);border-radius:3px;margin-top:8px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--green);width:0%}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:12px 28px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}
+.top .crumb{font-size:13px;color:var(--ink3)}
+.top .crumb b{color:var(--navy)}
+.top .timer{margin-left:auto;font-size:12px;color:var(--ink3);background:var(--line2);padding:4px 10px;border-radius:20px}
+.wrap{padding:30px 34px 90px;max-width:920px;width:100%;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px;color:var(--navy);letter-spacing:-.4px}
+h2{font-size:19px;margin:26px 0 10px;color:var(--navy)}
+h3{font-size:15.5px;margin:20px 0 8px;color:var(--ink)}
+.sub{color:var(--ink3);font-size:13.5px;margin-bottom:20px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px}
+table{border-collapse:collapse;width:100%;margin:0 0 16px;font-size:13.5px}
+th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px;font-weight:600}
+td{border:1px solid var(--line);padding:7px 10px;vertical-align:top;background:var(--card)}
+tr:nth-child(even) td{background:#FBFBFA}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+.callout{border-left:4px solid var(--navy);background:var(--navy-lt);border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 16px;font-size:14px}
+.callout.warn{border-color:var(--amber);background:var(--amber-lt)}
+.callout.ok{border-color:var(--green);background:var(--green-lt)}
+.callout.red{border-color:var(--red);background:var(--red-lt)}
+.callout b:first-child{display:block;margin-bottom:4px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+.kpi .k{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:center}
+.kpi .k b{display:block;font-size:26px;color:var(--navy)}
+.kpi .k span{font-size:12px;color:var(--ink3)}
+.tag{display:inline-block;background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold);border-radius:14px;padding:1px 10px;font-size:11.5px;font-weight:600;margin-right:6px}
+.path{display:inline-block;background:var(--line2);border-radius:6px;padding:1px 8px;font-family:Consolas,Menlo,monospace;font-size:12.5px;color:var(--navy-dk)}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:42px;margin-bottom:12px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.navbtns{display:flex;justify-content:space-between;margin-top:34px;gap:12px}
+button.btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-size:14.5px;font-weight:600;cursor:pointer}
+button.btn:hover{background:var(--navy-dk)}
+button.btn.ghost{background:var(--card);color:var(--navy);border:1.5px solid var(--navy)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+.quiz .q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.quiz .q h3{margin-top:0}
+.quiz label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.quiz label:hover{background:var(--line2)}
+.quiz label.right{background:var(--green-lt);border-color:var(--green)}
+.quiz label.wrong{background:var(--red-lt);border-color:var(--red)}
+.quiz input{margin-top:3px}
+.result{border-radius:12px;padding:20px 24px;margin-top:10px;font-size:15px;display:none}
+.result.ok{display:block;background:var(--green-lt);border:1.5px solid var(--green)}
+.result.ko{display:block;background:var(--red-lt);border:1.5px solid var(--red)}
+.mock{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 16px;font-size:12.5px}
+.mock .mtitle{background:var(--line2);padding:6px 12px;color:var(--ink3);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.mock .mbody{display:flex}
+.mock .mside{width:160px;background:#F7F7F5;border-right:1px solid var(--line);padding:8px}
+.mock .mside div{padding:4px 8px;border-radius:6px;margin-bottom:2px;color:var(--ink2)}
+.mock .mside div.sel{background:var(--navy);color:#fff}
+.mock .mmain{flex:1;padding:12px 14px}
+@media(max-width:860px){.side{display:none}.wrap{padding:20px 16px 80px}}
+@media print{.side,.top,.navbtns{display:none}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <b>EVALIS Academy</b>
+      <span>Corso operativo · 60 minuti<br>Piattaforma di verifica NIS2 — D.Lgs. 138/2024</span>
+    </div>
+    <div id="navlist"></div>
+    <div class="sidefoot">
+      Avanzamento corso
+      <div class="pbar"><i id="pfill"></i></div>
+      <div id="ptext" style="margin-top:5px">0 / 9 unità completate</div>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="top">
+      <span class="crumb">Corso <b>FAD-NIS2-P01</b> · Uso corretto della piattaforma di autovalutazione</span>
+      <span class="timer" id="unittime"></span>
+    </div>
+    <div class="wrap" id="content"></div>
+  </div>
+</div>
+
+<!-- ===== CONTENUTI UNITA ===== -->
+<template id="tpl-u1">
+<h1>Unità 1 — Quadro normativo e finalità della piattaforma</h1>
+<div class="sub">Durata indicativa: 5 minuti</div>
+<div class="card">
+<p>La piattaforma <b>"Verifica del livello di conformità — D.Lgs. 138/2024 (NIS2)"</b> è uno strumento di autovalutazione che consente di misurare, documentare e migliorare la conformità di un'organizzazione al decreto di recepimento della Direttiva (UE) 2022/2555.</p>
+<p>Prima di usarla correttamente occorre avere chiari tre concetti normativi che la piattaforma incorpora in ogni sua sezione.</p>
+</div>
+<h2>1.1 Chi è soggetto al decreto</h2>
+<table>
+<tr><th>Elemento</th><th>Contenuto</th></tr>
+<tr><td><b>Settore</b></td><td>Settori ad alta criticità (Allegato I) o altri settori critici (Allegato II)</td></tr>
+<tr><td><b>Dimensione</b></td><td>Media impresa: da 50 addetti o 10 M€ di fatturato e bilancio. Grande impresa: da 250 addetti o 50 M€ di fatturato o 43 M€ di bilancio</td></tr>
+<tr><td><b>Criteri specifici</b></td><td>Alcuni soggetti rientrano a prescindere dalla dimensione (fornitori di reti pubbliche, servizi fiduciari, DNS, PA individuate, fornitori unici di servizi essenziali)</td></tr>
+<tr><td><b>Classificazione</b></td><td><b>Soggetto essenziale</b> o <b>soggetto importante</b>: stessi obblighi sostanziali, diverso regime di vigilanza e massimali sanzionatori (fino a 10 M€/2% vs 7 M€/1,4% del fatturato mondiale)</td></tr>
+</table>
+<div class="callout warn"><b>Attenzione</b>La classificazione inserita in piattaforma è una valutazione preliminare dell'organizzazione: quella definitiva è comunicata dall'Autorità (ACN) tramite l'elenco ufficiale.</div>
+<h2>1.2 Le due famiglie di obblighi</h2>
+<ul>
+<li><b>Misure di gestione dei rischi</b> (art. 24, c. 2, lett. a–j): dalla governance alla MFA, mappate nella piattaforma sui 12 capitoli di verifica e sulle 13 procedure PNS.</li>
+<li><b>Notifica degli incidenti significativi</b> (art. 25): pre-notifica entro <b>24 ore</b>, notifica entro <b>72 ore</b>, relazione finale entro <b>un mese</b>. Il registro incidenti della piattaforma calcola automaticamente questi termini.</li>
+</ul>
+<h2>1.3 A cosa serve la piattaforma</h2>
+<div class="kpi">
+<div class="k"><b>124</b><span>requisiti di verifica</span></div>
+<div class="k"><b>12</b><span>capitoli tematici</span></div>
+<div class="k"><b>13</b><span>procedure PNS</span></div>
+<div class="k"><b>47</b><span>moduli MOD</span></div>
+<div class="k"><b>14</b><span>registri operativi</span></div>
+</div>
+<p>Il flusso di lavoro corretto, che seguirete nelle prossime unità, è:</p>
+<ol class="steps">
+<li>Creare il profilo dell'organizzazione (Unità 2)</li>
+<li>Definire ambito e assetto (Unità 3)</li>
+<li>Condurre la verifica sui 124 requisiti con la scala 0–4 (Unità 4)</li>
+<li>Analizzare gli scostamenti e generare il piano di adeguamento (Unità 5)</li>
+<li>Tenere i registri operativi nel tempo (Unità 6)</li>
+<li>Personalizzare e approvare il corpus documentale (Unità 7)</li>
+<li>Produrre relazioni e mettere in sicurezza i dati (Unità 8)</li>
+</ol>
+</template>
+
+<template id="tpl-u2">
+<h1>Unità 2 — Primi passi: organizzazioni e profili</h1>
+<div class="sub">Durata indicativa: 7 minuti · Sezione <span class="tag">Studio → Organizzazioni</span></div>
+<div class="card">
+<p>La piattaforma è <b>multi-organizzazione</b>: uno studio di consulenza può gestire più clienti nello stesso archivio, ciascuno con la propria verifica, i propri registri e il proprio corpus documentale. Finché non esiste o non è selezionata un'organizzazione, il menù laterale mostra solo <b>Organizzazioni</b>, <b>Archivio e sincronia</b> e <b>Guida all'uso</b>.</p>
+</div>
+<div class="mock"><div class="mtitle">Schema interfaccia</div><div class="mbody">
+<div class="mside"><div class="sel">▦ Organizzazioni</div><div>◆ Cruscotto</div><div>1 Ambito e assetto</div><div>2 Verifica di conformità</div><div>3 Scostamenti e piano</div><div>4 Registri</div><div>▤ Procedure</div><div>▥ Modulistica</div><div>⎙ Relazioni e stampe</div><div>⚙ Archivio e sincronia</div></div>
+<div class="mmain"><b>Organizzazioni</b><br>Elenco dei profili censiti. Da qui si crea, si seleziona e si duplica un profilo. Le altre voci del menù si attivano solo dopo la selezione.</div>
+</div></div>
+<h2>2.1 Creare un'organizzazione</h2>
+<ol class="steps">
+<li>Aprire <b>Organizzazioni</b> dal gruppo "Studio" del menù laterale.</li>
+<li>Premere il pulsante di nuova organizzazione e compilare l'anagrafica: ragione sociale, organo di amministrazione, referenti. Questi dati alimentano i <b>segnaposto</b> ([Nome Organizzazione], [Direzione], ecc.) usati nelle procedure.</li>
+<li>Salvare: l'organizzazione diventa quella corrente e il menù completo si attiva.</li>
+</ol>
+<div class="callout"><b>Perché l'anagrafica va compilata subito</b>Le 13 procedure PNS e i 47 moduli contengono segnaposto che la piattaforma sostituisce automaticamente con i dati anagrafici. Un'anagrafica incompleta produce documenti con campi [tra parentesi] non risolti.</div>
+<h2>2.2 Il salvataggio automatico</h2>
+<p>Ogni modifica viene salvata automaticamente dopo circa un secondo di inattività. In alto compare l'indicatore di stato:</p>
+<ul>
+<li><b>"salvataggio…"</b> — ci sono modifiche in attesa di scrittura;</li>
+<li><b>"salvato"</b> — tutti i dati sono persistiti.</li>
+</ul>
+<div class="callout warn"><b>Regola pratica</b>Non chiudere la scheda del browser mentre l'indicatore mostra "salvataggio…". Attendere sempre "salvato".</div>
+<h2>2.3 Dove finiscono i dati</h2>
+<p>Per impostazione predefinita i dati risiedono nel <b>browser</b> (localStorage) del computer in uso: non viaggiano verso alcun server. Le alternative (sincronizzazione REST o integrazione host) si configurano in <b>Archivio e sincronia</b> e sono trattate nell'Unità 8. Fin da subito, però, vale la regola d'oro:</p>
+<div class="callout red"><b>Regola d'oro</b>I dati locali si perdono se si svuota la cache del browser o si cambia computer. Esportare regolarmente l'archivio JSON (Unità 8) è parte dell'uso corretto della piattaforma, non un'opzione.</div>
+</template>
+
+<template id="tpl-u3">
+<h1>Unità 3 — Cruscotto e ambito</h1>
+<div class="sub">Durata indicativa: 6 minuti · Sezioni <span class="tag">Cruscotto</span> <span class="tag">Ambito e assetto</span></div>
+<h2>3.1 Il Cruscotto</h2>
+<div class="card">
+<p>Il <b>Cruscotto</b> è la pagina di sintesi: mostra la percentuale complessiva di conformità (visibile anche come contatore accanto alla voce di menù), l'avanzamento della verifica, gli scostamenti aperti, le urgenze dei registri (per esempio termini di notifica in scadenza) e lo stato del corpus documentale.</p>
+<p>Va letto come punto di partenza di ogni sessione di lavoro: dice subito <i>dove</i> intervenire.</p>
+</div>
+<h2>3.2 Ambito e assetto (passo 1 del percorso)</h2>
+<p>La sezione <b>Ambito e assetto</b> guida la determinazione preliminare dell'ambito soggettivo e la definizione dell'assetto organizzativo:</p>
+<table>
+<tr><th>Cosa si registra</th><th>A cosa serve</th></tr>
+<tr><td>Settore (Allegato I / II) e parametri dimensionali</td><td>Stabilire se l'organizzazione rientra nel decreto e come (essenziale/importante)</td></tr>
+<tr><td>Criteri specifici indipendenti dalla dimensione</td><td>Intercettare i casi che rientrano comunque (DNS, servizi fiduciari, PA, fornitori unici…)</td></tr>
+<tr><td>Ruoli: organo di amministrazione, punto di contatto verso l'Autorità, responsabile della sicurezza informatica, responsabili di funzione</td><td>Documentare l'assetto richiesto da PNS-01 e alimentare il MOD-01.03</td></tr>
+</table>
+<div class="callout"><b>Collegamento con la verifica</b>Le scelte fatte qui condizionano i requisiti attivi nella verifica: requisiti non pertinenti possono essere marcati N/A con motivazione (Unità 4). Compilare l'ambito prima della verifica evita valutazioni su requisiti fuori perimetro.</div>
+<div class="callout warn"><b>Errore frequente</b>Saltare "Ambito e assetto" e partire dalla verifica. Risultato: percentuali di conformità calcolate su un perimetro sbagliato e documenti di assetto (delibera, designazioni) mancanti in caso di ispezione.</div>
+</template>
+
+<template id="tpl-u4">
+<h1>Unità 4 — La verifica di conformità</h1>
+<div class="sub">Durata indicativa: 10 minuti · Sezione <span class="tag">Verifica di conformità</span> · Checkpoint al termine</div>
+<div class="card">
+<p>È il cuore della piattaforma: <b>124 requisiti</b> formulati come domande, organizzati in <b>12 capitoli</b> che ricalcano le misure dell'art. 24 e gli obblighi di governance. Ogni requisito riporta il riferimento normativo, la procedura PNS collegata e la criticità.</p>
+</div>
+<h2>4.1 I 12 capitoli</h2>
+<table>
+<tr><th>Capitolo</th><th>Contenuto</th></tr>
+<tr><td>Governance e organi</td><td>Approvazione delle misure, sorveglianza, responsabilità e formazione degli organi</td></tr>
+<tr><td>Registrazione e Autorità</td><td>Ambito, registrazione, variazioni, comunicazioni e obblighi informativi</td></tr>
+<tr><td>Analisi dei rischi</td><td>Politiche di analisi dei rischi e sicurezza dei sistemi informativi</td></tr>
+<tr><td>Incidenti e notifica</td><td>Gestione degli incidenti e termini di 24 ore, 72 ore e un mese</td></tr>
+<tr><td>Continuità operativa</td><td>Backup, ripristino, gestione delle crisi ed esercitazioni</td></tr>
+<tr><td>Catena di fornitura</td><td>Censimento, valutazione, clausole e accessi dei fornitori</td></tr>
+<tr><td>Sviluppo e vulnerabilità</td><td>Acquisizione, sviluppo, modifiche e gestione delle vulnerabilità</td></tr>
+<tr><td>Efficacia delle misure</td><td>Audit, verifiche tecniche, indicatori e trattamento dei rilievi</td></tr>
+<tr><td>Igiene e formazione</td><td>Pratiche di base, consapevolezza e formazione del personale</td></tr>
+<tr><td>Crittografia</td><td>Politiche di cifratura, gestione di chiavi e certificati</td></tr>
+<tr><td>Accessi e attivi</td><td>Risorse umane, inventario, controllo degli accessi e registrazione</td></tr>
+<tr><td>MFA e comunicazioni</td><td>Autenticazione a più fattori e comunicazioni protette e di emergenza</td></tr>
+</table>
+<h2>4.2 La scala di valutazione 0–4</h2>
+<p>Ogni requisito si valuta su una scala a cinque livelli. È la parte più delicata: usarla in modo omogeneo è ciò che rende la verifica credibile.</p>
+<table>
+<tr><th>Livello</th><th>Nome</th><th>Significato</th><th>Punteggio</th></tr>
+<tr><td><b>0</b></td><td>Assente</td><td>La misura non è attuata né pianificata</td><td>0%</td></tr>
+<tr><td><b>1</b></td><td>Pianificata</td><td>Definita o pianificata, non ancora attuata</td><td>25%</td></tr>
+<tr><td><b>2</b></td><td>Attuata parzialmente</td><td>Attuata su parte del perimetro o in modo non sistematico</td><td>50%</td></tr>
+<tr><td><b>3</b></td><td>Attuata</td><td>Attuata sull'intero perimetro, con evidenza documentale</td><td>75%</td></tr>
+<tr><td><b>4</b></td><td>Attuata e verificata</td><td>Attuata, misurata e con efficacia verificata periodicamente</td><td>100%</td></tr>
+</table>
+<div class="callout warn"><b>I due errori classici di valutazione</b>
+1) Assegnare 3 "Attuata" senza evidenza documentale: se non c'è un documento, un log o una registrazione che lo dimostri, il livello corretto è 2.<br>
+2) Assegnare 4 "Attuata e verificata" perché la misura "funziona": il livello 4 richiede una verifica <i>periodica</i> di efficacia (audit, test, indicatore), non la semplice assenza di problemi.</div>
+<h2>4.3 N/A, obiettivo e note</h2>
+<ul>
+<li><b>N/A</b>: un requisito non pertinente (es. sviluppo software per chi non sviluppa) si marca non applicabile <b>sempre con motivazione</b>; esce dal calcolo della conformità.</li>
+<li><b>Livello obiettivo</b>: per ogni requisito si fissa il livello target. La differenza tra obiettivo e livello attuale genera gli <b>scostamenti</b> (Unità 5).</li>
+<li><b>Note ed evidenze</b>: annotare per ciascun requisito quale documento o registrazione sostiene il livello assegnato. In sede di audit vale più la nota che il numero.</li>
+</ul>
+<h2>4.4 Metodo di lavoro consigliato</h2>
+<ol class="steps">
+<li>Procedere per capitolo, non in ordine sparso: il contatore a menù (es. 37/124) mostra l'avanzamento.</li>
+<li>Per ogni requisito: leggere il riferimento normativo, chiedersi "quale evidenza ho?", poi assegnare il livello.</li>
+<li>Fissare gli obiettivi con criterio: non tutto deve essere 4. Un obiettivo 3 su misure secondarie e 4 sulle misure critiche è più realistico e difendibile.</li>
+<li>Completare il 100% dei requisiti (valutati o N/A) prima di passare agli scostamenti.</li>
+</ol>
+</template>
+
+<template id="tpl-u5">
+<h1>Unità 5 — Scostamenti e piano di adeguamento</h1>
+<div class="sub">Durata indicativa: 7 minuti · Sezione <span class="tag">Scostamenti e piano</span></div>
+<div class="card">
+<p>La sezione confronta, requisito per requisito, il <b>livello attuale</b> con il <b>livello obiettivo</b> e presenta l'elenco degli scostamenti con la relativa priorità. Da qui si genera il <b>Piano di adeguamento</b> (MOD-13.02), che è a tutti gli effetti uno dei registri della piattaforma.</p>
+</div>
+<h2>5.1 Leggere gli scostamenti</h2>
+<ul>
+<li>Il numero accanto alla voce di menù indica gli scostamenti aperti.</li>
+<li>La priorità proposta tiene conto della distanza dal target e della criticità del requisito: gli scostamenti su requisiti critici (es. notifica incidenti, governance) vanno affrontati per primi.</li>
+</ul>
+<h2>5.2 Generare il piano</h2>
+<ol class="steps">
+<li>Completata la verifica, usare la funzione di <b>generazione del piano</b>: la piattaforma crea una riga di piano per ogni scostamento, precompilando area, requisito, livello attuale e obiettivo.</li>
+<li>Per ogni azione completare i campi gestionali: <b>azione</b> concreta, <b>priorità</b> (1 immediata → 4 programmata), <b>responsabile</b>, <b>risorse stimate</b>, <b>termine</b>.</li>
+<li>Aggiornare lo <b>stato</b> nel tempo: Aperta → In corso → Attuata → Verificata. Lo stato "Verificata" richiede di compilare la verifica di efficacia.</li>
+</ol>
+<div class="callout ok"><b>Buona pratica</b>Un'azione ben scritta risponde a: cosa si fa, chi la fa, entro quando, con quali risorse, come se ne verifica l'efficacia. "Migliorare i backup" non è un'azione; "Attivare copia off-site giornaliera dei sistemi X e Y e prova di ripristino trimestrale, resp. IT, entro 30/11" lo è.</div>
+<div class="callout warn"><b>Errore frequente</b>Rigenerare il piano dopo ogni ritocco alla verifica senza controllare le azioni già in corso: prima di rigenerare, verificare come la piattaforma tratta le righe esistenti e in ogni caso esportare l'archivio (Unità 8).</div>
+<h2>5.3 Ciclo di miglioramento</h2>
+<p>Quando un'azione è attuata e verificata, tornare alla verifica di conformità e aggiornare il livello del requisito corrispondente: la percentuale del cruscotto cresce e lo scostamento si chiude. Questo ciclo verifica → piano → attuazione → riverifica è il funzionamento a regime della piattaforma (e ricalca il riesame previsto dalla PNS-13).</p>
+</template>
+
+<template id="tpl-u6">
+<h1>Unità 6 — I registri operativi</h1>
+<div class="sub">Durata indicativa: 8 minuti · Sezione <span class="tag">Registri</span> · Checkpoint al termine</div>
+<div class="card">
+<p>I <b>14 registri</b> sono la parte "viva" della piattaforma: mentre la verifica si ripete periodicamente, i registri si alimentano in continuo. Ogni registro corrisponde a un modulo del corpus documentale ed è collegato a una procedura PNS.</p>
+</div>
+<table>
+<tr><th>Registro</th><th>Modulo</th><th>Procedura</th></tr>
+<tr><td>Piano di adeguamento</td><td>MOD-13.02</td><td>PNS-13</td></tr>
+<tr><td>Incidenti e notifiche</td><td>MOD-04.03</td><td>PNS-04</td></tr>
+<tr><td>Registro dei rischi</td><td>MOD-03.03</td><td>PNS-03</td></tr>
+<tr><td>Vulnerabilità</td><td>MOD-07.03</td><td>PNS-07</td></tr>
+<tr><td>Inventario degli attivi</td><td>MOD-10.01</td><td>PNS-10</td></tr>
+<tr><td>Fornitori</td><td>MOD-06.01</td><td>PNS-06</td></tr>
+<tr><td>Backup e prove di ripristino</td><td>MOD-05.03</td><td>PNS-05</td></tr>
+<tr><td>Verifiche tecniche e audit</td><td>MOD-12.03</td><td>PNS-12</td></tr>
+<tr><td>Formazione</td><td>MOD-08.02</td><td>PNS-08</td></tr>
+<tr><td>Simulazioni di phishing</td><td>MOD-08.03</td><td>PNS-08</td></tr>
+<tr><td>Riesame dei diritti di accesso</td><td>MOD-10.03</td><td>PNS-10</td></tr>
+<tr><td>Modifiche ai sistemi</td><td>MOD-07.02</td><td>PNS-07</td></tr>
+<tr><td>Comunicazioni con l'Autorità</td><td>MOD-02.02</td><td>PNS-02</td></tr>
+<tr><td>Certificati</td><td>MOD-09.04</td><td>PNS-09</td></tr>
+</table>
+<h2>6.1 Il registro incidenti: usare bene le date</h2>
+<p>È il registro più critico perché governa i <b>termini di notifica</b>. Due date sono decisive:</p>
+<ul>
+<li><b>Rilevazione</b>: quando l'evento è stato rilevato tecnicamente;</li>
+<li><b>Conoscenza</b>: quando l'organizzazione è venuta a conoscenza dell'incidente significativo. <b>Da questo momento decorrono i termini</b> che la piattaforma calcola e sorveglia: pre-notifica entro 24 ore, notifica entro 72 ore, relazione finale entro un mese.</li>
+</ul>
+<ol class="steps">
+<li>Registrare l'incidente appena rilevato, compilando tipologia, sistemi interessati e descrizione.</li>
+<li>Valutare la <b>significatività</b> (Sì/No/Da valutare) e motivarla sempre: la motivazione è ciò che difende la scelta di non notificare.</li>
+<li>Se significativo: annotare le date effettive di pre-notifica, notifica e relazione finale man mano che vengono effettuate sulla piattaforma ACN. Il cruscotto e il registro evidenziano le scadenze imminenti o superate.</li>
+<li>Valutare gli obblighi accessori: informazione ai destinatari dei servizi e, se ci sono dati personali, notifica al Garante (il registro ha campi dedicati).</li>
+</ol>
+<div class="callout red"><b>Attenzione</b>La piattaforma calcola e sorveglia i termini, ma <b>non effettua</b> le notifiche: quelle vanno fatte sulla piattaforma dell'ACN. Il registro documenta che sono state fatte e quando.</div>
+<h2>6.2 Regole comuni a tutti i registri</h2>
+<ul>
+<li>I numeri di riferimento (es. IN-…, AD-…) sono proposti automaticamente: non modificarli a mano se non necessario.</li>
+<li>Compilare i registri <b>quando l'evento accade</b>, non a fine anno: molte righe alimentano gli indicatori delle procedure e le urgenze del cruscotto.</li>
+<li>Ogni registro è stampabile dalla sezione stessa o da Relazioni e stampe (Unità 8).</li>
+</ul>
+</template>
+
+<template id="tpl-u7">
+<h1>Unità 7 — Corpus documentale: procedure e modulistica</h1>
+<div class="sub">Durata indicativa: 7 minuti · Sezioni <span class="tag">Procedure</span> <span class="tag">Modulistica</span></div>
+<div class="card">
+<p>Il corpus documentale comprende <b>13 procedure PNS</b> (PNS-01 … PNS-13) e <b>47 moduli MOD</b>, già scritti e mappati sugli articoli del decreto. Coprono governance (PNS-01, PNS-02, PNS-13) e tutte le misure dell'art. 24, c. 2 (PNS-03 … PNS-12).</p>
+</div>
+<h2>7.1 Personalizzazione automatica</h2>
+<p>I testi contengono <b>segnaposto</b> — [Nome Organizzazione], [Direzione], [Rev.] e simili — che la piattaforma sostituisce con i dati dell'anagrafica dell'organizzazione corrente. Per questo l'anagrafica va completata prima (Unità 2). I segnaposto non risolti restano visibili tra parentesi quadre: un documento consegnato con parentesi quadre è il segnale di un profilo incompleto.</p>
+<h2>7.2 Flusso di adozione corretto</h2>
+<ol class="steps">
+<li><b>Leggere</b> la procedura e verificare che descriva la realtà dell'organizzazione (ruoli, strumenti, perimetro).</li>
+<li><b>Adattare</b> ciò che non corrisponde: una procedura che descrive prassi inesistenti è un rischio in audit, non una protezione.</li>
+<li><b>Approvare</b>: cambiare lo stato del documento (da bozza ad approvata) tracciando revisione e data. Il contatore a menù (es. 9/13) mostra quante procedure risultano approvate.</li>
+<li><b>Distribuire e attuare</b>: la procedura vive nei registri collegati e negli indicatori che essa stessa definisce.</li>
+</ol>
+<div class="callout warn"><b>Errore frequente</b>Approvare in blocco tutte le procedure il primo giorno per far salire il contatore. Le procedure vanno approvate quando sono state adattate e quando l'organizzazione è davvero in grado di rispettarle: le date di approvazione raccontano una storia che deve essere credibile.</div>
+<h2>7.3 Modulistica</h2>
+<p>I 47 moduli sono i modelli operativi richiamati dalle procedure (delibere, designazioni, schede, piani, lettere). Alcuni coincidono con i registri (es. MOD-04.03 incidenti), altri si compilano una tantum (es. MOD-01.02 delibera di approvazione delle misure). Ogni modulo indica la procedura di appartenenza ed è stampabile singolarmente.</p>
+</template>
+
+<template id="tpl-u8">
+<h1>Unità 8 — Stampe, archivio e sincronia</h1>
+<div class="sub">Durata indicativa: 6 minuti · Sezioni <span class="tag">Relazioni e stampe</span> <span class="tag">Archivio e sincronia</span></div>
+<h2>8.1 Relazioni e stampe</h2>
+<div class="card">
+<p>La sezione <b>Relazioni e stampe</b> produce le uscite formali: relazione di verifica con i risultati per capitolo, piano di adeguamento, stampa di procedure, moduli e registri. Le stampe usano la funzione di stampa del browser: da lì si può salvare in PDF ("Salva come PDF" nella finestra di stampa).</p>
+</div>
+<ul>
+<li>Prima di stampare una relazione, verificare che la verifica sia completa e che l'anagrafica sia risolta (niente parentesi quadre).</li>
+<li>Le relazioni datate costituiscono l'evidenza del riesame periodico: conservarle a ogni ciclo di verifica.</li>
+</ul>
+<h2>8.2 Archivio e sincronia: le tre modalità di persistenza</h2>
+<table>
+<tr><th>Modalità</th><th>Come funziona</th><th>Quando usarla</th></tr>
+<tr><td><b>Locale</b> (predefinita)</td><td>Dati nel localStorage del browser, sul singolo computer</td><td>Uso individuale; richiede esportazioni JSON regolari</td></tr>
+<tr><td><b>REST</b></td><td>Sincronizzazione verso un endpoint configurato (URL + credenziali) in Archivio e sincronia</td><td>Più postazioni o backup centralizzato</td></tr>
+<tr><td><b>Host</b></td><td>La piattaforma è incorporata in un gestionale che espone la propria interfaccia di salvataggio</td><td>Integrazione in sistemi esistenti</td></tr>
+</table>
+<h2>8.3 Esportazione e importazione</h2>
+<ol class="steps">
+<li><b>Esportare</b> l'archivio JSON da Archivio e sincronia: il file contiene tutte le organizzazioni con verifiche, registri e stati documentali.</li>
+<li>Conservare l'esportazione in un percorso sicuro e versionato (una copia per ciclo di verifica come minimo; settimanale se i registri sono movimentati).</li>
+<li><b>Importare</b> il file su un altro computer o dopo una pulizia del browser per ripristinare tutto lo stato.</li>
+</ol>
+<div class="callout red"><b>Le tre cause tipiche di perdita dati</b>1) pulizia della cache o dei dati di navigazione; 2) uso della navigazione in incognito; 3) cambio di computer o di browser senza esportazione. Tutte e tre si prevengono con l'esportazione JSON regolare.</div>
+<div class="callout ok"><b>Sintesi del corso</b>Uso corretto = anagrafica completa → ambito prima della verifica → scala 0–4 con evidenze → piano con azioni concrete → registri compilati in tempo reale → procedure adattate prima di approvarle → esportazioni regolari. Se questi sette punti sono chiari, siete pronti per il test finale.</div>
+</template>
+
+<script>
+"use strict";
+/* ===== DATI CORSO ===== */
+var UNITS = [
+ {id:"u1", n:"1. Quadro normativo e finalit\u00E0", min:5},
+ {id:"u2", n:"2. Primi passi: organizzazioni", min:7},
+ {id:"u3", n:"3. Cruscotto e ambito", min:6},
+ {id:"u4", n:"4. Verifica di conformit\u00E0", min:10, cp:true},
+ {id:"u5", n:"5. Scostamenti e piano", min:7},
+ {id:"u6", n:"6. Registri operativi", min:8, cp:true},
+ {id:"u7", n:"7. Procedure e modulistica", min:7},
+ {id:"u8", n:"8. Stampe, archivio, sincronia", min:6},
+ {id:"u9", n:"9. Test finale", min:4, exam:true}
+];
+var LSKEY = "corso_nis2_p01_v1";
+var state = load();
+function load(){
+  try{ var r = localStorage.getItem(LSKEY); if(r) return JSON.parse(r); }catch(e){}
+  return {done:{}, cur:"u1", best:0};
+}
+function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify(state)); }catch(e){} }
+function unlocked(i){
+  if(i===0) return true;
+  var prev = UNITS[i-1];
+  return !!state.done[prev.id];
+}
+function idxOf(id){ for(var i=0;i<UNITS.length;i++){ if(UNITS[i].id===id) return i; } return 0; }
+
+/* ===== QUIZ ===== */
+var CP = {
+ u4: {min: 3, qs: [
+  {t:"Un requisito \u00E8 attuato su tutto il perimetro ma non esiste alcuna evidenza documentale. Quale livello va assegnato?",
+   o:["3 \u00B7 Attuata","2 \u00B7 Attuata parzialmente","4 \u00B7 Attuata e verificata","1 \u00B7 Pianificata"], c:1,
+   e:"Il livello 3 richiede evidenza documentale: senza evidenza, la valutazione corretta \u00E8 2."},
+  {t:"Che cosa richiede in pi\u00F9 il livello 4 rispetto al livello 3?",
+   o:["Che la misura funzioni da almeno un anno","La verifica periodica di efficacia (audit, test o indicatori)","La firma della Direzione","Nessuna differenza sostanziale"], c:1,
+   e:"Il livello 4 \u00E8 \u201Cattuata e verificata\u201D: serve una misurazione o verifica periodica di efficacia."},
+  {t:"Come si tratta un requisito non pertinente per l\u2019organizzazione?",
+   o:["Si assegna livello 0","Si lascia senza risposta","Si marca N/A con motivazione","Si assegna livello 4 per non abbassare la media"], c:2,
+   e:"N/A con motivazione: il requisito esce dal calcolo e la scelta resta difendibile."},
+  {t:"Da dove nascono gli scostamenti mostrati nella sezione dedicata?",
+   o:["Dalla differenza tra livello obiettivo e livello attuale","Dai requisiti con livello inferiore a 4","Dai registri non compilati","Dalle procedure non approvate"], c:0,
+   e:"Uno scostamento esiste quando il livello attuale \u00E8 sotto il livello obiettivo fissato."}
+ ]},
+ u6: {min: 3, qs: [
+  {t:"Da quale momento decorrono i termini di notifica di un incidente significativo?",
+   o:["Dalla data di rilevazione tecnica","Dalla data di conoscenza da parte dell\u2019organizzazione","Dalla data di registrazione in piattaforma","Dalla chiusura dell\u2019incidente"], c:1,
+   e:"I termini di 24 ore, 72 ore e un mese decorrono dalla conoscenza dell\u2019incidente significativo."},
+  {t:"Quali sono i tre termini che il registro incidenti calcola e sorveglia?",
+   o:["24 ore, 48 ore, 7 giorni","24 ore, 72 ore, un mese","72 ore, 7 giorni, 3 mesi","12 ore, 24 ore, 72 ore"], c:1,
+   e:"Pre-notifica entro 24 ore, notifica entro 72 ore, relazione finale entro un mese."},
+  {t:"La piattaforma effettua le notifiche all\u2019Autorit\u00E0?",
+   o:["S\u00EC, in automatico alla scadenza","S\u00EC, ma solo se configurata la sincronizzazione REST","No: calcola i termini, ma la notifica va fatta sulla piattaforma ACN","No, le notifiche non sono previste dal decreto"], c:2,
+   e:"La piattaforma sorveglia i termini e documenta le date; la notifica si effettua sulla piattaforma dell\u2019ACN."},
+  {t:"Se un incidente \u00E8 valutato NON significativo, cosa \u00E8 indispensabile registrare?",
+   o:["Nulla: si pu\u00F2 cancellare la riga","La motivazione della valutazione","La notifica al Garante","La relazione finale"], c:1,
+   e:"La motivazione documenta e difende la scelta di non notificare."}
+ ]},
+ u9: {min: 8, exam:true, qs: [
+  {t:"Qual \u00E8 il flusso di lavoro corretto della piattaforma?",
+   o:["Verifica \u2192 organizzazione \u2192 registri \u2192 ambito","Organizzazione \u2192 ambito \u2192 verifica \u2192 piano \u2192 registri \u2192 documenti \u2192 stampe","Procedure \u2192 verifica \u2192 organizzazione","Registri \u2192 piano \u2192 verifica"], c:1,
+   e:"Prima il profilo e l\u2019ambito, poi la verifica, gli scostamenti, i registri, il corpus documentale e le uscite."},
+  {t:"Perch\u00E9 l\u2019anagrafica dell\u2019organizzazione va completata subito?",
+   o:["Per attivare il salvataggio automatico","Perch\u00E9 alimenta i segnaposto delle procedure e dei moduli","Per calcolare la percentuale di conformit\u00E0","Per abilitare la stampa"], c:1,
+   e:"I segnaposto come [Nome Organizzazione] vengono risolti con i dati anagrafici."},
+  {t:"Quanti sono i requisiti della verifica e in quanti capitoli sono organizzati?",
+   o:["100 in 10 capitoli","124 in 12 capitoli","47 in 13 capitoli","124 in 13 capitoli"], c:1,
+   e:"124 requisiti in 12 capitoli tematici."},
+  {t:"Livello 2 della scala di valutazione significa:",
+   o:["Misura pianificata ma non attuata","Misura attuata su parte del perimetro o in modo non sistematico","Misura attuata con evidenza documentale","Misura assente"], c:1,
+   e:"Il livello 2 \u00E8 \u201CAttuata parzialmente\u201D."},
+  {t:"Cosa fa la funzione di generazione del piano di adeguamento?",
+   o:["Chiude automaticamente gli scostamenti","Crea una riga di piano per ogni scostamento, da completare con azione, responsabile e termine","Invia il piano all\u2019Autorit\u00E0","Aggiorna i livelli della verifica"], c:1,
+   e:"Precompila le righe dagli scostamenti; azione, priorit\u00E0, responsabile e termine vanno completati."},
+  {t:"Qual \u00E8 la sequenza corretta degli stati di un\u2019azione del piano?",
+   o:["Aperta \u2192 In corso \u2192 Attuata \u2192 Verificata","Bozza \u2192 Approvata \u2192 Chiusa","Pianificata \u2192 Attuata \u2192 Archiviata","In corso \u2192 Aperta \u2192 Verificata"], c:0,
+   e:"Aperta, In corso, Attuata e infine Verificata (con verifica di efficacia)."},
+  {t:"Il termine di 72 ore nel registro incidenti si riferisce a:",
+   o:["Alla relazione finale","Alla pre-notifica","Alla notifica dell\u2019incidente significativo","Alla notifica al Garante"], c:2,
+   e:"24 ore pre-notifica, 72 ore notifica, un mese relazione finale."},
+  {t:"Quando \u00E8 corretto portare una procedura PNS allo stato \u201Capprovata\u201D?",
+   o:["Il primo giorno, per completare il contatore","Dopo averla letta, adattata alla realt\u00E0 dell\u2019organizzazione e quando \u00E8 attuabile","Solo dopo un audit esterno","Mai: le procedure restano bozze"], c:1,
+   e:"L\u2019approvazione segue lettura e adattamento: procedure non rispondenti alla realt\u00E0 sono un rischio."},
+  {t:"Dove risiedono i dati nella modalit\u00E0 di persistenza predefinita?",
+   o:["Su un server dell\u2019ACN","Nel localStorage del browser in uso","Nel cloud della piattaforma","In un file sul desktop"], c:1,
+   e:"Modalit\u00E0 locale: i dati restano nel browser; per questo l\u2019esportazione JSON \u00E8 essenziale."},
+  {t:"Qual \u00E8 la protezione principale contro la perdita dei dati?",
+   o:["Non chiudere mai il browser","L\u2019esportazione regolare dell\u2019archivio JSON","Stampare tutte le pagine","Usare la navigazione in incognito"], c:1,
+   e:"L\u2019esportazione JSON consente il ripristino dopo pulizia cache, cambio computer o browser."}
+ ]}
+};
+
+/* ===== RENDER ===== */
+function navRender(){
+  var el = document.getElementById("navlist");
+  var h = '<div class="navgrp">Unit\u00E0 didattiche</div>';
+  for(var i=0;i<UNITS.length;i++){
+    var u = UNITS[i];
+    var open = unlocked(i);
+    var cls = "nav" + (state.cur===u.id ? " on":"") + (!open ? " lock":"");
+    var st = state.done[u.id] ? '<span class="st ok">\u2713</span>' : '<span class="st">'+(i+1)+'</span>';
+    h += '<button class="'+cls+'" data-u="'+u.id+'" '+(!open?'disabled':'')+'>'+st+' '+u.n+'<span class="mm">'+u.min+'\u2032</span></button>';
+  }
+  el.innerHTML = h;
+  var n = 0; for(var k in state.done){ if(state.done[k]) n++; }
+  document.getElementById("pfill").style.width = Math.round(n/UNITS.length*100)+"%";
+  document.getElementById("ptext").textContent = n+" / "+UNITS.length+" unit\u00E0 completate";
+}
+
+function quizHTML(id){
+  var cp = CP[id];
+  var h = '<div class="quiz" id="quizbox">';
+  h += cp.exam
+    ? '<h2>Test finale \u2014 10 domande, soglia di superamento 80% (8/10)</h2>'
+    : '<h2>Checkpoint \u2014 rispondere correttamente ad almeno '+cp.min+' domande su '+cp.qs.length+' per proseguire</h2>';
+  for(var i=0;i<cp.qs.length;i++){
+    var q = cp.qs[i];
+    h += '<div class="q"><h3>'+(i+1)+'. '+q.t+'</h3>';
+    for(var j=0;j<q.o.length;j++){
+      h += '<label data-q="'+i+'" data-o="'+j+'"><input type="radio" name="q'+i+'"><span>'+q.o[j]+'</span></label>';
+    }
+    h += '<div class="expl" id="ex'+i+'" style="display:none;font-size:13px;color:var(--ink2);margin-top:6px"></div></div>';
+  }
+  h += '<button class="btn" id="grade">Verifica le risposte</button>';
+  h += '<div class="result" id="qres"></div></div>';
+  return h;
+}
+
+function grade(id){
+  var cp = CP[id];
+  var score = 0;
+  for(var i=0;i<cp.qs.length;i++){
+    var q = cp.qs[i];
+    var labs = document.querySelectorAll('label[data-q="'+i+'"]');
+    var sel = -1;
+    labs.forEach(function(l){
+      l.classList.remove("right","wrong");
+      if(l.querySelector("input").checked) sel = parseInt(l.getAttribute("data-o"),10);
+    });
+    labs.forEach(function(l){
+      var o = parseInt(l.getAttribute("data-o"),10);
+      if(o===q.c) l.classList.add("right");
+      else if(o===sel) l.classList.add("wrong");
+    });
+    var ex = document.getElementById("ex"+i);
+    ex.style.display = "block"; ex.textContent = q.e;
+    if(sel===q.c) score++;
+  }
+  var res = document.getElementById("qres");
+  var pass = score >= cp.min;
+  res.className = "result " + (pass ? "ok":"ko");
+  if(pass){
+    res.innerHTML = "<b>Superato \u2014 "+score+"/"+cp.qs.length+" risposte corrette.</b> "+
+      (cp.exam ? "Il corso \u00E8 completato: la piattaforma pu\u00F2 essere usata in autonomia seguendo il flusso appreso." : "\u00C8 possibile proseguire con la prossima unit\u00E0.");
+    state.done[id] = true;
+    if(cp.exam && score > (state.best||0)) state.best = score;
+    save(); navRender(); btnRender();
+  } else {
+    res.innerHTML = "<b>Non superato \u2014 "+score+"/"+cp.qs.length+".</b> Rileggere l\u2019unit\u00E0, correggere le risposte e verificare di nuovo.";
+  }
+}
+
+function btnRender(){
+  var i = idxOf(state.cur);
+  var u = UNITS[i];
+  var box = document.getElementById("navbtns");
+  var prev = i>0 ? '<button class="btn ghost" id="bprev">\u2190 Unit\u00E0 precedente</button>' : '<span></span>';
+  var nxt = "";
+  if(i < UNITS.length-1){
+    var can = !!state.done[u.id] || (!u.cp && !u.exam);
+    nxt = '<button class="btn" id="bnext" '+(can?'':'disabled')+'>Unit\u00E0 successiva \u2192</button>';
+  }
+  box.innerHTML = prev + nxt;
+  var bp = document.getElementById("bprev"); if(bp) bp.onclick = function(){ go(UNITS[i-1].id); };
+  var bn = document.getElementById("bnext"); if(bn) bn.onclick = function(){
+    if(!u.cp && !u.exam){ state.done[u.id] = true; save(); }
+    go(UNITS[i+1].id);
+  };
+}
+
+function go(id){
+  var i = idxOf(id);
+  if(!unlocked(i)) return;
+  state.cur = id; save();
+  var u = UNITS[i];
+  var c = document.getElementById("content");
+  var h = "";
+  var tpl = document.getElementById("tpl-"+id);
+  if(tpl){ h += tpl.innerHTML; }
+  if(u.exam){
+    h += '<h1>Unit\u00E0 9 \u2014 Test finale</h1><div class="sub">10 domande a risposta multipla \u00B7 soglia 8/10</div>';
+  }
+  if(u.cp || u.exam){ h += quizHTML(id); }
+  h += '<div class="navbtns" id="navbtns"></div>';
+  c.innerHTML = h;
+  document.getElementById("unittime").textContent = "Durata unit\u00E0: "+u.min+" min";
+  var g = document.getElementById("grade");
+  if(g) g.onclick = function(){ grade(id); };
+  navRender(); btnRender();
+  window.scrollTo(0,0);
+}
+
+document.getElementById("navlist").addEventListener("click", function(ev){
+  var b = ev.target.closest("button[data-u]");
+  if(b && !b.disabled) go(b.getAttribute("data-u"));
+});
+
+go(state.cur || "u1");
+
+</script>
+</body>
+</html>

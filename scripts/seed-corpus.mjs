@@ -1,4 +1,4 @@
-// Semina del CORPUS DOCUMENTALE dei sei moduli di conformità.
+// Semina del CORPUS DOCUMENTALE dei moduli di conformità.
 //
 // 447 documenti e 6.489 blocchi, condivisi da tutti gli studi: contenuto di piattaforma,
 // nessun `organization_id`. Copiarlo per azienda sarebbe insostenibile — il solo
@@ -30,6 +30,11 @@ export const MODULI_CORPUS = [
   { dom: "sa8000", set: "sa8000-v1", nota: "Estratto dal prototipo sgs-sa8000-2026-v1.html" },
   { dom: "filiera", set: "filiera-v1", nota: "Estratto dal prototipo due-diligence-filiera-v1.html" },
   { dom: "wb", set: "wb-v1", nota: "Estratto dal prototipo whistleblowing-v1.html" },
+  // ⚠️ Un content set solo per DUE percorsi. Il sistema di gestione NIS2 contiene per
+  // intero l'autovalutazione: due set duplicherebbero 518 blocchi identici, e il giorno
+  // che se ne corregge uno l'altro resta indietro. La partizione la porta la colonna
+  // `perimetri` sui documenti.
+  { dom: "nis2", set: "nis2-v1", nota: "Estratto dal prototipo nis2-sistema-gestione-v1.html (sovrainsieme dei due percorsi)" },
 ];
 
 /** Inserisce a blocchi: 6.489 istruzioni singole sarebbero minuti di andirivieni. */
@@ -89,12 +94,16 @@ export async function seedCorpus(sql) {
             fase: d.fase ?? null,
             rif: d.rif ?? null,
             pro_code: d.pro ?? null,
+            // `null` dove non c'e' una partizione: sei domini su sette hanno un solo
+            // percorso, e per loro la domanda non si pone.
+            perimetri: d.perimetri ?? null,
             ordine: d.ordine,
           })),
         )}
         on conflict (content_set_id, code) do update set
           tipo = excluded.tipo, titolo = excluded.titolo, fase = excluded.fase,
-          rif = excluded.rif, pro_code = excluded.pro_code, ordine = excluded.ordine`;
+          rif = excluded.rif, pro_code = excluded.pro_code, perimetri = excluded.perimetri,
+          ordine = excluded.ordine`;
     });
     documenti += docs.length;
 

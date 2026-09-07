@@ -56,6 +56,20 @@ export const corpusDocument = pgTable(
     rif: text("rif"),
     /** Solo i moduli: la procedura di appartenenza. */
     proCode: text("pro_code"),
+    /**
+     * A quali percorsi appartiene il documento. `null` = a tutti quelli del content set.
+     *
+     * ⚠️ Nasce con NIS2, che e' il primo content set condiviso da DUE percorsi: il
+     * sistema di gestione contiene per intero l'autovalutazione e ci aggiunge una
+     * procedura e tre moduli — fra cui il «Catalogo dei controlli», che nell'altro
+     * percorso sarebbe un modulo da riempire a mano con stati che quel percorso non ha.
+     *
+     * Nullable e non un array vuoto: i sei domini che c'erano prima hanno un percorso
+     * ciascuno e la domanda non li riguarda. `null` vuol dire «non c'e' una partizione»,
+     * che e' diverso da «non appartiene a nessuno» — e un array vuoto avrebbe significato
+     * la seconda, facendo sparire 447 documenti in silenzio.
+     */
+    perimetri: text("perimetri").array(),
     ordine: integer("ordine").notNull(),
   },
   (t) => [

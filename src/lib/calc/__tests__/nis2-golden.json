@@ -1,0 +1,700 @@
+{
+ "fonte": "nis2-sistema-gestione-v1.html, funzioni ritagliate ed eseguite in sandbox",
+ "oggiCongelato": "2026-09-07",
+ "adessoCongelato": "2026-09-07T04:00:00.000Z",
+ "ambito": [
+  {
+   "settore": "Energia",
+   "dim": "Grande impresa",
+   "criterio": null,
+   "cls": "Essenziale",
+   "via": "grande impresa in settore ad alta criticità (Allegato I)",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Energia",
+   "dim": "Media impresa",
+   "criterio": null,
+   "cls": "Importante",
+   "via": "media impresa in settore ad alta criticità (Allegato I)",
+   "sanzioni": "fino a 7 milioni di euro o all'1,4% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Energia",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": null,
+   "cls": "Fuori ambito",
+   "via": "al di sotto delle soglie dimensionali e assenza di criteri specifici",
+   "sanzioni": "—"
+  },
+  {
+   "settore": "Servizi postali e di corriere",
+   "dim": "Grande impresa",
+   "criterio": null,
+   "cls": "Importante",
+   "via": "grande impresa in altro settore critico (Allegato II)",
+   "sanzioni": "fino a 7 milioni di euro o all'1,4% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Servizi postali e di corriere",
+   "dim": "Media impresa",
+   "criterio": null,
+   "cls": "Importante",
+   "via": "media impresa in altro settore critico (Allegato II)",
+   "sanzioni": "fino a 7 milioni di euro o all'1,4% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Servizi postali e di corriere",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": null,
+   "cls": "Fuori ambito",
+   "via": "al di sotto delle soglie dimensionali e assenza di criteri specifici",
+   "sanzioni": "—"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Grande impresa",
+   "criterio": null,
+   "cls": "",
+   "via": "",
+   "sanzioni": "—"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Media impresa",
+   "criterio": null,
+   "cls": "",
+   "via": "",
+   "sanzioni": "—"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": null,
+   "cls": "",
+   "via": "",
+   "sanzioni": "—"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c1",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c2",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c3",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c4",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c5",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c6",
+   "cls": "Essenziale",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 10 milioni di euro o al 2% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c7",
+   "cls": "Importante",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 7 milioni di euro o all'1,4% del fatturato mondiale annuo, se superiore"
+  },
+  {
+   "settore": "Commercio al dettaglio",
+   "dim": "Microimpresa o piccola impresa",
+   "criterio": "c8",
+   "cls": "Importante",
+   "via": "criterio specifico indipendente dalla dimensione",
+   "sanzioni": "fino a 7 milioni di euro o all'1,4% del fatturato mondiale annuo, se superiore"
+  }
+ ],
+ "conformita": {
+  "obiettivo": 3,
+  "attivi": 125,
+  "valutati": 20,
+  "livelloMedio": 2,
+  "percentualeProtipo": 50,
+  "alTarget": 8,
+  "scostamenti": 12,
+  "perCapo": [
+   {
+    "capo": "G",
+    "pcProtipo": 44,
+    "attivi": 12,
+    "valutati": 12
+   },
+   {
+    "capo": "R",
+    "pcProtipo": 59,
+    "attivi": 8,
+    "valutati": 8
+   },
+   {
+    "capo": "A",
+    "pcProtipo": 0,
+    "attivi": 9,
+    "valutati": 0
+   },
+   {
+    "capo": "B",
+    "pcProtipo": 0,
+    "attivi": 14,
+    "valutati": 0
+   },
+   {
+    "capo": "C",
+    "pcProtipo": 0,
+    "attivi": 10,
+    "valutati": 0
+   },
+   {
+    "capo": "D",
+    "pcProtipo": 0,
+    "attivi": 10,
+    "valutati": 0
+   },
+   {
+    "capo": "E",
+    "pcProtipo": 0,
+    "attivi": 11,
+    "valutati": 0
+   },
+   {
+    "capo": "F",
+    "pcProtipo": 0,
+    "attivi": 9,
+    "valutati": 0
+   },
+   {
+    "capo": "H",
+    "pcProtipo": 0,
+    "attivi": 12,
+    "valutati": 0
+   },
+   {
+    "capo": "I",
+    "pcProtipo": 0,
+    "attivi": 9,
+    "valutati": 0
+   },
+   {
+    "capo": "L",
+    "pcProtipo": 0,
+    "attivi": 11,
+    "valutati": 0
+   },
+   {
+    "capo": "M",
+    "pcProtipo": 0,
+    "attivi": 10,
+    "valutati": 0
+   }
+  ],
+  "priorita": [
+   {
+    "id": "G.01",
+    "crit": "A",
+    "livello": 0,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "G.02",
+    "crit": "A",
+    "livello": 1,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "G.03",
+    "crit": "A",
+    "livello": 2,
+    "priorita": "2 · alta"
+   },
+   {
+    "id": "G.06",
+    "crit": "A",
+    "livello": 0,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "G.07",
+    "crit": "M",
+    "livello": 1,
+    "priorita": "2 · alta"
+   },
+   {
+    "id": "G.08",
+    "crit": "M",
+    "livello": 2,
+    "priorita": "3 · media"
+   },
+   {
+    "id": "G.11",
+    "crit": "A",
+    "livello": 0,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "G.12",
+    "crit": "A",
+    "livello": 1,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "R.01",
+    "crit": "A",
+    "livello": 2,
+    "priorita": "2 · alta"
+   },
+   {
+    "id": "R.04",
+    "crit": "A",
+    "livello": 0,
+    "priorita": "1 · immediata"
+   },
+   {
+    "id": "R.05",
+    "crit": "M",
+    "livello": 1,
+    "priorita": "2 · alta"
+   },
+   {
+    "id": "R.06",
+    "crit": "M",
+    "livello": 2,
+    "priorita": "3 · media"
+   }
+  ],
+  "giorniPerPriorita": {
+   "1 · immediata": 30,
+   "2 · alta": 90,
+   "3 · media": 180,
+   "4 · programmata": 365
+  }
+ },
+ "controlli": {
+  "attuazioneProtipo": 3,
+  "attivi": 67,
+  "stati": [
+   {
+    "id": "G-01",
+    "frequenza": 365,
+    "dichiarato": "Attuato",
+    "effettivo": "Attuato",
+    "prossima": "2027-09-01"
+   },
+   {
+    "id": "G-02",
+    "frequenza": 365,
+    "dichiarato": "Attuato",
+    "effettivo": "Da verificare",
+    "prossima": "2020-12-31"
+   },
+   {
+    "id": "G-03",
+    "frequenza": 90,
+    "dichiarato": "In attuazione",
+    "effettivo": "In attuazione",
+    "prossima": ""
+   },
+   {
+    "id": "G-04",
+    "frequenza": 365,
+    "dichiarato": "Non attuato",
+    "effettivo": "Non attuato",
+    "prossima": ""
+   },
+   {
+    "id": "G-05",
+    "frequenza": 365,
+    "dichiarato": "Non applicabile",
+    "effettivo": "Non applicabile",
+    "prossima": ""
+   },
+   {
+    "id": "R-01",
+    "frequenza": 365,
+    "dichiarato": "",
+    "effettivo": "",
+    "prossima": ""
+   }
+  ],
+  "perFase": [
+   {
+    "id": "f1",
+    "aree": [
+     "G",
+     "R"
+    ],
+    "pcProtipo": 25
+   },
+   {
+    "id": "f2",
+    "aree": [
+     "A",
+     "L"
+    ],
+    "pcProtipo": 0
+   },
+   {
+    "id": "f3",
+    "aree": [
+     "B",
+     "C",
+     "M",
+     "E"
+    ],
+    "pcProtipo": 0
+   },
+   {
+    "id": "f4",
+    "aree": [
+     "D",
+     "I",
+     "H"
+    ],
+    "pcProtipo": 0
+   },
+   {
+    "id": "f5",
+    "aree": [
+     "F"
+    ],
+    "pcProtipo": 0
+   }
+  ]
+ },
+ "termini": {
+  "conoscenza": "2026-09-06T08:00",
+  "preNotifica": "2026-09-07T08:00",
+  "notifica": "2026-09-09T08:00",
+  "relazione": "",
+  "stati": [
+   {
+    "quale": "pre",
+    "stato": "scadenza"
+   },
+   {
+    "quale": "not",
+    "stato": "termini"
+   },
+   {
+    "quale": "rel",
+    "stato": "na"
+   }
+  ],
+  "ore": {
+   "preNotifica": 24,
+   "notifica": 72,
+   "mesiRelazione": 1
+  },
+  "mesiDalProtipo": [
+   {
+    "da": "2026-01-31T10:00",
+    "piuUnMese": "2026-03-03T10:00"
+   },
+   {
+    "da": "2026-03-31T10:00",
+    "piuUnMese": "2026-05-01T10:00"
+   },
+   {
+    "da": "2026-08-31T10:00",
+    "piuUnMese": "2026-10-01T10:00"
+   },
+   {
+    "da": "2026-12-31T10:00",
+    "piuUnMese": "2027-01-31T10:00"
+   }
+  ],
+  "oreDalProtipo": [
+   {
+    "da": "2026-03-28T23:00",
+    "piu24": "2026-03-29T23:00",
+    "piu72": "2026-03-31T23:00"
+   },
+   {
+    "da": "2026-10-24T23:00",
+    "piu24": "2026-10-25T23:00",
+    "piu72": "2026-10-27T23:00"
+   }
+  ]
+ },
+ "roadmap": {
+  "base": "2026-01-15",
+  "not": "2026-10-14",
+  "mis": "2027-07-14",
+  "reg": "2027-02-28",
+  "ggNot": 37,
+  "ggMis": 310,
+  "ggReg": 174
+ },
+ "indicatori": {
+  "base": {
+   "ultimo": {
+    "per": "2026-03",
+    "val": 90
+   },
+   "stato": "mid",
+   "andamento": 1,
+   "scostamento": -10
+  },
+  "senzaTarget": {
+   "stato": "ok",
+   "scostamento": null
+  },
+  "decrescente": {
+   "stato": "ok",
+   "andamento": -1
+  },
+  "senzaRilevazioni": {
+   "stato": "nd",
+   "scostamento": null
+  }
+ },
+ "casoDiProva": {
+  "org": {
+   "ana": {
+    "settore": "Energia",
+    "dim": "Grande impresa",
+    "obiettivo": "3 · Attuata",
+    "comunicazione": "2026-01-15",
+    "mesiNot": "9",
+    "mesiMis": "18"
+   },
+   "ver": {
+    "G.01": {
+     "l": "0 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.02": {
+     "l": "1 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.03": {
+     "l": "2 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.04": {
+     "l": "3 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.05": {
+     "l": "4 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.06": {
+     "l": "0 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.07": {
+     "l": "1 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.08": {
+     "l": "2 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.09": {
+     "l": "3 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.10": {
+     "l": "4 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.11": {
+     "l": "0 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "G.12": {
+     "l": "1 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.01": {
+     "l": "2 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.02": {
+     "l": "3 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.03": {
+     "l": "4 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.04": {
+     "l": "0 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.05": {
+     "l": "1 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.06": {
+     "l": "2 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.07": {
+     "l": "3 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.08": {
+     "l": "4 · x",
+     "e": "",
+     "n": "",
+     "na": ""
+    },
+    "R.09": {
+     "l": "",
+     "e": "",
+     "n": "",
+     "na": "Sì"
+    }
+   },
+   "ctrl": {
+    "G-01": {
+     "s": "Attuato",
+     "ult": "2026-09-01",
+     "resp": "",
+     "ev": "",
+     "note": ""
+    },
+    "G-02": {
+     "s": "Attuato",
+     "ult": "2020-01-01",
+     "resp": "",
+     "ev": "",
+     "note": ""
+    },
+    "G-03": {
+     "s": "In attuazione",
+     "ult": "",
+     "resp": "",
+     "ev": "",
+     "note": ""
+    },
+    "G-04": {
+     "s": "Non attuato",
+     "ult": "",
+     "resp": "",
+     "ev": "",
+     "note": ""
+    },
+    "G-05": {
+     "s": "Non applicabile",
+     "ult": "",
+     "resp": "",
+     "ev": "",
+     "note": ""
+    }
+   },
+   "road": {},
+   "ind": [],
+   "pro": {},
+   "mod": {},
+   "reg": {
+    "incidenti": [
+     {
+      "rif": "INC-01",
+      "sign": "Sì",
+      "cono": "2026-09-06T08:00",
+      "pre": "",
+      "not": "",
+      "rel": "",
+      "stato": "Aperto"
+     }
+    ]
+   }
+  },
+  "indicatore": {
+   "cod": "G-01",
+   "nome": "prova",
+   "target": 100,
+   "soglia": 80,
+   "verso": "Crescente",
+   "ril": [
+    {
+     "per": "2026-01",
+     "val": 60
+    },
+    {
+     "per": "2026-02",
+     "val": 75
+    },
+    {
+     "per": "2026-03",
+     "val": 90
+    }
+   ]
+  }
+ }
+}

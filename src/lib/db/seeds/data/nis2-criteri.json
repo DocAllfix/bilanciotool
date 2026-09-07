@@ -1,0 +1,10 @@
+[
+["c1","Fornitore di reti pubbliche di comunicazione elettronica o di servizi di comunicazione accessibili al pubblico","E"],
+["c2","Prestatore di servizi fiduciari","E"],
+["c3","Gestore di registri dei nomi di dominio di primo livello o fornitore di servizi DNS","E"],
+["c4","Pubblica amministrazione individuata dalla normativa","E"],
+["c5","Unico fornitore nello Stato di un servizio essenziale per il mantenimento di attività sociali o economiche fondamentali","E"],
+["c6","Soggetto la cui perturbazione avrebbe impatto significativo sulla sicurezza pubblica, l'incolumità pubblica o la salute pubblica","E"],
+["c7","Soggetto con impatto sistemico o rilevanza particolare a livello nazionale o regionale","I"],
+["c8","Soggetto individuato in ragione di normative settoriali o di specifica designazione","I"]
+]

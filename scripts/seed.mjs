@@ -45,6 +45,7 @@ const fid = (key) => `${FIL_SET}:${key}`;
 const WB_SET = "wb-v1";
 const wid = (key) => `${WB_SET}:${key}`;
 const SGESG_SET = "sgesg-v1";
+const NIS2_SET = "nis2-v1";
 const gid = (key) => `${SGESG_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
@@ -366,6 +367,99 @@ try {
   const corpus = await seedCorpus(sql);
   console.log(`  corpus: ${corpus.documenti} documenti, ${corpus.blocchi} blocchi, ${corpus.forme} segnaposto`);
   console.log(`  registri: ${corpus.registri} registri, ${corpus.colonneReg} colonne`);
+
+  // --- NIS2 (D.Lgs. 138/2024) — un catalogo solo per DUE percorsi -------------
+  //
+  // ⚠️ Dopo `seedCorpus`, e non prima: il content set `nis2-v1` lo crea quello, e queste
+  // tabelle vi puntano. Messo sopra, su un database vergine fallirebbe — e su uno gia'
+  // seminato passerebbe, che e' il modo peggiore di sbagliare: verde in sviluppo, rosso
+  // al primo ambiente nuovo. E' la stessa nota gia' scritta per `wb-v1`.
+  //
+  // ⚠️ `perimetri` NON si scrive qui: arriva dal JSON, dove l'estrattore l'ha DERIVATO
+  // confrontando i due prototipi. Ricalcolarlo in questo file sarebbe la seconda copia di
+  // una partizione che deve avere una sola sorgente.
+  for (const [i, c] of load("nis2-capi.json").entries()) {
+    await sql`
+      insert into nis2_chapter (content_set_id, key, nome, ordine)
+      values (${NIS2_SET}, ${c.id}, ${c.n}, ${i})
+      on conflict (content_set_id, key) do update set nome = excluded.nome, ordine = excluded.ordine`;
+  }
+
+  for (const l of load("nis2-livelli.json")) {
+    await sql`
+      insert into nis2_level (content_set_id, valore, nome, descrizione, percentuale)
+      values (${NIS2_SET}, ${l.v}, ${l.n}, ${l.d}, ${l.p})
+      on conflict (content_set_id, valore) do update set
+        nome = excluded.nome, descrizione = excluded.descrizione, percentuale = excluded.percentuale`;
+  }
+
+  for (const [i, r] of load("nis2-req.json").entries()) {
+    await sql`
+      insert into nis2_requirement (content_set_id, key, chapter_key, rif, critico, pro_code, testo, perimetri, ordine)
+      values (${NIS2_SET}, ${r.id}, ${r.cap}, ${r.rif}, ${r.crit === "A"}, ${r.pro ?? null}, ${r.t},
+              ${sql.array(r.perimetri)}, ${i})
+      on conflict (content_set_id, key) do update set
+        chapter_key = excluded.chapter_key, rif = excluded.rif, critico = excluded.critico,
+        pro_code = excluded.pro_code, testo = excluded.testo, perimetri = excluded.perimetri,
+        ordine = excluded.ordine`;
+  }
+
+  for (const [i, c] of load("nis2-ctrl.json").entries()) {
+    await sql`
+      insert into nis2_control (content_set_id, key, chapter_key, nome, descrizione, frequenza_giorni, critico, soa_control_key, ordine)
+      values (${NIS2_SET}, ${c.id}, ${c.cap}, ${c.n}, ${c.d}, ${c.f}, ${c.crit === "A"}, ${null}, ${i})
+      on conflict (content_set_id, key) do update set
+        chapter_key = excluded.chapter_key, nome = excluded.nome, descrizione = excluded.descrizione,
+        frequenza_giorni = excluded.frequenza_giorni, critico = excluded.critico, ordine = excluded.ordine`;
+  }
+
+  for (const [i, f] of load("nis2-fasi.json").entries()) {
+    await sql`
+      insert into nis2_phase (content_set_id, key, nome, descrizione, capitoli, ordine)
+      values (${NIS2_SET}, ${f.id}, ${f.n}, ${f.d}, ${sql.array(f.aree)}, ${i})
+      on conflict (content_set_id, key) do update set
+        nome = excluded.nome, descrizione = excluded.descrizione, capitoli = excluded.capitoli,
+        ordine = excluded.ordine`;
+  }
+
+  // I 19 indicatori arrivano come TUPLE, nell'ordine in cui il prototipo li scrive:
+  // [codice, nome, ambito, tipo, formula, unita, frequenza, target, verso, soglia].
+  for (const [i, t] of load("nis2-indicatori.json").entries()) {
+    const [key, nome, ambito, tipo, formula, unita, frequenza, target, verso, soglia] = t;
+    await sql`
+      insert into nis2_indicator_def (content_set_id, key, nome, ambito, tipo, formula, unita, frequenza, target, verso, soglia, ordine)
+      values (${NIS2_SET}, ${key}, ${nome}, ${ambito}, ${tipo.toLowerCase()}, ${formula}, ${unita},
+              ${frequenza.toLowerCase()}, ${target ?? null}, ${verso.toLowerCase()}, ${soglia ?? null}, ${i})
+      on conflict (content_set_id, key) do update set
+        nome = excluded.nome, ambito = excluded.ambito, tipo = excluded.tipo, formula = excluded.formula,
+        unita = excluded.unita, frequenza = excluded.frequenza, target = excluded.target,
+        verso = excluded.verso, soglia = excluded.soglia, ordine = excluded.ordine`;
+  }
+
+  // I ventitre settori dei due allegati. ⚠️ Stanno QUI e non nel motore: un elenco scritto
+  // due volte diverge, e il giorno che il decreto ne aggiunge uno il prodotto lo mostrerebbe
+  // nella tendina mentre il motore lo classifica «settore non elencato».
+  {
+    let ordine = 0;
+    for (const [allegato, file] of [[1, "nis2-settori-1.json"], [2, "nis2-settori-2.json"]]) {
+      for (const nome of load(file)) {
+        await sql`
+          insert into nis2_sector (content_set_id, key, allegato, ordine)
+          values (${NIS2_SET}, ${nome}, ${allegato}, ${ordine++})
+          on conflict (content_set_id, key) do update set allegato = excluded.allegato, ordine = excluded.ordine`;
+      }
+    }
+  }
+
+  // Gli otto criteri specifici: [chiave, testo, "E" | "I"].
+  for (const [i, c] of load("nis2-criteri.json").entries()) {
+    await sql`
+      insert into nis2_criterion (content_set_id, key, testo, classe, ordine)
+      values (${NIS2_SET}, ${c[0]}, ${c[1]}, ${c[2] === "E" ? "essenziale" : "importante"}, ${i})
+      on conflict (content_set_id, key) do update set
+        testo = excluded.testo, classe = excluded.classe, ordine = excluded.ordine`;
+  }
+
 
   // ⚠️ Dopo il corpus, e non prima: il content set `wb-v1` lo crea `seedCorpus`, e i
   // capi vi puntano con una chiave esterna. Messo sopra, su un database vergine

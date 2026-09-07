@@ -320,7 +320,16 @@ function CampoRiga({
       ) : (
         <Input
           id={id}
-          type={colonna.tipo === "date" ? "date" : colonna.tipo === "num" ? "number" : "text"}
+          type={
+            colonna.tipo === "date"
+              ? "date"
+              : // ⚠️ `datetime-local` e non `date`: sui termini a ore l'ora e' il dato.
+                colonna.tipo === "dt"
+                ? "datetime-local"
+                : colonna.tipo === "num"
+                  ? "number"
+                  : "text"
+          }
           defaultValue={valore}
           onBlur={(e) => salva(e.target.value)}
           aria-invalid={errore ? true : undefined}

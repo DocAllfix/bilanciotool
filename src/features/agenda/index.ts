@@ -27,50 +27,14 @@ export type DatiVoce = {
   companyId?: string | null;
 };
 
-/**
- * L'ora legale italiana è in vigore in un dato istante?
- *
- * Dall'ultima domenica di marzo alle 01:00 UTC all'ultima domenica di ottobre alle 01:00
- * UTC. La regola è europea e fissa: si calcola, non si chiede a nessuno.
- */
-function oraLegaleItaliana(istante: Date): boolean {
-  const anno = istante.getUTCFullYear();
-  // L'ultima domenica di un mese: si parte dall'ultimo giorno e si torna indietro.
-  const ultimaDomenica = (mese: number) => {
-    const ultimo = new Date(Date.UTC(anno, mese + 1, 0));
-    return ultimo.getUTCDate() - ultimo.getUTCDay();
-  };
-  const inizio = Date.UTC(anno, 2, ultimaDomenica(2), 1); // marzo, 01:00 UTC
-  const fine = Date.UTC(anno, 9, ultimaDomenica(9), 1); // ottobre, 01:00 UTC
-  const t = istante.getTime();
-  return t >= inizio && t < fine;
-}
-
-/** Oggi in ISO, secondo il calendario ITALIANO. Un solo posto dove si decide. */
-export function oggiIso(adesso = new Date()): string {
-  // ⚠️ IL GIORNO ITALIANO, non quello del fuso in cui gira il processo.
-  //
-  // Qui c'era `getFullYear/getMonth/getDate`, cioè il fuso LOCALE, con accanto un commento
-  // giusto per metà: «le voci d'agenda le scrive e le legge una persona in Italia». Vero
-  // per chi guarda — ma questo codice gira sul SERVER, e le funzioni di Vercel hanno il
-  // fuso UTC. Fra mezzanotte e le due, ora italiana d'estate, il server stava ancora a
-  // ieri: l'agenda proponeva la data del giorno prima e «le voci di oggi» erano quelle di
-  // ieri. In locale non si vede mai, perché lì il processo è già a Roma.
-  //
-  // Sui termini di legge vale la regola opposta (UTC), e i due casi non si contraddicono:
-  // là conta il termine, qui conta il giorno in cui la persona si trova.
-  //
-  // ⚠️ Non si risolve impostando `TZ` sull'ambiente: funzionerebbe, e tornerebbe a
-  // rompersi in silenzio nel primo ambiente che non ce l'ha. E nemmeno con `Intl`, che
-  // dipende dai dati ICU del runtime — il difetto gemello trovato lo stesso giorno sulle
-  // date del pannello di condivisione.
-  const scarto = oraLegaleItaliana(adesso) ? 2 : 1;
-  const italiano = new Date(adesso.getTime() + scarto * 3_600_000);
-  const a = italiano.getUTCFullYear();
-  const m = String(italiano.getUTCMonth() + 1).padStart(2, "0");
-  const g = String(italiano.getUTCDate()).padStart(2, "0");
-  return `${a}-${m}-${g}`;
-}
+// ⚠️ Il calendario italiano sta ora in `lib/calc/comune/tempo-italia.ts`, e da qui si
+// ri-esporta soltanto. Serviva anche al motore NIS2 — che deve sapere qual e' il giorno
+// italiano di un istante per calcolare «un mese dalla notifica» — e un motore puro non
+// puo' importare da un modulo che porta con se' Drizzle e `postgres`.
+//
+// Si ri-esporta invece di spostare i cinque chiamanti: `oggiIso` e' dell'agenda per chi
+// la usa, e cambiare cinque import per una riorganizzazione interna sarebbe rumore.
+export { oggiIso } from "@/lib/calc/comune/tempo-italia";
 
 /** Tutte le voci dello studio, dalla data piu' vicina. Le chiuse in fondo. */
 export async function elencaAgenda(

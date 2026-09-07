@@ -1,0 +1,21 @@
+[
+["G-01","Controlli attuati sul catalogo","Governance","Attuazione","(attuati / applicabili) × 100","%","Mensile",100,"Crescente",80],
+["G-02","Componenti degli organi con formazione valida","Governance","Attuazione","(formati / totali) × 100","%","Trimestrale",100,"Crescente",100],
+["B-01","Pre-notifiche entro 24 ore","Incidenti","Efficacia","(entro termine / dovute) × 100","%","Trimestrale",100,"Crescente",100],
+["B-02","Tempo medio di rilevazione degli incidenti","Incidenti","Efficacia","Media in ore tra evento e rilevazione","h","Trimestrale",24,"Decrescente",72],
+["B-03","Tempo medio di contenimento","Incidenti","Efficacia","Media in ore tra rilevazione e contenimento","h","Trimestrale",8,"Decrescente",24],
+["C-01","Prove di ripristino entro l'obiettivo","Continuità","Efficacia","(entro obiettivo / eseguite) × 100","%","Semestrale",100,"Crescente",80],
+["C-02","Backup con copia separata e immutabile","Continuità","Attuazione","(conformi / totali) × 100","%","Trimestrale",100,"Crescente",100],
+["D-01","Fornitori critici con clausole e termine di notifica compatibile","Fornitori","Attuazione","(conformi / classe A) × 100","%","Trimestrale",100,"Crescente",90],
+["E-01","Vulnerabilità critiche sanate nei termini","Vulnerabilità","Efficacia","(sanate nei termini / rilevate) × 100","%","Mensile",100,"Crescente",90],
+["E-02","Tempo medio di rimedio delle vulnerabilità critiche","Vulnerabilità","Efficacia","Media in giorni","gg","Mensile",7,"Decrescente",15],
+["E-03","Attivi fuori supporto in produzione","Vulnerabilità","Attuazione","Conteggio","n.","Mensile",0,"Decrescente",2],
+["M-01","Copertura MFA sugli ambiti obbligatori","Accessi e MFA","Attuazione","(utenze con MFA / utenze) × 100","%","Mensile",100,"Crescente",95],
+["L-01","Revoche entro il giorno successivo alla cessazione","Accessi e MFA","Efficacia","(nei termini / cessazioni) × 100","%","Mensile",100,"Crescente",95],
+["L-02","Utenze privilegiate riesaminate nel trimestre","Accessi e MFA","Attuazione","(riesaminate / totali) × 100","%","Trimestrale",100,"Crescente",100],
+["H-01","Tasso di clic nelle simulazioni di phishing","Formazione","Efficacia","(clic / inviati) × 100","%","Trimestrale",5,"Decrescente",15],
+["H-02","Tasso di segnalazione nelle simulazioni","Formazione","Efficacia","(segnalazioni / inviati) × 100","%","Trimestrale",50,"Crescente",25],
+["H-03","Postazioni con protezione attiva e aggiornata","Formazione","Attuazione","(protette / totali) × 100","%","Mensile",100,"Crescente",98],
+["F-01","Rilievi di audit chiusi nei termini","Sistema","Efficacia","(chiusi nei termini / chiusi) × 100","%","Trimestrale",85,"Crescente",70],
+["F-02","Livello di conformità verificato","Sistema","Efficacia","Percentuale dalla verifica","%","Trimestrale",75,"Crescente",50]
+]

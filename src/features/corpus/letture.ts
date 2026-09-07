@@ -286,7 +286,16 @@ export async function listaRegistri(
 export type ColonnaRegistro = {
   chiave: string;
   etichetta: string;
-  tipo: "text" | "ta" | "sel" | "date" | "num" | "crit" | "partner";
+  /**
+   * ⚠️ `dt` e' una data CON L'ORA, ed e' arrivata con NIS2.
+   *
+   * Non e' un vezzo: dall'istante in cui l'ente ha avuto conoscenza dell'incidente
+   * decorrono le ventiquattro ore della pre-notifica e le settantadue della notifica
+   * (art. 25 del D.Lgs. 138/2024). Con una data secca l'ora si perderebbe, e un termine
+   * perentorio calcolato sulla mezzanotte sarebbe sbagliato di mezza giornata in un
+   * verso o nell'altro.
+   */
+  tipo: "text" | "ta" | "sel" | "date" | "dt" | "num" | "crit" | "partner";
   inTabella: boolean;
   larghezza: string | null;
   opzioni: string[] | null;
