@@ -93,8 +93,11 @@ await agisci("⚠️ OGNI percorso ha sezioni PROPRIE, non solo quelle comuni", 
   for (const m of MODULI_AZIENDA) {
     await page.goto(`${BASE}/formazione/${m.href}`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("[data-sezioni]");
-    const testo = await page.locator("main").innerText();
-    if (/in preparazione/i.test(testo)) muti.push(m.href);
+    // ⚠️ Si guarda il RIQUADRO, non una parola nella prosa. La versione precedente
+    // cercava «in preparazione» in tutto il testo, e ha dichiarato senza parte propria
+    // dodici corsi che ce l'hanno il giorno in cui la scheda ha cominciato a dire
+    // «verifica in preparazione» per le domande che ancora mancano.
+    if (await page.locator("[data-parte-specifica-mancante]").count()) muti.push(m.href);
   }
   if (muti.length) throw new Error(`percorsi senza parte propria: ${muti.join(", ")}`);
 });

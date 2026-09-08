@@ -106,9 +106,14 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // Dal 25 agosto 2026 i percorsi sono DODICI: «sgesg» — l'implementazione del
     // sistema di gestione ESG — entra in Ecosostenibilita' dopo il Bilancio, perche'
     // e' il metodo che porta a quel documento.
+    // Dal 7 settembre 2026 sono QUATTORDICI: «nis2» e «sgnis2» entrano in Compliance
+    // dopo la Due diligence. Stanno li' e non fra i sistemi di gestione perche' quel
+    // gruppo significa «certificabile da un ente terzo», e NIS2 non lo certifica
+    // nessuno: e' un obbligo di legge con un'Autorita' di vigilanza. E stanno vicini
+    // fra loro perche' il secondo contiene per intero il primo.
     expect(f.voci.map((v) => v.modulo)).toEqual([
       "ghg", "energetico", "bilancio", "sgesg", "fornitore",
-      "mog231", "anticorruzione", "segnalazioni", "filiera",
+      "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2",
       "sgiqas", "sa8000", "soa",
     ]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo

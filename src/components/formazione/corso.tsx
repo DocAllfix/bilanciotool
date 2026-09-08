@@ -1,5 +1,7 @@
 import type { Blocco, Sezione, Tono } from "@/features/formazione";
+import type { EsitoVerifica } from "@/features/formazione/verifiche";
 import { Interfaccia } from "./interfaccia";
+import { Verifica } from "./verifica";
 
 /**
  * Il renderer della formazione: uno solo, per tutti i corsi.
@@ -156,11 +158,17 @@ export function SezioneCorso({
   sezione,
   indice,
   tinta,
+  corso,
+  esito,
 }: {
   sezione: Sezione;
   indice: number;
   /** Le classi del colore dell'area, dal registro dei moduli. */
   tinta?: { tratto: string; testo: string };
+  /** La chiave del corso: serve al server per ritrovare le domande. */
+  corso?: string;
+  /** L'esito gia' ottenuto su questa sezione, se c'e'. */
+  esito?: EsitoVerifica;
 }) {
   return (
     <section id={sezione.id} className="scroll-mt-24 border-t pt-8">
@@ -185,6 +193,18 @@ export function SezioneCorso({
           <BloccoReso key={i} b={b} />
         ))}
       </div>
+      {/* ⚠️ La verifica compare solo dove ci sono le domande, e non e' un cancello: chi ha
+          gia' fatto il passo uno deve poter entrare al passo tre. Il corso che non ne ha
+          ancora lo DICE nella propria scheda, invece di lasciare il posto vuoto. */}
+      {sezione.verifica && corso && (
+        <Verifica
+          corso={corso}
+          sezione={sezione.id}
+          titolo={sezione.titolo}
+          dati={sezione.verifica}
+          esitoIniziale={esito}
+        />
+      )}
     </section>
   );
 }

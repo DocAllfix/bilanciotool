@@ -508,6 +508,27 @@ Non bloccano il lancio, ma vanno saputi.
    le source map e vive solo nel pannello Vercel. Se sparisce il build **riesce lo
    stesso**, e gli stack trace in produzione diventano illeggibili: il guasto silenzioso
    che tutto il resto del monitoraggio è costruito per evitare.
+10. **I due corsi NIS2 sono muti.** I copioni sono consegnati e validati
+    (`audio-formazione/nis2/script.json` e `sgnis2/script.json`, 24,4 minuti a corso, zero
+    caratteri fuori dalla lista bianca), ma le tracce non sono ancora state sintetizzate.
+    Le sei sezioni comuni hanno la voce, le cinque proprie no: a schermo i due corsi
+    mostrano «con la voce **in parte**», che è il vero, e `tracce-pure` salta le sezioni
+    senza traccia invece di accusare il calcolo.
+    **Come si verifica**: `node audio-formazione/valida-script.mjs nis2 sgnis2` non deve
+    segnalare caratteri fuori lista; a tracce caricate, `minutiDiVoce` deve dare
+    `completa: true` per i due corsi.
+    ⚠️ **Il manifesto si importa al momento del build**: tracce nuove pretendono un
+    redeploy, altrimenti in anteprima i corsi restano muti e sembra un difetto del player.
+
+11. **Undici corsi su quindici non hanno ancora le domande di verifica.** La capacità c'è
+    ed è costruita per tutti; le domande esistono solo sui due NIS2 e su quanto già
+    scritto. **Non è un difetto nascosto**: la scheda dell'indice e l'intestazione del
+    corso dichiarano «verifica in preparazione», e il numero delle domande si deriva dalle
+    sezioni invece di essere scritto accanto al corso.
+    **Come si verifica**: `npm run qa -- formazione-comandi` ha un controllo che pretende
+    che entrambe le frasi compaiano nell'indice; e `formazione-verifiche-pure` rifiuta una
+    domanda malformata (indice della risposta fuori dalle opzioni, opzioni ripetute,
+    spiegazione mancante, soglia irraggiungibile).
 
 ---
 

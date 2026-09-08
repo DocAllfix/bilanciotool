@@ -12,6 +12,8 @@ import { SGIQAS } from "./corsi/sgiqas";
 import { SA8000 } from "./corsi/sa8000";
 import { SOA } from "./corsi/soa";
 import { SGESG } from "./corsi/sgesg";
+import { NIS2 } from "./corsi/nis2";
+import { SGNIS2 } from "./corsi/sgnis2";
 import { AVVIARE_ATTIVITA } from "./corsi/avviare-attivita";
 import { minutiTotali, type Corso, type Sezione } from "./tipi";
 
@@ -43,6 +45,8 @@ const PROPRIE: Partial<Record<ModuloAzienda, Sezione[]>> = {
   sa8000: SA8000,
   soa: SOA,
   sgesg: SGESG,
+  nis2: NIS2,
+  sgnis2: SGNIS2,
 };
 
 export type SchedaCorso = {

@@ -346,6 +346,78 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "nis2",
+    pathPattern: /^\/aziende\/[^/]+\/nis2/,
+    steps: [
+      {
+        element: '[data-tour="nis2-vista-ambito"]',
+        title: "Prima di tutto: rientri?",
+        description:
+          "Settore, dimensione e otto criteri che prescindono da entrambi. Da qui discendono gli obblighi che si applicano e un tetto sanzionatorio che arriva a dieci milioni: è la domanda che viene prima di «quanto siamo conformi».",
+      },
+      {
+        element: '[data-tour="nis2-classificazione"]',
+        title: "La classificazione porta la sua ragione",
+        description:
+          "«Essenziale» non basta: accanto c'è scritto perché — grande impresa in Allegato I, oppure un criterio specifico. Senza quel perché non lo difendi davanti a nessuno. E «non determinata» non è «fuori ambito»: la seconda è una conclusione, la prima dice che non c'è ancora.",
+      },
+      {
+        element: '[data-tour="nis2-criteri"]',
+        title: "Gli otto che scavalcano la dimensione",
+        description:
+          "Se ne ricorre anche uno solo, l'organizzazione rientra a prescindere dalle soglie: una microimpresa che gestisce un DNS è un soggetto essenziale. Fra due criteri prevale il più grave, non il primo che spunti.",
+      },
+      {
+        element: '[data-tour="nis2-vista-requisiti"]',
+        title: "126 requisiti, scala 0÷4",
+        description:
+          "Il livello 3 pretende l'evidenza documentale sull'intero perimetro; il 4 anche la verifica periodica di efficacia. È la differenza che un'ispezione controlla per prima, e la frase resta sotto gli occhi mentre scegli.",
+      },
+      {
+        element: '[data-tour="nis2-quadro-conformita"]',
+        title: "Un requisito non valutato pesa zero",
+        description:
+          "Non viene ignorato. Tre requisiti conformi su venti danno 15%, non 100: mediare sui soli valutati farebbe salire l'indice man mano che salti i requisiti difficili, ed è il contrario di quello che serve su un documento che va all'Autorità.",
+      },
+      {
+        element: '[data-tour="nis2-ponte"]',
+        title: "Le stesse risposte valgono di là",
+        description:
+          "L'autovalutazione e il Sistema di gestione condividono i requisiti: quello che valuti qui è già valutato là, e viceversa. Non è una copia — è la stessa riga.",
+      },
+    ],
+  },
+  {
+    pageId: "sgnis2",
+    pathPattern: /^\/aziende\/[^/]+\/sgnis2/,
+    steps: [
+      {
+        element: '[data-tour="sgnis2-vista-roadmap"]',
+        title: "I termini decorrono da una data sola",
+        description:
+          "Dalla comunicazione con cui l'ACN conferma l'inserimento nell'elenco: nove mesi per gli obblighi di notifica, diciotto per le misure. Senza quella data non sono scaduti — non sono ancora cominciati, ed è una differenza che il prodotto dice invece di mostrare uno zero.",
+      },
+      {
+        element: '[data-tour="sgnis2-vista-controlli"]',
+        title: "Attuato non vuol dire verificato",
+        description:
+          "Ogni controllo ha la sua frequenza di riverifica. Uno dichiarato attuato e mai più guardato torna «da verificare» da solo, alla scadenza: è così che un sistema resta vero invece di restare verde. Un'ispezione lo trova in dieci minuti chiedendo l'ultima evidenza.",
+      },
+      {
+        element: '[data-tour="sgnis2-vista-indicatori"]',
+        title: "Il verso conta più del numero",
+        description:
+          "Per il tasso di clic nel phishing scendere è un risultato; per la copertura MFA è un disastro. Stesso numero, stessa variazione, giudizi opposti — e il prodotto lo dice a parole, non con una freccia colorata.",
+      },
+      {
+        element: '[data-tour="sgnis2-vista-documenti"]',
+        title: "La relazione va all'organo di amministrazione",
+        description:
+          "L'art. 23 gli attribuisce l'approvazione delle misure e la responsabilità per la loro violazione. Ogni versione pubblicata si congela: lo stato dei controlli che riporta è quello del giorno della firma, e non cambia più.",
+      },
+    ],
+  },
+  {
     pageId: "soa",
     pathPattern: /^\/aziende\/[^/]+\/soa/,
     steps: [

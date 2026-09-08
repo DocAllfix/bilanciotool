@@ -400,6 +400,13 @@
       "when": 1788763427554,
       "tag": "0056_documenti_nis2",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1788763427555,
+      "tag": "0057_formazione_verifiche",
+      "breakpoints": true
     }
   ]
 }

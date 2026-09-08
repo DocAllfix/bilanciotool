@@ -53,6 +53,28 @@ export type VistaFinta =
  */
 export type Tono = "nota" | "attenzione" | "errore";
 
+/**
+ * Una domanda di verifica.
+ *
+ * ⚠️ `spiegazione` non è facoltativa, ed è la parte che vale. Un quiz che dice solo
+ * «sbagliato» insegna che hai sbagliato; uno che dice perché insegna la cosa. È il motivo
+ * per cui la verifica sta dentro il corso e non in fondo: la si legge accanto al testo che
+ * l'ha appena spiegata.
+ */
+export type Domanda = {
+  testo: string;
+  opzioni: string[];
+  /** L'indice dell'opzione giusta. */
+  corretta: number;
+  spiegazione: string;
+};
+
+export type Verifica = {
+  domande: Domanda[];
+  /** Quante ne servono per dirsi superata. */
+  minime: number;
+};
+
 export type Sezione = {
   /** Stabile: ci si àncora, e finisce nell'indirizzo. */
   id: string;
@@ -61,6 +83,16 @@ export type Sezione = {
   /** La riga sotto il titolo: che cosa si impara qui. */
   sommario: string;
   blocchi: Blocco[];
+  /**
+   * La verifica di questa sezione, quando c'è.
+   *
+   * ⚠️ NON sblocca niente. Il prototipo dei corsi bloccava l'unità successiva finché la
+   * precedente non era superata: è giusto in un corso obbligatorio, è sbagliato qui, dove
+   * chi ha già fatto il passo uno deve poter entrare al passo tre — ed è la ragione per
+   * cui le sezioni hanno id stabili e finiscono nell'indirizzo. La verifica DICE come sei
+   * andato; non ti chiude la porta.
+   */
+  verifica?: Verifica;
 };
 
 export type Corso = {

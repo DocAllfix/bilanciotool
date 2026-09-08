@@ -292,12 +292,119 @@ await agisci("⚠️ «non trovato»: entrambi i comandi portano dove dicono", a
 // dimostrativa, che dallo scadenzario è esclusa per decisione — il controllo trovava la
 // pagina senza scadenzario e riferiva un guasto che era del banco di prova.
 
+// ─── la verifica di sezione ──────────────────────────────────────────────────
+//
+// ⚠️ Ogni esito si legge dal DATABASE, mai dalla schermata. Il conteggio lo fa il server:
+// se il client mandasse «ho fatto 4 su 4» la verifica sarebbe un campo di testo, e una
+// schermata che dice «superata» non prova che qualcuno l'abbia scritto da qualche parte.
+
+const CORSO_CON_DOMANDE = "nis2";
+
+const rispondiATutte = async () => {
+  const box = page.locator("[data-verifica]").first();
+  const n = await box.locator("[data-domanda]").count();
+  for (let i = 0; i < n; i++) {
+    await box.locator(`[data-domanda="${i}"] button`).first().click();
+  }
+  return n;
+};
+
+const esitoInBanca = async (sezione) => {
+  const [r] = await sql`
+    select corrette, domande, superata, tentativi
+    from formazione_verifica
+    where corso = ${CORSO_CON_DOMANDE} and sezione = ${sezione}
+      and user_id = (select id from "user" where email = ${email})`;
+  return r ?? null;
+};
+
+let sezioneVerifica = "";
+let titoloVerifica = "";
+
+// ⚠️ Il comando si cerca DENTRO il riquadro della verifica e per il proprio nome
+// accessibile: un corso ha cinque sezioni con domande, quindi cinque «Consegna» sulla
+// stessa pagina. Cercarlo sulla pagina si ferma con «resolved to 5 elements», e un
+// `.first()` premerebbe quello di una sezione a caso.
+const comando = (nome) =>
+  page.locator("[data-verifica]").first().getByRole("button", { name: `${nome} la verifica: ${titoloVerifica}` });
+
+await agisci("⚠️ la consegna di una verifica SCRIVE l'esito nel database", async () => {
+  await apri(`${BASE}/formazione/${CORSO_CON_DOMANDE}`, "[data-verifica]");
+  sezioneVerifica = await page.locator("[data-verifica]").first().getAttribute("data-verifica");
+  if (!sezioneVerifica) throw new Error("nessuna sezione con verifica su questo corso");
+  titoloVerifica = await page
+    .locator("[data-verifica]")
+    .first()
+    .evaluate((el) => el.closest("section[id]")?.querySelector("h2")?.textContent?.trim() ?? "");
+  if (!titoloVerifica) throw new Error("la sezione con la verifica non ha un titolo");
+  if (await esitoInBanca(sezioneVerifica)) throw new Error("il banco parte sporco: c'è già un esito");
+
+  const domande = await rispondiATutte();
+  if (domande < 2) throw new Error(`la verifica ha ${domande} domande`);
+  await comando("Consegna").click();
+  await page.waitForSelector('[data-slot="esito-verifica"]', { timeout: 30_000 });
+
+  const r = await esitoInBanca(sezioneVerifica);
+  if (!r) throw new Error("nessuna riga in formazione_verifica");
+  if (r.domande !== domande) throw new Error(`il server ha contato ${r.domande} domande invece di ${domande}`);
+  if (r.tentativi !== 1) throw new Error(`tentativi ${r.tentativi} invece di 1`);
+});
+
+await agisci("⚠️ dopo la consegna OGNI domanda porta la propria spiegazione", async () => {
+  // È la parte che insegna: un quiz che dice solo «sbagliato» insegna che hai sbagliato.
+  // ⚠️ Si contano gli ELEMENTI della spiegazione, non la lunghezza dell'ultima riga di
+  // testo: quella misura passava anche SENZA aver consegnato, perché l'ultima riga era
+  // il testo dell'ultima opzione. Un controllo che non può accorgersi della differenza
+  // fra «prima» e «dopo» non prova niente.
+  const box = page.locator("[data-verifica]").first();
+  const domande = await box.locator("[data-domanda]").count();
+  const spiegazioni = await box.locator("[data-spiegazione]").count();
+  if (spiegazioni !== domande) throw new Error(`${spiegazioni} spiegazioni su ${domande} domande`);
+  const vuote = await box.locator("[data-spiegazione]").evaluateAll((n) =>
+    n.filter((x) => (x.textContent ?? "").trim().length < 25).length,
+  );
+  if (vuote) throw new Error(`${vuote} spiegazioni vuote o troppo corte`);
+});
+
+await agisci("⚠️ riprovando NON si perde un superamento già ottenuto", async () => {
+  // Il fatto si prepara nel database — non serve indovinare le risposte giuste — e poi
+  // si consegna un tentativo qualunque DALL'INTERFACCIA: è il percorso vero.
+  await sql`
+    update formazione_verifica set superata = true
+    where corso = ${CORSO_CON_DOMANDE} and sezione = ${sezioneVerifica}
+      and user_id = (select id from "user" where email = ${email})`;
+
+  await comando("Riprova").click();
+  await rispondiATutte();
+  await comando("Consegna").click();
+  await page.waitForSelector('[data-slot="esito-verifica"]', { timeout: 30_000 });
+
+  const r = await esitoInBanca(sezioneVerifica);
+  if (!r.superata) throw new Error("il superamento è andato perso al secondo tentativo");
+  if (r.tentativi !== 2) throw new Error(`tentativi ${r.tentativi} invece di 2`);
+});
+
+await agisci("⚠️ un corso SENZA domande lo dichiara, invece di tacerlo", async () => {
+  await apri(`${BASE}/formazione`, "[data-formazione]");
+  const testo = await page.locator("main").innerText();
+  if (!testo.includes("domande di verifica")) throw new Error("nessuna scheda dichiara le proprie domande");
+  if (!testo.includes("verifica in preparazione"))
+    throw new Error("i corsi senza domande non lo dicono: chi la cerca smette di cercarla");
+});
+
 // ─── da telefono ─────────────────────────────────────────────────────────────
 await agisci("⚠️ da telefono un corso si legge, e la pagina non sfonda", async () => {
   const tel = await browser.newContext({ ...devices["iPhone 13"], storageState: await page.context().storageState() });
   const p = await tel.newPage();
   const sfondamenti = [];
-  for (const url of [`${BASE}/formazione`, `${BASE}/formazione/energetico`, `${BASE}/formazione/corso/avviare-attivita`]) {
+  // ⚠️ `/formazione/nis2` c'e' perche' porta la VERIFICA: quattro opzioni per domanda in
+  // un riquadro, che e' la cosa piu' facile da far sfondare su uno schermo da 390 punti.
+  for (const url of [
+    `${BASE}/formazione`,
+    `${BASE}/formazione/energetico`,
+    `${BASE}/formazione/corso/avviare-attivita`,
+    `${BASE}/formazione/nis2`,
+  ]) {
     await p.goto(url, { waitUntil: "domcontentloaded" });
     await p.waitForSelector("main", { timeout: 60_000 });
     await p.waitForTimeout(600);

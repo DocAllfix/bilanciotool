@@ -230,6 +230,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.valutazione_ssl.publish": "Valutazione dei rischi pubblicata",
   "documento.manuale_sa8000.publish": "Manuale SA8000 pubblicato",
   "documento.dichiarazione_filiera.publish": "Dichiarazione di filiera pubblicata",
+  "documento.conformita_nis2.publish": "Relazione sulla conformità NIS2 pubblicata",
+  "documento.relazione_nis2.publish": "Relazione sul sistema di gestione NIS2 pubblicata",
+  "documento.controlli_nis2.publish": "Catalogo dei controlli NIS2 pubblicato",
   // I quattro del metodo ESG.
   "documento.offerta_esg.publish": "Offerta professionale pubblicata",
   "documento.verbale_avvio.publish": "Verbale di avvio pubblicato",
@@ -252,6 +255,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.valutazione_ssl.pdf": "Valutazione dei rischi scaricata in PDF",
   "documento.manuale_sa8000.pdf": "Manuale SA8000 scaricato in PDF",
   "documento.dichiarazione_filiera.pdf": "Dichiarazione di filiera scaricata in PDF",
+  "documento.conformita_nis2.pdf": "Relazione sulla conformità NIS2 scaricata in PDF",
+  "documento.relazione_nis2.pdf": "Relazione sul sistema NIS2 scaricata in PDF",
+  "documento.controlli_nis2.pdf": "Catalogo dei controlli NIS2 scaricato in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };
