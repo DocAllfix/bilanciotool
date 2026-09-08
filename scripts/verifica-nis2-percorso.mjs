@@ -19,11 +19,21 @@ import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import {
   attraversaProtezione,
   contatore,
+  pretendiPdfVero,
   pretendiServerAggiornato,
   spegniTour,
   strumenta,
 } from "./comune-collaudo.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+/** I nomi con cui i tre documenti si consegnano al committente. */
+const NOMI_CONSEGNA = {
+  conformita_nis2: "Relazione sul livello di conformita NIS2 (D.Lgs. 138-2024)",
+  relazione_nis2: "Relazione sul sistema di gestione NIS2 (D.Lgs. 138-2024)",
+  controlli_nis2: "Catalogo dei controlli NIS2 (D.Lgs. 138-2024)",
+};
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 
@@ -500,8 +510,76 @@ await agisci("il documento porta il codice di verifica", async () => {
   if (!r?.codice) throw new Error("nessun codice emesso: il documento non sarebbe verificabile");
 });
 
+// ─── i due documenti del sistema di gestione ─────────────────────────────────
+await vaiA("sgnis2", "documenti");
+await agisci("il sistema di gestione pubblica la Relazione e il Catalogo dei controlli", async () => {
+  // Due documenti distinti perche' hanno due lettori: la relazione va all'organo di
+  // amministrazione e si legge in mezz'ora, il catalogo e' la tabella che un ispettore
+  // sfoglia. Portare all'organo sessantotto righe significa non farsi leggere.
+  const bottoni = page.getByRole("button", { name: /Pubblica/i });
+  const quanti = await bottoni.count();
+  if (quanti < 2) throw new Error(`solo ${quanti} pulsanti di pubblicazione: i documenti del sistema sono due`);
+  for (let i = 0; i < quanti; i++) {
+    await bottoni.nth(i).click();
+    await page.waitForTimeout(9000);
+  }
+  const righe = await sql`select tipo, anno from document_snapshot
+                          where company_id = ${companyId} and tipo in ('relazione_nis2', 'controlli_nis2')`;
+  const tipi = righe.map((r) => r.tipo).sort();
+  if (tipi.join(",") !== "controlli_nis2,relazione_nis2") {
+    throw new Error(`pubblicati ${tipi.join(", ") || "nessuno"} invece dei due del sistema`);
+  }
+  // ⚠️ L'anno deve essere SENZA_ESERCIZIO: finendo nel ramo sbagliato del CHECK, la
+  // seconda relazione diventerebbe la versione 2 della prima, con lo stesso nome di file.
+  const sbagliati = righe.filter((r) => r.anno !== 0).map((r) => r.tipo);
+  if (sbagliati.length) throw new Error(`anno diverso da SENZA_ESERCIZIO su: ${sbagliati.join(", ")}`);
+});
+
+await agisci("⚠️ i TRE PDF sono documenti veri, e si contano le PAGINE", async () => {
+  // ⚠️ La domanda non e' «quanto pesa» ma «quante pagine ha». Su un'anteprima protetta il
+  // generatore apre il proprio indirizzo con Chromium e riceve la pagina di accesso di
+  // Vercel: ne esce un PDF valido, byte magici giusti, e due documenti DIVERSI dello
+  // stesso peso identico. Una pagina di accesso e' una pagina sola.
+  const righe = await sql`select id, tipo from document_snapshot
+                          where company_id = ${companyId}
+                            and tipo in ('conformita_nis2', 'relazione_nis2', 'controlli_nis2')
+                          order by tipo`;
+  if (righe.length !== 3) throw new Error(`${righe.length} snapshot invece di tre`);
+  const misure = [];
+  for (const r of righe) {
+    const risposta = await page.request.get(`${BASE}/api/documenti/${r.id}/pdf`);
+    if (!risposta.ok()) throw new Error(`${r.tipo}: HTTP ${risposta.status()}`);
+    const buf = await risposta.body();
+    const { byte, pagine } = pretendiPdfVero(buf);
+    misure.push({ tipo: r.tipo, byte, pagine });
+    // ⚠️ I PDF si consegnano dallo STESSO passaggio che li verifica, quando qualcuno lo
+    // chiede con `SALVA_PDF=<cartella>`. Uno script a parte che li rigenera per la
+    // consegna sarebbe una seconda strada verso lo stesso file, e le due divergono: si
+    // consegnerebbe un documento che nessuno ha contato.
+    if (process.env.SALVA_PDF) {
+      mkdirSync(process.env.SALVA_PDF, { recursive: true });
+      const dove = join(process.env.SALVA_PDF, `${NOMI_CONSEGNA[r.tipo] ?? r.tipo}.pdf`);
+      writeFileSync(dove, buf);
+      console.log(`       salvato: ${dove}`);
+    }
+  }
+  // E due documenti diversi non possono pesare uguale: e' il sintomo esatto con cui il
+  // difetto dell'anteprima si e' fatto vedere la prima volta.
+  const pesi = new Set(misure.map((m) => m.byte));
+  if (pesi.size !== misure.length) {
+    throw new Error(`due documenti diversi pesano uguale: ${misure.map((m) => `${m.tipo} ${m.byte}`).join(" | ")}`);
+  }
+  for (const m of misure) console.log(`       ${m.tipo}: ${Math.round(m.byte / 1024)} KB · ${m.pagine} pagine`);
+});
+
 const esito = riepilogo("NIS2 — i due percorsi");
 
 await browser.close();
 await sql.end();
-process.exit(esito ? 0 : 1);
+// ⚠️ `riepilogo` restituisce QUANTI ROSSI ci sono, non «e' andata bene». Qui c'era
+// `esito ? 0 : 1`, che e' l'esatto contrario: con dei falliti usciva ZERO — successo — e
+// con tutto verde usciva UNO. Chi legge il codice d'uscita (qa.mjs, la CI,
+// `giro-completo`, `qa-anteprima`) riceveva sempre la risposta sbagliata, e nel verso
+// peggiore: un collaudo rosso riferito come verde. Scoperto l'8 settembre 2026 leggendo
+// «44 ok, 0 falliti» accanto a un exit 1.
+process.exit(esito ? 1 : 0);

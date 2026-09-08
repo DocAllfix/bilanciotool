@@ -2344,6 +2344,59 @@ difetto, sulle due asserzioni giuste · `formazione` 12/12 · `formazione-comand
 foto della vetrina e della verifica in chiaro e scuro **guardate**, console pulita, zero
 sfondamento da telefono.
 
+**Il codice d'uscita invertito, e i tre PDF che nessuno contava (2026-09-08)**
+
+Chiudendo la Fase 7 mancava un pezzo del suo cancello: dei **tre** documenti NIS2 il
+collaudo ne pubblicava **uno** e non generava nessun PDF. Aggiunti la pubblicazione dei due
+documenti del sistema di gestione e la prova sui tre PDF — con le **pagine contate**, non i
+byte pesati, e con l'asserzione che due documenti diversi non possono pesare uguale: è il
+sintomo esatto con cui, il 27 agosto, si scoprì che Chromium stava stampando la pagina di
+accesso di Vercel. Misurati: 16, 11 e 8 pagine.
+
+⚠️ **E lì è saltato fuori un difetto degli strumenti: tre collaudi avevano il codice
+d'uscita ROVESCIATO.** `riepilogo` restituisce quanti rossi ci sono, e
+`process.exit(esito ? 0 : 1)` significa: con dei falliti esce **zero**, cioè successo, e con
+tutto verde esce **uno**. Trovato leggendo «44 ok, 0 falliti» accanto a un `EXIT=1`.
+
+Il verso è quello peggiore. Il referto lo legge una persona, il codice d'uscita lo legge
+tutto il resto — `qa.mjs`, la CI, `giro-completo.mjs`, `qa-anteprima.mjs` — e a tutti quelli
+`nis2-percorso`, `presentazione` e `tracce` avrebbero riferito **verde mentre erano rossi**.
+Rilanciati dopo la correzione sono verdi davvero (44, 11 e 15 controlli), quindi il difetto
+era latente: non ha ancora nascosto niente, e avrebbe nascosto la prima cosa che si fosse
+rotta.
+
+Guardia nuova, `collaudi-esito-pure.test.ts`: scandisce i collaudi che usano il contatore
+condiviso e rifiuta la polarità sbagliata, in tutte e due le forme (sull'espressione diretta
+e sulla variabile). Messa in rosso di proposito rimettendo il difetto in un file: lo nomina.
+Ha anche una prova che **il controllo sa riconoscere la forma malata**, perché una guardia
+scritta con un'espressione regolare sbagliata non riconosce niente e resta verde per sempre.
+
+**I tre PDF si consegnano dallo STESSO passaggio che li verifica**, con
+`SALVA_PDF=<cartella> npm run qa -- nis2-percorso`. Uno script a parte che li rigenerasse
+per la consegna sarebbe una seconda strada verso lo stesso file, e le due divergono: si
+finirebbe per consegnare un documento che nessuno ha contato. I tre sono in
+`Desktop/EvalisDeck - Documenti`.
+
+**Regole nate qui:**
+- **`riepilogo` restituisce i ROSSI, non «è andata bene».** Il vero va mappato su 1. Sono
+  tre le forme sane e una sola la malata, e si riconosce dal `? 0 : 1`.
+- **Un referto giusto a schermo non dice niente sul codice d'uscita.** Sono due canali, li
+  leggono due destinatari diversi, e possono dire cose opposte.
+- **Un aiutante di shell che sovrascrive un file può arrivare in ritardo.** Un `cp` di
+  ripristino lanciato in un comando finito in background ha riportato indietro una
+  correzione fatta dopo, in silenzio: se ne è accorto `git status`, che non mostrava il file
+  fra i modificati. **Dopo un ripristino si verifica che la modifica sia ancora lì.**
+- ⚠️ **Il dimezzamento dei backslash negli heredoc ha colpito di nuovo**, questa volta su
+  un'espressione regolare costruita a stringa: `\s` diventava `s` e la guardia si fermava con
+  «Unterminated group». Le espressioni regolari si scrivono **letterali**, o con
+  `String.raw`, e i file fitti di simboli si scrivono con lo strumento di scrittura.
+
+⚠️ **Debito dichiarato**: la cartella di consegna `Desktop/EvalisDeck - Documenti` è ferma a
+**cinque** documenti su diciannove tipi. Mancano quelli dei moduli usciti da agosto in poi —
+231, ISO 37001, segnalazioni, filiera, QAS, SA8000, metodo ESG — e ora ci sono i tre NIS2.
+Colmarla è una passata a sé, e il modo per farla è quello appena messo in piedi: il flag
+`SALVA_PDF` sul collaudo che quei documenti li verifica già.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
