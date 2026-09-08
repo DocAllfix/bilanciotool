@@ -214,7 +214,16 @@ await check("su telefono nessuna scheda sborda in orizzontale", async () => {
 await pm.screenshot({ path: `${OUT}/05-abbonamento-mobile.png`, fullPage: true });
 await mob.close();
 
+// ⚠️ LA CONNESSIONE AL DATABASE SI CHIUDE, SEMPRE. Un pool aperto tiene vivo il giro degli
+// eventi: il collaudo fa il suo lavoro, stampa il referto, e il PROCESSO NON ESCE MAI. Chi
+// guarda vede un timeout e accusa il prodotto.
+//
+// Misurato l'8 settembre 2026 sull'anteprima: questo collaudo ci ha messo 1706 secondi al
+// posto di una manciata, e `shell` — stesso difetto — e' rimasto appeso quarantadue minuti
+// dopo aver scritto l'ultima schermata in venti secondi. In un giro di cinquantaquattro
+// collaudi due appesi sono un metodo che nessuno lancia piu'.
 await browser.close();
+await sql.end().catch(() => {});
 console.log(`\nControlli: ${ok} ok, ${ko} falliti`);
 console.log(errori.length ? "ERRORI CONSOLE:\n" + errori.join("\n") : "Console pulita.");
 if (ko > 0 || errori.length) process.exitCode = 1;

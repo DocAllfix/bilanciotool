@@ -520,6 +520,15 @@ Non bloccano il lancio, ma vanno saputi.
     ⚠️ **Il manifesto si importa al momento del build**: tracce nuove pretendono un
     redeploy, altrimenti in anteprima i corsi restano muti e sembra un difetto del player.
 
+12. ⚠️ **Due collaudi QAS cedono sotto carico in una batteria di cinquantaquattro.**
+    `documenti-qas` e `sgiqas-percorso` sono rossi nel giro completo sull'anteprima e
+    **verdi in locale (18/18 e 32/32) e verdi sull'anteprima se lanciati da soli**, con il
+    bersaglio stampato e verificato. Hanno ceduto a due tentativi di fila sotto carico, il
+    che non è la stessa cosa di un rosso occasionale: va guardato, non assorbito nel verde.
+    **Come si verifica**: `npm run qa -- documenti-qas --su <anteprima>` da solo deve
+    passare; se passa solo da solo, la causa è la contesa sul database di sviluppo condiviso
+    fra i collaudi della batteria.
+
 11. **Undici corsi su quindici non hanno ancora le domande di verifica.** La capacità c'è
     ed è costruita per tutti; le domande esistono solo sui due NIS2 e su quanto già
     scritto. **Non è un difetto nascosto**: la scheda dell'indice e l'intestazione del

@@ -2397,6 +2397,78 @@ finirebbe per consegnare un documento che nessuno ha contato. I tre sono in
 Colmarla è una passata a sé, e il modo per farla è quello appena messo in piedi: il flag
 `SALVA_PDF` sul collaudo che quei documenti li verifica già.
 
+**Il giro sull'anteprima dei due percorsi NIS2 (2026-09-08)** — 54 collaudi contro un
+deploy vero. Il prodotto ha retto; a cedere sono stati gli strumenti, e una volta di più
+il difetto peggiore era in ciò che misura.
+
+**Il ramo, e l'ordine che Vercel impone.** `anteprima/nis2`, e l'ordine non è quello che
+sembra: Vercel **rifiuta** di legare una variabile a un ramo che sul remoto non esiste
+ancora (`Branch not found in the connected Git repository`). Quindi si spinge prima, e
+allora parte subito un build che eredita le variabili di **produzione** — il nostro era in
+coda quaranta secondi dopo il push. Va annullato, si creano le sette variabili legate al
+ramo, e si ridistribuisce. `scripts/vercel-deploy.mjs` fa i tre passi che il metodo
+chiedeva e che nessuno script sapeva fare.
+
+⚠️ **E il preparatore delle variabili puntava a un ramo di settimane prima.**
+`vercel-prepara-anteprima.mjs` aveva come predefinito `anteprima/collaudo-completo`:
+lanciato da un altro ramo rispondeva «c'è già su questo ramo, salto» per tutte e sette,
+mentre sul ramo vero non ce n'era **nessuna**. Chi ci avesse creduto avrebbe collaudato
+contro il database che incassa. Ora il predefinito è il ramo corrente, letto da
+`.git/HEAD` — non lanciando `git`, perché una chiamata sincrona a un processo figlio dentro
+uno script che poi fa richieste di rete fa cadere il processo in chiusura — e `main` viene
+rifiutato.
+
+**La precedenza delle variabili di ramo si è MISURATA, non creduta.** Le cinque critiche
+valgono ancora anche su `preview` con i valori di produzione: se la precedenza non
+funzionasse, cinquantaquattro collaudi scriverebbero nel database che incassa. La prova è
+stata creare un conto **dall'anteprima** e ritrovarlo nel database di **sviluppo**. Un
+minuto di lavoro prima di due ore di collaudi che scrivono.
+
+🔴 **Due collaudi non chiudevano la connessione al database, e appendevano il processo.**
+`visual-check-shell` ha scritto la sua ultima schermata dopo **venti secondi** ed è rimasto
+appeso **quarantadue minuti**; `visual-check-impostazioni`, stesso difetto, ci ha messo
+**1706 secondi** al posto di una manciata. Un pool `postgres` aperto tiene vivo il giro
+degli eventi: il collaudo fa il suo lavoro, stampa il referto, e il processo non esce mai.
+Non fallisce — appende, e chi guarda vede un timeout e accusa il prodotto. Dopo la
+correzione `shell` sull'anteprima costa **27 secondi**.
+
+⚠️ **La regola c'era già, scritta il 2 settembre dopo che lo stesso file aveva bloccato un
+lotto intero**: «un collaudo che non chiude le proprie risorse non fallisce: appende». Era
+rimasta una frase in un documento, e sei giorni dopo il difetto era ancora lì, sullo stesso
+file. Ora la tiene `collaudi-risorse-pure.test.ts`, messo in rosso togliendo la chiusura.
+
+**La diagnosi è arrivata dalle date dei file, non dalle ipotesi.** Avevo un sospetto —
+`networkidle`, che questo progetto ha già condannato — e l'ho **misurato prima di
+correggerlo**: sull'anteprima si risolve in 7 secondi sulla home e in 1 sul login. Era
+innocente. A dirlo è stato l'orario dell'ultima schermata: lavoro finito alle 16:29:23,
+processo vivo alle 17:11.
+
+**Esito**: **52 su 54 verdi**, e i due rossi — `documenti-qas` e `sgiqas-percorso`, del
+modulo QAS, estranei a NIS2 — sono **verdi in locale e verdi sull'anteprima se lanciati da
+soli**, con il bersaglio stampato e verificato. È contesa in una batteria di
+cinquantaquattro, e si dichiara invece di assorbirla nel verde: hanno ceduto a due
+tentativi di fila sotto carico, il che non è la stessa cosa di un rosso occasionale.
+
+✅ **`nis2-percorso` 44 su 44 sull'anteprima**, con i tre PDF generati da un deploy vero:
+16, 11 e 8 pagine. È il controllo che il 27 agosto scoprì Chromium che stampava la pagina
+di accesso di Vercel, e su un'anteprima protetta è l'unico posto dove quel difetto esiste.
+
+**Regole nate qui:**
+- **Su Vercel l'ordine è: spingi, ANNULLA, lega le variabili, ridistribuisci.** Le
+  variabili di ramo non si possono creare prima che il ramo esista, e il primo build parte
+  da solo. `[skip ci]` non lo ferma: provato.
+- **La precedenza di una variabile si misura scrivendo una riga e andandola a cercare.**
+  «Vercel dice che ha la precedenza» non è una prova quando la posta è il database che
+  incassa.
+- **Uno strumento con un bersaglio predefinito scritto a mano invecchia in silenzio**, e
+  risponde «c'è già» su un ramo che non è il tuo. Il predefinito giusto è quello che si
+  ricava dallo stato corrente.
+- **Un processo che non esce non è un collaudo lento.** Prima di dare la colpa alla rete o
+  al prodotto, si guarda l'orario dell'ultimo effetto prodotto: se il lavoro è finito da
+  quaranta minuti, il problema è la chiusura.
+- **Una regola che vive solo in un commento non protegge niente.** Questa era scritta, ed è
+  tornata sullo stesso file sei giorni dopo.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

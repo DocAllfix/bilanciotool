@@ -180,7 +180,16 @@ await page.setViewportSize({ width: 390, height: 844 });
 await go("/dashboard");
 await shot("08-dashboard-mobile");
 
+// ⚠️ LA CONNESSIONE AL DATABASE SI CHIUDE, SEMPRE. Un pool aperto tiene vivo il giro degli
+// eventi: il collaudo fa il suo lavoro, stampa il referto, e il PROCESSO NON ESCE MAI. Chi
+// guarda vede un timeout e accusa il prodotto.
+//
+// Misurato l'8 settembre 2026 sull'anteprima: qui l'ultima schermata era scritta dopo venti
+// secondi, e il processo e' rimasto appeso quarantadue minuti. `impostazioni`, con lo stesso
+// difetto, ci ha messo 1706 secondi al posto di una manciata. In un giro di cinquantaquattro
+// collaudi due appesi sono un metodo che nessuno lancia piu'.
 await browser.close();
+await sql.end().catch(() => {});
 if (errors.length) {
   console.error("ERRORI CONSOLE:\n" + errors.join("\n"));
   process.exit(1);
