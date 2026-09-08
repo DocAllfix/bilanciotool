@@ -19,6 +19,18 @@
 // dimenticare di lanciarlo.
 
 import { MODULI_PER_AREA, type AreaModuli, type ModuloAzienda } from "@/features/companies/moduli";
+// ⚠️ I CONTEGGI DEI DUE PERCORSI NIS2 SI DERIVANO DAL SEME, e non è pignoleria: qui c'era
+// scritto «126 requisiti» sulla scheda dell'AUTOVALUTAZIONE, che ne ha centoventiquattro —
+// il 126 è del sistema di gestione, e i due numeri differiscono di due requisiti che
+// riguardano solo chi il sistema lo sta costruendo. Su una pagina pubblica un numero
+// sbagliato non produce nessun errore: lo legge un potenziale cliente, e prima di lui lo
+// legge Google. È lo stesso danno di `llms.txt` che dichiarava trenta derivati quando il
+// motore ne calcola venticinque, e che è poi ricomparso in un documento commerciale scritto
+// da un consulente esterno che si era fidato di noi.
+//
+// Gli altri numeri di questa pagina sono ancora scritti a mano: derivarli tutti è una
+// passata a sé, e questa nota dice dove comincia.
+import { NUMERI } from "@/features/formazione/numeri";
 
 export type PercorsoVetrina = {
   titolo: string;
@@ -231,7 +243,7 @@ const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = {
     passi: [
       "Settore, dimensione, criteri specifici",
       "Essenziale, importante o fuori ambito",
-      "126 requisiti su 12 capi, scala 0÷4",
+      `${NUMERI.requisitiNis2Autovalutazione} requisiti su ${NUMERI.capiNis2} capi, scala 0÷4`,
       "Scostamenti e piano di adeguamento",
       "Registro degli incidenti e dei termini",
       "Relazione sul livello di conformità",
@@ -243,9 +255,9 @@ const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = {
     norma: "D.Lgs. 138/2024 · determinazioni ACN",
     passi: [
       "Roadmap in cinque fasi",
-      "68 controlli con la loro frequenza",
+      `${NUMERI.controlliNis2} controlli con la loro frequenza`,
       "Scadenzario degli adempimenti",
-      "19 indicatori di attuazione ed efficacia",
+      `${NUMERI.indicatoriNis2} indicatori di attuazione ed efficacia`,
       "Verifica di conformità e piano",
       "Relazione all'organo di amministrazione",
     ],

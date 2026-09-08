@@ -2273,6 +2273,77 @@ compresa · `formazione-verifiche-pure` 5/5 e `formazione-verifiche.db` 6/6, mes
 di proposito · `qa -- formazione-comandi` **21 su 21** con le quattro prove nuove sulla
 verifica · `formazione` 12/12 e `guida` 7/7 · foto della verifica in chiaro e scuro **guardate** · console pulita.
 
+**Fasi 6 e 7 del piano NIS2 (2026-09-08) — la vetrina, la barra, e un commento che diceva il falso**
+
+Il prodotto passa a **quattordici percorsi**. La riorganizzazione non è servita: con tre
+gruppi la card del portafoglio porta tre caselle e regge quattordici percorsi come ne
+reggeva dodici — è la forma nata il 25 agosto perché il numero smettesse di essere una cosa
+da indovinare. La vetrina si deriva già da `MODULI_PER_AREA` e il compilatore pretende il
+racconto di ogni modulo, quindi i due percorsi nuovi ci sono comparsi da soli, con «14
+percorsi in 3 gruppi» contato e non scritto.
+
+⚠️ **Ma un numero era falso, e stava su una pagina pubblica.** La scheda
+dell'**autovalutazione** dichiarava «126 requisiti»: 126 è il numero del **sistema di
+gestione**, e i due differiscono per i due requisiti che riguardano solo chi il sistema lo
+sta costruendo. Ora i conteggi dei due percorsi NIS2 si **derivano dal seme** in
+`percorsi-vetrina.ts`. Gli altri numeri della vetrina sono ancora scritti a mano: derivarli
+tutti è una passata a sé, e la nota dice dove comincia. È lo stesso danno di `llms.txt` che
+dichiarava trenta derivati quando il motore ne calcola venticinque — e quel «30» è poi
+ricomparso in un documento commerciale scritto da un consulente esterno che si era fidato
+di noi.
+
+⚠️ **Da telefono la home scorreva in orizzontale di due pixel.** A 360 punti — l'Android più
+comune — il marchio è a `shrink-0` e il menu è nascosto, quindi a uscire dallo schermo era
+il pulsante «Prova la demo». La causa era uno spazio speso per niente: `gap-6` fra il
+marchio e le voci, su una larghezza in cui le voci non ci sono. Ora è `gap-3` sotto `md`.
+
+**La barra laterale a 17 voci, misurata su schermo basso e resa un controllo permanente.**
+Dentro un'azienda la barra porta il nome, il fascicolo e i quattordici percorsi: cresce a
+ogni modulo, e il difetto del 2 settembre — il piede spinto fuori schermo, con menu
+dell'account e interruttore del tema irraggiungibili — è di quelli che tornano. Ora
+`visual-check-shell` lo misura a 1280×680: il contenitore scorre, il piede resta dentro, e
+l'ultima voce **risponde al clic** (`elementFromPoint`, che lo dice in tre righe mentre
+l'occhio no).
+
+⚠️ **E la prima versione di quel controllo non poteva diventare rossa.** La controprova l'ha
+detto: tolto `min-h-0`, il collaudo restava verde. Misurando una proprietà per volta è venuto
+fuori perché, e ribalta quello che il commento nel sorgente diceva da due settimane:
+
+| | scorre | piede |
+|---|---|---|
+| com'è | sì, 486 su 853 | dentro |
+| senza `min-h-0` | sì, invariato | dentro |
+| senza `overflow-y-auto` | **no**, contenuto tagliato | dentro, ma le ultime voci non si raggiungono |
+| senza entrambi | **no**, 853 su 853 | **1047**, cioè 367 punti sotto la piega |
+
+`overflow-y-auto` **da solo basta**: `min-height: auto` su un figlio flex vale soltanto
+finché il suo `overflow` è `visible`, e dandogli `auto` il minimo si risolve a zero da sé.
+Il commento diceva il contrario — «`overflow-y-auto` da solo non fa NIENTE» — ed è stato
+creduto finché non è stato messo alla prova. `min-h-0` resta, perché dice a voce alta ciò
+che l'altra ottiene di riflesso, ma la ragione scritta ora è quella vera.
+
+**Regole nate qui:**
+- **`scrollHeight > clientHeight` non vuol dire «scorre».** Vuol dire che il contenuto è più
+  alto della scatola, ed è vero anche quando viene tagliato: è per questo che la prima
+  versione del controllo restava verde con la barra rotta. Si guarda l'`overflow` calcolato,
+  che è il fatto.
+- **Un rettangolo `fixed` non si misura contro la finestra.** Il mio `piedeDentro` guardava
+  l'`<aside>`, che è fissa a tutta altezza: il suo bordo inferiore coincide sempre con
+  quello dello schermo, quindi quell'asserzione non poteva dare rosso nemmeno una volta.
+- **Una controprova che non morde va verificata sull'INIEZIONE prima che sul controllo.**
+  Qui l'iniezione era andata a segno nel sorgente e non produceva il difetto: era la
+  spiegazione che avevo in testa a essere sbagliata, non il collaudo.
+- **Un commento che dice il falso su una proprietà CSS si scopre solo togliendola.** Due
+  settimane di fiducia, e la misura è costata cinque minuti.
+
+Gate: typecheck · build · **1485 test in entrambe le modalità** · `qa -- nis2-percorso`
+**42 su 42** (i due percorsi comando per comando, compreso il controllo che vale più di
+tutti: si risponde a un requisito nell'autovalutazione e si verifica **nel database** che
+la riga sia una sola) · `tutto-pubblico` 37/37 · `shell` verde, e **rosso** rimettendo il
+difetto, sulle due asserzioni giuste · `formazione` 12/12 · `formazione-comandi` 21/21 ·
+foto della vetrina e della verifica in chiaro e scuro **guardate**, console pulita, zero
+sfondamento da telefono.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
