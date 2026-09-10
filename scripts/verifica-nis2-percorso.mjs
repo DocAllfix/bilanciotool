@@ -572,6 +572,48 @@ await agisci("⚠️ i TRE PDF sono documenti veri, e si contano le PAGINE", asy
   for (const m of misure) console.log(`       ${m.tipo}: ${Math.round(m.byte / 1024)} KB · ${m.pagine} pagine`);
 });
 
+// ─── il banco si smonta ──────────────────────────────────────────────────────
+//
+// ⚠️ QUESTO COLLAUDO NON RIPULIVA NIENTE, e per un giro sull'anteprima non si vedeva:
+// il database di sviluppo lo si semina di nuovo quando serve. Contro la PRODUZIONE
+// lascerebbe per sempre un conto, uno studio, un'azienda e tutte le righe dei due
+// percorsi — cioe' alimenterebbe esattamente il debito aperto dei 296 conti
+// `@example.com` che nessuno sa piu' distinguere da un cliente vero.
+//
+// L'ordine e' vincolato dalle chiavi esterne: prima i figli, poi le radici, e i documenti
+// prima di tutto perche' `document_snapshot` punta all'azienda. `nis2_indicator_reading`
+// prima di `nis2_indicator`, per la stessa ragione.
+//
+// ⚠️ `nis2_profile` e' CONDIVISO fra i due percorsi: va tolto una volta sola, ed e' il
+// motivo per cui non basta smontare i due moduli separatamente.
+await sql`delete from document_snapshot where organization_id = ${orgId}`;
+await sql`delete from nis2_indicator_reading where organization_id = ${orgId}`;
+await sql`delete from nis2_indicator where organization_id = ${orgId}`;
+await sql`delete from nis2_phase_state where organization_id = ${orgId}`;
+await sql`delete from nis2_control_state where organization_id = ${orgId}`;
+await sql`delete from nis2_requirement_state where organization_id = ${orgId}`;
+await sql`delete from nis2_system where organization_id = ${orgId}`;
+await sql`delete from nis2_assessment where organization_id = ${orgId}`;
+await sql`delete from nis2_profile where organization_id = ${orgId}`;
+await sql`delete from company where organization_id = ${orgId}`;
+await sql`delete from audit_log where organization_id = ${orgId}`;
+await sql`delete from org_entitlement where organization_id = ${orgId}`;
+await sql`delete from member where organization_id = ${orgId}`;
+await sql`delete from organization where id = ${orgId}`;
+await sql`delete from "user" where email = ${email}`;
+
+// ⚠️ E si VERIFICA che il banco sia smontato, invece di sperarlo: una cancellazione che
+// fallisce in silenzio — una chiave esterna che punta a una tabella dimenticata — lascia
+// il residuo e nessuno se ne accorge, perche' il referto qui sopra e' gia' verde.
+const [{ n: residuo }] = await sql`
+  select (select count(*) from organization where id = ${orgId})
+       + (select count(*) from "user" where email = ${email})
+       + (select count(*) from nis2_profile where organization_id = ${orgId}) as n`;
+if (Number(residuo) !== 0) {
+  console.log(`
+  ⚠️  BANCO NON SMONTATO: ${residuo} righe residue per ${orgId}`);
+}
+
 const esito = riepilogo("NIS2 — i due percorsi");
 
 await browser.close();

@@ -84,6 +84,46 @@ if (su && !/^https?:\/\//.test(su)) {
 }
 env.BASE = su ? su.replace(/\/+$/, "") : prod ? PROD : env.BASE || "http://localhost:3000";
 
+/** Il database che il collaudo interroghera' davvero, per poterlo dichiarare. */
+let dbDichiarato = "";
+
+// ⚠️ CON `--prod` SI SPOSTA ANCHE IL DATABASE, e non è un di più: è la correzione di un
+// buco aperto il 22 agosto 2026, il giorno in cui i due database sono stati separati.
+//
+// Fino ad allora ce n'era uno solo e la cosa funzionava per caso. Da quel giorno `--prod`
+// spostava il BROWSER sul sito vero e lasciava `DATABASE_URL` sullo SVILUPPO: un collaudo
+// che legge i propri esiti dal database — cioè quasi tutti quelli che scrivono —
+// interrogava un database che non c'entrava niente col sito che stava guidando. La
+// registrazione stessa non poteva riuscire, perché il gettone di verifica dell'indirizzo
+// viene scritto di là e cercato di qua.
+//
+// Nessuno se n'era accorto perché da allora contro la produzione sono girati solo i
+// collaudi che NON toccano il database: `tutto-pubblico`, `sitemap`, `legale`.
+if (prod) {
+  let testo = null;
+  try {
+    testo = readFileSync(".env.produzione", "utf8");
+  } catch {
+    console.error("  --prod: manca `.env.produzione`, e senza il collaudo interrogherebbe lo sviluppo.");
+    process.exit(1);
+  }
+  for (const chiave of ["DATABASE_URL", "DIRECT_URL"]) {
+    const v = testo.match(new RegExp(`^${chiave}=(.*)$`, "m"))?.[1]?.trim();
+    if (v) env[chiave] = v;
+  }
+} else if (!env.DATABASE_URL) {
+  // ⚠️ Senza `--prod` il figlio il database ce l'ha lo stesso: lo carica da `.env` con
+  // `dotenv`, che il lanciatore non fa. Leggerlo qui serve SOLO a poterlo dichiarare: se
+  // la riga qui sotto dicesse «nessuno» mentre il collaudo interroga lo sviluppo, sarebbe
+  // di nuovo un'etichetta che dice il falso — il difetto che tutto questo blocco esiste
+  // per non avere. Non si SCRIVE in `env`: il figlio deve continuare a leggerlo da sé.
+  try {
+    dbDichiarato = readFileSync(".env", "utf8").match(/^DATABASE_URL=(.*)$/m)?.[1]?.trim() ?? "";
+  } catch {
+    /* niente `.env`: allora «nessuno» è il vero */
+  }
+}
+
 // ⚠️ Un'anteprima di Vercel puo' essere protetta: senza questo segreto il collaudo
 // riceve una pagina di accesso al posto del prodotto e riferisce difetti che non ci
 // sono. Se c'e', si passa ai collaudi che sanno usarlo.
@@ -122,7 +162,20 @@ const nota = locale
   : su
     ? "  ← anteprima"
     : "";
-console.log(`→ ${scelto}  (${bersaglio})${nota}\n`);
+// ⚠️ E IL DATABASE SI DICHIARA ACCANTO AL SITO. Il bersaglio di un collaudo sono DUE cose,
+// e per settimane se ne stampava una sola: dal 22 agosto 2026, con i due database separati,
+// «produzione» accanto all'indirizzo poteva significare «sito vero, database di sviluppo».
+// Un'etichetta sbagliata è peggio di un'etichetta assente, perché a quella ci si crede.
+const db = env.DATABASE_URL || dbDichiarato;
+const nomeDb = /hahtljrexrngtfsplbsz/.test(db)
+  ? "PRODUZIONE"
+  : /dsjigmjvvrpifliqdgnx/.test(db)
+    ? "sviluppo"
+    : db
+      ? "sconosciuto"
+      : "nessuno";
+console.log(`→ ${scelto}  (${bersaglio})${nota}`);
+console.log(`   database: ${nomeDb}\n`);
 // `--su <indirizzo>` non si passa al collaudo: il bersaglio viaggia in `BASE`.
 // ⚠️ QUATTRO BERSAGLI, NON TRE: c'e' anche il DATABASE, e puo' divergere dal sito.
 //
@@ -148,7 +201,12 @@ const RIF_PRODUZIONE = "hahtljrexrngtfsplbsz";
   // quelli si imparano a scavalcare. Il fatto si legge dal sorgente del collaudo, non
   // da un elenco di nomi che qualcuno dovrebbe ricordarsi di aggiornare.
   const tocca = /postgres\(/.test(readFileSync(join(QUI, scelto), "utf8"));
-  const dbProduzione = (process.env.DATABASE_URL ?? "").includes(RIF_PRODUZIONE);
+  // ⚠️ Si guarda `env`, cioè ciò che il FIGLIO riceverà, non `process.env` del lanciatore.
+  // Da quando `--prod` sposta anche il database, i due divergono di proposito: leggendo il
+  // proprio, questa guardia confrontava il sito di produzione con il database di sviluppo
+  // del lanciatore e si fermava su una divergenza che non esisteva più. Ha fatto la cosa
+  // giusta — si è fermata invece di lasciar passare — ma sul confronto sbagliato.
+  const dbProduzione = (env.DATABASE_URL || dbDichiarato).includes(RIF_PRODUZIONE);
   const sitoProduzione = /evalisdeck\.(it|com)/.test(bersaglio);
   if (tocca && dbProduzione !== sitoProduzione && !process.env.SO_CHE_I_BERSAGLI_DIVERGONO) {
     console.error("\n🛑 IL SITO E IL DATABASE NON SONO LO STESSO AMBIENTE.\n");
