@@ -245,7 +245,18 @@ i due sono decisioni, non dimenticanze.
 
 - [ ] **48 ore senza errori nuovi** in Sentry
 - [ ] 🔒 **Interruttore dell'uomo morto** (healthchecks.io) sui backup e sul giro quotidiano
-- [ ] **Ripulire l'account Stripe vivo** dai clienti creati dai collaudi
+- [x] ✅ **Ripulire l'account Stripe vivo** — CHIUSA il 10 settembre 2026, e la notizia è
+      migliore del previsto: **in modalità viva non è mai esistito nessun abbonamento.**
+      Misurato con una chiave viva con restrizioni: i quattro abbonamenti che portavano il
+      suffisso dell'account EvalisDeck rispondono «No such subscription» in modalità viva,
+      e la lista degli abbonamenti vivi è vuota. Erano tutti artefatti di modalità PROVA.
+      **Nessun denaro è mai passato.** I quattro della sandbox sono stati annullati
+      (`livemode=false` confermato), e il database è passato a **9 utenti e 9
+      organizzazioni**: zero `@example.com`, zero abbonamenti.
+      ⚠️ Il suffisso nell'identificativo dice l'ACCOUNT, non la modalità: test e live dello
+      stesso account producono identificativi con lo stesso suffisso. È la ragione per cui
+      la domanda «è passato denaro?» si chiude solo interrogando Stripe.
+- [ ] ~~**Ripulire l'account Stripe vivo** dai clienti creati dai collaudi~~
       → tutti con email `@example.com`, nessuno ha mai pagato
       → ⚠️ **è l'ultimo pezzo rimasto**: il DATABASE è stato ripulito il 10 settembre 2026
         (`scripts/pulisci-produzione.mjs`), ma le otto organizzazioni con un abbonamento

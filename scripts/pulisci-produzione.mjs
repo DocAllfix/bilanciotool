@@ -42,8 +42,23 @@
 
 import { readFileSync } from "node:fs";
 import postgres from "postgres";
+import Stripe from "stripe";
 
 const APPLICA = process.argv.includes("--applica");
+/**
+ * Include anche le organizzazioni con un abbonamento, DOPO aver chiesto a Stripe che
+ * nessuno dei loro abbonamenti sia vivo.
+ *
+ * ⚠️ La verifica NON si fa sulla colonna `status` del nostro database: quella la aggiorna
+ * il webhook, e un abbonamento annullato dal cruscotto o via API la lascia a `active`
+ * finché l'evento non arriva. Fidarsene qui significherebbe cancellare l'organizzazione di
+ * un abbonamento ancora vivo, che è precisamente il caso che il salto esiste per evitare.
+ *
+ * Si chiede a Stripe con la chiave VIVA: un abbonamento che in modalità viva non esiste
+ * («No such subscription») è un artefatto di prova, e la ragione per saltarlo cade.
+ * La chiave si legge da `.env.stripe-vivo`, che `.gitignore` copre.
+ */
+const ANCHE_ABBONAMENTI = process.argv.includes("--abbonamenti-verificati-non-vivi");
 
 if (APPLICA && process.env.SO_CHE_E_PRODUZIONE !== "1") {
   console.error("\n  FERMO: questo comando CANCELLA nel database che incassa.");
@@ -70,21 +85,63 @@ try {
   // `bool_and` è il cuore del criterio: vero solo se OGNI membro è di collaudo. Con
   // `bool_or` — «almeno uno» — basterebbe un collaudo entrato per sbaglio in uno studio
   // vero per cancellarlo.
+  // ── quali organizzazioni con abbonamento si possono includere ───────────────
+  //
+  // Nessuna, a meno che Stripe non confermi che i loro abbonamenti non sono vivi.
+  const conAbbonamento = new Set(
+    (await sql`select distinct organization_id as id from stripe_subscription`).map((r) => r.id),
+  );
+  const assolte = new Set();
+  if (ANCHE_ABBONAMENTI) {
+    let chiave = null;
+    try {
+      chiave = readFileSync(".env.stripe-vivo", "utf8").match(/^STRIPE_SECRET_KEY=(.*)$/m)?.[1]?.trim();
+    } catch {
+      /* nessun file: si resta prudenti */
+    }
+    if (!chiave || !/_live_/.test(chiave)) {
+      console.error("\n  --abbonamenti-verificati-non-vivi pretende una chiave VIVA in `.env.stripe-vivo`.");
+      console.error("  Senza, «non è vivo» sarebbe una supposizione, non una misura.\n");
+      process.exit(1);
+    }
+    const stripe = new Stripe(chiave);
+    const righe = await sql`select organization_id as org, stripe_subscription_id as sid from stripe_subscription`;
+    const vivi = new Set();
+    for (const r of righe) {
+      try {
+        const x = await stripe.subscriptions.retrieve(r.sid);
+        // Presente in modalità viva: si salta comunque, a meno che non sia già annullato.
+        if (x.status !== "canceled") vivi.add(r.org);
+        console.log(`   Stripe · ${r.sid}  ${x.status}  livemode=${x.livemode}`);
+      } catch {
+        // «No such subscription» con la chiave viva = non esiste in modalità viva.
+        console.log(`   Stripe · ${r.sid}  non esiste in modalità viva`);
+      }
+    }
+    for (const id of conAbbonamento) if (!vivi.has(id)) assolte.add(id);
+    console.log(`\n   assolte dalla verifica su Stripe: ${assolte.size} su ${conAbbonamento.size}`);
+  }
+
+  const escluse = [...conAbbonamento].filter((id) => !assolte.has(id));
+
   const daTogliere = await sql`
     select o.id, o.name, count(m.id)::int as membri
     from organization o
     join member m on m.organization_id = o.id
     join "user" u on u.id = m.user_id
-    where o.id not in (select organization_id from stripe_subscription)
+    where ${escluse.length ? sql`o.id <> all(${escluse})` : sql`true`}
     group by o.id, o.name
     having bool_and(u.email like '%@example.com')`;
 
-  const salvate = await sql`
-    select count(*)::int n from organization o
-    where o.id in (select organization_id from stripe_subscription)`;
 
   console.log(`\nOrganizzazioni di collaudo da togliere : ${daTogliere.length}`);
-  console.log(`Saltate perché hanno un abbonamento     : ${salvate[0].n}   (si chiudono su Stripe)`);
+  // ⚠️ La riga dice il numero VERO delle saltate, che con la verifica su Stripe può essere
+  // zero. Prima stampava «hanno un abbonamento: 8» mentre stava per toglierne otto: la
+  // stessa etichetta che dice il falso contro cui è costruito metà di questo repository.
+  console.log(
+    `Saltate perché l'abbonamento è VIVO     : ${escluse.length}` +
+      (escluse.length ? "   (si chiudono su Stripe)" : ANCHE_ABBONAMENTI ? "   (nessuno è vivo)" : ""),
+  );
 
   if (!APPLICA) {
     console.log(`\n(nessuna modifica: aggiungi --applica)\n`);
