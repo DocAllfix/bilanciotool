@@ -4,11 +4,60 @@ import { organization } from "better-auth/plugins";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { verificaAccessiDisponibili } from "@/features/auth/limite-accessi";
+import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
+import { user as schemaUser } from "@/lib/db/schema";
 import { env } from "@/lib/env";
-import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail } from "@/lib/email";
+import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail, sendAccountEsistenteEmail } from "@/lib/email";
 import { createStudioOrg, firstMembershipOrgId, hasPendingInvitation } from "@/features/auth/orgs";
 import { indirizzoCorrente } from "@/lib/indirizzo";
+
+/**
+ * Chi prova a iscriversi con un indirizzo che ha già un account riceve un'email.
+ *
+ * ⚠️ SERVE A NON FAR MENTIRE LA SCHERMATA. Better Auth risponde `200` a un'iscrizione con
+ * un indirizzo già registrato — di proposito, perché rispondere «esiste già» rivelerebbe a
+ * un estraneo quali indirizzi hanno un account qui — ma non crea niente e **non manda
+ * niente**. La nostra pagina prende quel `200` per buono e scrive «Controlla la tua posta»,
+ * e la persona resta ad aspettare un'email che non partirà mai. È successo al committente
+ * sul sito vivo il 10 settembre 2026, con un indirizzo suo registrato un mese prima.
+ *
+ * Il rimedio NON è dire la verità a schermo: riaprirebbe la falla che quel `200` chiude.
+ * È mandare un'email **anche in questo caso**, così la frase diventa vera per tutti e due i
+ * casi e chi guarda da fuori continua a non distinguerli.
+ *
+ * ⚠️ NON INTERROMPE la richiesta e non cambia la risposta: Better Auth prosegue e risponde
+ * come ha sempre fatto. Se questo aggancio fallisse — la posta giù, un indirizzo storto —
+ * l'iscrizione non deve fallire con lui: un avviso di cortesia non può rompere il flusso
+ * che sta accompagnando. Per questo l'errore si annota e si va avanti.
+ */
+async function avvisaSeHaGiaUnAccount(ctx: {
+  path?: string;
+  body?: { email?: unknown };
+}): Promise<void> {
+  if (ctx.path !== "/sign-up/email") return;
+  const email = typeof ctx.body?.email === "string" ? ctx.body.email.trim().toLowerCase() : null;
+  if (!email) return;
+
+  try {
+    // ⚠️ Il confronto è insensibile alle maiuscole. Gli indirizzi email non lo sono nella
+    // parte prima della chiocciola secondo la lettera della norma, ma nella pratica ogni
+    // fornitore li tratta come uguali — e un conto registrato come `Mario@Gmail.com`
+    // sfuggirebbe a un confronto esatto, lasciando la persona esattamente nel vicolo cieco
+    // che questa funzione esiste per chiudere.
+    const righe = await db
+      .select({ id: schemaUser.id })
+      .from(schemaUser)
+      .where(sql`lower(${schemaUser.email}) = ${email}`)
+      .limit(1);
+    if (!righe.length) return;
+
+    const base = indirizzoCorrente();
+    await sendAccountEsistenteEmail(email, `${base}/login`, `${base}/password-dimenticata`);
+  } catch (e) {
+    console.error("[iscrizione] avviso «hai già un account» non inviato", e);
+  }
+}
 
 // La verifica dell'indirizzo è ACCESA dal 2026-08-11, con il dominio Resend verificato.
 // Gli account creati prima sono stati marcati come verificati: una regola introdotta
@@ -108,6 +157,7 @@ export const auth = betterAuth({
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       await verificaAccessiDisponibili(ctx as never);
+      await avvisaSeHaGiaUnAccount(ctx as never);
     }),
   },
   plugins: [

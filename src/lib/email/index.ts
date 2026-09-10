@@ -25,6 +25,21 @@ async function send(to: string, subject: string, html: string): Promise<{ sent: 
       ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
+  // ⚠️ UN INVIO RIFIUTATO SI ANNOTA. Prima si restituiva `{ sent: res.ok }` e basta, e
+  // NESSUN chiamante guarda quel campo: un rifiuto di Resend — dominio non verificato,
+  // chiave ristretta, limite superato, indirizzo malformato — spariva senza lasciare
+  // traccia, e l'unico sintomo era una persona che aspettava un'email mai arrivata.
+  //
+  // È la stessa famiglia del difetto per cui questa riga è stata scritta: qualcosa non
+  // succede, e niente lo dice. Il corpo della risposta porta il motivo, e senza quello la
+  // diagnosi comincia dal posto sbagliato — «sarà finita nello spam».
+  //
+  // Non si SOLLEVA: un'email che non parte non deve far fallire l'iscrizione o il
+  // pagamento che la stava accompagnando. Si annota, e il guasto si vede nei log.
+  if (!res.ok) {
+    const motivo = await res.text().catch(() => "");
+    console.error(`[email] «${subject}» NON inviata a ${to}: ${res.status} ${motivo.slice(0, 200)}`);
+  }
   return { sent: res.ok };
 }
 
@@ -39,6 +54,41 @@ export async function sendVerificationEmail(to: string, url: string) {
     heading: "Conferma il tuo indirizzo email",
     body: ["Per completare la registrazione conferma il tuo indirizzo email."],
     button: { label: "Conferma email", url },
+  }));
+}
+
+/**
+ * Qualcuno ha provato a iscriversi con un indirizzo che ha già un account.
+ *
+ * ⚠️ ESISTE PER NON FAR MENTIRE LA SCHERMATA. Better Auth risponde `200` a un'iscrizione
+ * con un indirizzo già registrato, di proposito: dire «questa email esiste» rivelerebbe a
+ * un estraneo quali indirizzi hanno un account qui. Ma non crea niente e **non manda
+ * niente**, e la nostra schermata prende quel `200` per buono e scrive «Controlla la tua
+ * posta» — una frase falsa, davanti a una persona che resterà ad aspettare un'email che
+ * non partirà mai. È successo al committente sul sito vivo il 10 settembre 2026.
+ *
+ * Il rimedio non è dire la verità a schermo — quello riaprirebbe la falla — è **mandare
+ * un'email anche in questo caso**: così la frase è vera per tutti e due, chi si è appena
+ * iscritto e chi un conto ce l'aveva già, e chi guarda da fuori non distingue i due casi.
+ *
+ * ⚠️ E il tono non accusa. Chi riceve questa email quasi sempre è il proprietario che si è
+ * dimenticato di avere un account, non un intruso: la prima cosa che deve trovare è la
+ * strada per entrare, non un avviso di sicurezza.
+ */
+export async function sendAccountEsistenteEmail(to: string, urlAccesso: string, urlPassword: string) {
+  logLinkInDev("account esistente", urlAccesso);
+  return send(to, "Hai già un account EvalisDeck", renderEmail({
+    previewText: "Questo indirizzo ha già un account: ecco come entrare",
+    heading: "Hai già un account",
+    body: [
+      "Qualcuno ha appena provato a iscriversi a EvalisDeck con questo indirizzo, che però ha già un account.",
+      "Non abbiamo creato niente di nuovo e non serve iscriversi di nuovo: entra con la password che avevi scelto.",
+      "Se non la ricordi, puoi reimpostarla dal collegamento in fondo. Se non sei stato tu a provare, puoi ignorare questa email: il tuo account non è stato toccato.",
+    ],
+    button: { label: "Entra nel tuo account", url: urlAccesso },
+    // `nota` è reso come HTML dal modello, quindi il collegamento passa. Gli indirizzi li
+    // costruiamo noi da `indirizzoCorrente()`, non arrivano da chi si sta iscrivendo.
+    nota: `Password dimenticata? <a href="${urlPassword}" style="color:inherit">Reimpostala qui</a>.`,
   }));
 }
 
