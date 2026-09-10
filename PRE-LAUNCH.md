@@ -247,6 +247,14 @@ i due sono decisioni, non dimenticanze.
 - [ ] 🔒 **Interruttore dell'uomo morto** (healthchecks.io) sui backup e sul giro quotidiano
 - [ ] **Ripulire l'account Stripe vivo** dai clienti creati dai collaudi
       → tutti con email `@example.com`, nessuno ha mai pagato
+      → ⚠️ **è l'ultimo pezzo rimasto**: il DATABASE è stato ripulito il 10 settembre 2026
+        (`scripts/pulisci-produzione.mjs`), ma le otto organizzazioni con un abbonamento
+        sono state **saltate di proposito** — l'abbonamento vive su Stripe, e togliere la
+        riga locale lo lascerebbe attivo di là. Si chiudono dal cruscotto, poi si rilancia
+        `pulisci-produzione.mjs` e spariscono anche da qui.
+      → ⚠️ **quattro di quegli otto NON sono sull'account sandbox.** Se su quelli sia
+        passato denaro vero non lo dice il nostro database, che per scelta non contiene un
+        solo importo: lo dice il cruscotto Stripe.
 
 ---
 
@@ -256,9 +264,12 @@ i due sono decisioni, non dimenticanze.
    I prezzi vivi sono oggetti diversi: finché nessuno paga davvero, la catena viva non è
    mai stata percorsa da capo a fondo. **Costa 6 €**, non 600: il buono di collaudo al 99%
    è pronto (`scripts/crea-buono-collaudo.mjs`), e passa dagli stessi prezzi che venderai.
-2. **Il database di produzione separato, con un restore provato.** Oggi i dati di un
-   cliente starebbero accanto a centotrenta organizzazioni di collaudo, e il ripristino di
-   un backup non è mai stato tentato.
+2. **Il restore di un backup, provato.** ✅ La metà sporca è chiusa: il 10 settembre 2026
+   la produzione è passata da **298 a 17 organizzazioni** e da **305 a 17 utenti** — restano
+   i nove indirizzi veri e le otto organizzazioni con un abbonamento, saltate di proposito.
+   I dati di un cliente non starebbero più accanto a centinaia di conti di collaudo.
+   ⚠️ Resta il **ripristino di un backup, mai tentato**: finché non lo si prova, «abbiamo i
+   backup» è una frase, non una garanzia.
 3. **I dati del titolare nei documenti legali** (P. IVA, sede, PEC). Vendere a un'azienda
    con l'identificazione incompleta in privacy e termini è un'esposizione legale, non un
    dettaglio estetico. Sono cinque minuti, e sono **dati che ha solo il committente**.
