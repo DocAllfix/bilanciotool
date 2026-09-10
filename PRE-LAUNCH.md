@@ -279,8 +279,15 @@ i due sono decisioni, non dimenticanze.
    la produzione è passata da **298 a 17 organizzazioni** e da **305 a 17 utenti** — restano
    i nove indirizzi veri e le otto organizzazioni con un abbonamento, saltate di proposito.
    I dati di un cliente non starebbero più accanto a centinaia di conti di collaudo.
-   ⚠️ Resta il **ripristino di un backup, mai tentato**: finché non lo si prova, «abbiamo i
-   backup» è una frase, non una garanzia.
+   ✅ **E il ripristino è stato provato**, il 10 settembre 2026:
+   `node scripts/prova-ripristino.mjs`. Dump della produzione in sola lettura, ripristino su
+   un PostgreSQL 17 usa-e-getta in un contenitore, confronto: **145 tabelle, 14.270 righe,
+   243 policy RLS, 145 tabelle con RLS, 4 trigger e 159 vincoli CHECK — tutti identici**.
+   ⚠️ Le difese si contano a parte dai dati, ed è il punto: una copia con le righe giuste e
+   senza policy, il giorno del ripristino vero, farebbe vedere a ogni studio tutti gli altri.
+   ⚠️ E i ruoli si creano PRIMA del ripristino: le policy nominano `app_rls`, che su un
+   PostgreSQL vergine non esiste. Senza, si ripristinerebbero i dati e non le difese, e il
+   conto delle policy direbbe zero mentre il dump le conteneva tutte.
 3. **I dati del titolare nei documenti legali** (P. IVA, sede, PEC). Vendere a un'azienda
    con l'identificazione incompleta in privacy e termini è un'esposizione legale, non un
    dettaglio estetico. Sono cinque minuti, e sono **dati che ha solo il committente**.
