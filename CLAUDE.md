@@ -2469,6 +2469,59 @@ di accesso di Vercel, e su un'anteprima protetta è l'unico posto dove quel dife
 - **Una regola che vive solo in un commento non protegge niente.** Questa era scritta, ed è
   tornata sullo stesso file sei giorni dopo.
 
+**Il rilascio in produzione dei due percorsi NIS2 (2026-09-10)** — quattordici percorsi
+online, e l'ordine dei passi è la parte che vale la pena ricordare.
+
+**L'ordine è: migrazioni, SEME, fusione.** E il secondo passo è quello che si dimentica,
+perché non compare in nessun cancello: le migrazioni creano le tabelle **vuote**, e i
+cataloghi NIS2 e il corpus sono dati di seme. Fondendo dopo le sole migrazioni, la
+produzione avrebbe avuto due percorsi che si aprono su un elenco di zero requisiti — un
+modulo che sembra rotto invece di uno che non c'è.
+
+**Ogni scrittura è stata preceduta da una domanda alla produzione, non da una deduzione.**
+
+- ⚠️ **I CHECK riaggiunti rivalidano OGNI riga esistente**, e le migrazioni che allargano
+  un dominio chiuso riscrivono il vincolo per intero. `scripts/stato-produzione.mjs` l'ha
+  chiesto prima: **zero righe fuori dominio** su 229 snapshot, 6.489 blocchi, 779 colonne,
+  12 content set. Una sola riga fuori elenco avrebbe fatto fallire la migrazione a metà.
+- ⚠️ **Il seme è stato letto prima di lanciarlo**: zero `delete`, zero `truncate`, solo
+  `on conflict (id) do update`. Su un database con 8 abbonamenti vivi e 298 organizzazioni
+  la differenza fra un upsert e un delete-then-insert è la differenza fra un aggiornamento
+  e la perdita delle chiavi a cui puntano le righe dei clienti.
+- **La previsione è stata SCRITTA PRIMA.** 13 content set, 511 documenti, 7039 blocchi, 84
+  registri, 939 colonne, 82 segnaposto, e i tredici conteggi dei cataloghi. Dopo il seme,
+  **tutti e quattordici coincidono**. Verificare contro un'attesa scritta prima è un'altra
+  cosa dal guardare i numeri e trovarli plausibili.
+
+✅ **E la verifica che conta più di tutte: i cataloghi si leggono come `app_rls`.** È il
+ruolo con cui gira la produzione, e il difetto trovato due giorni fa — una policy scritta
+su una GUC che nessuno impostava — insegna che un catalogo seminato non è un catalogo
+visibile. Chiesto alla produzione con `set local role app_rls`: tutte e otto le tabelle
+con gli stessi conteggi della connessione privilegiata, e **64 documenti, 550 blocchi, 14
+registri** di corpus NIS2 visti dall'applicazione. Se una di quelle policy fosse stata
+sbagliata, il modulo si sarebbe aperto vuoto in produzione e pieno in sviluppo.
+
+**Che cosa è online**: quattordici percorsi in tre gruppi, con Compliance a sei. La vetrina
+dichiara «14 percorsi in 3 gruppi» **contando**, non scrivendo, e la scheda
+dell'autovalutazione dice **124 requisiti** — il numero giusto, derivato dal seme dopo che
+era stato scritto a mano come 126, che è il numero dell'altro percorso.
+
+**I due corsi ci sono**, cinque sezioni proprie ciascuno, **27 domande** di verifica in
+tutto, e gli undici corsi che le domande non ce l'hanno ancora **lo dichiarano** a schermo.
+
+**Regole nate qui:**
+- **Una migrazione non è un rilascio: è il primo dei tre passi.** Migrazioni, seme,
+  fusione — e il seme non ha un cancello che lo pretenda, quindi è quello che si salta.
+- **Prima di scrivere in un database vivo si chiede al database vivo.** Non «il seme è
+  idempotente perché lo dice il commento», ma: quante righe cadrebbero fuori dai vincoli
+  nuovi, e questo file contiene `delete`?
+- **Una previsione scritta prima vale più di una verifica fatta dopo.** Guardare
+  quattordici numeri e trovarli ragionevoli non è la stessa cosa che vederli coincidere con
+  una lista scritta quando ancora non si sapeva.
+- **Un catalogo seminato non è un catalogo visibile.** In produzione la connessione è
+  `app_rls`: la lettura si prova assumendo quel ruolo, non fidandosi del fatto che
+  `postgres` veda le righe.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
