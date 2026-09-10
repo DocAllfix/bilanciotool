@@ -250,4 +250,10 @@ try {
 }
 
 await sql.end();
-process.exit(esito ? 0 : 1);
+// ⚠️ `riepilogo` restituisce QUANTI ROSSI ci sono, non «e' andata bene». Qui c'era
+// `esito ? 0 : 1`, che e' l'esatto contrario: con dei falliti usciva ZERO — successo — e
+// con tutto verde usciva UNO. Chi legge il codice d'uscita (qa.mjs, la CI,
+// `giro-completo`, `qa-anteprima`) riceveva sempre la risposta sbagliata, e nel verso
+// peggiore: un collaudo rosso riferito come verde. Scoperto l'8 settembre 2026 leggendo
+// «44 ok, 0 falliti» accanto a un exit 1.
+process.exit(esito ? 1 : 0);

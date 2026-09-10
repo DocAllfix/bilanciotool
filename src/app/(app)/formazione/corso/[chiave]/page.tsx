@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Play } from "lucide-react";
 
 import { corsoTrasversale, esisteCorsoTrasversale } from "@/features/formazione";
+import { esitiDelCorso } from "@/features/formazione/verifiche";
+import { requireSession } from "@/features/auth/guards";
 import { SezioneCorso } from "@/components/formazione/corso";
 import { IndiceCorso } from "@/components/formazione/indice";
 
@@ -20,6 +22,8 @@ export default async function CorsoTrasversalePage({ params }: Props) {
   if (!esisteCorsoTrasversale(chiave)) notFound();
 
   const c = corsoTrasversale(chiave);
+  const sessione = await requireSession();
+  const esiti = await esitiDelCorso(sessione.userId, c.chiave);
 
   return (
     <div className="mx-auto w-full max-w-6xl pb-24">
@@ -64,7 +68,13 @@ export default async function CorsoTrasversalePage({ params }: Props) {
         <IndiceCorso sezioni={c.sezioni.map((s) => ({ id: s.id, titolo: s.titolo, minuti: s.minuti }))} />
         <div className="mt-8 min-w-0 flex-1 space-y-12 lg:mt-0" data-sezioni="">
           {c.sezioni.map((s, i) => (
-            <SezioneCorso key={s.id} sezione={s} indice={i + 1} />
+            <SezioneCorso
+              key={s.id}
+              sezione={s}
+              indice={i + 1}
+              corso={c.chiave}
+              esito={esiti[s.id]}
+            />
           ))}
         </div>
       </div>

@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, integer, numeric, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, numeric, jsonb, boolean, index, uniqueIndex, primaryKey } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 
 // Contenuti metodologici versionati (seed di piattaforma, Fase 2C).
 // Tabelle NON-tenant: leggibili da tutti i tenant (passthrough RLS scoped ad app_rls),
@@ -375,4 +376,38 @@ export const soaControl = pgTable(
     uniqueIndex("soa_control_set_fw_ctl_uq").on(t.setId, t.frameworkKey, t.controlloId),
     index("soa_control_set_fw_idx").on(t.setId, t.frameworkKey),
   ],
+);
+
+/**
+ * L'avanzamento di una persona nelle verifiche dei corsi.
+ *
+ * ⚠️ SU DATABASE, non in `localStorage`. Il prototipo dei corsi tiene l'avanzamento nel
+ * browser: si perde cambiando dispositivo, e un esito di superamento che sparisce e' peggio
+ * che non averlo — chi l'ha ottenuto ricorda di averlo fatto, e il prodotto gli dice di no.
+ * Il prototipo e' un file su un computer; questo e' un prodotto con l'accesso.
+ *
+ * ⚠️ Per UTENTE e non per organizzazione: il corso lo fa una persona, e il socio dello
+ * studio che apre lo stesso corso comincia dal principio. Non e' un dato del cliente e non
+ * porta `organization_id`: chi cambia studio si porta dietro cio' che ha imparato.
+ */
+export const formazioneVerifica = pgTable(
+  "formazione_verifica",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** `ghg`, `nis2`, `avviare-attivita`: la chiave del corso, non un identificativo. */
+    corso: text("corso").notNull(),
+    /** L'id stabile della sezione, quello che finisce nell'indirizzo. */
+    sezione: text("sezione").notNull(),
+    /** Quante risposte giuste all'ultimo tentativo. */
+    corrette: integer("corrette").notNull(),
+    /** Su quante domande: se il corso cambia, un vecchio esito resta leggibile. */
+    domande: integer("domande").notNull(),
+    superata: boolean("superata").notNull(),
+    /** Quante volte ci ha provato. Non e' un voto: e' il segno di dove il corso non spiega. */
+    tentativi: integer("tentativi").default(1).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.corso, t.sezione] })],
 );

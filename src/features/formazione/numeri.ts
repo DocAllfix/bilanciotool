@@ -58,6 +58,17 @@ import indicatoriQas from "@/lib/db/seeds/data/sgiqas-indicatori.json";
 import controlliSoa from "@/lib/db/seeds/data/soa-controls.json";
 import sezioniSoa from "@/lib/db/seeds/data/soa-sections.json";
 import quadriSoa from "@/lib/db/seeds/data/soa-frameworks.json";
+import reqNis2 from "@/lib/db/seeds/data/nis2-req.json";
+import ctrlNis2 from "@/lib/db/seeds/data/nis2-ctrl.json";
+import capiNis2 from "@/lib/db/seeds/data/nis2-capi.json";
+import fasiNis2 from "@/lib/db/seeds/data/nis2-fasi.json";
+import indicatoriNis2 from "@/lib/db/seeds/data/nis2-indicatori.json";
+import criteriNis2 from "@/lib/db/seeds/data/nis2-criteri.json";
+import settori1Nis2 from "@/lib/db/seeds/data/nis2-settori-1.json";
+import settori2Nis2 from "@/lib/db/seeds/data/nis2-settori-2.json";
+import procedureNis2 from "@/lib/db/seeds/data/nis2-procedures.json";
+import moduliNis2 from "@/lib/db/seeds/data/nis2-modules.json";
+import registriNis2 from "@/lib/db/seeds/data/nis2-registri.json";
 import motivazioniSoa from "@/lib/db/seeds/data/soa-motivations.json";
 import fasiSgesg from "@/lib/db/seeds/data/sgesg-fasi.json";
 import schedeSgesg from "@/lib/db/seeds/data/sgesg-schede.json";
@@ -181,6 +192,26 @@ export const NUMERI = {
 
   /** Dichiarazione di Applicabilità. */
   controlliSoa: controlliSoa.length,
+
+  // ── NIS2 · D.Lgs. 138/2024 ────────────────────────────────────────────────
+  //
+  // ⚠️ I requisiti sono DUE numeri, non uno: 126 nel sistema di gestione, 124
+  // nell'autovalutazione. Scriverne uno solo farebbe dire al corso una cosa falsa in
+  // metà delle sue pagine, e la partizione si deriva dal campo `perimetri` del seme
+  // invece di essere ricordata.
+  requisitiNis2: reqNis2.length,
+  requisitiNis2Autovalutazione: reqNis2.filter((r) => r.perimetri.includes("autovalutazione")).length,
+  controlliNis2: ctrlNis2.length,
+  capiNis2: capiNis2.length,
+  fasiNis2: fasiNis2.length,
+  indicatoriNis2: indicatoriNis2.length,
+  criteriNis2: criteriNis2.length,
+  settoriNis2: settori1Nis2.length + settori2Nis2.length,
+  settoriNis2Allegato1: settori1Nis2.length,
+  settoriNis2Allegato2: settori2Nis2.length,
+  procedureNis2: procedureNis2.length,
+  moduliNis2: moduliNis2.length,
+  registriNis2: registriNis2.length,
   sezioniSoa: Object.keys(sezioniSoa).length,
   quadriSoa: Object.keys(quadriSoa).length,
   motivazioniSoa: Object.keys(motivazioniSoa).length,

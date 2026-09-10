@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Headphones, Play } from "lucide-react";
+import { ArrowLeft, Clock, Headphones, ListChecks, Play } from "lucide-react";
 
 import { corsoDelModulo, esisteCorso } from "@/features/formazione";
+import { esitiDelCorso } from "@/features/formazione/verifiche";
+import { requireSession } from "@/features/auth/guards";
 import { MODULI_AZIENDA, AREE } from "@/features/companies/moduli";
 import { SezioneCorso } from "@/components/formazione/corso";
 import { SelettoreCorsi } from "@/components/formazione/selettore";
@@ -29,6 +31,11 @@ export default async function CorsoPage({ params }: Props) {
   const m = MODULI_AZIENDA.find((x) => x.href === modulo)!;
   const area = AREE[m.area];
   const voce = minutiDiVoce(c.modulo, c.sezioni, c.idComuni);
+  // ⚠️ Gli esiti sono della PERSONA, non dello studio: il socio che apre lo stesso corso
+  // comincia dal principio, e chi cambia studio se li porta dietro.
+  const sessione = await requireSession();
+  const esiti = await esitiDelCorso(sessione.userId, c.modulo);
+  const domande = c.sezioni.reduce((n, x) => n + (x.verifica?.domande.length ?? 0), 0);
 
   return (
     // ⚠️ IL TERZO REGISTRO, MA CONTENUTO. Il prodotto ne ha già due — l'app densa e il
@@ -70,6 +77,15 @@ export default async function CorsoPage({ params }: Props) {
                 <span data-slot="kpi">{voce.totale}</span> minuti di voce
               </span>
             )}
+            {/* La verifica si dichiara anche quando non c'e': vedi la scheda nell'indice. */}
+            {domande > 0 ? (
+              <span className="flex items-center gap-1.5">
+                <ListChecks className="size-3.5" aria-hidden />
+                <span data-slot="kpi">{domande}</span> domande di verifica
+              </span>
+            ) : (
+              <span>verifica in preparazione</span>
+            )}
           </p>
         </div>
       </header>
@@ -93,7 +109,14 @@ export default async function CorsoPage({ params }: Props) {
       <SelettoreCorsi corrente={c.modulo} />
 
       {!c.completo && (
-        <div className="mt-6 max-w-prose rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3">
+        // ⚠️ L'ancoraggio è STRUTTURALE, non una frase. Il collaudo riconosceva questo
+        // riquadro cercando «in preparazione» nel testo della pagina, e il giorno in cui
+        // un'altra cosa della stessa pagina ha detto «verifica in preparazione» ha
+        // dichiarato senza parte propria tutti e dodici i corsi che ce l'hanno.
+        <div
+          data-parte-specifica-mancante=""
+          className="mt-6 max-w-prose rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3"
+        >
           <p className="text-[13px] font-semibold text-warning">La parte specifica è in preparazione</p>
           <p className="mt-1 text-[14px] leading-relaxed text-foreground/85">
             Questo corso spiega come si usa il prodotto: dove sei, come si salva, che cosa controlla la
@@ -115,12 +138,14 @@ export default async function CorsoPage({ params }: Props) {
         <IndiceCorso sezioni={c.sezioni.map((s) => ({ id: s.id, titolo: s.titolo, minuti: s.minuti }))} />
 
         <div className="mt-8 min-w-0 flex-1 space-y-12 lg:mt-0" data-sezioni="">
-          {c.sezioni.map((s, i) => (
+          {c.sezioni.map((sez, i) => (
             <SezioneCorso
-              key={s.id}
-              sezione={s}
+              key={sez.id}
+              sezione={sez}
               indice={i + 1}
               tinta={{ tratto: area.colore.tratto, testo: m.colore.tenue }}
+              corso={c.modulo}
+              esito={esiti[sez.id]}
             />
           ))}
 

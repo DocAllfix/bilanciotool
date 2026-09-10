@@ -1,0 +1,14 @@
+[
+{"id":"G","n":"Governance e organi","d":"Approvazione delle misure, sorveglianza, responsabilità e formazione degli organi."},
+{"id":"R","n":"Registrazione e Autorità","d":"Ambito, registrazione, variazioni, comunicazioni e obblighi informativi."},
+{"id":"A","n":"Analisi dei rischi","d":"Politiche di analisi dei rischi e di sicurezza dei sistemi informativi."},
+{"id":"B","n":"Incidenti e notifica","d":"Gestione degli incidenti e termini di 24 ore, 72 ore e un mese."},
+{"id":"C","n":"Continuità operativa","d":"Backup, ripristino, gestione delle crisi ed esercitazioni."},
+{"id":"D","n":"Catena di fornitura","d":"Censimento, valutazione, clausole e accessi dei fornitori."},
+{"id":"E","n":"Sviluppo e vulnerabilità","d":"Acquisizione, sviluppo, modifiche e gestione delle vulnerabilità."},
+{"id":"F","n":"Efficacia delle misure","d":"Audit, verifiche tecniche, indicatori e trattamento dei rilievi."},
+{"id":"H","n":"Igiene e formazione","d":"Pratiche di base, consapevolezza e formazione del personale."},
+{"id":"I","n":"Crittografia","d":"Politiche di cifratura, gestione delle chiavi e dei certificati."},
+{"id":"L","n":"Accessi e attivi","d":"Risorse umane, inventario, controllo degli accessi e registrazione."},
+{"id":"M","n":"MFA e comunicazioni","d":"Autenticazione a più fattori e comunicazioni protette e di emergenza."}
+]

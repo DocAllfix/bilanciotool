@@ -3,6 +3,10 @@ import { aziendeAttive } from "./lettori-condivisi";
 import {
   company,
   documentSnapshot,
+  nis2Assessment,
+  nis2ControlState,
+  nis2RequirementState,
+  nis2System,
   ghgInventory,
   ghgActivityRow,
   reportProject,
@@ -77,7 +81,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, programmaFiliera, documenti] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, autovalutazioneNis2, sistemaNis2, programmaFiliera, documenti] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -127,6 +131,14 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .from(saSystem)
         .where(and(eq(saSystem.companyId, companyId), eq(saSystem.organizationId, orgId))),
       tx
+        .select({ id: nis2Assessment.id })
+        .from(nis2Assessment)
+        .where(and(eq(nis2Assessment.companyId, companyId), eq(nis2Assessment.organizationId, orgId))),
+      tx
+        .select({ id: nis2System.id })
+        .from(nis2System)
+        .where(and(eq(nis2System.companyId, companyId), eq(nis2System.organizationId, orgId))),
+      tx
         .select({ id: chainProgram.id })
         .from(chainProgram)
         .where(and(eq(chainProgram.companyId, companyId), eq(chainProgram.organizationId, orgId))),
@@ -154,12 +166,14 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const wbId = sistemaWb[0]?.id ?? null;
     const qasId = sistemaQas[0]?.id ?? null;
     const saId = sistemaSa[0]?.id ?? null;
+    const nis2Id = autovalutazioneNis2[0]?.id ?? null;
+    const sgnis2Id = sistemaNis2[0]?.id ?? null;
     const filId = programmaFiliera[0]?.id ?? null;
     const annoBilancio = progetti[0]?.anno ?? null;
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner, nReqNis2, nCtrlNis2] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -239,6 +253,26 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
       filId
         ? tx.select({ n: count() }).from(chainPartner).where(eq(chainPartner.programId, filId))
         : zero,
+      // ⚠️ Per AZIENDA e non per radice: la tabella delle risposte e' condivisa fra i due
+      // percorsi NIS2, e la stessa istruttoria conta per tutti e due — che e' cio' che
+      // deve succedere, perche' e' la stessa.
+      nis2Id
+        ? tx
+            .select({ n: count() })
+            .from(nis2RequirementState)
+            .where(
+              and(
+                eq(nis2RequirementState.companyId, companyId),
+                isNotNull(nis2RequirementState.livello),
+              ),
+            )
+        : zero,
+      sgnis2Id
+        ? tx
+            .select({ n: count() })
+            .from(nis2ControlState)
+            .where(and(eq(nis2ControlState.companyId, companyId), isNotNull(nis2ControlState.stato)))
+        : zero,
     ]);
 
     // Per ogni tipo di documento, la versione più alta (l'elenco è già ordinato
@@ -276,6 +310,23 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         avviato: !!supId,
         anno: null,
         riempimento: supId ? { valore: nRisposte[0].n, etichetta: "risposte su 37" } : null,
+      },
+      // ⚠️ Il riempimento dell'autovalutazione NIS2 conta le risposte dell'AZIENDA, non
+      // della radice: la tabella e' condivisa fra i due percorsi, quindi la stessa
+      // istruttoria compare in tutti e due — ed e' giusto, perche' e' la stessa.
+      nis2: {
+        avviato: !!nis2Id,
+        anno: null,
+        riempimento: nis2Id
+          ? { valore: nReqNis2[0].n, etichetta: nReqNis2[0].n === 1 ? "requisito valutato" : "requisiti valutati" }
+          : null,
+      },
+      sgnis2: {
+        avviato: !!sgnis2Id,
+        anno: null,
+        riempimento: sgnis2Id
+          ? { valore: nCtrlNis2[0].n, etichetta: nCtrlNis2[0].n === 1 ? "controllo dichiarato" : "controlli dichiarati" }
+          : null,
       },
       soa: {
         avviato: !!soaId,

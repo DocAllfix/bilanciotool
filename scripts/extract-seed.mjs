@@ -126,19 +126,23 @@ function conIdBlocchi(blocks) {
  * `ordPro`/`ordMod` mancano in SA8000, che li ricava ordinando le chiavi: il
  * fallback fa lo stesso, così la funzione vale per tutti e sei.
  */
-function normalizzaCorpus(corpus) {
+function normalizzaCorpus(corpus, generi) {
+  // ⚠️ PRIMA di `conIdBlocchi`: la chiave di un blocco si deriva dal suo contenuto, e il
+  // contenuto comprende il genere. Rinominare dopo produrrebbe chiavi che non
+  // corrispondono a quelle del blocco seminato.
+  const rinomina = (b) => (generi && generi[b.k] ? { ...b, k: generi[b.k] } : b);
   const ordine = (mappa, dichiarato) => dichiarato ?? Object.keys(mappa).sort();
   const procedure = ordine(corpus.pro, corpus.ordPro).map((code, i) => ({
     code,
     ...corpus.pro[code],
     ordine: i + 1,
-    blocks: conIdBlocchi(corpus.pro[code].blocks),
+    blocks: conIdBlocchi(corpus.pro[code].blocks.map(rinomina)),
   }));
   const moduli = ordine(corpus.mod, corpus.ordMod).map((code, i) => ({
     code,
     ...corpus.mod[code],
     ordine: i + 1,
-    blocks: conIdBlocchi(corpus.mod[code].blocks),
+    blocks: conIdBlocchi(corpus.mod[code].blocks.map(rinomina)),
   }));
   return { procedure, moduli };
 }
@@ -209,16 +213,126 @@ const CONFORMITA = [
   // cataloghi della SoA. Si estraggono da lì, non si riscrivono a mano.
   { dom: "filiera", file: "due-diligence-filiera-v1.html", extra: ["fasi"], consts: { dim: "DIM", aree: "AREE", flags: "FLAGS" } },
   { dom: "wb", file: "whistleblowing-v1.html", extra: ["capi", "req"] },
+  // ⚠️ NIS2 SI ESTRAE DAL SOVRAINSIEME, NON DAI DUE FILE.
+  //
+  // I due prototipi NIS2 non sono due domini: il sistema di gestione CONTIENE per
+  // intero l'autovalutazione. Misurato, non dedotto: i 124 requisiti dell'uno sono
+  // byte-identici nell'altro, che ne aggiunge due; le 13 procedure identiche, +1; i
+  // 47 moduli identici, +3; stessi capi, stessi livelli, stessi 14 registri con le
+  // stesse 160 colonne.
+  //
+  // Estrarli separatamente produrrebbe due cataloghi quasi uguali da tenere allineati
+  // a mano — ed e' esattamente cio' che e' successo a SA8000, dove tre file
+  // normalizzati una volta sola sono rimasti indietro mentre i conteggi restavano
+  // giusti. Qui si estrae il piu' grande e si DERIVA il perimetro dal confronto.
+  {
+    dom: "nis2",
+    file: "nis2-sistema-gestione-v1.html",
+    extra: ["capi", "req", "ctrl", "livelli"],
+    // Il quadro d'ambito e la roadmap stanno in `const` nel sorgente, non nel blob:
+    // come i cataloghi della SoA e le dimensioni della filiera.
+    consts: {
+      fasi: "FASI",
+      indicatori: "BASE_IND",
+      ambiti: "AMB",
+      "settori-1": "ALL1",
+      "settori-2": "ALL2",
+      dimensioni: "DIMV",
+      criteri: "CRITSPEC",
+    },
+    sovrainsieme: { base: "nis2-Autovalutazione conformita-v1.html", ridotto: "autovalutazione", esteso: "sistema" },
+  },
 ];
+
+// ── I semafori di SA8000, e perche' la correzione sta QUI ────────────────────
+//
+// Il prototipo disegna lo stato di conformita' con tre cerchi colorati. A schermo
+// funzionano; su un modulo FOTOCOPIATO IN BIANCO E NERO — che e' dove quel modulo
+// finisce — diventano tre pallini identici, e la legenda smette di spiegare qualcosa.
+// Il 26 agosto 2026 sono stati sostituiti con le lettere.
+//
+// ⚠️ MA LA CORREZIONE ERA STATA FATTA A VALLE, direttamente sul JSON. Il prototipo e'
+// materiale di riferimento e non si tocca, quindi rilanciare l'estrattore la cancellava:
+// in silenzio, e coi conteggi ancora giusti — cioe' nel modo in cui nessun test poteva
+// accorgersene. E' successo davvero, al primo rilancio dopo quella data.
+//
+// Qui la correzione e' un dato, e si CONTA: se una sostituzione non trova il proprio
+// testo si ferma, invece di lasciar credere che sia stata applicata. Una sostituzione
+// che non trova niente non protesta da sola.
+//
+// ⚠️ Le 106 caselle di spunta NON si toccano: sono l'affordance di un modulo da
+// compilare, non decorazione.
+const CORREZIONI = [
+  {
+    dom: "sa8000",
+    perche: "tre cerchi colorati non sopravvivono alla fotocopia in bianco e nero",
+    coppie: [
+      ["\u{1F7E2}\u{1F7E1}\u{1F534}", "C / A / NC"],
+      [
+        "Legenda semaforo: \u{1F7E2} Conforme/In target | \u{1F7E1} Attenzione/Scostamento lieve | \u{1F534} NC/Scostamento critico",
+        "Legenda semaforo: C = Conforme/In target | A = Attenzione/Scostamento lieve | NC = Non conforme/Scostamento critico",
+      ],
+    ],
+  },
+];
+
+/**
+ * Applica le correzioni editoriali di un dominio, contando ogni sostituzione.
+ *
+ * ⚠️ Si passa il corpus INTERO, non una collezione per volta: i semafori stanno nei
+ * moduli e non nelle procedure, e correggere le due separatamente faceva scattare la
+ * guardia sulla meta` innocente. La domanda giusta e` «questo dominio contiene il testo
+ * da correggere?», non «lo contiene questa meta`?».
+ */
+function correggi(dom, corpus) {
+  const regola = CORREZIONI.find((c) => c.dom === dom);
+  if (!regola) return corpus;
+  let testo = JSON.stringify(corpus);
+  for (const [da, a] of regola.coppie) {
+    const quante = testo.split(da).length - 1;
+    if (!quante) {
+      throw new Error(`${dom}: la correzione «${da}» non ha trovato il proprio testo — il prototipo e' cambiato?`);
+    }
+    testo = testo.split(da).join(a);
+    console.log(`  ${dom}: ${quante} sostituzioni — ${regola.perche}`);
+  }
+  // Controprova: nessun semaforo deve essere sopravvissuto alla conversione.
+  const rimasti = [...testo.matchAll(/[\u{1F7E2}\u{1F7E1}\u{1F534}]/gu)];
+  if (rimasti.length) throw new Error(`${dom}: ${rimasti.length} semafori non convertiti`);
+  return JSON.parse(testo);
+}
+
+// ── I GENERI DI BLOCCO, e i due che il prototipo NIS2 chiama in un altro modo ─
+//
+// Il corpus ha quattro generi: paragrafo (`p`), tabella (`t`), banda di sezione (`h`) e
+// riquadro firma (`sig`). I prototipi NIS2 ne usano tre in piu': `f`, `s` e `l`.
+//
+// ⚠️ E il loro renderer non ne gestisce nessuno dei tre: cadono tutti nel ramo del
+// paragrafo, che legge `b.t` — e `f` e `l` non ce l'hanno. Misurato sui dati estratti:
+// **50 riquadri firma e 4 elenchi rendono VUOTO** in ogni documento del prototipo. Non e'
+// una scelta, e' una dimenticanza, e si vede solo contando i blocchi per genere.
+//
+// Qui `f` e `s` si riportano al genere che gia' esiste, perche' e' la stessa cosa detta
+// con un'altra lettera:
+//   `f` sta in fondo a ogni modulo, dopo la chiusura, e non ha testo → e' `sig`;
+//   `s` e' una banda maiuscola prima di una tabella («ESITO», «SETTORE E DIMENSIONE») → e' `h`.
+// `l` invece e' un genere nuovo per davvero: un elenco puntato, che il corpus non aveva.
+//
+// La normalizzazione sta QUI e non a valle: una correzione fatta dopo il generatore
+// sparisce alla prima riesecuzione, in silenzio e coi conteggi ancora giusti.
+const GENERI = { nis2: { f: "sig", s: "h" } };
 
 const outCorpus = {};
 for (const m of CONFORMITA) {
   const html = readFileSync(join(root, "aggiuntenuovimoduli", m.file), "utf8");
   const corpus = extractJsonBlob(html, "corpus");
-  const { procedure, moduli } = normalizzaCorpus(corpus);
-  outCorpus[`${m.dom}-registri.json`] = registri(html);
-  outCorpus[`${m.dom}-procedures.json`] = procedure;
-  outCorpus[`${m.dom}-modules.json`] = moduli;
+  const { procedure, moduli } = normalizzaCorpus(corpus, GENERI[m.dom]);
+  // I livelli si passano perche' due colonne dei registri NIS2 ne costruiscono le
+  // opzioni, e nel prototipo arrivano dal blob invece che da una `const` del sorgente.
+  outCorpus[`${m.dom}-registri.json`] = registri(html, { LIVELLI: corpus.livelli });
+  const corretto = correggi(m.dom, { procedure, moduli });
+  outCorpus[`${m.dom}-procedures.json`] = corretto.procedure;
+  outCorpus[`${m.dom}-modules.json`] = corretto.moduli;
   for (const k of m.extra) {
     if (corpus[k] === undefined) throw new Error(`${m.dom}: collezione «k=${k}» assente dal corpus`);
     outCorpus[`${m.dom}-${k}.json`] = corpus[k];
@@ -228,6 +342,43 @@ for (const m of CONFORMITA) {
   // due, quindi in SQL serve una tabella ponte vera, non una colonna.
   for (const [k, nome] of Object.entries(m.consts ?? {})) {
     outCorpus[`${m.dom}-${k}.json`] = extractConst(html, nome);
+  }
+  // ⚠️ IL PERIMETRO SI DERIVA, NON SI SCRIVE.
+  //
+  // Un requisito appartiene a entrambi i percorsi se compare in tutti e due i
+  // prototipi, al solo percorso esteso se compare nel sovrainsieme e basta. Scritto a
+  // mano sarebbe un elenco di 126 voci da ricordare; derivato, il giorno che arriva
+  // una v2 la partizione si ricalcola invece di restare ferma alla prima estrazione.
+  //
+  // Vale per i requisiti E per il corpus: anche le procedure e i moduli in piu' sono
+  // del solo sistema di gestione, e mostrarli a chi ha aperto l'autovalutazione
+  // significherebbe consegnargli documenti di un percorso che non ha.
+  if (m.sovrainsieme) {
+    const { base, ridotto, esteso } = m.sovrainsieme;
+    const baseCorpus = extractJsonBlob(readFileSync(join(root, "aggiuntenuovimoduli", base), "utf8"), "corpus");
+    const nelRidotto = {
+      req: new Set(baseCorpus.req.map((r) => r.id)),
+      pro: new Set(Object.keys(baseCorpus.pro)),
+      mod: new Set(Object.keys(baseCorpus.mod)),
+    };
+    // Controprova: il file dichiarato «base» dev'essere davvero un SOTTOinsieme. Se un
+    // domani i due divergessero, questa riga se ne accorge invece di produrre in
+    // silenzio un catalogo in cui manca meta' del lavoro.
+    const orfani = baseCorpus.req.filter((r) => !corpus.req.some((x) => x.id === r.id)).map((r) => r.id);
+    if (orfani.length) throw new Error(`${m.dom}: «${base}» non e' un sottoinsieme, requisiti assenti nel sovrainsieme: ${orfani.join(", ")}`);
+
+    const marca = (righe, chiave, insieme) =>
+      righe.map((r) => ({ ...r, perimetri: insieme.has(r[chiave]) ? [ridotto, esteso] : [esteso] }));
+    outCorpus[`${m.dom}-req.json`] = marca(outCorpus[`${m.dom}-req.json`], "id", nelRidotto.req);
+    outCorpus[`${m.dom}-procedures.json`] = marca(corretto.procedure, "code", nelRidotto.pro);
+    outCorpus[`${m.dom}-modules.json`] = marca(corretto.moduli, "code", nelRidotto.mod);
+    // I controlli sono nati col sistema di gestione: non esistono nell'altro percorso.
+    outCorpus[`${m.dom}-ctrl.json`] = outCorpus[`${m.dom}-ctrl.json`].map((c) => ({ ...c, perimetri: [esteso] }));
+    const soloEsteso = (righe) => righe.filter((r) => r.perimetri.length === 1).length;
+    console.log(
+      `  ${m.dom}: perimetro derivato — req ${soloEsteso(outCorpus[`${m.dom}-req.json`])}/${corpus.req.length} solo «${esteso}», ` +
+      `procedure ${soloEsteso(outCorpus[`${m.dom}-procedures.json`])}/${procedure.length}, moduli ${soloEsteso(outCorpus[`${m.dom}-modules.json`])}/${moduli.length}`,
+    );
   }
   if (m.criteri) {
     const c = extractJsonBlob(html, "criteri");

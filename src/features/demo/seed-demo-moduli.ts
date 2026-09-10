@@ -6,6 +6,8 @@ import {
   energyDriverValue, energyMeasure, energyNarrative,
   supplierAssessment, supplierAnswer, supplierQuestion,
   soaDeclaration, soaModule, soaControlDecision, soaControl,
+  nis2Assessment, nis2System, nis2Profile, nis2RequirementState, nis2ControlState,
+  nis2PhaseState, nis2Requirement, nis2Control,
   briberySystem, briberyPartner, briberyRequirement, briberyRequirementState,
   mogModel, mogProcess, mogScenario, mogCrimeApplicability, mogRequirement, mogRequirementState,
   wbSystem, wbChannel, wbReport, wbRequirement, wbRequirementState,
@@ -179,6 +181,106 @@ function statoDi(cardine: boolean, i: number): "nd" | "pl" | "pa" | "at" | "av" 
 }
 
 /* ─────────────────────────────────── seed ─────────────────────────────────────── */
+
+/**
+ * I due percorsi NIS2 della dimostrativa.
+ *
+ * ⚠️ Compilati A META' DEL GUADO, come gli altri: un percorso al 100% non fa vedere niente
+ * di cio' che il prodotto sa fare, e uno vuoto non fa vedere niente. Qui si vede la cosa
+ * che nessun altro modulo mostra — un controllo dichiarato attuato con la verifica scaduta
+ * che compare come «da verificare».
+ *
+ * ⚠️ E gli STESSI NUMERI degli altri moduli: Meccanica Adriatica e' una grande impresa in
+ * un settore dell'Allegato I in tutti i percorsi. Un consulente che apre due percorsi della
+ * stessa azienda e trova due classificazioni smette di fidarsi di entrambi.
+ */
+async function seedDemoNis2(tx: Tx, orgId: string, companyId: string): Promise<void> {
+  const requisiti = await db
+    .select()
+    .from(nis2Requirement)
+    .where(eq(nis2Requirement.contentSetId, "nis2-v1"))
+    .orderBy(asc(nis2Requirement.ordine));
+  const controlli = await db
+    .select()
+    .from(nis2Control)
+    .where(eq(nis2Control.contentSetId, "nis2-v1"))
+    .orderBy(asc(nis2Control.ordine));
+  if (!requisiti.length) return;
+
+  await tx.insert(nis2Profile).values({
+    id: randomUUID(),
+    organizationId: orgId,
+    companyId,
+    contentSetId: "nis2-v1",
+    settore: "Fabbricazione di macchinari e apparecchiature",
+    dimensione: "grande",
+    criteri: [],
+    organo: "Consiglio di Amministrazione",
+    responsabile: "Responsabile IT",
+    sostituto: "Vice Responsabile IT",
+    puntoContatto: "Responsabile IT",
+    contattoRecapito: "it@meccanica-adriatica.example",
+    comunicazioneIl: "2026-01-15",
+    obiettivo: 3,
+  });
+
+  await tx.insert(nis2Assessment).values({
+    id: randomUUID(), organizationId: orgId, companyId, contentSetId: "nis2-v1",
+  });
+  await tx.insert(nis2System).values({
+    id: randomUUID(), organizationId: orgId, companyId, contentSetId: "nis2-v1",
+  });
+
+  // Due terzi valutati, con una distribuzione che tocca tutti e cinque i livelli e due
+  // «non applicabile»: cosi' la percentuale non e' ne' zero ne' cento, e si capisce che
+  // i requisiti non guardati pesano.
+  const valutati = requisiti.slice(0, Math.round(requisiti.length * 0.66));
+  await tx.insert(nis2RequirementState).values(
+    valutati.map((r, i) => {
+      const na = i % 31 === 7;
+      return {
+        organizationId: orgId,
+        companyId,
+        requirementKey: r.key,
+        livello: na ? null : [3, 4, 2, 3, 1, 4, 3, 2][i % 8],
+        nonApplicabile: na,
+        evidenza: na ? null : i % 4 === 0 ? "Procedura PNS · revisione 01" : null,
+      };
+    }),
+  );
+
+  // ⚠️ Il secondo controllo ha la verifica SCADUTA di proposito: e' l'unico modo di far
+  // vedere, senza spiegazioni, che «attuato» e «attuato e verificato» non sono la stessa
+  // cosa. Senza un caso cosi', quella regola resta una frase nella guida.
+  const oggi = new Date();
+  const menoGiorni = (g: number) =>
+    new Date(oggi.getTime() - g * 86_400_000).toISOString().slice(0, 10);
+
+  await tx.insert(nis2ControlState).values(
+    controlli.slice(0, 44).map((c, i) => {
+      const stato = i % 7 === 6 ? "non_attuato" : i % 5 === 4 ? "in_attuazione" : "attuato";
+      const scaduto = i === 1 || i % 17 === 3;
+      return {
+        organizationId: orgId,
+        companyId,
+        controlKey: c.key,
+        stato: stato as "attuato",
+        responsabile: i % 3 === 0 ? "Responsabile IT" : "Direzione Operativa",
+        evidenza: stato === "attuato" ? "Registro interno · 2026" : null,
+        // Attuato senza verifica registrata, oppure con una verifica vecchia: in entrambi
+        // i casi lo stato effettivo diventa «da verificare».
+        ultimaVerifica:
+          stato !== "attuato" ? null : scaduto ? menoGiorni(c.frequenzaGiorni + 40) : menoGiorni(30),
+      };
+    }),
+  );
+
+  await tx.insert(nis2PhaseState).values([
+    { organizationId: orgId, companyId, phaseKey: "f1", stato: "completata", responsabile: "Direzione" },
+    { organizationId: orgId, companyId, phaseKey: "f2", stato: "completata", responsabile: "Responsabile IT" },
+    { organizationId: orgId, companyId, phaseKey: "f3", stato: "in_corso", responsabile: "Responsabile IT" },
+  ]);
+}
 
 export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): Promise<void> {
   // I cataloghi si leggono FUORI dal perimetro del tenant: sono contenuti di
@@ -889,6 +991,9 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
       conclusaIl: stato === "conclusa" ? new Date("2025-11-30T10:00:00Z") : null,
     })),
   );
+
+  // I due percorsi NIS2, in fondo perche' leggono il proprio catalogo.
+  await seedDemoNis2(tx, orgId, companyId);
 }
 
 

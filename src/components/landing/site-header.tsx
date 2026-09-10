@@ -19,7 +19,11 @@ export function SiteHeader() {
   const conBlog = blogVisibileAiMotori();
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-5">
+      {/* ⚠️ `gap-3` sotto `md`, dove il menu e' NASCOSTO: quello spazio serve a separare
+          il marchio dalle voci, e senza voci e' spazio speso per niente. Su uno schermo
+          da 360 punti costava i due pixel che facevano scorrere la pagina in orizzontale
+          — con il marchio a `shrink-0`, a uscire dallo schermo era il pulsante. */}
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-5 md:gap-6">
         {/* `shrink-0`: quando la barra si stringe il marchio e' la prima cosa che cede,
             e cede in silenzio. A 768px era ridotto a una scaglia di quattordici pixel.
             Ora a cedere sono gli spazi, e se non basta il difetto si vede. */}

@@ -69,14 +69,30 @@ for (const { nome, sezioni, corso, idComuni } of CASI) describe(nome, () => {
 
   it("dà a ogni slide un momento crescente dentro la propria sezione", () => {
     // Due slide sullo stesso istante vorrebbero dire che una non compare mai.
+    //
+    // ⚠️ UNA SEZIONE SENZA TRACCIA SI SALTA, e la condizione è che la traccia non ci sia
+    // davvero — `src` nullo E durata zero — non che i momenti siano scomodi. Senza il
+    // salto questo controllo pretendeva che ogni sezione di ogni corso avesse già l'audio,
+    // che è vero finché i corsi arrivano dopo la voce e smette di esserlo al primo corso
+    // nuovo: i due NIS2 lo hanno fatto cadere con «slide 9: expected 0 to be greater than
+    // 0», cioè accusando il calcolo dei momenti di un difetto che era l'assenza del file.
+    //
+    // Il salto NON può mangiarsi il controllo: se una traccia c'è, l'asserzione resta, e
+    // il conteggio qui sotto pretende che qualcosa sia stato davvero guardato.
     let inizio = 0;
+    let controllate = 0;
     for (const [k, s] of slide.entries()) {
       if (s.apreSezione) {
         inizio = k;
         continue;
       }
+      if (!pista[inizio].src && pista[inizio].durata === 0) continue;
+      controllate++;
       expect(pista[k].momento, `slide ${k + 1}`).toBeGreaterThan(pista[k - 1].momento);
       expect(pista[k].momento, `slide ${k + 1}`).toBeLessThanOrEqual(pista[inizio].durata);
     }
+    // Le sei sezioni comuni hanno la voce in tutti i corsi di percorso: se qui non si
+    // fosse controllato niente, vorrebbe dire che il manifesto non risponde più.
+    if (idComuni.length) expect(controllate, "nessuna slide controllata").toBeGreaterThan(0);
   });
 });

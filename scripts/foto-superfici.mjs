@@ -96,6 +96,11 @@ const SUPERFICI = [
   // un difetto di disposizione non lo vede nessun collaudo funzionale, perche' i comandi
   // rispondono lo stesso mentre una tabella sfonda o il piede copre il contenuto.
   ["formazione-presentazione", `${BASE}/formazione/energetico/presentazione`, "[data-presentazione]"],
+  // ⚠️ La verifica di sezione: quattro scelte per domanda, e dopo la consegna una
+  // spiegazione sotto ognuna. E' la superficie in cui un difetto di disposizione non lo
+  // coglie nessun collaudo funzionale, perche' i comandi rispondono lo stesso mentre le
+  // opzioni si accavallano o il riquadro dell'esito finisce fuori dalla colonna.
+  ["formazione-verifica", `${BASE}/formazione/nis2`, "[data-verifica]"],
 ];
 
 for (const [nome, url, ancora] of SUPERFICI) {
@@ -104,6 +109,11 @@ for (const [nome, url, ancora] of SUPERFICI) {
     await tema(scuro);
     await page.locator(ancora).first().waitFor({ timeout: 120_000 }).catch(() => {});
     await spegniTour(page);
+    // ⚠️ L'ancora e' CIO' CHE SI VUOLE GUARDARE, quindi va portata in vista. Su una pagina
+    // lunga la foto del solo riquadro iniziale non la contiene, e il controllo «guardala»
+    // non guarda niente: e' successo con la verifica dei corsi, che sta in fondo alla
+    // prima sezione. Dove l'ancora e' gia' visibile questo non muove niente.
+    await page.locator(ancora).first().scrollIntoViewIfNeeded().catch(() => {});
     await page.waitForTimeout(900);
     const file = `${OUT}/${nome}-${scuro ? "scuro" : "chiaro"}.png`;
     await page.screenshot({ path: file, fullPage: false });

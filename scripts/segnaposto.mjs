@@ -66,6 +66,19 @@ export const TOKEN = {
     // forma, e il campo si chiamava in un altro modo.
     "[Alta Direzione]": { fonte: "azienda", campo: "organo" },
   },
+  // ⚠️ NIS2 ne usa DUE SOLI in tutto il corpus — misurato: 70 occorrenze di
+  // `[Nome Organizzazione]` e 64 di `[Rev.]`, e nient'altro. Non si spande `TESTATA`
+  // come per gli altri: la sua testata di procedura non ha le caselle «Redatto da» e
+  // «Approvato da», quindi `[Resp. Due Diligence]` non compare da nessuna parte e
+  // dichiararlo sarebbe una riga che non descrive niente.
+  //
+  // Il prototipo dichiara NOVE sostituzioni (organo, responsabile, contatto, sede,
+  // partita IVA, settore, data): sette non hanno un solo riscontro nel testo. Innocuo,
+  // ma vale la pena saperlo prima di andarle a cercare.
+  nis2: {
+    "[Rev.]": { fonte: "revisione" },
+    "[Nome Organizzazione]": { fonte: "azienda", campo: "ragione" },
+  },
   sa8000: {
     "[Nome Organizzazione]": { fonte: "azienda", campo: "ragione" },
     // Variante tutta maiuscola, una sola occorrenza: il prototipo non la copriva.

@@ -6,7 +6,10 @@
 export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl",
   // I quattro del metodo ESG (percorso `sgesg`). Vedi `features/sgesg/documenti.ts`:
   // non hanno un template per uno, sono fatti del compilato delle schede.
-  "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale"] as const;
+  "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale",
+  // I tre di NIS2 (D.Lgs. 138/2024). Nessuno e' annuale: la conformita' e' una
+  // fotografia con revisioni, come la SoA.
+  "conformita_nis2", "relazione_nis2", "controlli_nis2"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -83,6 +86,27 @@ export const DOCUMENTI = {
     breve: "Attestato ESG",
     file: "attestato-esg",
     // Non si riferisce a un esercizio: le revisioni formano una serie unica.
+    mostraAnno: false,
+    haMedia: false,
+  },
+  conformita_nis2: {
+    nome: "Relazione sul livello di conformità NIS2",
+    breve: "Conformità NIS2",
+    file: "relazione-conformita-nis2",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  relazione_nis2: {
+    nome: "Relazione sul sistema di gestione NIS2",
+    breve: "Sistema NIS2",
+    file: "relazione-sistema-nis2",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  controlli_nis2: {
+    nome: "Catalogo dei controlli NIS2",
+    breve: "Controlli NIS2",
+    file: "catalogo-controlli-nis2",
     mostraAnno: false,
     haMedia: false,
   },

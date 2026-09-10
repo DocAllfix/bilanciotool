@@ -63,11 +63,22 @@ export function CollapsibleShell({
             )}
           </Link>
         </div>
-        {/* ⚠️ LO SCORRIMENTO STA QUI, E SERVONO DUE COSE INSIEME.
-            `overflow-y-auto` da solo non fa NIENTE: questo è un figlio flex, e un figlio
-            flex ha `min-height: auto`, cioè si rifiuta di rimpicciolirsi sotto il proprio
-            contenuto. Senza `min-h-0` la barra continuerebbe a traboccare esattamente come
-            prima, e la correzione sembrerebbe applicata.
+        {/* ⚠️ LO SCORRIMENTO STA QUI, e la parte che lo regge è `overflow-y-auto`.
+            Un figlio flex ha `min-height: auto`, cioè si rifiuta di rimpicciolirsi sotto
+            il proprio contenuto — ma quella regola vale SOLO finché il suo `overflow` è
+            `visible`. Dandogli `auto`, il minimo si risolve a zero da sé: misurato l'8
+            settembre 2026 togliendo una proprietà per volta e guardando i numeri, con la
+            barra a diciassette voci su uno schermo alto 680.
+            `min-h-0` resta perché dice a voce alta ciò che l'altra ottiene di riflesso, e
+            perché il giorno in cui qualcuno cambiasse l'overflow sarebbe l'unica cosa a
+            tenere in piedi la barra.
+
+            ⚠️ La versione precedente di questo commento diceva il CONTRARIO — che
+            `overflow-y-auto` da solo non facesse niente — ed è stata creduta per due
+            settimane, finché non è stata messa alla prova: togliendo `min-h-0` non cambia
+            un pixel, togliendo l'overflow le ultime voci vengono TAGLIATE e non si
+            raggiungono più. I due modi di romperla sono diversi, e `visual-check-shell` ha
+            un'asserzione per ciascuno.
 
             ⚠️ E non era «non si scorre»: dentro un'azienda la barra mostra il nome, il
             fascicolo e DODICI percorsi, e su uno schermo da portatile il contenuto usciva

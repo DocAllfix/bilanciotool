@@ -1,0 +1,7 @@
+[
+{"v":0,"n":"Assente","d":"La misura non è attuata né pianificata.","p":0},
+{"v":1,"n":"Pianificata","d":"La misura è definita o pianificata ma non ancora attuata.","p":25},
+{"v":2,"n":"Attuata parzialmente","d":"La misura è attuata su una parte del perimetro o in modo non sistematico.","p":50},
+{"v":3,"n":"Attuata","d":"La misura è attuata sull'intero perimetro, con evidenza documentale.","p":75},
+{"v":4,"n":"Attuata e verificata","d":"La misura è attuata, misurata e la sua efficacia è verificata periodicamente.","p":100}
+]

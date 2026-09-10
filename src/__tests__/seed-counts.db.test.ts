@@ -13,10 +13,14 @@ import {
   wbChapter, wbRequirement,
   sgesgPhaseDef,
   sgesgSchedaDef,
+  nis2Chapter, nis2Level, nis2Requirement, nis2Control, nis2Phase,
+  nis2IndicatorDef, nis2Sector, nis2Criterion,
 } from "@/lib/db/schema";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
 import { VALORE_STATO } from "@/lib/calc/soa/scoring";
+import { CLASSE_DEL_CRITERIO } from "@/lib/calc/nis2/ambito";
+import { LIVELLI } from "@/lib/calc/nis2/conformita";
 
 // Conteggi ESATTI dei contenuti metodologici estratti dai prototipi
 // (estrazione automatica via scripts/extract-seed.mjs — niente trascrizione manuale).
@@ -33,7 +37,10 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // Un content set per dominio, cosi' la versione dei contenuti di ciascuno si
     // congela da sola. Dal 25 agosto 2026 sono dodici: si aggiunge `sgesg`, le otto
     // fasi del metodo di implementazione del sistema di gestione ESG.
-    expect(await conta(contentSet)).toBe(12);
+    // Dal 7 settembre 2026 sono TREDICI: si aggiunge `nis2-v1`, e uno solo per DUE
+    // percorsi — il sistema di gestione contiene per intero l'autovalutazione, e due set
+    // duplicherebbero 518 blocchi identici destinati a divergere.
+    expect(await conta(contentSet)).toBe(13);
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
     expect(await conta(sgesgPhaseDef)).toBe(8);
@@ -249,6 +256,89 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
       // la differenza si vede.
       expect(r.riferimento.length, `${r.key} senza riferimento`).toBeGreaterThan(3);
     }
+  });
+
+
+  // ─────────────────────────────────────────────────────────────────── NIS2
+  //
+  // ⚠️ Un catalogo solo per due percorsi, e i conteggi sono la sola prova che la
+  // partizione non si e' persa per strada. Con `perimetri` mal derivato i numeri
+  // totali resterebbero identici mentre un percorso mostrerebbe i requisiti dell'altro.
+
+  it("NIS2: i conteggi del catalogo", async () => {
+    expect(await conta(nis2Chapter)).toBe(12);
+    expect(await conta(nis2Level)).toBe(5);
+    expect(await conta(nis2Requirement)).toBe(126);
+    expect(await conta(nis2Control)).toBe(68);
+    expect(await conta(nis2Phase)).toBe(5);
+    expect(await conta(nis2IndicatorDef)).toBe(19);
+    // 11 dell'Allegato I + 12 dell'Allegato II.
+    expect(await conta(nis2Sector)).toBe(23);
+    expect(await conta(nis2Criterion)).toBe(8);
+  });
+
+  it("NIS2: la partizione fra i due percorsi e' quella misurata sui prototipi", async () => {
+    const req = await db.select().from(nis2Requirement);
+    const soloSistema = req.filter((r) => !r.perimetri.includes("autovalutazione"));
+    // ⚠️ DUE, e sono G.11 e G.12. Il sistema di gestione e' un sovrainsieme stretto:
+    // se questo numero cresce senza che i prototipi siano cambiati, `perimetri` e'
+    // stato derivato male e l'autovalutazione ha perso dei requisiti.
+    expect(soloSistema.map((r) => r.key).sort()).toEqual(["G.11", "G.12"]);
+    // E nessun requisito e' del solo percorso breve: sarebbe una contraddizione col
+    // fatto che uno contiene l'altro.
+    expect(req.filter((r) => !r.perimetri.includes("sistema"))).toHaveLength(0);
+    // Nessun requisito fuori da entrambi: sarebbe seminato e invisibile.
+    for (const r of req) expect(r.perimetri.length, `${r.key} senza perimetro`).toBeGreaterThan(0);
+  });
+
+  it("NIS2: ogni requisito e ogni controllo rimandano a un capo che esiste", async () => {
+    const capi = new Set((await db.select().from(nis2Chapter)).map((c) => c.key));
+    for (const r of await db.select().from(nis2Requirement)) {
+      expect(capi.has(r.chapterKey), `${r.key} → ${r.chapterKey}`).toBe(true);
+      // Il riferimento normativo e' cio' che rende il requisito opponibile.
+      expect(r.rif.length, `${r.key} senza riferimento`).toBeGreaterThan(3);
+    }
+    for (const c of await db.select().from(nis2Control)) {
+      expect(capi.has(c.chapterKey), `${c.key} → ${c.chapterKey}`).toBe(true);
+      // ⚠️ Una frequenza a zero renderebbe il controllo perennemente «da verificare»,
+      // e una negativa lo renderebbe scaduto il giorno stesso della verifica.
+      expect(c.frequenzaGiorni, `${c.key} senza frequenza`).toBeGreaterThan(0);
+    }
+  });
+
+  it("⚠️ NIS2: le cinque fasi coprono i dodici capi UNA VOLTA CIASCUNO", async () => {
+    // Un capo in due fasi conterebbe due volte nell'avanzamento della roadmap; uno in
+    // nessuna sparirebbe senza che niente lo dica. Si vede solo contando: nessuna
+    // schermata mostra la copertura, e i totali resterebbero plausibili.
+    const capi = (await db.select().from(nis2Chapter)).map((c) => c.key).sort();
+    const coperti = (await db.select().from(nis2Phase)).flatMap((f) => f.capitoli).sort();
+    expect(coperti).toEqual(capi);
+  });
+
+  it("⚠️ NIS2: catalogo e motore sono d'accordo sulla scala e sui criteri", async () => {
+    // Sono le due cose che vivono in due posti per una ragione — le etichette nel
+    // database perche' le legge chi compila, le regole nel motore perche' sono
+    // eseguibili — e questo e' il punto in cui possono divergere in silenzio.
+    const livelli = (await db.select().from(nis2Level)).sort((a, b) => a.valore - b.valore);
+    expect(livelli.map((l) => l.valore)).toEqual(LIVELLI.map((l) => l.valore));
+    expect(livelli.map((l) => l.percentuale)).toEqual(LIVELLI.map((l) => l.percentuale));
+
+    for (const c of await db.select().from(nis2Criterion)) {
+      const nelMotore = CLASSE_DEL_CRITERIO[c.key as keyof typeof CLASSE_DEL_CRITERIO];
+      expect(nelMotore, `${c.key} sconosciuto al motore`).toBeTruthy();
+      // ⚠️ Se il catalogo dicesse «essenziale» e il motore «importante», il documento
+      // riporterebbe un tetto sanzionatorio e la schermata un altro.
+      expect(c.classe, `${c.key}: catalogo dice ${c.classe}, motore dice ${nelMotore}`).toBe(nelMotore);
+    }
+  });
+
+  it("NIS2: gli allegati non si sovrappongono", async () => {
+    const settori = await db.select().from(nis2Sector);
+    expect(settori.filter((s) => s.allegato === 1)).toHaveLength(11);
+    expect(settori.filter((s) => s.allegato === 2)).toHaveLength(12);
+    // Un settore in entrambi gli allegati darebbe una classificazione diversa a
+    // seconda dell'ordine in cui si guardano, che e' il modo peggiore di sbagliare.
+    expect(new Set(settori.map((s) => s.key)).size).toBe(23);
   });
 
   it("ogni sorgente appartiene a una categoria esistente", async () => {

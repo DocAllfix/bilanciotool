@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corso — Uso del Sistema di gestione per la conformità NIS2 (D.Lgs. 138/2024)</title>
+<style>
+:root{
+  --navy:#1F4E78; --navy-dk:#153A5B; --navy-lt:#E8EFF6;
+  --gold:#B98C4E; --gold-lt:#F5EDE0;
+  --ink:#16202A; --ink2:#48565F; --ink3:#7C8992;
+  --bg:#FAFAF8; --card:#fff; --line:#E3E4E0; --line2:#F0F0EC;
+  --green:#2E7D32; --green-lt:#E8F3E9;
+  --red:#B3261E; --red-lt:#FBEAE8;
+  --amber:#B06E00; --amber-lt:#FDF2DF;
+  --blue:#1F5F8B; --blue-lt:#E7F0F6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55}
+.app{display:flex;min-height:100vh}
+.side{width:280px;flex:0 0 280px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:18px;border-bottom:2px solid var(--navy)}
+.brand b{display:block;font-size:16px;color:var(--navy)}
+.brand span{display:block;font-size:11.5px;color:var(--ink3);margin-top:3px}
+.navgrp{padding:14px 14px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink2);font-size:13.5px}
+.nav:hover{background:var(--line2);color:var(--ink)}
+.nav.on{background:var(--navy);color:#fff;font-weight:600}
+.nav.lock{opacity:.45;cursor:not-allowed}
+.nav .st{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3)}
+.nav.on .st{border-color:rgba(255,255,255,.55);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .mm{margin-left:auto;font-size:10.5px;color:var(--ink3)}
+.nav.on .mm{color:rgba(255,255,255,.8)}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line2);font-size:11px;color:var(--ink3)}
+.pbar{height:6px;background:var(--line2);border-radius:3px;margin-top:8px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--green);width:0%}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:12px 28px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}
+.top .crumb{font-size:13px;color:var(--ink3)}
+.top .crumb b{color:var(--navy)}
+.top .timer{margin-left:auto;font-size:12px;color:var(--ink3);background:var(--line2);padding:4px 10px;border-radius:20px}
+.wrap{padding:30px 34px 90px;max-width:920px;width:100%;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px;color:var(--navy);letter-spacing:-.4px}
+h2{font-size:19px;margin:26px 0 10px;color:var(--navy)}
+h3{font-size:15.5px;margin:20px 0 8px;color:var(--ink)}
+.sub{color:var(--ink3);font-size:13.5px;margin-bottom:20px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px}
+table{border-collapse:collapse;width:100%;margin:0 0 16px;font-size:13.5px}
+th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px;font-weight:600}
+td{border:1px solid var(--line);padding:7px 10px;vertical-align:top;background:var(--card)}
+tr:nth-child(even) td{background:#FBFBFA}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:18px}
+.callout{border-left:4px solid var(--navy);background:var(--navy-lt);border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 16px;font-size:14px}
+.callout.warn{border-color:var(--amber);background:var(--amber-lt)}
+.callout.ok{border-color:var(--green);background:var(--green-lt)}
+.callout.red{border-color:var(--red);background:var(--red-lt)}
+.callout b:first-child{display:block;margin-bottom:4px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+.kpi .k{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:center}
+.kpi .k b{display:block;font-size:26px;color:var(--navy)}
+.kpi .k span{font-size:12px;color:var(--ink3)}
+.tag{display:inline-block;background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold);border-radius:14px;padding:1px 10px;font-size:11.5px;font-weight:600;margin-right:6px}
+.path{display:inline-block;background:var(--line2);border-radius:6px;padding:1px 8px;font-family:Consolas,Menlo,monospace;font-size:12.5px;color:var(--navy-dk)}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:42px;margin-bottom:12px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.navbtns{display:flex;justify-content:space-between;margin-top:34px;gap:12px}
+button.btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-size:14.5px;font-weight:600;cursor:pointer}
+button.btn:hover{background:var(--navy-dk)}
+button.btn.ghost{background:var(--card);color:var(--navy);border:1.5px solid var(--navy)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+.quiz .q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.quiz .q h3{margin-top:0}
+.quiz label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.quiz label:hover{background:var(--line2)}
+.quiz label.right{background:var(--green-lt);border-color:var(--green)}
+.quiz label.wrong{background:var(--red-lt);border-color:var(--red)}
+.quiz input{margin-top:3px}
+.result{border-radius:12px;padding:20px 24px;margin-top:10px;font-size:15px;display:none}
+.result.ok{display:block;background:var(--green-lt);border:1.5px solid var(--green)}
+.result.ko{display:block;background:var(--red-lt);border:1.5px solid var(--red)}
+.mock{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 16px;font-size:12.5px}
+.mock .mtitle{background:var(--line2);padding:6px 12px;color:var(--ink3);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.mock .mbody{display:flex}
+.mock .mside{width:160px;background:#F7F7F5;border-right:1px solid var(--line);padding:8px}
+.mock .mside div{padding:4px 8px;border-radius:6px;margin-bottom:2px;color:var(--ink2)}
+.mock .mside div.sel{background:var(--navy);color:#fff}
+.mock .mmain{flex:1;padding:12px 14px}
+@media(max-width:860px){.side{display:none}.wrap{padding:20px 16px 80px}}
+@media print{.side,.top,.navbtns{display:none}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <b>EVALIS Academy</b>
+      <span>Corso operativo · 60 minuti<br>Sistema di gestione NIS2 — D.Lgs. 138/2024</span>
+    </div>
+    <div id="navlist"></div>
+    <div class="sidefoot">
+      Avanzamento corso
+      <div class="pbar"><i id="pfill"></i></div>
+      <div id="ptext" style="margin-top:5px">0 / 9 unità completate</div>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="top">
+      <span class="crumb">Corso <b>FAD-NIS2-P02</b> · Uso corretto del sistema di gestione</span>
+      <span class="timer" id="unittime"></span>
+    </div>
+    <div class="wrap" id="content"></div>
+  </div>
+</div>
+
+<!-- ===== CONTENUTI UNITA ===== -->
+<template id="tpl-u1">
+<h1>Unità 1 — Dal check-up al sistema di gestione</h1>
+<div class="sub">Durata indicativa: 5 minuti</div>
+<div class="card">
+<p>La piattaforma <b>"Sistema di gestione per la conformità NIS2 — D.Lgs. 138/2024"</b> non è un semplice strumento di autovalutazione: è un sistema di gestione completo, pensato per <b>portare</b> l'organizzazione alla conformità e <b>mantenerla nel tempo</b>. La verifica di conformità resta, ma diventa una delle componenti di un ciclo continuo.</p>
+</div>
+<h2>1.1 Cosa contiene</h2>
+<div class="kpi">
+<div class="k"><b>126</b><span>requisiti di verifica</span></div>
+<div class="k"><b>12</b><span>capitoli tematici</span></div>
+<div class="k"><b>68</b><span>controlli a catalogo</span></div>
+<div class="k"><b>5</b><span>fasi di roadmap</span></div>
+<div class="k"><b>14</b><span>procedure PNS</span></div>
+<div class="k"><b>50</b><span>moduli MOD</span></div>
+<div class="k"><b>14</b><span>registri operativi</span></div>
+</div>
+<h2>1.2 Le quattro aree del menù</h2>
+<table>
+<tr><th>Gruppo</th><th>Sezioni</th><th>Funzione</th></tr>
+<tr><td><b>Studio</b></td><td>Organizzazioni</td><td>Gestione multi-cliente dei profili</td></tr>
+<tr><td><b>Sistema</b></td><td>Cruscotto · Ambito e assetto · Roadmap · Controlli · Registri · Scadenzario · Indicatori</td><td>Il funzionamento a regime: attuare, eseguire, misurare</td></tr>
+<tr><td><b>Conformità</b></td><td>Verifica di conformità · Scostamenti e piano</td><td>La fotografia periodica e il piano di adeguamento</td></tr>
+<tr><td><b>Corpus documentale / Uscite</b></td><td>Procedure · Modulistica · Relazioni e stampe · Archivio e sincronia · Guida</td><td>Documenti, stampe, salvataggio dei dati</td></tr>
+</table>
+<div class="callout"><b>La logica da interiorizzare</b>La <b>verifica</b> risponde a "dove siamo?"; la <b>roadmap</b> a "in che ordine adeguarsi?"; i <b>controlli</b> a "cosa deve esistere ed essere ripetuto?"; lo <b>scadenzario</b> a "cosa scade adesso?"; gli <b>indicatori</b> a "sta funzionando?". Usare solo la verifica significa usare un decimo della piattaforma.</div>
+<h2>1.3 Riferimenti normativi incorporati</h2>
+<p>Il sistema mappa il D.Lgs. 138/2024 (recepimento della Direttiva (UE) 2022/2555): misure di gestione dei rischi dell'art. 24, c. 2, obblighi di notifica (24 ore / 72 ore / un mese), responsabilità degli organi (art. 23), registrazione e rapporti con l'Autorità. La procedura <b>PNS-14</b> — nuova rispetto alla versione di sola autovalutazione — disciplina proprio pianificazione dell'adeguamento, catalogo dei controlli e calendario degli adempimenti: è la procedura "madre" delle sezioni Roadmap, Controlli e Scadenzario.</p>
+</template>
+
+<template id="tpl-u2">
+<h1>Unità 2 — Profili, salvataggio e persistenza</h1>
+<div class="sub">Durata indicativa: 5 minuti · Sezioni <span class="tag">Organizzazioni</span> <span class="tag">Archivio e sincronia</span></div>
+<div class="card">
+<p>Il sistema è <b>multi-organizzazione</b>: ogni profilo ha la propria verifica, i propri controlli, registri, indicatori e documenti. Finché nessuna organizzazione è selezionata, il menù mostra solo Organizzazioni, Archivio e sincronia e Guida.</p>
+</div>
+<ol class="steps">
+<li>Creare l'organizzazione da <b>Organizzazioni</b> e compilare per intero l'anagrafica (ragione sociale, organo di amministrazione, referenti): questi dati risolvono i <b>segnaposto</b> — [Nome Organizzazione], [Direzione] — presenti in procedure e moduli.</li>
+<li>Verificare l'indicatore di salvataggio in alto: <b>"salvataggio…"</b> = modifiche in attesa; <b>"salvato"</b> = dati persistiti. Non chiudere la scheda finché non compare "salvato".</li>
+<li>Conoscere la modalità di persistenza attiva (sezione Archivio e sincronia): <b>locale</b> (predefinita, dati nel browser), <b>REST</b> (sincronizzazione verso un endpoint con URL e credenziali), <b>host</b> (piattaforma incorporata in un gestionale).</li>
+</ol>
+<div class="callout red"><b>Regola d'oro</b>In modalità locale i dati vivono nel browser del singolo computer: pulizia della cache, navigazione in incognito o cambio macchina li cancellano. L'<b>esportazione regolare dell'archivio JSON</b> da Archivio e sincronia è parte dell'uso corretto, non un'opzione. L'importazione dello stesso file ripristina l'intero stato.</div>
+</template>
+
+<template id="tpl-u3">
+<h1>Unità 3 — Ambito, assetto e roadmap</h1>
+<div class="sub">Durata indicativa: 7 minuti · Sezioni <span class="tag">Ambito e assetto</span> <span class="tag">Roadmap</span> <span class="tag">Cruscotto</span></div>
+<h2>3.1 Ambito e assetto (sempre per primo)</h2>
+<p>Come nella versione di autovalutazione, qui si registrano settore (Allegato I / II), parametri dimensionali, criteri specifici indipendenti dalla dimensione e classificazione preliminare (<b>soggetto essenziale</b> o <b>importante</b>: stessi obblighi, diversa vigilanza e massimali fino a 10 M€/2% contro 7 M€/1,4%). Si definiscono inoltre i ruoli: organo di amministrazione, punto di contatto verso l'Autorità, responsabile della sicurezza informatica. La classificazione definitiva resta quella comunicata dall'ACN.</p>
+<h2>3.2 La Roadmap: adeguarsi nell'ordine giusto</h2>
+<div class="card">
+<p>La <b>Roadmap</b> organizza l'adeguamento in <b>5 fasi progressive</b>, ciascuna agganciata a specifiche aree di controllo. Serve a evitare l'errore più comune: partire dalle misure tecniche senza aver sistemato governance e conoscenza del perimetro.</p>
+</div>
+<table>
+<tr><th>Fase</th><th>Aree</th><th>Contenuto</th></tr>
+<tr><td><b>1 · Governance</b></td><td>Governance, Registrazione</td><td>Delibera dell'organo, ruoli, registrazione, formazione degli organi</td></tr>
+<tr><td><b>2 · Conoscenza</b></td><td>Analisi dei rischi, Accessi e attivi</td><td>Inventario, servizi, fornitori censiti, analisi dei rischi</td></tr>
+<tr><td><b>3 · Presidi essenziali</b></td><td>Incidenti, Continuità, MFA, Sviluppo</td><td>Notifica, backup, MFA, vulnerabilità, registrazione degli eventi</td></tr>
+<tr><td><b>4 · Consolidamento</b></td><td>Fornitura, Crittografia, Igiene</td><td>Catena di fornitura, crittografia, continuità, formazione estesa</td></tr>
+<tr><td><b>5 · Verifica</b></td><td>Efficacia delle misure</td><td>Audit, verifiche tecniche, indicatori, riesame</td></tr>
+</table>
+<div class="callout"><b>Come usarla</b>La roadmap mostra l'avanzamento di ogni fase in base allo stato dei controlli delle aree collegate. Il metodo corretto: portare a regime i controlli della fase corrente prima di aprire in massa quelli delle fasi successive. La delibera dell'organo (fase 1) prima del penetration test (fase 5).</div>
+<h2>3.3 Il Cruscotto</h2>
+<p>Il cruscotto riassume conformità percentuale, avanzamento della verifica, scostamenti aperti, stato dei controlli, urgenze dello scadenzario (compresi i termini di notifica degli incidenti) e stato del corpus documentale. È il punto di partenza di ogni sessione: dice dove intervenire oggi.</p>
+</template>
+
+<template id="tpl-u4">
+<h1>Unità 4 — Il catalogo dei controlli</h1>
+<div class="sub">Durata indicativa: 10 minuti · Sezione <span class="tag">Controlli</span> · Checkpoint al termine</div>
+<div class="card">
+<p>È la sezione che distingue questo sistema dalla semplice autovalutazione: <b>68 controlli</b> concreti, distribuiti sui 12 capitoli, ognuno con descrizione, criticità (<b>A</b> alta, <b>M</b> media) e <b>frequenza di riesecuzione</b>: 30, 90, 180 o 365 giorni. Un controllo è un adempimento verificabile — "Delibera dell'organo di approvazione delle misure", "Designazione del responsabile della sicurezza" — non un principio astratto.</p>
+</div>
+<h2>4.1 Gli stati di un controllo</h2>
+<table>
+<tr><th>Stato</th><th>Significato</th></tr>
+<tr><td><b>Non attuato</b></td><td>Il controllo non esiste ancora</td></tr>
+<tr><td><b>In attuazione</b></td><td>Lavori in corso: assegnare responsabile e completare</td></tr>
+<tr><td><b>Attuato</b></td><td>Il controllo esiste ed è stato eseguito; va registrata la data di ultima esecuzione</td></tr>
+<tr><td><b>Da verificare</b></td><td>Stato calcolato dal sistema: vedi 4.2</td></tr>
+<tr><td><b>Non applicabile</b></td><td>Fuori perimetro: motivare sempre nelle note</td></tr>
+</table>
+<h2>4.2 Lo stato effettivo: il meccanismo da capire bene</h2>
+<div class="callout warn"><b>Il punto più importante dell'intero corso</b>Un controllo marcato "Attuato" <b>non resta attuato per sempre</b>. Il sistema calcola la prossima scadenza come <i>data di ultima esecuzione + frequenza</i> (30/90/180/365 giorni). Se la scadenza è superata, lo stato effettivo torna automaticamente a <b>"Da verificare"</b> — e il cruscotto e lo scadenzario lo segnalano. Due conseguenze pratiche:<br>
+1) marcare "Attuato" <b>senza data di ultima esecuzione</b> produce subito "Da verificare";<br>
+2) ogni riesecuzione del controllo va registrata aggiornando la data, altrimenti la conformità "decade" da sola.</div>
+<h2>4.3 Compilare bene ogni controllo</h2>
+<ol class="steps">
+<li>Impostare lo <b>stato</b> reale, senza ottimismi: "In attuazione" è uno stato legittimo e informativo.</li>
+<li>Assegnare il <b>responsabile</b>: un controllo senza responsabile non verrà rieseguito.</li>
+<li>Indicare l'<b>evidenza</b>: quale documento, registrazione o log dimostra l'esecuzione (spesso un MOD o un registro della piattaforma).</li>
+<li>Registrare la <b>data di ultima esecuzione</b> a ogni ciclo: è il dato che alimenta scadenzario e stato effettivo.</li>
+<li>Usare le <b>note</b> per motivare i "Non applicabile" e annotare le particolarità.</li>
+</ol>
+<div class="callout ok"><b>Priorità di lavoro</b>A parità di stato, precedenza ai controlli con criticità <b>A</b> e frequenza breve (30/90 giorni): sono quelli che generano scadenze più fitte e presidiano gli obblighi più sensibili (notifiche, backup, accessi).</div>
+</template>
+
+<template id="tpl-u5">
+<h1>Unità 5 — Scadenzario e registri operativi</h1>
+<div class="sub">Durata indicativa: 8 minuti · Sezioni <span class="tag">Scadenzario</span> <span class="tag">Registri</span> · Checkpoint al termine</div>
+<h2>5.1 Lo Scadenzario: l'agenda del sistema</h2>
+<div class="card">
+<p>Lo <b>Scadenzario</b> raccoglie in un'unica vista tutto ciò che ha un termine: le <b>prossime esecuzioni dei controlli</b> (calcolate da ultima esecuzione + frequenza) e i <b>termini di notifica degli incidenti aperti</b> (pre-notifica 24 ore, notifica 72 ore, relazione finale un mese). È la pagina da controllare a ogni sessione di lavoro, subito dopo il cruscotto.</p>
+</div>
+<ul>
+<li>Scadenza superata su un controllo → lo stato effettivo è già tornato "Da verificare": rieseguire e aggiornare la data.</li>
+<li>Termine di notifica imminente o superato → intervenire immediatamente sul registro incidenti e sulla piattaforma ACN.</li>
+</ul>
+<h2>5.2 I 14 registri</h2>
+<p>I registri sono la parte "viva" del sistema, ciascuno collegato a un modulo e a una procedura: Piano di adeguamento (MOD-13.02), Incidenti e notifiche (MOD-04.03), Rischi (MOD-03.03), Vulnerabilità (MOD-07.03), Inventario degli attivi (MOD-10.01), Fornitori (MOD-06.01), Backup e prove di ripristino (MOD-05.03), Verifiche tecniche e audit (MOD-12.03), Formazione (MOD-08.02), Simulazioni di phishing (MOD-08.03), Riesame dei diritti di accesso (MOD-10.03), Modifiche ai sistemi (MOD-07.02), Comunicazioni con l'Autorità (MOD-02.02), Certificati (MOD-09.04). Regola generale: si compilano <b>quando l'evento accade</b>, non a fine anno — molte righe alimentano indicatori, evidenze dei controlli e urgenze del cruscotto.</p>
+<h2>5.3 Il registro incidenti: le due date decisive</h2>
+<ul>
+<li><b>Rilevazione</b>: quando l'evento è stato rilevato tecnicamente.</li>
+<li><b>Conoscenza</b>: quando l'organizzazione è venuta a conoscenza dell'incidente significativo. <b>Da qui decorrono i termini</b> di 24 ore, 72 ore e un mese che il sistema calcola e sorveglia.</li>
+</ul>
+<ol class="steps">
+<li>Registrare l'incidente appena rilevato (tipologia, sistemi, descrizione).</li>
+<li>Valutare la <b>significatività</b> e motivarla sempre: la motivazione difende anche la scelta di non notificare.</li>
+<li>Se significativo: annotare le date effettive di pre-notifica, notifica e relazione finale man mano che vengono eseguite sulla piattaforma ACN.</li>
+<li>Valutare gli obblighi accessori: informazione ai destinatari dei servizi e, in presenza di dati personali, notifica al Garante.</li>
+</ol>
+<div class="callout red"><b>Attenzione</b>Il sistema calcola e sorveglia i termini ma <b>non effettua</b> le notifiche: quelle si fanno sulla piattaforma dell'ACN. Il registro documenta che sono state fatte e quando.</div>
+</template>
+
+<template id="tpl-u6">
+<h1>Unità 6 — Gli indicatori</h1>
+<div class="sub">Durata indicativa: 6 minuti · Sezione <span class="tag">Indicatori</span></div>
+<div class="card">
+<p>La sezione <b>Indicatori</b> permette di costruire il cruscotto KPI del sistema: ogni indicatore ha ambito, formula di calcolo, unità di misura, fonte del dato, frequenza di rilevazione (mensile → annuale), responsabile, valore di riferimento iniziale, <b>target</b>, verso di miglioramento (crescente/decrescente) e <b>soglia di attenzione</b>.</p>
+</div>
+<h2>6.1 Attuazione vs efficacia</h2>
+<p>Il sistema distingue due tipi di indicatore — la distinzione che l'art. 24 c. 2 lett. f) richiede di presidiare:</p>
+<table>
+<tr><th>Tipo</th><th>Misura</th><th>Esempio</th></tr>
+<tr><td><b>Attuazione</b></td><td>Ciò che è stato fatto</td><td>% di dipendenti formati; % di sistemi con MFA attiva</td></tr>
+<tr><td><b>Efficacia</b></td><td>Se ha funzionato</td><td>% di clic nelle simulazioni di phishing; esito delle prove di ripristino</td></tr>
+</table>
+<div class="callout"><b>Buona pratica</b>Per ogni area critica, almeno una coppia attuazione + efficacia. "100% formati" (attuazione) con "35% di clic nel phishing" (efficacia) racconta che la misura esiste ma non funziona: è esattamente il tipo di evidenza che il riesame di direzione (PNS-13) deve esaminare.</div>
+<h2>6.2 Uso corretto</h2>
+<ol class="steps">
+<li>Definire pochi indicatori buoni (fonte del dato certa, responsabile assegnato) anziché molti non alimentati.</li>
+<li>Rilevare alla frequenza dichiarata e registrare i valori: un indicatore senza serie storica non dimostra nulla.</li>
+<li>Reagire alla <b>soglia di attenzione</b>: superarla deve generare un'azione nel piano di adeguamento, non solo una presa d'atto.</li>
+</ol>
+</template>
+
+<template id="tpl-u7">
+<h1>Unità 7 — Verifica di conformità e piano di adeguamento</h1>
+<div class="sub">Durata indicativa: 7 minuti · Sezioni <span class="tag">Verifica di conformità</span> <span class="tag">Scostamenti e piano</span></div>
+<h2>7.1 La verifica: 126 requisiti, scala 0–4</h2>
+<p>La verifica periodica interroga <b>126 requisiti</b> in 12 capitoli (governance, registrazione, rischi, incidenti, continuità, fornitura, sviluppo, efficacia, igiene e formazione, crittografia, accessi e attivi, MFA e comunicazioni). Ogni requisito si valuta sulla scala:</p>
+<table>
+<tr><th>Livello</th><th>Nome</th><th>Criterio</th></tr>
+<tr><td><b>0</b></td><td>Assente</td><td>Non attuata né pianificata</td></tr>
+<tr><td><b>1</b></td><td>Pianificata</td><td>Definita ma non attuata</td></tr>
+<tr><td><b>2</b></td><td>Attuata parzialmente</td><td>Parte del perimetro o non sistematica</td></tr>
+<tr><td><b>3</b></td><td>Attuata</td><td>Intero perimetro <b>con evidenza documentale</b></td></tr>
+<tr><td><b>4</b></td><td>Attuata e verificata</td><td>Anche misurata, con efficacia verificata periodicamente</td></tr>
+</table>
+<div class="callout warn"><b>I due errori classici</b>Livello 3 senza evidenza documentale (corretto: 2) e livello 4 senza verifica periodica di efficacia (corretto: 3). I requisiti non pertinenti si marcano <b>N/A con motivazione</b> ed escono dal calcolo. Per ogni requisito si fissa anche il <b>livello obiettivo</b>.</div>
+<h2>7.2 Il vantaggio del sistema: verifica e controlli si parlano</h2>
+<p>Nel sistema di gestione la verifica non parte mai da zero: lo stato dei controlli e i registri compilati <b>sono le evidenze</b> dei requisiti. Un controllo "Attuato" nei termini, con evidenza indicata, giustifica un livello 3–4 sul requisito collegato; un controllo "Da verificare" dovrebbe far riflettere prima di confermare un livello alto.</p>
+<h2>7.3 Scostamenti e piano</h2>
+<ol class="steps">
+<li>Gli <b>scostamenti</b> nascono dalla differenza tra livello obiettivo e livello attuale; il contatore a menù ne mostra il numero.</li>
+<li>La <b>generazione del piano</b> crea una riga per ogni scostamento nel registro Piano di adeguamento (MOD-13.02), da completare con azione concreta, priorità (1 immediata → 4 programmata), responsabile, risorse, termine.</li>
+<li>Gli stati avanzano: <b>Aperta → In corso → Attuata → Verificata</b> (quest'ultima con verifica di efficacia compilata).</li>
+<li>Chiusa l'azione, aggiornare il livello del requisito nella verifica: il ciclo verifica → piano → attuazione → riverifica è il riesame in pratica.</li>
+</ol>
+</template>
+
+<template id="tpl-u8">
+<h1>Unità 8 — Corpus documentale e uscite</h1>
+<div class="sub">Durata indicativa: 6 minuti · Sezioni <span class="tag">Procedure</span> <span class="tag">Modulistica</span> <span class="tag">Relazioni e stampe</span></div>
+<h2>8.1 Le 14 procedure PNS e i 50 moduli</h2>
+<p>Il corpus copre governance (PNS-01, PNS-02, PNS-13) e tutte le misure dell'art. 24 c. 2 (PNS-03…PNS-12), più la <b>PNS-14</b> su pianificazione dell'adeguamento, catalogo dei controlli e calendario degli adempimenti. I testi contengono segnaposto risolti dall'anagrafica: parentesi quadre residue = profilo incompleto.</p>
+<ol class="steps">
+<li><b>Leggere</b> la procedura e confrontarla con la realtà dell'organizzazione.</li>
+<li><b>Adattare</b> ciò che non corrisponde: una procedura che descrive prassi inesistenti è un rischio in audit.</li>
+<li><b>Approvare</b> (da bozza ad approvata) tracciando revisione e data; il contatore a menù mostra l'avanzamento.</li>
+<li><b>Attuare</b>: la procedura vive nei controlli, nei registri e negli indicatori collegati.</li>
+</ol>
+<div class="callout warn"><b>Errore frequente</b>Approvare tutto il primo giorno per completare il contatore: le date di approvazione devono raccontare un percorso credibile.</div>
+<h2>8.2 Relazioni e stampe</h2>
+<p>La sezione produce le uscite formali: relazione di verifica per capitolo, piano di adeguamento, stampa di procedure, moduli e registri. Le stampe passano dalla finestra di stampa del browser (da cui "Salva come PDF"). Prima di stampare: verifica completa, anagrafica risolta. Le relazioni datate a ogni ciclo sono l'evidenza del riesame periodico.</p>
+<div class="callout ok"><b>Sintesi del corso</b>Uso corretto del sistema = anagrafica completa → ambito → roadmap per fasi → controlli con responsabile, evidenza e <b>data di ultima esecuzione</b> → scadenzario controllato a ogni sessione → registri in tempo reale → indicatori di attuazione ed efficacia → verifica periodica con evidenze → piano con azioni concrete → procedure adattate → esportazioni JSON regolari. Pronti per il test finale.</div>
+</template>
+
+<script>
+"use strict";
+/* ===== DATI CORSO ===== */
+var UNITS = [
+ {id:"u1", n:"1. Dal check-up al sistema", min:5},
+ {id:"u2", n:"2. Profili e persistenza", min:5},
+ {id:"u3", n:"3. Ambito e roadmap", min:7},
+ {id:"u4", n:"4. Catalogo dei controlli", min:10, cp:true},
+ {id:"u5", n:"5. Scadenzario e registri", min:8, cp:true},
+ {id:"u6", n:"6. Indicatori", min:6},
+ {id:"u7", n:"7. Verifica e piano", min:7},
+ {id:"u8", n:"8. Documenti e uscite", min:6},
+ {id:"u9", n:"9. Test finale", min:6, exam:true}
+];
+var LSKEY = "corso_nis2_p02_v1";
+var state = load();
+function load(){
+  try{ var r = localStorage.getItem(LSKEY); if(r) return JSON.parse(r); }catch(e){}
+  return {done:{}, cur:"u1", best:0};
+}
+function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify(state)); }catch(e){} }
+function unlocked(i){
+  if(i===0) return true;
+  var prev = UNITS[i-1];
+  return !!state.done[prev.id];
+}
+function idxOf(id){ for(var i=0;i<UNITS.length;i++){ if(UNITS[i].id===id) return i; } return 0; }
+
+/* ===== QUIZ ===== */
+var CP = {
+ u4: {min: 3, qs: [
+  {t:"Un controllo \u00E8 marcato \u201CAttuato\u201D con ultima esecuzione di 5 mesi fa e frequenza 90 giorni. Quale stato effettivo mostra il sistema?",
+   o:["Attuato","Da verificare","In attuazione","Non applicabile"], c:1,
+   e:"Superata la scadenza (ultima esecuzione + frequenza), lo stato effettivo torna automaticamente \u201CDa verificare\u201D."},
+  {t:"Quali sono le frequenze di riesecuzione previste dal catalogo dei controlli?",
+   o:["7, 30, 90 giorni","30, 90, 180, 365 giorni","Solo annuale","15, 45, 120 giorni"], c:1,
+   e:"Ogni controllo ha frequenza di 30, 90, 180 o 365 giorni."},
+  {t:"Cosa succede marcando un controllo \u201CAttuato\u201D senza registrare la data di ultima esecuzione?",
+   o:["Resta \u201CAttuato\u201D a tempo indeterminato","Lo stato effettivo risulta subito \u201CDa verificare\u201D","Il sistema propone una data automatica","Il controllo viene escluso dal calcolo"], c:1,
+   e:"Senza data non \u00E8 calcolabile la prossima scadenza: lo stato effettivo \u00E8 \u201CDa verificare\u201D."},
+  {t:"A quali controlli dare priorit\u00E0 a parit\u00E0 di stato?",
+   o:["A quelli in fondo all\u2019elenco","A criticit\u00E0 A con frequenza breve (30/90 giorni)","A criticit\u00E0 M annuali","Ai non applicabili"], c:1,
+   e:"Criticit\u00E0 alta e frequenza breve presidiano gli obblighi pi\u00F9 sensibili e generano scadenze fitte."}
+ ]},
+ u5: {min: 3, qs: [
+  {t:"Cosa raccoglie lo Scadenzario?",
+   o:["Solo le scadenze dei controlli","Solo i termini degli incidenti","Prossime esecuzioni dei controlli e termini di notifica degli incidenti aperti","Le scadenze delle procedure"], c:2,
+   e:"\u00C8 la vista unificata dei termini: controlli in scadenza e termini di 24 ore / 72 ore / un mese degli incidenti."},
+  {t:"Da quale data decorrono i termini di notifica di un incidente significativo?",
+   o:["Dalla rilevazione tecnica","Dalla conoscenza da parte dell\u2019organizzazione","Dalla registrazione in piattaforma","Dalla chiusura dell\u2019incidente"], c:1,
+   e:"I termini decorrono dalla conoscenza dell\u2019incidente significativo."},
+  {t:"Il sistema effettua le notifiche all\u2019Autorit\u00E0?",
+   o:["S\u00EC, automaticamente","Solo con sincronizzazione REST attiva","No: calcola e sorveglia i termini, la notifica si fa sulla piattaforma ACN","No, non sono previste"], c:2,
+   e:"Le notifiche si effettuano sulla piattaforma dell\u2019ACN; il registro ne documenta date ed esiti."},
+  {t:"Quando vanno compilati i registri operativi?",
+   o:["A fine anno, prima dell\u2019audit","Quando l\u2019evento accade","Solo su richiesta dell\u2019Autorit\u00E0","Solo alla generazione del piano"], c:1,
+   e:"La compilazione in tempo reale alimenta indicatori, evidenze dei controlli e urgenze del cruscotto."}
+ ]},
+ u9: {min: 8, exam:true, qs: [
+  {t:"Quale sequenza descrive il funzionamento a regime del sistema?",
+   o:["Verifica \u2192 stampa \u2192 archivio","Ambito \u2192 roadmap \u2192 controlli \u2192 scadenzario \u2192 registri \u2192 indicatori \u2192 verifica \u2192 piano","Procedure \u2192 verifica \u2192 organizzazione","Controlli \u2192 ambito \u2192 roadmap"], c:1,
+   e:"Prima perimetro e roadmap, poi attuazione dei controlli, presidio delle scadenze, misurazione e verifica periodica."},
+  {t:"Qual \u00E8 la prima fase della roadmap?",
+   o:["Presidi essenziali","Conoscenza","Governance","Verifica"], c:2,
+   e:"Fase 1 Governance: delibera, ruoli, registrazione, formazione degli organi."},
+  {t:"Quanti controlli contiene il catalogo e con quali criticit\u00E0?",
+   o:["50 controlli, criticit\u00E0 1\u20134","68 controlli, criticit\u00E0 A e M","126 controlli, criticit\u00E0 A/B/C","68 controlli, senza criticit\u00E0"], c:1,
+   e:"68 controlli sui 12 capitoli, con criticit\u00E0 A (alta) o M (media)."},
+  {t:"Come calcola il sistema la prossima scadenza di un controllo?",
+   o:["Data di ultima esecuzione + frequenza del controllo","Inizio anno + 12 mesi","Data di approvazione della procedura + 90 giorni","La imposta manualmente l\u2019utente"], c:0,
+   e:"Prossima scadenza = ultima esecuzione + frequenza (30/90/180/365 giorni)."},
+  {t:"Un controllo \u201CAttuato\u201D con scadenza superata:",
+   o:["Resta attuato","Diventa \u201CNon attuato\u201D","Il suo stato effettivo torna \u201CDa verificare\u201D","Viene rimosso dal catalogo"], c:2,
+   e:"Il sistema riporta lo stato effettivo a \u201CDa verificare\u201D e lo segnala in cruscotto e scadenzario."},
+  {t:"Che differenza c\u2019\u00E8 tra indicatore di attuazione e di efficacia?",
+   o:["Nessuna","L\u2019attuazione misura ci\u00F2 che \u00E8 stato fatto, l\u2019efficacia se ha funzionato","L\u2019efficacia misura i costi","L\u2019attuazione \u00E8 riservata all\u2019Autorit\u00E0"], c:1,
+   e:"Es.: % formati (attuazione) vs % di clic nelle simulazioni di phishing (efficacia)."},
+  {t:"Il termine di 72 ore si riferisce a:",
+   o:["Alla pre-notifica","Alla notifica dell\u2019incidente significativo","Alla relazione finale","Alla notifica al Garante"], c:1,
+   e:"24 ore pre-notifica, 72 ore notifica, un mese relazione finale."},
+  {t:"Livello 3 della scala di verifica richiede:",
+   o:["Solo che la misura esista","Attuazione sull\u2019intero perimetro con evidenza documentale","Verifica periodica di efficacia","Approvazione dell\u2019Autorit\u00E0"], c:1,
+   e:"Senza evidenza documentale il livello corretto \u00E8 2; la verifica periodica di efficacia \u00E8 il livello 4."},
+  {t:"Cosa disciplina la procedura PNS-14?",
+   o:["La crittografia","Pianificazione dell\u2019adeguamento, catalogo dei controlli e calendario degli adempimenti","La formazione del personale","La catena di fornitura"], c:1,
+   e:"\u00C8 la procedura collegata alle sezioni Roadmap, Controlli e Scadenzario."},
+  {t:"Qual \u00E8 la protezione principale contro la perdita dei dati in modalit\u00E0 locale?",
+   o:["Non chiudere mai il browser","L\u2019esportazione regolare dell\u2019archivio JSON","La stampa di tutte le pagine","La navigazione in incognito"], c:1,
+   e:"L\u2019esportazione JSON consente il ripristino dopo pulizia cache, cambio computer o browser."}
+ ]}
+};
+
+/* ===== RENDER ===== */
+function navRender(){
+  var el = document.getElementById("navlist");
+  var h = '<div class="navgrp">Unit\u00E0 didattiche</div>';
+  for(var i=0;i<UNITS.length;i++){
+    var u = UNITS[i];
+    var open = unlocked(i);
+    var cls = "nav" + (state.cur===u.id ? " on":"") + (!open ? " lock":"");
+    var st = state.done[u.id] ? '<span class="st ok">\u2713</span>' : '<span class="st">'+(i+1)+'</span>';
+    h += '<button class="'+cls+'" data-u="'+u.id+'" '+(!open?'disabled':'')+'>'+st+' '+u.n+'<span class="mm">'+u.min+'\u2032</span></button>';
+  }
+  el.innerHTML = h;
+  var n = 0; for(var k in state.done){ if(state.done[k]) n++; }
+  document.getElementById("pfill").style.width = Math.round(n/UNITS.length*100)+"%";
+  document.getElementById("ptext").textContent = n+" / "+UNITS.length+" unit\u00E0 completate";
+}
+
+function quizHTML(id){
+  var cp = CP[id];
+  var h = '<div class="quiz" id="quizbox">';
+  h += cp.exam
+    ? '<h2>Test finale \u2014 10 domande, soglia di superamento 80% (8/10)</h2>'
+    : '<h2>Checkpoint \u2014 rispondere correttamente ad almeno '+cp.min+' domande su '+cp.qs.length+' per proseguire</h2>';
+  for(var i=0;i<cp.qs.length;i++){
+    var q = cp.qs[i];
+    h += '<div class="q"><h3>'+(i+1)+'. '+q.t+'</h3>';
+    for(var j=0;j<q.o.length;j++){
+      h += '<label data-q="'+i+'" data-o="'+j+'"><input type="radio" name="q'+i+'"><span>'+q.o[j]+'</span></label>';
+    }
+    h += '<div class="expl" id="ex'+i+'" style="display:none;font-size:13px;color:var(--ink2);margin-top:6px"></div></div>';
+  }
+  h += '<button class="btn" id="grade">Verifica le risposte</button>';
+  h += '<div class="result" id="qres"></div></div>';
+  return h;
+}
+
+function grade(id){
+  var cp = CP[id];
+  var score = 0;
+  for(var i=0;i<cp.qs.length;i++){
+    var q = cp.qs[i];
+    var labs = document.querySelectorAll('label[data-q="'+i+'"]');
+    var sel = -1;
+    labs.forEach(function(l){
+      l.classList.remove("right","wrong");
+      if(l.querySelector("input").checked) sel = parseInt(l.getAttribute("data-o"),10);
+    });
+    labs.forEach(function(l){
+      var o = parseInt(l.getAttribute("data-o"),10);
+      if(o===q.c) l.classList.add("right");
+      else if(o===sel) l.classList.add("wrong");
+    });
+    var ex = document.getElementById("ex"+i);
+    ex.style.display = "block"; ex.textContent = q.e;
+    if(sel===q.c) score++;
+  }
+  var res = document.getElementById("qres");
+  var pass = score >= cp.min;
+  res.className = "result " + (pass ? "ok":"ko");
+  if(pass){
+    res.innerHTML = "<b>Superato \u2014 "+score+"/"+cp.qs.length+" risposte corrette.</b> "+
+      (cp.exam ? "Il corso \u00E8 completato: la piattaforma pu\u00F2 essere usata in autonomia seguendo il flusso appreso." : "\u00C8 possibile proseguire con la prossima unit\u00E0.");
+    state.done[id] = true;
+    if(cp.exam && score > (state.best||0)) state.best = score;
+    save(); navRender(); btnRender();
+  } else {
+    res.innerHTML = "<b>Non superato \u2014 "+score+"/"+cp.qs.length+".</b> Rileggere l\u2019unit\u00E0, correggere le risposte e verificare di nuovo.";
+  }
+}
+
+function btnRender(){
+  var i = idxOf(state.cur);
+  var u = UNITS[i];
+  var box = document.getElementById("navbtns");
+  var prev = i>0 ? '<button class="btn ghost" id="bprev">\u2190 Unit\u00E0 precedente</button>' : '<span></span>';
+  var nxt = "";
+  if(i < UNITS.length-1){
+    var can = !!state.done[u.id] || (!u.cp && !u.exam);
+    nxt = '<button class="btn" id="bnext" '+(can?'':'disabled')+'>Unit\u00E0 successiva \u2192</button>';
+  }
+  box.innerHTML = prev + nxt;
+  var bp = document.getElementById("bprev"); if(bp) bp.onclick = function(){ go(UNITS[i-1].id); };
+  var bn = document.getElementById("bnext"); if(bn) bn.onclick = function(){
+    if(!u.cp && !u.exam){ state.done[u.id] = true; save(); }
+    go(UNITS[i+1].id);
+  };
+}
+
+function go(id){
+  var i = idxOf(id);
+  if(!unlocked(i)) return;
+  state.cur = id; save();
+  var u = UNITS[i];
+  var c = document.getElementById("content");
+  var h = "";
+  var tpl = document.getElementById("tpl-"+id);
+  if(tpl){ h += tpl.innerHTML; }
+  if(u.exam){
+    h += '<h1>Unit\u00E0 9 \u2014 Test finale</h1><div class="sub">10 domande a risposta multipla \u00B7 soglia 8/10</div>';
+  }
+  if(u.cp || u.exam){ h += quizHTML(id); }
+  h += '<div class="navbtns" id="navbtns"></div>';
+  c.innerHTML = h;
+  document.getElementById("unittime").textContent = "Durata unit\u00E0: "+u.min+" min";
+  var g = document.getElementById("grade");
+  if(g) g.onclick = function(){ grade(id); };
+  navRender(); btnRender();
+  window.scrollTo(0,0);
+}
+
+document.getElementById("navlist").addEventListener("click", function(ev){
+  var b = ev.target.closest("button[data-u]");
+  if(b && !b.disabled) go(b.getAttribute("data-u"));
+});
+
+go(state.cur || "u1");
+
+</script>
+</body>
+</html>

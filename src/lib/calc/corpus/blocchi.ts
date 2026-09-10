@@ -4,7 +4,12 @@
 // documento normativo che un cliente porta davanti a un auditor. Qui stanno in funzioni
 // pure, così si provano una volta e valgono identiche a schermo e in stampa.
 
-export type BloccoTipo = "p" | "t" | "h" | "sig";
+export type BloccoTipo = "p" | "t" | "h" | "sig" | "l";
+//
+// ⚠️ `l` (elenco puntato) e' arrivato con NIS2, che e' il settimo dominio del corpus e il
+// primo a usarlo — quattro blocchi in tutto. Nel suo prototipo rendevano VUOTI: il
+// renderer non li gestisce e cadono nel ramo del paragrafo, che legge un campo che questi
+// blocchi non hanno. Qui hanno un genere proprio e si vedono.
 
 export type Blocco = {
   blockId: string;
@@ -82,7 +87,8 @@ export type Unita =
       vuote: number;
       colonne: number;
     }
-  | { tipo: "firme"; blockId: string };
+  | { tipo: "firme"; blockId: string }
+  | { tipo: "elenco"; blockId: string; voci: string[] };
 
 /**
  * Trasforma i blocchi nelle unità che si rendono.
@@ -107,6 +113,15 @@ export function unita(blocchi: readonly Blocco[]): Unita[] {
 
     if (b.tipo === "sig") {
       out.push({ tipo: "firme", blockId: b.blockId });
+      i += 1;
+      continue;
+    }
+    if (b.tipo === "l") {
+      // Le voci stanno in `i`, come le scrive il prototipo. Un elenco senza voci non si
+      // rende: un `<ul>` vuoto e' uno spazio bianco che sembra un difetto di stampa.
+      const voci = (b.contenuto as { i?: unknown }).i;
+      const pulite = Array.isArray(voci) ? voci.map(String).filter((v) => v.trim()) : [];
+      if (pulite.length) out.push({ tipo: "elenco", blockId: b.blockId, voci: pulite });
       i += 1;
       continue;
     }

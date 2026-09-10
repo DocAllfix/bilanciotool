@@ -100,9 +100,33 @@ che nessuno lancia più e nessuno sa perché.
 ⚠️ **È il blocco duro.** Lo schema della produzione può essere indietro di settimane:
 fondere senza applicarle manda in produzione codice che cerca tabelle inesistenti.
 
+Prima, in sola lettura:
+
+```bash
+node scripts/stato-produzione.mjs
+```
+
+Dice quante migrazioni mancano, quali, quanto carico vivo c'è, e — la domanda che nessuno
+fa — **se una riga esistente farebbe fallire un CHECK riaggiunto**. Le migrazioni che
+allargano un dominio chiuso riscrivono il vincolo per intero, e riaggiungerlo rivalida ogni
+riga della tabella: se anche una sola cadesse fuori dal nuovo elenco, la migrazione
+fallirebbe a metà del rilascio. I domini li legge dalle migrazioni, non da una copia.
+
+Poi:
+
+```bash
+PD=$(grep -E "^DIRECT_URL=" .env.produzione | cut -d= -f2-)
+SO_CHE_E_PRODUZIONE=1 DIRECT_URL="$PD" npm run db:migrate
+```
+
 `scripts/guardia-database.mjs` si rifiuta di scrivere su un database con abbonamenti Stripe
 o sul riferimento noto della produzione. L'override è `SO_CHE_E_PRODUZIONE=1`, **e va
 dichiarato da una persona**.
+
+⚠️ **Che l'override d'ambiente arrivi davvero al processo si PROVA facendo rifiutare la
+guardia**: la si lancia con la stringa di produzione e senza override, e deve fermarsi
+nominando il progetto. Se non si ferma, quella variabile non sta arrivando dove credi — e
+il comando dopo scriverebbe altrove.
 
 ### 6 · La fusione, e dopo
 

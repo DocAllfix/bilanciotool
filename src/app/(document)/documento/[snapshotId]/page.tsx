@@ -15,6 +15,7 @@ import { DocumentoRelazionePc } from "@/components/documento/documento-relazione
 import { DocumentoMatricePc } from "@/components/documento/documento-matrice-pc";
 import { DocumentoMatrice231 } from "@/components/documento/documento-matrice-231";
 import { DocumentoRegistroFirmato } from "@/components/documento/documento-registro-firmato";
+import { DocumentoConformitaNis2, DocumentoSistemaNis2 } from "@/components/documento/documento-nis2";
 import { DocumentoSgesg } from "@/components/documento/documento-sgesg";
 import { DocumentoDichiarazioneFiliera } from "@/components/documento/documento-dichiarazione-filiera";
 import { DocumentoManualeSa8000 } from "@/components/documento/documento-manuale-sa8000";
@@ -139,6 +140,13 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
       case "diagnosi_esg":
       case "dossier_finale":
         return <DocumentoSgesg dati={snap.dati as never} />;
+      case "conformita_nis2":
+        return <DocumentoConformitaNis2 dati={snap.dati as never} />;
+      // ⚠️ I due del sistema di gestione da UN template solo, che riceve il tipo: cambia
+      // quale parte dello stesso stato si stampa, non da dove viene.
+      case "relazione_nis2":
+      case "controlli_nis2":
+        return <DocumentoSistemaNis2 dati={snap.dati as never} tipo={snap.tipo} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

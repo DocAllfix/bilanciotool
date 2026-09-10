@@ -203,3 +203,90 @@ Sempre nel modulo Segnalazioni, si conservano tre asimmetrie volute:
 - **«Da integrare» come unica eccezione alla porta AND** dell'ammissibilita': se manca
   soltanto l'elemento «fatti precisi e concordanti» la segnalazione si completa, non si
   archivia. Archiviare cio' che si poteva chiarire toglie la tutela a chi si e' esposto.
+
+---
+
+## NIS2 — D.Lgs. 138/2024 (percorsi `nis2` e `sgnis2`)
+
+Cinque scostamenti dal prototipo, tutti **misurati eseguendo il suo codice** prima di
+scrivere il rimedio (`scripts/golden-nis2.mjs`), non dedotti leggendolo.
+
+**1. Un requisito applicabile e non valutato pesa ZERO.** E' la terza volta che questa
+stessa correzione si applica in questo progetto, dopo il Modello 231 e ISO 37001, e la
+regola sta in un posto solo (`calc/comune/valutazione.ts`). Misurato sul caso di prova —
+venti requisiti valutati a giro sui cinque livelli, uno non applicabile, centocinque mai
+guardati — il prototipo restituisce **50%**, che e' lo stesso numero di «tutti e 125
+valutati a livello 2» e lo stesso di «tre conformi e centoventidue ignorati». Tre
+situazioni opposte, un numero solo, su un documento che si porta all'ACN. Qui: **8%**.
+
+«Non applicabile» resta fuori dal denominatore, ed e' un'altra cosa: e' una valutazione,
+non un'omissione.
+
+⚠️ Nel prototipo convivono **due motori che rispondono in modo opposto alla stessa
+domanda**: quello dei requisiti media sui soli valutati, quello dei controlli conta a zero
+cio' che non e' stato toccato. Si e' conservato quello giusto e corretto l'altro, invece
+di allinearli al peggiore per coerenza interna.
+
+**2. Le ore dei termini si sommano in millisecondi UTC.** Il prototipo usa
+`setHours(d.getHours() + 24)`, che aggiunge ventiquattro all'ora dell'**orologio**.
+Misurato nel fuso italiano:
+
+| istante | «+24 h» del prototipo | ore reali trascorse |
+|---|---|---|
+| 28 marzo 2026, 23:00 | 29 marzo, 23:00 | **23** |
+| 24 ottobre 2026, 23:00 | 25 ottobre, 23:00 | **25** |
+
+Su un termine perentorio dell'art. 25 e' un'ora tolta a chi deve pre-notificare, e il
+prodotto gli dice che e' in tempo. Provato rimettendo il difetto: tre asserzioni rosse.
+
+**3. I mesi si agganciano all'ultimo giorno invece di traboccare.** `setMonth(+1)`:
+
+| da | prototipo | corretto |
+|---|---|---|
+| 31 gennaio | 3 marzo | 28 febbraio |
+| 31 marzo | 1 maggio | 30 aprile |
+| 31 agosto | 1 ottobre | 30 settembre |
+| 31 dicembre | 31 gennaio | 31 gennaio (giusto per caso) |
+
+L'aggancio non e' riscritto: passa da `piuMesi` di `calc/segnalazioni/termini.ts`, gia'
+provata dal 2026-08-23.
+
+**4. I termini della roadmap non dipendono piu' dal fuso in cui gira il codice.** `addM`
+legge `new Date("2026-01-15")` come mezzanotte UTC, ci somma i mesi in ora **locale** e
+ristampa in UTC. Lo stesso dato, due risposte:
+
+    2026-01-15 + 9 mesi, Europe/Rome → 2026-10-14
+    2026-01-15 + 9 mesi, UTC         → 2026-10-15
+
+Il portatile del consulente e le funzioni su Vercel — che girano in UTC — davano al
+cliente due scadenze diverse. La suite NIS2 gira sotto tre fusi nel gate, proprio per
+questo.
+
+⚠️ **Il calendario delle scadenze e' quello ITALIANO, quello dei termini in ore e' l'UTC**,
+e le due regole non si contraddicono: la registrazione annuale scade il 28 febbraio in
+Italia — non nel fuso del processo — mentre ventiquattro ore sono ventiquattro ore
+ovunque. La prima e' una data del calendario, la seconda una durata.
+
+**5. Un settore fuori dai due allegati NON e' «fuori ambito».** Il prototipo restituisce
+la stringa vuota, che a schermo non dice niente; qui e' `null` con una via dichiarata
+(`settore_non_elencato`), distinta da `fuori_ambito`. Sono due cose diverse e il documento
+non deve confonderle: **«fuori ambito» e' una determinazione** — sei in un settore elencato
+e stai sotto le soglie — e si scrive in un documento firmato; l'altra dice che da li' non
+si conclude niente. Far dichiarare a un'azienda di essere fuori dal decreto sulla base di
+una domanda a cui nessuno ha risposto e' il difetto peggiore che questo motore possa avere.
+
+**Cio' che invece NON si tocca**, perche' il prototipo lo aveva gia' giusto:
+
+- **la relazione finale decorre dalla notifica, non dalla conoscenza**: senza notifica non
+  c'e' termine, e inventarlo metterebbe nello scadenzario di un cliente una scadenza che
+  il decreto non pone;
+- **un controllo «Attuato» la cui verifica e' scaduta torna «Da verificare»**: e' la
+  regola meno ovvia del modulo e l'unica che un lettore distratto toglierebbe credendo di
+  semplificare;
+- **un indicatore senza target ma con soglia si giudica sulla soglia**, e senza nessuno
+  dei due non si giudica. In SGI QAS lo stesso codice faceva `Number("") === 0` e rendeva
+  irraggiungibile il ramo della soglia: qui la regola si conserva invece di allinearsi al
+  modulo vicino per somiglianza;
+- **«programmata» non esce mai dal calcolo delle priorita'**: e' un'opzione del piano di
+  adeguamento, e chi decide di rimandare se ne assume la responsabilita'. Il tipo di
+  ritorno lo esclude, quindi la garanzia la da' il compilatore e non un test.

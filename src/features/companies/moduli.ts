@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, Megaphone, Network, Scale, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, Megaphone, Network, Radar, Scale, ShieldAlert, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "sgiqas", "sa8000", "soa"] as const;
+export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "sgiqas", "sa8000", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -280,6 +280,34 @@ export const MODULI_AZIENDA = [
     area: "compliance",
     colore: AREE.compliance.colore,
     documenti: ["dichiarazione_filiera"],
+    perEsercizio: false,
+  },
+  {
+    href: "nis2",
+    nome: "Autovalutazione conformità NIS2",
+    norma: "D.Lgs. 138/2024",
+    icona: ShieldAlert,
+    // ⚠️ COMPLIANCE e non «Sistemi di gestione», ed e' la decisione del committente del
+    // 7 settembre 2026. Il criterio del terzo gruppo e' «certificabile da un ente terzo»,
+    // e NIS2 non lo e': e' un obbligo di legge con un'Autorita' di vigilanza (ACN), la
+    // registrazione, la notifica degli incidenti e sanzioni fino a 10 milioni o al 2% del
+    // fatturato mondiale. E' la stessa forma di 231 e 37001.
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    documenti: ["conformita_nis2"],
+    perEsercizio: false,
+  },
+  {
+    href: "sgnis2",
+    nome: "Implementazione del sistema di gestione NIS2",
+    norma: "D.Lgs. 138/2024 · ACN",
+    icona: Radar,
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    // La Relazione e' cio' che si porta all'organo di amministrazione — che sotto l'art.
+    // 23 approva le misure e ne risponde di persona — quindi e' il documento principale.
+    // Il Catalogo dei controlli e' cio' che un ispettore sfoglia.
+    documenti: ["relazione_nis2", "controlli_nis2"],
     perEsercizio: false,
   },
   // ─── Sistemi di gestione ───────────────────────────────────────────────────

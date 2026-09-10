@@ -73,8 +73,8 @@ export function ritagliaFunzione(sorgente, nome) {
  * Il limite di giri non è pigrizia: è la garanzia che un rimando circolare o un nome che
  * non sta nel file si fermino con un messaggio, invece di girare per sempre.
  */
-export function valutaConDipendenze(sorgente, nome, giriMax = 40) {
-  const contesto = vm.createContext({ Number, String, Math, Object, Array, JSON, Boolean, Date });
+export function valutaConDipendenze(sorgente, nome, giriMax = 40, base = {}) {
+  const contesto = vm.createContext({ Number, String, Math, Object, Array, JSON, Boolean, Date, ...base });
   const risolti = new Set();
   const literal = ritagliaConst(sorgente, nome);
   if (!literal) throw new Error(`Costante «${nome}» non trovata`);
@@ -102,9 +102,21 @@ export function valutaConDipendenze(sorgente, nome, giriMax = 40) {
   throw new Error(`«${nome}»: troppe dipendenze da risolvere (oltre ${giriMax})`);
 }
 
-/** I registri di un prototipo, nella forma della tabella `corpus_register`. */
-export function registri(sorgente) {
-  const grezzi = valutaConDipendenze(sorgente, "REGDEF");
+/**
+ * I registri di un prototipo, nella forma della tabella `corpus_register`.
+ *
+ * ⚠️ `base` serve ai valori che NON stanno nel sorgente. Il risolutore sa cercare una
+ * `const` mancante nel file e riprovare, ma i prototipi NIS2 costruiscono le opzioni di
+ * due colonne dai livelli del CORPUS — `const LIVLAB = LIVELLI.map(…)`, dove `LIVELLI`
+ * arriva dal blob JSON e da una dichiarazione a piu' nomi (`const PRO = …, LIVELLI = …`)
+ * che il ritaglio non intercetta.
+ *
+ * Si passa il valore invece di insegnare al risolutore a leggere il blob: il blob lo ha
+ * gia' in mano chi chiama, e un secondo posto che lo estrae e' un secondo posto che puo'
+ * divergere.
+ */
+export function registri(sorgente, base = {}) {
+  const grezzi = valutaConDipendenze(sorgente, "REGDEF", 40, base);
   return grezzi.map((r, i) => ({
     registerId: r.id,
     modCode: r.mod ?? null,

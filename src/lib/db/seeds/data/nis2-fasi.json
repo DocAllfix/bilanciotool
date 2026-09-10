@@ -1,0 +1,7 @@
+[
+{"id":"f1","n":"Governance","aree":["G","R"],"d":"Delibera, ruoli, registrazione, formazione degli organi"},
+{"id":"f2","n":"Conoscenza","aree":["A","L"],"d":"Inventario, servizi, fornitori censiti, analisi dei rischi"},
+{"id":"f3","n":"Presidi essenziali","aree":["B","C","M","E"],"d":"Notifica, backup, MFA, vulnerabilità, registrazione degli eventi"},
+{"id":"f4","n":"Consolidamento","aree":["D","I","H"],"d":"Catena di fornitura, crittografia, continuità, formazione estesa"},
+{"id":"f5","n":"Verifica","aree":["F"],"d":"Audit, verifiche tecniche, indicatori, riesame"}
+]

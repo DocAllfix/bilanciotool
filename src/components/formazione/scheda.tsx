@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Headphones, Play } from "lucide-react";
+import { Headphones, ListChecks, Play } from "lucide-react";
 
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import type { SchedaCorso } from "@/features/formazione";
@@ -35,6 +35,11 @@ export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
     .filter((s) => corso.idComuni.includes(s.id))
     .reduce((n, s) => n + s.minuti, 0);
   const voce = minutiDiVoce(corso.modulo, corso.sezioni, corso.idComuni);
+  // ⚠️ Il numero si DERIVA dalle sezioni, non si scrive accanto al corso: scritto a mano
+  // sarebbe un secondo posto dove vive lo stesso fatto, e i due divergono al primo
+  // ritocco delle domande. È la stessa ragione per cui i numeri dei corsi vengono da
+  // `numeri.ts` e non dalla memoria di chi scrive.
+  const domande = corso.sezioni.reduce((n, s) => n + (s.verifica?.domande.length ?? 0), 0);
 
   return (
     <Link
@@ -65,6 +70,20 @@ export function SchedaFormazione({ corso }: { corso: SchedaCorso }) {
         <span>
           <span data-slot="kpi">{corso.sezioni.length}</span> sezioni
         </span>
+        <span aria-hidden>·</span>
+        {/* ⚠️ La verifica si DICHIARA anche quando non c'è. Undici corsi su quindici non
+            hanno ancora le domande: tacerlo lascia credere che il corso sia finito e che
+            la verifica non fosse prevista, e chi la cerca smette di cercarla. È la stessa
+            scelta del dodicesimo percorso nella guida, che dichiara di non produrre
+            ancora un documento invece di restare muto in mezzo ad altri che ne nominano uno. */}
+        {domande > 0 ? (
+          <span className="flex items-center gap-1.5">
+            <ListChecks className="size-3.5" aria-hidden />
+            <span data-slot="kpi">{domande}</span> domande di verifica
+          </span>
+        ) : (
+          <span>verifica in preparazione</span>
+        )}
         {voce.totale > 0 && (
           <>
             <span aria-hidden>·</span>

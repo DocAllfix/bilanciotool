@@ -69,6 +69,16 @@ export function RendeCorpus({ blocchi, override = {}, segnaposti, contesto }: Pr
           );
         }
 
+        if (u.tipo === "elenco") {
+          return (
+            <ul key={u.blockId} className="corpus-elenco" data-blocco={u.blockId}>
+              {u.voci.map((v, j) => (
+                <li key={j}>{conSegnaposto(risolvi(v))}</li>
+              ))}
+            </ul>
+          );
+        }
+
         if (u.tipo === "sezione") {
           return (
             <div key={u.blockId} className="corpus-sezione" data-blocco={u.blockId}>

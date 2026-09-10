@@ -2174,6 +2174,301 @@ raggiungibilità e rilanciato) · `formazione` 12/12 · `formazione-comandi` 17/
 7/7 a server caldo · `shell` esce con 0 · `tutto-demo` 68/68 · barra misurata su schermo
 basso · foto in chiaro e scuro guardate.
 
+**Fase 5 del piano NIS2 (2026-09-08) — la verifica dei corsi, e la difesa che non era mai scattata**
+
+I due corsi NIS2 portano **27 domande**; le altre tredici superfici della formazione
+guadagnano la capacità e **dichiarano di non avere ancora le domande**. Il quiz è **dato**,
+come tutto il resto della formazione: un componente solo (`src/components/formazione/verifica.tsx`)
+lo rende per tutti e quindici i corsi.
+
+Tre decisioni, tutte scritte accanto al codice:
+
+- **Non sblocca niente.** Il corso d'origine bloccava l'unità successiva finché la
+  precedente non era superata: è giusto in un corso obbligatorio, è sbagliato qui, dove chi
+  ha già fatto il passo uno deve poter entrare al passo tre — ed è la ragione per cui le
+  sezioni hanno id stabili e finiscono nell'indirizzo. La verifica **dice** come sei andato.
+- **La parte che insegna sono le spiegazioni, non il punteggio**, e compaiono su ogni
+  domanda dopo la consegna, giusta o sbagliata che sia. `spiegazione` non è facoltativa nel
+  tipo: un quiz che dice solo «sbagliato» insegna che hai sbagliato.
+- **Il conteggio lo fa il server**, leggendo il catalogo. Il browser manda le scelte e
+  basta. Non è una difesa contro l'imbroglio — chi vuole imbrogliare su un corso proprio ha
+  già vinto — è che un conteggio fatto in due posti prima o poi diverge.
+
+**L'avanzamento è della PERSONA, non dello studio.** `formazione_verifica` (migrazione
+`0057`) non porta `organization_id`: chi ha fatto un corso se lo porta dietro cambiando
+studio, e il socio che apre lo stesso corso comincia dal principio. Un esito superato **non
+si perde riprovando**, e a garantirlo è Postgres con un `OR` dentro l'`ON CONFLICT`: leggere
+il vecchio esito e riscriverlo sarebbe il leggi-modifica-scrivi che questo progetto ha già
+pagato quattro volte.
+
+⚠️ **La policy RLS di quella tabella non sarebbe mai scattata.** È scritta sull'utente
+(`app.user_id`), e quella GUC la imposta solo `withTenant`: le due funzioni giravano contro
+`db` nudo. In sviluppo funzionava tutto — la connessione è privilegiata — e in produzione,
+dove la connessione **è** `app_rls`, la policy avrebbe negato ogni riga. Il quiz non avrebbe
+salvato e non avrebbe letto niente, in silenzio, senza un errore da nessuna parte.
+
+E il test lo confermava passando anche con `RLS_FORCE_ROLE=app_rls`, perché **quel seam
+morde solo dentro `withTenant`**: su una query che non ci passa non ha niente da forzare.
+La controprova, dopo il rimedio: col contesto sbagliato sotto `app_rls` la scrittura viene
+respinta con `new row violates row-level security policy`, e **lo stesso codice rotto passa
+senza `app_rls`** — che è esattamente la forma del difetto.
+
+**Altri due difetti veri, trovati dal collaudo:**
+
+1. **Cinque pulsanti «Consegna» identici** su un corso con cinque verifiche. Per un lettore
+   di schermo sono cinque comandi indistinguibili, e Playwright si è fermato con «resolved
+   to 5 elements» — lo stesso difetto dei sei requisiti ISO 37001 che citavano tutti il
+   punto 4.5. Ora il nome accessibile porta il titolo della sezione, e le risposte portano
+   il numero della domanda.
+2. **Il mio controllo sulle spiegazioni passava senza aver consegnato.** Misurava la
+   lunghezza dell'ultima riga di testo, che prima della consegna è l'ultima opzione. Ora
+   conta gli elementi `[data-spiegazione]`, che esistono solo dopo la consegna: messo in
+   rosso di proposito dice «0 spiegazioni su 4 domande».
+
+**Due guardie del progetto hanno preso me**, ed è il quarto turno di fila:
+`navigazione.db` (il fascicolo elencava dodici moduli e ora sono quattordici) e
+`formazione-numeri-pure`, che ha trovato **diciotto** numeri scritti a mano nei due corsi
+nuovi. Di quei diciotto, sei erano conteggi veri da derivare — compresi quelli di una
+**riproduzione dell'interfaccia**, che è proprio la finta che nessuno ricontrolla — e gli
+altri erano falsi positivi di tre famiglie che ora sono **regole** e non eccezioni: un
+numero preceduto da «art.» o «comma» è un riferimento normativo, uno seguito da «milioni»
+o «addetti» è una grandezza. Una regola copre anche la frase che nessuno ha ancora scritto.
+
+⚠️ **`tracce-pure` pretendeva che ogni sezione avesse già l'audio.** Regge finché i corsi
+arrivano dopo la voce, e cade al primo corso nuovo: i due NIS2 lo hanno fatto cadere con
+«slide 9: expected 0 to be greater than 0», cioè accusando il calcolo dei momenti di un
+difetto che era l'assenza del file. Ora una sezione senza traccia si salta — a condizione
+che la traccia non ci sia davvero — e un contatore impedisce al salto di mangiarsi il
+controllo. Provato rimettendo i momenti a zero: quindici prove tornano rosse.
+
+**I copioni audio dei due corsi sono consegnati come file**, secondo il contratto già in
+uso: `audio-formazione/nis2/script.json` e `audio-formazione/sgnis2/script.json`, cinque
+sezioni proprie ciascuno, **3.823 parole e 24,4 minuti a corso** — le sei comuni non si
+ripetono. `ricalcola.mjs` li dà entro il +10% per sezione e il +4% sulla somma;
+`valida-script.mjs` dà **zero caratteri fuori dalla lista bianca**, che è il controllo che
+blocca la sintesi. Le sei parole da configurare — `NIS2`, `ACN`, `MFA`, `DNS`,
+`cybersicurezza`, `phishing` — stanno in `termini_nuovi`, e `genera-audio.py` **non è stato
+toccato**: la pronuncia è una decisione che si prende ascoltando, e l'ha già presa l'utente
+una volta. La consegna è scritta in `SCAMBIO-AGENTI.md`, sezione 12.
+
+**Regole nate qui:**
+- **`RLS_FORCE_ROLE=app_rls` non prova niente su una query che non passa da `withTenant`.**
+  Il seam assume il ruolo ristretto *dentro* la transazione: fuori, la suite gira
+  privilegiata e la policy non si vede mai. Una tabella nuova con una policy nuova va
+  provata guardando **chi è connesso**, non fidandosi del fatto che la suite sia verde in
+  entrambe le modalità.
+- **Un controllo che non sa distinguere «prima» da «dopo» non prova niente.** La lunghezza
+  dell'ultima riga di testo era la stessa con e senza la consegna.
+- **Un'assenza di dati non è un difetto del calcolo.** Un controllo che presuppone un
+  contenuto che deve ancora arrivare accusa il codice al posto del calendario.
+- **Le eccezioni a una guardia si scrivono come regole quando descrivono una FAMIGLIA.**
+  «Art. 25» non è un caso particolare: è ogni riferimento normativo di ogni modulo di
+  conformità, presente e futuro.
+- **Una controprova che non morde va verificata sull'INIEZIONE.** La prima l'ho messa in
+  una frase che in quel file non esisteva, e il verde che ne è uscito stava per farmi
+  credere che la guardia fosse debole.
+
+Gate: typecheck · build · **1485 test** in entrambe le modalità, `RLS_FORCE_ROLE=app_rls`
+compresa · `formazione-verifiche-pure` 5/5 e `formazione-verifiche.db` 6/6, messi in rosso
+di proposito · `qa -- formazione-comandi` **21 su 21** con le quattro prove nuove sulla
+verifica · `formazione` 12/12 e `guida` 7/7 · foto della verifica in chiaro e scuro **guardate** · console pulita.
+
+**Fasi 6 e 7 del piano NIS2 (2026-09-08) — la vetrina, la barra, e un commento che diceva il falso**
+
+Il prodotto passa a **quattordici percorsi**. La riorganizzazione non è servita: con tre
+gruppi la card del portafoglio porta tre caselle e regge quattordici percorsi come ne
+reggeva dodici — è la forma nata il 25 agosto perché il numero smettesse di essere una cosa
+da indovinare. La vetrina si deriva già da `MODULI_PER_AREA` e il compilatore pretende il
+racconto di ogni modulo, quindi i due percorsi nuovi ci sono comparsi da soli, con «14
+percorsi in 3 gruppi» contato e non scritto.
+
+⚠️ **Ma un numero era falso, e stava su una pagina pubblica.** La scheda
+dell'**autovalutazione** dichiarava «126 requisiti»: 126 è il numero del **sistema di
+gestione**, e i due differiscono per i due requisiti che riguardano solo chi il sistema lo
+sta costruendo. Ora i conteggi dei due percorsi NIS2 si **derivano dal seme** in
+`percorsi-vetrina.ts`. Gli altri numeri della vetrina sono ancora scritti a mano: derivarli
+tutti è una passata a sé, e la nota dice dove comincia. È lo stesso danno di `llms.txt` che
+dichiarava trenta derivati quando il motore ne calcola venticinque — e quel «30» è poi
+ricomparso in un documento commerciale scritto da un consulente esterno che si era fidato
+di noi.
+
+⚠️ **Da telefono la home scorreva in orizzontale di due pixel.** A 360 punti — l'Android più
+comune — il marchio è a `shrink-0` e il menu è nascosto, quindi a uscire dallo schermo era
+il pulsante «Prova la demo». La causa era uno spazio speso per niente: `gap-6` fra il
+marchio e le voci, su una larghezza in cui le voci non ci sono. Ora è `gap-3` sotto `md`.
+
+**La barra laterale a 17 voci, misurata su schermo basso e resa un controllo permanente.**
+Dentro un'azienda la barra porta il nome, il fascicolo e i quattordici percorsi: cresce a
+ogni modulo, e il difetto del 2 settembre — il piede spinto fuori schermo, con menu
+dell'account e interruttore del tema irraggiungibili — è di quelli che tornano. Ora
+`visual-check-shell` lo misura a 1280×680: il contenitore scorre, il piede resta dentro, e
+l'ultima voce **risponde al clic** (`elementFromPoint`, che lo dice in tre righe mentre
+l'occhio no).
+
+⚠️ **E la prima versione di quel controllo non poteva diventare rossa.** La controprova l'ha
+detto: tolto `min-h-0`, il collaudo restava verde. Misurando una proprietà per volta è venuto
+fuori perché, e ribalta quello che il commento nel sorgente diceva da due settimane:
+
+| | scorre | piede |
+|---|---|---|
+| com'è | sì, 486 su 853 | dentro |
+| senza `min-h-0` | sì, invariato | dentro |
+| senza `overflow-y-auto` | **no**, contenuto tagliato | dentro, ma le ultime voci non si raggiungono |
+| senza entrambi | **no**, 853 su 853 | **1047**, cioè 367 punti sotto la piega |
+
+`overflow-y-auto` **da solo basta**: `min-height: auto` su un figlio flex vale soltanto
+finché il suo `overflow` è `visible`, e dandogli `auto` il minimo si risolve a zero da sé.
+Il commento diceva il contrario — «`overflow-y-auto` da solo non fa NIENTE» — ed è stato
+creduto finché non è stato messo alla prova. `min-h-0` resta, perché dice a voce alta ciò
+che l'altra ottiene di riflesso, ma la ragione scritta ora è quella vera.
+
+**Regole nate qui:**
+- **`scrollHeight > clientHeight` non vuol dire «scorre».** Vuol dire che il contenuto è più
+  alto della scatola, ed è vero anche quando viene tagliato: è per questo che la prima
+  versione del controllo restava verde con la barra rotta. Si guarda l'`overflow` calcolato,
+  che è il fatto.
+- **Un rettangolo `fixed` non si misura contro la finestra.** Il mio `piedeDentro` guardava
+  l'`<aside>`, che è fissa a tutta altezza: il suo bordo inferiore coincide sempre con
+  quello dello schermo, quindi quell'asserzione non poteva dare rosso nemmeno una volta.
+- **Una controprova che non morde va verificata sull'INIEZIONE prima che sul controllo.**
+  Qui l'iniezione era andata a segno nel sorgente e non produceva il difetto: era la
+  spiegazione che avevo in testa a essere sbagliata, non il collaudo.
+- **Un commento che dice il falso su una proprietà CSS si scopre solo togliendola.** Due
+  settimane di fiducia, e la misura è costata cinque minuti.
+
+Gate: typecheck · build · **1485 test in entrambe le modalità** · `qa -- nis2-percorso`
+**42 su 42** (i due percorsi comando per comando, compreso il controllo che vale più di
+tutti: si risponde a un requisito nell'autovalutazione e si verifica **nel database** che
+la riga sia una sola) · `tutto-pubblico` 37/37 · `shell` verde, e **rosso** rimettendo il
+difetto, sulle due asserzioni giuste · `formazione` 12/12 · `formazione-comandi` 21/21 ·
+foto della vetrina e della verifica in chiaro e scuro **guardate**, console pulita, zero
+sfondamento da telefono.
+
+**Il codice d'uscita invertito, e i tre PDF che nessuno contava (2026-09-08)**
+
+Chiudendo la Fase 7 mancava un pezzo del suo cancello: dei **tre** documenti NIS2 il
+collaudo ne pubblicava **uno** e non generava nessun PDF. Aggiunti la pubblicazione dei due
+documenti del sistema di gestione e la prova sui tre PDF — con le **pagine contate**, non i
+byte pesati, e con l'asserzione che due documenti diversi non possono pesare uguale: è il
+sintomo esatto con cui, il 27 agosto, si scoprì che Chromium stava stampando la pagina di
+accesso di Vercel. Misurati: 16, 11 e 8 pagine.
+
+⚠️ **E lì è saltato fuori un difetto degli strumenti: tre collaudi avevano il codice
+d'uscita ROVESCIATO.** `riepilogo` restituisce quanti rossi ci sono, e
+`process.exit(esito ? 0 : 1)` significa: con dei falliti esce **zero**, cioè successo, e con
+tutto verde esce **uno**. Trovato leggendo «44 ok, 0 falliti» accanto a un `EXIT=1`.
+
+Il verso è quello peggiore. Il referto lo legge una persona, il codice d'uscita lo legge
+tutto il resto — `qa.mjs`, la CI, `giro-completo.mjs`, `qa-anteprima.mjs` — e a tutti quelli
+`nis2-percorso`, `presentazione` e `tracce` avrebbero riferito **verde mentre erano rossi**.
+Rilanciati dopo la correzione sono verdi davvero (44, 11 e 15 controlli), quindi il difetto
+era latente: non ha ancora nascosto niente, e avrebbe nascosto la prima cosa che si fosse
+rotta.
+
+Guardia nuova, `collaudi-esito-pure.test.ts`: scandisce i collaudi che usano il contatore
+condiviso e rifiuta la polarità sbagliata, in tutte e due le forme (sull'espressione diretta
+e sulla variabile). Messa in rosso di proposito rimettendo il difetto in un file: lo nomina.
+Ha anche una prova che **il controllo sa riconoscere la forma malata**, perché una guardia
+scritta con un'espressione regolare sbagliata non riconosce niente e resta verde per sempre.
+
+**I tre PDF si consegnano dallo STESSO passaggio che li verifica**, con
+`SALVA_PDF=<cartella> npm run qa -- nis2-percorso`. Uno script a parte che li rigenerasse
+per la consegna sarebbe una seconda strada verso lo stesso file, e le due divergono: si
+finirebbe per consegnare un documento che nessuno ha contato. I tre sono in
+`Desktop/EvalisDeck - Documenti`.
+
+**Regole nate qui:**
+- **`riepilogo` restituisce i ROSSI, non «è andata bene».** Il vero va mappato su 1. Sono
+  tre le forme sane e una sola la malata, e si riconosce dal `? 0 : 1`.
+- **Un referto giusto a schermo non dice niente sul codice d'uscita.** Sono due canali, li
+  leggono due destinatari diversi, e possono dire cose opposte.
+- **Un aiutante di shell che sovrascrive un file può arrivare in ritardo.** Un `cp` di
+  ripristino lanciato in un comando finito in background ha riportato indietro una
+  correzione fatta dopo, in silenzio: se ne è accorto `git status`, che non mostrava il file
+  fra i modificati. **Dopo un ripristino si verifica che la modifica sia ancora lì.**
+- ⚠️ **Il dimezzamento dei backslash negli heredoc ha colpito di nuovo**, questa volta su
+  un'espressione regolare costruita a stringa: `\s` diventava `s` e la guardia si fermava con
+  «Unterminated group». Le espressioni regolari si scrivono **letterali**, o con
+  `String.raw`, e i file fitti di simboli si scrivono con lo strumento di scrittura.
+
+⚠️ **Debito dichiarato**: la cartella di consegna `Desktop/EvalisDeck - Documenti` è ferma a
+**cinque** documenti su diciannove tipi. Mancano quelli dei moduli usciti da agosto in poi —
+231, ISO 37001, segnalazioni, filiera, QAS, SA8000, metodo ESG — e ora ci sono i tre NIS2.
+Colmarla è una passata a sé, e il modo per farla è quello appena messo in piedi: il flag
+`SALVA_PDF` sul collaudo che quei documenti li verifica già.
+
+**Il giro sull'anteprima dei due percorsi NIS2 (2026-09-08)** — 54 collaudi contro un
+deploy vero. Il prodotto ha retto; a cedere sono stati gli strumenti, e una volta di più
+il difetto peggiore era in ciò che misura.
+
+**Il ramo, e l'ordine che Vercel impone.** `anteprima/nis2`, e l'ordine non è quello che
+sembra: Vercel **rifiuta** di legare una variabile a un ramo che sul remoto non esiste
+ancora (`Branch not found in the connected Git repository`). Quindi si spinge prima, e
+allora parte subito un build che eredita le variabili di **produzione** — il nostro era in
+coda quaranta secondi dopo il push. Va annullato, si creano le sette variabili legate al
+ramo, e si ridistribuisce. `scripts/vercel-deploy.mjs` fa i tre passi che il metodo
+chiedeva e che nessuno script sapeva fare.
+
+⚠️ **E il preparatore delle variabili puntava a un ramo di settimane prima.**
+`vercel-prepara-anteprima.mjs` aveva come predefinito `anteprima/collaudo-completo`:
+lanciato da un altro ramo rispondeva «c'è già su questo ramo, salto» per tutte e sette,
+mentre sul ramo vero non ce n'era **nessuna**. Chi ci avesse creduto avrebbe collaudato
+contro il database che incassa. Ora il predefinito è il ramo corrente, letto da
+`.git/HEAD` — non lanciando `git`, perché una chiamata sincrona a un processo figlio dentro
+uno script che poi fa richieste di rete fa cadere il processo in chiusura — e `main` viene
+rifiutato.
+
+**La precedenza delle variabili di ramo si è MISURATA, non creduta.** Le cinque critiche
+valgono ancora anche su `preview` con i valori di produzione: se la precedenza non
+funzionasse, cinquantaquattro collaudi scriverebbero nel database che incassa. La prova è
+stata creare un conto **dall'anteprima** e ritrovarlo nel database di **sviluppo**. Un
+minuto di lavoro prima di due ore di collaudi che scrivono.
+
+🔴 **Due collaudi non chiudevano la connessione al database, e appendevano il processo.**
+`visual-check-shell` ha scritto la sua ultima schermata dopo **venti secondi** ed è rimasto
+appeso **quarantadue minuti**; `visual-check-impostazioni`, stesso difetto, ci ha messo
+**1706 secondi** al posto di una manciata. Un pool `postgres` aperto tiene vivo il giro
+degli eventi: il collaudo fa il suo lavoro, stampa il referto, e il processo non esce mai.
+Non fallisce — appende, e chi guarda vede un timeout e accusa il prodotto. Dopo la
+correzione `shell` sull'anteprima costa **27 secondi**.
+
+⚠️ **La regola c'era già, scritta il 2 settembre dopo che lo stesso file aveva bloccato un
+lotto intero**: «un collaudo che non chiude le proprie risorse non fallisce: appende». Era
+rimasta una frase in un documento, e sei giorni dopo il difetto era ancora lì, sullo stesso
+file. Ora la tiene `collaudi-risorse-pure.test.ts`, messo in rosso togliendo la chiusura.
+
+**La diagnosi è arrivata dalle date dei file, non dalle ipotesi.** Avevo un sospetto —
+`networkidle`, che questo progetto ha già condannato — e l'ho **misurato prima di
+correggerlo**: sull'anteprima si risolve in 7 secondi sulla home e in 1 sul login. Era
+innocente. A dirlo è stato l'orario dell'ultima schermata: lavoro finito alle 16:29:23,
+processo vivo alle 17:11.
+
+**Esito**: **52 su 54 verdi**, e i due rossi — `documenti-qas` e `sgiqas-percorso`, del
+modulo QAS, estranei a NIS2 — sono **verdi in locale e verdi sull'anteprima se lanciati da
+soli**, con il bersaglio stampato e verificato. È contesa in una batteria di
+cinquantaquattro, e si dichiara invece di assorbirla nel verde: hanno ceduto a due
+tentativi di fila sotto carico, il che non è la stessa cosa di un rosso occasionale.
+
+✅ **`nis2-percorso` 44 su 44 sull'anteprima**, con i tre PDF generati da un deploy vero:
+16, 11 e 8 pagine. È il controllo che il 27 agosto scoprì Chromium che stampava la pagina
+di accesso di Vercel, e su un'anteprima protetta è l'unico posto dove quel difetto esiste.
+
+**Regole nate qui:**
+- **Su Vercel l'ordine è: spingi, ANNULLA, lega le variabili, ridistribuisci.** Le
+  variabili di ramo non si possono creare prima che il ramo esista, e il primo build parte
+  da solo. `[skip ci]` non lo ferma: provato.
+- **La precedenza di una variabile si misura scrivendo una riga e andandola a cercare.**
+  «Vercel dice che ha la precedenza» non è una prova quando la posta è il database che
+  incassa.
+- **Uno strumento con un bersaglio predefinito scritto a mano invecchia in silenzio**, e
+  risponde «c'è già» su un ramo che non è il tuo. Il predefinito giusto è quello che si
+  ricava dallo stato corrente.
+- **Un processo che non esce non è un collaudo lento.** Prima di dare la colpa alla rete o
+  al prodotto, si guarda l'orario dell'ultimo effetto prodotto: se il lavoro è finito da
+  quaranta minuti, il problema è la chiusura.
+- **Una regola che vive solo in un commento non protegge niente.** Questa era scritta, ed è
+  tornata sullo stesso file sei giorni dopo.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

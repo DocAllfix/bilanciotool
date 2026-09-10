@@ -76,6 +76,24 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "sgiqas.requisito.set": "Requisito del sistema integrato valutato",
   "sgiqas.indicatore.create": "Indicatore di prestazione creato",
   "sgiqas.indicatore.set": "Indicatore di prestazione aggiornato",
+
+  // ── NIS2 · D.Lgs. 138/2024 ─────────────────────────────────────────────────
+  //
+  // ⚠️ Le prime cinque cominciano con `nis2.` e valgono per ENTRAMBI i percorsi: profilo,
+  // ambito e risposte ai requisiti sono dati condivisi, e chi legge la cronologia non deve
+  // dedurre da quale delle due schermate e' stata fatta la modifica — la modifica e' una.
+  "nis2.autovalutazione.crea": "Autovalutazione NIS2 avviata",
+  "nis2.sistema.crea": "Sistema di gestione NIS2 avviato",
+  "nis2.ambito.set": "Ambito soggettivo NIS2 aggiornato",
+  "nis2.assetto.set": "Assetto di governance NIS2 aggiornato",
+  "nis2.requisito.set": "Requisito NIS2 valutato",
+  "sgnis2.controllo.set": "Controllo NIS2 aggiornato",
+  "sgnis2.fase.set": "Fase della roadmap NIS2 aggiornata",
+  "sgnis2.roadmap.set": "Termini della roadmap NIS2 aggiornati",
+  "sgnis2.indicatori.carica": "Indicatori NIS2 di base caricati",
+  "sgnis2.indicatore.crea": "Indicatore NIS2 creato",
+  "sgnis2.indicatore.set": "Indicatore NIS2 aggiornato",
+  "sgnis2.rilevazione.set": "Rilevazione di un indicatore NIS2 registrata",
   "sgiqas.indicatore.delete": "Indicatore di prestazione rimosso",
   "sgiqas.indicatori.base": "Indicatori di partenza caricati",
   "sgiqas.rilevazione.set": "Rilevazione registrata",
@@ -212,6 +230,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.valutazione_ssl.publish": "Valutazione dei rischi pubblicata",
   "documento.manuale_sa8000.publish": "Manuale SA8000 pubblicato",
   "documento.dichiarazione_filiera.publish": "Dichiarazione di filiera pubblicata",
+  "documento.conformita_nis2.publish": "Relazione sulla conformità NIS2 pubblicata",
+  "documento.relazione_nis2.publish": "Relazione sul sistema di gestione NIS2 pubblicata",
+  "documento.controlli_nis2.publish": "Catalogo dei controlli NIS2 pubblicato",
   // I quattro del metodo ESG.
   "documento.offerta_esg.publish": "Offerta professionale pubblicata",
   "documento.verbale_avvio.publish": "Verbale di avvio pubblicato",
@@ -234,6 +255,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "documento.valutazione_ssl.pdf": "Valutazione dei rischi scaricata in PDF",
   "documento.manuale_sa8000.pdf": "Manuale SA8000 scaricato in PDF",
   "documento.dichiarazione_filiera.pdf": "Dichiarazione di filiera scaricata in PDF",
+  "documento.conformita_nis2.pdf": "Relazione sulla conformità NIS2 scaricata in PDF",
+  "documento.relazione_nis2.pdf": "Relazione sul sistema NIS2 scaricata in PDF",
+  "documento.controlli_nis2.pdf": "Catalogo dei controlli NIS2 scaricato in PDF",
   "demo.seed": "Organizzazione dimostrativa creata",
   "org.create": "Studio creato",
 };

@@ -21,13 +21,54 @@
 //   node scripts/vercel-prepara-anteprima.mjs            → dice cosa farebbe, non fa niente
 //   node scripts/vercel-prepara-anteprima.mjs --applica  → esegue
 //
-//   --ramo <nome>   il ramo da preparare (predefinito: anteprima/collaudo-completo)
+//   --ramo <nome>   il ramo da preparare (predefinito: quello su cui sei adesso)
+//
+// ⚠️ IL PREDEFINITO E' IL RAMO CORRENTE, e non un nome scritto qui dentro. C'era
+// «anteprima/collaudo-completo», cioe' il ramo di un giro finito settimane prima: lanciato
+// da un altro ramo, lo script rispondeva «c'e' gia' su questo ramo, salto» per tutte e
+// sette le variabili — mentre sul ramo vero non ce n'era nessuna. Chi ci avesse creduto
+// avrebbe spinto un ramo che, senza variabili proprie, eredita quelle di PRODUZIONE: la
+// preview avrebbe collaudato contro il database che incassa.
+//
+// E' la stessa lezione del bersaglio dei collaudi: uno strumento che dichiara un
+// bersaglio diverso da quello su cui agisce e' peggio di uno che non lo dichiara, perche'
+// a quello ci si crede.
 
 import { readFileSync } from "node:fs";
 
 const APPLICA = process.argv.includes("--applica");
 const iRamo = process.argv.indexOf("--ramo");
-const RAMO = iRamo >= 0 ? process.argv[iRamo + 1] : "anteprima/collaudo-completo";
+/**
+ * Il ramo corrente, letto da `.git/HEAD`.
+ *
+ * ⚠️ NON si lancia `git`: su Windows una chiamata sincrona a un processo figlio, dentro
+ * uno script che poi fa richieste di rete, fa cadere il processo in chiusura con
+ * «Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)» e un'uscita 127. Uno script
+ * di preparazione che esce con errore DOPO aver stampato il piano giusto e' peggio di uno
+ * che non funziona: sembra che qualcosa sia andato storto, e nessuno sa che cosa.
+ *
+ * `.git/HEAD` contiene `ref: refs/heads/<nome>` su un ramo, e il solo SHA se si e' in
+ * stato distaccato — dove un ramo da preparare non c'e', e va detto.
+ */
+const ramoCorrente = () => {
+  try {
+    const testa = readFileSync(".git/HEAD", "utf8").trim();
+    return testa.startsWith("ref: refs/heads/") ? testa.slice("ref: refs/heads/".length) : "";
+  } catch {
+    return "";
+  }
+};
+const RAMO = iRamo >= 0 ? process.argv[iRamo + 1] : ramoCorrente();
+if (!RAMO) {
+  console.error("Non riesco a leggere il ramo corrente: passalo con --ramo <nome>");
+  process.exit(1);
+}
+// ⚠️ Mai `main`: Vercel distribuisce in produzione da li', e legare a `main` variabili
+// d'anteprima significherebbe scavalcare quelle di produzione sul sito vivo.
+if (RAMO === "main") {
+  console.error("Il ramo e' `main`: le variabili d'anteprima non si legano al ramo di produzione.");
+  process.exit(1);
+}
 
 // ── credenziali e identificativi ─────────────────────────────────────────────
 const token = readFileSync(".env.vercel", "utf8").match(/^VERCEL_TOKEN=(.*)$/m)?.[1]?.trim();

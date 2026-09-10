@@ -508,6 +508,36 @@ Non bloccano il lancio, ma vanno saputi.
    le source map e vive solo nel pannello Vercel. Se sparisce il build **riesce lo
    stesso**, e gli stack trace in produzione diventano illeggibili: il guasto silenzioso
    che tutto il resto del monitoraggio è costruito per evitare.
+10. **I due corsi NIS2 sono muti.** I copioni sono consegnati e validati
+    (`audio-formazione/nis2/script.json` e `sgnis2/script.json`, 24,4 minuti a corso, zero
+    caratteri fuori dalla lista bianca), ma le tracce non sono ancora state sintetizzate.
+    Le sei sezioni comuni hanno la voce, le cinque proprie no: a schermo i due corsi
+    mostrano «con la voce **in parte**», che è il vero, e `tracce-pure` salta le sezioni
+    senza traccia invece di accusare il calcolo.
+    **Come si verifica**: `node audio-formazione/valida-script.mjs nis2 sgnis2` non deve
+    segnalare caratteri fuori lista; a tracce caricate, `minutiDiVoce` deve dare
+    `completa: true` per i due corsi.
+    ⚠️ **Il manifesto si importa al momento del build**: tracce nuove pretendono un
+    redeploy, altrimenti in anteprima i corsi restano muti e sembra un difetto del player.
+
+12. ⚠️ **Due collaudi QAS cedono sotto carico in una batteria di cinquantaquattro.**
+    `documenti-qas` e `sgiqas-percorso` sono rossi nel giro completo sull'anteprima e
+    **verdi in locale (18/18 e 32/32) e verdi sull'anteprima se lanciati da soli**, con il
+    bersaglio stampato e verificato. Hanno ceduto a due tentativi di fila sotto carico, il
+    che non è la stessa cosa di un rosso occasionale: va guardato, non assorbito nel verde.
+    **Come si verifica**: `npm run qa -- documenti-qas --su <anteprima>` da solo deve
+    passare; se passa solo da solo, la causa è la contesa sul database di sviluppo condiviso
+    fra i collaudi della batteria.
+
+11. **Undici corsi su quindici non hanno ancora le domande di verifica.** La capacità c'è
+    ed è costruita per tutti; le domande esistono solo sui due NIS2 e su quanto già
+    scritto. **Non è un difetto nascosto**: la scheda dell'indice e l'intestazione del
+    corso dichiarano «verifica in preparazione», e il numero delle domande si deriva dalle
+    sezioni invece di essere scritto accanto al corso.
+    **Come si verifica**: `npm run qa -- formazione-comandi` ha un controllo che pretende
+    che entrambe le frasi compaiano nell'indice; e `formazione-verifiche-pure` rifiuta una
+    domanda malformata (indice della risposta fuori dalle opzioni, opzioni ripetute,
+    spiegazione mancante, soglia irraggiungibile).
 
 ---
 

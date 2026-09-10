@@ -35,6 +35,28 @@ const RADICE = join(process.cwd(), "src", "features", "formazione");
 const MESI =
   "(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)";
 
+/**
+ * Le parole che, PRIMA di un numero, ne fanno un riferimento a una norma.
+ *
+ * ⚠️ Stessa famiglia del trattino già escluso per «ESRS S1-14»: «l'art. 25» e «il comma 2»
+ * non sono conteggi del seme, e nei moduli di conformità compaiono a ogni paragrafo. Con i
+ * numeri degli articoli che crescono, la collisione è quasi certa — è arrivata con NIS2,
+ * dove l'art. 25 collide con le 25 sorgenti GHG e l'art. 23 con nient'altro che il caso.
+ *
+ * È una REGOLA e non un'eccezione perché copre anche l'articolo che nessuno ha ancora
+ * citato; un elenco di frasi coprirebbe solo quelle scritte finora.
+ */
+const RIFERIMENTI = "(art\\.|articolo|artt\\.|comma|commi|allegato|Allegato|direttiva|Direttiva|punto)";
+
+/**
+ * Le parole che, DOPO un numero, ne fanno una grandezza e non un conteggio di cose.
+ *
+ * ⚠️ Stessa famiglia del segno di percento già escluso. «Dieci milioni di euro» è il tetto
+ * sanzionatorio dell'art. 38, e il suo «10» non ha niente a che vedere con i 10 pilastri
+ * del 231 — che è esattamente quello che la guardia proponeva di usare al suo posto.
+ */
+const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti)";
+
 /** I file di CONTENUTO: le sezioni comuni e quelle dei singoli percorsi. */
 function fileDiContenuto(): string[] {
   const file = [join(RADICE, "comuni.ts")];
@@ -81,6 +103,10 @@ const ECCEZIONI: [string, string][] = [
   [
     "Meno 15% di kWh per ora lavorata entro il 2027 rispetto al 2024",
     "esempio di obiettivo misurabile: la percentuale è parte del testo citato, non la soglia delle parole",
+  ],
+  [
+    "Tre requisiti al 100% su venti applicabili: 300 ÷ 20 = 15. Mediando sui soli valutati verrebbe 100, che è lo stesso numero di «tutti e venti conformi».",
+    "l'aritmetica di un esempio inventato: i tre numeri sono i termini di una divisione, e derivarli dal seme la renderebbe falsa",
   ],
 ];
 
@@ -155,7 +181,7 @@ describe("i numeri della formazione", () => {
           // un template literal un solo `\d` è la lettera «d», e la guardia smetterebbe di
           // scattare senza dirlo. Ci sono ricascato scrivendo proprio questa riga.
           const comeConteggio = new RegExp(
-            `(?<![\\d\\-/])(?<![\\d][.,])${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})`,
+            `(?<![\\d\\-/])(?<![\\d][.,])(?<!${RIFERIMENTI} )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
             "u",
           );
           if (comeConteggio.test(daControllare)) {

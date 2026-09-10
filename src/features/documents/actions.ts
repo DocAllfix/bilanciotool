@@ -11,7 +11,9 @@ import {
   publishRelazioneWbSnapshot,
   publishRiesameQasSnapshot,
   publishManualeSa8000Snapshot,
+  publishConformitaNis2Snapshot,
   publishDichiarazioneFilieraSnapshot,
+  publishSistemaNis2Snapshot,
   publishSgesgSnapshot,
   publishAnalisiAmbientaleSnapshot,
   publishValutazioneSslSnapshot,
@@ -68,6 +70,15 @@ export async function publishDocumentAction(
         case "dossier_finale": {
           const t = tipo;
           return (u: string, o: string, c: string, a: number) => publishSgesgSnapshot(u, o, c, a, t);
+        }
+        case "conformita_nis2":
+          return (u: string, o: string, c: string) => publishConformitaNis2Snapshot(u, o, c);
+        // ⚠️ I due del sistema di gestione passano da UNA funzione sola, che riceve anche
+        // il tipo: cambia quale parte dello stesso stato si stampa, non da dove viene.
+        case "relazione_nis2":
+        case "controlli_nis2": {
+          const t = tipo;
+          return (u: string, o: string, c: string) => publishSistemaNis2Snapshot(u, o, c, t);
         }
         default: {
           const mai: never = tipo;

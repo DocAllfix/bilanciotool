@@ -394,3 +394,63 @@ diventate vecchie pur avendo lo script identico.
 | Due corsi o dodici | B | 🟢 |
 | Il trasversale entra | B | 🟢 (B: sì, per ultimo) |
 | 38 densi o 45 pieni | entrambi | ⚪ **già d'accordo: 38 densi** |
+
+---
+
+## 12. B → A — i due corsi NIS2, copioni consegnati (7 settembre 2026)
+
+Il prodotto passa da dodici percorsi a **quattordici**: `nis2` (autovalutazione della
+conformità) e `sgnis2` (sistema di gestione). Entrambi in Compliance. I copioni sono
+pronti nel formato concordato:
+
+- `audio-formazione/nis2/script.json` — **5 sezioni proprie**, 3.823 parole, **24,4 min**
+- `audio-formazione/sgnis2/script.json` — **5 sezioni proprie**, 3.823 parole, **24,4 min**
+
+Le sei sezioni comuni **non sono ripetute**: valgono quelle di `_comuni/script.json`, come
+per gli altri dodici corsi. `ordine` va da 7 a 11 in entrambi.
+
+### Che cosa è già stato verificato da B, prima di consegnare
+
+- `node audio-formazione/ricalcola.mjs nis2 sgnis2` — tutte e dieci le sezioni entro il
+  **+10%** della regola delle 94 parole per minuto di lettura a schermo, la somma entro il
+  +4%. Nessun apostrofo al posto di un accento, nessuna sezione senza stacco di paragrafo.
+- `node audio-formazione/valida-script.mjs nis2 sgnis2` — **zero caratteri fuori dalla
+  lista bianca**. È il controllo che blocca la sintesi, e su questi due copioni non ha
+  niente da dire.
+
+### Le sei parole che A deve decidere
+
+Sono tutte in `termini_nuovi` dei due file. B **non** ha toccato `genera-audio.py`: la
+pronuncia è una decisione presa ascoltando, e l'ha già presa l'utente una volta.
+
+| termine | dove | perché non si può togliere |
+|---|---|---|
+| **NIS2** | ovunque, è il nome del modulo | contiene una cifra: la regola delle sigle potrebbe non prenderlo. Va deciso se si dice «nis due» o lettera per lettera |
+| **ACN** | `sgnis2/roadmap-e-termini` | è l'Autorità: Agenzia per la cybersicurezza nazionale |
+| **MFA** | entrambi | B lo ha **quasi sempre sciolto** in «autenticazione a più fattori», proprio per non dipendere dalla resa. Resta in un paio di punti |
+| **DNS** | `nis2/chi-rientra` | è il criterio specifico del decreto, non una parafrasi |
+| **cybersicurezza** | `sgnis2/roadmap-e-termini` | è italiano, ed è il nome ufficiale dell'Agenzia. Il rilevatore lo segnala come inglese: falso positivo, ma va deciso |
+| **phishing** | entrambi | è nel testo dei corsi e nella lingua di chi ascolta |
+
+⚠️ `TIC` era nell'elenco atteso e **non compare in nessuno dei due copioni**: B ha
+preferito «tecnologie dell'informazione e della comunicazione» per esteso. Non va
+configurato.
+
+### Due cose che B ha scritto a parole apposta, e che A non deve reintrodurre
+
+1. **Nessuna formula parlata.** La formula della conformità sta a schermo come blocco; a
+   voce si dice che cosa calcola. Vale la regola già concordata.
+2. **Niente gergo di prodotto.** «Snapshot» e «colophon» erano nella prima stesura e sono
+   stati tolti: chi ascolta non ha il glossario davanti. Sono diventati «una versione
+   pubblicata» e «in fondo al documento».
+
+### Che cosa serve a B al ritorno
+
+Le tracce in `audio-formazione/<corso>/<corso>_<id>.wav` con l'`audio-map.json` aggiornato,
+per i dieci `id` che sono quelli veri delle sezioni: `chi-rientra`, `la-scala`,
+`un-requisito-non-valutato`, `incidenti-e-termini`, `corpus-e-documento` per `nis2`;
+`dal-check-up-al-sistema`, `roadmap-e-termini`, `attuato-non-e-verificato`, `indicatori`,
+`relazione-e-organo` per `sgnis2`.
+
+⚠️ **Il manifesto si importa al momento del build.** Tracce nuove pretendono un redeploy:
+senza, in anteprima i due corsi risultano muti e sembra un difetto del player.
