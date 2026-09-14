@@ -57,7 +57,7 @@ PAROLE_AL_SECONDO = 2.607   # MISURATA su 16 tracce reali (gamma 2,37-2,77).
 # Sigle lette a lettere (convenzione I.A. / P.D.C.A. della fabbrica). NON si toccano
 # quelle che sono parole: ATECO, ENEA, ISPRA, INAIL, IVA, SOA, MUD.
 SIGLE = ["ESRS", "ESG", "GHG", "GRI", "GWP", "SGI", "QAS", "KPI", "PDF", "DDT",
-         "GPL", "PMI", "UTC", "CEI", "PDCA", "DNSH", "LCA"]
+         "GPL", "PMI", "UTC", "CEI", "PDCA", "DNSH", "LCA", "DNS"]
 
 # Termini inglesi -> <lang en-US>.
 #
@@ -74,7 +74,9 @@ SIGLE = ["ESRS", "ESG", "GHG", "GRI", "GWP", "SGI", "QAS", "KPI", "PDF", "DDT",
 # standard, target, budget, business, checklist. In italiano professionale si dicono
 # all'italiana, e forzarli in inglese suonerebbe peggio — audit da solo compare 43 volte.
 # Non riaggiungerli senza una nuova prova d'ascolto.
-INGLESI = ["scope", "file", "cloud", "stakeholder", "baseline"]
+# Aggiunti con i corsi NIS2 (14/09/2026): phishing e cyber. Stessa regola dei primi
+# cinque: in inglese SOLO dove la lettura italiana sbaglia la parola.
+INGLESI = ["scope", "file", "cloud", "stakeholder", "baseline", "phishing", "cyber"]
 
 GLOSSARIO = {
     "tCO₂e": "tonnellate di CO due equivalente", "CO₂e": "CO due equivalente",
@@ -86,6 +88,12 @@ GLOSSARIO = {
     "Σ": " sommatoria di ", "≥": " maggiore o uguale a ", "≤": " minore o uguale a ",
     "→": " che porta a ", "ᵢ": " i-esimo", "≈": " circa uguale a ", "≠": " diverso da ",
     "max(0,": "il maggiore fra zero e", "cat.": "categoria",
+    # NIS2 in italiano si dice "nis due": scritto tutto maiuscolo la voce lo tratta da
+    # sigla, in minuscolo con lo spazio lo legge come parola seguita dal numero.
+    "NIS2": "Nis 2",
+    # "cybersicurezza" si pronuncia con "cyber" all'inglese: separato, la lista INGLESI
+    # lo marca da solo.
+    "cybersicurezza": "cyber sicurezza",
 }
 LISTA_BIANCA = re.compile(r"[a-zA-Zà-ùÀ-Ù0-9\s.,;:!?']")
 
@@ -424,7 +432,19 @@ def main() -> int:
         corso = p.parent.name.strip("_")
         if a.corso and corso != a.corso:
             continue
-        for s in json.loads(p.read_text(encoding="utf-8"))["sezioni"]:
+        dati = json.loads(p.read_text(encoding="utf-8"))
+
+        # Controllo INVERSO: un termine dichiarato in `termini_nuovi` che nel testo non
+        # compare mai. Nei copioni NIS2 ce n'erano tre (ACN, MFA, TIC): chi decide la
+        # pronuncia avrebbe deciso su parole che la voce non dice. Si confronta con
+        # lookaround e non con \b, perché \b fallisce su "NIS2": fra la S e il 2 non c'è
+        # confine di parola.
+        testo_corso = " ".join(s["script"] for s in dati["sezioni"])
+        for termine in dati.get("termini_nuovi", []):
+            if not re.search(rf"(?<![A-Za-zÀ-ÿ0-9]){re.escape(termine)}(?![A-Za-zÀ-ÿ0-9])", testo_corso):
+                problemi.append(f"[{corso}] termine dichiarato ma assente dal testo: {termine}")
+
+        for s in dati["sezioni"]:
             id_ = f"{corso}/{s['id']}"
             try:
                 t = controlla(normalizza(s["script"]), id_)

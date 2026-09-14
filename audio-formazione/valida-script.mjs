@@ -114,7 +114,10 @@ for (const c of cartelle) {
     // l'elenco era così rumoroso da rendere invisibile l'unico termine vero.
     for (const m of s.script.matchAll(/\b\p{Ll}{4,}\b/gu)) {
       const w = m[0];
-      if (INGLESI.includes(w) || ITALIANE_PER_DECISIONE.has(w)) continue;
+      // ⚠️ Anche il GLOSSARIO: una parola con una pronuncia scritta è già decisa. Senza,
+      // `cybersicurezza` — resa come «cyber sicurezza» in genera-audio.py — restava fra i
+      // «non dichiarati» per sempre, e un avviso fisso è un avviso che si smette di leggere.
+      if (INGLESI.includes(w) || ITALIANE_PER_DECISIONE.has(w) || glossario.includes(w)) continue;
       if (PREFISSI_ITALIANI.some((p) => w.startsWith(p))) continue;
       // Solo grafie che in italiano NON esistono. La consonante finale non è un indizio:
       // l'italiano tronca (poter, far, gran) e il rumore seppellisce il segnale.
