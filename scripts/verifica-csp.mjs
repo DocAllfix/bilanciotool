@@ -73,6 +73,24 @@ await check("nemmeno col consenso accettato (Analytics carica davvero)", async (
   if (violazioni.length) throw new Error(violazioni[0]);
 });
 
+// ⚠️ DA QUI IN POI SI SCRIVE, e in produzione non si passa. Il metodo di rilascio dava
+// questo collaudo per «puri GET su pagine pubbliche», e le prime tre prove lo sono; le
+// successive REGISTRANO un conto (e l'ultima apre il pagamento, dove le chiavi sono vive).
+// Il 14 settembre 2026, lanciato sul sito vero dopo un rilascio, ha creato
+// `csp-…@example.com` con il suo studio nel database che incassa: tolto a mano.
+//
+// Il criterio è QUALE DATABASE si tocca, non dove punta il browser — lo stesso di
+// `registraEEntra` e di `guardia-database.mjs`: un'anteprima è nostra, la produzione no.
+const IN_PRODUZIONE =
+  (process.env.DATABASE_URL ?? "").includes("hahtljrexrngtfsplbsz") || /^https:\/\/(www\.)?evalisdeck\.it/.test(BASE);
+if (IN_PRODUZIONE) {
+  console.log("  --   saltate in produzione: accesso, percorso di un'azienda e pagamento registrerebbero un conto vero");
+  console.log(`\nCSP: ${ok} ok, ${ko} falliti (parte pubblica soltanto)`);
+  await browser.close();
+  await sql.end();
+  process.exit(ko ? 1 : 0);
+}
+
 const RUN = Date.now();
 await check("l'applicazione, dopo l'accesso, non produce violazioni", async () => {
   await registraEEntra(page, sql, {

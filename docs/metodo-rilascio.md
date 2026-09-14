@@ -131,7 +131,10 @@ il comando dopo scriverebbe altrove.
 ### 6 · La fusione, e dopo
 
 Dopo il rilascio, i collaudi in **sola lettura** sul sito vivo: `tutto-pubblico`,
-`sitemap`, `legale`, `csp`. Sono puri GET su pagine pubbliche — verificato file per file
+`sitemap`, `legale`, `csp`. ⚠️ **`csp` NON lo era tutto**: dopo le prove pubbliche
+registrava un conto e apriva il pagamento. Il 14 settembre 2026 ha creato
+`csp-…@example.com` nel database di produzione, tolto con `pulisci-produzione.mjs`. Ora in
+produzione salta da solo le prove che scrivono e lo dice. Le altre sono puri GET su pagine pubbliche — verificato file per file
 che non registrino niente e non tocchino Stripe.
 
 ⚠️ **Mai in produzione i collaudi che scrivono.** Registrano utenti veri, pubblicano
