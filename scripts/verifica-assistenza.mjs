@@ -202,11 +202,33 @@ await agisci("⚠️ con l'abbonamento SCADUTO si scrive lo stesso, e il ticket 
   // pagare. Il paywall non tocca questa pagina, ed è dichiarato anche nei test.
   await sql`update org_entitlement set status='expired' where organization_id = ${orgCliente}`;
   await vaiA(cliente, `${BASE}/assistenza/${ticketId}`);
+  // ⚠️ Si aspetta la CONVERSAZIONE e poi il pulsante ATTIVO, non si scrive appena arriva
+  // il guscio. Sull'anteprima la pagina arriva prima che React sia vivo: scrivendo subito,
+  // il testo finisce nel campo ma non nello stato, «Invia» resta disattivato e il clic
+  // scade — che si legge «il prodotto non lascia scrivere». In locale non si vede mai.
+  await cliente.waitForSelector("[data-conversazione]", { timeout: 60_000 });
   await cliente.fill("#risposta", "Ho lo stesso problema anche col rinnovo.");
+  const attivo = await cliente
+    .waitForSelector("[data-invia]:not([disabled])", { timeout: 20_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!attivo) {
+    // Un secondo tentativo, DICHIARATO: se React si è idratato dopo il primo `fill`, il
+    // campo va riscritto perché lo stato lo registri. Se anche così resta spento, il
+    // difetto è del prodotto e il controllo lo dice.
+    await cliente.fill("#risposta", "");
+    await cliente.fill("#risposta", "Ho lo stesso problema anche col rinnovo.");
+    await cliente.waitForSelector("[data-invia]:not([disabled])", { timeout: 20_000 }).catch(() => {
+      throw new Error("«Invia» resta disattivato dopo aver scritto: il testo non arriva allo stato");
+    });
+  }
   await cliente.click("[data-invia]");
-  await cliente.waitForTimeout(1500);
-  const msg = await sql`select count(*)::int n from assistenza_messaggio where ticket_id = ${ticketId}`;
-  if (msg[0].n !== 3) throw new Error(`i messaggi sono ${msg[0].n}: la risposta non è stata scritta`);
+  let n = 0;
+  for (let i = 0; i < 30 && n !== 3; i++) {
+    await cliente.waitForTimeout(500);
+    [{ n }] = await sql`select count(*)::int n from assistenza_messaggio where ticket_id = ${ticketId}`;
+  }
+  if (n !== 3) throw new Error(`i messaggi sono ${n}: la risposta non è stata scritta`);
   const [t] = await sql`select stato from assistenza_ticket where id = ${ticketId}`;
   if (t.stato !== "aperto") throw new Error(`rispondendo a una richiesta chiusa lo stato è «${t.stato}»`);
 });

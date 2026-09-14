@@ -127,7 +127,12 @@ export function Presentazione({
   const conAudio = pista.some((p) => p.src);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background" data-presentazione="">
+    // ⚠️ `data-sezione` è l'ancora con cui un collaudo sa in quale sezione si trova. Prima la
+    // deduceva dal titolo nell'intestazione, che sulle slide distillate non c'è — lo porta la
+    // tela — e quando tutti i corsi sono diventati distillati il titolo era sempre vuoto: il
+    // collaudo non vedeva mai cambiare sezione. Un testo che la grafica può togliere non è
+    // un'ancora.
+    <div className="fixed inset-0 z-50 flex flex-col bg-background" data-presentazione="" data-sezione={corrente.sezione.id}>
       {conAudio && (
         <audio
           ref={audioRef}

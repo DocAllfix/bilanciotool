@@ -53,6 +53,9 @@ const stato = () =>
       n,
       tot,
       titolo: document.querySelector("[data-presentazione] h1")?.textContent?.trim() ?? "",
+      // ⚠️ La sezione si legge dall'ANCORA, non dal titolo: sulle slide distillate il titolo
+      // nell'intestazione non c'è, e dedurla da lì diceva «mai cambiata sezione».
+      sezione: document.querySelector("[data-presentazione]")?.getAttribute("data-sezione") ?? "",
       audio: a ? { src: a.getAttribute("src") ?? "", t: a.currentTime, pausa: a.paused, durata: a.duration } : null,
     };
   });
@@ -169,15 +172,16 @@ await agisci("passando di sezione cambia la traccia, non solo la slide", async (
   const partenza = await page.evaluate(
     () => document.querySelector("[data-presentazione] audio")?.getAttribute("src") ?? "",
   );
-  const sezionePartenza = (await stato()).titolo;
+  const sezionePartenza = (await stato()).sezione;
   for (let k = 0; k < 30; k++) {
     const s2 = await stato();
     if (s2.n >= s2.tot) break;
     await page.getByRole("button", { name: /Avanti/ }).click();
     await page.waitForTimeout(200);
-    if ((await stato()).titolo !== sezionePartenza) break;
+    if ((await stato()).sezione !== sezionePartenza) break;
   }
-  if ((await stato()).titolo === sezionePartenza) throw new Error("non si è mai cambiata sezione");
+  if (!sezionePartenza) throw new Error("la presentazione non dichiara in quale sezione si trova");
+  if ((await stato()).sezione === sezionePartenza) throw new Error("non si è mai cambiata sezione");
   await attendi(
     async () => {
       const ora = await page.evaluate(
@@ -193,7 +197,7 @@ await agisci("passando di sezione cambia la traccia, non solo la slide", async (
 
 // ── Uscire riporta al corso, sulla sezione in cui si era ────────────────────────────────
 await agisci("uscendo si torna al corso, sul punto in cui si era", async () => {
-  const titolo = (await stato()).titolo;
+  const { sezione } = await stato();
   await page.getByRole("button", { name: /^Esci$/ }).click();
   await page.waitForURL(/\/formazione\/energetico(#|$)/);
   await page.waitForSelector("[data-sezioni]");
@@ -202,7 +206,9 @@ await agisci("uscendo si torna al corso, sul punto in cui si era", async () => {
   // `CSS.escape` vive nel BROWSER, non in Node: la domanda va fatta dentro la pagina.
   const presente = await page.evaluate((id) => Boolean(document.getElementById(id)), ancora);
   if (!presente) throw new Error(`l'ancora ${ancora} non esiste nella pagina del corso`);
-  return `torna su «${titolo}» (${ancora})`;
+  // Più stretto di prima: l'ancora deve essere PROPRIO la sezione in cui si era.
+  if (ancora !== sezione) throw new Error(`si torna su «${ancora}» invece che su «${sezione}»`);
+  return `torna su «${sezione}»`;
 });
 
 // ── La traccia non si serve a chi non ha fatto l'accesso ────────────────────────────────
