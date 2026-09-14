@@ -1,0 +1,1014 @@
+[
+  {
+    "sezione": "chi-rientra",
+    "p": 0,
+    "inizia": "Prima di chiedersi quanto un'azienda sia",
+    "layout": "apertura",
+    "titolo": "Chi rientra",
+    "sottotitolo": "E a quale titolo",
+    "testo": "Prima di chiedersi quanto un'azienda sia conforme, bisogna stabilire se il decreto le si applica.",
+    "agenda": [
+      "I settori dei due allegati",
+      "Le soglie dimensionali",
+      "I criteri specifici",
+      "Fuori ambito e non determinata",
+      "Il tetto delle sanzioni"
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 2,
+    "inizia": "I settori elencati dal decreto sono",
+    "layout": "confronto",
+    "titolo": "Due allegati, due pesi",
+    "a": {
+      "h": "Allegato I",
+      "sub": "{settoriNis2Allegato1} settori ad alta criticità",
+      "punti": [
+        "A parità di dimensione, classificazione più grave",
+        "Una grande impresa qui è essenziale"
+      ]
+    },
+    "b": {
+      "h": "Allegato II",
+      "sub": "{settoriNis2Allegato2} altri settori critici",
+      "punti": [
+        "A parità di dimensione, classificazione meno grave",
+        "Una grande impresa qui è importante"
+      ]
+    }
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 3,
+    "inizia": "Il parametro dimensionale ha tre gradini,",
+    "layout": "numeri",
+    "titolo": "Il parametro dimensionale",
+    "numeri": [
+      {
+        "n": "50 addetti",
+        "h": "Media impresa",
+        "d": "Oppure da 10 milioni di fatturato."
+      },
+      {
+        "n": "250 addetti",
+        "h": "Grande impresa",
+        "d": "Oppure da 50 milioni di fatturato."
+      },
+      {
+        "n": "Una soglia",
+        "h": "Basta superarne una",
+        "d": "Addetti e fatturato non si sommano e non si mediano."
+      }
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 4,
+    "inizia": "Dall'incrocio dei due parametri escono tre",
+    "layout": "cards",
+    "titolo": "Dall'incrocio, tre esiti",
+    "cards": [
+      {
+        "h": "Essenziale",
+        "d": "Grande impresa in Allegato I."
+      },
+      {
+        "h": "Importante",
+        "d": "Grande impresa in Allegato II, o media impresa in uno dei due allegati."
+      },
+      {
+        "h": "Fuori ambito",
+        "d": "Micro o piccola impresa, in entrambi gli allegati."
+      }
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 5,
+    "inizia": "Ma non basta per tutti, e",
+    "layout": "evidenza",
+    "eyebrow": "La parte che si sbaglia",
+    "titolo": "I {criteriNis2} criteri specifici scavalcano la dimensione.",
+    "testo": "Una microimpresa che fornisce servizi DNS, o che è l'unico fornitore in Italia di un servizio essenziale, è soggetto essenziale."
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 6,
+    "inizia": "Quando ne ricorrono due insieme, prevale",
+    "layout": "definizione",
+    "eyebrow": "Quando ne ricorrono due",
+    "titolo": "Prevale il più grave",
+    "definizione": "Non il primo che hai spuntato né quello più in alto nell'elenco: decide il criterio più grave, e con lui il tetto delle sanzioni.",
+    "punti": [
+      {
+        "h": "Sei criteri",
+        "d": "portano a essenziale"
+      },
+      {
+        "h": "Due criteri",
+        "d": "portano a importante"
+      }
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 7,
+    "inizia": "C'è poi una distinzione che il",
+    "layout": "confronto",
+    "titolo": "Fuori ambito non è non determinata",
+    "a": {
+      "h": "Fuori ambito",
+      "sub": "È una determinazione",
+      "punti": [
+        "Settore elencato e dimensione nota",
+        "Il decreto non si applica",
+        "Si scrive in un documento firmato"
+      ]
+    },
+    "b": {
+      "h": "Non determinata",
+      "sub": "Nessuna conclusione",
+      "punti": [
+        "Manca la dimensione",
+        "Oppure il settore non è negli allegati",
+        "Non vale come fuori ambito"
+      ]
+    }
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 9,
+    "inizia": "Dalla classificazione discende il numero che",
+    "layout": "numeri",
+    "titolo": "Il tetto delle sanzioni, articolo 38",
+    "numeri": [
+      {
+        "n": "10 milioni",
+        "h": "Soggetto essenziale",
+        "d": "Oppure il 2% del fatturato mondiale annuo, se superiore."
+      },
+      {
+        "n": "7 milioni",
+        "h": "Soggetto importante",
+        "d": "Oppure l'1,4% del fatturato mondiale annuo."
+      }
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 10,
+    "inizia": "Per questo la schermata dell'ambito non",
+    "layout": "split",
+    "titolo": "L'esito porta la sua ragione",
+    "lead": "Accanto alla classificazione c'è sempre la via da cui viene: senza, non la difendi davanti a chi verifica.",
+    "punti": [
+      {
+        "h": "Grande impresa",
+        "d": "in Allegato I"
+      },
+      {
+        "h": "Criterio specifico",
+        "d": "con il suo numero"
+      },
+      {
+        "h": "Settore non elencato",
+        "d": "quando la strada non porta a una conclusione"
+      }
+    ]
+  },
+  {
+    "sezione": "chi-rientra",
+    "p": 11,
+    "inizia": "Un'ultima avvertenza pratica, che riguarda il",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Prima l'ambito",
+        "d": "un errore qui si porta dietro tutto il resto"
+      },
+      {
+        "h": "I criteri specifici",
+        "d": "prevalgono sulla dimensione"
+      },
+      {
+        "h": "Fuori ambito",
+        "d": "è una determinazione, non un vuoto"
+      },
+      {
+        "h": "Valutazione preliminare",
+        "d": "la qualificazione definitiva compete all'Autorità"
+      }
+    ],
+    "prossimo": {
+      "titolo": "La scala da zero a quattro",
+      "testo": "Come si valuta ciascun requisito, e perché il tre è caro."
+    }
+  },
+  {
+    "sezione": "la-scala",
+    "p": 0,
+    "inizia": "I requisiti dell'autovalutazione sono centoventiquattro, distribuiti",
+    "layout": "apertura",
+    "titolo": "La scala da zero a quattro",
+    "sottotitolo": "E perché il tre è caro",
+    "testo": "{requisitiNis2Autovalutazione} requisiti su {capiNis2} capi, ciascuno valutato su cinque gradini.",
+    "agenda": [
+      "I cinque livelli",
+      "Il salto dal due al tre",
+      "Il livello obiettivo",
+      "Non applicabile",
+      "Come si conduce la verifica"
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 1,
+    "inizia": "Ogni requisito si valuta su una",
+    "layout": "tabella",
+    "titolo": "Cinque gradini, cinque definizioni",
+    "cols": [
+      "Livello",
+      "Nome",
+      "Che cosa pretende"
+    ],
+    "righe": [
+      [
+        "0",
+        "Assente",
+        "Non attuata né pianificata"
+      ],
+      [
+        "1",
+        "Pianificata",
+        "Definita o pianificata, non ancora attuata"
+      ],
+      [
+        "2",
+        "Attuata parzialmente",
+        "Su una parte del perimetro, o non sistematica"
+      ],
+      [
+        "3",
+        "Attuata",
+        "Sull'intero perimetro, con evidenza documentale"
+      ],
+      [
+        "4",
+        "Attuata e verificata",
+        "In più, efficacia misurata e verificata periodicamente"
+      ]
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 2,
+    "inizia": "Il salto che decide se una",
+    "layout": "evidenza",
+    "eyebrow": "Il salto che decide",
+    "titolo": "Dal due al tre c'è una parola: evidenza.",
+    "testo": "«Lo facciamo» vale due. «Lo facciamo su tutto e c'è un documento che lo prova» vale tre."
+  },
+  {
+    "sezione": "la-scala",
+    "p": 4,
+    "inizia": "Il quarto livello aggiunge una cosa",
+    "layout": "flusso",
+    "titolo": "Che cosa aggiunge ogni gradino",
+    "passi": [
+      {
+        "h": "Due",
+        "d": "la misura c'è, su una parte"
+      },
+      {
+        "h": "Tre",
+        "d": "su tutto il perimetro, con un documento"
+      },
+      {
+        "h": "Quattro",
+        "d": "e qualcuno misura periodicamente se funziona"
+      }
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 5,
+    "inizia": "Accanto alla scala c'è il livello",
+    "layout": "punti",
+    "titolo": "Il livello obiettivo",
+    "intro": "Quello che l'organizzazione si dà: di norma tre.",
+    "punti": [
+      {
+        "h": "Non entra",
+        "d": "nel calcolo della conformità"
+      },
+      {
+        "h": "Non cambia",
+        "d": "la classificazione"
+      },
+      {
+        "h": "Decide",
+        "d": "che cosa è uno scostamento"
+      },
+      {
+        "h": "Dà una scala",
+        "d": "al piano di adeguamento"
+      }
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 6,
+    "inizia": "Alzare l'obiettivo a quattro su tutti",
+    "layout": "split",
+    "titolo": "Obiettivo quattro su tutto?",
+    "lead": "Sembra ambizione, ed è una promessa che di solito non si mantiene.",
+    "punti": [
+      {
+        "h": "Misurare l'efficacia",
+        "d": "di ogni singola misura"
+      },
+      {
+        "h": "Con una periodicità",
+        "d": "e registrandola"
+      },
+      {
+        "h": "Per una piccola o media impresa",
+        "d": "un carico che nessuno sostiene"
+      }
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 7,
+    "inizia": "C'è infine il caso del requisito",
+    "layout": "definizione",
+    "eyebrow": "Il requisito che non riguarda il cliente",
+    "titolo": "Non applicabile",
+    "definizione": "Esce dal denominatore: chi dichiara che un requisito non lo riguarda non risulta inadempiente su quel requisito.",
+    "punti": [
+      {
+        "h": "È una valutazione",
+        "d": "che qualcuno firma e può dover motivare"
+      },
+      {
+        "h": "Azzera il livello",
+        "d": "nessun numero resta accanto"
+      }
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 9,
+    "inizia": "La differenza fra un requisito non",
+    "layout": "confronto",
+    "titolo": "Non applicabile e non valutato",
+    "a": {
+      "h": "Non applicabile",
+      "sub": "L'hai deciso",
+      "punti": [
+        "È una determinazione",
+        "Esce dal denominatore"
+      ]
+    },
+    "b": {
+      "h": "Non valutato",
+      "sub": "Non l'hai ancora guardato",
+      "punti": [
+        "È un vuoto",
+        "Resta nel conteggio"
+      ]
+    }
+  },
+  {
+    "sezione": "la-scala",
+    "p": 10,
+    "inizia": "Due consigli su come si conduce",
+    "layout": "cards",
+    "titolo": "Due consigli sul lavoro",
+    "cards": [
+      {
+        "h": "Comincia da dove c'è già qualcosa",
+        "d": "accessi, backup e autenticazione: le risposte arrivano in mezz'ora."
+      },
+      {
+        "h": "L'evidenza si scrive mentre valuti",
+        "d": "nome, data e posizione del documento, con il cliente davanti."
+      }
+    ]
+  },
+  {
+    "sezione": "la-scala",
+    "p": 12,
+    "inizia": "C'è poi una domanda che i",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Il tre",
+        "d": "vuole l'evidenza documentale"
+      },
+      {
+        "h": "Il quattro",
+        "d": "vuole la misura dell'efficacia"
+      },
+      {
+        "h": "L'obiettivo",
+        "d": "decide gli scostamenti, non la percentuale"
+      },
+      {
+        "h": "Non applicabile",
+        "d": "è una dichiarazione firmata"
+      },
+      {
+        "h": "Niente è definitivo",
+        "d": "finché non pubblichi un documento"
+      }
+    ],
+    "prossimo": {
+      "titolo": "Più bassa del previsto",
+      "testo": "Perché un requisito non valutato pesa zero."
+    }
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 0,
+    "inizia": "Questa è la cosa che sorprende",
+    "layout": "apertura",
+    "titolo": "Più bassa del previsto",
+    "sottotitolo": "La percentuale e il requisito non valutato",
+    "testo": "Tre requisiti su venti, tutti al massimo: la conformità dice 15%, non cento.",
+    "agenda": [
+      "La regola",
+      "Perché non si media",
+      "La formula",
+      "Scostamento e istruttoria",
+      "Come si presenta l'avanzamento"
+    ]
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 1,
+    "inizia": "Non è un difetto: è la",
+    "layout": "evidenza",
+    "eyebrow": "La regola",
+    "titolo": "Un requisito applicabile e non valutato pesa zero.",
+    "testo": "E resta nel denominatore. È la regola che distingue questo strumento dal foglio di calcolo."
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 2,
+    "inizia": "Proviamo a vedere che cosa succederebbe",
+    "layout": "numeri",
+    "titolo": "Tre situazioni, un numero solo",
+    "numeri": [
+      {
+        "n": "100%",
+        "h": "Tre conformi su venti",
+        "d": "Il foglio media soltanto ciò che hai guardato."
+      },
+      {
+        "n": "100%",
+        "h": "Tutti e venti conformi",
+        "d": "Lo stesso numero."
+      },
+      {
+        "n": "100%",
+        "h": "Tre conformi, diciassette mai aperti",
+        "d": "Ancora lo stesso numero."
+      }
+    ]
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 4,
+    "inizia": "La formula è semplice e sta",
+    "layout": "definizione",
+    "eyebrow": "La formula",
+    "titolo": "Conformità",
+    "definizione": "Somma dei pesi dei requisiti applicabili, divisa per il numero dei requisiti applicabili.",
+    "punti": [
+      {
+        "h": "Non applicabili",
+        "d": "escono da entrambi i termini"
+      },
+      {
+        "h": "Non valutati",
+        "d": "zero sopra, uno sotto"
+      }
+    ]
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 5,
+    "inizia": "Quello che la percentuale misura, quindi,",
+    "layout": "split",
+    "titolo": "Che cosa misura la percentuale",
+    "lead": "Non la media di ciò che hai guardato: quanto è stato dimostrato sul totale di ciò che va dimostrato.",
+    "punti": [
+      {
+        "h": "A schermo",
+        "d": "quanti requisiti restano da valutare"
+      },
+      {
+        "h": "Accanto",
+        "d": "che pesano zero nella percentuale"
+      },
+      {
+        "h": "Perché",
+        "d": "un 8% il primo giorno non sembri un guasto"
+      }
+    ]
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 6,
+    "inizia": "Da qui discende una seconda distinzione,",
+    "layout": "confronto",
+    "titolo": "Scostamento o istruttoria",
+    "a": {
+      "h": "Scostamento",
+      "sub": "Valutato, sotto l'obiettivo",
+      "punti": [
+        "Entra nel piano",
+        "Con priorità e termine"
+      ]
+    },
+    "b": {
+      "h": "Non valutato",
+      "sub": "Lavoro da finire",
+      "punti": [
+        "Non entra nel piano",
+        "È istruttoria, non un'azione"
+      ]
+    }
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 8,
+    "inizia": "Detto in una frase sola, da",
+    "layout": "evidenza",
+    "eyebrow": "Da dire al cliente il primo giorno",
+    "titolo": "La percentuale bassa non dice che siete messi male.",
+    "testo": "Dice che il lavoro non è ancora stato fatto, e salirà perché avrete dato le risposte."
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 9,
+    "inizia": "Vale la pena aggiungere che cosa",
+    "layout": "tabella",
+    "titolo": "A metà lavoro, due numeri insieme",
+    "cols": [
+      "Numero",
+      "Valore",
+      "Che cosa dice"
+    ],
+    "righe": [
+      [
+        "Conformità",
+        "30%",
+        "quanto è dimostrato oggi"
+      ],
+      [
+        "Valutati",
+        "70 su {requisitiNis2Autovalutazione}",
+        "a che punto è il mandato"
+      ],
+      [
+        "Da valutare",
+        "i restanti",
+        "pesano zero solo perché non sono stati aperti"
+      ]
+    ]
+  },
+  {
+    "sezione": "un-requisito-non-valutato",
+    "p": 11,
+    "inizia": "La stessa regola torna identica nel",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Non valutato",
+        "d": "pesa zero e resta nel denominatore"
+      },
+      {
+        "h": "Mediare i valutati",
+        "d": "premia chi salta i requisiti scomodi"
+      },
+      {
+        "h": "Scostamento",
+        "d": "è valutato sotto l'obiettivo; il non valutato è istruttoria"
+      },
+      {
+        "h": "Stessa regola",
+        "d": "anche per i controlli del sistema di gestione"
+      }
+    ],
+    "prossimo": {
+      "titolo": "Le ore che non si recuperano",
+      "testo": "I termini di notifica dell'articolo 25."
+    }
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 0,
+    "inizia": "Tutto il resto di NIS2 si",
+    "layout": "apertura",
+    "titolo": "Le ore che non si recuperano",
+    "sottotitolo": "I termini dell'articolo 25",
+    "testo": "Tutto il resto si recupera. Un termine di notifica mancato resta scritto, e l'Autorità lo guarda.",
+    "agenda": [
+      "Tre adempimenti, tre termini",
+      "Da che cosa decorrono",
+      "L'ora del giorno",
+      "I cinque stati",
+      "Chi notifica di notte"
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 1,
+    "inizia": "Gli adempimenti sono tre, e i",
+    "layout": "timeline",
+    "titolo": "Tre adempimenti, tre termini",
+    "tappe": [
+      {
+        "t": "24 ore",
+        "h": "Pre notifica",
+        "d": "Dalla conoscenza dell'incidente."
+      },
+      {
+        "t": "72 ore",
+        "h": "Notifica",
+        "d": "Dalla stessa conoscenza."
+      },
+      {
+        "t": "1 mese",
+        "h": "Relazione finale",
+        "d": "Dalla notifica, non dalla conoscenza."
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 3,
+    "inizia": "La relazione finale invece decorre dalla",
+    "layout": "confronto",
+    "titolo": "Da che cosa decorrono",
+    "a": {
+      "h": "Pre notifica e notifica",
+      "sub": "Dalla conoscenza",
+      "punti": [
+        "L'istante in cui l'ente lo sa",
+        "Non quando è avvenuto",
+        "Non quando è risolto"
+      ]
+    },
+    "b": {
+      "h": "Relazione finale",
+      "sub": "Dalla notifica",
+      "punti": [
+        "Senza notifica non decorre",
+        "Non è scaduta: non è cominciata"
+      ]
+    }
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 4,
+    "inizia": "Il registro chiede la data e",
+    "layout": "numeri",
+    "titolo": "Perché serve anche l'ora",
+    "numeri": [
+      {
+        "n": "24 ore",
+        "h": "Il termine della pre notifica",
+        "d": "calcolato da una mezzanotte inventata"
+      },
+      {
+        "n": "12 ore",
+        "h": "L'errore possibile",
+        "d": "in un verso o nell'altro, su un termine perentorio"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 5,
+    "inizia": "C'è un secondo motivo, meno ovvio,",
+    "layout": "definizione",
+    "eyebrow": "Il secondo motivo",
+    "titolo": "Tempo coordinato universale",
+    "definizione": "I calcoli non si fanno nell'ora locale: col cambio dell'ora legale, ventiquattro ore locali valgono ventitré o venticinque ore reali.",
+    "punti": [
+      {
+        "h": "Succede",
+        "d": "due volte l'anno, e non si vede finché non capita"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 6,
+    "inizia": "Gli stati che il prodotto mostra",
+    "layout": "cards",
+    "titolo": "I cinque stati di un termine",
+    "cards": [
+      {
+        "h": "Nei termini",
+        "d": "fatto in tempo"
+      },
+      {
+        "h": "In corso",
+        "d": "il termine non è vicino"
+      },
+      {
+        "h": "In scadenza",
+        "d": "resta meno di un quarto del tempo"
+      },
+      {
+        "h": "Scaduto",
+        "d": "passato, e non fatto"
+      },
+      {
+        "h": "Fuori termine",
+        "d": "fatto, ma dopo la scadenza"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 7,
+    "inizia": "Sull'ultimo stato vale la pena fermarsi.",
+    "layout": "evidenza",
+    "eyebrow": "L'ultimo stato",
+    "titolo": "Fatto in ritardo resta fuori termine.",
+    "testo": "Non torna nei termini per il fatto di essere stato fatto: è proprio ciò che l'Autorità guarda."
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 8,
+    "inizia": "Un ultimo consiglio operativo, che vale",
+    "layout": "punti",
+    "titolo": "L'ora della conoscenza",
+    "intro": "Va raccolta mentre l'incidente è in corso.",
+    "punti": [
+      {
+        "h": "Ricostruita dopo",
+        "d": "è sempre più tarda del vero"
+      },
+      {
+        "h": "Più tarda del vero",
+        "d": "fa sembrare rispettato un termine che non lo era"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 9,
+    "inizia": "C'è una conseguenza organizzativa che conviene",
+    "layout": "flusso",
+    "titolo": "Un incidente di venerdì sera",
+    "passi": [
+      {
+        "h": "Venerdì sera",
+        "d": "l'incidente viene conosciuto"
+      },
+      {
+        "h": "Sabato sera",
+        "d": "scade la pre notifica"
+      },
+      {
+        "h": "La domanda vera",
+        "d": "chi la esegue di notte, e chi lo sostituisce"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 11,
+    "inizia": "Ultimo punto, sul rapporto fra i",
+    "layout": "split",
+    "titolo": "La pre notifica non è una notifica ridotta",
+    "lead": "È un avviso iniziale che fa partire l'orologio dell'Autorità.",
+    "punti": [
+      {
+        "h": "Si fa subito",
+        "d": "anche quando non si sa quasi niente"
+      },
+      {
+        "h": "L'errore più comune",
+        "d": "aspettare il quadro completo e mancare il primo termine"
+      }
+    ]
+  },
+  {
+    "sezione": "incidenti-e-termini",
+    "p": 12,
+    "inizia": "Nello scadenzario del percorso questi termini",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Pre notifica e notifica",
+        "d": "decorrono dalla conoscenza"
+      },
+      {
+        "h": "Relazione finale",
+        "d": "decorre dalla notifica"
+      },
+      {
+        "h": "Data e ora",
+        "d": "in tempo coordinato universale"
+      },
+      {
+        "h": "Fuori termine",
+        "d": "resta scritto"
+      },
+      {
+        "h": "Il presidio",
+        "d": "funziona anche di notte e nei festivi"
+      }
+    ],
+    "prossimo": {
+      "titolo": "Procedure, registri e relazione",
+      "testo": "Che cosa trovi già scritto e che cosa esce alla fine."
+    }
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 0,
+    "inizia": "Il percorso non ti lascia davanti",
+    "layout": "apertura",
+    "titolo": "Procedure, registri e relazione",
+    "sottotitolo": "Che cosa trovi scritto e che cosa esce",
+    "testo": "{procedureNis2} procedure, {moduliNis2} moduli e {registriNis2} registri già pronti sui riferimenti del decreto.",
+    "agenda": [
+      "Il corpus documentale",
+      "Lo stato dei documenti",
+      "La relazione immutabile",
+      "Che cosa dichiara in apertura",
+      "Il codice di verifica"
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 1,
+    "inizia": "Quel materiale non è pensato per",
+    "layout": "split",
+    "titolo": "Si personalizzano in due modi",
+    "lead": "Il materiale non è pensato per essere adottato così com'è.",
+    "punti": [
+      {
+        "h": "Segnaposto",
+        "d": "il sistema li riempie con i dati dell'organizzazione"
+      },
+      {
+        "h": "Blocchi di testo",
+        "d": "da riscrivere quando la procedura non descrive il cliente"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 2,
+    "inizia": "Ogni documento ha uno stato che",
+    "layout": "cards",
+    "titolo": "Lo stato di ogni documento",
+    "cards": [
+      {
+        "h": "Da personalizzare",
+        "d": "com'è nel catalogo"
+      },
+      {
+        "h": "In redazione",
+        "d": "ci si sta lavorando"
+      },
+      {
+        "h": "Approvata",
+        "d": "adottata dall'organizzazione"
+      },
+      {
+        "h": "Non applicabile",
+        "d": "una scelta, non una dimenticanza"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 3,
+    "inizia": "Alla fine del percorso esce la",
+    "layout": "evidenza",
+    "eyebrow": "La relazione sul livello di conformità",
+    "titolo": "Ogni versione pubblicata è immutabile.",
+    "testo": "Se domani correggi un dato, la relazione consegnata non cambia: la prossima sarà la revisione due."
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 5,
+    "inizia": "In apertura, riquadrato, il documento dichiara",
+    "layout": "definizione",
+    "eyebrow": "In apertura, riquadrato",
+    "titolo": "Che cosa il documento non contiene",
+    "definizione": "La classificazione è una valutazione preliminare: la qualificazione definitiva compete all'Autorità.",
+    "punti": [
+      {
+        "h": "I non valutati",
+        "d": "pesano zero, non sono esclusi dal calcolo"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 7,
+    "inizia": "Ogni versione pubblicata porta infine un",
+    "layout": "flusso",
+    "titolo": "Il codice di verifica",
+    "passi": [
+      {
+        "h": "Riceve il documento",
+        "d": "cliente, ente o azienda a valle"
+      },
+      {
+        "h": "Digita il codice",
+        "d": "su una pagina pubblica, senza account"
+      },
+      {
+        "h": "Vede chi l'ha emesso",
+        "d": "per quale azienda, che documento, quale revisione"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 8,
+    "inizia": "In fondo al documento compare anche",
+    "layout": "confronto",
+    "titolo": "Autentico e superato",
+    "a": {
+      "h": "Autentico",
+      "sub": "Per sempre",
+      "punti": [
+        "Il documento è nostro",
+        "Dice ciò che diceva quel giorno"
+      ]
+    },
+    "b": {
+      "h": "Superato",
+      "sub": "Col tempo",
+      "punti": [
+        "Il catalogo può cambiare",
+        "La pagina di verifica lo dice"
+      ]
+    }
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 9,
+    "inizia": "Una nota sul lavoro quotidiano con",
+    "layout": "punti",
+    "titolo": "Come si lavora con le procedure",
+    "intro": "Aprirle tutte e riscriverle è il modo più veloce per non finirne nessuna.",
+    "punti": [
+      {
+        "h": "Lasciale da personalizzare",
+        "d": "all'inizio"
+      },
+      {
+        "h": "Compila prima la verifica",
+        "d": "dei requisiti"
+      },
+      {
+        "h": "Apri solo quelle necessarie",
+        "d": "le indica il piano di adeguamento"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-e-documento",
+    "p": 10,
+    "inizia": "E i registri, a differenza delle",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Le procedure",
+        "d": "si personalizzano e si adottano"
+      },
+      {
+        "h": "I registri",
+        "d": "non si scrivono: si tengono"
+      },
+      {
+        "h": "La relazione",
+        "d": "è immutabile e dichiara i suoi limiti"
+      },
+      {
+        "h": "Il codice",
+        "d": "conferma l'autenticità a chiunque"
+      }
+    ]
+  }
+]

@@ -2590,6 +2590,74 @@ console pulita.
 senza, la coda non la apre nessuno e le notifiche portano a una pagina che risponde «non
 c'è».
 
+**Le slide in stile Academy (2026-09-14) — varietà distillata, marchio EvalisDeck**
+
+Decisioni del committente, riferite dalla sessione di Evalis Academy: la **varietà di
+Academy** costruita sul materiale e sulla voce dei nostri corsi; **marchio EvalisDeck
+completo** (il monogramma in uso, «Evalis Deck» come testo, Bricolage Grotesque + Geist
+Mono, i colori del prodotto). Il tema l'ho scelto io e sta scritto: **E1**, la tela ha
+colori propri e non segue l'interruttore dell'app.
+
+**Divisione del lavoro, e il contratto fra le due sessioni.** L'altra sessione distilla i
+contenuti (conosce i copioni), noi facciamo renderer e controlli. Un file per corso,
+`audio-formazione/<corso>/slide.json` (le comuni in `_comuni/`), voci
+`{ sezione, p, inizia, layout, …campi }` coi dodici layout di Academy.
+`node scripts/raccogli-slide.mjs` le raccoglie in `audio-formazione/slide-map.json`, che le
+pagine importano **al build** come il manifesto dell'audio.
+
+- **`p` è il paragrafo da cui la slide PARTE**, e il momento in cui compare è la marca di
+  quel paragrafo: **esatto**, non più il criterio proporzionale che «poteva cadere un
+  paragrafo prima o dopo». Una sezione senza voci resta com'era: i corsi arrivano a pezzi.
+- **`inizia`** (le prime parole del paragrafo) esiste contro l'accoppiamento per
+  POSIZIONE: un paragrafo inserito a metà farebbe partire ogni slide dopo sulla frase
+  sbagliata senza che niente protesti.
+- **`slide-json-pure`** è il cancello: paragrafi, ancore, layout, campi obbligatori, tetti,
+  campi vietati (header e footer li costruisce il renderer) e **numeri scritti a mano**, con
+  la stessa regola di `formazione-numeri-pure`. Un conteggio si scrive `{chiave}` di
+  `NUMERI`. Controprovato dall'altra sessione sul file vero: rosso, con la voce e il
+  segnaposto da usare.
+- **La tela è 1280 × 720 e si SCALA** (`TelaScalata`, `transform`), non si ridispone: a
+  ogni larghezza è la stessa slide, e il controllo sui tagli misura sempre la stessa cosa.
+
+**Consegnati e passati**: nis2 49 slide, sgnis2 48, **97 voci** su 10 sezioni.
+`qa -- slide-tagli` verde a 900, 1200 e 1600 px; 194 foto nei due temi dell'app con lo
+stesso fondo della tela, console pulita.
+
+**Difetti trovati, tutti prima del commit:**
+1. ⚠️ **Il controllo sui tagli era CIECO, e la prima controprova non ha morso.** Il corpo è
+   centrato in verticale: un contenuto che sfora si allarga sopra e sotto, e
+   `scrollHeight` conta solo la parte sotto. Otto punti lunghissimi: verde. Ora misura i
+   RETTANGOLI del primo e dell'ultimo figlio contro i bordi del corpo; col titolo di 552
+   caratteri diventa rosso con «slide 12 (evidenza): 248px fuori dal corpo», a tutte e tre
+   le larghezze, e dopo il ripristino torna verde sulle 97 voci vere.
+2. **`numeri` spezzava «250 addetti» su due righe** a 70 px su tre colonne: non sforava, si
+   spezzava, quindi l'ha visto la foto e non il controllo. Il valore non va a capo e la
+   misura si sceglie sul più lungo della slide.
+3. **Il nome del corso compariva due volte** a pochi centimetri (barra e intestazione della
+   tela), e **sulle slide scure la tela spariva nel fondo**: ora c'è un filo chiaro, perché
+   un'ombra scura su scuro non si vede.
+4. **Lo script delle foto si è appeso oltre dieci minuti**: `getAttribute` su un selettore
+   ASPETTA l'elemento, e sulle slide non distillate la tela non c'è. Si conta, non si
+   aspetta.
+
+**Regole nate qui:**
+- ⚠️ **Una fixture scritta per collaudare il renderer non deve contenere contenuto
+  plausibile.** La mia di dodici voci aveva la scala 0÷4 con definizioni inventate, una
+  timeline nella sezione sbagliata e uno split senza riscontro: sembrava vera ed era
+  falsa, che è l'errore più difficile da vedere a schermo. L'ha trovata l'altra sessione.
+  Si collauda sui file veri; se serve una fixture, dichiara di esserlo in ogni riga.
+- **Una catena che salva e ripristina un file condiviso va annunciata a chi lo scrive.** La
+  controprova ha iniettato il difetto nel file CONSEGNATO dall'altra sessione: il
+  ripristino era corretto — copia fatta dopo la consegna, verificata byte per byte — ma
+  una modifica sua durante la catena sarebbe stata cancellata in silenzio.
+- **Una controprova che non morde si verifica sull'INIEZIONE**: la catena ora fotografa la
+  slide col difetto, così un verde si guarda invece di dedurlo.
+- **I valori di un layout pensato per le cifre non sono sempre cifre** («Una soglia»): la
+  misura va scelta sul dato, non sul tipo di layout.
+
+⚠️ **Per il rilascio**: le tracce NIS2 sono sull'archivio di SVILUPPO; in produzione vanno
+caricate con le chiavi di produzione prima del deploy, altrimenti i due corsi risultano muti.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

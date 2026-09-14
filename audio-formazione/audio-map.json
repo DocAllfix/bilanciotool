@@ -1,9 +1,9 @@
 {
  "comuni/dove-sei": {
-  "sha": "e5c07eb924fa2339877b4ec4d71eef67e62989eb3027489e55bc0bdfd0efbe82",
-  "sha_script": "45b1405fe159768a9ef6018a43cebce574572628c8009a9858f2bb32dc15077a",
-  "durata_s": 118.2,
-  "byte": 946221,
+  "sha": "89139504a385fe5e51c68cc99b0b88854a569f730949b654e9ae3ddc6a864b9b",
+  "sha_script": "b05651639d67f7ec42020efaa5ef205fbac1fb91addbafd78641dd3d2d135fd7",
+  "durata_s": 117.1,
+  "byte": 937581,
   "parole": 302,
   "mp3": "_mp3/comuni/dove-sei.mp3",
   "marche": [
@@ -13,19 +13,19 @@
    },
    {
     "p": 1,
-    "s": 29.94
+    "s": 29.09
    },
    {
     "p": 2,
-    "s": 52.04
+    "s": 51.19
    },
    {
     "p": 3,
-    "s": 76.34
+    "s": 75.49
    },
    {
     "p": 4,
-    "s": 97.61
+    "s": 96.54
    }
   ],
   "marche_parole": 302,
@@ -1124,11 +1124,11 @@
   "chiave_archivio": "_piattaforma/formazione/soa/contesto-e-ambito.mp3"
  },
  "sgesg/che-cosa-e": {
-  "sha": "3a7a37264a38168fafe81354f5ef4beb50034da9cef78da41a5db48aa980db15",
-  "sha_script": "283474b03ded195a6a33afa23937ee033bdd20d5af41b8598b5e7b3454600c45",
+  "sha": "4f2682cb98f31ecd0ff74a26bed73620f0b5ad9d6adb4e079f881fd6203e4e20",
+  "sha_script": "eb76816a87f736fdaa48efd4134b438eecae54dcbadd86b16662d19eee86baec",
   "durata_s": 238.9,
-  "byte": 1911981,
-  "parole": 631,
+  "byte": 1911789,
+  "parole": 632,
   "mp3": "_mp3/sgesg/che-cosa-e.mp3",
   "marche": [
    {
@@ -1137,34 +1137,34 @@
    },
    {
     "p": 1,
-    "s": 25.2
+    "s": 25.18
    },
    {
     "p": 2,
-    "s": 53.11
+    "s": 53.09
    },
    {
     "p": 3,
-    "s": 76.15
+    "s": 76.12
    },
    {
     "p": 4,
-    "s": 106.4
+    "s": 106.38
    },
    {
     "p": 5,
-    "s": 139.72
+    "s": 139.7
    },
    {
     "p": 6,
-    "s": 181.86
+    "s": 181.84
    },
    {
     "p": 7,
-    "s": 209.15
+    "s": 209.12
    }
   ],
-  "marche_parole": 631,
+  "marche_parole": 632,
   "chiave_archivio": "_piattaforma/formazione/sgesg/che-cosa-e.mp3"
  },
  "sgesg/le-fasi": {
@@ -2844,11 +2844,11 @@
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/perche-adesso.mp3"
  },
  "avviare-attivita/posizionamento": {
-  "sha": "b4202df32280a09697ba88ed9627d4f917133ee2c98255476974f00a6ead23df",
-  "sha_script": "9fca91b6aee58d07e13f2a4ce3c5a9b3fa4db715e64f9c09c8ae0fcab6089950",
-  "durata_s": 148.4,
-  "byte": 1188141,
-  "parole": 355,
+  "sha": "7b7d89a61c718378bd2091f78ec0b23b6263cd7e3360140e814325b041de4085",
+  "sha_script": "078a7ab9d7deb9e658afbf22d0e0e99a3fc1dcb6a0c8d87d8c2f9d5824010fea",
+  "durata_s": 147.3,
+  "byte": 1179309,
+  "parole": 354,
   "mp3": "_mp3/avviare-attivita/posizionamento.mp3",
   "marche": [
    {
@@ -2857,30 +2857,30 @@
    },
    {
     "p": 1,
-    "s": 14.53
+    "s": 13.44
    },
    {
     "p": 2,
-    "s": 28.79
+    "s": 27.7
    },
    {
     "p": 3,
-    "s": 62.08
+    "s": 60.99
    },
    {
     "p": 4,
-    "s": 91.91
+    "s": 90.83
    },
    {
     "p": 5,
-    "s": 113.35
+    "s": 112.26
    },
    {
     "p": 6,
-    "s": 136.26
+    "s": 135.18
    }
   ],
-  "marche_parole": 352,
+  "marche_parole": 351,
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/posizionamento.mp3"
  },
  "avviare-attivita/dove-sono-i-clienti": {
@@ -3144,11 +3144,11 @@
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/obiezioni.mp3"
  },
  "avviare-attivita/metodo-progetto": {
-  "sha": "92bca37cde1eadeb749116c3cfc36fa283471b101d5d1720cd19e66de5751efa",
-  "sha_script": "01bcd7e9ddafca607c26b555d2ba15a58d64702a2080131dc51ac5a3837b44a2",
-  "durata_s": 186.2,
-  "byte": 1490157,
-  "parole": 434,
+  "sha": "ae39b1b1d3edc7889fa13bc337ec22b5e81adfda84c7d78f92aec63f9b653928",
+  "sha_script": "fc0750c224b1f9e68b2e9253ce23a75615708b1c0fe4387eb8380d115fdae6f1",
+  "durata_s": 185.6,
+  "byte": 1485165,
+  "parole": 432,
   "mp3": "_mp3/avviare-attivita/metodo-progetto.mp3",
   "marche": [
    {
@@ -3157,38 +3157,38 @@
    },
    {
     "p": 1,
-    "s": 10.06
+    "s": 9.44
    },
    {
     "p": 2,
-    "s": 40.08
+    "s": 39.45
    },
    {
     "p": 3,
-    "s": 66.99
+    "s": 66.36
    },
    {
     "p": 4,
-    "s": 82.26
+    "s": 81.64
    },
    {
     "p": 5,
-    "s": 104.45
+    "s": 103.83
    },
    {
     "p": 6,
-    "s": 119.69
+    "s": 119.06
    },
    {
     "p": 7,
-    "s": 150.1
+    "s": 149.47
    },
    {
     "p": 8,
-    "s": 168.2
+    "s": 167.57
    }
   ],
-  "marche_parole": 434,
+  "marche_parole": 432,
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/metodo-progetto.mp3"
  },
  "avviare-attivita/verso-la-verifica": {
@@ -3324,11 +3324,11 @@
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/organizzare-lo-studio.mp3"
  },
  "avviare-attivita/crescere": {
-  "sha": "5f07294ea7a6e6f825ebb2b717a5dff2101a37f4188dfa1f18c4fbbbcba2926b",
-  "sha_script": "2ca1e800bb3fe98fae3ca3aaf21be2b56f13d23319760fd7cdc1e2d53a3b9e8c",
-  "durata_s": 161.4,
-  "byte": 1292205,
-  "parole": 426,
+  "sha": "fa1bd590b6fa8dcc21d42a8226f6d56be41a98a21a4d527e0c057dbd7fa5208d",
+  "sha_script": "6838cd1ae9ceda79c8b0ecf4837c1ee1be5fa8c50de6ddfff514d702fd73a5d0",
+  "durata_s": 161.1,
+  "byte": 1289709,
+  "parole": 425,
   "mp3": "_mp3/avviare-attivita/crescere.mp3",
   "marche": [
    {
@@ -3337,34 +3337,34 @@
    },
    {
     "p": 1,
-    "s": 10.78
+    "s": 10.45
    },
    {
     "p": 2,
-    "s": 34.0
+    "s": 33.67
    },
    {
     "p": 3,
-    "s": 56.27
+    "s": 55.95
    },
    {
     "p": 4,
-    "s": 73.38
+    "s": 73.05
    },
    {
     "p": 5,
-    "s": 98.86
+    "s": 98.54
    },
    {
     "p": 6,
-    "s": 117.97
+    "s": 117.65
    },
    {
     "p": 7,
-    "s": 140.51
+    "s": 140.19
    }
   ],
-  "marche_parole": 426,
+  "marche_parole": 425,
   "chiave_archivio": "_piattaforma/formazione/avviare-attivita/crescere.mp3"
  },
  "filiera/anagrafica-filiera": {

@@ -1,4 +1,5 @@
 import type { Blocco, Sezione } from "./tipi";
+import { momentiDistillati, sostituisciNumeri, type VoceSlide } from "./slide-distillate";
 
 /**
  * La modalità presentazione: le stesse sezioni del corso, una schermata per volta.
@@ -73,7 +74,71 @@ export type Slide = {
    * manderebbe da capo proprio mentre chi ascolta ha capito.
    */
   apreSezione: boolean;
+  /**
+   * La voce distillata, quando la sezione ne ha: il contenuto a schermo scritto per
+   * paragrafo del copione, già coi numeri sostituiti. Quando c'è, `blocchi` è vuoto — la
+   * sezione parla con le voci distillate, non più coi suoi blocchi.
+   */
+  distillata?: VoceSlide;
 };
+
+/** Ricopia i testi di una voce sostituendo i segnaposto, a ogni profondità. */
+function conNumeri<T>(v: T, numeri: Record<string, number>): T {
+  if (typeof v === "string") return sostituisciNumeri(v, numeri) as T;
+  if (Array.isArray(v)) return v.map((x) => conNumeri(x, numeri)) as T;
+  if (v && typeof v === "object") {
+    return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k === "inizia" ? x : conNumeri(x, numeri)])) as T;
+  }
+  return v;
+}
+
+/**
+ * Le slide di un corso intero, con le sezioni distillate dove ci sono.
+ *
+ * ⚠️ I file `slide.json` arrivano un corso alla volta, e dentro un corso possono coprire
+ * solo alcune sezioni. Una sezione con voci distillate si mostra con quelle; una senza
+ * resta com'era, coi suoi blocchi. Nessuna delle due strade può rompere l'altra.
+ *
+ * ⚠️ `momenti` è ESATTO per le sezioni distillate — il secondo in cui comincia il paragrafo
+ * da cui la slide parte — e `null` per le altre, che mantengono il criterio proporzionale
+ * di `pistaPerSlide`. Mescolare i due criteri in una funzione sola era possibile, ma
+ * nasconderebbe quale dei due vale per quale slide.
+ */
+export function costruisciSlideCorso(
+  sezioni: Sezione[],
+  ctx: {
+    corso: string;
+    idComuni: string[];
+    mappa: Record<string, VoceSlide[]>;
+    numeri: Record<string, number>;
+    /** Le marche della traccia di una sezione, per chiave `<corso>/<sezione>`. */
+    marche: (chiave: string) => { p: number; s: number }[];
+  },
+): { slide: Slide[]; momenti: (number | null)[] } {
+  const grezze: Omit<Slide, "numero" | "totale">[] = [];
+  const momenti: (number | null)[] = [];
+
+  for (const sezione of sezioni) {
+    const chiave = `${ctx.idComuni.includes(sezione.id) ? "comuni" : ctx.corso}/${sezione.id}`;
+    const voci = ctx.mappa[chiave];
+
+    if (!voci?.length) {
+      for (const s of costruisciSlide([sezione])) {
+        grezze.push({ sezione: s.sezione, blocchi: s.blocchi, indiceBlocco: s.indiceBlocco, apreSezione: s.apreSezione });
+        momenti.push(null);
+      }
+      continue;
+    }
+
+    const esatti = momentiDistillati(voci.map((v) => v.p), ctx.marche(chiave));
+    voci.forEach((voce, k) => {
+      grezze.push({ sezione, blocchi: [], indiceBlocco: 0, apreSezione: k === 0, distillata: conNumeri(voce, ctx.numeri) });
+      momenti.push(esatti ? esatti[k] : null);
+    });
+  }
+
+  return { slide: grezze.map((s, i) => ({ ...s, numero: i + 1, totale: grezze.length })), momenti };
+}
 
 export function costruisciSlide(sezioni: Sezione[]): Slide[] {
   const grezze: Omit<Slide, "numero" | "totale">[] = [];

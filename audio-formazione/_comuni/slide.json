@@ -1,0 +1,496 @@
+[
+  {
+    "sezione": "dove-sei",
+    "p": 0,
+    "inizia": "Prima di entrare in un percorso",
+    "layout": "apertura",
+    "titolo": "Dove sei, e come ci si muove",
+    "sottotitolo": "Tre livelli, sempre nello stesso ordine",
+    "testo": "Il portafoglio elenca le aziende, il fascicolo raccoglie i {moduli} percorsi in {gruppi} gruppi, il percorso è dove lavori.",
+    "agenda": [
+      "Portafoglio, fascicolo, percorso",
+      "La barra laterale",
+      "La pagina di apertura dello studio",
+      "Disponibili, non da fare",
+      "Colore e icona"
+    ]
+  },
+  {
+    "sezione": "dove-sei",
+    "p": 1,
+    "inizia": "La barra laterale segue questa struttura.",
+    "layout": "confronto",
+    "titolo": "La barra laterale cambia con te",
+    "a": {
+      "h": "Nello studio",
+      "sub": "Le voci generali",
+      "punti": [
+        "Portafoglio",
+        "Documenti",
+        "Agenda",
+        "Compensi"
+      ]
+    },
+    "b": {
+      "h": "Dentro un'azienda",
+      "sub": "Il suo nome e i suoi percorsi",
+      "punti": [
+        "Dal bilancio alla dichiarazione di applicabilità",
+        "Senza tornare indietro"
+      ]
+    }
+  },
+  {
+    "sezione": "dove-sei",
+    "p": 2,
+    "inizia": "Sopra il portafoglio c'è la pagina",
+    "layout": "split",
+    "titolo": "Dove cominciare la giornata",
+    "lead": "La pagina di apertura dello studio raccoglie i numeri del portafoglio, i documenti pubblicati di recente e lo scadenzario.",
+    "punti": [
+      {
+        "h": "Per urgenza",
+        "d": "che cosa faccio adesso"
+      },
+      {
+        "h": "Per cliente",
+        "d": "chi è più indietro"
+      },
+      {
+        "h": "Per ambito",
+        "d": "dove sono indietro"
+      }
+    ]
+  },
+  {
+    "sezione": "dove-sei",
+    "p": 3,
+    "inizia": "Una cosa che vale la pena",
+    "layout": "evidenza",
+    "eyebrow": "Per chi apre il fascicolo la prima volta",
+    "titolo": "{moduli} percorsi disponibili, non {moduli} da fare.",
+    "testo": "Si aprono quelli che servono a quel cliente. Gli altri restano spenti, e non compaiono nello scadenzario."
+  },
+  {
+    "sezione": "dove-sei",
+    "p": 4,
+    "inizia": "E il colore ha un significato",
+    "layout": "definizione",
+    "eyebrow": "Non è decorazione",
+    "titolo": "Colore e icona",
+    "definizione": "Il modo più rapido per capire dove sei quando hai otto clienti aperti e le schermate cominciano a somigliarsi.",
+    "punti": [
+      {
+        "h": "Il colore",
+        "d": "dice di che materia si parla"
+      },
+      {
+        "h": "L'icona",
+        "d": "dice quale lavoro stai facendo"
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-salva",
+    "p": 0,
+    "inizia": "La prima cosa da disimparare, se",
+    "layout": "apertura",
+    "titolo": "Come si salva",
+    "sottotitolo": "Da solo, campo per campo",
+    "testo": "Il pulsante salva non c'è: ogni campo si salva nel momento in cui lo lasci, e il dato è sul server.",
+    "agenda": [
+      "Il salvataggio automatico",
+      "Per campo, non per riga",
+      "Dati isolati fra studi",
+      "Niente da esportare"
+    ]
+  },
+  {
+    "sezione": "come-si-salva",
+    "p": 1,
+    "inizia": "Il salvataggio riguarda il solo campo",
+    "layout": "split",
+    "titolo": "Per campo, non per riga",
+    "lead": "Una scelta pagata con quattro difetti veri: la pagina rimandava tutta la riga, compresa la parte non ancora aggiornata.",
+    "punti": [
+      {
+        "h": "Salvare il costo",
+        "d": "azzerava la quantità appena scritta"
+      },
+      {
+        "h": "La rilevanza finanziaria",
+        "d": "cancellava l'impatto messo un attimo prima"
+      },
+      {
+        "h": "Adesso torna un campo solo",
+        "d": "e il valore precedente lo rilegge il server"
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-salva",
+    "p": 2,
+    "inizia": "Sui dati, due cose che vale",
+    "layout": "cards",
+    "titolo": "Due cose sui dati",
+    "cards": [
+      {
+        "h": "Isolati fra studi",
+        "d": "Il divieto lo applica il database: un altro studio non li legge nemmeno per un nostro errore di programmazione."
+      },
+      {
+        "h": "Condivisi dentro lo studio",
+        "d": "I colleghi che inviti vedono tutto il portafoglio, così un socio può sostituire l'altro."
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-salva",
+    "p": 3,
+    "inizia": "E non c'è nessun archivio da",
+    "layout": "evidenza",
+    "eyebrow": "Il cambiamento più grande",
+    "titolo": "Nessun archivio da esportare, nessun file da conservare.",
+    "testo": "Il lavoro sta sul server: cambiare computer significa solo rifare l'accesso."
+  },
+  {
+    "sezione": "esercizio",
+    "p": 0,
+    "inizia": "Questo percorso si redige per anno.",
+    "layout": "apertura",
+    "titolo": "L'esercizio, e il confronto con l'anno prima",
+    "sottotitolo": "Questo percorso si redige per anno",
+    "testo": "Il selettore in cima dice su quale esercizio lavori: i dati sono per anno, e l'anno vecchio resta com'era.",
+    "agenda": [
+      "Il selettore dell'esercizio",
+      "Copiare la struttura dell'anno prima",
+      "Il confronto non è facoltativo",
+      "Le due colonne insieme",
+      "Il primo anno"
+    ]
+  },
+  {
+    "sezione": "esercizio",
+    "p": 1,
+    "inizia": "Il confronto con l'anno precedente non",
+    "layout": "evidenza",
+    "eyebrow": "Da ricordare",
+    "titolo": "Senza l'anno prima, il documento dice quanto consumi, non se migliori.",
+    "testo": "Esce lo stesso, con le colonne delle variazioni vuote. E chi lo legge cerca proprio quella colonna."
+  },
+  {
+    "sezione": "esercizio",
+    "p": 2,
+    "inizia": "C'è anche una ragione che riguarda",
+    "layout": "split",
+    "titolo": "Le due colonne, insieme",
+    "lead": "Compilarle nello stesso momento costa molto meno che tornarci fra un mese.",
+    "punti": [
+      {
+        "h": "Le fatture",
+        "d": "sono già aperte"
+      },
+      {
+        "h": "Il referente",
+        "d": "è già al telefono"
+      },
+      {
+        "h": "La visura",
+        "d": "è già sul tavolo"
+      }
+    ]
+  },
+  {
+    "sezione": "esercizio",
+    "p": 3,
+    "inizia": "Un'ultima cosa sul primo anno. Se",
+    "layout": "definizione",
+    "eyebrow": "Il primo anno",
+    "titolo": "Il confronto che non c'è, dichiarato",
+    "definizione": "Se è la prima volta che segui l'azienda, il documento dichiara che manca l'anno di confronto invece di lasciare un buco.",
+    "punti": [
+      {
+        "h": "Dall'anno dopo",
+        "d": "il confronto c'è per costruzione"
+      }
+    ]
+  },
+  {
+    "sezione": "revisione",
+    "p": 0,
+    "inizia": "Questo percorso non si redige per",
+    "layout": "apertura",
+    "titolo": "Una fotografia, non un esercizio",
+    "sottotitolo": "Si aggiorna, e si consegna per revisioni",
+    "testo": "Niente selettore dell'anno: c'è lo stato corrente, e il lavoro prosegue invece di ricominciare a gennaio.",
+    "agenda": [
+      "Lo stato corrente",
+      "Quando pubblicare",
+      "Aggiornare non è consegnare"
+    ]
+  },
+  {
+    "sezione": "revisione",
+    "p": 1,
+    "inizia": "Quando conviene pubblicare, allora. Quando qualcuno",
+    "layout": "cards",
+    "titolo": "Si pubblica quando qualcuno deve riceverlo",
+    "cards": [
+      {
+        "h": "Un committente",
+        "d": "che lo ha chiesto"
+      },
+      {
+        "h": "Un ente di certificazione",
+        "d": "o una banca"
+      },
+      {
+        "h": "Un cliente a monte",
+        "d": "della filiera"
+      }
+    ]
+  },
+  {
+    "sezione": "revisione",
+    "p": 2,
+    "inizia": "La differenza pratica con un percorso",
+    "layout": "confronto",
+    "titolo": "Aggiornare non è consegnare",
+    "a": {
+      "h": "Aggiornare",
+      "sub": "Continuo",
+      "punti": [
+        "Costa poco per volta",
+        "Si lavora sullo stato corrente"
+      ]
+    },
+    "b": {
+      "h": "Consegnare",
+      "sub": "Un momento scelto",
+      "punti": [
+        "Produce una revisione numerata",
+        "Le precedenti restano consultabili"
+      ]
+    }
+  },
+  {
+    "sezione": "la-verifica",
+    "p": 0,
+    "inizia": "Ogni percorso ha, verso la fine,",
+    "layout": "apertura",
+    "titolo": "La verifica prima di consegnare",
+    "sottotitolo": "L'elenco di ciò che manca",
+    "testo": "Non è un riassunto e non è un voto: ogni voce mancante è un collegamento al punto da sistemare.",
+    "agenda": [
+      "Che cosa elenca",
+      "Completezza, non correttezza",
+      "Che cosa resta a te",
+      "L'ordine giusto"
+    ]
+  },
+  {
+    "sezione": "la-verifica",
+    "p": 1,
+    "inizia": "Ed è qui che serve dire",
+    "layout": "definizione",
+    "eyebrow": "La cosa più importante",
+    "titolo": "Completezza, non correttezza",
+    "definizione": "La verifica guarda se un dato c'è, non se è giusto: un numero sbagliato ma presente risulta a posto, e la riga diventa verde."
+  },
+  {
+    "sezione": "la-verifica",
+    "p": 2,
+    "inizia": "Facciamo l'esempio più concreto che mi",
+    "layout": "punti",
+    "titolo": "Resta lavoro tuo, anche quando è tutto verde",
+    "intro": "Sbagli di dieci volte il consumo di gas: il documento esce senza nessun avviso.",
+    "punti": [
+      {
+        "h": "La quadratura",
+        "d": "con le fatture"
+      },
+      {
+        "h": "La plausibilità",
+        "d": "dei fattori di carico"
+      },
+      {
+        "h": "La coerenza",
+        "d": "dei salti da un anno all'altro"
+      }
+    ]
+  },
+  {
+    "sezione": "la-verifica",
+    "p": 3,
+    "inizia": "Il modo giusto di usare la",
+    "layout": "chiusura",
+    "titolo": "L'ultimo controllo, non il primo",
+    "punti": [
+      {
+        "h": "Prima i numeri",
+        "d": "e ti chiedi se hanno senso"
+      },
+      {
+        "h": "Poi la verifica",
+        "d": "per non dimenticare una casella"
+      },
+      {
+        "h": "Al contrario",
+        "d": "ti dirà che va tutto bene, e non servirà a niente"
+      }
+    ]
+  },
+  {
+    "sezione": "pubblicare",
+    "p": 0,
+    "inizia": "Pubblicare non significa stampare. Significa congelare",
+    "layout": "apertura",
+    "titolo": "Che cosa succede quando pubblichi",
+    "sottotitolo": "Il documento si congela",
+    "testo": "Dati e calcoli in una versione numerata, che il database non lascia più modificare: è il motivo per cui il documento vale.",
+    "agenda": [
+      "Congelare, non stampare",
+      "Quattro cose in quel momento",
+      "Il PDF archiviato",
+      "Non si pubblica per vedere"
+    ]
+  },
+  {
+    "sezione": "pubblicare",
+    "p": 1,
+    "inizia": "Quattro cose succedono in quel momento.",
+    "layout": "cards",
+    "titolo": "Quattro cose, in quel momento",
+    "cards": [
+      {
+        "h": "Numero di versione",
+        "d": "Ripubblicando ottieni la seconda, e la prima resta consultabile."
+      },
+      {
+        "h": "Marchio",
+        "d": "Si sceglie lì: i documenti consegnati non cambiano se lo studio cambia logo."
+      },
+      {
+        "h": "Edizione dei contenuti",
+        "d": "Congelata, perché le norme si aggiornano."
+      },
+      {
+        "h": "Codice di verifica",
+        "d": "Chi ha il documento ne controlla l'autenticità dal sito, senza account."
+      }
+    ]
+  },
+  {
+    "sezione": "pubblicare",
+    "p": 2,
+    "inizia": "Il PDF si genera una volta",
+    "layout": "evidenza",
+    "eyebrow": "Il PDF",
+    "titolo": "Riscaricarlo restituisce lo stesso identico file.",
+    "testo": "Si genera una volta e resta archiviato: quello consegnato al cliente non cambia impaginazione, nemmeno fra due anni."
+  },
+  {
+    "sezione": "pubblicare",
+    "p": 3,
+    "inizia": "La conseguenza pratica è una sola,",
+    "layout": "confronto",
+    "titolo": "Anteprima o pubblicazione",
+    "a": {
+      "h": "Anteprima",
+      "sub": "Dal percorso",
+      "punti": [
+        "Quante volte vuoi",
+        "Mentre il lavoro è in corso"
+      ]
+    },
+    "b": {
+      "h": "Pubblicazione",
+      "sub": "Quando il lavoro è finito",
+      "punti": [
+        "Resta nell'archivio per sempre",
+        "Il cliente vede anche le versioni di prova"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-comuni",
+    "p": 0,
+    "inizia": "Chiudo la parte comune con i",
+    "layout": "apertura",
+    "titolo": "Gli errori più frequenti",
+    "sottotitolo": "Distrazioni, non incomprensioni",
+    "testo": "Il primo non produce nessun avviso: prima di cominciare, guarda i due selettori dell'azienda e dell'esercizio.",
+    "agenda": [
+      "Azienda o esercizio sbagliato",
+      "Vuoto invece di zero",
+      "L'anno di confronto",
+      "Pubblicare per vedere"
+    ]
+  },
+  {
+    "sezione": "errori-comuni",
+    "p": 1,
+    "inizia": "Il secondo è lasciare vuoto un",
+    "layout": "confronto",
+    "titolo": "Vuoto non è zero",
+    "a": {
+      "h": "Vuoto",
+      "sub": "La voce non esiste",
+      "punti": [
+        "Esce dai conti",
+        "Il documento la dichiara mancante"
+      ]
+    },
+    "b": {
+      "h": "Zero",
+      "sub": "Esiste e vale zero",
+      "punti": [
+        "Resta nei conti",
+        "È un'informazione"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-comuni",
+    "p": 2,
+    "inizia": "Il terzo è non compilare l'anno",
+    "layout": "evidenza",
+    "eyebrow": "L'anno di confronto",
+    "titolo": "Senza confronto è una fotografia, non una misura.",
+    "testo": "Il documento esce con le variazioni vuote: se ne accorge chi lo legge, non chi lo compila."
+  },
+  {
+    "sezione": "errori-comuni",
+    "p": 3,
+    "inizia": "Il quarto l'ho già nominato ed",
+    "layout": "tabella",
+    "titolo": "I quattro errori, e come si evitano",
+    "cols": [
+      "Errore",
+      "Conseguenza",
+      "Come si evita"
+    ],
+    "righe": [
+      [
+        "Azienda o esercizio sbagliato",
+        "Dati validi nel posto sbagliato, senza avviso",
+        "Guardare i due selettori"
+      ],
+      [
+        "Vuoto invece di zero",
+        "Il dato risulta mancante",
+        "Zero quando vale zero"
+      ],
+      [
+        "Anno di confronto vuoto",
+        "Nessuna variazione nel documento",
+        "Compilare le due colonne insieme"
+      ],
+      [
+        "Pubblicare per vedere",
+        "Una versione in più, per sempre",
+        "Usare l'anteprima"
+      ]
+    ]
+  }
+]

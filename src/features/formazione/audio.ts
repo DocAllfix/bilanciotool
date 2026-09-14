@@ -80,6 +80,12 @@ export function pistaPerSlide(
   slide: { sezione: { id: string }; apreSezione: boolean }[],
   corso: string,
   idComuni: string[],
+  /**
+   * I momenti ESATTI, dove ci sono: quelli delle slide distillate, dal paragrafo da cui
+   * partono. `null` lascia il criterio proporzionale. Senza questo argomento tutto resta
+   * com'era, ed è voluto: le pagine che non hanno ancora slide distillate non cambiano.
+   */
+  esatti?: (number | null)[],
 ): PostoPista[] {
   const pista: PostoPista[] = new Array(slide.length);
 
@@ -97,7 +103,7 @@ export function pistaPerSlide(
     for (let k = i; k < j; k++) {
       pista[k] = {
         src: k === i && t ? `/api/formazione/audio/${chiaveTraccia(corso, id, idComuni.includes(id))}` : null,
-        momento: momenti?.[k - i] ?? 0,
+        momento: esatti?.[k] ?? momenti?.[k - i] ?? 0,
         durata: t?.durata_s ?? 0,
       };
     }

@@ -1,0 +1,2546 @@
+{
+  "comuni/come-si-salva": [
+    {
+      "sezione": "come-si-salva",
+      "p": 0,
+      "inizia": "La prima cosa da disimparare, se",
+      "layout": "apertura",
+      "titolo": "Come si salva",
+      "sottotitolo": "Da solo, campo per campo",
+      "testo": "Il pulsante salva non c'è: ogni campo si salva nel momento in cui lo lasci, e il dato è sul server.",
+      "agenda": [
+        "Il salvataggio automatico",
+        "Per campo, non per riga",
+        "Dati isolati fra studi",
+        "Niente da esportare"
+      ]
+    },
+    {
+      "sezione": "come-si-salva",
+      "p": 1,
+      "inizia": "Il salvataggio riguarda il solo campo",
+      "layout": "split",
+      "titolo": "Per campo, non per riga",
+      "lead": "Una scelta pagata con quattro difetti veri: la pagina rimandava tutta la riga, compresa la parte non ancora aggiornata.",
+      "punti": [
+        {
+          "h": "Salvare il costo",
+          "d": "azzerava la quantità appena scritta"
+        },
+        {
+          "h": "La rilevanza finanziaria",
+          "d": "cancellava l'impatto messo un attimo prima"
+        },
+        {
+          "h": "Adesso torna un campo solo",
+          "d": "e il valore precedente lo rilegge il server"
+        }
+      ]
+    },
+    {
+      "sezione": "come-si-salva",
+      "p": 2,
+      "inizia": "Sui dati, due cose che vale",
+      "layout": "cards",
+      "titolo": "Due cose sui dati",
+      "cards": [
+        {
+          "h": "Isolati fra studi",
+          "d": "Il divieto lo applica il database: un altro studio non li legge nemmeno per un nostro errore di programmazione."
+        },
+        {
+          "h": "Condivisi dentro lo studio",
+          "d": "I colleghi che inviti vedono tutto il portafoglio, così un socio può sostituire l'altro."
+        }
+      ]
+    },
+    {
+      "sezione": "come-si-salva",
+      "p": 3,
+      "inizia": "E non c'è nessun archivio da",
+      "layout": "evidenza",
+      "eyebrow": "Il cambiamento più grande",
+      "titolo": "Nessun archivio da esportare, nessun file da conservare.",
+      "testo": "Il lavoro sta sul server: cambiare computer significa solo rifare l'accesso."
+    }
+  ],
+  "comuni/dove-sei": [
+    {
+      "sezione": "dove-sei",
+      "p": 0,
+      "inizia": "Prima di entrare in un percorso",
+      "layout": "apertura",
+      "titolo": "Dove sei, e come ci si muove",
+      "sottotitolo": "Tre livelli, sempre nello stesso ordine",
+      "testo": "Il portafoglio elenca le aziende, il fascicolo raccoglie i {moduli} percorsi in {gruppi} gruppi, il percorso è dove lavori.",
+      "agenda": [
+        "Portafoglio, fascicolo, percorso",
+        "La barra laterale",
+        "La pagina di apertura dello studio",
+        "Disponibili, non da fare",
+        "Colore e icona"
+      ]
+    },
+    {
+      "sezione": "dove-sei",
+      "p": 1,
+      "inizia": "La barra laterale segue questa struttura.",
+      "layout": "confronto",
+      "titolo": "La barra laterale cambia con te",
+      "a": {
+        "h": "Nello studio",
+        "sub": "Le voci generali",
+        "punti": [
+          "Portafoglio",
+          "Documenti",
+          "Agenda",
+          "Compensi"
+        ]
+      },
+      "b": {
+        "h": "Dentro un'azienda",
+        "sub": "Il suo nome e i suoi percorsi",
+        "punti": [
+          "Dal bilancio alla dichiarazione di applicabilità",
+          "Senza tornare indietro"
+        ]
+      }
+    },
+    {
+      "sezione": "dove-sei",
+      "p": 2,
+      "inizia": "Sopra il portafoglio c'è la pagina",
+      "layout": "split",
+      "titolo": "Dove cominciare la giornata",
+      "lead": "La pagina di apertura dello studio raccoglie i numeri del portafoglio, i documenti pubblicati di recente e lo scadenzario.",
+      "punti": [
+        {
+          "h": "Per urgenza",
+          "d": "che cosa faccio adesso"
+        },
+        {
+          "h": "Per cliente",
+          "d": "chi è più indietro"
+        },
+        {
+          "h": "Per ambito",
+          "d": "dove sono indietro"
+        }
+      ]
+    },
+    {
+      "sezione": "dove-sei",
+      "p": 3,
+      "inizia": "Una cosa che vale la pena",
+      "layout": "evidenza",
+      "eyebrow": "Per chi apre il fascicolo la prima volta",
+      "titolo": "{moduli} percorsi disponibili, non {moduli} da fare.",
+      "testo": "Si aprono quelli che servono a quel cliente. Gli altri restano spenti, e non compaiono nello scadenzario."
+    },
+    {
+      "sezione": "dove-sei",
+      "p": 4,
+      "inizia": "E il colore ha un significato",
+      "layout": "definizione",
+      "eyebrow": "Non è decorazione",
+      "titolo": "Colore e icona",
+      "definizione": "Il modo più rapido per capire dove sei quando hai otto clienti aperti e le schermate cominciano a somigliarsi.",
+      "punti": [
+        {
+          "h": "Il colore",
+          "d": "dice di che materia si parla"
+        },
+        {
+          "h": "L'icona",
+          "d": "dice quale lavoro stai facendo"
+        }
+      ]
+    }
+  ],
+  "comuni/errori-comuni": [
+    {
+      "sezione": "errori-comuni",
+      "p": 0,
+      "inizia": "Chiudo la parte comune con i",
+      "layout": "apertura",
+      "titolo": "Gli errori più frequenti",
+      "sottotitolo": "Distrazioni, non incomprensioni",
+      "testo": "Il primo non produce nessun avviso: prima di cominciare, guarda i due selettori dell'azienda e dell'esercizio.",
+      "agenda": [
+        "Azienda o esercizio sbagliato",
+        "Vuoto invece di zero",
+        "L'anno di confronto",
+        "Pubblicare per vedere"
+      ]
+    },
+    {
+      "sezione": "errori-comuni",
+      "p": 1,
+      "inizia": "Il secondo è lasciare vuoto un",
+      "layout": "confronto",
+      "titolo": "Vuoto non è zero",
+      "a": {
+        "h": "Vuoto",
+        "sub": "La voce non esiste",
+        "punti": [
+          "Esce dai conti",
+          "Il documento la dichiara mancante"
+        ]
+      },
+      "b": {
+        "h": "Zero",
+        "sub": "Esiste e vale zero",
+        "punti": [
+          "Resta nei conti",
+          "È un'informazione"
+        ]
+      }
+    },
+    {
+      "sezione": "errori-comuni",
+      "p": 2,
+      "inizia": "Il terzo è non compilare l'anno",
+      "layout": "evidenza",
+      "eyebrow": "L'anno di confronto",
+      "titolo": "Senza confronto è una fotografia, non una misura.",
+      "testo": "Il documento esce con le variazioni vuote: se ne accorge chi lo legge, non chi lo compila."
+    },
+    {
+      "sezione": "errori-comuni",
+      "p": 3,
+      "inizia": "Il quarto l'ho già nominato ed",
+      "layout": "tabella",
+      "titolo": "I quattro errori, e come si evitano",
+      "cols": [
+        "Errore",
+        "Conseguenza",
+        "Come si evita"
+      ],
+      "righe": [
+        [
+          "Azienda o esercizio sbagliato",
+          "Dati validi nel posto sbagliato, senza avviso",
+          "Guardare i due selettori"
+        ],
+        [
+          "Vuoto invece di zero",
+          "Il dato risulta mancante",
+          "Zero quando vale zero"
+        ],
+        [
+          "Anno di confronto vuoto",
+          "Nessuna variazione nel documento",
+          "Compilare le due colonne insieme"
+        ],
+        [
+          "Pubblicare per vedere",
+          "Una versione in più, per sempre",
+          "Usare l'anteprima"
+        ]
+      ]
+    }
+  ],
+  "comuni/esercizio": [
+    {
+      "sezione": "esercizio",
+      "p": 0,
+      "inizia": "Questo percorso si redige per anno.",
+      "layout": "apertura",
+      "titolo": "L'esercizio, e il confronto con l'anno prima",
+      "sottotitolo": "Questo percorso si redige per anno",
+      "testo": "Il selettore in cima dice su quale esercizio lavori: i dati sono per anno, e l'anno vecchio resta com'era.",
+      "agenda": [
+        "Il selettore dell'esercizio",
+        "Copiare la struttura dell'anno prima",
+        "Il confronto non è facoltativo",
+        "Le due colonne insieme",
+        "Il primo anno"
+      ]
+    },
+    {
+      "sezione": "esercizio",
+      "p": 1,
+      "inizia": "Il confronto con l'anno precedente non",
+      "layout": "evidenza",
+      "eyebrow": "Da ricordare",
+      "titolo": "Senza l'anno prima, il documento dice quanto consumi, non se migliori.",
+      "testo": "Esce lo stesso, con le colonne delle variazioni vuote. E chi lo legge cerca proprio quella colonna."
+    },
+    {
+      "sezione": "esercizio",
+      "p": 2,
+      "inizia": "C'è anche una ragione che riguarda",
+      "layout": "split",
+      "titolo": "Le due colonne, insieme",
+      "lead": "Compilarle nello stesso momento costa molto meno che tornarci fra un mese.",
+      "punti": [
+        {
+          "h": "Le fatture",
+          "d": "sono già aperte"
+        },
+        {
+          "h": "Il referente",
+          "d": "è già al telefono"
+        },
+        {
+          "h": "La visura",
+          "d": "è già sul tavolo"
+        }
+      ]
+    },
+    {
+      "sezione": "esercizio",
+      "p": 3,
+      "inizia": "Un'ultima cosa sul primo anno. Se",
+      "layout": "definizione",
+      "eyebrow": "Il primo anno",
+      "titolo": "Il confronto che non c'è, dichiarato",
+      "definizione": "Se è la prima volta che segui l'azienda, il documento dichiara che manca l'anno di confronto invece di lasciare un buco.",
+      "punti": [
+        {
+          "h": "Dall'anno dopo",
+          "d": "il confronto c'è per costruzione"
+        }
+      ]
+    }
+  ],
+  "comuni/la-verifica": [
+    {
+      "sezione": "la-verifica",
+      "p": 0,
+      "inizia": "Ogni percorso ha, verso la fine,",
+      "layout": "apertura",
+      "titolo": "La verifica prima di consegnare",
+      "sottotitolo": "L'elenco di ciò che manca",
+      "testo": "Non è un riassunto e non è un voto: ogni voce mancante è un collegamento al punto da sistemare.",
+      "agenda": [
+        "Che cosa elenca",
+        "Completezza, non correttezza",
+        "Che cosa resta a te",
+        "L'ordine giusto"
+      ]
+    },
+    {
+      "sezione": "la-verifica",
+      "p": 1,
+      "inizia": "Ed è qui che serve dire",
+      "layout": "definizione",
+      "eyebrow": "La cosa più importante",
+      "titolo": "Completezza, non correttezza",
+      "definizione": "La verifica guarda se un dato c'è, non se è giusto: un numero sbagliato ma presente risulta a posto, e la riga diventa verde."
+    },
+    {
+      "sezione": "la-verifica",
+      "p": 2,
+      "inizia": "Facciamo l'esempio più concreto che mi",
+      "layout": "punti",
+      "titolo": "Resta lavoro tuo, anche quando è tutto verde",
+      "intro": "Sbagli di dieci volte il consumo di gas: il documento esce senza nessun avviso.",
+      "punti": [
+        {
+          "h": "La quadratura",
+          "d": "con le fatture"
+        },
+        {
+          "h": "La plausibilità",
+          "d": "dei fattori di carico"
+        },
+        {
+          "h": "La coerenza",
+          "d": "dei salti da un anno all'altro"
+        }
+      ]
+    },
+    {
+      "sezione": "la-verifica",
+      "p": 3,
+      "inizia": "Il modo giusto di usare la",
+      "layout": "chiusura",
+      "titolo": "L'ultimo controllo, non il primo",
+      "punti": [
+        {
+          "h": "Prima i numeri",
+          "d": "e ti chiedi se hanno senso"
+        },
+        {
+          "h": "Poi la verifica",
+          "d": "per non dimenticare una casella"
+        },
+        {
+          "h": "Al contrario",
+          "d": "ti dirà che va tutto bene, e non servirà a niente"
+        }
+      ]
+    }
+  ],
+  "comuni/pubblicare": [
+    {
+      "sezione": "pubblicare",
+      "p": 0,
+      "inizia": "Pubblicare non significa stampare. Significa congelare",
+      "layout": "apertura",
+      "titolo": "Che cosa succede quando pubblichi",
+      "sottotitolo": "Il documento si congela",
+      "testo": "Dati e calcoli in una versione numerata, che il database non lascia più modificare: è il motivo per cui il documento vale.",
+      "agenda": [
+        "Congelare, non stampare",
+        "Quattro cose in quel momento",
+        "Il PDF archiviato",
+        "Non si pubblica per vedere"
+      ]
+    },
+    {
+      "sezione": "pubblicare",
+      "p": 1,
+      "inizia": "Quattro cose succedono in quel momento.",
+      "layout": "cards",
+      "titolo": "Quattro cose, in quel momento",
+      "cards": [
+        {
+          "h": "Numero di versione",
+          "d": "Ripubblicando ottieni la seconda, e la prima resta consultabile."
+        },
+        {
+          "h": "Marchio",
+          "d": "Si sceglie lì: i documenti consegnati non cambiano se lo studio cambia logo."
+        },
+        {
+          "h": "Edizione dei contenuti",
+          "d": "Congelata, perché le norme si aggiornano."
+        },
+        {
+          "h": "Codice di verifica",
+          "d": "Chi ha il documento ne controlla l'autenticità dal sito, senza account."
+        }
+      ]
+    },
+    {
+      "sezione": "pubblicare",
+      "p": 2,
+      "inizia": "Il PDF si genera una volta",
+      "layout": "evidenza",
+      "eyebrow": "Il PDF",
+      "titolo": "Riscaricarlo restituisce lo stesso identico file.",
+      "testo": "Si genera una volta e resta archiviato: quello consegnato al cliente non cambia impaginazione, nemmeno fra due anni."
+    },
+    {
+      "sezione": "pubblicare",
+      "p": 3,
+      "inizia": "La conseguenza pratica è una sola,",
+      "layout": "confronto",
+      "titolo": "Anteprima o pubblicazione",
+      "a": {
+        "h": "Anteprima",
+        "sub": "Dal percorso",
+        "punti": [
+          "Quante volte vuoi",
+          "Mentre il lavoro è in corso"
+        ]
+      },
+      "b": {
+        "h": "Pubblicazione",
+        "sub": "Quando il lavoro è finito",
+        "punti": [
+          "Resta nell'archivio per sempre",
+          "Il cliente vede anche le versioni di prova"
+        ]
+      }
+    }
+  ],
+  "comuni/revisione": [
+    {
+      "sezione": "revisione",
+      "p": 0,
+      "inizia": "Questo percorso non si redige per",
+      "layout": "apertura",
+      "titolo": "Una fotografia, non un esercizio",
+      "sottotitolo": "Si aggiorna, e si consegna per revisioni",
+      "testo": "Niente selettore dell'anno: c'è lo stato corrente, e il lavoro prosegue invece di ricominciare a gennaio.",
+      "agenda": [
+        "Lo stato corrente",
+        "Quando pubblicare",
+        "Aggiornare non è consegnare"
+      ]
+    },
+    {
+      "sezione": "revisione",
+      "p": 1,
+      "inizia": "Quando conviene pubblicare, allora. Quando qualcuno",
+      "layout": "cards",
+      "titolo": "Si pubblica quando qualcuno deve riceverlo",
+      "cards": [
+        {
+          "h": "Un committente",
+          "d": "che lo ha chiesto"
+        },
+        {
+          "h": "Un ente di certificazione",
+          "d": "o una banca"
+        },
+        {
+          "h": "Un cliente a monte",
+          "d": "della filiera"
+        }
+      ]
+    },
+    {
+      "sezione": "revisione",
+      "p": 2,
+      "inizia": "La differenza pratica con un percorso",
+      "layout": "confronto",
+      "titolo": "Aggiornare non è consegnare",
+      "a": {
+        "h": "Aggiornare",
+        "sub": "Continuo",
+        "punti": [
+          "Costa poco per volta",
+          "Si lavora sullo stato corrente"
+        ]
+      },
+      "b": {
+        "h": "Consegnare",
+        "sub": "Un momento scelto",
+        "punti": [
+          "Produce una revisione numerata",
+          "Le precedenti restano consultabili"
+        ]
+      }
+    }
+  ],
+  "nis2/chi-rientra": [
+    {
+      "sezione": "chi-rientra",
+      "p": 0,
+      "inizia": "Prima di chiedersi quanto un'azienda sia",
+      "layout": "apertura",
+      "titolo": "Chi rientra",
+      "sottotitolo": "E a quale titolo",
+      "testo": "Prima di chiedersi quanto un'azienda sia conforme, bisogna stabilire se il decreto le si applica.",
+      "agenda": [
+        "I settori dei due allegati",
+        "Le soglie dimensionali",
+        "I criteri specifici",
+        "Fuori ambito e non determinata",
+        "Il tetto delle sanzioni"
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 2,
+      "inizia": "I settori elencati dal decreto sono",
+      "layout": "confronto",
+      "titolo": "Due allegati, due pesi",
+      "a": {
+        "h": "Allegato I",
+        "sub": "{settoriNis2Allegato1} settori ad alta criticità",
+        "punti": [
+          "A parità di dimensione, classificazione più grave",
+          "Una grande impresa qui è essenziale"
+        ]
+      },
+      "b": {
+        "h": "Allegato II",
+        "sub": "{settoriNis2Allegato2} altri settori critici",
+        "punti": [
+          "A parità di dimensione, classificazione meno grave",
+          "Una grande impresa qui è importante"
+        ]
+      }
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 3,
+      "inizia": "Il parametro dimensionale ha tre gradini,",
+      "layout": "numeri",
+      "titolo": "Il parametro dimensionale",
+      "numeri": [
+        {
+          "n": "50 addetti",
+          "h": "Media impresa",
+          "d": "Oppure da 10 milioni di fatturato."
+        },
+        {
+          "n": "250 addetti",
+          "h": "Grande impresa",
+          "d": "Oppure da 50 milioni di fatturato."
+        },
+        {
+          "n": "Una soglia",
+          "h": "Basta superarne una",
+          "d": "Addetti e fatturato non si sommano e non si mediano."
+        }
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 4,
+      "inizia": "Dall'incrocio dei due parametri escono tre",
+      "layout": "cards",
+      "titolo": "Dall'incrocio, tre esiti",
+      "cards": [
+        {
+          "h": "Essenziale",
+          "d": "Grande impresa in Allegato I."
+        },
+        {
+          "h": "Importante",
+          "d": "Grande impresa in Allegato II, o media impresa in uno dei due allegati."
+        },
+        {
+          "h": "Fuori ambito",
+          "d": "Micro o piccola impresa, in entrambi gli allegati."
+        }
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 5,
+      "inizia": "Ma non basta per tutti, e",
+      "layout": "evidenza",
+      "eyebrow": "La parte che si sbaglia",
+      "titolo": "I {criteriNis2} criteri specifici scavalcano la dimensione.",
+      "testo": "Una microimpresa che fornisce servizi DNS, o che è l'unico fornitore in Italia di un servizio essenziale, è soggetto essenziale."
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 6,
+      "inizia": "Quando ne ricorrono due insieme, prevale",
+      "layout": "definizione",
+      "eyebrow": "Quando ne ricorrono due",
+      "titolo": "Prevale il più grave",
+      "definizione": "Non il primo che hai spuntato né quello più in alto nell'elenco: decide il criterio più grave, e con lui il tetto delle sanzioni.",
+      "punti": [
+        {
+          "h": "Sei criteri",
+          "d": "portano a essenziale"
+        },
+        {
+          "h": "Due criteri",
+          "d": "portano a importante"
+        }
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 7,
+      "inizia": "C'è poi una distinzione che il",
+      "layout": "confronto",
+      "titolo": "Fuori ambito non è non determinata",
+      "a": {
+        "h": "Fuori ambito",
+        "sub": "È una determinazione",
+        "punti": [
+          "Settore elencato e dimensione nota",
+          "Il decreto non si applica",
+          "Si scrive in un documento firmato"
+        ]
+      },
+      "b": {
+        "h": "Non determinata",
+        "sub": "Nessuna conclusione",
+        "punti": [
+          "Manca la dimensione",
+          "Oppure il settore non è negli allegati",
+          "Non vale come fuori ambito"
+        ]
+      }
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 9,
+      "inizia": "Dalla classificazione discende il numero che",
+      "layout": "numeri",
+      "titolo": "Il tetto delle sanzioni, articolo 38",
+      "numeri": [
+        {
+          "n": "10 milioni",
+          "h": "Soggetto essenziale",
+          "d": "Oppure il 2% del fatturato mondiale annuo, se superiore."
+        },
+        {
+          "n": "7 milioni",
+          "h": "Soggetto importante",
+          "d": "Oppure l'1,4% del fatturato mondiale annuo."
+        }
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 10,
+      "inizia": "Per questo la schermata dell'ambito non",
+      "layout": "split",
+      "titolo": "L'esito porta la sua ragione",
+      "lead": "Accanto alla classificazione c'è sempre la via da cui viene: senza, non la difendi davanti a chi verifica.",
+      "punti": [
+        {
+          "h": "Grande impresa",
+          "d": "in Allegato I"
+        },
+        {
+          "h": "Criterio specifico",
+          "d": "con il suo numero"
+        },
+        {
+          "h": "Settore non elencato",
+          "d": "quando la strada non porta a una conclusione"
+        }
+      ]
+    },
+    {
+      "sezione": "chi-rientra",
+      "p": 11,
+      "inizia": "Un'ultima avvertenza pratica, che riguarda il",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Prima l'ambito",
+          "d": "un errore qui si porta dietro tutto il resto"
+        },
+        {
+          "h": "I criteri specifici",
+          "d": "prevalgono sulla dimensione"
+        },
+        {
+          "h": "Fuori ambito",
+          "d": "è una determinazione, non un vuoto"
+        },
+        {
+          "h": "Valutazione preliminare",
+          "d": "la qualificazione definitiva compete all'Autorità"
+        }
+      ],
+      "prossimo": {
+        "titolo": "La scala da zero a quattro",
+        "testo": "Come si valuta ciascun requisito, e perché il tre è caro."
+      }
+    }
+  ],
+  "nis2/corpus-e-documento": [
+    {
+      "sezione": "corpus-e-documento",
+      "p": 0,
+      "inizia": "Il percorso non ti lascia davanti",
+      "layout": "apertura",
+      "titolo": "Procedure, registri e relazione",
+      "sottotitolo": "Che cosa trovi scritto e che cosa esce",
+      "testo": "{procedureNis2} procedure, {moduliNis2} moduli e {registriNis2} registri già pronti sui riferimenti del decreto.",
+      "agenda": [
+        "Il corpus documentale",
+        "Lo stato dei documenti",
+        "La relazione immutabile",
+        "Che cosa dichiara in apertura",
+        "Il codice di verifica"
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 1,
+      "inizia": "Quel materiale non è pensato per",
+      "layout": "split",
+      "titolo": "Si personalizzano in due modi",
+      "lead": "Il materiale non è pensato per essere adottato così com'è.",
+      "punti": [
+        {
+          "h": "Segnaposto",
+          "d": "il sistema li riempie con i dati dell'organizzazione"
+        },
+        {
+          "h": "Blocchi di testo",
+          "d": "da riscrivere quando la procedura non descrive il cliente"
+        }
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 2,
+      "inizia": "Ogni documento ha uno stato che",
+      "layout": "cards",
+      "titolo": "Lo stato di ogni documento",
+      "cards": [
+        {
+          "h": "Da personalizzare",
+          "d": "com'è nel catalogo"
+        },
+        {
+          "h": "In redazione",
+          "d": "ci si sta lavorando"
+        },
+        {
+          "h": "Approvata",
+          "d": "adottata dall'organizzazione"
+        },
+        {
+          "h": "Non applicabile",
+          "d": "una scelta, non una dimenticanza"
+        }
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 3,
+      "inizia": "Alla fine del percorso esce la",
+      "layout": "evidenza",
+      "eyebrow": "La relazione sul livello di conformità",
+      "titolo": "Ogni versione pubblicata è immutabile.",
+      "testo": "Se domani correggi un dato, la relazione consegnata non cambia: la prossima sarà la revisione due."
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 5,
+      "inizia": "In apertura, riquadrato, il documento dichiara",
+      "layout": "definizione",
+      "eyebrow": "In apertura, riquadrato",
+      "titolo": "Che cosa il documento non contiene",
+      "definizione": "La classificazione è una valutazione preliminare: la qualificazione definitiva compete all'Autorità.",
+      "punti": [
+        {
+          "h": "I non valutati",
+          "d": "pesano zero, non sono esclusi dal calcolo"
+        }
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 7,
+      "inizia": "Ogni versione pubblicata porta infine un",
+      "layout": "flusso",
+      "titolo": "Il codice di verifica",
+      "passi": [
+        {
+          "h": "Riceve il documento",
+          "d": "cliente, ente o azienda a valle"
+        },
+        {
+          "h": "Digita il codice",
+          "d": "su una pagina pubblica, senza account"
+        },
+        {
+          "h": "Vede chi l'ha emesso",
+          "d": "per quale azienda, che documento, quale revisione"
+        }
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 8,
+      "inizia": "In fondo al documento compare anche",
+      "layout": "confronto",
+      "titolo": "Autentico e superato",
+      "a": {
+        "h": "Autentico",
+        "sub": "Per sempre",
+        "punti": [
+          "Il documento è nostro",
+          "Dice ciò che diceva quel giorno"
+        ]
+      },
+      "b": {
+        "h": "Superato",
+        "sub": "Col tempo",
+        "punti": [
+          "Il catalogo può cambiare",
+          "La pagina di verifica lo dice"
+        ]
+      }
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 9,
+      "inizia": "Una nota sul lavoro quotidiano con",
+      "layout": "punti",
+      "titolo": "Come si lavora con le procedure",
+      "intro": "Aprirle tutte e riscriverle è il modo più veloce per non finirne nessuna.",
+      "punti": [
+        {
+          "h": "Lasciale da personalizzare",
+          "d": "all'inizio"
+        },
+        {
+          "h": "Compila prima la verifica",
+          "d": "dei requisiti"
+        },
+        {
+          "h": "Apri solo quelle necessarie",
+          "d": "le indica il piano di adeguamento"
+        }
+      ]
+    },
+    {
+      "sezione": "corpus-e-documento",
+      "p": 10,
+      "inizia": "E i registri, a differenza delle",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Le procedure",
+          "d": "si personalizzano e si adottano"
+        },
+        {
+          "h": "I registri",
+          "d": "non si scrivono: si tengono"
+        },
+        {
+          "h": "La relazione",
+          "d": "è immutabile e dichiara i suoi limiti"
+        },
+        {
+          "h": "Il codice",
+          "d": "conferma l'autenticità a chiunque"
+        }
+      ]
+    }
+  ],
+  "nis2/incidenti-e-termini": [
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 0,
+      "inizia": "Tutto il resto di NIS2 si",
+      "layout": "apertura",
+      "titolo": "Le ore che non si recuperano",
+      "sottotitolo": "I termini dell'articolo 25",
+      "testo": "Tutto il resto si recupera. Un termine di notifica mancato resta scritto, e l'Autorità lo guarda.",
+      "agenda": [
+        "Tre adempimenti, tre termini",
+        "Da che cosa decorrono",
+        "L'ora del giorno",
+        "I cinque stati",
+        "Chi notifica di notte"
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 1,
+      "inizia": "Gli adempimenti sono tre, e i",
+      "layout": "timeline",
+      "titolo": "Tre adempimenti, tre termini",
+      "tappe": [
+        {
+          "t": "24 ore",
+          "h": "Pre notifica",
+          "d": "Dalla conoscenza dell'incidente."
+        },
+        {
+          "t": "72 ore",
+          "h": "Notifica",
+          "d": "Dalla stessa conoscenza."
+        },
+        {
+          "t": "1 mese",
+          "h": "Relazione finale",
+          "d": "Dalla notifica, non dalla conoscenza."
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 3,
+      "inizia": "La relazione finale invece decorre dalla",
+      "layout": "confronto",
+      "titolo": "Da che cosa decorrono",
+      "a": {
+        "h": "Pre notifica e notifica",
+        "sub": "Dalla conoscenza",
+        "punti": [
+          "L'istante in cui l'ente lo sa",
+          "Non quando è avvenuto",
+          "Non quando è risolto"
+        ]
+      },
+      "b": {
+        "h": "Relazione finale",
+        "sub": "Dalla notifica",
+        "punti": [
+          "Senza notifica non decorre",
+          "Non è scaduta: non è cominciata"
+        ]
+      }
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 4,
+      "inizia": "Il registro chiede la data e",
+      "layout": "numeri",
+      "titolo": "Perché serve anche l'ora",
+      "numeri": [
+        {
+          "n": "24 ore",
+          "h": "Il termine della pre notifica",
+          "d": "calcolato da una mezzanotte inventata"
+        },
+        {
+          "n": "12 ore",
+          "h": "L'errore possibile",
+          "d": "in un verso o nell'altro, su un termine perentorio"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 5,
+      "inizia": "C'è un secondo motivo, meno ovvio,",
+      "layout": "definizione",
+      "eyebrow": "Il secondo motivo",
+      "titolo": "Tempo coordinato universale",
+      "definizione": "I calcoli non si fanno nell'ora locale: col cambio dell'ora legale, ventiquattro ore locali valgono ventitré o venticinque ore reali.",
+      "punti": [
+        {
+          "h": "Succede",
+          "d": "due volte l'anno, e non si vede finché non capita"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 6,
+      "inizia": "Gli stati che il prodotto mostra",
+      "layout": "cards",
+      "titolo": "I cinque stati di un termine",
+      "cards": [
+        {
+          "h": "Nei termini",
+          "d": "fatto in tempo"
+        },
+        {
+          "h": "In corso",
+          "d": "il termine non è vicino"
+        },
+        {
+          "h": "In scadenza",
+          "d": "resta meno di un quarto del tempo"
+        },
+        {
+          "h": "Scaduto",
+          "d": "passato, e non fatto"
+        },
+        {
+          "h": "Fuori termine",
+          "d": "fatto, ma dopo la scadenza"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 7,
+      "inizia": "Sull'ultimo stato vale la pena fermarsi.",
+      "layout": "evidenza",
+      "eyebrow": "L'ultimo stato",
+      "titolo": "Fatto in ritardo resta fuori termine.",
+      "testo": "Non torna nei termini per il fatto di essere stato fatto: è proprio ciò che l'Autorità guarda."
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 8,
+      "inizia": "Un ultimo consiglio operativo, che vale",
+      "layout": "punti",
+      "titolo": "L'ora della conoscenza",
+      "intro": "Va raccolta mentre l'incidente è in corso.",
+      "punti": [
+        {
+          "h": "Ricostruita dopo",
+          "d": "è sempre più tarda del vero"
+        },
+        {
+          "h": "Più tarda del vero",
+          "d": "fa sembrare rispettato un termine che non lo era"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 9,
+      "inizia": "C'è una conseguenza organizzativa che conviene",
+      "layout": "flusso",
+      "titolo": "Un incidente di venerdì sera",
+      "passi": [
+        {
+          "h": "Venerdì sera",
+          "d": "l'incidente viene conosciuto"
+        },
+        {
+          "h": "Sabato sera",
+          "d": "scade la pre notifica"
+        },
+        {
+          "h": "La domanda vera",
+          "d": "chi la esegue di notte, e chi lo sostituisce"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 11,
+      "inizia": "Ultimo punto, sul rapporto fra i",
+      "layout": "split",
+      "titolo": "La pre notifica non è una notifica ridotta",
+      "lead": "È un avviso iniziale che fa partire l'orologio dell'Autorità.",
+      "punti": [
+        {
+          "h": "Si fa subito",
+          "d": "anche quando non si sa quasi niente"
+        },
+        {
+          "h": "L'errore più comune",
+          "d": "aspettare il quadro completo e mancare il primo termine"
+        }
+      ]
+    },
+    {
+      "sezione": "incidenti-e-termini",
+      "p": 12,
+      "inizia": "Nello scadenzario del percorso questi termini",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Pre notifica e notifica",
+          "d": "decorrono dalla conoscenza"
+        },
+        {
+          "h": "Relazione finale",
+          "d": "decorre dalla notifica"
+        },
+        {
+          "h": "Data e ora",
+          "d": "in tempo coordinato universale"
+        },
+        {
+          "h": "Fuori termine",
+          "d": "resta scritto"
+        },
+        {
+          "h": "Il presidio",
+          "d": "funziona anche di notte e nei festivi"
+        }
+      ],
+      "prossimo": {
+        "titolo": "Procedure, registri e relazione",
+        "testo": "Che cosa trovi già scritto e che cosa esce alla fine."
+      }
+    }
+  ],
+  "nis2/la-scala": [
+    {
+      "sezione": "la-scala",
+      "p": 0,
+      "inizia": "I requisiti dell'autovalutazione sono centoventiquattro, distribuiti",
+      "layout": "apertura",
+      "titolo": "La scala da zero a quattro",
+      "sottotitolo": "E perché il tre è caro",
+      "testo": "{requisitiNis2Autovalutazione} requisiti su {capiNis2} capi, ciascuno valutato su cinque gradini.",
+      "agenda": [
+        "I cinque livelli",
+        "Il salto dal due al tre",
+        "Il livello obiettivo",
+        "Non applicabile",
+        "Come si conduce la verifica"
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 1,
+      "inizia": "Ogni requisito si valuta su una",
+      "layout": "tabella",
+      "titolo": "Cinque gradini, cinque definizioni",
+      "cols": [
+        "Livello",
+        "Nome",
+        "Che cosa pretende"
+      ],
+      "righe": [
+        [
+          "0",
+          "Assente",
+          "Non attuata né pianificata"
+        ],
+        [
+          "1",
+          "Pianificata",
+          "Definita o pianificata, non ancora attuata"
+        ],
+        [
+          "2",
+          "Attuata parzialmente",
+          "Su una parte del perimetro, o non sistematica"
+        ],
+        [
+          "3",
+          "Attuata",
+          "Sull'intero perimetro, con evidenza documentale"
+        ],
+        [
+          "4",
+          "Attuata e verificata",
+          "In più, efficacia misurata e verificata periodicamente"
+        ]
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 2,
+      "inizia": "Il salto che decide se una",
+      "layout": "evidenza",
+      "eyebrow": "Il salto che decide",
+      "titolo": "Dal due al tre c'è una parola: evidenza.",
+      "testo": "«Lo facciamo» vale due. «Lo facciamo su tutto e c'è un documento che lo prova» vale tre."
+    },
+    {
+      "sezione": "la-scala",
+      "p": 4,
+      "inizia": "Il quarto livello aggiunge una cosa",
+      "layout": "flusso",
+      "titolo": "Che cosa aggiunge ogni gradino",
+      "passi": [
+        {
+          "h": "Due",
+          "d": "la misura c'è, su una parte"
+        },
+        {
+          "h": "Tre",
+          "d": "su tutto il perimetro, con un documento"
+        },
+        {
+          "h": "Quattro",
+          "d": "e qualcuno misura periodicamente se funziona"
+        }
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 5,
+      "inizia": "Accanto alla scala c'è il livello",
+      "layout": "punti",
+      "titolo": "Il livello obiettivo",
+      "intro": "Quello che l'organizzazione si dà: di norma tre.",
+      "punti": [
+        {
+          "h": "Non entra",
+          "d": "nel calcolo della conformità"
+        },
+        {
+          "h": "Non cambia",
+          "d": "la classificazione"
+        },
+        {
+          "h": "Decide",
+          "d": "che cosa è uno scostamento"
+        },
+        {
+          "h": "Dà una scala",
+          "d": "al piano di adeguamento"
+        }
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 6,
+      "inizia": "Alzare l'obiettivo a quattro su tutti",
+      "layout": "split",
+      "titolo": "Obiettivo quattro su tutto?",
+      "lead": "Sembra ambizione, ed è una promessa che di solito non si mantiene.",
+      "punti": [
+        {
+          "h": "Misurare l'efficacia",
+          "d": "di ogni singola misura"
+        },
+        {
+          "h": "Con una periodicità",
+          "d": "e registrandola"
+        },
+        {
+          "h": "Per una piccola o media impresa",
+          "d": "un carico che nessuno sostiene"
+        }
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 7,
+      "inizia": "C'è infine il caso del requisito",
+      "layout": "definizione",
+      "eyebrow": "Il requisito che non riguarda il cliente",
+      "titolo": "Non applicabile",
+      "definizione": "Esce dal denominatore: chi dichiara che un requisito non lo riguarda non risulta inadempiente su quel requisito.",
+      "punti": [
+        {
+          "h": "È una valutazione",
+          "d": "che qualcuno firma e può dover motivare"
+        },
+        {
+          "h": "Azzera il livello",
+          "d": "nessun numero resta accanto"
+        }
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 9,
+      "inizia": "La differenza fra un requisito non",
+      "layout": "confronto",
+      "titolo": "Non applicabile e non valutato",
+      "a": {
+        "h": "Non applicabile",
+        "sub": "L'hai deciso",
+        "punti": [
+          "È una determinazione",
+          "Esce dal denominatore"
+        ]
+      },
+      "b": {
+        "h": "Non valutato",
+        "sub": "Non l'hai ancora guardato",
+        "punti": [
+          "È un vuoto",
+          "Resta nel conteggio"
+        ]
+      }
+    },
+    {
+      "sezione": "la-scala",
+      "p": 10,
+      "inizia": "Due consigli su come si conduce",
+      "layout": "cards",
+      "titolo": "Due consigli sul lavoro",
+      "cards": [
+        {
+          "h": "Comincia da dove c'è già qualcosa",
+          "d": "accessi, backup e autenticazione: le risposte arrivano in mezz'ora."
+        },
+        {
+          "h": "L'evidenza si scrive mentre valuti",
+          "d": "nome, data e posizione del documento, con il cliente davanti."
+        }
+      ]
+    },
+    {
+      "sezione": "la-scala",
+      "p": 12,
+      "inizia": "C'è poi una domanda che i",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Il tre",
+          "d": "vuole l'evidenza documentale"
+        },
+        {
+          "h": "Il quattro",
+          "d": "vuole la misura dell'efficacia"
+        },
+        {
+          "h": "L'obiettivo",
+          "d": "decide gli scostamenti, non la percentuale"
+        },
+        {
+          "h": "Non applicabile",
+          "d": "è una dichiarazione firmata"
+        },
+        {
+          "h": "Niente è definitivo",
+          "d": "finché non pubblichi un documento"
+        }
+      ],
+      "prossimo": {
+        "titolo": "Più bassa del previsto",
+        "testo": "Perché un requisito non valutato pesa zero."
+      }
+    }
+  ],
+  "nis2/un-requisito-non-valutato": [
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 0,
+      "inizia": "Questa è la cosa che sorprende",
+      "layout": "apertura",
+      "titolo": "Più bassa del previsto",
+      "sottotitolo": "La percentuale e il requisito non valutato",
+      "testo": "Tre requisiti su venti, tutti al massimo: la conformità dice 15%, non cento.",
+      "agenda": [
+        "La regola",
+        "Perché non si media",
+        "La formula",
+        "Scostamento e istruttoria",
+        "Come si presenta l'avanzamento"
+      ]
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 1,
+      "inizia": "Non è un difetto: è la",
+      "layout": "evidenza",
+      "eyebrow": "La regola",
+      "titolo": "Un requisito applicabile e non valutato pesa zero.",
+      "testo": "E resta nel denominatore. È la regola che distingue questo strumento dal foglio di calcolo."
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 2,
+      "inizia": "Proviamo a vedere che cosa succederebbe",
+      "layout": "numeri",
+      "titolo": "Tre situazioni, un numero solo",
+      "numeri": [
+        {
+          "n": "100%",
+          "h": "Tre conformi su venti",
+          "d": "Il foglio media soltanto ciò che hai guardato."
+        },
+        {
+          "n": "100%",
+          "h": "Tutti e venti conformi",
+          "d": "Lo stesso numero."
+        },
+        {
+          "n": "100%",
+          "h": "Tre conformi, diciassette mai aperti",
+          "d": "Ancora lo stesso numero."
+        }
+      ]
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 4,
+      "inizia": "La formula è semplice e sta",
+      "layout": "definizione",
+      "eyebrow": "La formula",
+      "titolo": "Conformità",
+      "definizione": "Somma dei pesi dei requisiti applicabili, divisa per il numero dei requisiti applicabili.",
+      "punti": [
+        {
+          "h": "Non applicabili",
+          "d": "escono da entrambi i termini"
+        },
+        {
+          "h": "Non valutati",
+          "d": "zero sopra, uno sotto"
+        }
+      ]
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 5,
+      "inizia": "Quello che la percentuale misura, quindi,",
+      "layout": "split",
+      "titolo": "Che cosa misura la percentuale",
+      "lead": "Non la media di ciò che hai guardato: quanto è stato dimostrato sul totale di ciò che va dimostrato.",
+      "punti": [
+        {
+          "h": "A schermo",
+          "d": "quanti requisiti restano da valutare"
+        },
+        {
+          "h": "Accanto",
+          "d": "che pesano zero nella percentuale"
+        },
+        {
+          "h": "Perché",
+          "d": "un 8% il primo giorno non sembri un guasto"
+        }
+      ]
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 6,
+      "inizia": "Da qui discende una seconda distinzione,",
+      "layout": "confronto",
+      "titolo": "Scostamento o istruttoria",
+      "a": {
+        "h": "Scostamento",
+        "sub": "Valutato, sotto l'obiettivo",
+        "punti": [
+          "Entra nel piano",
+          "Con priorità e termine"
+        ]
+      },
+      "b": {
+        "h": "Non valutato",
+        "sub": "Lavoro da finire",
+        "punti": [
+          "Non entra nel piano",
+          "È istruttoria, non un'azione"
+        ]
+      }
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 8,
+      "inizia": "Detto in una frase sola, da",
+      "layout": "evidenza",
+      "eyebrow": "Da dire al cliente il primo giorno",
+      "titolo": "La percentuale bassa non dice che siete messi male.",
+      "testo": "Dice che il lavoro non è ancora stato fatto, e salirà perché avrete dato le risposte."
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 9,
+      "inizia": "Vale la pena aggiungere che cosa",
+      "layout": "tabella",
+      "titolo": "A metà lavoro, due numeri insieme",
+      "cols": [
+        "Numero",
+        "Valore",
+        "Che cosa dice"
+      ],
+      "righe": [
+        [
+          "Conformità",
+          "30%",
+          "quanto è dimostrato oggi"
+        ],
+        [
+          "Valutati",
+          "70 su {requisitiNis2Autovalutazione}",
+          "a che punto è il mandato"
+        ],
+        [
+          "Da valutare",
+          "i restanti",
+          "pesano zero solo perché non sono stati aperti"
+        ]
+      ]
+    },
+    {
+      "sezione": "un-requisito-non-valutato",
+      "p": 11,
+      "inizia": "La stessa regola torna identica nel",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Non valutato",
+          "d": "pesa zero e resta nel denominatore"
+        },
+        {
+          "h": "Mediare i valutati",
+          "d": "premia chi salta i requisiti scomodi"
+        },
+        {
+          "h": "Scostamento",
+          "d": "è valutato sotto l'obiettivo; il non valutato è istruttoria"
+        },
+        {
+          "h": "Stessa regola",
+          "d": "anche per i controlli del sistema di gestione"
+        }
+      ],
+      "prossimo": {
+        "titolo": "Le ore che non si recuperano",
+        "testo": "I termini di notifica dell'articolo 25."
+      }
+    }
+  ],
+  "sgnis2/attuato-non-e-verificato": [
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 0,
+      "inizia": "I sessantotto controlli del sistema hanno",
+      "layout": "apertura",
+      "titolo": "Attuato non vuol dire verificato",
+      "sottotitolo": "La regola che un'ispezione trova in dieci minuti",
+      "testo": "{controlliNis2} controlli, quattro stati dichiarati e una frequenza di riverifica.",
+      "agenda": [
+        "La frequenza di riverifica",
+        "Da verificare",
+        "Mai verificato vale scaduto",
+        "Come si pesa l'attuazione",
+        "Frequenze e responsabili"
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 1,
+      "inizia": "Trecentosessantacinque giorni per una delibera annuale.",
+      "layout": "numeri",
+      "titolo": "La frequenza di riverifica",
+      "numeri": [
+        {
+          "n": "365 giorni",
+          "h": "Delibera annuale",
+          "d": "una volta l'anno"
+        },
+        {
+          "n": "90 giorni",
+          "h": "Riesame degli accessi",
+          "d": "ogni trimestre"
+        },
+        {
+          "n": "30 giorni",
+          "h": "Scansione delle vulnerabilità",
+          "d": "ogni mese"
+        }
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 2,
+      "inizia": "Ecco il meccanismo, ed è la",
+      "layout": "evidenza",
+      "eyebrow": "La regola meno ovvia",
+      "titolo": "Un attuato mai più guardato torna da verificare.",
+      "testo": "Quando l'ultima verifica è più vecchia della frequenza, lo stato effettivo cambia da solo."
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 4,
+      "inizia": "C'è un secondo caso, e all'inizio",
+      "layout": "tabella",
+      "titolo": "Dichiarato ed effettivo",
+      "cols": [
+        "Dichiarato",
+        "Ultima verifica",
+        "Stato effettivo"
+      ],
+      "righe": [
+        [
+          "Attuato",
+          "un mese fa, frequenza 365 giorni",
+          "Attuato"
+        ],
+        [
+          "Attuato",
+          "tre anni fa, frequenza 365 giorni",
+          "Da verificare"
+        ],
+        [
+          "Attuato",
+          "nessuna registrata",
+          "Da verificare"
+        ],
+        [
+          "In attuazione",
+          "—",
+          "In attuazione"
+        ]
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 6,
+      "inizia": "Questo porta a una conseguenza pratica",
+      "layout": "definizione",
+      "eyebrow": "La conseguenza pratica",
+      "titolo": "Un lavoro che si tiene",
+      "definizione": "Il primo anno si dichiarano i controlli. Dal secondo il lavoro è tenerli verdi: riverificare e annotare."
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 7,
+      "inizia": "La percentuale di attuazione pesa gli",
+      "layout": "cards",
+      "titolo": "Come pesa l'attuazione",
+      "cards": [
+        {
+          "h": "Attuato",
+          "d": "vale uno"
+        },
+        {
+          "h": "In attuazione",
+          "d": "vale mezzo"
+        },
+        {
+          "h": "Da verificare",
+          "d": "vale mezzo: efficacia non dimostrata oggi"
+        },
+        {
+          "h": "Non attuato",
+          "d": "vale zero, e un controllo mai toccato resta nel denominatore"
+        },
+        {
+          "h": "Non applicabile",
+          "d": "esce dal denominatore"
+        }
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 9,
+      "inizia": "A schermo, lo stato dichiarato e",
+      "layout": "split",
+      "titolo": "Dichiarato accanto a effettivo",
+      "lead": "Mostrare soltanto lo stato effettivo sarebbe più pulito, e incomprensibile.",
+      "punti": [
+        {
+          "h": "Chi vede un controllo in rosso",
+          "d": "deve sapere che era stato dichiarato attuato"
+        },
+        {
+          "h": "Altrimenti",
+          "d": "pensa che il prodotto abbia perso il dato"
+        }
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 10,
+      "inizia": "Un ultimo consiglio, sul modo di",
+      "layout": "punti",
+      "titolo": "Rivedere le frequenze",
+      "intro": "Sono la promessa di quanto spesso qualcuno farà una cosa.",
+      "punti": [
+        {
+          "h": "Rivedile con il cliente",
+          "d": "almeno quelle a trenta e novanta giorni"
+        },
+        {
+          "h": "Una frequenza disattesa",
+          "d": "tiene il sistema sempre in rosso"
+        },
+        {
+          "h": "Meglio più lunga e vera",
+          "d": "che più breve e disattesa"
+        }
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 11,
+      "inizia": "La vista dei controlli mostra in",
+      "layout": "evidenza",
+      "eyebrow": "Il riquadro in cima",
+      "titolo": "Le righe si scorrono, le caselle si guardano.",
+      "testo": "Una casella per controllo, colorata per stato effettivo: dove si concentrano i problemi si vede prima di leggere un nome."
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 12,
+      "inizia": "Sotto il riquadro l'elenco si filtra,",
+      "layout": "flusso",
+      "titolo": "Dal secondo anno si lavora così",
+      "passi": [
+        {
+          "h": "Filtro sulle scadenze",
+          "d": "solo i controlli in scadenza"
+        },
+        {
+          "h": "Riverifica",
+          "d": "e registrazione dell'evidenza"
+        },
+        {
+          "h": "Responsabile",
+          "d": "un nome accanto a ogni controllo"
+        }
+      ]
+    },
+    {
+      "sezione": "attuato-non-e-verificato",
+      "p": 14,
+      "inizia": "Ultima nota, sul rapporto fra i",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Frequenza scaduta",
+          "d": "l'attuato torna da verificare"
+        },
+        {
+          "h": "Mai verificato",
+          "d": "vale come scaduto"
+        },
+        {
+          "h": "Il lavoro",
+          "d": "non si consegna: si tiene"
+        },
+        {
+          "h": "Il responsabile",
+          "d": "decide se le riverifiche si fanno"
+        },
+        {
+          "h": "Conformità e attuazione",
+          "d": "rispondono a due domande diverse"
+        }
+      ],
+      "prossimo": {
+        "titolo": "Attuazione ed efficacia",
+        "testo": "Perché lo stesso numero può essere buono o pessimo."
+      }
+    }
+  ],
+  "sgnis2/dal-check-up-al-sistema": [
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 0,
+      "inizia": "L'autovalutazione risponde a una domanda sola:",
+      "layout": "apertura",
+      "titolo": "Dal check up al sistema",
+      "sottotitolo": "Che cosa cambia rispetto all'autovalutazione",
+      "testo": "Il primo percorso dice a che punto siamo. Il secondo come ci arriviamo, e come restiamo lì.",
+      "agenda": [
+        "Quattro cose in più",
+        "Le risposte non si danno due volte",
+        "Le sei viste",
+        "Quando proporre il secondo mandato",
+        "Che cosa condividono"
+      ]
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 1,
+      "inizia": "Il secondo percorso contiene per intero",
+      "layout": "numeri",
+      "titolo": "Quello che il sistema aggiunge",
+      "numeri": [
+        {
+          "n": "{controlliNis2}",
+          "h": "Controlli",
+          "d": "ciascuno con la sua frequenza di riverifica"
+        },
+        {
+          "n": "{fasiNis2}",
+          "h": "Fasi della roadmap",
+          "d": "in un ordine che funziona sul campo"
+        },
+        {
+          "n": "{indicatoriNis2}",
+          "h": "Indicatori",
+          "d": "di attuazione e di efficacia"
+        },
+        {
+          "n": "{requisitiNis2}",
+          "h": "Requisiti",
+          "d": "due in più dell'autovalutazione"
+        }
+      ]
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 2,
+      "inizia": "La cosa più importante da capire",
+      "layout": "evidenza",
+      "eyebrow": "Le risposte non si danno due volte",
+      "titolo": "È la stessa riga, non una copia.",
+      "testo": "Il requisito valutato nell'autovalutazione è già valutato nel sistema di gestione, e viceversa."
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 3,
+      "inizia": "È una scelta di progetto, ed",
+      "layout": "confronto",
+      "titolo": "Una riga sola, non due copie",
+      "a": {
+        "h": "Due copie",
+        "sub": "L'alternativa",
+        "punti": [
+          "Due risposte alla stessa domanda",
+          "Due documenti che si contraddicono"
+        ]
+      },
+      "b": {
+        "h": "Una riga sola",
+        "sub": "La scelta",
+        "punti": [
+          "Una risposta sola",
+          "Un dato in un posto solo"
+        ]
+      }
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 5,
+      "inizia": "Le viste proprie del sistema sono",
+      "layout": "cards",
+      "titolo": "Le sei viste del sistema",
+      "cards": [
+        {
+          "h": "Quadro",
+          "d": "conformità, avanzamento, scadenze"
+        },
+        {
+          "h": "Roadmap",
+          "d": "le fasi e il loro avanzamento"
+        },
+        {
+          "h": "Controlli",
+          "d": "con il loro stato"
+        },
+        {
+          "h": "Indicatori",
+          "d": "attuazione ed efficacia"
+        },
+        {
+          "h": "Verifica",
+          "d": "i requisiti, condivisa"
+        },
+        {
+          "h": "Documenti",
+          "d": "procedure e pubblicazione"
+        }
+      ]
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 6,
+      "inizia": "Non è uno stepper e non",
+      "layout": "split",
+      "titolo": "Non è uno stepper",
+      "lead": "In un sistema di gestione si lavora avanti e indietro per mesi.",
+      "punti": [
+        {
+          "h": "Gli indicatori",
+          "d": "si tarano dopo i primi dati"
+        },
+        {
+          "h": "La roadmap",
+          "d": "si aggiorna quando una fase si sblocca"
+        },
+        {
+          "h": "I controlli",
+          "d": "si rivedono a ogni scadenza"
+        }
+      ]
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 7,
+      "inizia": "Un consiglio su come si presenta",
+      "layout": "definizione",
+      "eyebrow": "Quando proporlo",
+      "titolo": "Il secondo mandato",
+      "definizione": "Non dopo la relazione, quando il cliente pensa di aver finito: mentre la si costruisce, quando vede che la percentuale sale facendo, non compilando meglio."
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 8,
+      "inizia": "Vale la pena chiarire anche che",
+      "layout": "tabella",
+      "titolo": "Che cosa condividono i due percorsi",
+      "cols": [
+        "Elemento",
+        "Autovalutazione",
+        "Sistema di gestione"
+      ],
+      "righe": [
+        [
+          "Profilo dell'azienda",
+          "sì",
+          "sì"
+        ],
+        [
+          "Classificazione d'ambito",
+          "sì",
+          "sì"
+        ],
+        [
+          "Risposte ai requisiti",
+          "sì",
+          "sì"
+        ],
+        [
+          "Controlli e roadmap",
+          "no",
+          "sì"
+        ],
+        [
+          "Indicatori e documenti del sistema",
+          "no",
+          "sì"
+        ]
+      ]
+    },
+    {
+      "sezione": "dal-check-up-al-sistema",
+      "p": 10,
+      "inizia": "Un'ultima cosa, che riguarda l'organizzazione dello",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Il sistema",
+          "d": "contiene per intero l'autovalutazione"
+        },
+        {
+          "h": "Le risposte",
+          "d": "sono la stessa riga"
+        },
+        {
+          "h": "Nessuna sequenza obbligata",
+          "d": "si lavora avanti e indietro"
+        },
+        {
+          "h": "Il momento giusto",
+          "d": "per proporlo è durante l'autovalutazione"
+        }
+      ],
+      "prossimo": {
+        "titolo": "La roadmap e i termini",
+        "testo": "Nove e diciotto mesi da una data sola."
+      }
+    }
+  ],
+  "sgnis2/indicatori": [
+    {
+      "sezione": "indicatori",
+      "p": 0,
+      "inizia": "Gli indicatori proposti dal catalogo sono",
+      "layout": "apertura",
+      "titolo": "Attuazione ed efficacia",
+      "sottotitolo": "E il verso che rovescia il giudizio",
+      "testo": "{indicatoriNis2} indicatori su otto ambiti, in due famiglie che rispondono a domande diverse.",
+      "agenda": [
+        "Due famiglie",
+        "Il verso di miglioramento",
+        "Target e soglia",
+        "Un target assente",
+        "Quali scegliere per primi"
+      ]
+    },
+    {
+      "sezione": "indicatori",
+      "p": 1,
+      "inizia": "Gli indicatori di attuazione misurano ciò",
+      "layout": "confronto",
+      "titolo": "Due famiglie di indicatori",
+      "a": {
+        "h": "Attuazione",
+        "sub": "Quanto ne abbiamo fatto",
+        "punti": [
+          "Copertura dell'autenticazione a più fattori",
+          "Controlli attuati sul catalogo",
+          "Fornitori critici valutati"
+        ]
+      },
+      "b": {
+        "h": "Efficacia",
+        "sub": "Ha funzionato?",
+        "punti": [
+          "Pre notifiche entro le 24 ore",
+          "Tempo medio di contenimento",
+          "Clic nelle simulazioni di phishing"
+        ]
+      }
+    },
+    {
+      "sezione": "indicatori",
+      "p": 3,
+      "inizia": "Un sistema con tutti indicatori di",
+      "layout": "punti",
+      "titolo": "Quanti indicatori il primo anno",
+      "intro": "Non caricarne {indicatoriNis2}.",
+      "punti": [
+        {
+          "h": "Tre o quattro",
+          "d": "di attuazione"
+        },
+        {
+          "h": "Due",
+          "d": "di efficacia"
+        },
+        {
+          "h": "Misurati davvero",
+          "d": "valgono più di tabelle vuote"
+        }
+      ]
+    },
+    {
+      "sezione": "indicatori",
+      "p": 4,
+      "inizia": "Il cuore di questa sezione è",
+      "layout": "cards",
+      "titolo": "Il verso di miglioramento",
+      "cards": [
+        {
+          "h": "Clic nel phishing che scendono",
+          "d": "è un risultato"
+        },
+        {
+          "h": "Copertura MFA che scende",
+          "d": "è un disastro"
+        },
+        {
+          "h": "Scritto a parole",
+          "d": "il verso non si affida a una freccia colorata"
+        }
+      ]
+    },
+    {
+      "sezione": "indicatori",
+      "p": 6,
+      "inizia": "Ogni indicatore ha poi un target",
+      "layout": "tabella",
+      "titolo": "Da target e soglia, lo stato",
+      "cols": [
+        "Condizione",
+        "Stato"
+      ],
+      "righe": [
+        [
+          "Oltre il target",
+          "A target"
+        ],
+        [
+          "Fra soglia e target",
+          "In attenzione"
+        ],
+        [
+          "Oltre la soglia, nel verso peggiore",
+          "Fuori target"
+        ],
+        [
+          "Soglia senza target",
+          "Si giudica sulla soglia"
+        ],
+        [
+          "Né target né soglia",
+          "Non valutabile"
+        ]
+      ]
+    },
+    {
+      "sezione": "indicatori",
+      "p": 7,
+      "inizia": "Quell'ultimo caso merita attenzione perché è",
+      "layout": "evidenza",
+      "eyebrow": "La trappola classica",
+      "titolo": "Un target assente non è un target a zero.",
+      "testo": "Letto come numero, un campo vuoto fa risultare a target ogni indicatore mai tarato."
+    },
+    {
+      "sezione": "indicatori",
+      "p": 8,
+      "inizia": "Un'ultima cosa sul funzionamento. Gli indicatori",
+      "layout": "split",
+      "titolo": "Si copiano nel sistema",
+      "lead": "Gli indicatori di base non si riferiscono al catalogo.",
+      "punti": [
+        {
+          "h": "Il target",
+          "d": "si tara su quel cliente"
+        },
+        {
+          "h": "La formula",
+          "d": "si adatta al dato che c'è"
+        },
+        {
+          "h": "Ricaricarli",
+          "d": "non riporta indietro le tarature"
+        }
+      ]
+    },
+    {
+      "sezione": "indicatori",
+      "p": 10,
+      "inizia": "Le rilevazioni si inseriscono per periodo,",
+      "layout": "definizione",
+      "eyebrow": "Le rilevazioni",
+      "titolo": "L'ultima è quella del periodo più recente",
+      "definizione": "Non l'ultima inserita: un dato di marzo scritto a giugno non scavalca quello di aprile."
+    },
+    {
+      "sezione": "indicatori",
+      "p": 12,
+      "inizia": "Un indicatore senza target non ha",
+      "layout": "confronto",
+      "titolo": "Scostamento zero e scostamento vuoto",
+      "a": {
+        "h": "Zero",
+        "sub": "Esattamente sul bersaglio",
+        "punti": [
+          "Un'ottima notizia"
+        ]
+      },
+      "b": {
+        "h": "Vuoto",
+        "sub": "Nessun target",
+        "punti": [
+          "Non si scrive zero",
+          "Sarebbe una notizia falsa"
+        ]
+      }
+    },
+    {
+      "sezione": "indicatori",
+      "p": 14,
+      "inizia": "Il secondo: mettere almeno un indicatore",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Attuazione",
+          "d": "quanto ne abbiamo fatto"
+        },
+        {
+          "h": "Efficacia",
+          "d": "se ha funzionato"
+        },
+        {
+          "h": "Il verso",
+          "d": "rovescia il giudizio sullo stesso numero"
+        },
+        {
+          "h": "Target assente",
+          "d": "non è un target a zero"
+        },
+        {
+          "h": "Per primi",
+          "d": "indicatori con un dato che esiste già"
+        },
+        {
+          "h": "Almeno uno",
+          "d": "che possa peggiorare"
+        }
+      ],
+      "prossimo": {
+        "titolo": "La relazione, e chi la riceve",
+        "testo": "Perché il destinatario è l'organo di amministrazione."
+      }
+    }
+  ],
+  "sgnis2/relazione-e-organo": [
+    {
+      "sezione": "relazione-e-organo",
+      "p": 0,
+      "inizia": "L'articolo 23 del decreto attribuisce all'organo",
+      "layout": "apertura",
+      "titolo": "La relazione, e chi la riceve",
+      "sottotitolo": "L'organo di amministrazione",
+      "testo": "L'articolo 23 gli attribuisce l'approvazione delle misure e la responsabilità per la loro violazione.",
+      "agenda": [
+        "Chi risponde",
+        "Due documenti per due lettori",
+        "Lo stato effettivo congelato",
+        "Che cosa non contiene",
+        "Il ritmo delle relazioni"
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 1,
+      "inizia": "Non si tratta di un destinatario",
+      "layout": "evidenza",
+      "eyebrow": "Non un destinatario formale",
+      "titolo": "L'organo risponde, personalmente.",
+      "testo": "Consegnare la relazione al responsabile informatico e non all'organo è un lavoro tecnico corretto che manca il punto giuridico."
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 2,
+      "inizia": "Il percorso produce due documenti, e",
+      "layout": "confronto",
+      "titolo": "Due documenti, due lettori",
+      "a": {
+        "h": "Relazione sul sistema",
+        "sub": "Va all'organo",
+        "punti": [
+          "Ambito e termini in corso",
+          "Roadmap, controlli, indicatori",
+          "Si legge in mezz'ora"
+        ]
+      },
+      "b": {
+        "h": "Catalogo dei controlli",
+        "sub": "Lo sfoglia l'ispettore",
+        "punti": [
+          "Un controllo per riga",
+          "Stato effettivo e responsabile",
+          "Ultima e prossima verifica"
+        ]
+      }
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 4,
+      "inizia": "Sulla relazione c'è un punto che",
+      "layout": "definizione",
+      "eyebrow": "Che cosa congela",
+      "titolo": "Lo stato effettivo",
+      "definizione": "Non quello dichiarato: se un controllo era attuato ma la verifica era scaduta, il documento lo dice.",
+      "punti": [
+        {
+          "h": "Il giorno dopo",
+          "d": "un controllo può scadere, e la relazione non cambia"
+        }
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 6,
+      "inizia": "In apertura, riquadrato, ogni relazione dichiara",
+      "layout": "split",
+      "titolo": "In apertura, riquadrato",
+      "lead": "Ogni relazione dichiara che cosa non contiene.",
+      "punti": [
+        {
+          "h": "Lo stato",
+          "d": "è quello alla data di emissione"
+        },
+        {
+          "h": "Le evidenze",
+          "d": "restano presso l'organizzazione"
+        }
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 7,
+      "inizia": "Ogni versione porta un numero di",
+      "layout": "cards",
+      "titolo": "Revisione e codice di verifica",
+      "cards": [
+        {
+          "h": "Numero di revisione",
+          "d": "per confrontare due relazioni a distanza di un anno"
+        },
+        {
+          "h": "Codice di verifica",
+          "d": "per confermarne l'autenticità, senza account"
+        }
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 8,
+      "inizia": "Un'ultima raccomandazione sul ritmo. La relazione",
+      "layout": "timeline",
+      "titolo": "Il ritmo delle relazioni",
+      "tappe": [
+        {
+          "t": "Avvio",
+          "h": "La prima relazione",
+          "d": "numeri bassi e roadmap davanti"
+        },
+        {
+          "t": "6 o 12 mesi",
+          "h": "Le successive",
+          "d": "dimostrano che le decisioni sono seguite"
+        },
+        {
+          "t": "Fine",
+          "h": "Una sola non basta",
+          "d": "dimostra il risultato, non chi lo seguiva"
+        }
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 9,
+      "inizia": "Su che cosa portare in quella",
+      "layout": "punti",
+      "titolo": "Che cosa portare in riunione",
+      "intro": "L'elenco è breve, e conviene rispettarlo.",
+      "punti": [
+        {
+          "h": "La classificazione",
+          "d": "con la ragione da cui viene"
+        },
+        {
+          "h": "I termini in corso",
+          "d": "con i giorni che restano"
+        },
+        {
+          "h": "Lo stato effettivo",
+          "d": "dei controlli"
+        },
+        {
+          "h": "Gli indicatori",
+          "d": "se ci sono già rilevazioni"
+        }
+      ]
+    },
+    {
+      "sezione": "relazione-e-organo",
+      "p": 11,
+      "inizia": "Un'ultima avvertenza sul secondo documento. Il",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Il destinatario",
+          "d": "è l'organo che risponde"
+        },
+        {
+          "h": "Due documenti",
+          "d": "per due lettori"
+        },
+        {
+          "h": "Lo stato effettivo",
+          "d": "congelato alla data di emissione"
+        },
+        {
+          "h": "Il catalogo",
+          "d": "si rigenera prima di ogni verifica"
+        }
+      ]
+    }
+  ],
+  "sgnis2/roadmap-e-termini": [
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 0,
+      "inizia": "I due termini che contano in",
+      "layout": "apertura",
+      "titolo": "La roadmap",
+      "sottotitolo": "E i termini che decorrono da una data sola",
+      "testo": "Dalla comunicazione di inserimento nell'elenco dei soggetti decorrono i due termini che contano.",
+      "agenda": [
+        "Nove e diciotto mesi",
+        "La registrazione annuale",
+        "Quando la data manca",
+        "Le fasi",
+        "Avanzamento e stato"
+      ]
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 1,
+      "inizia": "A questi si aggiunge un adempimento",
+      "layout": "timeline",
+      "titolo": "I termini dalla comunicazione",
+      "tappe": [
+        {
+          "t": "9 mesi",
+          "h": "Obblighi di notifica",
+          "d": "articolo 25"
+        },
+        {
+          "t": "18 mesi",
+          "h": "Misure di gestione del rischio",
+          "d": "articolo 24"
+        },
+        {
+          "t": "28 febbraio",
+          "h": "Registrazione",
+          "d": "da rinnovare ogni anno"
+        }
+      ]
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 2,
+      "inizia": "Qui c'è un punto che il",
+      "layout": "evidenza",
+      "eyebrow": "Se la data manca",
+      "titolo": "I termini non sono scaduti: non sono cominciati.",
+      "testo": "Il prodotto lo dice a parole invece di mostrare un contatore a zero, che si leggerebbe come fuori termine."
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 4,
+      "inizia": "La data si inserisce nella vista",
+      "layout": "definizione",
+      "eyebrow": "Dove si inserisce",
+      "titolo": "Ambito e assetto",
+      "definizione": "La vista condivisa con l'autovalutazione: la data si scrive una volta e vale per tutti e due i percorsi."
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 5,
+      "inizia": "Le cinque fasi della roadmap raggruppano",
+      "layout": "flusso",
+      "titolo": "Le {fasiNis2} fasi della roadmap",
+      "passi": [
+        {
+          "h": "Governance",
+          "d": "delibera, ruoli, registrazione"
+        },
+        {
+          "h": "Conoscenza",
+          "d": "attivi, servizi, fornitori, rischi"
+        },
+        {
+          "h": "Presidi essenziali",
+          "d": "notifica, backup, autenticazione, vulnerabilità"
+        },
+        {
+          "h": "Consolidamento",
+          "d": "fornitura, crittografia, continuità"
+        },
+        {
+          "h": "Verifica",
+          "d": "audit, indicatori, riesame"
+        }
+      ]
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 7,
+      "inizia": "L'ordine ha una logica che conviene",
+      "layout": "split",
+      "titolo": "Perché si comincia dalla governance",
+      "lead": "Senza la delibera dell'organo e senza i ruoli, tutto il resto non ha chi lo decide.",
+      "punti": [
+        {
+          "h": "La seconda fase",
+          "d": "è la più lunga e la più ingrata"
+        },
+        {
+          "h": "Senza inventario",
+          "d": "non si può proteggere niente"
+        }
+      ]
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 8,
+      "inizia": "Infine, la distinzione fra le due",
+      "layout": "confronto",
+      "titolo": "Avanzamento e stato della fase",
+      "a": {
+        "h": "Avanzamento",
+        "sub": "Si misura",
+        "punti": [
+          "Viene dai controlli dei capi",
+          "Non si fa salire dichiarando"
+        ]
+      },
+      "b": {
+        "h": "Stato",
+        "sub": "Si dichiara",
+        "punti": [
+          "Non avviata, in corso, completata",
+          "È un giudizio di chi conduce"
+        ]
+      }
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 10,
+      "inizia": "Sui nove e diciotto mesi conviene",
+      "layout": "numeri",
+      "titolo": "Come raccontare i due termini",
+      "numeri": [
+        {
+          "n": "9 mesi",
+          "h": "Sembrano tanti",
+          "d": "ma la notifica è una catena da provare, anche di notte"
+        },
+        {
+          "n": "18 mesi",
+          "h": "Sembrano pochi",
+          "d": "e lo sono se l'inventario comincia tardi"
+        }
+      ]
+    },
+    {
+      "sezione": "roadmap-e-termini",
+      "p": 11,
+      "inizia": "I diciotto mesi per le misure",
+      "layout": "chiusura",
+      "titolo": "Da portare via",
+      "punti": [
+        {
+          "h": "Una data sola",
+          "d": "la comunicazione di inserimento nell'elenco"
+        },
+        {
+          "h": "Senza la data",
+          "d": "i termini non sono cominciati"
+        },
+        {
+          "h": "Le fasi",
+          "d": "non si sovrappongono"
+        },
+        {
+          "h": "Lo stato",
+          "d": "è un tuo giudizio, l'avanzamento no"
+        },
+        {
+          "h": "A ritroso",
+          "d": "dalla scadenza dei diciotto mesi"
+        }
+      ],
+      "prossimo": {
+        "titolo": "Attuato non vuol dire verificato",
+        "testo": "La regola che un'ispezione trova in dieci minuti."
+      }
+    }
+  ]
+}

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { corsoTrasversale, esisteCorsoTrasversale } from "@/features/formazione";
-import { costruisciSlide } from "@/features/formazione/presentazione";
-import { pistaPerSlide } from "@/features/formazione/audio";
+import { corsoTrasversale, esisteCorsoTrasversale, NUMERI } from "@/features/formazione";
+import { costruisciSlideCorso } from "@/features/formazione/presentazione";
+import { pistaPerSlide, traccia } from "@/features/formazione/audio";
+import type { VoceSlide } from "@/features/formazione/slide-distillate";
 import { Presentazione } from "@/components/formazione/presentazione";
+import mappaSlide from "../../../../../../../audio-formazione/slide-map.json";
 
 type Props = { params: Promise<{ chiave: string }> };
 
@@ -19,15 +21,23 @@ export default async function PresentazioneTrasversalePage({ params }: Props) {
   if (!esisteCorsoTrasversale(chiave)) notFound();
 
   const c = corsoTrasversale(chiave);
-  const slide = costruisciSlide([...c.sezioni]);
+  // ⚠️ Nessuna sezione comune: un corso trasversale non insegna un percorso, quindi non
+  // ha «dove sei» né «come si salva». Le sue tracce stanno tutte sotto la propria chiave.
+  const { slide, momenti } = costruisciSlideCorso([...c.sezioni], {
+    corso: chiave,
+    idComuni: [],
+    mappa: mappaSlide as Record<string, VoceSlide[]>,
+    numeri: NUMERI as unknown as Record<string, number>,
+    marche: (k) => traccia(k)?.marche ?? [],
+  });
 
   return (
     <Presentazione
       slide={slide}
-      // ⚠️ Nessuna sezione comune: un corso trasversale non insegna un percorso, quindi non
-      // ha «dove sei» né «come si salva». Le sue tracce stanno tutte sotto la propria chiave.
-      pista={pistaPerSlide(slide, chiave, [])}
+      pista={pistaPerSlide(slide, chiave, [], momenti)}
       nomeCorso={c.nome}
+      // Non ha una norma: in alto a destra dice che cosa insegna, cioè il mestiere.
+      norma="Il mestiere del consulente"
       // ⚠️ Non ha un'area, e non gliene si inventa una: il colore d'area dice di che materia
       // si parla, e questo corso parla del mestiere, non di una materia. Prende l'accento.
       tinta={{ tratto: "bg-primary" }}

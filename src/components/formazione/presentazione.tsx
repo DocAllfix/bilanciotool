@@ -8,6 +8,8 @@ import type { Slide } from "@/features/formazione/presentazione";
 import type { PostoPista } from "@/features/formazione/audio";
 import { BloccoReso } from "./corso";
 import { Interfaccia } from "./interfaccia";
+import { SlideDistillata } from "./slide-layout";
+import { TelaScalata } from "./tela-scalata";
 
 /**
  * La presentazione: una schermata per volta, con la voce che spiega.
@@ -20,12 +22,15 @@ export function Presentazione({
   slide,
   pista,
   nomeCorso,
+  norma,
   tinta,
   href,
 }: {
   slide: Slide[];
   pista: PostoPista[];
   nomeCorso: string;
+  /** Il riferimento normativo, in alto a destra sulle slide distillate. */
+  norma: string;
   tinta: { tratto: string };
   /** Dove si torna uscendo: la pagina del corso, al punto in cui si era. */
   href: string;
@@ -146,7 +151,13 @@ export function Presentazione({
 
       <header className="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4 sm:px-10">
         <div className="min-w-0">
-          <p className="truncate text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          {/* ⚠️ Sulle slide distillate il nome del corso lo porta già l'intestazione della
+              tela, a pochi centimetri: due volte nella stessa schermata si legge come un
+              errore, non come un'enfasi. Resta per le slide che la tela non ce l'hanno. */}
+          <p
+            className={`truncate text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground ${corrente.distillata ? "invisible" : ""}`}
+            aria-hidden={corrente.distillata ? true : undefined}
+          >
             {nomeCorso}
           </p>
           {/* ⚠️ Il titolo nell'intestazione SOLO quando il corpo non lo annuncia: sulla
@@ -154,7 +165,9 @@ export function Presentazione({
               venti centimetri di distanza. Una ripetizione così vicina non si legge come
               enfasi, si legge come un errore. Qui l'intestazione serve a orientarsi mentre
               la sezione prosegue, e sulla prima slide quel compito ce l'ha il corpo. */}
-          {!corrente.apreSezione && (
+          {/* Sulle slide distillate il titolo lo porta già la tela, nel piede: ripeterlo
+              qui sarebbe la stessa ripetizione a venti centimetri corretta più sotto. */}
+          {!corrente.apreSezione && !corrente.distillata && (
             <h1 className="font-display mt-1 truncate text-[20px] font-bold tracking-[-0.01em] sm:text-[26px]">
               {corrente.sezione.titolo}
             </h1>
@@ -175,6 +188,23 @@ export function Presentazione({
           guarda, e senza, quindici minuti di schermate identiche diventano rumore visivo.
           È la stessa cosa che DESIGN.md dice del prodotto — il contrasto fra i registri è
           il lusso — applicata dentro la presentazione. */}
+      {corrente.distillata ? (
+        // ⚠️ LA SLIDE DISTILLATA HA LA SUA TELA, e la tela ha i suoi colori (tema E1): il fondo
+        // intorno resta neutro e scuro, come la sala intorno a uno schermo. Si scala per stare
+        // nello spazio, non si ridispone — ed è la stessa tela che il controllo sui tagli misura.
+        <div className="flex min-h-0 flex-1 bg-[oklch(0.18_0.012_205)] p-4 sm:p-8" data-slide-distillata={corrente.distillata.layout}>
+          <div key={corrente.numero} className="flex min-h-0 flex-1 motion-safe:animate-[slideEntra_360ms_cubic-bezier(0.16,1,0.3,1)_both]">
+            <TelaScalata>
+              <SlideDistillata
+                voce={corrente.distillata}
+                corso={nomeCorso}
+                norma={norma}
+                sezione={corrente.sezione.titolo}
+              />
+            </TelaScalata>
+          </div>
+        </div>
+      ) : (
       <div
         // ⚠️ Il contenuto si ANCORA IN ALTO, non si centra verticalmente. Centrato, una slide
         // con un avviso solo galleggia a metà schermo con trecento pixel di vuoto sopra e
@@ -251,6 +281,7 @@ export function Presentazione({
           </div>
         </div>
       </div>
+      )}
 
       <footer className="flex shrink-0 items-center justify-between gap-3 border-t px-6 py-4 sm:px-10">
         <button
