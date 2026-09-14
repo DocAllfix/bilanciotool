@@ -3,9 +3,6 @@
   "nome": "Sistema di gestione della sicurezza NIS2",
   "nota": "Cinque sezioni proprie. Le sei comuni stanno in _comuni/script.json e non si ripetono qui. Scritto sulla regola delle 94 parole per minuto di lettura a schermo e sulla costante misurata di 2,607 parole al secondo.",
   "termini_nuovi": [
-    "NIS2",
-    "ACN",
-    "MFA",
     "phishing",
     "cybersicurezza"
   ],
