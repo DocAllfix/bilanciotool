@@ -44,6 +44,20 @@ if (corsi.has("comuni")) {
   corsi.add("ghg");
   corsi.add("soa");
 }
+// ⚠️ Un elenco di corsi sulla riga di comando limita il giro a QUELLI. Senza, si misura
+// tutto il manifesto: è il controllo completo, ma con quindici corsi a tre larghezze dura
+// più di dieci minuti, e un corso consegnato ogni pochi minuti non si collauda così.
+//   node scripts/verifica-slide-tagli.mjs filiera mog231
+const richiesti = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+if (richiesti.length) {
+  const ignoti = richiesti.filter((c) => !corsi.has(c));
+  if (ignoti.length) {
+    console.error(`Nel manifesto non ci sono slide per: ${ignoti.join(", ")}`);
+    process.exit(1);
+  }
+  for (const c of [...corsi]) if (!richiesti.includes(c)) corsi.delete(c);
+}
+
 const attese = Object.entries(mappa)
   .filter(([k]) => !k.startsWith("comuni/"))
   .reduce((n, [, v]) => n + v.length, 0);
@@ -127,13 +141,19 @@ for (const corso of corsi) {
           if (m.corpo && m.corpo.fuori > 1) {
             tagliate.push(`slide ${m.numero} (${m.layout}) a ${w}px: ${m.corpo.fuori}px fuori dal corpo (${m.corpo.contenuto} su ${m.corpo.spazio})`);
           }
-          // ⚠️ Le misure DENTRO la tela non devono cambiare con la finestra. Tolleranza di
-          // due pixel: la scala introduce arrotondamenti sub-pixel, non riflussi.
-          const firma = `${m.tela?.l}x${m.tela?.a}:${Math.round((m.corpo?.contenuto ?? 0) / 3)}`;
-          if (riferimento.has(m.numero) && riferimento.get(m.numero) !== firma) {
-            riflesse.push(`slide ${m.numero}: ${riferimento.get(m.numero)} a ${LARGHEZZE[0]}px, ${firma} a ${w}px`);
+          // ⚠️ Le misure DENTRO la tela non devono cambiare con la finestra. Tolleranza come
+          // SCARTO ASSOLUTO di tre pixel, non come arrotondamento a gradini: la versione
+          // precedente divideva per tre e arrotondava, e una misura a cavallo di due gradini
+          // (446 e 445 px, cioè 148,67 e 148,33) scattava su un pixel — segnalazioni, slide
+          // 64, rossa nel controllo completo e verde nel suo lotto. Un riflusso vero sposta
+          // decine di pixel: una riga in più è alta almeno venti.
+          const tela = `${m.tela?.l}x${m.tela?.a}`;
+          const altezza = m.corpo?.contenuto ?? 0;
+          const prima = riferimento.get(m.numero);
+          if (prima && (prima.tela !== tela || Math.abs(prima.altezza - altezza) > 3)) {
+            riflesse.push(`slide ${m.numero}: ${prima.tela}:${prima.altezza} a ${LARGHEZZE[0]}px, ${tela}:${altezza} a ${w}px`);
           }
-          riferimento.set(m.numero, riferimento.get(m.numero) ?? firma);
+          if (!prima) riferimento.set(m.numero, { tela, altezza });
         }
         if (k < totale) {
           await page.keyboard.press("ArrowRight");

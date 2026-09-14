@@ -1,0 +1,761 @@
+[
+  {
+    "sezione": "che-cosa-e",
+    "p": 0,
+    "inizia": "Questo percorso è diverso da tutti",
+    "layout": "apertura",
+    "titolo": "Che cosa è",
+    "sottotitolo": "Un anno di lavoro, non un documento su un tema",
+    "testo": "Le {fasiSgesg} fasi portano un'impresa da nessun presidio a un sistema ESG che sta in piedi.",
+    "agenda": [
+      "Non una scala a gradini",
+      "Una fase esiste quando la tocchi",
+      "Non conclusa pesa zero",
+      "A lavoro in parte fatto",
+      "Le fasi",
+      "Un sistema, non un adempimento"
+    ]
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 1,
+    "inizia": "La prima cosa da sapere è",
+    "layout": "evidenza",
+    "eyebrow": "Non è una scala a gradini",
+    "titolo": "Nelle fasi si lavora avanti e indietro, ed è voluto.",
+    "testo": "La materialità si riapre quando la diagnosi trova qualcosa di imprevisto. Pretendere l'ordine costringerebbe a barare."
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 2,
+    "inizia": "La seconda cosa è che una",
+    "layout": "definizione",
+    "eyebrow": "Una fase esiste solo quando la tocchi",
+    "titolo": "Niente righe vuote in attesa",
+    "definizione": "Righe già create cancellerebbero la differenza fra una fase non avviata e una avviata e vuota."
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 3,
+    "inizia": "La terza è quella su cui",
+    "layout": "numeri",
+    "titolo": "Una fase dovuta e non conclusa pesa zero",
+    "numeri": [
+      {
+        "n": "38%",
+        "h": "Tre concluse su otto",
+        "d": "Il numero vero."
+      },
+      {
+        "n": "100%",
+        "h": "Tre su tre",
+        "d": "Mediando le sole fasi toccate: lo stesso di otto su otto."
+      }
+    ]
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 4,
+    "inizia": "Un ultima cosa su chi lo",
+    "layout": "split",
+    "titolo": "Anche a lavoro in parte fatto",
+    "lead": "Materialità, inventario e bilancio già pronti si dichiarano conclusi in due minuti.",
+    "punti": [
+      {
+        "h": "Il valore",
+        "d": "si sposta sulle altre cinque fasi"
+      },
+      {
+        "h": "Governance, politiche, piano",
+        "d": "formazione interna e riesame"
+      },
+      {
+        "h": "L'uso più frequente",
+        "d": "dal secondo anno in poi"
+      }
+    ]
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 5,
+    "inizia": "Vale la pena dire quali sono",
+    "layout": "punti",
+    "titolo": "Le {fasiSgesg} fasi",
+    "punti": [
+      {
+        "h": "Contesto e mandato",
+        "d": "chi è l'azienda, chi ha chiesto, che cosa si aspetta"
+      },
+      {
+        "h": "Materialità",
+        "d": "i temi che contano davvero"
+      },
+      {
+        "h": "Governance",
+        "d": "chi risponde di che cosa"
+      },
+      {
+        "h": "Misurazione",
+        "d": "dati e indicatori"
+      },
+      {
+        "h": "Politiche e obiettivi",
+        "d": "gli impegni"
+      },
+      {
+        "h": "Racconto",
+        "d": "e rendicontazione"
+      },
+      {
+        "h": "Formazione",
+        "d": "e diffusione interna"
+      },
+      {
+        "h": "Riesame",
+        "d": "chiude il ciclo e apre il successivo"
+      }
+    ]
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 6,
+    "inizia": "Chi guarda quelle otto fasi riconosce",
+    "layout": "cards",
+    "titolo": "Tre fasi si lavorano altrove",
+    "cards": [
+      {
+        "h": "Materialità, misurazione, racconto",
+        "d": "Il prodotto le fa già in percorsi propri: si lavorano di là."
+      },
+      {
+        "h": "Le altre cinque",
+        "d": "Nessun altro percorso le copre, anche per chi ha già il bilancio."
+      }
+    ]
+  },
+  {
+    "sezione": "che-cosa-e",
+    "p": 7,
+    "inizia": "Un'ultima cosa su come si presenta",
+    "layout": "confronto",
+    "titolo": "Un sistema, non un adempimento",
+    "a": {
+      "h": "Chi compra un bilancio",
+      "sub": "Compra un documento",
+      "punti": [
+        "Più facile da vendere"
+      ]
+    },
+    "b": {
+      "h": "Chi compra questo percorso",
+      "sub": "Compra un modo di lavorare",
+      "punti": [
+        "Chi decide, che cosa si misura, quando si riesamina"
+      ]
+    }
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 0,
+    "inizia": "Ogni fase porta tre cose: uno",
+    "layout": "apertura",
+    "titolo": "Le fasi",
+    "sottotitolo": "Stato, note, data di chiusura",
+    "testo": "Le note sono dove si scrive quello che non entra altrove: chi hai sentito, che cosa ti hanno risposto, perché hai deciso così.",
+    "agenda": [
+      "Riaprire una fase",
+      "Un giudizio, non un calcolo",
+      "L'ordine",
+      "Le note",
+      "La durata",
+      "Il ritmo"
+    ]
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 1,
+    "inizia": "Riaprendo una fase la data di",
+    "layout": "definizione",
+    "eyebrow": "Lo pretende il database",
+    "titolo": "Riaprendo, la data di chiusura si cancella",
+    "definizione": "Altrimenti il documento riporterebbe chiuso un lavoro riaperto: una bugia scritta su un documento firmato."
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 2,
+    "inizia": "E qui c'è la scelta più",
+    "layout": "evidenza",
+    "eyebrow": "La scelta più importante del percorso",
+    "titolo": "Lo stato di una fase è un giudizio, non un calcolo.",
+    "testo": "Il prodotto saprebbe chiuderla quando il percorso collegato è pubblicato. Ma chiudere è una dichiarazione di chi firma."
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 3,
+    "inizia": "Quindi il prodotto fa una cosa",
+    "layout": "confronto",
+    "titolo": "Il ponte informa, chi firma decide",
+    "a": {
+      "h": "Il prodotto",
+      "sub": "Mostra",
+      "punti": [
+        "Lo stato del percorso collegato",
+        "Con i numeri veri"
+      ]
+    },
+    "b": {
+      "h": "Il consulente",
+      "sub": "Decide",
+      "punti": [
+        "Quando la fase è conclusa"
+      ]
+    }
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 4,
+    "inizia": "Un consiglio pratico sull'ordine. Le prime",
+    "layout": "flusso",
+    "titolo": "L'ordine pratico",
+    "passi": [
+      {
+        "h": "Prime tre fasi",
+        "d": "in sequenza"
+      },
+      {
+        "h": "Dalla quarta",
+        "d": "due insieme: si alimentano"
+      },
+      {
+        "h": "La prima",
+        "d": "aperta ancora qualche settimana: il perimetro cambia"
+      }
+    ]
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 5,
+    "inizia": "E una parola su che cosa",
+    "layout": "split",
+    "titolo": "Che cosa scrivere nelle note",
+    "lead": "Non un diario: la decisione che non ha un campo suo.",
+    "punti": [
+      {
+        "h": "«Escluso il sito di Verona»",
+        "d": "la produzione chiude a giugno"
+      },
+      {
+        "h": "«Cambiato il referente del personale»",
+        "d": "a marzo"
+      },
+      {
+        "h": "«Piano rimandato»",
+        "d": "al prossimo consiglio"
+      }
+    ]
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 6,
+    "inizia": "Sulla durata, perché è la prima",
+    "layout": "numeri",
+    "titolo": "La durata",
+    "numeri": [
+      {
+        "n": "Un anno",
+        "h": "Il tempo minimo",
+        "d": "Perché il ciclo si chiuda."
+      },
+      {
+        "n": "Tre mesi",
+        "h": "Compressi",
+        "d": "Saltano le ultime fasi: proprio quelle che fanno il sistema."
+      }
+    ]
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 7,
+    "inizia": "Un consiglio su come tenere il",
+    "layout": "cards",
+    "titolo": "Tre momenti fissi con la direzione",
+    "cards": [
+      {
+        "h": "All'inizio",
+        "d": "Il mandato."
+      },
+      {
+        "h": "A metà",
+        "d": "Materialità e misurazione."
+      },
+      {
+        "h": "Alla fine",
+        "d": "Il riesame."
+      }
+    ]
+  },
+  {
+    "sezione": "le-fasi",
+    "p": 8,
+    "inizia": "E una cosa sull'ordine reale delle",
+    "layout": "chiusura",
+    "titolo": "Filoni, non compartimenti",
+    "punti": [
+      {
+        "h": "La governance",
+        "d": "si comincia alla prima fase e si chiude all'ultima"
+      },
+      {
+        "h": "Le fasi",
+        "d": "corrono in parallelo"
+      },
+      {
+        "h": "Per questo",
+        "d": "il percorso non è una sequenza di passi"
+      }
+    ]
+  },
+  {
+    "sezione": "le-schede",
+    "p": 0,
+    "inizia": "Il metodo porta sessantatré schede, ciascuna",
+    "layout": "apertura",
+    "titolo": "Le schede",
+    "sottotitolo": "{schedeSgesg} schede, un renderer solo",
+    "testo": "Dati seminati, non moduli scritti a mano: ciò che si ricopia prima o poi diverge.",
+    "agenda": [
+      "Tre regole",
+      "Le tabelle di lavoro",
+      "Quando compilarle",
+      "Leggere lo stato",
+      "Le decisive",
+      "Le note"
+    ]
+  },
+  {
+    "sezione": "le-schede",
+    "p": 1,
+    "inizia": "Tre regole valgono per tutte. Una",
+    "layout": "cards",
+    "titolo": "Tre regole per tutte",
+    "cards": [
+      {
+        "h": "Scelta multipla",
+        "d": "Si salva come elenco, non come testo con le virgole."
+      },
+      {
+        "h": "Campo svuotato",
+        "d": "Si toglie del tutto: non resta una stringa vuota."
+      },
+      {
+        "h": "Stato dichiarato",
+        "d": "Una scheda si chiude con dei facoltativi vuoti: lo decide il consulente."
+      }
+    ]
+  },
+  {
+    "sezione": "le-schede",
+    "p": 2,
+    "inizia": "Poi c'è una cosa che sorprende",
+    "layout": "definizione",
+    "eyebrow": "Ventuno schede",
+    "titolo": "Tabelle di lavoro",
+    "definizione": "Registro dei rischi, matrice delle responsabilità, valutazione degli impatti, catalogo delle iniziative, indice dei contenuti: griglie a righe, senza campi."
+  },
+  {
+    "sezione": "le-schede",
+    "p": 3,
+    "inizia": "Il prodotto lo dichiara a schermo,",
+    "layout": "evidenza",
+    "eyebrow": "Dichiarato a schermo",
+    "titolo": "Una scheda vuota fra le piene si legge come un guasto.",
+    "testo": "Dichiarata, si legge per quello che è: un pezzo di metodo che per ora si lavora fuori dal prodotto."
+  },
+  {
+    "sezione": "le-schede",
+    "p": 4,
+    "inizia": "Un suggerimento su come usarle. Le",
+    "layout": "confronto",
+    "titolo": "Quando compilarle",
+    "a": {
+      "h": "Tutte a gennaio, a metà",
+      "sub": "La condizione peggiore",
+      "punti": [
+        "Non si distingue il valutato dal non guardato"
+      ]
+    },
+    "b": {
+      "h": "Quando hai l'informazione",
+      "sub": "Non in ordine di numero",
+      "punti": [
+        "Ogni scheda nasce completa"
+      ]
+    }
+  },
+  {
+    "sezione": "le-schede",
+    "p": 5,
+    "inizia": "Una nota su come si legge",
+    "layout": "definizione",
+    "eyebrow": "Leggere lo stato",
+    "titolo": "Schede chiuse su previste",
+    "definizione": "Il modo più rapido di capire dove sei, sapendo che le tabelle di lavoro non si chiudono: quel rapporto non arriva mai a tutte."
+  },
+  {
+    "sezione": "le-schede",
+    "p": 6,
+    "inizia": "Un modo di orientarsi fra sessantatré",
+    "layout": "split",
+    "titolo": "Una decina sono decisive",
+    "lead": "Se il tempo scarseggia, si compilano bene queste e si dichiara il resto da completare.",
+    "punti": [
+      {
+        "h": "Mandato e perimetro",
+        "d": "le prime decisioni"
+      },
+      {
+        "h": "Temi materiali",
+        "d": "e indicatori scelti"
+      },
+      {
+        "h": "Obiettivi e ruoli",
+        "d": "e il piano"
+      }
+    ]
+  },
+  {
+    "sezione": "le-schede",
+    "p": 7,
+    "inizia": "Sulle note che si scrivono dentro",
+    "layout": "evidenza",
+    "eyebrow": "Dove finisce il ragionamento",
+    "titolo": "Il valore sta nel perché di una scelta.",
+    "testo": "Perché quel tema è materiale, perché quell'obiettivo: il dossier di chiusura lo riprende, i campi da soli no."
+  },
+  {
+    "sezione": "le-schede",
+    "p": 8,
+    "inizia": "E una precisazione sulle ventuno tabelle",
+    "layout": "chiusura",
+    "titolo": "Le tabelle di lavoro si fanno fuori",
+    "punti": [
+      {
+        "h": "Su un foglio di calcolo",
+        "d": "tipicamente"
+      },
+      {
+        "h": "Il registro dei rischi",
+        "d": "e le sue conclusioni entrano nel piano"
+      },
+      {
+        "h": "La matrice delle responsabilità",
+        "d": "e i ruoli entrano nella governance"
+      }
+    ]
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 0,
+    "inizia": "Tre fasi su otto chiedono cose",
+    "layout": "apertura",
+    "titolo": "I ponti",
+    "sottotitolo": "Tre fasi che il prodotto sa già fare",
+    "testo": "Doppia materialità, emissioni con gli indicatori, capitoli con la pubblicazione: il dato resta dove nasce.",
+    "agenda": [
+      "Non copiare",
+      "Non creato non è zero",
+      "Materialità avviata",
+      "Passare dal ponte",
+      "Il numero che conta",
+      "Il calendario"
+    ]
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 1,
+    "inizia": "La tentazione opposta è concreta, e",
+    "layout": "evidenza",
+    "eyebrow": "La tentazione opposta",
+    "titolo": "Un dato in due posti è un dato in nessun posto.",
+    "testo": "Copiati qui i temi del bilancio, basta una correzione di là perché nessuno sappia quale sia quello buono."
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 2,
+    "inizia": "C'è un dettaglio che sembra pignoleria",
+    "layout": "confronto",
+    "titolo": "Un percorso che non esiste ancora",
+    "a": {
+      "h": "«Zero temi su {temi}»",
+      "sub": "Direbbe avviato e vuoto",
+      "punti": [
+        "Manda a cercare nel posto sbagliato"
+      ]
+    },
+    "b": {
+      "h": "«Non ancora creato»",
+      "sub": "Dice il vero",
+      "punti": [
+        "Si sa che cosa aprire"
+      ]
+    }
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 3,
+    "inizia": "Allo stesso modo, la materialità si",
+    "layout": "definizione",
+    "eyebrow": "Mezza materialità è materialità cominciata",
+    "titolo": "Avviata con un solo punteggio",
+    "definizione": "Basta uno dei due punteggi su un tema: pretenderli entrambi direbbe non avviato a chi ha fatto metà del lavoro."
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 4,
+    "inizia": "Il modo giusto di lavorare queste",
+    "layout": "flusso",
+    "titolo": "Passare dal ponte",
+    "passi": [
+      {
+        "h": "Apri",
+        "d": "il percorso collegato"
+      },
+      {
+        "h": "Lavora",
+        "d": "là dentro"
+      },
+      {
+        "h": "Torna",
+        "d": "e dichiara la fase conclusa quando lo ritieni"
+      }
+    ]
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 5,
+    "inizia": "Una osservazione che vale per tutti",
+    "layout": "cards",
+    "titolo": "Il numero che conta, letto dal vivo",
+    "cards": [
+      {
+        "h": "Materialità",
+        "d": "Temi valutati sul totale."
+      },
+      {
+        "h": "Emissioni",
+        "d": "Il totale dell'inventario."
+      },
+      {
+        "h": "Racconto",
+        "d": "I capitoli sopra soglia."
+      }
+    ]
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 7,
+    "inizia": "Lo stesso vale per la misurazione,",
+    "layout": "evidenza",
+    "eyebrow": "La ricaduta sul calendario",
+    "titolo": "La misurazione dipende da un esercizio chiuso.",
+    "testo": "Non si fa a marzo per l'anno in corso: chi imposta il programma a gennaio deve saperlo."
+  },
+  {
+    "sezione": "i-ponti",
+    "p": 8,
+    "inizia": "E un'ultima osservazione sul valore del",
+    "layout": "chiusura",
+    "titolo": "Il valore per il cliente",
+    "punti": [
+      {
+        "h": "I dati",
+        "d": "stanno in un posto solo"
+      },
+      {
+        "h": "Le emissioni del bilancio",
+        "d": "sono quelle dell'inventario"
+      },
+      {
+        "h": "Una banca chiede quel numero",
+        "d": "e la risposta è una sola"
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 0,
+    "inizia": "Questo percorso produce quattro documenti: l'offerta",
+    "layout": "apertura",
+    "titolo": "I documenti",
+    "sottotitolo": "Quattro momenti in cui il progetto tocca il cliente",
+    "testo": "Uno per proporre, uno per far partire, uno per restituire, uno per chiudere.",
+    "agenda": [
+      "Quattro documenti",
+      "Ciò che ereditano",
+      "Che cosa non contengono",
+      "Quando si emettono",
+      "Offerta, diagnosi, dossier"
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 1,
+    "inizia": "Il contenuto di ciascuno è il",
+    "layout": "flusso",
+    "titolo": "Quattro documenti",
+    "passi": [
+      {
+        "h": "Offerta professionale",
+        "d": "una scheda sola"
+      },
+      {
+        "h": "Verbale di avvio",
+        "d": "tre schede insieme"
+      },
+      {
+        "h": "Rapporto di diagnosi ESG",
+        "d": "a metà percorso"
+      },
+      {
+        "h": "Dossier di chiusura",
+        "d": "alla fine"
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 2,
+    "inizia": "E tutti e quattro passano dalla",
+    "layout": "cards",
+    "titolo": "Ciò che ereditano, per costruzione",
+    "cards": [
+      {
+        "h": "Il marchio",
+        "d": "Congelato alla pubblicazione."
+      },
+      {
+        "h": "L'edizione dei contenuti",
+        "d": "Su cui sono stati redatti."
+      },
+      {
+        "h": "La nota di emissione",
+        "d": "In calce."
+      },
+      {
+        "h": "Il codice di verifica",
+        "d": "Pubblico."
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 3,
+    "inizia": "Una cosa che va detta perché",
+    "layout": "evidenza",
+    "eyebrow": "Riquadrato, in cima",
+    "titolo": "Ogni documento dichiara che cosa non contiene.",
+    "testo": "Alcune fasi hanno registri a righe che il prodotto non compila ancora: tacerlo prometterebbe più di quanto il documento porta."
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 4,
+    "inizia": "Per la stessa ragione le voci",
+    "layout": "definizione",
+    "eyebrow": "Per la stessa ragione",
+    "titolo": "«Non compilato», invece di sparire",
+    "definizione": "Un campo che sparisce lascia un documento che sembra completo; uno che dice non compilato lo dice a chi sta per firmare."
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 5,
+    "inizia": "Un consiglio sull'ordine con cui si",
+    "layout": "tabella",
+    "titolo": "Quando si emettono",
+    "cols": [
+      "Documento",
+      "Quando",
+      "Perché"
+    ],
+    "righe": [
+      [
+        "Offerta e verbale di avvio",
+        "Presto",
+        "Soldi e impegni: letti con più attenzione"
+      ],
+      [
+        "Rapporto di diagnosi",
+        "A metà percorso",
+        "Prima di decidere il piano"
+      ],
+      [
+        "Dossier di chiusura",
+        "Alla fine",
+        "Si ritrova l'anno dopo"
+      ]
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 7,
+    "inizia": "Sull'offerta professionale, che è il documento",
+    "layout": "split",
+    "titolo": "L'offerta professionale",
+    "lead": "Si consegna prima del lavoro, e di fatto è un contratto.",
+    "punti": [
+      {
+        "h": "Che cosa è incluso",
+        "d": "e che cosa no"
+      },
+      {
+        "h": "Durata",
+        "d": "e condizioni"
+      },
+      {
+        "h": "Un anno dopo",
+        "d": "il dossier si legge accanto a lei"
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 8,
+    "inizia": "Sul rapporto di diagnosi, che è",
+    "layout": "confronto",
+    "titolo": "Il rapporto di diagnosi",
+    "a": {
+      "h": "Un elenco di lacune",
+      "sub": "Non fa muovere nessuno",
+      "punti": [
+        "Nessuna conseguenza detta"
+      ]
+    },
+    "b": {
+      "h": "Una fotografia per decidere",
+      "sub": "Che cosa succede se non si interviene",
+      "punti": [
+        "Emesso a metà, quando si può ancora scegliere"
+      ]
+    }
+  },
+  {
+    "sezione": "documenti-sgesg",
+    "p": 9,
+    "inizia": "Un'ultima cosa sul dossier di chiusura,",
+    "layout": "chiusura",
+    "titolo": "Il dossier di chiusura",
+    "punti": [
+      {
+        "h": "Che cosa è stato fatto",
+        "d": "detto a chi non c'era"
+      },
+      {
+        "h": "Che cosa è rimasto aperto",
+        "d": "in chiaro"
+      },
+      {
+        "h": "Da dove si riparte",
+        "d": "prima di qualunque tabella"
+      }
+    ]
+  }
+]

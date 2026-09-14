@@ -32,11 +32,11 @@
   "chiave_archivio": "_piattaforma/formazione/comuni/dove-sei.mp3"
  },
  "energetico/passo-1-sito": {
-  "sha": "b60de9a25a7f3fb1093d9aae1ae2687630c35a720c74ce939c90f354a0c16d08",
-  "sha_script": "e574e970e4b8760f9256c730e0db360415f761b0b12d79607e82f3c4d3951aff",
-  "durata_s": 159.6,
-  "byte": 1277421,
-  "parole": 415,
+  "sha": "e326478b24799e1b967c9b84469825c0a3af6793fb859ea06988662c9fd71041",
+  "sha_script": "f1029092d761c0fe42ad0b18269a790db36ba7731a11adfd3ed69ea3ae9d84fb",
+  "durata_s": 159.3,
+  "byte": 1274925,
+  "parole": 414,
   "mp3": "_mp3/energetico/passo-1-sito.mp3",
   "marche": [
    {
@@ -49,22 +49,22 @@
    },
    {
     "p": 2,
-    "s": 38.2
+    "s": 37.89
    },
    {
     "p": 3,
-    "s": 66.21
+    "s": 65.9
    },
    {
     "p": 4,
-    "s": 93.3
+    "s": 92.99
    },
    {
     "p": 5,
-    "s": 128.44
+    "s": 128.12
    }
   ],
-  "marche_parole": 410,
+  "marche_parole": 409,
   "chiave_archivio": "_piattaforma/formazione/energetico/passo-1-sito.mp3"
  },
  "energetico/passo-2-vettori": {
@@ -100,10 +100,10 @@
   "chiave_archivio": "_piattaforma/formazione/energetico/passo-2-vettori.mp3"
  },
  "fornitore/come-si-calcola": {
-  "sha": "2ad7d8acff45fa510887f403a1490235c62c002360adb960934c842d1b7b197a",
-  "sha_script": "e9830604aecb28094f9521ae6d51eec15e9f85db8da37d2c91e7bbe8e519d5cc",
+  "sha": "fa69bf3aee2dc9e120de5ee41b33c2828560edaa211aff5d31d310baf5200dc7",
+  "sha_script": "aa4a65fa01b6805d07f84f0beb366dc3b108986c09d4704e5340e52505a897c9",
   "durata_s": 223.8,
-  "byte": 1790829,
+  "byte": 1791021,
   "parole": 565,
   "mp3": "_mp3/fornitore/come-si-calcola.mp3",
   "marche": [
@@ -113,31 +113,31 @@
    },
    {
     "p": 1,
-    "s": 33.45
+    "s": 33.48
    },
    {
     "p": 2,
-    "s": 75.46
+    "s": 75.49
    },
    {
     "p": 3,
-    "s": 120.83
+    "s": 120.85
    },
    {
     "p": 4,
-    "s": 128.61
+    "s": 128.64
    },
    {
     "p": 5,
-    "s": 157.72
+    "s": 157.75
    },
    {
     "p": 6,
-    "s": 172.97
+    "s": 173.0
    },
    {
     "p": 7,
-    "s": 192.72
+    "s": 192.75
    }
   ],
   "marche_parole": 564,
@@ -1312,11 +1312,11 @@
   "chiave_archivio": "_piattaforma/formazione/sgesg/i-ponti.mp3"
  },
  "sgesg/documenti-sgesg": {
-  "sha": "3534115ec2c510b3a641d237a94cc649e70600435f27233678ade057e0ba5073",
-  "sha_script": "9e11ee3197fe80d1a3e5b6bce24f9ab6c2fca569be9db915953b077b95488591",
-  "durata_s": 254.2,
-  "byte": 2034669,
-  "parole": 707,
+  "sha": "69d5842901c3ddf7d96495b3137e4188e47e2762d9f3eeed74c9c7e746441f31",
+  "sha_script": "65c7137d9834dd3402e9e3195b6848fac87fca10fface2c1e1c9d470ba13917d",
+  "durata_s": 254.1,
+  "byte": 2033325,
+  "parole": 708,
   "mp3": "_mp3/sgesg/documenti-sgesg.mp3",
   "marche": [
    {
@@ -1333,34 +1333,34 @@
    },
    {
     "p": 3,
-    "s": 69.92
+    "s": 69.74
    },
    {
     "p": 4,
-    "s": 96.97
+    "s": 96.79
    },
    {
     "p": 5,
-    "s": 113.11
+    "s": 112.92
    },
    {
     "p": 6,
-    "s": 151.04
+    "s": 150.85
    },
    {
     "p": 7,
-    "s": 164.7
+    "s": 164.51
    },
    {
     "p": 8,
-    "s": 197.2
+    "s": 197.01
    },
    {
     "p": 9,
-    "s": 225.51
+    "s": 225.32
    }
   ],
-  "marche_parole": 707,
+  "marche_parole": 708,
   "chiave_archivio": "_piattaforma/formazione/sgesg/documenti-sgesg.mp3"
  },
  "fornitore/anagrafica-e-richiesta": {

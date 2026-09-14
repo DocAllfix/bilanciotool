@@ -1,0 +1,1084 @@
+[
+  {
+    "sezione": "passo-1-confini",
+    "p": 0,
+    "inizia": "Il passo uno è il più",
+    "layout": "apertura",
+    "titolo": "I confini dell'inventario",
+    "sottotitolo": "Il contratto su cui si reggono i numeri",
+    "testo": "La norma chiede di dichiarare quali unità entrano prima di contare una sola tonnellata.",
+    "agenda": [
+      "Confini organizzativi",
+      "Unità nel perimetro",
+      "Confini di rendicontazione",
+      "Periodo e metodo",
+      "Set di GWP e dati del periodo",
+      "Il confine congelato"
+    ]
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 1,
+    "inizia": "Si comincia dai confini organizzativi, punto",
+    "layout": "split",
+    "titolo": "Il consolidamento, punto 5.1",
+    "lead": "Una scelta fra tre approcci, applicata a tutte le unità e mantenuta negli anni.",
+    "punti": [
+      {
+        "h": "Controllo operativo",
+        "d": "quasi sempre la scelta giusta per una PMI"
+      },
+      {
+        "h": "Controllo finanziario",
+        "d": "o quota di partecipazione, le alternative"
+      },
+      {
+        "h": "Uniforme",
+        "d": "su tutte le unità del perimetro"
+      },
+      {
+        "h": "Stabile",
+        "d": "cambiarlo a metà impone il ricalcolo del passo 6"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 2,
+    "inizia": "Poi le unità nel perimetro: società,",
+    "layout": "evidenza",
+    "eyebrow": "Il rilievo più frequente in verifica",
+    "titolo": "Escludere si può. Escludere senza dirlo, no.",
+    "testo": "Un magazzino affittato a terzi si lascia fuori benissimo; senza una riga che lo spieghi diventa una lacuna."
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 3,
+    "inizia": "Seguono i confini di rendicontazione, punto",
+    "layout": "punti",
+    "titolo": "I criteri di significatività, punto 5.2.4",
+    "intro": "Si dichiarano prima di usarli, non quando i numeri sono già usciti.",
+    "punti": [
+      {
+        "h": "Una soglia",
+        "d": "quantitativa"
+      },
+      {
+        "h": "L'influenza",
+        "d": "dell'organizzazione sulla sorgente"
+      },
+      {
+        "h": "La rilevanza",
+        "d": "per gli stakeholder"
+      },
+      {
+        "h": "Il rischio",
+        "d": "legato alla sorgente"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 4,
+    "inizia": "Infine periodo e metodo: il periodo",
+    "layout": "definizione",
+    "eyebrow": "Periodo e metodo",
+    "titolo": "La metodologia di quantificazione",
+    "definizione": "Dati di attività moltiplicati per fattori di emissione: è la regola.",
+    "punti": [
+      {
+        "h": "Bilancio di massa",
+        "d": "è un'eccezione, e si dichiara"
+      },
+      {
+        "h": "Misura diretta",
+        "d": "è un'eccezione, e si dichiara"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 5,
+    "inizia": "Due cose che si saltano volentieri",
+    "layout": "evidenza",
+    "eyebrow": "Il set di GWP",
+    "titolo": "Uno solo fra i {gwpSet} disponibili, per tutto l'inventario.",
+    "testo": "Coerente con l'edizione dei fattori adottata: mescolarli produce numeri che non tornano con nessuna fonte."
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 6,
+    "inizia": "La seconda sono i dati del",
+    "layout": "cards",
+    "titolo": "I dati del periodo sono denominatori",
+    "cards": [
+      {
+        "h": "Ricavi netti",
+        "d": "per l'intensità sui ricavi"
+      },
+      {
+        "h": "Organico medio",
+        "d": "per l'intensità per addetto"
+      },
+      {
+        "h": "Produzione e unità",
+        "d": "per l'intensità per unità di prodotto"
+      },
+      {
+        "h": "Per ogni periodo",
+        "d": "anno base compreso: senza, le intensità restano vuote"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-1-confini",
+    "p": 7,
+    "inizia": "Un'ultima cosa. Il confine di questo",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Il confine",
+        "d": "si congela quando crei l'inventario"
+      },
+      {
+        "h": "Ogni esclusione",
+        "d": "con la sua motivazione"
+      },
+      {
+        "h": "La significatività",
+        "d": "dichiarata prima dei numeri"
+      },
+      {
+        "h": "Il set di GWP",
+        "d": "coerente con i fattori"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 0,
+    "inizia": "Il punto cinque punto due della",
+    "layout": "apertura",
+    "titolo": "Il registro delle sorgenti",
+    "sottotitolo": "Tutte, non solo quelle che ti riguardano",
+    "testo": "Per ciascuna delle {sorgentiGhg} sorgenti, nelle {categorieGhg} categorie, dichiari se è inclusa o esclusa.",
+    "agenda": [
+      "Tre stati",
+      "Non significativa",
+      "Si include ciò che si quantifica",
+      "Le esclusioni nel rapporto",
+      "Tutte in una sessione",
+      "L'ordine del giro"
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 1,
+    "inizia": "Gli stati sono tre e non",
+    "layout": "tabella",
+    "titolo": "Tre stati, non intercambiabili",
+    "cols": [
+      "Stato",
+      "Significa",
+      "Che cosa serve"
+    ],
+    "righe": [
+      [
+        "Inclusa",
+        "Esiste nel perimetro",
+        "Quantificarla al passo 3"
+      ],
+      [
+        "Esclusa",
+        "Esiste ma non la quantifichi",
+        "Motivazione obbligatoria"
+      ],
+      [
+        "Non applicabile",
+        "Nell'attività non c'è",
+        "Una riga breve"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 2,
+    "inizia": "Sulla motivazione di un'esclusione una precisazione",
+    "layout": "definizione",
+    "eyebrow": "Una precisazione che vale un rilievo",
+    "titolo": "«Non significativa»",
+    "definizione": "Regge soltanto se al passo 1 hai dichiarato il criterio di significatività. Senza, è un'opinione.",
+    "punti": [
+      {
+        "h": "Con il criterio",
+        "d": "è una regola scritta prima di vedere i numeri"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 3,
+    "inizia": "C'è poi un'incoerenza che il prodotto",
+    "layout": "evidenza",
+    "eyebrow": "La regola pratica",
+    "titolo": "Si include ciò che si quantifica.",
+    "testo": "Senza dati, la strada corretta è escludere dichiarando che non sono disponibili, non includere sperando di tornarci."
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 4,
+    "inizia": "Una nota che fa risparmiare tempo:",
+    "layout": "cards",
+    "titolo": "Le esclusioni finiscono nel rapporto",
+    "cards": [
+      {
+        "h": "Scritte una volta",
+        "d": "Entrano da sole nel capitolo dei confini di rendicontazione."
+      },
+      {
+        "h": "Per esteso, non a sigle",
+        "d": "Le leggerà qualcuno che non era presente quando hai deciso."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 5,
+    "inizia": "Un consiglio sull'ordine. Conviene percorrere tutte",
+    "layout": "split",
+    "titolo": "Tutte le sorgenti in una sessione",
+    "lead": "Anche con motivazioni provvisorie, invece di lasciarne metà senza stato.",
+    "punti": [
+      {
+        "h": "Un registro a metà",
+        "d": "non distingue le sorgenti scartate da quelle mai guardate"
+      },
+      {
+        "h": "Dopo un mese",
+        "d": "non lo distingue più nemmeno chi ci ha lavorato"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-registro",
+    "p": 6,
+    "inizia": "Un consiglio su come si fa",
+    "layout": "confronto",
+    "titolo": "Il giro, dal più vicino al più lontano",
+    "a": {
+      "h": "Le prime tre categorie",
+      "sub": "Dirette, energia importata, trasporti",
+      "punti": [
+        "Si chiudono con fatture e libretti dei mezzi",
+        "Quasi sempre pesano di più"
+      ]
+    },
+    "b": {
+      "h": "Le ultime tre",
+      "sub": "Acquisti, prodotti venduti, altre fonti",
+      "punti": [
+        "Serve parlare con chi compra e chi vende",
+        "Le esclusioni motivate sono la norma"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 0,
+    "inizia": "Il passo tre è dove si",
+    "layout": "apertura",
+    "titolo": "L'inserimento dei dati",
+    "sottotitolo": "Una voce per sorgente e per sito",
+    "testo": "Il sito distingue le righe dello stesso vettore su stabilimenti diversi.",
+    "agenda": [
+      "I campi della voce",
+      "Categoria 2 e biomasse",
+      "Qualità ed evidenza",
+      "I conti",
+      "Copia dal periodo precedente",
+      "Tre errori sulle unità"
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 1,
+    "inizia": "I campi. Categoria e sorgente, con",
+    "layout": "flusso",
+    "titolo": "I campi di una voce",
+    "passi": [
+      {
+        "h": "Categoria e sorgente",
+        "d": "la sorgente si filtra sulla categoria"
+      },
+      {
+        "h": "Descrizione",
+        "d": "come la scriveresti a un collega"
+      },
+      {
+        "h": "Fattore",
+        "d": "dalla libreria o personalizzato"
+      },
+      {
+        "h": "Quantità",
+        "d": "nell'unità del fattore"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 2,
+    "inizia": "Due campi che valgono solo in",
+    "layout": "confronto",
+    "titolo": "Due campi che valgono solo in certi casi",
+    "a": {
+      "h": "Categoria 2",
+      "sub": "Energia importata",
+      "punti": [
+        "Fattore market based",
+        "Quota coperta da garanzie d'origine, nella stessa unità"
+      ]
+    },
+    "b": {
+      "h": "Biomasse",
+      "sub": "CO₂ biogenica",
+      "punti": [
+        "Fattore biogenico",
+        "Rendicontata a parte, fuori dai totali"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 3,
+    "inizia": "Poi ci sono due campi che",
+    "layout": "cards",
+    "titolo": "I due campi che reggono la verifica",
+    "cards": [
+      {
+        "h": "Qualità del dato",
+        "d": "{livelliQualitaGhg} livelli dal misurato allo stimato, con l'incertezza proposta e modificabile."
+      },
+      {
+        "h": "Evidenza documentale",
+        "d": "Il rinvio al documento che il verificatore seguirà: requisito 6.3."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 4,
+    "inizia": "Sui conti: le tonnellate di anidride",
+    "layout": "tabella",
+    "titolo": "I conti",
+    "cols": [
+      "Grandezza",
+      "Calcolo"
+    ],
+    "righe": [
+      [
+        "tCO₂e",
+        "quantità × fattore ÷ 1000"
+      ],
+      [
+        "Market based",
+        "max(0, quantità − quota coperta) × fattore market ÷ 1000"
+      ],
+      [
+        "CO₂ biogenica",
+        "quantità × fattore biogenico ÷ 1000, tenuta separata"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 5,
+    "inizia": "Una cosa sull'anteprima che vedi nel",
+    "layout": "evidenza",
+    "eyebrow": "L'anteprima nel dialogo",
+    "titolo": "È lo stesso motore che scriverà la riga.",
+    "testo": "Non un secondo calcolo scritto a parte: due aritmetiche separate divergono sempre, e ce ne si accorge sul documento."
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 6,
+    "inizia": "Sulla qualità del dato voglio insistere,",
+    "layout": "definizione",
+    "eyebrow": "Il campo su cui si bara senza accorgersene",
+    "titolo": "Qualità del dato",
+    "definizione": "Serve a dirti dove mettere un contatore, non a farti fare bella figura adesso.",
+    "punti": [
+      {
+        "h": "Una stima dichiarata documentale",
+        "d": "abbassa l'incertezza e nasconde dove investire"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 7,
+    "inizia": "Una scorciatoia vera: copia dal periodo",
+    "layout": "split",
+    "titolo": "Copia dal periodo precedente",
+    "lead": "Il modo più rapido di aprire un esercizio nuovo.",
+    "punti": [
+      {
+        "h": "Restano",
+        "d": "struttura, fattori ed evidenze"
+      },
+      {
+        "h": "Si azzerano",
+        "d": "le quantità"
+      },
+      {
+        "h": "Eviti",
+        "d": "di dimenticare un pezzo del registro"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 8,
+    "inizia": "Chiudo con tre errori sulle unità,",
+    "layout": "cards",
+    "titolo": "Tre errori sulle unità che passano ogni controllo",
+    "cards": [
+      {
+        "h": "Gasolio",
+        "d": "Da riscaldamento e da autotrazione sono fattori distinti: non si sommano."
+      },
+      {
+        "h": "Fotovoltaico",
+        "d": "L'energia immessa in rete non è consumo: l'hai venduta."
+      },
+      {
+        "h": "Quota coperta",
+        "d": "In un'altra unità falsa il market based, senza nessun avviso."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 9,
+    "inizia": "Ancora due cose sull'ordine del lavoro,",
+    "layout": "punti",
+    "titolo": "L'ordine del lavoro",
+    "punti": [
+      {
+        "h": "Una sorgente alla volta",
+        "d": "fattore, unità ed evidenza condivisi: costa la metà"
+      },
+      {
+        "h": "La stessa descrizione ogni anno",
+        "d": "e il confronto è immediato"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-dati",
+    "p": 10,
+    "inizia": "E una avvertenza sul sito. Il",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Il sito",
+        "d": "compilalo anche con uno stabilimento solo"
+      },
+      {
+        "h": "La qualità del dato",
+        "d": "dichiarata onestamente"
+      },
+      {
+        "h": "L'evidenza",
+        "d": "un rinvio che si può seguire"
+      },
+      {
+        "h": "Le unità",
+        "d": "quelle del fattore, quota coperta compresa"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-4-fattori",
+    "p": 0,
+    "inizia": "La libreria porta cinquantanove fattori precaricati,",
+    "layout": "apertura",
+    "titolo": "La libreria dei fattori",
+    "sottotitolo": "Di piattaforma, con le tue sovrascritture",
+    "testo": "{fattoriGhg} fattori precaricati e versionati: quello che cambi vive sopra, non dentro.",
+    "agenda": [
+      "Piattaforma e sovrascrittura",
+      "Che cosa porta un fattore",
+      "Eliminare e ripristinare",
+      "Le voci non cambiano",
+      "Prima della verifica"
+    ]
+  },
+  {
+    "sezione": "passo-4-fattori",
+    "p": 1,
+    "inizia": "Ogni fattore porta valore, unità, fonte",
+    "layout": "definizione",
+    "titolo": "Un fattore",
+    "definizione": "Valore, unità, fonte e anno. La fonte non è facoltativa: rende difendibile il numero.",
+    "punti": [
+      {
+        "h": "Categoria 2",
+        "d": "in più il valore market based"
+      },
+      {
+        "h": "Biomasse",
+        "d": "un fattore fossile nei totali, uno biogenico a parte"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-4-fattori",
+    "p": 2,
+    "inizia": "Una regola sull'eliminazione che vale la",
+    "layout": "confronto",
+    "titolo": "Eliminare non è ripristinare",
+    "a": {
+      "h": "Fattore personalizzato",
+      "sub": "In uso, non si elimina",
+      "punti": [
+        "Le voci resterebbero senza riferimento"
+      ]
+    },
+    "b": {
+      "h": "Sovrascrittura",
+      "sub": "Si ripristina sempre",
+      "punti": [
+        "Sotto ricompare la chiave di piattaforma",
+        "Nessuna voce resta senza fattore"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-4-fattori",
+    "p": 3,
+    "inizia": "E adesso la cosa che sorprende",
+    "layout": "evidenza",
+    "eyebrow": "Quello che sorprende più spesso",
+    "titolo": "Cambiare un fattore non cambia le voci già inserite.",
+    "testo": "Il fattore si congela sulla riga quando salvi. Per ricalcolare le voci vanno rimesse a mano: è una decisione da motivare."
+  },
+  {
+    "sezione": "passo-4-fattori",
+    "p": 4,
+    "inizia": "Un avvertimento prima di emettere un",
+    "layout": "punti",
+    "titolo": "Prima di una verifica di parte terza",
+    "intro": "I valori precaricati sono indicativi.",
+    "punti": [
+      {
+        "h": "Aggiornali",
+        "d": "all'edizione dichiarata nel rapporto"
+      },
+      {
+        "h": "Fonte e anno",
+        "d": "su ogni fattore usato"
+      },
+      {
+        "h": "La stessa edizione",
+        "d": "anche per l'anno base"
+      },
+      {
+        "h": "Un cambio di edizione",
+        "d": "si dichiara, e può imporre il ricalcolo"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 0,
+    "inizia": "Il passo cinque non chiede niente:",
+    "layout": "apertura",
+    "titolo": "I risultati",
+    "sottotitolo": "Il passo che non chiede niente",
+    "testo": "È la pagina dove fermarsi più a lungo: qui si capisce se l'inventario regge.",
+    "agenda": [
+      "Location e market based",
+      "Che cosa trovi",
+      "Incertezza e qualità",
+      "Peso incrociato con qualità",
+      "Due segnali da capire",
+      "Le variazioni sopra il 20%"
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 1,
+    "inizia": "La prima cosa che vedi sono",
+    "layout": "confronto",
+    "titolo": "Due totali, due domande diverse",
+    "a": {
+      "h": "Location based",
+      "sub": "Quanto si è emesso",
+      "punti": [
+        "Fattore medio della rete",
+        "Le emissioni fisiche dei tuoi siti"
+      ]
+    },
+    "b": {
+      "h": "Market based",
+      "sub": "Che cosa hai comprato",
+      "punti": [
+        "Fattori contrattuali per la quota certificata",
+        "Da solo porterebbe un sito quasi a zero"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 2,
+    "inizia": "Poi trovi la composizione per scope",
+    "layout": "cards",
+    "titolo": "Che cosa trovi sulla pagina",
+    "cards": [
+      {
+        "h": "Composizione",
+        "d": "per scope e per categoria, calcolata dai dati"
+      },
+      {
+        "h": "Riepilogo per categoria",
+        "d": "voci, tonnellate, peso, incertezza, qualità"
+      },
+      {
+        "h": "Intensità",
+        "d": "per ricavi, per addetto, per unità di prodotto"
+      },
+      {
+        "h": "Voci più pesanti",
+        "d": "in ordine"
+      },
+      {
+        "h": "CO₂ biogenica",
+        "d": "a parte, fuori dai totali"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 3,
+    "inizia": "Sui due indicatori di qualità vale",
+    "layout": "tabella",
+    "titolo": "Due indicatori di qualità",
+    "cols": [
+      "Indicatore",
+      "Come si calcola",
+      "Che cosa ne segue"
+    ],
+    "righe": [
+      [
+        "Incertezza combinata",
+        "Somma in quadratura dei contributi, divisa per il totale",
+        "Domina la voce più pesante, non la più incerta"
+      ],
+      [
+        "Qualità ponderata",
+        "Media dei punteggi pesata sulle emissioni",
+        "Dice dove conviene migliorare il dato"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 4,
+    "inizia": "Quindi il modo giusto di leggere",
+    "layout": "evidenza",
+    "eyebrow": "Come si legge",
+    "titolo": "Peso e qualità, incrociati.",
+    "testo": "La categoria che pesa di più con la qualità più bassa è il primo posto dove investire prima della verifica."
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 5,
+    "inizia": "Un'ultima osservazione. Se un'intensità è vuota,",
+    "layout": "split",
+    "titolo": "Due segnali da non fraintendere",
+    "lead": "Nessuno dei due è un difetto del calcolo.",
+    "punti": [
+      {
+        "h": "Un'intensità vuota",
+        "d": "manca il denominatore fra i dati del periodo"
+      },
+      {
+        "h": "Market uguale a location",
+        "d": "nessun contratto, oppure quota coperta non compilata"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 6,
+    "inizia": "Un modo pratico di usare questa",
+    "layout": "flusso",
+    "titolo": "Prima di consegnare",
+    "passi": [
+      {
+        "h": "Confronta",
+        "d": "voce per voce con l'anno precedente"
+      },
+      {
+        "h": "Cerca i salti",
+        "d": "le variazioni sopra il 20%"
+      },
+      {
+        "h": "Spiegali",
+        "d": "attività, fattore o modo di contare"
+      },
+      {
+        "h": "Il modo di contare",
+        "d": "se non l'hai deciso tu, è un errore"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-risultati",
+    "p": 7,
+    "inizia": "E una osservazione sulle intensità che",
+    "layout": "definizione",
+    "eyebrow": "Per il colloquio col cliente",
+    "titolo": "L'intensità per gli obiettivi",
+    "definizione": "Quella per unità di prodotto: l'intensità per ricavi migliora anche quando salgono soltanto i prezzi."
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 0,
+    "inizia": "L'anno base è il metro con",
+    "layout": "apertura",
+    "titolo": "L'anno base",
+    "sottotitolo": "Il metro di tutto il resto",
+    "testo": "Punti 7.2 e 7.3: sceglierlo, giustificarlo, e corredarlo in anticipo delle regole di ricalcolo.",
+    "agenda": [
+      "Perché in anticipo",
+      "Tre campi",
+      "Traguardo e percorso",
+      "Completo non è credibile",
+      "Quale periodo"
+    ]
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 1,
+    "inizia": "Sulla parola anticipo mi fermo, perché",
+    "layout": "evidenza",
+    "eyebrow": "La parola che conta",
+    "titolo": "Le regole di ricalcolo si scrivono prima.",
+    "testo": "Cedi lo stabilimento più energivoro e scendi del 30%: la regola scritta prima ti obbliga a dire che il calo non è merito tuo."
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 2,
+    "inizia": "Quindi tre campi. Il periodo di",
+    "layout": "tabella",
+    "titolo": "Tre campi",
+    "cols": [
+      "Campo",
+      "Che cosa contiene"
+    ],
+    "righe": [
+      [
+        "Periodo di riferimento",
+        "Uno dei periodi con dati, col suo totale"
+      ],
+      [
+        "Motivazione",
+        "Verificabile: primo periodo con dati completi su tutti i siti"
+      ],
+      [
+        "Regola di ricalcolo",
+        "Acquisizioni e cessioni, cambio di metodo, errori significativi, variazione dei confini"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 3,
+    "inizia": "Sugli obiettivi il conto è semplice:",
+    "layout": "definizione",
+    "titolo": "Traguardo e percorso",
+    "definizione": "Traguardo = base × (1 − riduzione). Percorso compiuto = (base − attuale) ÷ (base − traguardo).",
+    "punti": [
+      {
+        "h": "Il prodotto",
+        "d": "dice a che punto sei rispetto a dove volevi arrivare"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 4,
+    "inizia": "E qui l'avvertimento che chiude il",
+    "layout": "confronto",
+    "titolo": "Completo non vuol dire credibile",
+    "a": {
+      "h": "Il prodotto",
+      "sub": "Calcola",
+      "punti": [
+        "Il traguardo",
+        "Il percorso compiuto"
+      ]
+    },
+    "b": {
+      "h": "Il consulente",
+      "sub": "Giudica",
+      "punti": [
+        "Se la riduzione è raggiungibile con le azioni scritte",
+        "È a lui che lo chiedono in verifica"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-6-anno-base",
+    "p": 5,
+    "inizia": "Una nota pratica sulla scelta del",
+    "layout": "chiusura",
+    "titolo": "Quale periodo scegliere",
+    "punti": [
+      {
+        "h": "Non l'anno peggiore",
+        "d": "si paga in verifica e l'anno dopo"
+      },
+      {
+        "h": "Il primo con dati completi",
+        "d": "su tutti i siti"
+      },
+      {
+        "h": "Quasi sempre",
+        "d": "coincide col primo inventario fatto bene"
+      }
+    ]
+  },
+  {
+    "sezione": "verifica-e-rapporto",
+    "p": 0,
+    "inizia": "La checklist del passo sette porta",
+    "layout": "apertura",
+    "titolo": "Verifica e rapporto",
+    "sottotitolo": "I {checklistGhg} requisiti della checklist",
+    "testo": "Ciascuno riferito al suo punto della norma: per ognuno lo stato, e l'evidenza o l'azione da fare.",
+    "agenda": [
+      "Annotazioni che diventano fascicolo",
+      "I segnaposto nel rapporto",
+      "Il limite della verifica",
+      "Che cosa chiede il verificatore"
+    ]
+  },
+  {
+    "sezione": "verifica-e-rapporto",
+    "p": 1,
+    "inizia": "Quelle annotazioni non restano in questa",
+    "layout": "confronto",
+    "titolo": "Annotazioni per chi le leggerà",
+    "a": {
+      "h": "«Evidenza presente»",
+      "sub": "Non si può seguire",
+      "punti": [
+        "Non dice dove guardare"
+      ]
+    },
+    "b": {
+      "h": "«Contratto di fornitura 2024, cartella contratti»",
+      "sub": "Si segue",
+      "punti": [
+        "Diventa un riferimento del fascicolo di audit"
+      ]
+    }
+  },
+  {
+    "sezione": "verifica-e-rapporto",
+    "p": 2,
+    "inizia": "Sul rapporto: è costruito sui contenuti",
+    "layout": "evidenza",
+    "eyebrow": "Il rapporto, punto 9.3.1",
+    "titolo": "I testi mancanti compaiono come segnaposto.",
+    "testo": "Un vuoto dichiarato è informazione. Un vuoto silenzioso promette più di quanto porta, finché un verificatore non lo nota."
+  },
+  {
+    "sezione": "verifica-e-rapporto",
+    "p": 4,
+    "inizia": "Poi il limite, che qui prende",
+    "layout": "tabella",
+    "titolo": "Completezza formale, e il suo limite",
+    "cols": [
+      "La verifica può dirti",
+      "Non può dirti"
+    ],
+    "righe": [
+      [
+        "Che due sorgenti sono escluse senza motivazione",
+        "Che la motivazione scritta non regge"
+      ],
+      [
+        "Che la qualità del dato è compilata",
+        "Che hai dichiarato documentale una stima"
+      ]
+    ]
+  },
+  {
+    "sezione": "verifica-e-rapporto",
+    "p": 6,
+    "inizia": "Un ultima cosa sul fascicolo che",
+    "layout": "cards",
+    "titolo": "Che cosa chiede il verificatore",
+    "cards": [
+      {
+        "h": "Fatture e letture",
+        "d": "a supporto delle voci più pesanti"
+      },
+      {
+        "h": "Fonte e anno",
+        "d": "dei fattori usati"
+      },
+      {
+        "h": "Motivazioni",
+        "d": "delle esclusioni"
+      },
+      {
+        "h": "Anno base",
+        "d": "con le regole di ricalcolo"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui conviene",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Nove errori, e quasi tutti silenziosi",
+    "testo": "Seguire l'ordine giusto fa risparmiare più tempo di qualunque scorciatoia dentro i passi.",
+    "agenda": [
+      "L'ordine dei passi",
+      "Perché i fattori prima delle voci",
+      "Quattro errori frequenti",
+      "Quattro che falsano in silenzio",
+      "Il più costoso"
+    ]
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 1,
+    "inizia": "Prima i confini completi e i",
+    "layout": "flusso",
+    "titolo": "L'ordine in cui lavorare",
+    "passi": [
+      {
+        "h": "Confini e periodo",
+        "d": "consolidamento, perimetro, significatività, GWP"
+      },
+      {
+        "h": "Registro",
+        "d": "ogni sorgente con uno stato"
+      },
+      {
+        "h": "Fattori",
+        "d": "all'edizione dichiarata, con fonte e anno"
+      },
+      {
+        "h": "Voci",
+        "d": "per sorgente e sito, con evidenza e qualità"
+      },
+      {
+        "h": "Risultati e verifica",
+        "d": "anno base, obiettivi, pubblicazione"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 2,
+    "inizia": "Il motivo per cui i fattori",
+    "layout": "evidenza",
+    "eyebrow": "Perché i fattori prima delle voci",
+    "titolo": "Il fattore si congela sulla riga.",
+    "testo": "Trecento voci inserite e poi la libreria aggiornata: o tieni i valori vecchi, o rimetti trecento voci a mano."
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 3,
+    "inizia": "Gli errori che tornano più spesso",
+    "layout": "cards",
+    "titolo": "Quattro errori che tornano spesso",
+    "cards": [
+      {
+        "h": "Azienda o esercizio sbagliato",
+        "d": "Nessun avviso, perché i dati sono validi."
+      },
+      {
+        "h": "Esclusioni senza motivazione",
+        "d": "Il rilievo classico sul punto 5.2."
+      },
+      {
+        "h": "Inclusa e mai quantificata",
+        "d": "Un'incoerenza visibile a chiunque."
+      },
+      {
+        "h": "Fattori precaricati tali e quali",
+        "d": "Senza fonte né anno, emissioni non difendibili."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 4,
+    "inizia": "E poi quattro errori che hanno",
+    "layout": "tabella",
+    "titolo": "Quattro errori che falsano in silenzio",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Quota coperta in un'altra unità",
+        "Market based falsato"
+      ],
+      [
+        "Fattore biogenico dentro il totale",
+        "Violazione del punto 6.5"
+      ],
+      [
+        "Tutto dichiarato documentale",
+        "Incertezza sottostimata"
+      ],
+      [
+        "Evidenza documentale vuota",
+        "Requisito 6.3 non soddisfatto"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 5,
+    "inizia": "L'ultimo è il più costoso: cambiare",
+    "layout": "definizione",
+    "eyebrow": "Il più costoso",
+    "titolo": "Cambiare senza ricalcolare",
+    "definizione": "Fattori o confini cambiati senza applicare la regola di ricalcolo: il confronto con l'anno base non significa più niente, ma resta nel documento."
+  },
+  {
+    "sezione": "errori-ghg",
+    "p": 6,
+    "inizia": "Chiudo con una regola generale che",
+    "layout": "chiusura",
+    "titolo": "Sette errori su nove non avvisano",
+    "punti": [
+      {
+        "h": "Sono errori di significato",
+        "d": "non di forma"
+      },
+      {
+        "h": "I conti tornano",
+        "d": "e la verifica diventa verde"
+      },
+      {
+        "h": "Rileggi i risultati",
+        "d": "prima di aprire la verifica, non dopo"
+      }
+    ]
+  }
+]

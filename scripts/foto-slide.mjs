@@ -38,9 +38,18 @@ const RUN = Date.now();
 const { orgId } = await registraEEntra(page, sql, { base: BASE, nome: "Studio Slide", email: `foto-slide-${RUN}@example.com`, pwd: PWD_COLLAUDO });
 await sql`update org_entitlement set status='active', piano='studio', activated_at=now() where organization_id=${orgId}`;
 
+// ⚠️ I corsi TRASVERSALI stanno sotto `/formazione/corso/<chiave>`, non sotto
+// `/formazione/<percorso>`: aprendo l'indirizzo dei percorsi si arrivava a «questa pagina
+// non c'è» e lo script moriva aspettando una presentazione che lì non esiste. Il controllo
+// sui tagli la distinzione la faceva già; questo script no.
+const TRASVERSALI = new Set(["avviare-attivita"]);
+const indirizzo = TRASVERSALI.has(corso)
+  ? `${BASE}/formazione/corso/${corso}/presentazione`
+  : `${BASE}/formazione/${corso}/presentazione`;
+
 const colori = [];
 for (const scuro of [false, true]) {
-  await page.goto(`${BASE}/formazione/${corso}/presentazione`, { waitUntil: "domcontentloaded" });
+  await page.goto(indirizzo, { waitUntil: "domcontentloaded" });
   await page.evaluate((s) => { try { localStorage.setItem("theme", s ? "dark" : "light"); } catch {} }, scuro);
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-presentazione]", { timeout: 60_000 });

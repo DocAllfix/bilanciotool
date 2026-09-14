@@ -1,0 +1,748 @@
+[
+  {
+    "sezione": "passo-1-organizzazione",
+    "p": 0,
+    "inizia": "Il passo uno è la carta",
+    "layout": "apertura",
+    "titolo": "L'organizzazione",
+    "sottotitolo": "La carta d'identità dell'azienda",
+    "testo": "Finisce in copertina e nella nota metodologica: un revisore la confronta con la visura in trenta secondi.",
+    "agenda": [
+      "I campi del profilo",
+      "I siti operativi",
+      "Perimetro largo, dati stretti",
+      "L'ordine dei passi"
+    ]
+  },
+  {
+    "sezione": "passo-1-organizzazione",
+    "p": 1,
+    "inizia": "Il campo su cui vale la",
+    "layout": "definizione",
+    "eyebrow": "Non è anagrafica",
+    "titolo": "I siti operativi",
+    "definizione": "Definiscono il confine di tutti i dati del bilancio: ciò che è nel perimetro deve entrare nei consumi.",
+    "punti": [
+      {
+        "h": "Un sito escluso",
+        "d": "va detto in nota metodologica, con il motivo"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-1-organizzazione",
+    "p": 2,
+    "inizia": "Faccio l'esempio che si vede più",
+    "layout": "evidenza",
+    "eyebrow": "Il difetto che un revisore trova per primo",
+    "titolo": "Perimetro dichiarato largo, compilato stretto.",
+    "testo": "Tre siti dichiarati e le sole bollette della sede: basta guardare gli addetti accanto ai kWh. Nel perimetro va ciò di cui hai i dati."
+  },
+  {
+    "sezione": "passo-1-organizzazione",
+    "p": 3,
+    "inizia": "Il logo e l'immagine di copertina",
+    "layout": "flusso",
+    "titolo": "L'ordine dei passi non si salta",
+    "passi": [
+      {
+        "h": "Passo 2",
+        "d": "decide i temi materiali"
+      },
+      {
+        "h": "Passo 3",
+        "d": "raccoglie i dati"
+      },
+      {
+        "h": "Passo 4",
+        "d": "mostra le schede dei soli temi materiali"
+      },
+      {
+        "h": "Passo 5",
+        "d": "costruisce i diagrammi sui dati"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 0,
+    "inizia": "Questo è il cuore metodologico del",
+    "layout": "apertura",
+    "titolo": "La doppia rilevanza",
+    "sottotitolo": "Il cuore metodologico del percorso",
+    "testo": "{temi} temi predefiniti sui tre pilastri, ciascuno con il suo riferimento ESRS e GRI.",
+    "agenda": [
+      "Rilevanza d'impatto",
+      "Rilevanza finanziaria",
+      "La regola: almeno una",
+      "Tarare la soglia",
+      "Valutato o no",
+      "Proposta ATECO ed evidenze"
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 1,
+    "inizia": "La prima scala è la rilevanza",
+    "layout": "tabella",
+    "titolo": "Rilevanza d'impatto: dall'azienda verso fuori",
+    "cols": [
+      "Punteggio",
+      "Livello",
+      "Effetti su persone e ambiente"
+    ],
+    "righe": [
+      [
+        "1",
+        "Trascurabile",
+        "Nessuna incidenza apprezzabile"
+      ],
+      [
+        "2",
+        "Lieve",
+        "Limitati, reversibili, circoscritti"
+      ],
+      [
+        "3",
+        "Moderato",
+        "Apprezzabili, gestibili con misure ordinarie"
+      ],
+      [
+        "4",
+        "Rilevante",
+        "Estesi o difficilmente reversibili"
+      ],
+      [
+        "5",
+        "Molto rilevante",
+        "Gravi, diffusi o irreversibili"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 2,
+    "inizia": "La seconda scala è la rilevanza",
+    "layout": "punti",
+    "titolo": "Rilevanza finanziaria: da fuori verso l'azienda",
+    "intro": "Quanto il tema incide su ricavi, costi, investimenti, accesso a mercati e credito.",
+    "numerati": false,
+    "punti": [
+      {
+        "h": "Uno",
+        "d": "nessun effetto apprezzabile"
+      },
+      {
+        "h": "Due",
+        "d": "marginale"
+      },
+      {
+        "h": "Tre",
+        "d": "apprezzabile: costi, investimenti, mercati"
+      },
+      {
+        "h": "Quattro",
+        "d": "rilevante: marginalità o requisiti dei clienti"
+      },
+      {
+        "h": "Cinque",
+        "d": "critico: continuità o mercati chiave"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 3,
+    "inizia": "E adesso la regola che decide,",
+    "layout": "evidenza",
+    "eyebrow": "La regola da ricordare",
+    "titolo": "Materiale se raggiunge la soglia su almeno una dimensione.",
+    "testo": "Almeno una, non entrambe: un tema che non costa niente ma produce un danno grave resta materiale. Soglia predefinita {sogliaMaterialitaPredefinita}, regolabile per progetto."
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 4,
+    "inizia": "Sulla taratura della soglia ti do",
+    "layout": "numeri",
+    "titolo": "Tarare la soglia",
+    "numeri": [
+      {
+        "n": "8-10",
+        "h": "Temi materiali",
+        "d": "Un equilibrio ragionevole per una PMI, con la soglia predefinita."
+      },
+      {
+        "n": "Quasi tutti",
+        "h": "Valutazioni gonfiate",
+        "d": "Il passo 4 diventa ingestibile."
+      },
+      {
+        "n": "Nessuno",
+        "h": "Soglia alta o valutazioni prudenti",
+        "d": "Si rivedono i punteggi, non la soglia."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 5,
+    "inizia": "Attenzione a una distinzione che in",
+    "layout": "confronto",
+    "titolo": "Non valutato non è non materiale",
+    "a": {
+      "h": "Non materiale",
+      "sub": "Una posizione",
+      "punti": [
+        "Il tema ha almeno un punteggio",
+        "Resta sotto soglia"
+      ]
+    },
+    "b": {
+      "h": "Non valutato",
+      "sub": "Una lacuna",
+      "punti": [
+        "Nessun punteggio",
+        "Conta come tale nell'avanzamento"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 6,
+    "inizia": "C'è una proposta ricavata dal codice",
+    "layout": "definizione",
+    "eyebrow": "La proposta dal codice ATECO",
+    "titolo": "Mai applicata da sola",
+    "definizione": "Suggerisce i temi tipici del settore con il motivo accanto: la accetti o la scarti tema per tema.",
+    "punti": [
+      {
+        "h": "Una valutazione comparsa da sola",
+        "d": "non la può spiegare nessuno in verifica"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-2-materialita",
+    "p": 7,
+    "inizia": "Chiudo con il campo che si",
+    "layout": "chiusura",
+    "titolo": "Le evidenze",
+    "punti": [
+      {
+        "h": "Non entrano nei calcoli",
+        "d": "e per questo si saltano"
+      },
+      {
+        "h": "Sei mesi dopo",
+        "d": "distinguono una valutazione da un'impressione"
+      },
+      {
+        "h": "Due righe per tema",
+        "d": "quali fatti, dati, conversazioni"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 0,
+    "inizia": "Il passo tre sono quarantanove indicatori",
+    "layout": "apertura",
+    "titolo": "Gli indicatori",
+    "sottotitolo": "{indicatori} indicatori in {sezioniKpi} sezioni",
+    "testo": "Tu inserisci i dati grezzi; i derivati li calcola il prodotto, e non si modificano.",
+    "agenda": [
+      "Dove si prendono i dati",
+      "Quattro regole",
+      "Le emissioni: un ponte",
+      "Un derivato che non torna",
+      "Tre interlocutori",
+      "Da dove cominciare"
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 1,
+    "inizia": "Le otto sezioni, e dove si",
+    "layout": "punti",
+    "titolo": "Dove si prendono i dati",
+    "numerati": false,
+    "punti": [
+      {
+        "h": "Energia",
+        "d": "bollette, schede carburante, inverter, garanzie d'origine"
+      },
+      {
+        "h": "Acqua",
+        "d": "acquedotto, contatore di pozzo, scarichi"
+      },
+      {
+        "h": "Rifiuti e materiali",
+        "d": "registro di carico e scarico, formulari, MUD"
+      },
+      {
+        "h": "Persone",
+        "d": "libro unico, organico al 31 dicembre, UniEmens"
+      },
+      {
+        "h": "Salute e sicurezza",
+        "d": "registro infortuni, denunce INAIL"
+      },
+      {
+        "h": "Formazione e retribuzioni",
+        "d": "attestati, cedolini, certificazione unica"
+      },
+      {
+        "h": "Valore economico e fornitori",
+        "d": "bilancio d'esercizio, partitari, questionari"
+      },
+      {
+        "h": "Governance ed etica",
+        "d": "visura, modello 231, registro segnalazioni"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 2,
+    "inizia": "Quattro regole valgono per tutta la",
+    "layout": "cards",
+    "titolo": "Quattro regole per tutta la griglia",
+    "cards": [
+      {
+        "h": "Anno solare",
+        "d": "Fatture a cavallo d'anno: la competenza si ricostruisce, non si stima."
+      },
+      {
+        "h": "Zero non è vuoto",
+        "d": "Il vuoto la verifica lo conta come non rilevato."
+      },
+      {
+        "h": "Le unità del campo",
+        "d": "Mai convertite a mano: nessun controllo vedrebbe l'errore."
+      },
+      {
+        "h": "L'anno precedente",
+        "d": "Sblocca confronti e variazioni nel documento."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 3,
+    "inizia": "E adesso la cosa più importante",
+    "layout": "evidenza",
+    "eyebrow": "La differenza più grossa col prototipo",
+    "titolo": "Le emissioni non si inseriscono: si leggono dall'inventario GHG.",
+    "testo": "Scope 1 e 2 sono un ponte, non una copia. Un dato in due posti è un dato in nessun posto."
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 4,
+    "inizia": "Sui derivati, un'ultima raccomandazione operativa. Il",
+    "layout": "flusso",
+    "titolo": "Un derivato non torna? Si risale",
+    "passi": [
+      {
+        "h": "Le unità",
+        "d": "dei dati grezzi: la causa più frequente"
+      },
+      {
+        "h": "I doppi conteggi",
+        "d": "il gasolio della flotta anche nel riscaldamento"
+      },
+      {
+        "h": "I fattori",
+        "d": "dentro l'inventario GHG"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 5,
+    "inizia": "Una parola su come si raccolgono",
+    "layout": "cards",
+    "titolo": "Tre richieste invece di otto",
+    "cards": [
+      {
+        "h": "Commercialista",
+        "d": "Bilancio d'esercizio, partitari fornitori, certificazione unica."
+      },
+      {
+        "h": "Consulente del lavoro",
+        "d": "Libro unico, organico, prospetto disabili, ore lavorate."
+      },
+      {
+        "h": "Ufficio tecnico",
+        "d": "Bollette, formulari, MUD, letture dei contatori."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-3-indicatori",
+    "p": 6,
+    "inizia": "E c'è un ordine che conviene",
+    "layout": "split",
+    "titolo": "Da quali sezioni cominciare",
+    "lead": "Da quelle che alimentano i derivati su cui scriverai gli obiettivi al passo 4.",
+    "punti": [
+      {
+        "h": "Energia",
+        "d": "per i kWh per ora lavorata"
+      },
+      {
+        "h": "Persone",
+        "d": "per le ore lavorate"
+      },
+      {
+        "h": "Valore economico",
+        "d": "per le emissioni per milione di euro di ricavi"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-4-politiche",
+    "p": 0,
+    "inizia": "Al passo quattro il bilancio smette",
+    "layout": "apertura",
+    "titolo": "Politiche, azioni, obiettivi",
+    "sottotitolo": "Il bilancio comincia a dire qualcosa",
+    "testo": "Le schede compaiono solo per i temi materiali: una pagina vuota vuol dire che si interviene al passo 2.",
+    "agenda": [
+      "Tre campi, tre domande",
+      "Un obiettivo che serve",
+      "Il salvataggio per campo",
+      "Quando la politica non c'è"
+    ]
+  },
+  {
+    "sezione": "passo-4-politiche",
+    "p": 1,
+    "inizia": "I tre campi rispondono a tre",
+    "layout": "tabella",
+    "titolo": "Tre campi, tre domande",
+    "cols": [
+      "Campo",
+      "Domanda",
+      "Esempio"
+    ],
+    "righe": [
+      [
+        "Politica",
+        "Quale impegno formale?",
+        "Politica energetica approvata nel 2024, nel sistema ISO 50001"
+      ],
+      [
+        "Azioni",
+        "Che cosa avete fatto nell'anno?",
+        "Illuminazione del reparto rifatta, diagnosi D.Lgs. 102/2014"
+      ],
+      [
+        "Obiettivo",
+        "Dove, ed entro quando?",
+        "−15% di kWh per ora lavorata entro il 2027, rispetto al 2024"
+      ]
+    ]
+  },
+  {
+    "sezione": "passo-4-politiche",
+    "p": 2,
+    "inizia": "Sull'obiettivo devo insistere, perché è il",
+    "layout": "confronto",
+    "titolo": "Passa la verifica, non passa il cliente",
+    "a": {
+      "h": "«Ridurre i consumi»",
+      "sub": "Un'intenzione",
+      "punti": [
+        "Il campo è pieno, la spunta è verde",
+        "Nessuna misura, nessuna scadenza"
+      ]
+    },
+    "b": {
+      "h": "Un obiettivo",
+      "sub": "Si può rendicontare",
+      "punti": [
+        "Quanto",
+        "Rispetto a cosa",
+        "Entro quando"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-4-politiche",
+    "p": 3,
+    "inizia": "E una nota pratica per come",
+    "layout": "evidenza",
+    "eyebrow": "Mentre scrivi",
+    "titolo": "Ogni campo si salva per conto suo.",
+    "testo": "Era un difetto vero, in quattro punti diversi, corretto alla radice: la pagina non rimanda mai la riga intera."
+  },
+  {
+    "sezione": "passo-4-politiche",
+    "p": 4,
+    "inizia": "Un'ultima cosa, che riguarda il lavoro",
+    "layout": "split",
+    "titolo": "Quando la politica formale non c'è",
+    "lead": "Non si riempie con una frase generica: quasi sempre esiste già qualcosa da citare.",
+    "punti": [
+      {
+        "h": "Una prassi consolidata",
+        "d": "mai messa per iscritto"
+      },
+      {
+        "h": "Un altro documento",
+        "d": "sistema certificato, modello 231, codice etico"
+      },
+      {
+        "h": "Un contratto",
+        "d": "con un cliente che imponeva requisiti"
+      },
+      {
+        "h": "«In corso di adozione»",
+        "d": "meglio che inventarla o lasciare vuoto"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 0,
+    "inizia": "I capitoli discorsivi sono sette, e",
+    "layout": "apertura",
+    "titolo": "Il racconto",
+    "sottotitolo": "{capitoliReport} capitoli, la parte che si legge davvero",
+    "testo": "Il coinvolgimento degli stakeholder regge la credibilità della materialità.",
+    "agenda": [
+      "Lettera agli stakeholder",
+      "Identità e storia",
+      "Modello di business",
+      "Catena del valore",
+      "Coinvolgimento degli stakeholder",
+      "Nota metodologica",
+      "Impegni per il futuro"
+    ]
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 1,
+    "inizia": "L'editor accetta una lista ristretta di",
+    "layout": "evidenza",
+    "eyebrow": "L'editor",
+    "titolo": "Incolla da dove vuoi: arriva il testo.",
+    "testo": "Le formattazioni ammesse le fa rispettare il server: da un altro documento non passa niente di eseguibile né di invisibile."
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 2,
+    "inizia": "Le bozze si generano dai dati",
+    "layout": "confronto",
+    "titolo": "Bozze e diagrammi",
+    "a": {
+      "h": "Le bozze",
+      "sub": "Un punto di partenza",
+      "punti": [
+        "Nascono dai dati inseriti",
+        "La voce dell'azienda la metti tu"
+      ]
+    },
+    "b": {
+      "h": "I diagrammi",
+      "sub": "Calcolati",
+      "punti": [
+        "Dal passo 3 e dalla matrice",
+        "Mai sostituiti con immagini fatte altrove"
+      ]
+    }
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 3,
+    "inizia": "Sulla soglia, la stessa precisazione che",
+    "layout": "definizione",
+    "eyebrow": "La soglia di completamento",
+    "titolo": "Oltre {paroleMinimeCapitolo} parole",
+    "definizione": "Distingue un capitolo scritto da un campo toccato per sbaglio. Non è un giudizio editoriale.",
+    "punti": [
+      {
+        "h": "Una lettera di due righe",
+        "d": "il conteggio è giusto, il capitolo no"
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 4,
+    "inizia": "Due cose sul come si scrivono,",
+    "layout": "cards",
+    "titolo": "La voce, che il prodotto non dà",
+    "cards": [
+      {
+        "h": "Lettera agli stakeholder",
+        "d": "È credibile quando nomina una cosa andata male."
+      },
+      {
+        "h": "Modello di business",
+        "d": "Non che cosa vendete: come si genera valore, e chi lo riceve."
+      }
+    ]
+  },
+  {
+    "sezione": "passo-5-racconto",
+    "p": 5,
+    "inizia": "La nota metodologica merita un discorso",
+    "layout": "chiusura",
+    "titolo": "La nota metodologica",
+    "punti": [
+      {
+        "h": "Perimetro, periodo, standard",
+        "d": "e criteri di calcolo"
+      },
+      {
+        "h": "Le scelte",
+        "d": "fatte quando un dato mancava"
+      },
+      {
+        "h": "Dati imperfetti e nota onesta",
+        "d": "reggono la verifica"
+      },
+      {
+        "h": "Poco tempo?",
+        "d": "toglilo agli altri capitoli"
+      }
+    ]
+  },
+  {
+    "sezione": "verifica-bilancio",
+    "p": 0,
+    "inizia": "La verifica di questo percorso guarda",
+    "layout": "apertura",
+    "titolo": "La verifica del bilancio",
+    "sottotitolo": "Cinque controlli, un elenco di destinazioni",
+    "testo": "Ogni lacuna è un collegamento al punto da sistemare.",
+    "agenda": [
+      "Profilo del passo 1",
+      "Indicatori senza valore dell'anno",
+      "Indicatori senza anno precedente",
+      "Temi materiali senza politica o azioni",
+      "Capitoli sotto soglia"
+    ]
+  },
+  {
+    "sezione": "verifica-bilancio",
+    "p": 1,
+    "inizia": "Il più insidioso dei cinque è",
+    "layout": "evidenza",
+    "eyebrow": "Il più insidioso",
+    "titolo": "Il controllo sull'anno precedente.",
+    "testo": "La colonna del confronto sta a destra e si smette di guardarla. E quei dati vanno richiesti a chi ha già archiviato il file."
+  },
+  {
+    "sezione": "verifica-bilancio",
+    "p": 2,
+    "inizia": "E poi c'è il limite, che",
+    "layout": "tabella",
+    "titolo": "Completezza, non correttezza",
+    "cols": [
+      "Resta lavoro tuo",
+      "Con che cosa"
+    ],
+    "righe": [
+      [
+        "Valore economico",
+        "Quadratura col bilancio d'esercizio"
+      ],
+      [
+        "Rifiuti",
+        "Quadratura col MUD"
+      ],
+      [
+        "Variazioni",
+        "Una voce che raddoppia vuole un motivo scritto"
+      ]
+    ]
+  },
+  {
+    "sezione": "verifica-bilancio",
+    "p": 4,
+    "inizia": "Vale la pena sapere che cosa",
+    "layout": "cards",
+    "titolo": "Che cosa guarda chi riceve il bilancio",
+    "cards": [
+      {
+        "h": "Addetti e dati collegati",
+        "d": "Ore lavorate, formazione, infortuni: devono tornare fra loro."
+      },
+      {
+        "h": "Temi materiali completi",
+        "d": "Politica, azioni, e un indicatore che li misura."
+      },
+      {
+        "h": "L'anno prima",
+        "d": "Tre o quattro voci a campione."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-bilancio",
+    "p": 0,
+    "inizia": "Metto in fila i sei errori",
+    "layout": "apertura",
+    "titolo": "Gli errori del bilancio",
+    "sottotitolo": "I sei che costano più tempo",
+    "testo": "Il primo, come ovunque: azienda o esercizio sbagliato. Te ne accorgi quando un totale non torna col bilancio d'esercizio.",
+    "agenda": [
+      "Emissioni riscritte",
+      "Valutazioni gonfiate",
+      "Temi non valutati",
+      "Vuoto invece di zero",
+      "Unità convertite a mano"
+    ]
+  },
+  {
+    "sezione": "errori-bilancio",
+    "p": 1,
+    "inizia": "Il secondo è riscrivere le emissioni",
+    "layout": "evidenza",
+    "eyebrow": "Il secondo",
+    "titolo": "Un inventario fatto in fretta per zittire l'avviso è peggio di nessuno.",
+    "testo": "Un avviso visibile è un promemoria; un numero sbagliato è un dato."
+  },
+  {
+    "sezione": "errori-bilancio",
+    "p": 2,
+    "inizia": "Il terzo e il quarto riguardano",
+    "layout": "confronto",
+    "titolo": "Due errori opposti sulla materialità",
+    "a": {
+      "h": "Valutazioni gonfiate",
+      "sub": "Quindici temi materiali",
+      "punti": [
+        "Quindici schede al passo 4",
+        "Che nessuno compila davvero"
+      ]
+    },
+    "b": {
+      "h": "Temi non valutati",
+      "sub": "Sperando che non contino",
+      "punti": [
+        "In verifica: che cosa avete deciso?",
+        "Nessuna risposta"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-bilancio",
+    "p": 3,
+    "inizia": "Il quinto e il sesto sono",
+    "layout": "chiusura",
+    "titolo": "I più banali, e i più comuni",
+    "punti": [
+      {
+        "h": "Vuoto invece di zero",
+        "d": "una lacuna al posto di un'informazione"
+      },
+      {
+        "h": "Unità convertite a mano",
+        "d": "kWh scritti in MWh: mille volte, e passa ogni controllo"
+      }
+    ]
+  }
+]

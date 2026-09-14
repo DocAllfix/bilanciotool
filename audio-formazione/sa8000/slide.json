@@ -1,0 +1,971 @@
+[
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 0,
+    "inizia": "Il primo passo raccoglie cinque gruppi,",
+    "layout": "apertura",
+    "titolo": "Anagrafica",
+    "sottotitolo": "Due gruppi decidono la visita",
+    "testo": "Più di qualunque procedura scritta dopo.",
+    "agenda": [
+      "Rappresentanze sindacali",
+      "Il gruppo per la prestazione sociale",
+      "I canali di reclamo",
+      "Il contratto collettivo",
+      "L'elezione dei rappresentanti"
+    ]
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 1,
+    "inizia": "Si comincia dall'identificazione, con i siti",
+    "layout": "definizione",
+    "eyebrow": "Rappresentanze sindacali",
+    "titolo": "«Nessuna», non un campo vuoto",
+    "definizione": "È il presupposto dei criteri sulla libertà di associazione e sugli orari: vuoto, lascia due gruppi di criteri senza fondamento."
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 3,
+    "inizia": "Quest'ultima colonna è la più importante",
+    "layout": "confronto",
+    "titolo": "Il gruppo per la prestazione sociale",
+    "a": {
+      "h": "Soli dirigenti",
+      "sub": "Il rilievo più tipico",
+      "punti": [
+        "Quasi sempre perché nessuno ha pensato all'elezione"
+      ]
+    },
+    "b": {
+      "h": "Rappresentanza equilibrata",
+      "sub": "Lavoratori e management",
+      "punti": [
+        "Rappresentanti eletti, non designati"
+      ]
+    }
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 4,
+    "inizia": "E non si corregge con una",
+    "layout": "evidenza",
+    "eyebrow": "Non si corregge con una riga",
+    "titolo": "La composizione si riscontra nel registro delle riunioni.",
+    "testo": "Con l'atto di elezione e la prima seduta verbalizzata: senza, il rilievo è scritto prima di aprire un'altra pagina."
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 6,
+    "inizia": "Sui canali c'è un errore che",
+    "layout": "split",
+    "titolo": "I canali di reclamo di esempio",
+    "lead": "Le procedure arrivano con indirizzi e numeri di esempio: se restano, il canale consegnato ai lavoratori non esiste.",
+    "punti": [
+      {
+        "h": "Chi prova a usarlo",
+        "d": "non riceve risposta"
+      },
+      {
+        "h": "La procedura di reclamo",
+        "d": "funziona sulla carta, non nei fatti"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 7,
+    "inizia": "Casella e telefono reali si mettono",
+    "layout": "flusso",
+    "titolo": "Canali reali, subito",
+    "passi": [
+      {
+        "h": "In anagrafica",
+        "d": "casella e telefono reali"
+      },
+      {
+        "h": "Ovunque servano",
+        "d": "procedure e moduli, senza ricopiarli"
+      },
+      {
+        "h": "Attivati prima",
+        "d": "per avere uno storico in visita"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 8,
+    "inizia": "Sul contratto collettivo applicato, che sembra",
+    "layout": "definizione",
+    "eyebrow": "Il contratto collettivo applicato",
+    "titolo": "Il metro di orari e retribuzioni",
+    "definizione": "Condizioni almeno pari a legge e accordi applicabili. Dichiararne uno diverso da quello vero si scopre confrontando due buste paga."
+  },
+  {
+    "sezione": "anagrafica-sa8000",
+    "p": 9,
+    "inizia": "Un consiglio su come si arriva",
+    "layout": "chiusura",
+    "titolo": "L'elezione dei rappresentanti",
+    "punti": [
+      {
+        "h": "Non un adempimento",
+        "d": "e non va presentata così"
+      },
+      {
+        "h": "Spiegare a che cosa serve il gruppo",
+        "d": "portare i problemi prima dei reclami"
+      },
+      {
+        "h": "Senza indicazioni",
+        "d": "altrimenti il gruppo nasce svuotato"
+      }
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 0,
+    "inizia": "Lo standard porta centododici criteri raggruppati",
+    "layout": "apertura",
+    "titolo": "I criteri",
+    "sottotitolo": "{criteriSa8000} criteri in {gruppiSa8000} gruppi",
+    "testo": "Su {sezioniSa8000} sezioni: per ognuno lo stato di presidio, le procedure che lo governano, l'evidenza.",
+    "agenda": [
+      "Tre sezioni",
+      "Parziale pesa zero",
+      "Il non applicabile",
+      "Criteri e procedure",
+      "Da dove cominciare",
+      "I fondazionali"
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 1,
+    "inizia": "Le tre sezioni hanno nature diverse",
+    "layout": "cards",
+    "titolo": "Tre sezioni, tre nature",
+    "cards": [
+      {
+        "h": "Fondazionali",
+        "d": "I divieti assoluti: nessuna gradualità."
+      },
+      {
+        "h": "Sistema di gestione",
+        "d": "La struttura che fa funzionare il resto."
+      },
+      {
+        "h": "Prestazione",
+        "d": "Orari, retribuzioni, salute e sicurezza, non discriminazione."
+      }
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 2,
+    "inizia": "Sulla conformità c'è una formula e",
+    "layout": "definizione",
+    "eyebrow": "La formula",
+    "titolo": "Conformità",
+    "definizione": "Criteri presidiati ÷ (totale − non applicabili).",
+    "punti": [
+      {
+        "h": "Il parziale",
+        "d": "pesa zero, non metà"
+      }
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 3,
+    "inizia": "È uno scostamento voluto rispetto agli",
+    "layout": "confronto",
+    "titolo": "Il parziale",
+    "a": {
+      "h": "Negli altri percorsi",
+      "sub": "Vale metà",
+      "punti": [
+        "Un mezzo risultato"
+      ]
+    },
+    "b": {
+      "h": "Qui",
+      "sub": "Pesa zero",
+      "punti": [
+        "In audit è una non conformità",
+        "La percentuale che ritroverai in visita"
+      ]
+    }
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 5,
+    "inizia": "Sul non applicabile serve una parsimonia",
+    "layout": "evidenza",
+    "eyebrow": "Il non applicabile",
+    "titolo": "Nessun giovane lavoratore non rende inapplicabile il criterio.",
+    "testo": "Il criterio non chiede se ce ne sono: chiede se un sistema, la verifica dell'età, impedisce che ce ne siano di non conformi."
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 7,
+    "inizia": "Un'ultima cosa sul collegamento fra criteri",
+    "layout": "cards",
+    "titolo": "Collegare criteri e procedure",
+    "cards": [
+      {
+        "h": "In testata",
+        "d": "Ogni procedura dice i criteri che governa: sai che cosa scopri se non la approvi."
+      },
+      {
+        "h": "In visita",
+        "d": "Alla domanda su quale documento risponde, la risposta è immediata."
+      }
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 8,
+    "inizia": "Un modo pratico di affrontare centododici",
+    "layout": "tabella",
+    "titolo": "In ordine inverso alla difficoltà percepita",
+    "cols": [
+      "Sezione",
+      "Com'è davvero"
+    ],
+    "righe": [
+      [
+        "Fondazionali",
+        "Sembrano i più impegnativi, sono i più rapidi"
+      ],
+      [
+        "Sistema di gestione",
+        "Il più lento: richiede più documenti"
+      ],
+      [
+        "Prestazione",
+        "Richiede dati, con chi tiene presenze e paghe"
+      ]
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 9,
+    "inizia": "Sulle evidenze c'è una differenza rispetto",
+    "layout": "split",
+    "titolo": "L'evidenza migliore non è un documento",
+    "lead": "È un registro con dentro dei casi, o un dato di sistema come le ore lavorate.",
+    "punti": [
+      {
+        "h": "Libertà di associazione, citando la procedura",
+        "d": "debole"
+      },
+      {
+        "h": "Citando verbali e reclami",
+        "d": "tutta un'altra cosa"
+      }
+    ]
+  },
+  {
+    "sezione": "criteri-sa8000",
+    "p": 10,
+    "inizia": "E una cosa sui criteri fondazionali",
+    "layout": "chiusura",
+    "titolo": "I criteri fondazionali",
+    "punti": [
+      {
+        "h": "Nessun piano graduale",
+        "d": "su lavoro minorile e forzato"
+      },
+      {
+        "h": "Se emerge un problema",
+        "d": "la certificazione si ferma e si rimedia subito"
+      },
+      {
+        "h": "Da dire all'inizio",
+        "d": "non in visita"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 0,
+    "inizia": "I registri sono dieci, e sono",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "{registriSa8000} registri",
+    "testo": "Muovono l'avanzamento, lo scadenzario e gli indicatori.",
+    "agenda": [
+      "Quali sono",
+      "Le riunioni del gruppo",
+      "I giovani lavoratori",
+      "Stati e date",
+      "Tenerli vivi",
+      "Stakeholder e mancati incidenti"
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 1,
+    "inizia": "Due di questi hanno una particolarità",
+    "layout": "confronto",
+    "titolo": "Quali sono",
+    "a": {
+      "h": "Rischi e gestione",
+      "sub": "Cinque registri",
+      "punti": [
+        "Impatti e rischi",
+        "Obiettivi e piano d'azione",
+        "Stakeholder e coinvolgimento",
+        "Audit interni",
+        "Riunioni del gruppo"
+      ]
+    },
+    "b": {
+      "h": "Casi e persone",
+      "sub": "Cinque registri",
+      "punti": [
+        "Reclami interni",
+        "Reclami esterni",
+        "Azioni correttive e rimedi",
+        "Giovani lavoratori",
+        "Incidenti e mancati incidenti"
+      ]
+    }
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 2,
+    "inizia": "Il registro delle riunioni del gruppo",
+    "layout": "evidenza",
+    "eyebrow": "Le riunioni del gruppo",
+    "titolo": "Zero riunioni in un anno: il gruppo non esiste.",
+    "testo": "Non basta la composizione perfetta: deve riunirsi, e le sedute devono essere verbalizzate."
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 3,
+    "inizia": "Il registro dei giovani lavoratori invece",
+    "layout": "definizione",
+    "eyebrow": "Il registro che sorprende",
+    "titolo": "Giovani lavoratori, anche quando non ce ne sono",
+    "definizione": "Serve a dichiarare l'assenza, con il riferimento alla procedura di verifica dell'età.",
+    "punti": [
+      {
+        "h": "Vuoto e senza dichiarazione",
+        "d": "si legge come un'area non presidiata"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 4,
+    "inizia": "Poi vale la regola comune a",
+    "layout": "tabella",
+    "titolo": "Stati e date fanno i calcoli",
+    "cols": [
+      "Che cosa",
+      "Da dove"
+    ],
+    "righe": [
+      [
+        "Situazioni aperte",
+        "Gli stati diversi da chiuso"
+      ],
+      [
+        "Scadenzario",
+        "Le scadenze delle registrazioni non chiuse"
+      ],
+      [
+        "Indicatori",
+        "Ricezione, conferma e chiusura dei reclami"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 6,
+    "inizia": "Un consiglio su come tenerli vivi,",
+    "layout": "numeri",
+    "titolo": "Tenerli vivi",
+    "numeri": [
+      {
+        "n": "Quattro",
+        "h": "Di continuo",
+        "d": "Reclami interni, azioni correttive, incidenti, riunioni."
+      },
+      {
+        "n": "Sei",
+        "h": "A eventi o periodici",
+        "d": "Passati in rassegna alla riunione del gruppo."
+      },
+      {
+        "n": "Trimestrale",
+        "h": "Una cadenza scritta",
+        "d": "La riunione trascina gli altri registri."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 7,
+    "inizia": "Sul registro degli stakeholder e del",
+    "layout": "split",
+    "titolo": "Stakeholder, non un elenco di enti",
+    "lead": "Tre voci generiche un auditor le confronta con la realtà dell'azienda in trenta secondi.",
+    "punti": [
+      {
+        "h": "Lavoratori",
+        "d": "e loro rappresentanze"
+      },
+      {
+        "h": "Agenzie",
+        "d": "che forniscono personale"
+      },
+      {
+        "h": "Fornitori",
+        "d": "con lavoratori sui propri siti"
+      },
+      {
+        "h": "Comunità",
+        "d": "dove l'attività ha un impatto"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-sa8000",
+    "p": 8,
+    "inizia": "Sul registro degli incidenti e mancati",
+    "layout": "chiusura",
+    "titolo": "I mancati incidenti",
+    "punti": [
+      {
+        "h": "Senza danno",
+        "d": "nessuno ha interesse a nasconderli"
+      },
+      {
+        "h": "Dicono",
+        "d": "dove il danno sarebbe accaduto"
+      },
+      {
+        "h": "Una condizione sola",
+        "d": "nessuno rimproverato per averne segnalato uno"
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 0,
+    "inizia": "Tre regole tengono insieme questo sistema,",
+    "layout": "apertura",
+    "titolo": "Rischi, reclami, rimedio",
+    "sottotitolo": "Tre regole che distinguono questo sistema",
+    "testo": "Da un sistema di gestione qualunque.",
+    "agenda": [
+      "L'ambito del rischio",
+      "La relazione con l'impatto",
+      "I reclami interni",
+      "Il riscontro",
+      "Le tre parti di un'azione",
+      "Il rimedio"
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 1,
+    "inizia": "La prima riguarda il rischio, che",
+    "layout": "definizione",
+    "eyebrow": "Prima regola: il rischio",
+    "titolo": "L'ambito",
+    "definizione": "Gravità × probabilità, ma conta di più l'ambito: operazioni proprie, partner diretto, partner indiretto.",
+    "punti": [
+      {
+        "h": "Così",
+        "d": "la catena di fornitura entra nel registro dei rischi"
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 2,
+    "inizia": "Senza quella colonna il registro parlerebbe",
+    "layout": "evidenza",
+    "eyebrow": "Senza quella colonna",
+    "titolo": "I problemi stanno quasi sempre due livelli più in là.",
+    "testo": "Il registro parlerebbe solo di ciò che succede dentro i cancelli, la parte che meno preoccupa questo standard."
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 3,
+    "inizia": "Poi c'è la relazione con l'impatto,",
+    "layout": "tabella",
+    "titolo": "La relazione con l'impatto",
+    "cols": [
+      "Relazione",
+      "Risposta attesa"
+    ],
+    "righe": [
+      [
+        "Causato",
+        "Cessare la condotta e rimediare"
+      ],
+      [
+        "Contribuito",
+        "Cessare la condotta e rimediare"
+      ],
+      [
+        "Direttamente collegato",
+        "Usare la leva sul partner"
+      ]
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 4,
+    "inizia": "La seconda regola riguarda i reclami.",
+    "layout": "flusso",
+    "titolo": "Seconda regola: i reclami interni",
+    "passi": [
+      {
+        "h": "Conferma",
+        "d": "di ricezione entro pochi giorni"
+      },
+      {
+        "h": "Chiusura",
+        "d": "più stretta per le gravità alte"
+      },
+      {
+        "h": "Riscontro",
+        "d": "a chi ha segnalato"
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 5,
+    "inizia": "Quest'ultimo passaggio è quello che salta",
+    "layout": "evidenza",
+    "eyebrow": "Il passaggio che salta",
+    "titolo": "Senza riscontro ha funzionato per l'azienda, non per la persona.",
+    "testo": "Il lavoratore non sa che il problema è risolto, e la volta dopo non segnalerà."
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 6,
+    "inizia": "La terza regola è quella su",
+    "layout": "cards",
+    "titolo": "Terza regola: tre parti di un'azione correttiva",
+    "cards": [
+      {
+        "h": "Correzione",
+        "d": "Immediata."
+      },
+      {
+        "h": "Azione sulle cause",
+        "d": "Perché non si ripeta."
+      },
+      {
+        "h": "Rimedio",
+        "d": "A chi ha subito l'impatto."
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 7,
+    "inizia": "Chiudere un'azione con le prime due",
+    "layout": "numeri",
+    "titolo": "Il rimedio è una parte separata",
+    "numeri": [
+      {
+        "n": "30 ore",
+        "h": "Di straordinario non retribuito",
+        "d": "Correggere la rilevazione presenze non le restituisce."
+      },
+      {
+        "n": "Il rimedio",
+        "h": "Restituirle",
+        "d": "La parte che riguarda la persona."
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 8,
+    "inizia": "E la chiusura richiede la verifica",
+    "layout": "split",
+    "titolo": "Chiudere un'azione",
+    "lead": "Con la verifica di efficacia, non con la dichiarazione di aver fatto.",
+    "punti": [
+      {
+        "h": "Reclamo fondato o incidente",
+        "d": "genera un'azione correttiva"
+      },
+      {
+        "h": "Il riferimento",
+        "d": "si scrive nel registro di origine"
+      },
+      {
+        "h": "Mesi dopo",
+        "d": "si segue la catena dal fatto al rimedio"
+      }
+    ]
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 9,
+    "inizia": "Sui reclami esterni, che sono un",
+    "layout": "confronto",
+    "titolo": "Reclami interni ed esterni",
+    "a": {
+      "h": "Interni",
+      "sub": "Da chi lavora nell'organizzazione",
+      "punti": [
+        "Quanto il canale funziona dentro"
+      ]
+    },
+    "b": {
+      "h": "Esterni",
+      "sub": "Fornitori, comunità, sindacati, ONG",
+      "punti": [
+        "Tempi e controllo diversi",
+        "Quanto il canale è conosciuto fuori"
+      ]
+    }
+  },
+  {
+    "sezione": "rischi-reclami-rimedio",
+    "p": 10,
+    "inizia": "Una raccomandazione su come si scrive",
+    "layout": "chiusura",
+    "titolo": "Come si scrive un rimedio",
+    "punti": [
+      {
+        "h": "Proporzionato",
+        "d": "al danno, e accettato da chi l'ha subito"
+      },
+      {
+        "h": "Economico o organizzativo",
+        "d": "denaro, oppure un cambiamento verificabile"
+      },
+      {
+        "h": "Una discriminazione",
+        "d": "si rimuovono gli effetti: non basta una scusa"
+      },
+      {
+        "h": "Si registra",
+        "d": "che cosa è offerto, che cosa è accettato, e quando"
+      }
+    ]
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 0,
+    "inizia": "Il corpus porta ventidue procedure e",
+    "layout": "apertura",
+    "titolo": "Il corpus e il Manuale",
+    "sottotitolo": "{procedureSa8000} procedure e {moduliSa8000} moduli",
+    "testo": "Ogni procedura riporta in testata i criteri che governa: un criterio scoperto indica il documento da approvare.",
+    "agenda": [
+      "L'ordine di approvazione",
+      "Il Manuale",
+      "Da compilare, non nascosto",
+      "Gli indicatori",
+      "Il riesame",
+      "Piano e audit interno"
+    ]
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 1,
+    "inizia": "Sull'ordine di approvazione c'è una sequenza",
+    "layout": "flusso",
+    "titolo": "L'ordine di approvazione",
+    "passi": [
+      {
+        "h": "Politica e gruppo",
+        "d": "l'organo che fa vivere il sistema"
+      },
+      {
+        "h": "Rischi",
+        "d": "e obiettivi"
+      },
+      {
+        "h": "Reclami e rimedio",
+        "d": "il meccanismo più fidato"
+      },
+      {
+        "h": "Prestazione",
+        "d": "dai criteri a rischio più alto"
+      },
+      {
+        "h": "Audit e riesame",
+        "d": "per ultimi"
+      }
+    ]
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 2,
+    "inizia": "Approvare le procedure di prestazione prima",
+    "layout": "evidenza",
+    "eyebrow": "L'inversione che costa doppio",
+    "titolo": "Prestazione prima dei rischi: presidi per problemi mai descritti.",
+    "testo": "È la stessa inversione che fa rifare il lavoro in tutti gli altri percorsi."
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 3,
+    "inizia": "Il Manuale del sistema si compone",
+    "layout": "definizione",
+    "eyebrow": "Il fascicolo per la visita",
+    "titolo": "Il Manuale si compone da solo",
+    "definizione": "Da anagrafica e stato del corpus: organizzazione, campo con i siti, ruoli, struttura documentale, piano di implementazione."
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 4,
+    "inizia": "I dati mancanti compaiono come da",
+    "layout": "evidenza",
+    "eyebrow": "Una scelta da sfruttare",
+    "titolo": "I dati mancanti compaiono come da compilare.",
+    "testo": "Aprilo presto: dice che cosa manca meglio di un contatore, nel contesto in cui il dato servirà."
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 5,
+    "inizia": "Gli indicatori si calcolano dai registri",
+    "layout": "cards",
+    "titolo": "Che cosa dicono gli indicatori al riesame",
+    "cards": [
+      {
+        "h": "Reclami e tempi",
+        "d": "Se il meccanismo è accessibile e creduto."
+      },
+      {
+        "h": "Azioni e rimedi",
+        "d": "Se il sistema corregge, o registra soltanto."
+      },
+      {
+        "h": "Rischi e obiettivi",
+        "d": "Se il piano è ancorato alla realtà."
+      }
+    ]
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 6,
+    "inizia": "Un'ultima raccomandazione sul riesame, che è",
+    "layout": "confronto",
+    "titolo": "Il riesame",
+    "a": {
+      "h": "Solo numeri in crescita",
+      "sub": "Non serve a niente",
+      "punti": [
+        "Si riconosce subito"
+      ]
+    },
+    "b": {
+      "h": "La traccia di una discussione",
+      "sub": "Quello che l'auditor cerca",
+      "punti": [
+        "Che cosa non ha funzionato",
+        "Che cosa si cambia, chi, entro quando"
+      ]
+    }
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 7,
+    "inizia": "Sul piano di implementazione, che è",
+    "layout": "definizione",
+    "eyebrow": "Il piano di implementazione",
+    "titolo": "Scoperti e pianificati è una posizione",
+    "definizione": "Con date e responsabili permette una prima visita con criteri ancora scoperti. Senza date, nessuno ha deciso di farlo."
+  },
+  {
+    "sezione": "manuale-sa8000",
+    "p": 8,
+    "inizia": "Un'ultima cosa sull'audit interno, che in",
+    "layout": "chiusura",
+    "titolo": "L'audit interno",
+    "punti": [
+      {
+        "h": "Non chi è responsabile",
+        "d": "dell'area auditata"
+      },
+      {
+        "h": "In un'azienda piccola",
+        "d": "un vincolo reale"
+      },
+      {
+        "h": "Da risolvere prima",
+        "d": "formazione incrociata o supporto esterno"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui si",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Verso la visita di certificazione",
+    "testo": "Cinque errori fanno andare male la visita, e i primi due sono di gran lunga i più frequenti.",
+    "agenda": [
+      "L'ordine",
+      "Gruppo e canali",
+      "Gli altri tre",
+      "Persone, non documenti",
+      "I tempi"
+    ]
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 1,
+    "inizia": "Prima l'anagrafica coi campi obbligatori, il",
+    "layout": "flusso",
+    "titolo": "L'ordine",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "gruppo e canali reali"
+      },
+      {
+        "h": "Elezione e politica",
+        "d": "prima riunione registrata"
+      },
+      {
+        "h": "Rischi",
+        "d": "per criterio e ambito, stakeholder censiti"
+      },
+      {
+        "h": "Procedure e mappa",
+        "d": "reclamo, rimedio, prestazione"
+      },
+      {
+        "h": "Audit e riesame",
+        "d": "poi il Manuale"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 3,
+    "inizia": "Il primo è il gruppo per",
+    "layout": "confronto",
+    "titolo": "I due più frequenti",
+    "a": {
+      "h": "Gruppo di soli dirigenti",
+      "sub": "O senza riunioni registrate",
+      "punti": [
+        "Si evita con l'elezione",
+        "E con le sedute verbalizzate"
+      ]
+    },
+    "b": {
+      "h": "Canali di esempio",
+      "sub": "Lasciati nelle procedure",
+      "punti": [
+        "La procedura più importante, inapplicabile"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 5,
+    "inizia": "Il terzo è l'uso del non",
+    "layout": "tabella",
+    "titolo": "Gli altri tre",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Non applicabile per evitare uno scoperto",
+        "Mappa svuotata"
+      ],
+      [
+        "Registrazioni senza stato o date",
+        "Nessun avanzamento, scadenzario o indicatore"
+      ],
+      [
+        "Azione chiusa senza rimedio",
+        "Il punto su cui lo standard non transige"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 6,
+    "inizia": "Una riflessione finale sul modo di",
+    "layout": "evidenza",
+    "eyebrow": "Una riflessione",
+    "titolo": "Qui il sistema riguarda le condizioni di lavoro delle persone.",
+    "testo": "Le evidenze migliori sono i reclami, i verbali con i rappresentanti eletti, i rimedi erogati."
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 7,
+    "inizia": "Un'organizzazione che affronta la certificazione come",
+    "layout": "confronto",
+    "titolo": "Due modi di arrivare alla visita",
+    "a": {
+      "h": "Prima i documenti",
+      "sub": "Procedure impeccabili",
+      "punti": [
+        "E quattro registri vuoti",
+        "Non passa"
+      ]
+    },
+    "b": {
+      "h": "Prima gruppo e canali",
+      "sub": "Sei mesi di funzionamento",
+      "punti": [
+        "Meno carta, più sostanza"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 8,
+    "inizia": "Aggiungo due indicazioni sui tempi, perché",
+    "layout": "numeri",
+    "titolo": "I tempi",
+    "numeri": [
+      {
+        "n": "6 mesi",
+        "h": "Di funzionamento vero",
+        "d": "Fra l'avvio e la visita."
+      },
+      {
+        "n": "3 settimane",
+        "h": "Per le procedure",
+        "d": "In qualunque momento."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-sa8000",
+    "p": 10,
+    "inizia": "E una cosa da dire al",
+    "layout": "chiusura",
+    "titolo": "Una dichiarazione sulle condizioni di lavoro",
+    "punti": [
+      {
+        "h": "Verificata",
+        "d": "anche parlando con i lavoratori, senza la direzione"
+      },
+      {
+        "h": "Sistema descritto e vissuto",
+        "d": "l'auditor vede se coincidono"
+      },
+      {
+        "h": "Nessun documento",
+        "d": "copre quella distanza"
+      }
+    ]
+  }
+]

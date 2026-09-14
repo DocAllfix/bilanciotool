@@ -2655,8 +2655,35 @@ stesso fondo della tela, console pulita.
 - **I valori di un layout pensato per le cifre non sono sempre cifre** («Una soglia»): la
   misura va scelta sul dato, non sul tipo di layout.
 
-⚠️ **Per il rilascio**: le tracce NIS2 sono sull'archivio di SVILUPPO; in produzione vanno
-caricate con le chiavi di produzione prima del deploy, altrimenti i due corsi risultano muti.
+**Estese a tutti i corsi (2026-09-14, stesso giorno)**, dopo che il committente le ha
+viste sul server locale con la voce: «mi piacciono e funzionano, procedi con tutto il resto».
+L'altra sessione ha distillato i 13 corsi rimasti, uno alla volta; noi li abbiamo passati a
+lotti. **16 file, 113 sezioni, 840 voci**: ogni corso ha ora slide distillate dall'inizio
+alla fine, comuni comprese.
+
+- **Lotti, non corsi.** Un corso arrivava ogni pochi minuti e un cancello completo ne
+  richiedeva venti: `verifica-slide-tagli.mjs <corsi…>` misura solo il lotto, e il
+  controllo completo si rifà una volta alla fine. E un commit per corso avrebbe lasciato
+  nel repository un manifesto con corsi i cui file non erano ancora dentro.
+- **Tre difetti del renderer trovati dalle foto**, nessuno dal controllo sui tagli perché
+  nessuno sforava: cinque schede davano 3+2 con un buco (ora la seconda riga è centrata);
+  un titolo lungo nel confronto disallineava le due colonne (ora condividono le righe);
+  `numerati: false` lasciava un «·» che si leggeva come una macchia (ora niente segno).
+- **Le varianti delle comuni** (`esercizio` e `revisione`): il controllo visitava solo
+  `ghg`, quindi `revisione` non si sarebbe mai misurata. Ora visita anche `soa`.
+- **`foto-slide.mjs` apriva l'indirizzo dei percorsi anche per il corso trasversale**, e
+  moriva aspettando una presentazione su «questa pagina non c'è».
+- **Numeri detti a voce superati**, trovati dall'altra sessione confrontando i copioni con
+  `NUMERI`: «dodici percorsi», «gli altri undici», «altri quindici tipi di documento». Otto
+  tracce rifatte senza il numero, così non tornano sbagliate al percorso successivo.
+
+⚠️ **Debito dichiarato**: in `numeri.ts` `pilastri231` conta le FAMIGLIE di reati e
+`capi231` i PILASTRI della mappa di idoneità: i nomi sono scambiati. Oggi valgono entrambi
+10 e il numero mostrato è giusto; va corretto insieme ai segnaposto che li usano, con un test.
+
+⚠️ **Per il rilascio**: le tracce nuove e rifatte sono sull'archivio di SVILUPPO (le due
+NIS2 e otto rifatte in questa giornata); in produzione vanno caricate con le chiavi di
+produzione prima del deploy, altrimenti i corsi risultano muti o con la voce vecchia.
 
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.

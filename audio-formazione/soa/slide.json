@@ -1,0 +1,725 @@
+[
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 0,
+    "inizia": "Il campo di applicazione è la",
+    "layout": "apertura",
+    "titolo": "Contesto e ambito",
+    "sottotitolo": "Il confine, prima di qualunque controllo",
+    "testo": "Servizi, processi, sedi e tecnologie coperti. Quello che resta fuori è escluso, con una motivazione scritta.",
+    "agenda": [
+      "Due dichiarazioni che decidono",
+      "Valori chiusi",
+      "I quadri",
+      "Attivare per completezza",
+      "Concordare il confine",
+      "Lo stesso confine ovunque"
+    ]
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 1,
+    "inizia": "Subito dopo ci sono due dichiarazioni",
+    "layout": "cards",
+    "titolo": "Due dichiarazioni che decidono i controlli",
+    "cards": [
+      {
+        "h": "Ruolo nel trattamento",
+        "d": "Titolare o responsabile: obblighi diversi, controlli diversi."
+      },
+      {
+        "h": "Servizi cloud",
+        "d": "Li usi, li offri, oppure non ne hai."
+      }
+    ]
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 2,
+    "inizia": "Su questa seconda dichiarazione vale la",
+    "layout": "confronto",
+    "titolo": "«Non uso servizi cloud» è una risposta",
+    "a": {
+      "h": "Nel prototipo",
+      "sub": "Si cercava la parola nel testo",
+      "punti": [
+        "L'avviso compariva a chi dichiarava di non usarne"
+      ]
+    },
+    "b": {
+      "h": "Adesso",
+      "sub": "Valori chiusi",
+      "punti": [
+        "Il confronto avviene per valore",
+        "Quell'avviso non può più nascere"
+      ]
+    }
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 3,
+    "inizia": "Veniamo ai quadri. I controlli della",
+    "layout": "numeri",
+    "titolo": "I quadri",
+    "numeri": [
+      {
+        "n": "Sempre",
+        "h": "La norma principale",
+        "d": "I suoi controlli non si scelgono."
+      },
+      {
+        "n": "{quadriSoa}",
+        "h": "Quadri aggiuntivi",
+        "d": "Si attivano quando il contesto lo richiede."
+      },
+      {
+        "n": "{controlliSoa}",
+        "h": "Controlli, tutto acceso",
+        "d": "Su {sezioniSoa} sezioni."
+      }
+    ]
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 4,
+    "inizia": "Qui compare l'errore che si vede",
+    "layout": "evidenza",
+    "eyebrow": "L'errore in buona fede",
+    "titolo": "Un quadro si attiva perché serve, non per completezza.",
+    "testo": "Ogni controllo che porta vuole stato, motivazione, riferimento e responsabile: decine di righe da compilare e da difendere."
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 5,
+    "inizia": "Un'ultima cosa, che è poi la",
+    "layout": "definizione",
+    "eyebrow": "La prima domanda del verificatore",
+    "titolo": "Il campo descrive davvero l'azienda?",
+    "definizione": "Scritto bene, il resto del documento si legge come una conseguenza. Scritto male, ogni controllo diventa discutibile."
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 6,
+    "inizia": "Sull'ordine del lavoro una raccomandazione che",
+    "layout": "split",
+    "titolo": "Il confine è una decisione di governo",
+    "lead": "Va concordato con chi in azienda ha l'autorità di dire di no.",
+    "punti": [
+      {
+        "h": "Scritto da soli",
+        "d": "una sede o un servizio fuori dalle intenzioni della direzione"
+      },
+      {
+        "h": "Una firma accanto",
+        "d": "dieci minuti adesso, e molti risparmiati dopo"
+      }
+    ]
+  },
+  {
+    "sezione": "contesto-e-ambito",
+    "p": 7,
+    "inizia": "Che cosa si trascura di più,",
+    "layout": "chiusura",
+    "titolo": "Lo stesso confine ovunque",
+    "punti": [
+      {
+        "h": "Nel manuale",
+        "d": "e nel contratto di certificazione"
+      },
+      {
+        "h": "Spesso sul sito",
+        "d": "dell'azienda"
+      },
+      {
+        "h": "Confronta le parole",
+        "d": "non il senso"
+      }
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 0,
+    "inizia": "Per ogni controllo del catalogo dichiari",
+    "layout": "apertura",
+    "titolo": "I controlli",
+    "sottotitolo": "Cinque dichiarazioni: due decidono, tre dimostrano",
+    "testo": "Per ogni controllo del catalogo.",
+    "agenda": [
+      "Applicabile o escluso",
+      "Lo stato di attuazione",
+      "Le motivazioni",
+      "Il riferimento documentale",
+      "Tre passate",
+      "Che cosa chiede chi verifica"
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 1,
+    "inizia": "La prima decisione è se il",
+    "layout": "evidenza",
+    "eyebrow": "Prima decisione",
+    "titolo": "Si esclude solo ciò che è estraneo, mai ciò che è difficile.",
+    "testo": "L'esclusione vuole una giustificazione: senza, è una non conformità già scritta, e chi verifica comincia da lì."
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 2,
+    "inizia": "La seconda decisione è lo stato",
+    "layout": "tabella",
+    "titolo": "Lo stato di attuazione",
+    "cols": [
+      "Stato",
+      "Quando si dichiara"
+    ],
+    "righe": [
+      [
+        "Non attuato",
+        "Il controllo non c'è"
+      ],
+      [
+        "Pianificato",
+        "È deciso, non ancora fatto"
+      ],
+      [
+        "Parzialmente attuato",
+        "C'è, ma non del tutto"
+      ],
+      [
+        "Attuato",
+        "Con un'evidenza reperibile subito"
+      ],
+      [
+        "Attuato e verificato",
+        "Un audit o un test ne ha confermato l'efficacia, con una data"
+      ]
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 3,
+    "inizia": "Le altre tre voci dimostrano. La",
+    "layout": "split",
+    "titolo": "Le {motivazioniSoa} motivazioni della selezione",
+    "lead": "Almeno una per controllo applicabile. La valutazione del rischio è quella attesa; le altre la rafforzano, non la sostituiscono.",
+    "punti": [
+      {
+        "h": "Valutazione del rischio",
+        "d": "quella attesa dalla norma"
+      },
+      {
+        "h": "Obbligo legale",
+        "d": "o contrattuale"
+      },
+      {
+        "h": "Requisito di business",
+        "d": "o buona prassi"
+      }
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 4,
+    "inizia": "Le motivazioni sono un insieme e",
+    "layout": "definizione",
+    "eyebrow": "Un insieme, non una scelta unica",
+    "titolo": "Motivazioni voce per voce",
+    "definizione": "Accendere o spegnere una voce agisce solo su quella: in due sullo stesso controllo, nessuno cancella l'altro."
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 5,
+    "inizia": "Poi c'è il riferimento documentale, che",
+    "layout": "confronto",
+    "titolo": "Il riferimento documentale",
+    "a": {
+      "h": "«Gestione degli accessi»",
+      "sub": "Una descrizione",
+      "punti": [
+        "Sei mesi dopo non fa ritrovare niente"
+      ]
+    },
+    "b": {
+      "h": "«Procedura 03.2 rev. 4»",
+      "sub": "Il nome vero",
+      "punti": [
+        "Quello che l'auditor chiederà di aprire"
+      ]
+    }
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 7,
+    "inizia": "Sull'ordine di lavoro ho una raccomandazione",
+    "layout": "flusso",
+    "titolo": "Tre passate, non riga per riga",
+    "passi": [
+      {
+        "h": "Prima",
+        "d": "applicabilità ed esclusioni, sezione per sezione"
+      },
+      {
+        "h": "Seconda",
+        "d": "stato e motivazioni, dai {cardineSoa} controlli cardine"
+      },
+      {
+        "h": "Terza",
+        "d": "riferimenti e responsabili: raccolta, delegabile"
+      }
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 8,
+    "inizia": "Che cosa chiede chi controlla, e",
+    "layout": "cards",
+    "titolo": "Le tre domande di chi verifica",
+    "cards": [
+      {
+        "h": "Un controllo escluso",
+        "d": "E perché: la motivazione regge?"
+      },
+      {
+        "h": "Un attuato scelto a caso",
+        "d": "E la sua evidenza: non bastano tre pronte."
+      },
+      {
+        "h": "Chi se ne occupa",
+        "d": "A voce: un nome e un ruolo, non l'ufficio."
+      }
+    ]
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 9,
+    "inizia": "Come si parla al cliente di",
+    "layout": "definizione",
+    "eyebrow": "Con il cliente",
+    "titolo": "Non si valuta l'azienda",
+    "definizione": "Si scrive che cosa ha deciso di presidiare e perché: un non attuato diventa una riga del piano, non una bocciatura."
+  },
+  {
+    "sezione": "i-controlli",
+    "p": 10,
+    "inizia": "Che cosa si trascura di più:",
+    "layout": "chiusura",
+    "titolo": "Rileggere le motivazioni",
+    "punti": [
+      {
+        "h": "Una settimana dopo",
+        "d": "metà risultano generiche"
+      },
+      {
+        "h": "Una motivazione che vale per tutti",
+        "d": "non motiva nessuno"
+      },
+      {
+        "h": "È lì",
+        "d": "che si capisce se il lavoro è stato fatto o compilato"
+      }
+    ]
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 0,
+    "inizia": "L'indice di maturità è una media,",
+    "layout": "apertura",
+    "titolo": "Il calcolo",
+    "sottotitolo": "L'indice di maturità",
+    "testo": "Somma dei valori degli stati, divisa per i controlli applicabili: gli esclusi non entrano nel denominatore.",
+    "agenda": [
+      "Non valutato pesa zero",
+      "Fasce e sezioni",
+      "L'ordine del piano",
+      "Non è un requisito",
+      "Due misurazioni",
+      "Il punteggio per sezione"
+    ]
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 1,
+    "inizia": "Dentro quella divisione c'è però il",
+    "layout": "numeri",
+    "titolo": "Un controllo senza stato pesa zero",
+    "numeri": [
+      {
+        "n": "90%",
+        "h": "Mediando solo i valutati",
+        "d": "Con dieci controlli dichiarati su centotrenta."
+      },
+      {
+        "n": "Il vero",
+        "h": "Pesando zero i non valutati",
+        "d": "L'indice sale lavorando, non saltando."
+      }
+    ]
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 3,
+    "inizia": "Le fasce di maturità sono cinque,",
+    "layout": "confronto",
+    "titolo": "{fasceSoa} fasce, e il punteggio per sezione",
+    "a": {
+      "h": "Solo il totale",
+      "sub": "Un 60% complessivo",
+      "punti": [
+        "Non dice dove intervenire"
+      ]
+    },
+    "b": {
+      "h": "Per sezione",
+      "sub": "Una al 20%, le altre all'80%",
+      "punti": [
+        "Dice da dove cominciare"
+      ]
+    }
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 4,
+    "inizia": "C'è poi una seconda formula, ed",
+    "layout": "definizione",
+    "eyebrow": "La formula che ordina il piano",
+    "titolo": "L'impatto di un'azione",
+    "definizione": "(valore massimo − valore attuale) ÷ numero degli applicabili.",
+    "punti": [
+      {
+        "h": "Venti controlli da zero a parziale",
+        "d": "spostano più di tre portati a verificato"
+      }
+    ]
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 5,
+    "inizia": "Un'ultima cosa, ed è quella da",
+    "layout": "evidenza",
+    "eyebrow": "Da dire prima di qualunque percentuale",
+    "titolo": "L'indice non è un requisito della norma.",
+    "testo": "La norma chiede decisioni motivate e attuazione dimostrabile. Al 70% con tutto motivato si è certificabili; al 90% con metà giustificazioni mancanti, no."
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 6,
+    "inizia": "Nella pratica, il modo di usare",
+    "layout": "split",
+    "titolo": "Guardarlo due volte",
+    "lead": "Il numero assoluto dice poco; la differenza fra due misurazioni misura il lavoro fatto.",
+    "punti": [
+      {
+        "h": "Salva il punteggio",
+        "d": "quando chiudi una passata"
+      },
+      {
+        "h": "Il termine di paragone",
+        "d": "è tuo, non di un settore"
+      }
+    ]
+  },
+  {
+    "sezione": "calcolo-soa",
+    "p": 7,
+    "inizia": "Che cosa si trascura di più,",
+    "layout": "chiusura",
+    "titolo": "Il punteggio per sezione",
+    "punti": [
+      {
+        "h": "Le sezioni",
+        "d": "non pesano uguale per ogni azienda"
+      },
+      {
+        "h": "Servizi o manifattura",
+        "d": "nella stessa posizione numerica stanno diversamente"
+      },
+      {
+        "h": "Un solo numero",
+        "d": "toglie l'informazione per decidere il budget"
+      }
+    ]
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 0,
+    "inizia": "Le verifiche di coerenza sono, senza",
+    "layout": "apertura",
+    "titolo": "Le verifiche di coerenza",
+    "sottotitolo": "La prima mezz'ora dell'auditor",
+    "testo": "Arrivare all'appuntamento avendo già trovato da solo quello che troverebbe lui.",
+    "agenda": [
+      "Sei verifiche",
+      "Esclusioni e motivazioni",
+      "Attuati senza documento",
+      "Stati e responsabili",
+      "Profilo e quadri",
+      "Presto e spesso"
+    ]
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 1,
+    "inizia": "Sono sei, e conviene conoscerle a",
+    "layout": "punti",
+    "titolo": "Sei verifiche, nell'ordine in cui arrivano",
+    "punti": [
+      {
+        "h": "Esclusioni",
+        "d": "senza giustificazione"
+      },
+      {
+        "h": "Applicabili",
+        "d": "senza motivazione di inclusione"
+      },
+      {
+        "h": "Attuati",
+        "d": "senza riferimento documentale"
+      },
+      {
+        "h": "Applicabili",
+        "d": "senza stato"
+      },
+      {
+        "h": "Applicabili",
+        "d": "senza responsabile"
+      },
+      {
+        "h": "Profilo e quadri",
+        "d": "incoerenti"
+      }
+    ]
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 2,
+    "inizia": "La prima sono le esclusioni prive",
+    "layout": "evidenza",
+    "eyebrow": "La prima",
+    "titolo": "Un'esclusione senza motivazione non si rimedia in verifica.",
+    "testo": "O la motivazione è scritta, o manca."
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 3,
+    "inizia": "La seconda sono i controlli applicabili",
+    "layout": "definizione",
+    "eyebrow": "La seconda",
+    "titolo": "Il perché che si rimanda",
+    "definizione": "Rischio, obbligo legale, contratto, business o buona prassi: è il rilievo che si accumula più in fretta."
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 4,
+    "inizia": "La terza sono i controlli dichiarati",
+    "layout": "evidenza",
+    "eyebrow": "La terza",
+    "titolo": "Attuato senza documento: la contraddizione più visibile.",
+    "testo": "È la più facile da cercare, e chi verifica la cerca subito."
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 5,
+    "inizia": "La quarta sono gli applicabili senza",
+    "layout": "cards",
+    "titolo": "Quarta e quinta",
+    "cards": [
+      {
+        "h": "Senza stato",
+        "d": "Il controllo pesa zero: ti dice dove l'indice è più basso di quanto potrebbe."
+      },
+      {
+        "h": "Senza responsabile",
+        "d": "In verifica si chiede a voce chi se ne occupa: serve un nome."
+      }
+    ]
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 7,
+    "inizia": "La sesta è l'incoerenza fra profilo",
+    "layout": "definizione",
+    "eyebrow": "La sesta",
+    "titolo": "Profilo e quadri incoerenti",
+    "definizione": "Un ruolo o una posizione senza il quadro attivo, o il contrario: nasce dalle scelte del primo passo."
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 8,
+    "inizia": "Su come sono presentate c'è una",
+    "layout": "confronto",
+    "titolo": "Un elenco di codici, non un punteggio",
+    "a": {
+      "h": "Un numero",
+      "sub": "Ti dice come stai",
+      "punti": [
+        "E ti lascia dove sei"
+      ]
+    },
+    "b": {
+      "h": "Un elenco di codici",
+      "sub": "Ti dice che cosa aprire",
+      "punti": [
+        "Chiuso, il rilievo sparisce da solo"
+      ]
+    }
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 9,
+    "inizia": "Il consiglio pratico è di lanciarle",
+    "layout": "numeri",
+    "titolo": "Presto e spesso",
+    "numeri": [
+      {
+        "n": "Alla fine",
+        "h": "Decine di righe",
+        "d": "Tutte insieme, con la scadenza addosso."
+      },
+      {
+        "n": "A ogni passata",
+        "h": "Cinque o sei",
+        "d": "Chiuse mentre ricordi il perché."
+      }
+    ]
+  },
+  {
+    "sezione": "verifiche-soa",
+    "p": 10,
+    "inizia": "Come si parla al cliente dei",
+    "layout": "chiusura",
+    "titolo": "Con il cliente",
+    "punti": [
+      {
+        "h": "Non sono errori tuoi",
+        "d": "sono le domande di fra un mese"
+      },
+      {
+        "h": "Trovate adesso",
+        "d": "che c'è tempo"
+      },
+      {
+        "h": "E ha il vantaggio",
+        "d": "di essere vero"
+      }
+    ]
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 0,
+    "inizia": "Il documento finale è la Dichiarazione",
+    "layout": "apertura",
+    "titolo": "La Dichiarazione di Applicabilità",
+    "sottotitolo": "Il documento che consegni",
+    "testo": "Quattro parti, e una nota che non si toglie.",
+    "agenda": [
+      "Quattro parti",
+      "La nota di conformità",
+      "Congelato alla pubblicazione",
+      "Quando pubblicare",
+      "Legenda e firme"
+    ]
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 1,
+    "inizia": "La prima è una tabella per",
+    "layout": "cards",
+    "titolo": "Quattro parti",
+    "cards": [
+      {
+        "h": "Una tabella per sezione",
+        "d": "Riferimento, controllo, applicabilità, motivazioni, stato, documento."
+      },
+      {
+        "h": "La legenda delle sigle",
+        "d": "Per chi deve verificare: l'unico lettore per cui è scritto."
+      },
+      {
+        "h": "Il piano",
+        "d": "Con responsabili e termini."
+      },
+      {
+        "h": "Le firme",
+        "d": "Di chi redige e di chi approva: due persone."
+      }
+    ]
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 2,
+    "inizia": "Poi c'è una nota che sta",
+    "layout": "evidenza",
+    "eyebrow": "Riquadrata, in chiaro",
+    "titolo": "La nota di conformità collega la tabella all'obbligo.",
+    "testo": "Senza, il documento sembra completo ed è solo un elenco. In una dichiarazione fatta da altri, cercala per prima."
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 3,
+    "inizia": "L'ultima cosa riguarda che cosa succede",
+    "layout": "definizione",
+    "eyebrow": "Quando pubblichi",
+    "titolo": "Il documento si congela",
+    "definizione": "Con il codice di verifica e l'edizione dei contenuti: una revisione crea una versione nuova accanto alla precedente."
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 4,
+    "inizia": "Il motivo pratico lo capisci il",
+    "layout": "confronto",
+    "titolo": "Sei mesi dopo, davanti all'organismo",
+    "a": {
+      "h": "«Ci ricordiamo che»",
+      "sub": "Una ricostruzione",
+      "punti": [
+        "A memoria"
+      ]
+    },
+    "b": {
+      "h": "«Qui c'è scritto»",
+      "sub": "La versione di marzo",
+      "punti": [
+        "Aperta e mostrata"
+      ]
+    }
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 5,
+    "inizia": "Una raccomandazione finale, che è poi",
+    "layout": "split",
+    "titolo": "Pubblicare quando è pronto",
+    "lead": "Non quando è il momento di consegnare.",
+    "punti": [
+      {
+        "h": "A metà lavoro",
+        "d": "resta nell'archivio per sempre"
+      },
+      {
+        "h": "Tre versioni ravvicinate",
+        "d": "e il cliente si chiede che cosa non andasse"
+      }
+    ]
+  },
+  {
+    "sezione": "documento-soa",
+    "p": 6,
+    "inizia": "Che cosa si trascura di più",
+    "layout": "chiusura",
+    "titolo": "Legenda e firme",
+    "punti": [
+      {
+        "h": "Non hanno contenuto tecnico",
+        "d": "e si trascurano"
+      },
+      {
+        "h": "Sono le prime due",
+        "d": "che un organismo guarda"
+      },
+      {
+        "h": "Mancanti",
+        "d": "rendono sospetto anche un documento buono"
+      }
+    ]
+  }
+]

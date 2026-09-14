@@ -1,0 +1,1250 @@
+[
+  {
+    "sezione": "anagrafica-231",
+    "p": 0,
+    "inizia": "Il primo passo sembra la parte",
+    "layout": "apertura",
+    "titolo": "Anagrafica dell'ente",
+    "sottotitolo": "Sei gruppi che alimentano tutti i documenti",
+    "testo": "Organo amministrativo, legale rappresentante e organo di controllo diventano intestazioni e firme dei documenti.",
+    "agenda": [
+      "L'Organismo di Vigilanza",
+      "Il budget",
+      "Esposizione e canale",
+      "Prima l'anagrafica",
+      "L'ambito di applicazione",
+      "Configurazione e indipendenza"
+    ]
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 1,
+    "inizia": "Poi l'Organismo di Vigilanza, con composizione,",
+    "layout": "split",
+    "titolo": "L'Organismo di Vigilanza",
+    "lead": "Alimenta la prima sezione della sua relazione, quella che l'organo di controllo legge per prima.",
+    "punti": [
+      {
+        "h": "Composizione",
+        "d": "e componenti"
+      },
+      {
+        "h": "Nomina",
+        "d": "data e scadenza"
+      },
+      {
+        "h": "Budget annuo",
+        "d": "non facoltativo"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 2,
+    "inizia": "E qui c'è il campo su",
+    "layout": "evidenza",
+    "eyebrow": "Il campo su cui non si soprassiede",
+    "titolo": "Senza budget autonomo, l'organismo non è indipendente.",
+    "testo": "In giudizio è un indice di inidoneità del modello. Costa una riga di verbale, deliberata insieme alla nomina."
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 3,
+    "inizia": "Gli altri due gruppi sono l'esposizione,",
+    "layout": "cards",
+    "titolo": "Gli altri due gruppi",
+    "cards": [
+      {
+        "h": "Esposizione",
+        "d": "Rapporti con la pubblica amministrazione e sistemi di gestione: orientano il catalogo dei reati."
+      },
+      {
+        "h": "Canale e adozione",
+        "d": "Gestore delle segnalazioni, date di adozione e revisione, ambito ed esclusioni motivate."
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 4,
+    "inizia": "Un consiglio sull'ordine che fa risparmiare",
+    "layout": "flusso",
+    "titolo": "Prima l'anagrafica, poi i testi",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "compilata una volta"
+      },
+      {
+        "h": "Segnaposto",
+        "d": "risolti in tutti i documenti"
+      },
+      {
+        "h": "Un cambio di nomina",
+        "d": "e i nomi cambiano ovunque insieme"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 5,
+    "inizia": "Un'ultima nota sull'ambito di applicazione. Se",
+    "layout": "definizione",
+    "eyebrow": "L'ambito di applicazione",
+    "titolo": "Un perimetro taciuto vale per tutto",
+    "definizione": "Se il modello copre solo alcune unità locali, va detto e motivato: altrimenti ti giudicano su un'estensione che non presidiavi."
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 6,
+    "inizia": "Due parole sulla scelta della configurazione",
+    "layout": "tabella",
+    "titolo": "Tre configurazioni dell'Organismo",
+    "cols": [
+      "Forma",
+      "Quando"
+    ],
+    "righe": [
+      [
+        "Monocratico",
+        "Ente piccolo, con una persona davvero indipendente"
+      ],
+      [
+        "Collegiale",
+        "Processi a rischio diversi: competenze legali, contabili, tecniche"
+      ],
+      [
+        "Organo esistente",
+        "Dove la legge lo consente"
+      ]
+    ]
+  },
+  {
+    "sezione": "anagrafica-231",
+    "p": 7,
+    "inizia": "E una cosa sull'indipendenza che vale",
+    "layout": "chiusura",
+    "titolo": "Indipendenza: chi nomina, chi revoca, chi paga",
+    "punti": [
+      {
+        "h": "Tutti e tre in una persona",
+        "d": "nessuna indipendenza, anche con tre professionisti esterni"
+      },
+      {
+        "h": "La delibera di nomina",
+        "d": "si costruisce su questi tre punti"
+      },
+      {
+        "h": "Mezz'ora con chi la firma",
+        "d": "e ne vale la pena"
+      }
+    ]
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 0,
+    "inizia": "Il catalogo porta venticinque fattispecie raggruppate",
+    "layout": "apertura",
+    "titolo": "Il catalogo dei reati",
+    "sottotitolo": "{reati231} fattispecie in {pilastri231} famiglie",
+    "testo": "Per ognuna dichiari se si applica; se la escludi, la motivazione si riferisce all'attività svolta.",
+    "agenda": [
+      "Non applicabile non è improbabile",
+      "Le sanzioni interdittive",
+      "Due regole",
+      "Da dove cominciare",
+      "I delitti informatici",
+      "Prima il catalogo"
+    ]
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 1,
+    "inizia": "La distinzione che rende un catalogo",
+    "layout": "confronto",
+    "titolo": "Non applicabile non vuol dire improbabile",
+    "a": {
+      "h": "Non applicabile",
+      "sub": "Condotta estranea all'attività",
+      "punti": [
+        "Abusi di mercato per una non quotata"
+      ]
+    },
+    "b": {
+      "h": "Improbabile",
+      "sub": "Resta applicabile",
+      "punti": [
+        "La probabilità si valuta nello scenario"
+      ]
+    }
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 2,
+    "inizia": "Escludere per improbabilità significa aver deciso",
+    "layout": "evidenza",
+    "eyebrow": "Chi legge se ne accorge",
+    "titolo": "Mezzo catalogo escluso e matrice tutta bassa: nessuno ha guardato.",
+    "testo": "Escludere per improbabilità significa decidere il risultato prima della valutazione."
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 3,
+    "inizia": "Le fattispecie che comportano sanzioni interdittive",
+    "layout": "definizione",
+    "eyebrow": "Segnalate nel catalogo",
+    "titolo": "Sanzioni interdittive",
+    "definizione": "Possono fermare l'attività: per queste fattispecie l'impatto di norma non scende sotto il livello grave."
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 4,
+    "inizia": "Il catalogo va chiuso per intero.",
+    "layout": "cards",
+    "titolo": "Due regole sul catalogo",
+    "cards": [
+      {
+        "h": "Si chiude per intero",
+        "d": "Una fattispecie non esaminata è un buco: deciso, o non ci sei arrivato?"
+      },
+      {
+        "h": "Solo le applicabili",
+        "d": "si associano ai processi: se un reato non si trova, la causa è qui."
+      }
+    ]
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 6,
+    "inizia": "Un metodo pratico per chiudere il",
+    "layout": "split",
+    "titolo": "Chiudere il catalogo in una sessione",
+    "lead": "Cominciare dalle famiglie che si applicano quasi sempre chiude metà del catalogo in un'ora.",
+    "punti": [
+      {
+        "h": "Quasi sempre",
+        "d": "PA, societari, sicurezza sul lavoro, ambientali, tributari, riciclaggio"
+      },
+      {
+        "h": "Dipende dall'attività",
+        "d": "informatici, proprietà industriale, contrabbando, personalità individuale"
+      }
+    ]
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 7,
+    "inizia": "E una avvertenza su una famiglia",
+    "layout": "evidenza",
+    "eyebrow": "Esclusi troppo in fretta",
+    "titolo": "I delitti informatici non riguardano solo chi fa informatica.",
+    "testo": "Riguardano chi accede abusivamente a un sistema, danneggia dati, usa credenziali altrui: qualunque impresa con computer e fornitori."
+  },
+  {
+    "sezione": "catalogo-reati",
+    "p": 8,
+    "inizia": "Un'ultima nota sull'ordine. Il catalogo va",
+    "layout": "chiusura",
+    "titolo": "Prima il catalogo, poi i processi",
+    "punti": [
+      {
+        "h": "Solo le applicabili",
+        "d": "si collegano ai processi"
+      },
+      {
+        "h": "Tornare indietro",
+        "d": "porta a decidere guardando il processo, non l'attività"
+      },
+      {
+        "h": "Il ragionamento",
+        "d": "risulta rovesciato"
+      }
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 0,
+    "inizia": "La mappatura dei processi è il",
+    "layout": "apertura",
+    "titolo": "I processi sensibili",
+    "sottotitolo": "Il fondamento del modello",
+    "testo": "La parte che un giudice guarda per capire se l'ente ha riflettuto sui propri rischi o ha comprato un documento.",
+    "agenda": [
+      "La discrezionalità",
+      "Gli scenari",
+      "Quanti processi",
+      "Come descrivere il rischio",
+      "Le controparti",
+      "La documentazione"
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 1,
+    "inizia": "Di questi sei elementi ce n'è",
+    "layout": "definizione",
+    "eyebrow": "L'elemento che pesa di più",
+    "titolo": "I margini di discrezionalità",
+    "definizione": "Non è la dimensione del flusso a fare il rischio: è quanto margine ha chi decide, e quanto poco resta scritto.",
+    "punti": [
+      {
+        "h": "Centomila euro con tre preventivi",
+        "d": "meno rischiosi di diecimila decisi da una persona sola"
+      }
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 2,
+    "inizia": "Poi ci sono gli scenari, cioè",
+    "layout": "cards",
+    "titolo": "Lo scenario: un reato incrociato con un processo",
+    "cards": [
+      {
+        "h": "Probabilità e impatto",
+        "d": "E lo stato dei presidi."
+      },
+      {
+        "h": "Modalità di commissione",
+        "d": "Scritte in chiaro."
+      },
+      {
+        "h": "Presidi esistenti",
+        "d": "Scritti in chiaro: rendono leggibile la matrice."
+      }
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 3,
+    "inizia": "Sui processi tipici di una piccola",
+    "layout": "tabella",
+    "titolo": "I processi tipici di una piccola impresa",
+    "cols": [
+      "Ambito",
+      "Processi"
+    ],
+    "righe": [
+      [
+        "Mercato",
+        "Gare e amministrazione, vendite e agenti"
+      ],
+      [
+        "Acquisti e denaro",
+        "Selezione dei fornitori, tesoreria, omaggi e liberalità"
+      ],
+      [
+        "Persone e luoghi",
+        "Risorse umane, salute e sicurezza, ambiente e rifiuti"
+      ],
+      [
+        "Dati e conti",
+        "Sistemi informativi, bilancio e adempimenti fiscali"
+      ]
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 4,
+    "inizia": "Ma il numero giusto non è",
+    "layout": "numeri",
+    "titolo": "Quanti processi",
+    "numeri": [
+      {
+        "n": "Venticinque",
+        "h": "Troppi",
+        "d": "Spezzati troppo: matrice illeggibile."
+      },
+      {
+        "n": "Quattro",
+        "h": "Troppo pochi",
+        "d": "Qualche reato applicabile resta scoperto."
+      },
+      {
+        "n": "Il giusto",
+        "h": "Ogni reato coperto",
+        "d": "Senza duplicazioni."
+      }
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 5,
+    "inizia": "Un suggerimento sull'ordine del lavoro. Conviene",
+    "layout": "evidenza",
+    "eyebrow": "L'ordine del lavoro",
+    "titolo": "Prima tutti i processi, poi i dettagli.",
+    "testo": "Uno per volta fino in fondo si descrivono bene i primi tre e si liquidano gli ultimi, che spesso sono i più esposti."
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 6,
+    "inizia": "Un modo concreto di descrivere le",
+    "layout": "confronto",
+    "titolo": "Descrivere il punto in cui il processo si piega",
+    "a": {
+      "h": "Selezione dei fornitori",
+      "sub": "Il rischio non è comprare",
+      "punti": [
+        "È scegliere per ragioni diverse dalla convenienza"
+      ]
+    },
+    "b": {
+      "h": "Tesoreria",
+      "sub": "Il rischio non è pagare",
+      "punti": [
+        "È pagare un soggetto diverso dal contraente, o con causali generiche"
+      ]
+    }
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 7,
+    "inizia": "Sulle controparti c'è un campo che",
+    "layout": "split",
+    "titolo": "Le controparti",
+    "lead": "Chi sta dall'altra parte regge metà della valutazione.",
+    "punti": [
+      {
+        "h": "Pubbliche",
+        "d": "un profilo di rischio"
+      },
+      {
+        "h": "Private",
+        "d": "un altro"
+      },
+      {
+        "h": "Intermediari",
+        "d": "un altro ancora"
+      },
+      {
+        "h": "Con la prevenzione della corruzione",
+        "d": "i due elenchi dovrebbero somigliarsi"
+      }
+    ]
+  },
+  {
+    "sezione": "processi-sensibili",
+    "p": 8,
+    "inizia": "E una cosa sulla documentazione prodotta,",
+    "layout": "chiusura",
+    "titolo": "La documentazione prodotta",
+    "punti": [
+      {
+        "h": "Dice in anticipo",
+        "d": "dove un controllo potrà cercare"
+      },
+      {
+        "h": "Un processo senza documenti",
+        "d": "non lascia verificare nessun presidio"
+      },
+      {
+        "h": "È già una criticità",
+        "d": "a prescindere dal livello di rischio"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 0,
+    "inizia": "Il rischio si calcola in due",
+    "layout": "apertura",
+    "titolo": "Il motore del rischio",
+    "sottotitolo": "Due stadi",
+    "testo": "Inerente: probabilità per impatto. Residuo: l'inerente incrociato con lo stato dei presidi.",
+    "agenda": [
+      "L'impatto",
+      "Presidi non valutati",
+      "Il livello di un processo",
+      "Presidi adeguati",
+      "La probabilità",
+      "Presentare la matrice"
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 1,
+    "inizia": "Sull'impatto una precisazione. Non è solo",
+    "layout": "definizione",
+    "eyebrow": "Non solo la sanzione pecuniaria",
+    "titolo": "L'impatto",
+    "definizione": "Conta anche la sanzione interdittiva, e il danno reputazionale.",
+    "punti": [
+      {
+        "h": "Con sanzioni interdittive",
+        "d": "di norma non scende sotto grave"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 2,
+    "inizia": "Adesso la regola che sorprende e",
+    "layout": "evidenza",
+    "eyebrow": "La regola che sorprende",
+    "titolo": "I presidi non valutati contano come assenti.",
+    "testo": "Una riga troppo rossa non chiede perché il calcolo esagera: chiede che cosa non hai ancora dichiarato."
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 3,
+    "inizia": "C'è poi una cosa che va",
+    "layout": "confronto",
+    "titolo": "Una matrice credibile",
+    "a": {
+      "h": "Tutta su livelli bassi",
+      "sub": "Costruita per rassicurare",
+      "punti": [
+        "Per un ente esposto, poco credibile"
+      ]
+    },
+    "b": {
+      "h": "Punti critici dichiarati",
+      "sub": "Costruita per funzionare",
+      "punti": [
+        "Con i presidi che li governano",
+        "Un rischio critico scende, non sparisce"
+      ]
+    }
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 4,
+    "inizia": "Sul livello di un processo: è",
+    "layout": "definizione",
+    "eyebrow": "Il livello di un processo",
+    "titolo": "Il massimo, non la media",
+    "definizione": "Un solo scenario critico rende critico il processo, anche con tutti gli altri bassi."
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 5,
+    "inizia": "I residui non accettabili vanno nel",
+    "layout": "cards",
+    "titolo": "Il piano di adeguamento",
+    "cards": [
+      {
+        "h": "Azione",
+        "d": "sul residuo non accettabile"
+      },
+      {
+        "h": "Responsabile",
+        "d": "senza, non si fa"
+      },
+      {
+        "h": "Termine",
+        "d": "entro quando"
+      },
+      {
+        "h": "Verifica",
+        "d": "senza, non si sa se è fatta"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 6,
+    "inizia": "Un'ultima avvertenza sui presidi dichiarati adeguati,",
+    "layout": "flusso",
+    "titolo": "Adeguato significa tre cose insieme",
+    "passi": [
+      {
+        "h": "Previsto",
+        "d": "dal protocollo di parte speciale del processo"
+      },
+      {
+        "h": "Approvato",
+        "d": "insieme al protocollo"
+      },
+      {
+        "h": "Applicato",
+        "d": "con evidenza"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 7,
+    "inizia": "Sulla probabilità vale la pena dire",
+    "layout": "evidenza",
+    "eyebrow": "La probabilità",
+    "titolo": "Non se qualcuno vuole delinquere: se il processo glielo consente.",
+    "testo": "Un giudizio sul processo, non sulle persone: nessuno stima la disonestà dei collaboratori, tutti stimano quanto è controllato un pagamento."
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 8,
+    "inizia": "Un consiglio su come presentare la",
+    "layout": "split",
+    "titolo": "Presentare la matrice a chi firma",
+    "lead": "Le righe critiche si presentano insieme all'azione che le governa.",
+    "punti": [
+      {
+        "h": "Righe rosse senza piano",
+        "d": "il consiglio chiede di abbassare i punteggi"
+      },
+      {
+        "h": "Righe rosse con azioni e costi",
+        "d": "il consiglio approva"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-231",
+    "p": 9,
+    "inizia": "E una nota sul riesame periodico",
+    "layout": "chiusura",
+    "titolo": "Quando rivedere gli scenari",
+    "punti": [
+      {
+        "h": "Quando cambiano",
+        "d": "processi, controparti o presidi"
+      },
+      {
+        "h": "Un mercato o una sede nuova",
+        "d": "sono cambiamenti"
+      },
+      {
+        "h": "A calendario, senza cambiamenti",
+        "d": "insegna che l'esercizio è formale"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 0,
+    "inizia": "I registri sono dodici, e sono",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "{registri231} registri: la prova dell'efficace attuazione",
+    "testo": "Un modello adottato e mai applicato non protegge l'ente.",
+    "agenda": [
+      "Quali sono",
+      "Le date",
+      "Le segnalazioni",
+      "Tenerli vivi",
+      "I tre che contano di più",
+      "Flussi e deroghe"
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 1,
+    "inizia": "Eccoli: piano di adeguamento, deleghe e",
+    "layout": "confronto",
+    "titolo": "Quali sono",
+    "a": {
+      "h": "Modello e presidi",
+      "sub": "Sei registri",
+      "punti": [
+        "Piano di adeguamento",
+        "Deleghe e procure",
+        "Deroghe ai protocolli",
+        "Omaggi e liberalità",
+        "Terzi qualificati",
+        "Aggiornamenti del modello"
+      ]
+    },
+    "b": {
+      "h": "Organismo e persone",
+      "sub": "Sei registri",
+      "punti": [
+        "Flussi informativi",
+        "Segnalazioni",
+        "Provvedimenti disciplinari",
+        "Verifiche dell'organismo",
+        "Verbali dell'organismo",
+        "Formazione"
+      ]
+    }
+  },
+  {
+    "sezione": "registri-231",
+    "p": 2,
+    "inizia": "La cosa più importante di questa",
+    "layout": "tabella",
+    "titolo": "Contano le date, non le righe",
+    "cols": [
+      "Registrazione",
+      "Conta solo con"
+    ],
+    "righe": [
+      [
+        "Verifica",
+        "La data di esecuzione"
+      ],
+      [
+        "Segnalazione",
+        "Avviso di ricevimento e riscontro"
+      ],
+      [
+        "Azione di adeguamento",
+        "La verifica, non la sola attuazione"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 3,
+    "inizia": "La conseguenza pratica è secca: le",
+    "layout": "evidenza",
+    "eyebrow": "La conseguenza",
+    "titolo": "Un registro pieno di righe, e un cruscotto che dice zero.",
+    "testo": "Non è un difetto del calcolo: la data si compila nel momento in cui si crea la riga."
+  },
+  {
+    "sezione": "registri-231",
+    "p": 4,
+    "inizia": "Una nota sul registro delle segnalazioni.",
+    "layout": "definizione",
+    "eyebrow": "Con il percorso segnalazioni attivo",
+    "titolo": "Il registro delle segnalazioni",
+    "definizione": "Diventa di sola lettura e rimanda al fascicolo, dove i termini di legge si calcolano davvero.",
+    "punti": [
+      {
+        "h": "Senza quel percorso",
+        "d": "resta l'unico posto dove annotarle"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 5,
+    "inizia": "Un consiglio su come tenerli vivi,",
+    "layout": "split",
+    "titolo": "Tenerli vivi",
+    "lead": "Si alimentano quando succede la cosa, non a dicembre.",
+    "punti": [
+      {
+        "h": "Ricostruito a fine anno",
+        "d": "date vicine, intervalli regolari"
+      },
+      {
+        "h": "Un registro vero",
+        "d": "è irregolare, ed è credibile per questo"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 6,
+    "inizia": "Vale la pena dire quali dei",
+    "layout": "cards",
+    "titolo": "I tre chiesti per primi",
+    "cards": [
+      {
+        "h": "Verbali dell'organismo",
+        "d": "Dimostrano che ha vigilato."
+      },
+      {
+        "h": "Flussi informativi ricevuti",
+        "d": "Dimostrano che qualcuno gli ha parlato."
+      },
+      {
+        "h": "Provvedimenti disciplinari",
+        "d": "Dimostrano che il modello ha morso."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 7,
+    "inizia": "Sui flussi informativi c'è una cosa",
+    "layout": "punti",
+    "titolo": "Zero flussi è un problema di canale",
+    "intro": "I flussi obbligatori si definiscono nella procedura: chi manda che cosa, e quando.",
+    "punti": [
+      {
+        "h": "Ufficio acquisti",
+        "d": "le deroghe"
+      },
+      {
+        "h": "Amministrazione",
+        "d": "i rapporti con la pubblica amministrazione"
+      },
+      {
+        "h": "Responsabile della sicurezza",
+        "d": "gli infortuni"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-231",
+    "p": 8,
+    "inizia": "Un'ultima cosa sulle deroghe ai protocolli,",
+    "layout": "chiusura",
+    "titolo": "Le deroghe ai protocolli",
+    "punti": [
+      {
+        "h": "Registrate e motivate",
+        "d": "segno di un sistema vivo"
+      },
+      {
+        "h": "Zero in un anno",
+        "d": "quasi sempre protocolli non applicati"
+      },
+      {
+        "h": "In verifica",
+        "d": "una delle domande più difficili"
+      }
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 0,
+    "inizia": "La mappa di idoneità porta ottantuno",
+    "layout": "apertura",
+    "titolo": "La mappa di idoneità",
+    "sottotitolo": "{presidi231} presidi su {capi231} pilastri",
+    "testo": "Domande formulate come le porrebbe chi deve accertare l'idoneità: con delibera avente data certa e anteriore ai fatti.",
+    "agenda": [
+      "Non valutato pesa zero",
+      "Tre tipi di indicatori",
+      "Violazioni senza provvedimenti",
+      "Parlare con la direzione",
+      "Dove si viene giudicati inidonei",
+      "La formazione"
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 1,
+    "inizia": "La regola di calcolo è la",
+    "layout": "numeri",
+    "titolo": "Un presidio non valutato pesa zero",
+    "numeri": [
+      {
+        "n": "Tre su venti",
+        "h": "Media sui soli valutati",
+        "d": "Darebbe lo stesso numero di venti su venti."
+      },
+      {
+        "n": "Venti su venti",
+        "h": "Tutto conforme",
+        "d": "La situazione opposta."
+      },
+      {
+        "n": "Lavorando",
+        "h": "L'indice sale",
+        "d": "Mai saltando."
+      }
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 2,
+    "inizia": "Gli indicatori sono di tre tipi",
+    "layout": "tabella",
+    "titolo": "Tre tipi di indicatori",
+    "cols": [
+      "Tipo",
+      "Domanda",
+      "Che cosa misura"
+    ],
+    "righe": [
+      [
+        "Copertura",
+        "Hai guardato tutto?",
+        "Catalogo esaminato, ogni reato coperto da un processo"
+      ],
+      [
+        "Attuazione",
+        "Il modello vive?",
+        "Azioni verificate, verifiche, verbali, flussi, formazione, clausole"
+      ],
+      [
+        "Esito",
+        "Com'è andata?",
+        "Termini rispettati, zero ritorsioni, provvedimenti sulle violazioni"
+      ]
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 3,
+    "inizia": "Su quest'ultimo punto va detta la",
+    "layout": "evidenza",
+    "eyebrow": "La cosa più scomoda del percorso",
+    "titolo": "Violazioni accertate senza provvedimenti: il sistema disciplinare non è stato applicato.",
+    "testo": "In giudizio pesa contro l'ente, ed è il più facile da evitare: prendere e registrare il provvedimento."
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 4,
+    "inizia": "Un suggerimento su come usare la",
+    "layout": "confronto",
+    "titolo": "Con la direzione, separare i costi",
+    "a": {
+      "h": "Si chiude in un consiglio",
+      "sub": "Una decisione",
+      "punti": [
+        "L'adozione con data certa"
+      ]
+    },
+    "b": {
+      "h": "Richiede mesi",
+      "sub": "Progetti e abitudini",
+      "punti": [
+        "La formazione",
+        "I flussi informativi"
+      ]
+    }
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 6,
+    "inizia": "Sui dieci pilastri conviene sapere quali",
+    "layout": "cards",
+    "titolo": "Dove i modelli vengono giudicati inidonei",
+    "cards": [
+      {
+        "h": "L'organismo",
+        "d": "e la sua indipendenza"
+      },
+      {
+        "h": "Il sistema disciplinare",
+        "d": "effettivamente applicato"
+      },
+      {
+        "h": "La formazione",
+        "d": "documentata"
+      }
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 7,
+    "inizia": "Sulla formazione una precisazione che fa",
+    "layout": "definizione",
+    "eyebrow": "Adempimento o difesa",
+    "titolo": "Formazione dimostrabile",
+    "definizione": "Chi ha partecipato, su che cosa, con quale verifica di apprendimento: il materiale conservato insieme alla firma.",
+    "punti": [
+      {
+        "h": "Un elenco di presenze",
+        "d": "dimostra solo che erano in una stanza"
+      }
+    ]
+  },
+  {
+    "sezione": "idoneita-231",
+    "p": 8,
+    "inizia": "E un modo di usare la",
+    "layout": "chiusura",
+    "titolo": "Compilarla prima dei documenti",
+    "punti": [
+      {
+        "h": "Prima",
+        "d": "diventa un piano di lavoro"
+      },
+      {
+        "h": "Le non conformità",
+        "d": "sono l'indice di ciò che va costruito"
+      },
+      {
+        "h": "Alla fine",
+        "d": "misura quando non c'è più tempo"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 0,
+    "inizia": "Il corpus del modello porta diciotto",
+    "layout": "apertura",
+    "titolo": "Il corpus del modello",
+    "sottotitolo": "{documenti231} documenti, {moduli231} moduli",
+    "testo": "La parte generale, dal quadro normativo all'aggiornamento, e un protocollo di parte speciale per famiglia di reati.",
+    "agenda": [
+      "Blocco per blocco",
+      "L'ordine di approvazione",
+      "La sola parte generale",
+      "Personalizzare i protocolli",
+      "Quando aggiornare"
+    ]
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 1,
+    "inizia": "Il corpus è comune e versionato,",
+    "layout": "confronto",
+    "titolo": "Blocco per blocco",
+    "a": {
+      "h": "Ciò che non tocchi",
+      "sub": "Resta comune",
+      "punti": [
+        "Riceve gli aggiornamenti"
+      ]
+    },
+    "b": {
+      "h": "Ciò che modifichi",
+      "sub": "Diventa tuo",
+      "punti": [
+        "E resta tuo"
+      ]
+    }
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 2,
+    "inizia": "Sull'ordine di approvazione c'è una sequenza",
+    "layout": "flusso",
+    "titolo": "L'ordine di approvazione",
+    "passi": [
+      {
+        "h": "Struttura",
+        "d": "e metodologia"
+      },
+      {
+        "h": "Organismo",
+        "d": "e flussi informativi"
+      },
+      {
+        "h": "Segnalazioni",
+        "d": "e sistema disciplinare"
+      },
+      {
+        "h": "Parte speciale",
+        "d": "dopo la mappatura dei processi"
+      },
+      {
+        "h": "Formazione",
+        "d": "e aggiornamento"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 3,
+    "inizia": "La ragione dell'ordine è nel penultimo",
+    "layout": "evidenza",
+    "eyebrow": "L'errore che costa più tempo",
+    "titolo": "Protocolli approvati prima di mappare i processi.",
+    "testo": "Presidi per rischi non ancora descritti: arrivata la mappatura vanno rifatti, dopo essere già passati in consiglio."
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 4,
+    "inizia": "Un'ultima cosa sulla consegna della sola",
+    "layout": "definizione",
+    "eyebrow": "Se il cliente chiede la sola parte generale",
+    "titolo": "Una proprietà del dato",
+    "definizione": "Le procedure dichiarano la loro fase; dove la distinzione non c'è, il comando non compare."
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 5,
+    "inizia": "Una cosa sulla personalizzazione dei protocolli",
+    "layout": "cards",
+    "titolo": "Un protocollo generico si riconosce",
+    "cards": [
+      {
+        "h": "Funzioni",
+        "d": "che nell'azienda non esistono"
+      },
+      {
+        "h": "Soglie",
+        "d": "che nessuno applica"
+      },
+      {
+        "h": "Controlli",
+        "d": "che nessuno esegue"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 6,
+    "inizia": "Il criterio per capire quanto personalizzare",
+    "layout": "tabella",
+    "titolo": "Chi lo fa, qui, si chiama così?",
+    "cols": [
+      "Risposta",
+      "Che cosa fare"
+    ],
+    "righe": [
+      [
+        "Sì",
+        "La riga resta"
+      ],
+      [
+        "No",
+        "La riga va riscritta"
+      ],
+      [
+        "Nessuno lo fa",
+        "Si toglie, oppure si crea il presidio"
+      ]
+    ]
+  },
+  {
+    "sezione": "corpus-231",
+    "p": 7,
+    "inizia": "Sull'aggiornamento del modello, infine, una regola",
+    "layout": "chiusura",
+    "titolo": "Quando aggiornare il modello",
+    "punti": [
+      {
+        "h": "Cambia la legge",
+        "d": "prevedibile"
+      },
+      {
+        "h": "Cambia l'organizzazione",
+        "d": "prevedibile"
+      },
+      {
+        "h": "Succede qualcosa",
+        "d": "il caso che conta: almeno una valutazione scritta"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui si",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Costruire un modello da zero",
+    "testo": "Seguire l'ordine evita quasi tutti gli errori che vengono dopo.",
+    "agenda": [
+      "L'ordine",
+      "Sette errori",
+      "Sei silenziosi",
+      "Dove va il tempo",
+      "Da dire al cliente"
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 1,
+    "inizia": "Prima l'anagrafica completa, con l'organismo e",
+    "layout": "flusso",
+    "titolo": "L'ordine in cui si costruisce",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "organismo, budget, canale"
+      },
+      {
+        "h": "Catalogo",
+        "d": "chiuso, con esclusioni motivate"
+      },
+      {
+        "h": "Processi e scenari",
+        "d": "ogni reato applicabile coperto"
+      },
+      {
+        "h": "Piano e adozione",
+        "d": "documenti approvati, delibera registrata"
+      },
+      {
+        "h": "Idoneità e registri",
+        "d": "poi la relazione dell'organismo"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 2,
+    "inizia": "Gli errori che rendono un modello",
+    "layout": "tabella",
+    "titolo": "Errori che rendono il modello indifendibile",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Reati esclusi perché improbabili",
+        "Catalogo indifendibile, scenari mancanti"
+      ],
+      [
+        "Reato applicabile senza processo",
+        "Incoerenza nel cruscotto e a stampa"
+      ],
+      [
+        "Presidi adeguati, protocolli generici",
+        "Residuo ottimistico, contraddizione a stampa"
+      ],
+      [
+        "Residui inaccettabili senza piano",
+        "Rischio dichiarato e non governato"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 4,
+    "inizia": "Il quinto è l'organismo senza budget",
+    "layout": "cards",
+    "titolo": "Gli ultimi tre, il più pesante per ultimo",
+    "cards": [
+      {
+        "h": "Organismo senza budget o verbali",
+        "d": "Inidoneità e mancata attuazione insieme."
+      },
+      {
+        "h": "Segnalazioni senza date",
+        "d": "Obblighi di legge non dimostrabili."
+      },
+      {
+        "h": "Violazioni senza provvedimenti",
+        "d": "Il modello non è mai stato applicato."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 5,
+    "inizia": "Una riflessione finale che vale per",
+    "layout": "evidenza",
+    "eyebrow": "Sei errori su sette",
+    "titolo": "Nessun avviso: i campi sono validi, il documento esce.",
+    "testo": "Il prodotto segnala le incoerenze formali, non se una motivazione regge. Quello lo sa chi conosce l'azienda."
+  },
+  {
+    "sezione": "errori-231",
+    "p": 6,
+    "inizia": "Aggiungo due indicazioni sui tempi, perché",
+    "layout": "numeri",
+    "titolo": "Dove va il tempo",
+    "numeri": [
+      {
+        "n": "Metà",
+        "h": "Processi e scenari",
+        "d": "Non si comprime: si parla con le persone, va prenotata per prima."
+      },
+      {
+        "n": "Un quarto",
+        "h": "Personalizzazione",
+        "d": "Si può parallelizzare."
+      },
+      {
+        "n": "Il resto",
+        "h": "Decisioni",
+        "d": "Si prendono in una riunione."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-231",
+    "p": 7,
+    "inizia": "E una cosa che vale la",
+    "layout": "chiusura",
+    "titolo": "Da dire prima di firmare l'incarico",
+    "punti": [
+      {
+        "h": "Il modello non protegge",
+        "d": "per il fatto di esistere"
+      },
+      {
+        "h": "Protegge",
+        "d": "se è costruito su quell'azienda, e applicato"
+      },
+      {
+        "h": "Senza registri, verifiche e formazione",
+        "d": "c'è un documento, non una difesa"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1259 @@
+[
+  {
+    "sezione": "anagrafica-37001",
+    "p": 0,
+    "inizia": "Il primo passo raccoglie cinque gruppi",
+    "layout": "apertura",
+    "titolo": "Anagrafica",
+    "sottotitolo": "Cinque gruppi, due decidono la credibilità",
+    "testo": "Identificazione, governance, esposizione, canale di segnalazione e campo di applicazione.",
+    "agenda": [
+      "Chi sorveglia",
+      "Funzione esternalizzata",
+      "Il perimetro",
+      "Chi ricopre la funzione",
+      "Paesi di operatività",
+      "Esposizione verso pubblici ufficiali"
+    ]
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 1,
+    "inizia": "Si parte dall'identificazione, con i paesi",
+    "layout": "cards",
+    "titolo": "Identificazione e governance",
+    "cards": [
+      {
+        "h": "Paesi di operatività",
+        "d": "Concorrono al rischio di contesto e alla valutazione dei soci."
+      },
+      {
+        "h": "Governance",
+        "d": "Alta direzione, organo di governo, funzione di prevenzione e il suo impegno."
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 4,
+    "inizia": "La prima: se non esiste un",
+    "layout": "confronto",
+    "titolo": "Chi sorveglia, se l'organo di governo non c'è",
+    "a": {
+      "h": "Campo vuoto",
+      "sub": "Nessuno ha detto chi sorveglia",
+      "punti": [
+        "Il primo rilievo di un audit"
+      ]
+    },
+    "b": {
+      "h": "Dichiarato",
+      "sub": "Sorveglia l'alta direzione",
+      "punti": [
+        "Legittimo in una piccola impresa",
+        "Purché scritto"
+      ]
+    }
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 5,
+    "inizia": "La seconda riguarda la funzione di",
+    "layout": "evidenza",
+    "eyebrow": "Funzione di prevenzione esternalizzata",
+    "titolo": "La responsabilità resta interna, sempre.",
+    "testo": "Servono nome e ruolo del dirigente interno responsabile. Un sistema in cui non si capisce chi risponde è il primo rilievo scritto."
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 7,
+    "inizia": "Un'ultima nota sul campo di applicazione.",
+    "layout": "evidenza",
+    "eyebrow": "Il campo di applicazione",
+    "titolo": "Un perimetro taciuto si presume esteso a tutto.",
+    "testo": "In certificazione si verifica ciò che il documento dichiara, non ciò che chi l'ha scritto aveva in mente."
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 8,
+    "inizia": "Una cosa sulla scelta di chi",
+    "layout": "split",
+    "titolo": "Chi ricopre la funzione",
+    "lead": "Competenza, autorità e risorse adeguate, e un riporto all'organo di governo.",
+    "punti": [
+      {
+        "h": "Responsabile amministrativo o acquisti",
+        "d": "significa stare dentro i processi da sorvegliare"
+      },
+      {
+        "h": "Si può fare",
+        "d": "con un meccanismo per il conflitto, dichiarato prima"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 9,
+    "inizia": "Sui paesi di operatività, che sembrano",
+    "layout": "definizione",
+    "eyebrow": "Paesi di operatività",
+    "titolo": "Conta dove opera, non dove ha sede",
+    "definizione": "E dove operano per suo conto i soci in affari: un intermediario in un paese ad alto rischio cambia il profilo.",
+    "punti": [
+      {
+        "h": "Alimenta",
+        "d": "la prima delle {dimensioni37001} dimensioni del rischio dei soci"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-37001",
+    "p": 10,
+    "inizia": "Un'ultima nota sull'esposizione verso pubblici ufficiali,",
+    "layout": "chiusura",
+    "titolo": "L'esposizione verso pubblici ufficiali",
+    "punti": [
+      {
+        "h": "In termini concreti",
+        "d": "quante volte, per quale pratica, chi ha il contatto"
+      },
+      {
+        "h": "Tre gare l'anno",
+        "d": "non sono rapporti quotidiani con l'ente di controllo"
+      },
+      {
+        "h": "La differenza",
+        "d": "giustifica il livello dei presidi"
+      }
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 0,
+    "inizia": "Il censimento dei soci in affari",
+    "layout": "apertura",
+    "titolo": "I soci in affari",
+    "sottotitolo": "Il passo da cui discende tutto il resto",
+    "testo": "E comincia con un fraintendimento da togliere di mezzo subito.",
+    "agenda": [
+      "Non solo fornitori",
+      "Tre gruppi di dati",
+      "Lo stato del rapporto",
+      "Il censimento iniziale",
+      "Un approccio basato sul rischio",
+      "I titolari effettivi"
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 1,
+    "inizia": "Soci in affari non vuol dire",
+    "layout": "evidenza",
+    "eyebrow": "Il fraintendimento",
+    "titolo": "Soci in affari non vuol dire fornitori.",
+    "testo": "Anche clienti, joint venture, istituti finanziari, somministrazione, distributori, e soprattutto agenti e intermediari."
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 3,
+    "inizia": "Per ogni socio si raccolgono tre",
+    "layout": "cards",
+    "titolo": "Tre gruppi di dati per socio",
+    "cards": [
+      {
+        "h": "Identificazione",
+        "d": "Categoria, paese, oggetto del rapporto, titolari effettivi."
+      },
+      {
+        "h": "Rapporto economico",
+        "d": "Valore annuo, remunerazione, eventuale controllata."
+      },
+      {
+        "h": "Adempimenti",
+        "d": "Verifica preliminare, politica, impegni, clausole, formazione, stato."
+      }
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 4,
+    "inizia": "Poi il rapporto economico: valore annuo,",
+    "layout": "definizione",
+    "eyebrow": "La remunerazione conta più del valore",
+    "titolo": "Provvigione o compenso a successo",
+    "definizione": "Attivano la verifica di proporzionalità: sono le forme in cui un pagamento indebito si nasconde meglio."
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 6,
+    "inizia": "Sullo stato del rapporto c'è una",
+    "layout": "confronto",
+    "titolo": "Cessato o sospeso",
+    "a": {
+      "h": "Cessato",
+      "sub": "Esce dai calcoli",
+      "punti": [
+        "Solo se il rapporto è davvero finito"
+      ]
+    },
+    "b": {
+      "h": "Sospeso",
+      "sub": "Resta dentro",
+      "punti": [
+        "Il socio su cui si interviene resta sorvegliato"
+      ]
+    }
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 7,
+    "inizia": "Un suggerimento pratico sul censimento iniziale.",
+    "layout": "flusso",
+    "titolo": "Il censimento iniziale: tre fonti incrociate",
+    "passi": [
+      {
+        "h": "Partitario",
+        "d": "fornitori"
+      },
+      {
+        "h": "Contratti",
+        "d": "di agenzia"
+      },
+      {
+        "h": "Primi venti clienti",
+        "d": "per fatturato"
+      }
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 8,
+    "inizia": "Sulla dimensione del censimento, perché è",
+    "layout": "split",
+    "titolo": "Un approccio basato sul rischio",
+    "lead": "Censire centinaia di fornitori con questo dettaglio è impossibile, e la norma non lo chiede.",
+    "punti": [
+      {
+        "h": "Per intero",
+        "d": "agenti, intermediari, consulenti, distributori, joint venture"
+      },
+      {
+        "h": "Con una soglia di valore",
+        "d": "le categorie ordinarie, dichiarando la soglia"
+      }
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 9,
+    "inizia": "La soglia va scritta, non tenuta",
+    "layout": "evidenza",
+    "eyebrow": "La soglia",
+    "titolo": "Dichiarata prima è metodo; ricostruita dopo è una giustificazione.",
+    "testo": "Va scritta, e rivista quando cambia la struttura degli acquisti."
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 10,
+    "inizia": "Sui titolari effettivi, che è il",
+    "layout": "definizione",
+    "eyebrow": "Titolari effettivi",
+    "titolo": "Una ricerca proporzionata al rischio",
+    "definizione": "Per un socio a basso rischio basta la visura; per uno critico servono banche dati specializzate.",
+    "punti": [
+      {
+        "h": "Titolarità non ricostruibile",
+        "d": "non è un campo vuoto: è un aggravante"
+      }
+    ]
+  },
+  {
+    "sezione": "soci-in-affari",
+    "p": 11,
+    "inizia": "Un consiglio sul mantenimento nel tempo.",
+    "layout": "chiusura",
+    "titolo": "Tenere vivo il censimento",
+    "punti": [
+      {
+        "h": "Il socio nuovo",
+        "d": "si inserisce quando nasce il rapporto"
+      },
+      {
+        "h": "Agganciato",
+        "d": "all'apertura dell'anagrafica nel gestionale"
+      },
+      {
+        "h": "La revisione annuale",
+        "d": "trova sempre trenta soci senza data"
+      }
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 0,
+    "inizia": "Questa è la sezione centrale della",
+    "layout": "apertura",
+    "titolo": "Rischio e obblighi",
+    "sottotitolo": "Il meccanismo che decide che cosa è dovuto",
+    "testo": "Non una classificazione statistica: dal livello di rischio discendono gli obblighi.",
+    "agenda": [
+      "Le dimensioni",
+      "Gli aggravanti",
+      "La soglia",
+      "Otto obblighi",
+      "La validità",
+      "Non fattibile",
+      "Molti soci"
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 1,
+    "inizia": "Il livello si valuta su quattro",
+    "layout": "cards",
+    "titolo": "Le {dimensioni37001} dimensioni del rischio",
+    "cards": [
+      {
+        "h": "Paese",
+        "d": "Dove il socio opera per conto, non la sua sede."
+      },
+      {
+        "h": "Pubblici ufficiali",
+        "d": "L'interazione con loro."
+      },
+      {
+        "h": "Natura del rapporto",
+        "d": "Dai beni standard all'agire per conto verso terzi."
+      },
+      {
+        "h": "Rilevanza e discrezionalità",
+        "d": "Della prestazione."
+      }
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 2,
+    "inizia": "Poi ci sono sei fattori aggravanti,",
+    "layout": "punti",
+    "titolo": "{fattori37001} fattori aggravanti",
+    "intro": "Ne basta uno: il livello va almeno ad alto.",
+    "numerati": false,
+    "punti": [
+      {
+        "h": "Provvigione",
+        "d": "o compenso a successo"
+      },
+      {
+        "h": "Socio imposto",
+        "d": "dal cliente o da un pubblico ufficiale"
+      },
+      {
+        "h": "Titolarità o giurisdizione",
+        "d": "opache"
+      },
+      {
+        "h": "Precedenti",
+        "d": "indagini, condanne, sanzioni per corruzione"
+      },
+      {
+        "h": "Legami",
+        "d": "con pubblici ufficiali o candidati"
+      },
+      {
+        "h": "Pagamenti",
+        "d": "a soggetti diversi dal contraente"
+      }
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 3,
+    "inizia": "Uno solo di questi porta il",
+    "layout": "evidenza",
+    "eyebrow": "Il difetto peggiore del percorso",
+    "titolo": "Un agente a provvigione classificato basso.",
+    "testo": "Quattro dimensioni medie non annullano un aggravante, e i precedenti per corruzione portano al massimo. Rivedili su ogni socio."
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 4,
+    "inizia": "La regola su cui poggia l'intera",
+    "layout": "definizione",
+    "eyebrow": "La regola su cui poggia la norma",
+    "titolo": "Controlli rafforzati",
+    "definizione": "Dovuti per i soci con rischio superiore al basso: in pratica, per ogni livello diverso dal più basso."
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 5,
+    "inizia": "Gli obblighi che si accendono sono",
+    "layout": "confronto",
+    "titolo": "Otto obblighi",
+    "a": {
+      "h": "Sempre, sopra soglia",
+      "sub": "Cinque",
+      "punti": [
+        "Verifica preliminare valida",
+        "Politica comunicata",
+        "Impegni acquisiti",
+        "Clausole contrattuali",
+        "Controlli del socio verificati"
+      ]
+    },
+    "b": {
+      "h": "Secondo la situazione",
+      "sub": "Tre",
+      "punti": [
+        "Formazione, se agisce per conto",
+        "Proporzionalità, se a provvigione",
+        "Adeguamento, se controllata"
+      ]
+    }
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 6,
+    "inizia": "Sulla verifica preliminare c'è una cosa",
+    "layout": "numeri",
+    "titolo": "La verifica preliminare scade",
+    "numeri": [
+      {
+        "n": "12 mesi",
+        "h": "Livello critico",
+        "d": "Rivista ogni anno."
+      },
+      {
+        "n": "36 mesi",
+        "h": "Livello basso",
+        "d": "La validità più lunga."
+      }
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 8,
+    "inizia": "Chiudere un obbligo dichiarando non fattibile",
+    "layout": "evidenza",
+    "eyebrow": "L'unica scorciatoia",
+    "titolo": "Non fattibile: solo documentato, e valutato nel rischio.",
+    "testo": "Senza il perché è la prima cosa che un auditor cerca. Cinque righe scritte subito valgono mezza giornata di ricostruzione."
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 9,
+    "inizia": "Un modo pratico di condurre la",
+    "layout": "tabella",
+    "titolo": "Molti soci, senza metterci settimane",
+    "cols": [
+      "Situazione",
+      "Come si valuta"
+    ],
+    "righe": [
+      [
+        "Agisce per conto e ha contatti con pubblici ufficiali",
+        "Uno per uno, con cura"
+      ],
+      [
+        "Solo una delle due",
+        "Con attenzione"
+      ],
+      [
+        "Nessuna delle due",
+        "Per categoria omogenea, dichiarandolo"
+      ]
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 11,
+    "inizia": "Sulla verifica di proporzionalità del corrispettivo,",
+    "layout": "split",
+    "titolo": "La verifica di proporzionalità",
+    "lead": "Non che il prezzo sia basso: che il compenso sia proporzionato alla prestazione resa.",
+    "punti": [
+      {
+        "h": "15% per aver presentato un cliente",
+        "d": "sproporzionato"
+      },
+      {
+        "h": "15% gestendo cliente, credito e assistenza",
+        "d": "proporzionato"
+      },
+      {
+        "h": "Si registra",
+        "d": "il ragionamento, non il numero"
+      }
+    ]
+  },
+  {
+    "sezione": "rischio-e-obblighi",
+    "p": 12,
+    "inizia": "E un'ultima cosa sulla validità della",
+    "layout": "chiusura",
+    "titolo": "Il carico delle verifiche",
+    "punti": [
+      {
+        "h": "Cento soci, validità di due anni",
+        "d": "cinquanta verifiche l'anno per stare fermi"
+      },
+      {
+        "h": "Va pianificato",
+        "d": "all'inizio"
+      },
+      {
+        "h": "Scadenze distribuite",
+        "d": "non tutte nel mese del censimento"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 0,
+    "inizia": "I registri sono dodici, e sono",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "{registri37001} registri che alimentano il cruscotto",
+    "testo": "E gli indicatori, e la relazione all'organo di governo.",
+    "agenda": [
+      "Il registro dei rischi",
+      "Regali e ospitalità",
+      "Le date",
+      "Come tenerli",
+      "Deleghe e conflitti",
+      "Controlli finanziari e non"
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 1,
+    "inizia": "Il primo è anche il più",
+    "layout": "confronto",
+    "titolo": "Corruzione in uscita e in entrata",
+    "a": {
+      "h": "In uscita",
+      "sub": "Commessa dall'organizzazione",
+      "punti": [
+        "Scenari per processo",
+        "Probabilità e conseguenza"
+      ]
+    },
+    "b": {
+      "h": "In entrata",
+      "sub": "Subita dai propri addetti",
+      "punti": [
+        "Tenuta separata",
+        "Con controlli e idoneità"
+      ]
+    }
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 2,
+    "inizia": "Uno scenario con controlli non idonei",
+    "layout": "evidenza",
+    "eyebrow": "La regola pratica",
+    "titolo": "Ogni scenario, almeno un controllo nel registro.",
+    "testo": "Se non c'è, il controllo non esiste o non è registrato: in entrambi i casi va sistemato."
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 3,
+    "inizia": "Sul registro dei regali e delle",
+    "layout": "definizione",
+    "eyebrow": "Regali e ospitalità",
+    "titolo": "L'autorizzazione preventiva è preventiva",
+    "definizione": "Registrata dopo, senza averla chiesta, resta come autorizzazione dovuta e mancata: un indicatore negativo.",
+    "punti": [
+      {
+        "h": "Il rimedio",
+        "d": "la soglia comunicata a chi può ricevere, non a chi tiene il registro"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 5,
+    "inizia": "E poi vale anche qui la",
+    "layout": "tabella",
+    "titolo": "Conta la data",
+    "cols": [
+      "Registro",
+      "Date che servono"
+    ],
+    "righe": [
+      [
+        "Segnalazioni",
+        "Ricezione e presa in carico"
+      ],
+      [
+        "Non conformità",
+        "Termine e chiusura"
+      ],
+      [
+        "Audit",
+        "Esecuzione"
+      ],
+      [
+        "Controlli",
+        "Ultima verifica ed esito"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 6,
+    "inizia": "Un consiglio su come tenerli. Dodici",
+    "layout": "numeri",
+    "titolo": "Come tenerli",
+    "numeri": [
+      {
+        "n": "Quattro",
+        "h": "Registri vivi",
+        "d": "Controlli, regali, formazione, conflitti di interessi."
+      },
+      {
+        "n": "Otto",
+        "h": "Quando serve",
+        "d": "Si toccano quando succede qualcosa."
+      },
+      {
+        "n": "Una volta al mese",
+        "h": "Un momento fisso",
+        "d": "Per non scoprirli vuoti a dicembre."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 7,
+    "inizia": "Sul registro delle deleghe e dei",
+    "layout": "definizione",
+    "eyebrow": "Deleghe e poteri decisionali",
+    "titolo": "La mappa di chi può decidere",
+    "definizione": "La corruzione vuole qualcuno che possa decidere e nessuno che controlli: il registro è la mappa della prima metà.",
+    "punti": [
+      {
+        "h": "Una delega mai revocata",
+        "d": "è un potere che nessuno sa di dover sorvegliare"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 8,
+    "inizia": "Sul registro dei conflitti di interessi",
+    "layout": "evidenza",
+    "eyebrow": "Conflitti di interessi",
+    "titolo": "Una dichiarazione all'assunzione non vale dopo due anni.",
+    "testo": "I conflitti nascono. La raccolta si rifà con periodicità, soprattutto per chi ha poteri di spesa."
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 9,
+    "inizia": "Un modo di far vivere il",
+    "layout": "cards",
+    "titolo": "Il registro delle segnalazioni",
+    "cards": [
+      {
+        "h": "Con il percorso segnalazioni",
+        "d": "Rimanda al fascicolo."
+      },
+      {
+        "h": "Senza",
+        "d": "È l'unico posto: annota anche quelle arrivate a voce, che sono la maggioranza."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-37001",
+    "p": 10,
+    "inizia": "Infine, una osservazione sui controlli finanziari",
+    "layout": "confronto",
+    "titolo": "Controlli finanziari e non finanziari",
+    "a": {
+      "h": "Finanziari",
+      "sub": "Il momento del pagamento",
+      "punti": [
+        "Doppia firma",
+        "Tracciabilità",
+        "Limiti al contante",
+        "Controllo delle causali"
+      ]
+    },
+    "b": {
+      "h": "Non finanziari",
+      "sub": "Tutto ciò che accade prima",
+      "punti": [
+        "Separazione dei compiti",
+        "Rotazione",
+        "Verifiche a campione",
+        "Autorizzazioni"
+      ]
+    }
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 0,
+    "inizia": "La mappa di conformità porta novantuno",
+    "layout": "apertura",
+    "titolo": "La mappa di conformità",
+    "sottotitolo": "{requisiti37001} domande su {capi37001} capitoli",
+    "testo": "Ciascuna riferita al punto della norma e collegata alla procedura che le risponde.",
+    "agenda": [
+      "Domande da certificatore",
+      "Non valutato pesa zero",
+      "Il non applicabile",
+      "Le evidenze",
+      "Da dove cominciare",
+      "Le parziali"
+    ]
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 1,
+    "inizia": "Come nel Modello, le domande sono",
+    "layout": "evidenza",
+    "eyebrow": "Scritte come le porrebbe chi certifica",
+    "titolo": "È l'autovalutazione che precede l'audit.",
+    "testo": "L'evidenza annotata accanto a ogni domanda è il riferimento che esibirai."
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 2,
+    "inizia": "La regola di calcolo è quella",
+    "layout": "numeri",
+    "titolo": "Un requisito non valutato pesa zero",
+    "numeri": [
+      {
+        "n": "Dieci",
+        "h": "Conformi, gli unici valutati",
+        "d": "Mediati da soli, varrebbero il 100%."
+      },
+      {
+        "n": "{requisiti37001}",
+        "h": "Tutti conformi",
+        "d": "Lo stesso numero, per una situazione opposta."
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 3,
+    "inizia": "Sul non applicabile serve parsimonia, e",
+    "layout": "definizione",
+    "eyebrow": "Con parsimonia",
+    "titolo": "Non applicabile",
+    "definizione": "Per requisiti oggettivamente estranei, come i punti sulle controllate quando non ce ne sono.",
+    "punti": [
+      {
+        "h": "Usato per evitare una non conformità",
+        "d": "non regge la prima domanda in audit"
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 5,
+    "inizia": "Un suggerimento sulle evidenze che fa",
+    "layout": "confronto",
+    "titolo": "Quale evidenza",
+    "a": {
+      "h": "Una procedura",
+      "sub": "Descrive l'intenzione",
+      "punti": [
+        "Un rimando generico"
+      ]
+    },
+    "b": {
+      "h": "Una riga di registro",
+      "sub": "Dimostra l'esecuzione",
+      "punti": [
+        "Verificabile in trenta secondi"
+      ]
+    }
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 6,
+    "inizia": "Un consiglio su come affrontare le",
+    "layout": "flusso",
+    "titolo": "Non in ordine di capitolo",
+    "passi": [
+      {
+        "h": "Un terzo",
+        "d": "risponde già dai registri: un'ora, con l'evidenza pronta"
+      },
+      {
+        "h": "Due terzi",
+        "d": "chiedono una decisione o un documento, e si affrontano sapendo dove si è"
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 7,
+    "inizia": "Sulle domande parzialmente conformi vale una",
+    "layout": "split",
+    "titolo": "Le parzialmente conformi",
+    "lead": "Senza una nota non servono a nessuno, né a te fra sei mesi né all'auditor.",
+    "punti": [
+      {
+        "h": "La nota dice",
+        "d": "che pezzo manca"
+      },
+      {
+        "h": "E dice",
+        "d": "che cosa serve per chiuderlo"
+      },
+      {
+        "h": "L'elenco delle parziali",
+        "d": "diventa il piano di lavoro"
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-37001",
+    "p": 8,
+    "inizia": "E una cosa sull'ordine fra autovalutazione",
+    "layout": "chiusura",
+    "titolo": "Prima l'autovalutazione, poi l'audit interno",
+    "punti": [
+      {
+        "h": "Non lo sostituisce",
+        "d": "e non lo segue"
+      },
+      {
+        "h": "L'audit interno",
+        "d": "arriva su un sistema già ripulito"
+      },
+      {
+        "h": "Scoprire in audit",
+        "d": "che mancano le clausole è un audit sprecato"
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 0,
+    "inizia": "Gli indicatori sono di due famiglie,",
+    "layout": "apertura",
+    "titolo": "Gli indicatori",
+    "sottotitolo": "Che cosa è stato fatto, e se funziona",
+    "testo": "Due famiglie per due domande diverse.",
+    "agenda": [
+      "Processo ed esito",
+      "Zero segnalazioni",
+      "I benefici autorizzati",
+      "Misurare il canale",
+      "Obiettivi",
+      "Percentuali e numeri assoluti"
+    ]
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 1,
+    "inizia": "Quelli di processo dicono che cosa",
+    "layout": "confronto",
+    "titolo": "Processo ed esito",
+    "a": {
+      "h": "Processo",
+      "sub": "Che cosa è stato fatto",
+      "punti": [
+        "Verifiche preliminari valide",
+        "Obblighi assolti",
+        "Clausole e impegni",
+        "Audit e formazione"
+      ]
+    },
+    "b": {
+      "h": "Esito",
+      "sub": "Come sta andando",
+      "punti": [
+        "Segnalazioni prese in carico nei termini",
+        "Casi e riesami",
+        "Ritorsioni",
+        "Benefici autorizzati prima"
+      ]
+    }
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 3,
+    "inizia": "E adesso la lettura che conta,",
+    "layout": "evidenza",
+    "eyebrow": "La lettura che conta",
+    "titolo": "Nessuna segnalazione, nessun caso: da guardare con attenzione.",
+    "testo": "Senza aver misurato il canale non dimostra efficacia, dimostra di non aver guardato. Zero in un anno è quasi sempre un canale sconosciuto o non creduto."
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 6,
+    "inizia": "Un'ultima nota sull'indicatore dei benefici autorizzati",
+    "layout": "definizione",
+    "eyebrow": "L'unico che misura un'abitudine",
+    "titolo": "Benefici autorizzati preventivamente",
+    "definizione": "Il più lento a migliorare. Se resta fermo mentre gli altri salgono, il sistema è documentato e non praticato."
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 7,
+    "inizia": "Due parole su come si costruisce",
+    "layout": "cards",
+    "titolo": "Tre domande in una rilevazione interna",
+    "cards": [
+      {
+        "h": "Sapete che il canale esiste?",
+        "d": "Misura la comunicazione."
+      },
+      {
+        "h": "Sapreste dove trovarlo adesso?",
+        "d": "Misura l'accessibilità."
+      },
+      {
+        "h": "Lo usereste?",
+        "d": "Misura la fiducia: la più scomoda, e la più utile."
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 8,
+    "inizia": "Sugli obiettivi anticorruzione, che la norma",
+    "layout": "split",
+    "titolo": "Obiettivi che funzionano",
+    "lead": "«Mantenere alto il livello di conformità» non è un obiettivo.",
+    "punti": [
+      {
+        "h": "100% di verifiche preliminari",
+        "d": "sui soci critici entro giugno"
+      },
+      {
+        "h": "Formazione",
+        "d": "a tutti i responsabili con poteri di spesa, entro l'anno"
+      },
+      {
+        "h": "Oltre il 90%",
+        "d": "di autorizzazioni preventive sui benefici"
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-37001",
+    "p": 9,
+    "inizia": "E una lettura che vale per",
+    "layout": "numeri",
+    "titolo": "Percentuale e numero assoluto, insieme",
+    "numeri": [
+      {
+        "n": "100%",
+        "h": "Su tre soci critici",
+        "d": "La percentuale la premia."
+      },
+      {
+        "n": "80%",
+        "h": "Su cinquanta soci critici",
+        "d": "Una situazione completamente diversa."
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 0,
+    "inizia": "Il corpus base porta dodici procedure",
+    "layout": "apertura",
+    "titolo": "Il corpus",
+    "sottotitolo": "{procedure37001} procedure e {moduli37001} moduli",
+    "testo": "Dal contesto e dal rischio fino a monitoraggio, audit e miglioramento, personalizzabile blocco per blocco.",
+    "agenda": [
+      "L'ordine di approvazione",
+      "Due documenti",
+      "Le criticità",
+      "La politica",
+      "La formazione",
+      "Il riesame"
+    ]
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 1,
+    "inizia": "Sull'ordine di approvazione c'è una sequenza",
+    "layout": "flusso",
+    "titolo": "L'ordine di approvazione",
+    "passi": [
+      {
+        "h": "Rischio",
+        "d": "e politica"
+      },
+      {
+        "h": "Funzione",
+        "d": "e deleghe"
+      },
+      {
+        "h": "Verifica preliminare",
+        "d": "e soci in affari"
+      },
+      {
+        "h": "Controlli e benefici",
+        "d": "poi le segnalazioni"
+      },
+      {
+        "h": "Per ultimi",
+        "d": "pianificazione, competenze, formazione, riesame"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 2,
+    "inizia": "La ragione sta nel primo passaggio.",
+    "layout": "evidenza",
+    "eyebrow": "Perché si parte dal rischio",
+    "titolo": "Procedure prima del rischio: controlli per scenari mai descritti.",
+    "testo": "Arrivata la valutazione, i controlli sono sovradimensionati o insufficienti, e sono già passati in delibera."
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 3,
+    "inizia": "Il percorso produce due documenti. La",
+    "layout": "confronto",
+    "titolo": "Due documenti, due destinatari",
+    "a": {
+      "h": "La relazione",
+      "sub": "All'organo di governo",
+      "punti": [
+        "Racconta",
+        "Letta una volta all'anno"
+      ]
+    },
+    "b": {
+      "h": "La matrice di conformità",
+      "sub": "Per l'audit",
+      "punti": [
+        "Dimostra"
+      ]
+    }
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 5,
+    "inizia": "Un consiglio sulla relazione, che è",
+    "layout": "definizione",
+    "eyebrow": "La sezione più letta della relazione",
+    "titolo": "Le criticità",
+    "definizione": "Non l'elenco dei punti scoperti: che cosa succederebbe se restassero scoperti, e che cosa costa chiuderli."
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 6,
+    "inizia": "Sulla politica anticorruzione, che è il",
+    "layout": "cards",
+    "titolo": "La politica deve dire tre cose",
+    "cards": [
+      {
+        "h": "Che cosa è vietato",
+        "d": "In quell'azienda, con esempi concreti."
+      },
+      {
+        "h": "Che cosa succede",
+        "d": "A chi lo fa."
+      },
+      {
+        "h": "A chi rivolgersi",
+        "d": "Per un dubbio."
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 7,
+    "inizia": "Sulla formazione, che è il pezzo",
+    "layout": "split",
+    "titolo": "La formazione, differenziata per esposizione",
+    "lead": "Uguale per tutti annoia i primi e non serve ai secondi.",
+    "punti": [
+      {
+        "h": "Senza contatti esterni",
+        "d": "un'ora su politica e canale"
+      },
+      {
+        "h": "Acquisti e rapporti pubblici",
+        "d": "casi concreti e soglie"
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-37001",
+    "p": 8,
+    "inizia": "Un'ultima cosa sul riesame della direzione,",
+    "layout": "chiusura",
+    "titolo": "Il riesame della direzione",
+    "punti": [
+      {
+        "h": "Gli indicatori",
+        "d": "il primo ingresso"
+      },
+      {
+        "h": "Le criticità emerse",
+        "d": "il secondo"
+      },
+      {
+        "h": "Le risorse della funzione",
+        "d": "il terzo: quello che si omette, e che lo rende utile"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui si",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Il sistema costruito da zero",
+    "testo": "Nell'ordine giusto, la maggior parte degli errori non arriva.",
+    "agenda": [
+      "L'ordine",
+      "I primi due errori",
+      "Gli altri quattro",
+      "Che cosa chiede la norma",
+      "Avviare l'incarico"
+    ]
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 1,
+    "inizia": "Prima l'anagrafica, con la governance dichiarata,",
+    "layout": "flusso",
+    "titolo": "L'ordine in cui si costruisce",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "governance, funzione, canale"
+      },
+      {
+        "h": "Rischi",
+        "d": "scenari con controlli e idoneità"
+      },
+      {
+        "h": "Soci in affari",
+        "d": "censimento, livelli, aggravanti, adempimenti"
+      },
+      {
+        "h": "Deleghe e persone",
+        "d": "conflitti, dichiarazioni, formazione"
+      },
+      {
+        "h": "Conformità",
+        "d": "audit interno e relazione"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 3,
+    "inizia": "Il primo è confondere i soci",
+    "layout": "confronto",
+    "titolo": "I primi due valgono metà del rischio",
+    "a": {
+      "h": "Soci confusi con l'albo fornitori",
+      "sub": "Fuori agenti, intermediari, clienti",
+      "punti": [
+        "Proprio quelli per cui la norma esiste"
+      ]
+    },
+    "b": {
+      "h": "Aggravanti non compilati",
+      "sub": "L'agente a provvigione resta basso",
+      "punti": [
+        "Nessun obbligo dovuto",
+        "Il sistema funziona e non copre chi doveva"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 4,
+    "inizia": "Il terzo è la verifica preliminare",
+    "layout": "tabella",
+    "titolo": "Gli altri quattro",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Verifica preliminare senza data",
+        "Obbligo mai assolto, quota a zero"
+      ],
+      [
+        "Non fattibile senza motivazione",
+        "Chiuso male: peggio che aperto"
+      ],
+      [
+        "Conformi su procedure generiche",
+        "Una conformità che non regge"
+      ],
+      [
+        "Registri a fine anno",
+        "Date vicine, mesi vuoti senza traccia"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 6,
+    "inizia": "Una riflessione che vale per tutto",
+    "layout": "evidenza",
+    "eyebrow": "Da spiegare prima di cominciare",
+    "titolo": "Non dimostrare che la corruzione non c'è: dimostrare di aver guardato.",
+    "testo": "Un sistema che dichiara zero rischio su tutto non è più credibile di uno che mostra i punti esposti e come li governa."
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 7,
+    "inizia": "Aggiungo due cose sull'avvio dell'incarico, perché",
+    "layout": "definizione",
+    "eyebrow": "Avviare l'incarico",
+    "titolo": "Uno strumento di gestione",
+    "definizione": "Non un attestato di onestà: chi lo adotta per dimostrare di essere pulito rifiuta di scrivere dove potrebbe non esserlo."
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 8,
+    "inizia": "La seconda riguarda il censimento dei",
+    "layout": "split",
+    "titolo": "Il censimento si prenota per primo",
+    "lead": "È l'unica attività del percorso che non si fa da soli in ufficio.",
+    "punti": [
+      {
+        "h": "Serve accesso",
+        "d": "a gestionale fornitori, contratti di agenzia, elenco clienti"
+      },
+      {
+        "h": "Servono le persone",
+        "d": "che li conoscono"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-37001",
+    "p": 9,
+    "inizia": "E una nota su che cosa",
+    "layout": "chiusura",
+    "titolo": "«La certificazione mi protegge?»",
+    "punti": [
+      {
+        "h": "Certificato e applicato",
+        "d": "un elemento a favore"
+      },
+      {
+        "h": "Certificato e non applicato",
+        "d": "peggio di nessun sistema"
+      },
+      {
+        "h": "La differenza",
+        "d": "la fanno i registri e la formazione"
+      }
+    ]
+  }
+]

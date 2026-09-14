@@ -65,12 +65,16 @@ function Num({ n, scuro }: { n: string; scuro: boolean }) {
 
 function RigaPunto({ n, p, scuro }: { n: string; p: Punto; scuro: boolean }) {
   const { h, d } = testoPunto(p);
+  // ⚠️ Senza numerazione non si mette un SEGNO al suo posto: il «·» di Academy, a 12 px nel
+  // colore d'accento, a schermo si leggeva come una macchia accanto a etichette che si
+  // numerano già da sole («Uno», «Due»…). L'ha visto la foto di bilancio. Niente segno.
+  const senzaNumero = n === "·";
   return (
     <div
-      className="flex items-baseline gap-5 border-t py-[11px]"
+      className={`flex items-baseline border-t py-[11px] ${senzaNumero ? "" : "gap-5"}`}
       style={{ borderColor: scuro ? "var(--s-linea-su-scuro)" : "var(--s-linea)" }}
     >
-      <Num n={n} scuro={scuro} />
+      {!senzaNumero && <Num n={n} scuro={scuro} />}
       <span className="text-[17px] leading-[1.4]" style={{ color: scuro ? "var(--s-su-scuro)" : "var(--s-corpo)" }}>
         {h && (
           <b className="font-semibold" style={{ color: scuro ? "var(--s-titolo-su-scuro)" : "var(--s-inchiostro)" }}>
@@ -193,15 +197,23 @@ function Corpo({ v, scuro }: { v: VoceSlide; scuro: boolean }) {
 
     case "cards": {
       const cards = (v.cards as { h: string; d?: string }[] | undefined) ?? [];
-      const cols = cards.length <= 3 ? cards.length : 3;
+      // ⚠️ Nessuna scheda orfana. Con tre colonne fisse, quattro schede davano 3+1 e cinque
+      // davano 3+2 con un buco a destra: l'ha visto la foto di ghg. Quattro vanno 2+2; cinque
+      // vanno 3+2 con la seconda riga CENTRATA, su una griglia a sei colonne dove ogni scheda
+      // ne occupa due e la quarta comincia dalla seconda.
+      const n = cards.length;
+      const griglia =
+        n === 1 ? "grid-cols-1" : n === 2 || n === 4 ? "grid-cols-2" : n === 5 ? "grid-cols-6" : "grid-cols-3";
       return (
         <>
           <Titolo scuro={false}>{titolo}</Titolo>
-          <div
-            className={`mt-[26px] grid gap-4 ${cols === 1 ? "grid-cols-1" : cols === 2 ? "grid-cols-2" : "grid-cols-3"}`}
-          >
+          <div className={`mt-[26px] grid gap-4 ${griglia}`}>
             {cards.map((c, i) => (
-              <div key={i} className="rounded-xl border p-[26px]" style={{ background: "var(--s-carta)", borderColor: "var(--s-linea)" }}>
+              <div
+                key={i}
+                className={`rounded-xl border p-[26px] ${n === 5 ? (i === 3 ? "col-span-2 col-start-2" : "col-span-2") : ""}`}
+                style={{ background: "var(--s-carta)", borderColor: "var(--s-linea)" }}
+              >
                 <p className="mb-3.5 font-mono text-[13px]" style={{ color: "var(--s-accento)" }}>
                   {due(i + 1)}
                 </p>
@@ -284,16 +296,26 @@ function Corpo({ v, scuro }: { v: VoceSlide; scuro: boolean }) {
     }
 
     case "confronto": {
-      const colonna = (c: { h?: string; sub?: string; punti?: Punto[] } | undefined) => (
-        <div>
-          <p className="font-display mb-1.5 text-[24px] font-semibold" style={{ color: "var(--s-inchiostro)" }}>
-            {c?.h}
-          </p>
-          {c?.sub && (
-            <p className="mb-2.5 font-mono text-[14px] uppercase tracking-[0.12em]" style={{ color: "var(--s-accento)" }}>
-              {c.sub}
-            </p>
-          )}
+      type Colonna = { h?: string; sub?: string; punti?: Punto[] } | undefined;
+      const a = v.a as Colonna;
+      const b = v.b as Colonna;
+      // ⚠️ Le due colonne condividono le RIGHE, non solo la griglia. Come due blocchi
+      // indipendenti, un titolo che andava a capo a destra spingeva giù tutta la colonna
+      // destra, e i due elenchi non erano più allineati — «Contratto di fornitura 2024,
+      // cartella contratti» in ghg. Qui titolo, sottotitolo ed elenco stanno ciascuno su una
+      // riga della griglia comune, quindi la riga si alza per tutte e due.
+      const intestazione = (c: Colonna) => (
+        <p className="font-display self-end text-[24px] font-semibold leading-[1.2]" style={{ color: "var(--s-inchiostro)" }}>
+          {c?.h}
+        </p>
+      );
+      const sotto = (c: Colonna) => (
+        <p className="mt-1.5 font-mono text-[14px] uppercase tracking-[0.12em]" style={{ color: "var(--s-accento)" }}>
+          {c?.sub ?? ""}
+        </p>
+      );
+      const elenco = (c: Colonna) => (
+        <div className="mt-2.5">
           {(c?.punti ?? []).map((p, i) => (
             <div key={i} className="flex items-baseline gap-3.5 border-t py-2.5" style={{ borderColor: "var(--s-linea)" }}>
               <span className="text-[13px]" style={{ color: "var(--s-accento)" }} aria-hidden>
@@ -310,9 +332,13 @@ function Corpo({ v, scuro }: { v: VoceSlide; scuro: boolean }) {
         <>
           <Titolo scuro={false}>{titolo}</Titolo>
           <Intro testo={v.intro} scuro={false} />
-          <div className="mt-7 grid grid-cols-2 gap-14">
-            {colonna(v.a as never)}
-            {colonna(v.b as never)}
+          <div className="mt-7 grid grid-cols-2 gap-x-14">
+            {intestazione(a)}
+            {intestazione(b)}
+            {sotto(a)}
+            {sotto(b)}
+            {elenco(a)}
+            {elenco(b)}
           </div>
         </>
       );

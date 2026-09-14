@@ -1,0 +1,919 @@
+[
+  {
+    "sezione": "anagrafica-qas",
+    "p": 0,
+    "inizia": "Questo primo passo sembra la scheda",
+    "layout": "apertura",
+    "titolo": "Anagrafica",
+    "sottotitolo": "Due decisioni che pesano su tutto",
+    "testo": "Quanti requisiti dovrai gestire, e se gli indici del cruscotto avranno un numero o resteranno vuoti.",
+    "agenda": [
+      "Le norme applicate",
+      "I ruoli",
+      "Esclusioni ammesse e no",
+      "Le ore lavorate",
+      "L'ordine",
+      "Il campo di applicazione"
+    ]
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 1,
+    "inizia": "Comincia dalle norme applicate, perché sono",
+    "layout": "definizione",
+    "eyebrow": "Un elenco, non una scelta unica",
+    "titolo": "Le norme applicate",
+    "definizione": "Una, due o tutte e {normeQas}: dalla combinazione dipende quali dei {requisitiQas} requisiti entrano nella mappa.",
+    "punti": [
+      {
+        "h": "Certificato solo sulla qualità",
+        "d": "non si vede contare addosso ambiente e sicurezza"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 2,
+    "inizia": "Il secondo gruppo di campi sono",
+    "layout": "split",
+    "titolo": "I ruoli, con nomi veri",
+    "lead": "Sono le persone a cui il sistema attribuirà le azioni: un ruolo vuoto è un'azione senza destinatario.",
+    "punti": [
+      {
+        "h": "Direzione",
+        "d": "dell'organizzazione"
+      },
+      {
+        "h": "Responsabile",
+        "d": "del sistema"
+      },
+      {
+        "h": "Responsabile",
+        "d": "della prevenzione"
+      },
+      {
+        "h": "Medico",
+        "d": "competente"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 3,
+    "inizia": "Il terzo gruppo è il sistema:",
+    "layout": "confronto",
+    "titolo": "Le esclusioni",
+    "a": {
+      "h": "Ammessa",
+      "sub": "Un requisito di qualità che non si applica",
+      "punti": [
+        "La progettazione, per chi produce su specifica del cliente"
+      ]
+    },
+    "b": {
+      "h": "Mai ammessa",
+      "sub": "Ambiente e sicurezza",
+      "punti": [
+        "Attività con impatti ambientali significativi",
+        "Luoghi di lavoro"
+      ]
+    }
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 4,
+    "inizia": "C'è poi un campo che si",
+    "layout": "evidenza",
+    "eyebrow": "Il campo che vale più di tutti",
+    "titolo": "Senza ore lavorate, gli indici di sicurezza restano vuoti.",
+    "testo": "Frequenza e gravità non escono sbagliati: non escono. Vuoti nel cruscotto e nel riesame, dove qualcuno andrà a cercarli."
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 5,
+    "inizia": "L'errore che ne consegue è di",
+    "layout": "definizione",
+    "eyebrow": "Un errore silenzioso",
+    "titolo": "Ore lavorate aggiornate a ogni periodo",
+    "definizione": "Compilate a gennaio e dimenticate, a dicembre gli indici si calcolano su un monte ore vecchio di un anno."
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 6,
+    "inizia": "Nella pratica, la sequenza che funziona",
+    "layout": "flusso",
+    "titolo": "La sequenza che funziona",
+    "passi": [
+      {
+        "h": "Le norme",
+        "d": "determinano il perimetro"
+      },
+      {
+        "h": "Campo ed esclusioni",
+        "d": "da concordare con la direzione"
+      },
+      {
+        "h": "Ruoli e ore lavorate",
+        "d": "raccolta, delegabile a chi ha i dati"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-qas",
+    "p": 7,
+    "inizia": "Una cosa che si trascura quasi",
+    "layout": "chiusura",
+    "titolo": "Da portare via",
+    "punti": [
+      {
+        "h": "Il campo di applicazione",
+        "d": "coincide con quello dei certificati"
+      },
+      {
+        "h": "Le esclusioni",
+        "d": "mai su ambiente e sicurezza"
+      },
+      {
+        "h": "Le ore lavorate",
+        "d": "a ogni periodo"
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 0,
+    "inizia": "Gli indicatori sono la parte del",
+    "layout": "apertura",
+    "titolo": "Gli indicatori",
+    "sottotitolo": "Quelli che i clienti guardano di più",
+    "testo": "E che si costruiscono peggio: vale la pena capire perché prima di compilarne uno.",
+    "agenda": [
+      "Che cosa porta un indicatore",
+      "Il verso del miglioramento",
+      "I target vuoti",
+      "Reattivi e proattivi",
+      "Cambiare la formula",
+      "La frequenza"
+    ]
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 1,
+    "inizia": "Ogni indicatore porta con sé sette",
+    "layout": "split",
+    "titolo": "Che cosa porta un indicatore",
+    "lead": "Il set di partenza ne propone {indicatoriQas}, già con formula e riferimenti. I target no: un target ereditato non è un obiettivo.",
+    "punti": [
+      {
+        "h": "Definizione",
+        "d": "e formula"
+      },
+      {
+        "h": "Fonte",
+        "d": "e frequenza di rilevazione"
+      },
+      {
+        "h": "Valore iniziale",
+        "d": "il punto di partenza"
+      },
+      {
+        "h": "Target",
+        "d": "con il suo verso"
+      },
+      {
+        "h": "Soglia",
+        "d": "di attenzione"
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 2,
+    "inizia": "Il primo modo in cui un",
+    "layout": "confronto",
+    "titolo": "Il verso del miglioramento",
+    "a": {
+      "h": "Deve calare",
+      "sub": "Reclami, infortuni, consumi",
+      "punti": [
+        "Soglia di attenzione sopra il target"
+      ]
+    },
+    "b": {
+      "h": "Deve salire",
+      "sub": "Soddisfazione, formazione",
+      "punti": [
+        "Soglia di attenzione sotto il target"
+      ]
+    }
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 3,
+    "inizia": "Il secondo modo è più sottile",
+    "layout": "evidenza",
+    "eyebrow": "Un altro modo in cui un cruscotto mente",
+    "titolo": "Un indicatore senza target non è a target: è non rilevato.",
+    "testo": "Nel prototipo un target vuoto valeva zero, e l'indicatore risultava conforme. Su ogni casella vuota: che si veda che manca."
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 4,
+    "inizia": "C'è poi una scelta di composizione",
+    "layout": "cards",
+    "titolo": "Reattivi e proattivi",
+    "cards": [
+      {
+        "h": "Reattivi",
+        "d": "Infortuni, reclami, non conformità: ciò che è già accaduto."
+      },
+      {
+        "h": "Proattivi",
+        "d": "Sopralluoghi, mancati infortuni, formazione: almeno uno per ambito."
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 5,
+    "inizia": "Su come si parla di questo",
+    "layout": "definizione",
+    "eyebrow": "Con il cliente",
+    "titolo": "Rendicontare o governare",
+    "definizione": "I reattivi servono a rendicontare, i proattivi a governare: con i secondi si decide qualcosa lunedì mattina."
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 6,
+    "inizia": "Un'ultima regola, che riguarda il tempo.",
+    "layout": "evidenza",
+    "eyebrow": "Cambiare il criterio di calcolo",
+    "titolo": "Si annota, e la serie si ricostruisce o si interrompe.",
+    "testo": "Un grafico che prosegue attraverso un cambio di formula confronta due cose diverse, e non lo dice."
+  },
+  {
+    "sezione": "indicatori-qas",
+    "p": 7,
+    "inizia": "Che cosa si trascura di più:",
+    "layout": "chiusura",
+    "titolo": "La frequenza di rilevazione",
+    "punti": [
+      {
+        "h": "Mensile compilato quando capita",
+        "d": "una serie con i buchi"
+      },
+      {
+        "h": "Una serie con i buchi",
+        "d": "non mostra una tendenza"
+      },
+      {
+        "h": "Meglio trimestrale",
+        "d": "e rispettato"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 0,
+    "inizia": "I registri sono sedici, e conviene",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "{registriQas} fonti di calcolo, non archivi",
+    "testo": "Cruscotto, riesame e stampe prendono i numeri da qui: un registro incompleto è un calcolo che non si fa.",
+    "agenda": [
+      "Quattro gruppi",
+      "Date e stati",
+      "Da dove cominciare",
+      "Le autorizzazioni",
+      "Che cosa chiede chi controlla",
+      "La gestione delle modifiche"
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 1,
+    "inizia": "Eccoli, per gruppi. Sul contesto e",
+    "layout": "cards",
+    "titolo": "Quattro gruppi",
+    "cards": [
+      {
+        "h": "Contesto e persone",
+        "d": "Processi, parti interessate, consultazione dei lavoratori."
+      },
+      {
+        "h": "Ambiente e sicurezza",
+        "d": "Aspetti, pericoli, obblighi, autorizzazioni."
+      },
+      {
+        "h": "Gestione",
+        "d": "Obiettivi, modifiche, formazione, fornitori, emergenze."
+      },
+      {
+        "h": "Controllo",
+        "d": "Reclami, audit, non conformità, infortuni."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 2,
+    "inizia": "Il punto che fa la differenza",
+    "layout": "tabella",
+    "titolo": "Sono le date e gli stati a fare i calcoli",
+    "cols": [
+      "Registrazione",
+      "Conta solo se"
+    ],
+    "righe": [
+      [
+        "Audit eseguito",
+        "Ha la data"
+      ],
+      [
+        "Non conformità chiusa nei termini",
+        "Ha termine e data di chiusura"
+      ],
+      [
+        "Infortunio negli indici",
+        "È classificato infortunio e ha i giorni di assenza"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 3,
+    "inizia": "Detto al contrario: una registrazione incompleta",
+    "layout": "evidenza",
+    "eyebrow": "Sembra una durezza del prodotto",
+    "titolo": "È quello che succederebbe in audit.",
+    "testo": "Un audit senza data non viene contato come eseguito: il sistema te lo dice prima del verificatore."
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 4,
+    "inizia": "Sull'ordine di lavoro, la raccomandazione è",
+    "layout": "split",
+    "titolo": "Non aprire tutti i registri insieme",
+    "lead": "Comincia da quelli che alimentano gli indicatori scelti; gli altri quando succede la cosa.",
+    "punti": [
+      {
+        "h": "Un indicatore sui reclami",
+        "d": "apri reclami e soddisfazione"
+      },
+      {
+        "h": "Uno sulla formazione",
+        "d": "apri formazione"
+      },
+      {
+        "h": "Tutti aperti a gennaio",
+        "d": "tutti a metà, e non servono"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 5,
+    "inizia": "Un registro merita un discorso a",
+    "layout": "numeri",
+    "titolo": "Le autorizzazioni: l'anticipo va generoso",
+    "numeri": [
+      {
+        "n": "60 giorni",
+        "h": "Su un rinnovo che ne chiede trenta",
+        "d": "Non costano niente."
+      },
+      {
+        "n": "30 giorni",
+        "h": "Su un rinnovo che ne chiede novanta",
+        "d": "Costano una sospensione dell'attività."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 6,
+    "inizia": "Che cosa chiede chi controlla, su",
+    "layout": "cards",
+    "titolo": "Tre richieste di chi controlla",
+    "cards": [
+      {
+        "h": "L'ultimo audit interno",
+        "d": "E il suo rapporto."
+      },
+      {
+        "h": "Una non conformità dell'anno scorso",
+        "d": "E come è stata chiusa."
+      },
+      {
+        "h": "Le autorizzazioni",
+        "d": "In scadenza nei prossimi sei mesi."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-qas",
+    "p": 7,
+    "inizia": "Quello che si trascura di più",
+    "layout": "definizione",
+    "eyebrow": "Il registro più trascurato",
+    "titolo": "La gestione delle modifiche",
+    "definizione": "Nessun evento lo attiva da fuori: un macchinario cambiato lo scrive solo chi ha preso l'abitudine di farlo."
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 0,
+    "inizia": "I due motori di valutazione sono",
+    "layout": "apertura",
+    "titolo": "I due motori di valutazione",
+    "sottotitolo": "Ambiente e sicurezza, due domande diverse",
+    "testo": "Il cuore tecnico del sistema, e funzionano in modo diverso.",
+    "agenda": [
+      "La significatività",
+      "I criteri assoluti",
+      "Le condizioni operative",
+      "Il livello di rischio",
+      "La gerarchia dei controlli",
+      "Il rischio residuo"
+    ]
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 1,
+    "inizia": "Il primo calcola la significatività di",
+    "layout": "definizione",
+    "eyebrow": "Motore ambientale",
+    "titolo": "La significatività",
+    "definizione": "Gravità × frequenza × sensibilità del contesto: un prodotto, quindi un fattore basso abbassa tutto."
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 2,
+    "inizia": "Ma accanto al prodotto ci sono",
+    "layout": "punti",
+    "titolo": "I criteri assoluti",
+    "intro": "Ciascuno rende l'aspetto significativo da solo, qualunque cosa dica il punteggio.",
+    "numerati": false,
+    "punti": [
+      {
+        "h": "Prescrizione legale",
+        "d": "non pienamente presidiata"
+      },
+      {
+        "h": "Esposto o reclamo",
+        "d": "ricevuto"
+      },
+      {
+        "h": "Limiti",
+        "d": "superati"
+      },
+      {
+        "h": "Emergenza",
+        "d": "in condizione grave"
+      }
+    ]
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 3,
+    "inizia": "Per ogni aspetto si dichiarano anche",
+    "layout": "evidenza",
+    "eyebrow": "Normale, anomala, emergenza",
+    "titolo": "I problemi ambientali non capitano nei giorni in cui tutto funziona.",
+    "testo": "Lo scarico nei limiti a regime può uscirne durante un avviamento: se l'avviamento non è valutato, non compare da nessuna parte."
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 4,
+    "inizia": "Il secondo motore calcola il livello",
+    "layout": "definizione",
+    "eyebrow": "Motore della sicurezza",
+    "titolo": "Il livello di rischio",
+    "definizione": "Probabilità × gravità. La formula è semplice: il punto interessante viene dopo."
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 5,
+    "inizia": "L'ordine è questo, e va rispettato:",
+    "layout": "flusso",
+    "titolo": "La gerarchia dei controlli",
+    "passi": [
+      {
+        "h": "Eliminazione",
+        "d": "del pericolo"
+      },
+      {
+        "h": "Sostituzione",
+        "d": "con qualcosa di meno pericoloso"
+      },
+      {
+        "h": "Controlli tecnici",
+        "d": "sull'impianto"
+      },
+      {
+        "h": "Controlli amministrativi",
+        "d": "procedure e organizzazione"
+      },
+      {
+        "h": "Protezione individuale",
+        "d": "l'ultima difesa"
+      }
+    ]
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 6,
+    "inizia": "Come si parla di questo al",
+    "layout": "confronto",
+    "titolo": "Il casco e il carico sospeso",
+    "a": {
+      "h": "Il casco",
+      "sub": "Protegge chi lo indossa",
+      "punti": [
+        "Il problema spostato sulla persona"
+      ]
+    },
+    "b": {
+      "h": "Togliere il carico sospeso",
+      "sub": "Protegge chiunque passi",
+      "punti": [
+        "Anche chi ha dimenticato il casco"
+      ]
+    }
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 7,
+    "inizia": "C'è infine una regola sul rischio",
+    "layout": "evidenza",
+    "eyebrow": "Il rischio residuo",
+    "titolo": "Si dichiara dopo le misure, non prima.",
+    "testo": "Compilato prima è una previsione: descrive un'azienda che non esiste ancora."
+  },
+  {
+    "sezione": "motori-qas",
+    "p": 8,
+    "inizia": "Quello che si trascura di più",
+    "layout": "chiusura",
+    "titolo": "La rivalutazione",
+    "punti": [
+      {
+        "h": "Una valutazione",
+        "d": "è vera quando è stata fatta"
+      },
+      {
+        "h": "Una linea nuova, un reparto spostato",
+        "d": "la invecchiano"
+      },
+      {
+        "h": "Senza un'occasione fissata",
+        "d": "resta agli atti come se fosse attuale"
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 0,
+    "inizia": "La mappa di conformità porta centosette",
+    "layout": "apertura",
+    "titolo": "La mappa di conformità",
+    "sottotitolo": "{requisitiQas} domande su {capiQas} capitoli",
+    "testo": "Ogni domanda con il punto della norma, la marcatura delle norme che lo richiedono, la procedura, lo stato e l'evidenza.",
+    "agenda": [
+      "La marcatura",
+      "Il filtro per norma",
+      "Non valutato pesa zero",
+      "Il non applicabile",
+      "Le evidenze",
+      "Da dove cominciare"
+    ]
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 1,
+    "inizia": "La marcatura è la parte che",
+    "layout": "confronto",
+    "titolo": "La marcatura",
+    "a": {
+      "h": "Punti comuni",
+      "sub": "Richiesti da tutte e tre",
+      "punti": [
+        "Contesto",
+        "Parti interessate",
+        "Competenza",
+        "Audit interno"
+      ]
+    },
+    "b": {
+      "h": "Punti propri",
+      "sub": "Di una norma sola",
+      "punti": [
+        "Si vedono solo nel suo filtro"
+      ]
+    }
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 2,
+    "inizia": "Da lì viene il filtro per",
+    "layout": "evidenza",
+    "eyebrow": "Il filtro per norma",
+    "titolo": "Ognuno vede il proprio perimetro.",
+    "testo": "Chi applica solo la qualità non si trova la conformità abbassata da domande ambientali che non lo riguardano."
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 3,
+    "inizia": "La regola di calcolo è quella",
+    "layout": "definizione",
+    "eyebrow": "La regola comune",
+    "titolo": "Non valutato pesa zero",
+    "definizione": "Mediare sui soli valutati farebbe salire la conformità saltando i requisiti difficili."
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 4,
+    "inizia": "Sul non applicabile serve la solita",
+    "layout": "split",
+    "titolo": "Non applicabile, con parsimonia",
+    "lead": "Corretto per le norme che l'azienda non applica e per le esclusioni dichiarate in anagrafica.",
+    "punti": [
+      {
+        "h": "Per evitare una non conformità",
+        "d": "svuota la mappa"
+      },
+      {
+        "h": "La prima domanda dell'auditor",
+        "d": "è sempre perché"
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 6,
+    "inizia": "Sulle evidenze una raccomandazione che vale",
+    "layout": "cards",
+    "titolo": "Quale evidenza",
+    "cards": [
+      {
+        "h": "Una procedura",
+        "d": "Descrive l'intenzione: si legge in un minuto e non prova niente."
+      },
+      {
+        "h": "Un registro",
+        "d": "Dimostra l'esecuzione: si apre e mostra le righe."
+      }
+    ]
+  },
+  {
+    "sezione": "conformita-qas",
+    "p": 7,
+    "inizia": "Un consiglio sull'ordine con cui affrontarla.",
+    "layout": "numeri",
+    "titolo": "Una norma alla volta",
+    "numeri": [
+      {
+        "n": "Tre al 70%",
+        "h": "In ordine di capitolo",
+        "d": "Il giorno della visita."
+      },
+      {
+        "n": "Una al 100%",
+        "h": "Partendo dal suo filtro",
+        "d": "La prima norma da certificare."
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 0,
+    "inizia": "Il corpus base porta diciotto procedure",
+    "layout": "apertura",
+    "titolo": "I documenti",
+    "sottotitolo": "{procedureQas} procedure e {moduliQas} moduli",
+    "testo": "Ogni procedura riporta i punti delle norme che copre: si sa sempre che cosa resta scoperto.",
+    "agenda": [
+      "Procedure di un solo ambito",
+      "Tre documenti",
+      "Il riesame",
+      "La colonna delle valutazioni",
+      "Compilarlo in riunione"
+    ]
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 1,
+    "inizia": "Alcune procedure sono specifiche di un",
+    "layout": "definizione",
+    "eyebrow": "Procedure di un solo ambito",
+    "titolo": "Non applicabili, non personalizzate",
+    "definizione": "Chi non applica quella norma le dichiara non applicabili: una procedura per un sistema che non esiste confonde chi la troverà."
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 3,
+    "inizia": "Il riesame di direzione precompila gli",
+    "layout": "cards",
+    "titolo": "Tre documenti",
+    "cards": [
+      {
+        "h": "Riesame di direzione",
+        "d": "Ingressi precompilati con i dati veri, valutazioni alla direzione."
+      },
+      {
+        "h": "Analisi ambientale",
+        "d": "Aspetti, impatti, criteri, significatività."
+      },
+      {
+        "h": "Valutazione dei rischi",
+        "d": "Pericoli, gerarchia dei controlli, rischio residuo."
+      }
+    ]
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 4,
+    "inizia": "L'analisi ambientale porta aspetti, impatti, criteri",
+    "layout": "evidenza",
+    "eyebrow": "Chiesti per primi da un auditor",
+    "titolo": "Analisi ambientale e valutazione dei rischi.",
+    "testo": "Prima ancora del manuale: da lì si capisce se il sistema è stato costruito su quell'azienda, o comprato."
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 6,
+    "inizia": "Il requisito non chiede una raccolta",
+    "layout": "confronto",
+    "titolo": "Un riesame che elenca i dati non è un riesame",
+    "a": {
+      "h": "Una raccolta di indicatori",
+      "sub": "Non soddisfa il punto",
+      "punti": [
+        "Un rilievo ogni volta"
+      ]
+    },
+    "b": {
+      "h": "Valutazioni e decisioni",
+      "sub": "Quello che la norma chiede",
+      "punti": [
+        "Le risorse",
+        "Gli obiettivi confermati o cambiati",
+        "Le modifiche al sistema"
+      ]
+    }
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 7,
+    "inizia": "È anche il motivo per cui",
+    "layout": "definizione",
+    "eyebrow": "Una scelta del prodotto",
+    "titolo": "La colonna delle valutazioni resta vuota",
+    "definizione": "Invece di una frase di comodo: è una domanda posta alla direzione, e se resta vuota lo dice il documento."
+  },
+  {
+    "sezione": "documenti-qas",
+    "p": 8,
+    "inizia": "Un consiglio pratico sul riesame, che",
+    "layout": "chiusura",
+    "titolo": "Compilare il riesame in riunione",
+    "punti": [
+      {
+        "h": "Gli ingressi",
+        "d": "già compilati"
+      },
+      {
+        "h": "Le valutazioni",
+        "d": "scritte mentre si discute"
+      },
+      {
+        "h": "Compilato insieme",
+        "d": "è una decisione, non un documento firmato"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui si",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Sette errori, nessun avviso",
+    "testo": "L'ordine conta perché i due motori dipendono da quello che c'è prima.",
+    "agenda": [
+      "L'ordine",
+      "Nessun avviso",
+      "Quattro errori sugli indicatori",
+      "Motori e riesame",
+      "Il valore del sistema integrato"
+    ]
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 1,
+    "inizia": "Prima l'anagrafica, con ruoli, norme applicate,",
+    "layout": "flusso",
+    "titolo": "L'ordine in cui si costruisce",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "ruoli, norme, campo, ore lavorate"
+      },
+      {
+        "h": "Registri di contesto",
+        "d": "processi, parti, obblighi, autorizzazioni"
+      },
+      {
+        "h": "I due motori",
+        "d": "con gli obiettivi collegati"
+      },
+      {
+        "h": "Indicatori e procedure",
+        "d": "target rivisti, prime rilevazioni"
+      },
+      {
+        "h": "Mappa, audit, riesame",
+        "d": "sulle norme applicate"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 2,
+    "inizia": "Gli errori che fanno mentire il",
+    "layout": "evidenza",
+    "eyebrow": "Che cosa li accomuna",
+    "titolo": "Nessuno dei sette produce un avviso.",
+    "testo": "Il cruscotto continua a calcolare, e mente."
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 3,
+    "inizia": "Il primo sono le ore lavorate",
+    "layout": "tabella",
+    "titolo": "Quattro errori sugli indicatori",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Ore lavorate non inserite",
+        "Indici infortunistici vuoti"
+      ],
+      [
+        "Verso di miglioramento sbagliato",
+        "Verde mentre si peggiora"
+      ],
+      [
+        "Solo indicatori reattivi",
+        "Si registra quando è tardi"
+      ],
+      [
+        "Formula cambiata senza annotarla",
+        "Una serie che confronta cose diverse"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 7,
+    "inizia": "Il quinto sono gli aspetti ambientali",
+    "layout": "cards",
+    "titolo": "Gli ultimi tre",
+    "cards": [
+      {
+        "h": "Aspetti senza criteri assoluti",
+        "d": "Prescrizioni violate classificate non significative."
+      },
+      {
+        "h": "Gerarchia ferma ai dispositivi",
+        "d": "Senza motivazione: il rilievo tipico sulla sicurezza."
+      },
+      {
+        "h": "Riesame senza valutazioni",
+        "d": "Non soddisfa il punto della norma."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-qas",
+    "p": 8,
+    "inizia": "Una riflessione finale su questo percorso,",
+    "layout": "chiusura",
+    "titolo": "Tre sistemi tenuti insieme",
+    "punti": [
+      {
+        "h": "Tre manuali, tre audit, tre riesami",
+        "d": "costano il triplo del necessario"
+      },
+      {
+        "h": "I punti comuni",
+        "d": "sono la maggioranza, e si compilano una volta"
+      },
+      {
+        "h": "Mostrarlo al primo incontro",
+        "d": "vende il percorso"
+      }
+    ]
+  }
+]

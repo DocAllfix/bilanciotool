@@ -1,0 +1,861 @@
+[
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 0,
+    "inizia": "Il primo passo raccoglie due cose",
+    "layout": "apertura",
+    "titolo": "Anagrafica e richiesta",
+    "sottotitolo": "Due colonne che non sono anagrafica",
+    "testo": "A sinistra l'azienda valutata; a destra la richiesta del committente: chi è, quale punteggio minimo, entro quando.",
+    "agenda": [
+      "La soglia",
+      "Se il committente non la indica",
+      "La richiesta originale",
+      "La dimensione",
+      "Il referente interno",
+      "Il termine di consegna"
+    ]
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 1,
+    "inizia": "Il campo su cui vale la",
+    "layout": "definizione",
+    "eyebrow": "Il campo che governa tutto il resto",
+    "titolo": "La soglia",
+    "definizione": "La tacca sulla barra del quadro di sintesi, i punti che mancano, e la direzione in cui ordina il piano.",
+    "punti": [
+      {
+        "h": "Senza soglia",
+        "d": "il piano ordina verso nessun posto"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 2,
+    "inizia": "Se il committente la soglia non",
+    "layout": "evidenza",
+    "eyebrow": "Se il committente non la indica",
+    "titolo": "Non lasciare la soglia predefinita.",
+    "testo": "Scegli quella della fascia che l'azienda vuole raggiungere, e annota che è una scelta vostra. Altrimenti si festeggia un obiettivo che nessuno ha posto."
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 3,
+    "inizia": "Un consiglio pratico sulla raccolta. Questi",
+    "layout": "split",
+    "titolo": "La richiesta originale, sotto gli occhi",
+    "lead": "Non ricostruita da una telefonata.",
+    "punti": [
+      {
+        "h": "Sessanta o sessantacinque",
+        "d": "cambia il piano di settimane di lavoro"
+      },
+      {
+        "h": "Il termine",
+        "d": "decide se le azioni lunghe hanno senso"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 4,
+    "inizia": "E una nota sulla dimensione dell'azienda.",
+    "layout": "confronto",
+    "titolo": "La dimensione serve a leggere, non a classificare",
+    "a": {
+      "h": "Dieci persone",
+      "sub": "Stesso punteggio",
+      "punti": [
+        "La formalizzazione che manca pesa poco"
+      ]
+    },
+    "b": {
+      "h": "Duecento persone",
+      "sub": "Stesso punteggio",
+      "punti": [
+        "Quella formalizzazione è sostanza"
+      ]
+    }
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 5,
+    "inizia": "Sul referente interno, che è il",
+    "layout": "cards",
+    "titolo": "Il referente interno",
+    "cards": [
+      {
+        "h": "Scelto perché ha accesso",
+        "d": "Ai documenti, e può convocare gli altri: qualità, amministrazione, titolare."
+      },
+      {
+        "h": "Scelto perché ha tempo",
+        "d": "Allunga il lavoro di settimane, che allo studio nessuno paga."
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-e-richiesta",
+    "p": 6,
+    "inizia": "E una osservazione sul termine di",
+    "layout": "chiusura",
+    "titolo": "Il termine di consegna",
+    "punti": [
+      {
+        "h": "Tre settimane",
+        "d": "non bastano a raggiungere la soglia"
+      },
+      {
+        "h": "Il piano, allora",
+        "d": "dimostra che l'azienda sa dove sta"
+      },
+      {
+        "h": "Dillo prima",
+        "d": "a chi si aspetta un salto di trenta punti"
+      }
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 0,
+    "inizia": "Il questionario è fatto di trentasette",
+    "layout": "apertura",
+    "titolo": "Il questionario",
+    "sottotitolo": "{domandeFornitore} domande su {areeFornitore} aree",
+    "testo": "Ogni domanda porta il riferimento normativo, l'evidenza attesa e un peso da 1 a 3.",
+    "agenda": [
+      "Quattro risposte",
+      "Non applicabile o nessuna risposta",
+      "La regola dell'evidenza",
+      "Dettagli d'uso",
+      "Le aree",
+      "L'ordine della sessione"
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 1,
+    "inizia": "Le risposte possibili sono quattro, e",
+    "layout": "tabella",
+    "titolo": "Quattro risposte",
+    "cols": [
+      "Risposta",
+      "Vale",
+      "Quando"
+    ],
+    "righe": [
+      [
+        "Sì",
+        "Pieno",
+        "Requisito soddisfatto, evidenza reperibile oggi"
+      ],
+      [
+        "In parte",
+        "Metà",
+        "C'è, ma incompleto, non aggiornato o non formalizzato"
+      ],
+      [
+        "No",
+        "Zero",
+        "Assente: diventa un'azione nel piano"
+      ],
+      [
+        "Non applicabile",
+        "Esce dal conto",
+        "Il requisito non riguarda l'attività"
+      ]
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 2,
+    "inizia": "E adesso la distinzione che rende",
+    "layout": "confronto",
+    "titolo": "Non applicabile non è nessuna risposta",
+    "a": {
+      "h": "Non applicabile",
+      "sub": "Una scelta",
+      "punti": [
+        "Conta come valutata",
+        "Esce dal punteggio"
+      ]
+    },
+    "b": {
+      "h": "Nessuna risposta",
+      "sub": "Una lacuna",
+      "punti": [
+        "Esce anche dalle valutate",
+        "Saltare non alza l'indice"
+      ]
+    }
+  },
+  {
+    "sezione": "questionario",
+    "p": 3,
+    "inizia": "Sulla stessa linea c'è la regola",
+    "layout": "evidenza",
+    "eyebrow": "La regola dell'evidenza",
+    "titolo": "Sì solo se il documento esiste, ed è reperibile oggi.",
+    "testo": "Da cercare, ricostruire o firmare: è «in parte». È esattamente ciò che il committente chiederà di vedere."
+  },
+  {
+    "sezione": "questionario",
+    "p": 4,
+    "inizia": "Due dettagli d'uso. Ripremere la stessa",
+    "layout": "cards",
+    "titolo": "Due dettagli d'uso",
+    "cards": [
+      {
+        "h": "Ripremere annulla",
+        "d": "La stessa risposta premuta di nuovo si cancella."
+      },
+      {
+        "h": "La nota interna",
+        "d": "Stato, chi se ne occupa, dove sta la bozza: la ritrovi nel piano."
+      }
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 6,
+    "inizia": "Su come condurre il questionario dal",
+    "layout": "punti",
+    "titolo": "Dal vivo, con il referente accanto",
+    "intro": "E con l'accesso ai documenti aperto.",
+    "punti": [
+      {
+        "h": "L'evidenza prima del Sì",
+        "d": "non dopo"
+      },
+      {
+        "h": "Chiedere dopo",
+        "d": "significa tornare su venti domande"
+      },
+      {
+        "h": "La nota",
+        "d": "si scrive mentre la persona parla"
+      }
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 7,
+    "inizia": "Sulle cinque aree, per sapere che",
+    "layout": "cards",
+    "titolo": "Le {areeFornitore} aree, prima di aprirle",
+    "cards": [
+      {
+        "h": "Governo della sostenibilità",
+        "d": "Quasi sempre la più scoperta: documenti formali mai scritti."
+      },
+      {
+        "h": "Ambiente",
+        "d": "Spesso messa meglio di quanto l'azienda crede."
+      },
+      {
+        "h": "Lavoro e diritti umani",
+        "d": "Molti requisiti coincidono con adempimenti già assolti."
+      },
+      {
+        "h": "Etica e conformità",
+        "d": "Dipende quasi tutta dal modello organizzativo."
+      },
+      {
+        "h": "Catena di fornitura",
+        "d": "La più giovane, e scoperta ovunque."
+      }
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 8,
+    "inizia": "Questa distribuzione ha una conseguenza pratica",
+    "layout": "split",
+    "titolo": "L'ordine della sessione",
+    "lead": "Cominciare dalle lacune produce un'ora di no e un referente che si difende.",
+    "punti": [
+      {
+        "h": "Prima Ambiente e Lavoro",
+        "d": "arrivano le risposte positive"
+      },
+      {
+        "h": "A metà il governo",
+        "d": "quando la fiducia c'è"
+      }
+    ]
+  },
+  {
+    "sezione": "questionario",
+    "p": 9,
+    "inizia": "Un'ultima cosa sulle note interne, che",
+    "layout": "chiusura",
+    "titolo": "Le note interne",
+    "punti": [
+      {
+        "h": "Durante il colloquio",
+        "d": "con le parole del referente"
+      },
+      {
+        "h": "«La tiene Marco nella cartella condivisa»",
+        "d": "dice più di «non formalizzato»"
+      },
+      {
+        "h": "Sei mesi dopo",
+        "d": "riprendi il lavoro invece di ricominciarlo"
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 0,
+    "inizia": "L'indice si costruisce in tre passaggi,",
+    "layout": "apertura",
+    "titolo": "Come si calcola",
+    "sottotitolo": "Tre passaggi, e un quarto valore",
+    "testo": "Capirli spiega perché certe azioni fanno salire il punteggio e altre quasi no.",
+    "agenda": [
+      "Il punteggio di area",
+      "L'indice pesato",
+      "Il valore di ogni domanda",
+      "L'ordine del piano",
+      "Che cosa muove l'indice",
+      "Leggere per area"
+    ]
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 1,
+    "inizia": "Faccio un esempio, perché a parole",
+    "layout": "tabella",
+    "titolo": "Un'area, domanda per domanda",
+    "cols": [
+      "Domanda",
+      "Peso",
+      "Risposta",
+      "Porta"
+    ],
+    "righe": [
+      [
+        "Prima",
+        "2",
+        "Sì",
+        "200"
+      ],
+      [
+        "Seconda",
+        "2",
+        "In parte",
+        "100"
+      ],
+      [
+        "Terza",
+        "1",
+        "No",
+        "0"
+      ],
+      [
+        "Quarta",
+        "2",
+        "Sì",
+        "200"
+      ],
+      [
+        "Quinta",
+        "—",
+        "Non applicabile",
+        "Esce dal conto"
+      ],
+      [
+        "Area",
+        "",
+        "",
+        "500 su 700: 71"
+      ]
+    ]
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 2,
+    "inizia": "Secondo passaggio: l'indice complessivo è la",
+    "layout": "numeri",
+    "titolo": "L'indice: una media pesata",
+    "numeri": [
+      {
+        "n": "25%",
+        "h": "Ambiente, Lavoro, Etica",
+        "d": "Ciascuna."
+      },
+      {
+        "n": "15%",
+        "h": "Catena di fornitura",
+        "d": "Sul totale."
+      },
+      {
+        "n": "10%",
+        "h": "Governo della sostenibilità",
+        "d": "Sul totale."
+      },
+      {
+        "n": "Fuori",
+        "h": "Aree non valutate",
+        "d": "Escono dalla media invece di contare zero."
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 4,
+    "inizia": "Poi c'è un quarto valore, ed",
+    "layout": "definizione",
+    "eyebrow": "Il quarto valore",
+    "titolo": "Quanto sposta una domanda",
+    "definizione": "I punti dell'indice che guadagni portandola a Sì: lo spostamento della sua area, per il peso dell'area.",
+    "punti": [
+      {
+        "h": "Dieci punti in Ambiente",
+        "d": "valgono due volte e mezzo quelli nel Governo"
+      }
+    ]
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 5,
+    "inizia": "Il piano ordina le azioni con",
+    "layout": "evidenza",
+    "eyebrow": "L'ordine del piano",
+    "titolo": "Punti recuperati, diviso giornate.",
+    "testo": "In cima le azioni che rendono di più per il tempo che costano: per avvicinarti alla soglia, lavora dall'alto della lista."
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 6,
+    "inizia": "E ricorda una cosa che sembra",
+    "layout": "confronto",
+    "titolo": "Che cosa muove l'indice",
+    "a": {
+      "h": "Azione completata",
+      "sub": "Non lo muove",
+      "punti": [
+        "Una riga verde nel piano, e basta"
+      ]
+    },
+    "b": {
+      "h": "Risposta portata a Sì",
+      "sub": "Lo muove",
+      "punti": [
+        "L'azione esce dal piano da sola"
+      ]
+    }
+  },
+  {
+    "sezione": "come-si-calcola",
+    "p": 7,
+    "inizia": "Un modo pratico di usare il",
+    "layout": "split",
+    "titolo": "Lo stesso cinquantotto, due situazioni",
+    "lead": "L'indice serve al committente; all'azienda servono i punteggi per area.",
+    "punti": [
+      {
+        "h": "Quattro aree sopra soglia, una molto sotto",
+        "d": "si sistema con un intervento mirato"
+      },
+      {
+        "h": "Cinquantotto uniforme",
+        "d": "richiede un programma"
+      }
+    ]
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 0,
+    "inizia": "Il piano non si scrive: si",
+    "layout": "apertura",
+    "titolo": "Il piano",
+    "sottotitolo": "Non si scrive: si genera",
+    "testo": "Ogni No e ogni In parte producono un'azione, con l'impatto già calcolato e una stima di giornate.",
+    "agenda": [
+      "Efficienza e logica",
+      "Le giornate",
+      "L'errore più comune",
+      "Negoziare il tempo",
+      "Il responsabile",
+      "Le scadenze"
+    ]
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 2,
+    "inizia": "Ma quell'ordine non conosce le dipendenze",
+    "layout": "confronto",
+    "titolo": "Efficienza e logica",
+    "a": {
+      "h": "Il prodotto",
+      "sub": "Dà l'efficienza",
+      "punti": [
+        "Punti recuperati per giornata"
+      ]
+    },
+    "b": {
+      "h": "Il consulente",
+      "sub": "Mette la logica del progetto",
+      "punti": [
+        "La materialità prima degli obiettivi",
+        "Anche se costa più giornate"
+      ]
+    }
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 3,
+    "inizia": "Un chiarimento sulle giornate, perché a",
+    "layout": "definizione",
+    "eyebrow": "Non un preventivo",
+    "titolo": "Le giornate",
+    "definizione": "Un ordine di grandezza per pianificare: mezza giornata o due settimane, non quanto fatturerai.",
+    "punti": [
+      {
+        "h": "Il costo",
+        "d": "dipende da chi esegue e da quanto materiale c'è già"
+      }
+    ]
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 4,
+    "inizia": "E adesso l'errore più comune di",
+    "layout": "evidenza",
+    "eyebrow": "L'errore più comune del percorso",
+    "titolo": "Righe verdi nel piano, indice fermo.",
+    "testo": "Chiusa l'azione, torna alla domanda e portala a Sì: l'azione esce dal piano da sola e l'indice sale."
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 5,
+    "inizia": "Un modo pratico di lavorarci col",
+    "layout": "numeri",
+    "titolo": "Il piano negozia il tempo",
+    "numeri": [
+      {
+        "n": "5",
+        "h": "Le prime azioni",
+        "d": "Portate al referente con l'impatto in punti accanto."
+      },
+      {
+        "n": "5 punti",
+        "h": "Per due giornate",
+        "d": "Una frase che una direzione capisce."
+      }
+    ]
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 6,
+    "inizia": "Sul responsabile di un'azione, che è",
+    "layout": "split",
+    "titolo": "Il responsabile è una persona",
+    "lead": "L'ufficio acquisti non fa niente; Laura fa.",
+    "punti": [
+      {
+        "h": "Azioni piccole",
+        "d": "nessuna urgente presa da sola"
+      },
+      {
+        "h": "Senza un nome",
+        "d": "restano tutte ferme insieme"
+      }
+    ]
+  },
+  {
+    "sezione": "piano-fornitore",
+    "p": 7,
+    "inizia": "E una osservazione sulle scadenze. Metterle",
+    "layout": "chiusura",
+    "titolo": "Le scadenze",
+    "punti": [
+      {
+        "h": "Non tutte alla stessa data",
+        "d": "è il modo più rapido di renderle inutili"
+      },
+      {
+        "h": "A due o tre settimane",
+        "d": "l'una dall'altra, nell'ordine del piano"
+      },
+      {
+        "h": "Ogni chiusura",
+        "d": "un piccolo risultato che tiene vivo il lavoro"
+      }
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 0,
+    "inizia": "La vista delle evidenze raccoglie i",
+    "layout": "apertura",
+    "titolo": "Evidenze e attestato",
+    "sottotitolo": "Il fascicolo, prima che lo chiedano",
+    "testo": "I documenti attesi dalle {domandeFornitore} domande, per area: assente, in redazione, disponibile, non applicabile.",
+    "agenda": [
+      "Allineare evidenze e risposte",
+      "Che cosa porta l'attestato",
+      "La natura del documento",
+      "Tre controlli",
+      "Il fascicolo",
+      "Quando pubblicare"
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 1,
+    "inizia": "Qui c'è una cosa da sapere",
+    "layout": "evidenza",
+    "eyebrow": "Non si sincronizzano",
+    "titolo": "A fine sessione, allinea le evidenze alle risposte.",
+    "testo": "Un Sì con il documento assente, o un documento disponibile accanto a un No: il committente li vede al primo sguardo."
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 2,
+    "inizia": "L'attestato riporta l'esito, i punteggi per",
+    "layout": "cards",
+    "titolo": "Che cosa porta l'attestato",
+    "cards": [
+      {
+        "h": "Esito e punteggi",
+        "d": "per area, con le barre"
+      },
+      {
+        "h": "Risposte",
+        "d": "con le note"
+      },
+      {
+        "h": "Piano",
+        "d": "e scala delle fasce"
+      },
+      {
+        "h": "Riferimenti",
+        "d": "normativi"
+      },
+      {
+        "h": "Codice di verifica",
+        "d": "controllabile dal sito, senza account"
+      }
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 3,
+    "inizia": "E adesso la cosa che non",
+    "layout": "definizione",
+    "eyebrow": "Non si tocca",
+    "titolo": "Autovalutazione, non certificazione",
+    "definizione": "Il paragrafo riquadrato sulla natura del documento non si toglie e non si riformula: tutela chi rilascia l'attestato.",
+    "punti": [
+      {
+        "h": "Presentarlo come certificazione",
+        "d": "è un rischio reputazionale e legale, e ricade su di te"
+      }
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 4,
+    "inizia": "Tre controlli prima di pubblicare. Che",
+    "layout": "punti",
+    "titolo": "Tre controlli prima di pubblicare",
+    "punti": [
+      {
+        "h": "Tutte le domande",
+        "d": "con una risposta, non applicabile compreso"
+      },
+      {
+        "h": "Le evidenze dei Sì",
+        "d": "disponibili e raccolte"
+      },
+      {
+        "h": "L'anagrafica completa",
+        "d": "committente e partita IVA compaiono solo se compilati"
+      }
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 5,
+    "inizia": "Sul fascicolo delle evidenze, che vale",
+    "layout": "split",
+    "titolo": "Il fascicolo come cartella vera",
+    "lead": "Il committente chiede tre o quattro evidenze a campione, quasi sempre le più impegnative.",
+    "punti": [
+      {
+        "h": "I documenti dei Sì",
+        "d": "raccolti in una cartella"
+      },
+      {
+        "h": "Nominati come le domande",
+        "d": "e la richiesta diventa una mail di due minuti"
+      }
+    ]
+  },
+  {
+    "sezione": "evidenze-e-attestato",
+    "p": 6,
+    "inizia": "E un consiglio su quando pubblicare",
+    "layout": "chiusura",
+    "titolo": "Quando pubblicare",
+    "punti": [
+      {
+        "h": "Non subito",
+        "d": "dopo il questionario"
+      },
+      {
+        "h": "Prima un giro",
+        "d": "sulle evidenze e sul quadro, col referente"
+      },
+      {
+        "h": "Ripubblicato dopo una settimana",
+        "d": "con numeri migliori, si nota"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 0,
+    "inizia": "Chiudo con come si conduce una",
+    "layout": "apertura",
+    "titolo": "La sessione, e gli errori",
+    "sottotitolo": "Mezza giornata con l'azienda davanti",
+    "testo": "Questo percorso quasi sempre si fa dal vivo, non da soli in ufficio.",
+    "agenda": [
+      "Come si conduce",
+      "Sei errori",
+      "Il tono",
+      "La rivalutazione",
+      "Il valore per l'azienda"
+    ]
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 1,
+    "inizia": "Si comincia dall'anagrafica con la richiesta",
+    "layout": "flusso",
+    "titolo": "Come si conduce",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "con la richiesta del committente"
+      },
+      {
+        "h": "Questionario",
+        "d": "col referente e i documenti"
+      },
+      {
+        "h": "Evidenze",
+        "d": "allineate alle risposte"
+      },
+      {
+        "h": "Quadro",
+        "d": "distanza dalla soglia e priorità"
+      },
+      {
+        "h": "Piano e attestato",
+        "d": "responsabili, rivalutazione, poi l'attestato"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 2,
+    "inizia": "Gli errori che tornano più spesso",
+    "layout": "confronto",
+    "titolo": "Due errori che gonfiano l'indice",
+    "a": {
+      "h": "Il Sì di buona volontà",
+      "sub": "Senza documento",
+      "punti": [
+        "Figura pessima quando chiedono le evidenze"
+      ]
+    },
+    "b": {
+      "h": "Non applicabile al posto del No",
+      "sub": "Denominatore ridotto",
+      "punti": [
+        "Punteggio indifendibile"
+      ]
+    }
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 3,
+    "inizia": "Il terzo sono le domande lasciate",
+    "layout": "tabella",
+    "titolo": "Altri quattro errori",
+    "cols": [
+      "Errore",
+      "Effetto"
+    ],
+    "righe": [
+      [
+        "Domande senza risposta",
+        "Indice non confrontabile"
+      ],
+      [
+        "Azione chiusa, risposta ferma",
+        "Il piano gira a vuoto"
+      ],
+      [
+        "Evidenze non allineate",
+        "Il committente dubita del resto"
+      ],
+      [
+        "Lavorare sull'area più leggera",
+        "Molto sforzo, pochi punti"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 4,
+    "inizia": "Un'ultima raccomandazione sul tono da tenere",
+    "layout": "evidenza",
+    "eyebrow": "Il tono",
+    "titolo": "Non è un'ispezione.",
+    "testo": "Chi si sente esaminato risponde Sì per non sfigurare. Detto all'inizio che un no oggi vale più di un sì fragile, le risposte cambiano."
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 5,
+    "inizia": "Aggiungo una cosa sulla rivalutazione, che",
+    "layout": "definizione",
+    "eyebrow": "Il lavoro ricorrente",
+    "titolo": "La rivalutazione",
+    "definizione": "Si aggiorna quando le azioni si chiudono, e il committente quasi sempre la chiede ogni anno.",
+    "punti": [
+      {
+        "h": "Chi sa che ci tornerà",
+        "d": "scrive le note per sé fra un anno"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-fornitore",
+    "p": 6,
+    "inizia": "E una riflessione sul valore di",
+    "layout": "chiusura",
+    "titolo": "Il valore per l'azienda",
+    "punti": [
+      {
+        "h": "Il committente",
+        "d": "la chiede per selezionare i fornitori"
+      },
+      {
+        "h": "Il piano",
+        "d": "è l'unico elenco ordinato di cose da fare in sostenibilità"
+      },
+      {
+        "h": "Per lo studio",
+        "d": "la differenza fra un incarico e una relazione"
+      }
+    ]
+  }
+]

@@ -1,0 +1,967 @@
+[
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 0,
+    "inizia": "Il primo passo raccoglie cinque gruppi,",
+    "layout": "apertura",
+    "titolo": "Anagrafica",
+    "sottotitolo": "Cinque gruppi che risolvono il corpus",
+    "testo": "Da qui si risolvono i segnaposto di tutti i documenti, e due campi pesano nei calcoli.",
+    "agenda": [
+      "Identificazione e spesa",
+      "Governance del processo",
+      "Il canale di reclamo",
+      "Comunicazione e campo di applicazione",
+      "I segnaposto"
+    ]
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 1,
+    "inizia": "Si comincia dall'identificazione, che include la",
+    "layout": "evidenza",
+    "eyebrow": "La spesa di approvvigionamento complessiva",
+    "titolo": "Chi ha mappato bene il 15% degli acquisti ha guardato il 15%.",
+    "testo": "Confrontata con la spesa mappata, è la misura più onesta di quanto la due diligence copra davvero."
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 2,
+    "inizia": "Poi la governance del processo: alta",
+    "layout": "definizione",
+    "eyebrow": "Governance del processo",
+    "titolo": "Il responsabile della due diligence",
+    "definizione": "Nominato con un atto, e con accesso ai dati di acquisto: il lavoro vive di partitari fornitori e contratti.",
+    "punti": [
+      {
+        "h": "Accanto",
+        "d": "l'alta direzione ed eventualmente un comitato di filiera"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 4,
+    "inizia": "Le lingue del canale sono quelle",
+    "layout": "confronto",
+    "titolo": "Il canale parla la lingua dei lavoratori",
+    "a": {
+      "h": "Solo in italiano",
+      "sub": "Esiste sulla carta",
+      "punti": [
+        "Chi dovrebbe usarlo non può",
+        "Un rilievo imbarazzante da ricevere"
+      ]
+    },
+    "b": {
+      "h": "Nelle lingue dei siti",
+      "sub": "Esiste nei fatti",
+      "punti": [
+        "È il presupposto dell'accessibilità",
+        "Tradurre un modulo costa poco"
+      ]
+    }
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 5,
+    "inizia": "Gli ultimi due gruppi sono la",
+    "layout": "cards",
+    "titolo": "Gli ultimi due gruppi",
+    "cards": [
+      {
+        "h": "Comunicazione",
+        "d": "Data e indirizzo dell'ultima dichiarazione pubblicata."
+      },
+      {
+        "h": "Campo di applicazione",
+        "d": "Categorie merceologiche, livelli della filiera, aree geografiche."
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 6,
+    "inizia": "Sul campo di applicazione una raccomandazione.",
+    "layout": "split",
+    "titolo": "Due livelli dichiarati, e fatti bene",
+    "lead": "«Tutta la filiera» quando si arriva ai fornitori diretti è una contraddizione che la dichiarazione annuale rende pubblica.",
+    "punti": [
+      {
+        "h": "Due livelli",
+        "d": "una posizione difendibile e verificabile"
+      },
+      {
+        "h": "L'intenzione di estendere",
+        "d": "scritta, non data per fatta"
+      }
+    ]
+  },
+  {
+    "sezione": "anagrafica-filiera",
+    "p": 7,
+    "inizia": "Un'ultima cosa sui segnaposto, che vale",
+    "layout": "chiusura",
+    "titolo": "I segnaposto",
+    "punti": [
+      {
+        "h": "Restano visibili",
+        "d": "fra parentesi quadre"
+      },
+      {
+        "h": "Ogni procedura",
+        "d": "dice quanti ne ha ancora aperti"
+      },
+      {
+        "h": "Riscriverli a mano",
+        "d": "significa dimenticarne sempre uno"
+      }
+    ]
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 0,
+    "inizia": "La mappa della filiera è fatta",
+    "layout": "apertura",
+    "titolo": "Filiera e partner",
+    "sottotitolo": "La mappa è fatta di nodi",
+    "testo": "Un nodo è un sito, non una ragione sociale: un partner con tre stabilimenti genera tre nodi.",
+    "agenda": [
+      "Perché il sito",
+      "Quattro gruppi di dati",
+      "La manodopera",
+      "La leva",
+      "Lo stato del rapporto",
+      "La prima mappa"
+    ]
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 1,
+    "inizia": "È la differenza fra sapere che",
+    "layout": "confronto",
+    "titolo": "Per ragione sociale o per sito",
+    "a": {
+      "h": "Per ragione sociale",
+      "sub": "Il rischio sparisce in una media",
+      "punti": [
+        "Lo stabilimento ad alto rischio non si vede"
+      ]
+    },
+    "b": {
+      "h": "Per sito",
+      "sub": "Mostra dove sta il problema",
+      "punti": [
+        "Il rischio paese diventa visibile",
+        "Emergono i siti non dichiarati"
+      ]
+    }
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 2,
+    "inizia": "Per ogni nodo si raccolgono quattro",
+    "layout": "cards",
+    "titolo": "Quattro gruppi di dati per ogni nodo",
+    "cards": [
+      {
+        "h": "Identificazione",
+        "d": "Livello, categoria, paese, sito, attività."
+      },
+      {
+        "h": "Manodopera",
+        "d": "Addetti, stagionali, migranti, agenzie, subappalto."
+      },
+      {
+        "h": "Rapporto commerciale",
+        "d": "Spesa, peso sul fatturato del partner, sostituibilità."
+      },
+      {
+        "h": "Qualifica e contratto",
+        "d": "Codice di condotta, clausole, canale comunicato, stato."
+      }
+    ]
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 4,
+    "inizia": "Poi la manodopera, ed è il",
+    "layout": "evidenza",
+    "eyebrow": "Il gruppo che orienta il rischio",
+    "titolo": "La manodopera non è anagrafica.",
+    "testo": "Un sito con molti stagionali reclutati tramite agenzia ha un altro profilo, a parità di paese e di settore."
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 5,
+    "inizia": "Poi il rapporto commerciale: spesa annua,",
+    "layout": "definizione",
+    "eyebrow": "Il rapporto commerciale",
+    "titolo": "La leva",
+    "definizione": "Quanto l'organizzazione può ottenere chiedendo: il peso della sua spesa sul fatturato del partner, e la sostituibilità.",
+    "punti": [
+      {
+        "h": "Da guardare",
+        "d": "prima di qualunque ipotesi di uscita"
+      }
+    ]
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 7,
+    "inizia": "Sullo stato del rapporto c'è una",
+    "layout": "tabella",
+    "titolo": "Lo stato del rapporto",
+    "cols": [
+      "Stato",
+      "Effetto nei calcoli"
+    ],
+    "righe": [
+      [
+        "Cessato",
+        "Esce da coperture e verifiche dovute"
+      ],
+      [
+        "Sospeso",
+        "Resta nei calcoli"
+      ],
+      [
+        "In uscita graduale",
+        "È un indicatore di esito: la leva è stata usata"
+      ]
+    ]
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 8,
+    "inizia": "Usare cessato per un rapporto che",
+    "layout": "evidenza",
+    "eyebrow": "La trappola",
+    "titolo": "Cessato al posto di sospeso: i numeri migliorano, la sostanza peggiora.",
+    "testo": "Spariscono dalle statistiche proprio i nodi su cui si sta intervenendo, e nessun controllo automatico se ne accorge."
+  },
+  {
+    "sezione": "filiera-e-partner",
+    "p": 9,
+    "inizia": "Un consiglio su come costruire la",
+    "layout": "flusso",
+    "titolo": "La prima mappa si fa dalla spesa",
+    "passi": [
+      {
+        "h": "Ordina",
+        "d": "i fornitori per importo"
+      },
+      {
+        "h": "Prendi",
+        "d": "la quota che copre l'80% della spesa"
+      },
+      {
+        "h": "Mappala per sito",
+        "d": "di solito 20-50 nodi, in due settimane"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 0,
+    "inizia": "Il rischio si costruisce in tre",
+    "layout": "apertura",
+    "titolo": "Il motore del rischio",
+    "sottotitolo": "Tre passaggi",
+    "testo": "Capirli distingue una mappa utile da una tabella colorata.",
+    "agenda": [
+      "Il rischio inerente",
+      "I fattori aggravanti",
+      "La maturità",
+      "Le aree critiche",
+      "Il residuo",
+      "Da dove cominciare"
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 1,
+    "inizia": "Il primo è il rischio inerente,",
+    "layout": "definizione",
+    "eyebrow": "Primo passaggio",
+    "titolo": "Il rischio inerente",
+    "definizione": "La media delle {dimensioniFiliera} dimensioni valutate: paese, settore, prodotto o materia prima, modello di approvvigionamento.",
+    "punti": [
+      {
+        "h": "Non giudica il partner",
+        "d": "descrive dove si trova"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 2,
+    "inizia": "Poi ci sono cinque fattori aggravanti,",
+    "layout": "punti",
+    "titolo": "Cinque fattori aggravanti",
+    "intro": "Ne basta uno: il nodo non scende sotto il livello alto.",
+    "numerati": false,
+    "punti": [
+      {
+        "h": "Agenzie di reclutamento",
+        "d": "per lavoratori migranti"
+      },
+      {
+        "h": "Lavoro",
+        "d": "a domicilio"
+      },
+      {
+        "h": "Sito non dichiarato",
+        "d": "emerso in verifica"
+      },
+      {
+        "h": "Segnalazione",
+        "d": "fondata"
+      },
+      {
+        "h": "Provvedimento",
+        "d": "di un'autorità"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 3,
+    "inizia": "È una regola importante e va",
+    "layout": "evidenza",
+    "eyebrow": "La regola",
+    "titolo": "Un aggravante non entra nella media: la scavalca.",
+    "testo": "Altrimenti un sito non dichiarato emerso in verifica verrebbe annacquato da tre dimensioni basse."
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 4,
+    "inizia": "Il secondo passaggio è la maturità,",
+    "layout": "split",
+    "titolo": "Secondo passaggio: la maturità",
+    "lead": "Misura che cosa fa il partner, su {areeFiliera} aree.",
+    "punti": [
+      {
+        "h": "Governance",
+        "d": "e politiche"
+      },
+      {
+        "h": "Lavoro minorile",
+        "d": "area critica"
+      },
+      {
+        "h": "Lavoro forzato",
+        "d": "e reclutamento, area critica"
+      },
+      {
+        "h": "Orario",
+        "d": "e retribuzioni"
+      },
+      {
+        "h": "Libertà",
+        "d": "di associazione"
+      },
+      {
+        "h": "Salute e sicurezza",
+        "d": "area critica"
+      },
+      {
+        "h": "Ambiente",
+        "d": "e legalità"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 5,
+    "inizia": "E qui c'è il meccanismo più",
+    "layout": "definizione",
+    "eyebrow": "Il meccanismo più importante",
+    "titolo": "Le aree critiche fanno da tetto",
+    "definizione": "Un punteggio basso su una di esse limita la maturità complessiva, anche con tutte le altre ottime.",
+    "punti": [
+      {
+        "h": "Una governance impeccabile",
+        "d": "non compensa una lacuna sul lavoro minorile"
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 6,
+    "inizia": "E quando quelle aree non sono",
+    "layout": "confronto",
+    "titolo": "Aree critiche mai valutate",
+    "a": {
+      "h": "Nel prototipo",
+      "sub": "Tetto dal valore più alto",
+      "punti": [
+        "Una sola risposta di governance, maturità massima",
+        "Il silenzio premiato come una buona risposta"
+      ]
+    },
+    "b": {
+      "h": "Adesso",
+      "sub": "Tetto dal valore più basso",
+      "punti": [
+        "Le verifiche vanno dove mancano informazioni"
+      ]
+    }
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 7,
+    "inizia": "Il terzo passaggio è il residuo,",
+    "layout": "numeri",
+    "titolo": "Terzo passaggio: il residuo",
+    "numeri": [
+      {
+        "n": "12 mesi",
+        "h": "Residuo critico",
+        "d": "Ogni quanto va verificato il partner."
+      },
+      {
+        "n": "48 mesi",
+        "h": "Residuo basso",
+        "d": "La cadenza più distesa."
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 8,
+    "inizia": "Due conseguenze pratiche. La prima: un",
+    "layout": "cards",
+    "titolo": "Due conseguenze pratiche",
+    "cards": [
+      {
+        "h": "Senza maturità",
+        "d": "Il nodo è trattato al livello più basso: residuo nel caso peggiore."
+      },
+      {
+        "h": "Mai verificato",
+        "d": "Risulta sempre scaduto: senza verifiche non c'è un punto di partenza."
+      }
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 9,
+    "inizia": "E adesso il motivo per cui",
+    "layout": "tabella",
+    "titolo": "Perché questa sequenza",
+    "cols": [
+      "Passaggio",
+      "Che cosa fa"
+    ],
+    "righe": [
+      [
+        "Inerente",
+        "Descrive il contesto"
+      ],
+      [
+        "Maturità",
+        "Descrive la risposta del partner"
+      ],
+      [
+        "Residuo",
+        "Li combina e decide le priorità"
+      ]
+    ]
+  },
+  {
+    "sezione": "motore-rischio-filiera",
+    "p": 10,
+    "inizia": "Il modo giusto di procedere è",
+    "layout": "flusso",
+    "titolo": "Il modo giusto di procedere",
+    "passi": [
+      {
+        "h": "Inerente",
+        "d": "su tutti i nodi attivi: sono dati di contesto"
+      },
+      {
+        "h": "Maturità",
+        "d": "dai nodi ad alto inerente, scendendo"
+      },
+      {
+        "h": "Ogni maturità",
+        "d": "toglie un nodo dal caso peggiore"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 0,
+    "inizia": "I registri sono sette: impatti negativi,",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "{registriFiliera} registri, collegati a moduli e procedure",
+    "testo": "Alimentano le percentuali del cruscotto.",
+    "agenda": [
+      "Impatti negativi",
+      "Piani d'azione correttivi",
+      "Verifiche e audit",
+      "Segnalazioni e rimedi",
+      "Punti di opacità",
+      "Richieste informative",
+      "Obiettivi e azioni"
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 1,
+    "inizia": "Il primo è quello che regge",
+    "layout": "definizione",
+    "eyebrow": "Il registro degli impatti",
+    "titolo": "La gravità",
+    "definizione": "Il massimo fra scala, portata e irrimediabilità. Il massimo, non la media."
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 2,
+    "inizia": "La ragione è che mediare farebbe",
+    "layout": "confronto",
+    "titolo": "Un danno irreversibile su poche persone",
+    "a": {
+      "h": "Mediato",
+      "sub": "Diventa moderato",
+      "punti": [
+        "Finisce in fondo all'elenco"
+      ]
+    },
+    "b": {
+      "h": "Col massimo",
+      "sub": "Resta grave",
+      "punti": [
+        "Ed è quello che è"
+      ]
+    }
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 3,
+    "inizia": "Sulla probabilità una precisazione che si",
+    "layout": "evidenza",
+    "eyebrow": "La probabilità",
+    "titolo": "Si compila solo per gli impatti potenziali.",
+    "testo": "Un impatto già in atto non si attenua: in atto con probabilità bassa è una contraddizione."
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 4,
+    "inizia": "Poi c'è la colonna che decide",
+    "layout": "tabella",
+    "titolo": "La relazione con l'impatto decide che cosa fare",
+    "cols": [
+      "Relazione",
+      "Risposta attesa"
+    ],
+    "righe": [
+      [
+        "Causato",
+        "Cessare la condotta e provvedere al rimedio"
+      ],
+      [
+        "Contribuito",
+        "Cessare la condotta e provvedere al rimedio"
+      ],
+      [
+        "Direttamente collegato",
+        "Usare la leva perché sia il partner a rimediare"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 5,
+    "inizia": "Se l'organizzazione ha causato l'impatto o",
+    "layout": "cards",
+    "titolo": "Confondere i casi: due errori opposti",
+    "cards": [
+      {
+        "h": "Troppo",
+        "d": "Prendersi la responsabilità di rimedi che non spettano."
+      },
+      {
+        "h": "Troppo poco",
+        "d": "Scrivere lettere quando si sarebbe dovuto intervenire."
+      }
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 6,
+    "inizia": "Sui punti di opacità, che è",
+    "layout": "definizione",
+    "eyebrow": "Il registro più originale",
+    "titolo": "Punti di opacità",
+    "definizione": "Tratti di filiera che non si riescono a ricostruire: un intermediario che non rivela i fornitori, una materia prima che si perde più su.",
+    "punti": [
+      {
+        "h": "Registrarli",
+        "d": "dichiara i limiti della conoscenza"
+      },
+      {
+        "h": "Anno dopo anno",
+        "d": "si mostrano in riduzione"
+      }
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 7,
+    "inizia": "Infine vale anche qui la regola",
+    "layout": "tabella",
+    "titolo": "Conta solo con la data",
+    "cols": [
+      "Registrazione",
+      "Data che serve"
+    ],
+    "righe": [
+      [
+        "Verifica eseguita",
+        "Data di esecuzione"
+      ],
+      [
+        "Piano chiuso nei termini",
+        "Scadenza e data di chiusura"
+      ],
+      [
+        "Segnalazione",
+        "Data di conferma"
+      ],
+      [
+        "Richiesta informativa",
+        "Data di risposta"
+      ]
+    ]
+  },
+  {
+    "sezione": "registri-filiera",
+    "p": 8,
+    "inizia": "Registrazioni senza date esistono nell'elenco e",
+    "layout": "evidenza",
+    "eyebrow": "In una verifica di seconda parte",
+    "titolo": "La domanda non è se, è quando.",
+    "testo": "Registrazioni senza date esistono nell'elenco e non muovono nulla: il cruscotto dice il vero."
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 0,
+    "inizia": "Gli indicatori sono di due famiglie,",
+    "layout": "apertura",
+    "titolo": "Gli indicatori",
+    "sottotitolo": "Due famiglie",
+    "testo": "La distinzione fra processo ed esito è la cosa più utile che il cruscotto insegna.",
+    "agenda": [
+      "Processo ed esito",
+      "Quando il sistema è efficace",
+      "Le segnalazioni",
+      "Lo zero",
+      "La copertura"
+    ]
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 1,
+    "inizia": "Quelli di processo misurano ciò che",
+    "layout": "confronto",
+    "titolo": "Processo ed esito",
+    "a": {
+      "h": "Processo",
+      "sub": "Ciò che è stato fatto",
+      "punti": [
+        "Spesa coperta da partner qualificati",
+        "Clausole a contratto",
+        "Verifiche eseguite sul piano",
+        "Piani chiusi nei termini"
+      ]
+    },
+    "b": {
+      "h": "Esito",
+      "sub": "Ciò che è cambiato",
+      "punti": [
+        "Impatti gravi chiusi",
+        "Rimedi erogati",
+        "Canale comunicato ai lavoratori",
+        "Opacità in riduzione"
+      ]
+    }
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 3,
+    "inizia": "Il sistema è efficace quando migliorano",
+    "layout": "evidenza",
+    "eyebrow": "Quando il sistema è efficace",
+    "titolo": "Quando migliorano gli esiti.",
+    "testo": "Processo al massimo ed esiti fermi: attività eseguite con precisione senza che cambi niente per nessuno. Da dentro somiglia al successo."
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 4,
+    "inizia": "Poi c'è una lettura che va",
+    "layout": "definizione",
+    "eyebrow": "Da spiegare alla direzione prima",
+    "titolo": "Più segnalazioni",
+    "definizione": "Non è un peggioramento: si legge come un canale più accessibile e più creduto."
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 5,
+    "inizia": "E il rovescio: zero segnalazioni in",
+    "layout": "split",
+    "titolo": "Zero segnalazioni, rischio inerente alto",
+    "lead": "Non dice che non succede niente: dice che nessuno lo racconta.",
+    "punti": [
+      {
+        "h": "Per leggere lo zero",
+        "d": "servono i dati che gli stanno accanto"
+      },
+      {
+        "h": "Il canale",
+        "d": "comunicato a chi, in quali lingue, con quale verifica"
+      },
+      {
+        "h": "Senza quei dati",
+        "d": "lo zero si legge nel modo peggiore"
+      }
+    ]
+  },
+  {
+    "sezione": "indicatori-filiera",
+    "p": 7,
+    "inizia": "Un'ultima osservazione sugli indicatori di copertura,",
+    "layout": "numeri",
+    "titolo": "La copertura si legge col denominatore",
+    "numeri": [
+      {
+        "n": "90%",
+        "h": "Della spesa mappata",
+        "d": "Coperta: suona benissimo."
+      },
+      {
+        "n": "20%",
+        "h": "Spesa mappata sul totale",
+        "d": "Il denominatore."
+      },
+      {
+        "n": "18%",
+        "h": "La copertura vera",
+        "d": "Per questo si dichiara la spesa complessiva."
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 0,
+    "inizia": "Il corpus base è comune e",
+    "layout": "apertura",
+    "titolo": "Il corpus documentale",
+    "sottotitolo": "{procedureFiliera} procedure e {moduliFiliera} moduli",
+    "testo": "Comune e versionato, personalizzabile blocco per blocco: l'aggiornamento arriva dove non hai scritto.",
+    "agenda": [
+      "Tre regole di personalizzazione",
+      "Che cosa si dichiara",
+      "Quello che si può sapere",
+      "Le criticità",
+      "Che cosa non si divulga"
+    ]
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 1,
+    "inizia": "Tre regole pratiche sulla personalizzazione. La",
+    "layout": "cards",
+    "titolo": "Tre regole sulla personalizzazione",
+    "cards": [
+      {
+        "h": "Solo ciò che differisce",
+        "d": "Soglie, funzioni, cadenze: un blocco riscritto identico si stacca dagli aggiornamenti."
+      },
+      {
+        "h": "Segnaposto dall'anagrafica",
+        "d": "Il contatore dice quanti ne restano aperti."
+      },
+      {
+        "h": "Congelato alla creazione",
+        "d": "Un documento approvato non cambia fra due approvazioni."
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 5,
+    "inizia": "Non si dichiara l'assenza di lavoro",
+    "layout": "confronto",
+    "titolo": "La dichiarazione annuale",
+    "a": {
+      "h": "Non si dichiara",
+      "sub": "Un fatto che non si può conoscere",
+      "punti": [
+        "«Nella filiera non c'è lavoro forzato»"
+      ]
+    },
+    "b": {
+      "h": "Si dichiara",
+      "sub": "Che cosa è stato verificato",
+      "punti": [
+        "Come, e con quali limiti"
+      ]
+    }
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 6,
+    "inizia": "Un'organizzazione non può sapere che nella",
+    "layout": "numeri",
+    "titolo": "Quello che si può sapere",
+    "numeri": [
+      {
+        "n": "70%",
+        "h": "Della spesa",
+        "d": "Mappata."
+      },
+      {
+        "n": "40",
+        "h": "Siti",
+        "d": "Verificati."
+      },
+      {
+        "n": "3",
+        "h": "Rilievi",
+        "d": "Trovati, e come sono stati chiusi."
+      }
+    ]
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 7,
+    "inizia": "Per la stessa ragione le criticità",
+    "layout": "evidenza",
+    "eyebrow": "Le criticità si riportano",
+    "titolo": "Tre rilievi trovati e chiusi valgono più di zero rilievi.",
+    "testo": "Una dichiarazione senza rilievi non indica una filiera sana: indica una verifica inefficace."
+  },
+  {
+    "sezione": "corpus-filiera",
+    "p": 8,
+    "inizia": "E due cose non si divulgano",
+    "layout": "cards",
+    "titolo": "Due cose che non si divulgano mai",
+    "cards": [
+      {
+        "h": "I nomi dei partner",
+        "d": "Salvo scelta deliberata di pubblicare la lista dei fornitori."
+      },
+      {
+        "h": "Chi ha segnalato",
+        "d": "Nessun dato che possa esporlo: è un obbligo."
+      }
+    ]
+  },
+  {
+    "sezione": "errori-filiera",
+    "p": 0,
+    "inizia": "Chiudo con l'ordine in cui si",
+    "layout": "apertura",
+    "titolo": "L'ordine, e gli errori",
+    "sottotitolo": "Qui le fasi si condizionano",
+    "testo": "L'ordine in cui si mette in piedi il sistema conta più che altrove.",
+    "agenda": [
+      "L'ordine",
+      "Partner senza spesa",
+      "Gli altri quattro errori",
+      "Il senso del percorso"
+    ]
+  },
+  {
+    "sezione": "errori-filiera",
+    "p": 1,
+    "inizia": "Prima l'anagrafica completa, con governance, canale",
+    "layout": "flusso",
+    "titolo": "L'ordine in cui si costruisce",
+    "passi": [
+      {
+        "h": "Anagrafica",
+        "d": "governance, canale, perimetro"
+      },
+      {
+        "h": "Prime procedure",
+        "d": "politica, codice di condotta, nomina"
+      },
+      {
+        "h": "Mappa per sito",
+        "d": "con spesa e rischio inerente"
+      },
+      {
+        "h": "Maturità",
+        "d": "dai nodi ad alto rischio, con impatti e piani"
+      },
+      {
+        "h": "Verifiche e dichiarazione",
+        "d": "piano sul residuo, riesame, obiettivi"
+      }
+    ]
+  },
+  {
+    "sezione": "errori-filiera",
+    "p": 3,
+    "inizia": "Il primo è il partner senza",
+    "layout": "evidenza",
+    "eyebrow": "Il primo errore",
+    "titolo": "Un nodo senza spesa annua non entra in nessuna percentuale.",
+    "testo": "Il cruscotto sottostima sistematicamente. La spesa va messa su ogni nodo, anche stimata, dichiarando che è una stima."
+  },
+  {
+    "sezione": "errori-filiera",
+    "p": 4,
+    "inizia": "Il secondo è mappare un nodo",
+    "layout": "tabella",
+    "titolo": "Gli altri quattro",
+    "cols": [
+      "Errore",
+      "Conseguenza"
+    ],
+    "righe": [
+      [
+        "Nodo per ragione sociale",
+        "Rischio paese e siti non dichiarati invisibili"
+      ],
+      [
+        "Inerente senza maturità",
+        "Verifiche annuali ovunque: un piano disatteso"
+      ],
+      [
+        "Registrazioni senza date",
+        "Lavoro non dimostrabile"
+      ],
+      [
+        "Cessato al posto di sospeso",
+        "Numeri migliori, nodi critici spariti"
+      ]
+    ]
+  },
+  {
+    "sezione": "errori-filiera",
+    "p": 7,
+    "inizia": "Una riflessione finale sul senso di",
+    "layout": "chiusura",
+    "titolo": "Il senso del percorso",
+    "punti": [
+      {
+        "h": "Non dimostra",
+        "d": "che la filiera è pulita"
+      },
+      {
+        "h": "Dimostra",
+        "d": "che l'organizzazione la guarda, con metodo e limiti dichiarati"
+      },
+      {
+        "h": "E che interviene",
+        "d": "quando trova qualcosa"
+      }
+    ]
+  }
+]
