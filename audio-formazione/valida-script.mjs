@@ -98,9 +98,11 @@ for (const c of cartelle) {
       guasti++;
     }
 
-    // Una sigla è una sequenza di due o più maiuscole. Le parole intere in maiuscolo non
-    // esistono nei copioni, quindi non c'è ambiguità.
-    for (const m of s.script.matchAll(/\b[A-Z]{2,}\b/g)) {
+    // Una sigla è una sequenza di due o più maiuscole, eventualmente seguita da cifre. Le
+    // parole intere in maiuscolo non esistono nei copioni, quindi non c'è ambiguità.
+    // ⚠️ Niente `\b`: in `NIS2` fra la S e il 2 non c'è confine di parola, e la sigla
+    // sfuggiva del tutto — né dichiarata né segnalata. Lo ha trovato l'altra sessione.
+    for (const m of s.script.matchAll(/(?<![A-Za-zÀ-ÿ0-9])[A-Z]{2,}[0-9]*(?![A-Za-zÀ-ÿ0-9])/g)) {
       if (!SIGLE.includes(m[0]) && !SIGLE_PAROLA.has(m[0]) && !glossario.includes(m[0])) {
         sigleIgnote.set(m[0], (sigleIgnote.get(m[0]) ?? new Set()).add(dove));
       }
