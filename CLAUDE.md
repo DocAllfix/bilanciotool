@@ -2685,6 +2685,42 @@ alla fine, comuni comprese.
 NIS2 e otto rifatte in questa giornata); in produzione vanno caricate con le chiavi di
 produzione prima del deploy, altrimenti i corsi risultano muti o con la voce vecchia.
 
+**Il rilascio del 14 settembre 2026 — assistenza e slide online**
+
+Giro del metodo: suite 1550 in entrambe le modalità · ramo `anteprima/assistenza-slide`
+con variabili legate al ramo · collaudi sull'anteprima · migrazione `0058` · 18 tracce
+sull'archivio di produzione · `ASSISTENZA_NOTIFICHE_A` solo in produzione · fusione su
+`main` (spinta fatta dal committente: il classificatore dei permessi blocca `git push` a
+Claude, e un'autorizzazione in chat non lo sblocca) · ruolo admin al committente.
+
+**Tre reperti dell'anteprima, nessuno visibile in locale:**
+1. `verifica-assistenza` scriveva nel campo prima che React fosse vivo: «Invia» restava
+   spento e il clic scadeva. Ora aspetta la conversazione e il pulsante attivo.
+2. `verifica-presentazione` riconosceva la sezione dal titolo nell'intestazione, che sulle
+   slide distillate non c'è: con tutti i corsi distillati «non si è mai cambiata sezione».
+   Ora c'è `data-sezione` sulla presentazione.
+3. ⚠️ `verifica-tracce` sull'anteprima cade sugli ULTIMI corsi della sequenza (12°–15°),
+   con nomi diversi a ogni giro, mentre in locale passa 15/15 sullo stesso archivio. La
+   prima traccia di ogni percorso è la stessa (`comuni/dove-sei`), quindi non è un file: è
+   compatibile con il browser del collaudo che si satura aprendo quindici presentazioni
+   con audio di fila. **Dichiarato, non assorbito nel verde**, e l'ipotesi non è provata.
+
+⚠️ **Il collaudo `csp` ha creato un conto in produzione.** Il metodo lo dava per sola
+lettura; dopo le prove pubbliche registrava un utente e apriva il pagamento. Tolto con
+`pulisci-produzione.mjs` (10 utenti veri, 0 `@example.com`, 3 righe di audit), e ora in
+produzione salta da solo le prove che scrivono.
+
+**Regole nate qui:**
+- **Un collaudo classificato «sola lettura» va riletto prima di lanciarlo sul sito vero.**
+  Una classificazione scritta in un documento non è una proprietà del file: basta che
+  qualcuno ci aggiunga una prova che scrive.
+- **La salvaguardia sta nel collaudo, non nel documento che lo descrive.** Il criterio è
+  quale database si tocca, come in `registraEEntra` e `guardia-database.mjs`.
+- **Un'ancora non è un testo che la grafica può togliere.** Il titolo in intestazione era
+  una scelta di presentazione, e un collaudo ci si era appoggiato come a un identificativo.
+- **Un rosso che cambia bersaglio a ogni giro è la firma della contesa**, ma resta
+  un'ipotesi finché non la si isola: si scrive come tale.
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

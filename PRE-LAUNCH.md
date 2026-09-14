@@ -304,7 +304,12 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
-0-assistenza. ⏳ **L'assistenza è pronta e NON è in produzione** (2026-09-14).
+0-assistenza. ✅ **In produzione dal 14 settembre 2026** (commit `f4cc8ef`): migrazione
+   `0058` applicata (59/59, RLS forzata sulle due tabelle), `ASSISTENZA_NOTIFICHE_A` su
+   Vercel per la sola produzione, `platform_role = 'admin'` sull'utente del committente.
+   Resta qui sotto la procedura, per il giorno in cui servisse rifarla altrove.
+
+   _Com'era prima del rilascio:_ **L'assistenza è pronta e NON è in produzione**.
 
    Tre passi, in quest'ordine, e nessuno dei tre ha un cancello che lo pretenda:
    1. migrazione `0058_assistenza` sulla produzione (`DIRECT_URL`, con
