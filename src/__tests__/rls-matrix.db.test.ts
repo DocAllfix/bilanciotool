@@ -22,6 +22,10 @@ const ECCEZIONI: Record<string, string> = {
   // migrazione 0043, che porta anche il rischio residuo dichiarato.
   document_codice:
     "lettura pubblica per progetto: la pagina /verifica risponde senza sessione. Scrittura per-org, update al solo contatore, resto bloccato da trigger (migrazione 0043)",
+  assistenza_ticket:
+    "policy per UTENTE (`assistenza_ticket_utente_rls`): un ticket lo vede chi l'ha aperto e lo staff, non i colleghi dello studio. `organization_id` serve al registro e allo staff, non alla visibilità (migrazione 0058)",
+  assistenza_messaggio:
+    "non ha `organization_id` e non sarebbe qui; scritto per simmetria: segue il ticket via EXISTS con la stessa policy per utente (migrazione 0058)",
   audit_log: "append-only: insert libero, select per-org, update/delete revocati a livello grant",
   entitlement_event:
     "registro append-only delle capacità: policy SEPARATE per INSERT (propria org o platform_admin, che serve al webhook) e SELECT (propria org). Nessuna policy per UPDATE/DELETE, perché non devono esistere — ed è PIÙ stretto di una `FOR ALL`, non più largo. In più un trigger BEFORE UPDATE OR DELETE che vale anche per la connessione privilegiata, come per document_snapshot.",

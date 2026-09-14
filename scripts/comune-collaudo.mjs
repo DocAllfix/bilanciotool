@@ -47,6 +47,7 @@ const ESTRANEI = /(stripe\.com|google-analytics|googletagmanager|sentry\.io|supa
  * ⚠️ Solo in locale: in produzione il build id di questa macchina non c'entra niente.
  */
 export async function pretendiServerAggiornato(base) {
+  await pretendiCheSiaEvalisDeck(base);
   if (!/^https?:\/\/(localhost|127\.0\.0\.1)/.test(base)) return;
   const { readFileSync } = await import("node:fs");
   let buildId;
@@ -63,6 +64,37 @@ export async function pretendiServerAggiornato(base) {
         "Fermalo davvero — la porta va vista libera — poi riavvia e rilancia.",
     );
   }
+}
+
+/**
+ * L'indirizzo che stiamo per collaudare serve DAVVERO questo prodotto?
+ *
+ * ⚠️ Nasce da un caso vero del 14 settembre 2026: sulla stessa macchina gira anche
+ * Formazione Evalis, e i due `next start` si contendono la porta 3000. Chi arriva secondo
+ * muore, il primo continua a rispondere 200, e i collaudi girano contro l'ALTRO prodotto.
+ *
+ * Il guasto non si presenta come «applicazione sbagliata»: si presenta come «elemento non
+ * trovato», su controlli che non c'entrano niente con quello che si è appena toccato. Là
+ * sono stati cinque e2e rossi e una caccia alla regressione; qui, un manifesto di build
+ * che rispondeva 404 mentre `/login` rispondeva 200 — e il tempo l'ho perso lo stesso,
+ * perché quel messaggio incolpa un server vecchio, non un prodotto diverso.
+ *
+ * Un collaudo che gira sull'applicazione sbagliata non deve poter diventare né verde né
+ * rosso: deve fermarsi. Il marchio nel titolo è il segno più economico che lo distingue.
+ */
+export async function pretendiCheSiaEvalisDeck(base) {
+  const r = await fetch(`${base}/login`, { redirect: "follow" });
+  const html = await r.text().catch(() => "");
+  if (/EvalisDeck/i.test(html)) return;
+  // Su un'anteprima protetta la pagina è quella di Vercel: lì il marchio non c'è, e
+  // `attraversaProtezione` è la strada giusta — non si dichiara guasto un accesso negato.
+  if (/vercel/i.test(html) && !/^https?:\/\/(localhost|127\.0\.0\.1)/.test(base)) return;
+  const titolo = html.match(/<title[^>]*>([^<]{0,120})/i)?.[1]?.trim() ?? "(nessun titolo)";
+  throw new Error(
+    `L'indirizzo ${base} NON serve EvalisDeck: il titolo è «${titolo}».\n` +
+      "Quasi sempre è un altro prodotto che ha preso la porta (su questa macchina gira anche\n" +
+      "Formazione Evalis). Fermalo, oppure lancia il collaudo con BASE su un'altra porta.",
+  );
 }
 
 /**

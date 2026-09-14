@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MODULI_PER_AREA } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, CalendarDays, ChevronLeft, FileStack, GraduationCap, HelpCircle, Settings2, Wallet } from "lucide-react";
+import { Briefcase, CalendarDays, ChevronLeft, FileStack, GraduationCap, HelpCircle, LifeBuoy, Settings2, Wallet } from "lucide-react";
 
 // Navigazione della shell, in due modi.
 //
@@ -30,6 +30,10 @@ const VOCI = [
   // gruppo perché è la sola che insegna qualcosa invece di rispondere o di regolare.
   { href: "/formazione", label: "Formazione", icon: GraduationCap, tour: "nav-formazione" },
   { href: "/guida", label: "Guida", icon: HelpCircle, tour: "nav-guida" },
+  // ⚠️ L'assistenza sta ACCANTO alla guida, e dopo: la guida risponde a una domanda sul
+  // prodotto, l'assistenza a una che il prodotto non ha saputo risolvere. Chi ci arriva
+  // ha già provato la prima.
+  { href: "/assistenza", label: "Assistenza", icon: LifeBuoy, tour: "nav-assistenza" },
   { href: "/impostazioni", label: "Impostazioni", icon: Settings2, tour: "nav-impostazioni" },
 ] as const;
 

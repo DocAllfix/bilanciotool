@@ -2522,6 +2522,74 @@ tutto, e gli undici corsi che le domande non ce l'hanno ancora **lo dichiarano**
   `app_rls`: la lettura si prova assumendo quel ruolo, non fidandosi del fatto che
   `postgres` veda le righe.
 
+**L'assistenza (2026-09-14) — ticket, notifiche e coda staff, dal modello di Academy**
+
+Decisioni del committente, riferite dalla sessione di Evalis Academy: assistente **guidato
+senza modello** (strada A) che finisce in «apri una richiesta»; notifiche **per entrambi i
+progetti** con le stesse regole; coda staff che **non chiude la porta a un agente**.
+
+- **Migrazione `0058`**: `assistenza_ticket` + `assistenza_messaggio`, policy per
+  **UTENTE** e non per organizzazione. Un collega dello **stesso studio non vede** le
+  richieste dell'altro: si scrive all'assistenza anche per dire «non riesco a fare quello
+  che il socio mi ha chiesto». Provato assumendo `app_rls` a mano: il proprietario vede
+  1, il collega **0**. Le due tabelle stanno fra le eccezioni scritte di `rls-matrix`.
+- **L'assistenza sta FUORI dal paywall**, dichiarato in `paywall-superfici-nuove`: chi ha
+  l'abbonamento scaduto è proprio chi scrive, spesso per pagare.
+- **Logica senza guardie** in `features/assistenza/index.ts`, guardie in `actions.ts` e
+  nelle pagine: un domani un agente chiamerà le funzioni staff senza passare dal browser, e
+  il perimetro resterà quello del database.
+- **Notifiche** (`ASSISTENZA_NOTIFICHE_A`, elenco separato da virgole): richiesta nuova e
+  risposta dell'utente → staff; risposta dello staff → utente. Partono **dopo** la
+  transazione e non possono farla fallire; nessuno riceve ciò che ha scritto lui; un invio
+  per destinatario; anteprima di 600 caratteri **troncata prima dell'escape**.
+- **Coda staff** `/staff/assistenza`: per chi non è staff **non esiste** («Questa pagina
+  non c'è»), non «riservato».
+
+**Difetti trovati, tutti prima del commit:**
+1. ⚠️ **La coda staff dava 500 a chi non era staff.** `requirePlatformAdmin` SOLLEVA, e
+   dentro un componente server un'eccezione diventa «An error occurred in the Server
+   Components render». Ora `app/(app)/staff/guardia.ts` risponde `notFound()`.
+2. ⚠️ **La pastiglia dello stato usciva VUOTA nella coda**: le etichette stavano in un
+   modulo `"use client"` e la coda è un componente server, che da lì riceve un riferimento
+   e non l'oggetto. Nessun errore: l'ha vista la foto.
+3. **Lo staff leggeva «Tocca a te»** su una richiesta a cui aveva appena risposto: lo
+   stesso stato dice cose opposte ai due lati, e ora sono due elenchi.
+4. **`accent-subtle` non esiste come token**: classi che non producevano niente, e il
+   collegamento del rimando si leggeva appena in scuro. `text-accent` è una velatura, non
+   un colore di testo.
+
+**Regole nate qui:**
+- **Su questa macchina gira anche Formazione Evalis, e i due `next start` si contendono la
+  porta.** I collaudi non dicono «applicazione sbagliata», dicono «elemento non trovato».
+  `pretendiCheSiaEvalisDeck` (in `pretendiServerAggiornato`) apre `/login` e pretende il
+  marchio: provata su example.com, si ferma e stampa il titolo. Accordo fra le sessioni:
+  **3000 a EvalisDeck, 3100 a Evalis**.
+- ⚠️ **Mai `taskkill /IM node.exe`**: ferma i processi node di TUTTA la macchina, compresi
+  quelli dell'altra sessione. Si ferma il solo processo in ascolto sulla porta
+  (`Get-NetTCPConnection -LocalPort 3000` → `Stop-Process`).
+- ⚠️ **`npm run build | head` interrompe il build a metà**: la pipe si chiude e `.next`
+  resta incompleto. Il server continua a servire quello vecchio, e la guardia del build id
+  se ne accorge. Il build si lancia con l'uscita su file.
+- **`notFound()` arriva in streaming dopo il guscio.** Letto a `domcontentloaded`,
+  l'`innerText` è la sola barra laterale — che si legge «guscio vuoto», cioè il difetto
+  opposto. Si corre la pagina «non trovata» CONTRO il contenuto vietato: aspettando solo
+  la prima, un prodotto che mostra la conversazione di un altro fallirebbe con «Timeout».
+  Controprova fatta togliendo il filtro sul proprietario: il referto ora nomina il difetto.
+- **Un componente server non importa dati da un modulo client** — riconfermato una terza
+  volta, dopo le domande della vetrina.
+
+Gate: typecheck · build · `assistenza.db` 13/13 (policy provata sotto `app_rls`) ·
+`assistenza-email-pure` 9/9 · `paywall-superfici-nuove` 16/16 · `rls-matrix` ·
+`etichette-audit` · `qa -- assistenza` **14/14**, rosso sull'asserzione giusta togliendo
+il filtro sul proprietario · `visual-check-shell` verde con la voce in più · foto in
+chiaro, scuro e da telefono **guardate** (`scripts/foto-assistenza.mjs`), sfondamento 0 px,
+console pulita.
+
+⚠️ **Non in produzione.** Per il rilascio servono, in quest'ordine: migrazione `0058`,
+`ASSISTENZA_NOTIFICHE_A` su Vercel, e almeno un utente con `platform_role = 'admin'` —
+senza, la coda non la apre nessuno e le notifiche portano a una pagina che risponde «non
+c'è».
+
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 

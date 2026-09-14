@@ -133,6 +133,12 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // Agenda dello studio. ⚠️ L'etichetta non riporta il TITOLO della voce: qui ci
   // finiscono nomi di persone da richiamare e trattative in corso, e questa cronologia
   // la vede tutto lo studio.
+  // Assistenza. ⚠️ Nessuna etichetta riporta l'OGGETTO: la richiesta la vede solo chi l'ha
+  // scritta, mentre questa cronologia la vede tutto lo studio.
+  "assistenza.ticket.create": "Richiesta di assistenza inviata",
+  "assistenza.ticket.reply": "Risposta in una richiesta di assistenza",
+  "assistenza.ticket.staff_reply": "L'assistenza ha risposto a una richiesta",
+  "assistenza.ticket.stato": "Stato di una richiesta di assistenza cambiato",
   "agenda.voce.create": "Voce aggiunta in agenda",
   "agenda.voce.set": "Voce dell'agenda modificata",
   "agenda.voce.stato": "Voce dell'agenda chiusa o riaperta",

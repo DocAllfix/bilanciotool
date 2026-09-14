@@ -24,3 +24,4 @@ export * from "./agenda";
 export * from "./compensi";
 export * from "./verifica";
 export * from "./nis2";
+export * from "./assistenza";

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   agendaVoce,
+  assistenzaTicket,
   companyContact,
   compenso,
   documentSnapshot,
@@ -44,6 +45,7 @@ let progA = "";
 
 async function pulisci(orgId: string) {
   await db.delete(agendaVoce).where(eq(agendaVoce.organizationId, orgId));
+  await db.delete(assistenzaTicket).where(eq(assistenzaTicket.organizationId, orgId));
   await db.delete(compenso).where(eq(compenso.organizationId, orgId));
   await db.delete(companyContact).where(eq(companyContact.organizationId, orgId));
   await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, orgId));
@@ -143,6 +145,27 @@ describe("nessuno tocca il lavoro di un altro studio", () => {
   it("in prova non muove una fase di un programma altrui", async () => {
     await expect(setStatoFase(P.userId, P.orgId, progA, "proc00", "conclusa")).rejects.toThrow();
     expect(await db.select().from(sgesgFase).where(eq(sgesgFase.programId, progA))).toEqual([]);
+  });
+});
+
+describe("⚠️ l'ASSISTENZA sta FUORI dal paywall, ed e' voluto", () => {
+  // Chi ha l'abbonamento scaduto e' esattamente chi ha bisogno di scrivere: spesso scrive
+  // PER pagare. Chiudergli la porta sarebbe il contrario del servizio, e trasformerebbe un
+  // problema di fatturazione in un cliente perso in silenzio.
+  //
+  // Sta scritto qui perche' la regola generale di questo file e' l'opposta — «ogni
+  // superficie nuova passa da `requireEntitlement`» — e senza questa eccezione dichiarata
+  // il primo che allinea le superfici metterebbe il controllo anche qui, con le migliori
+  // intenzioni.
+  it("uno studio scaduto apre una richiesta, e la riga compare", async () => {
+    const { apriTicket, mieiTicket } = await import("@/features/assistenza");
+    const prima = (await mieiTicket(S.userId, S.orgId)).length;
+    const { id } = await apriTicket(S.userId, S.orgId, {
+      oggetto: "Non riesco a rinnovare",
+      testo: "La carta viene rifiutata.",
+    });
+    expect(id).toBeTruthy();
+    expect((await mieiTicket(S.userId, S.orgId)).length).toBe(prima + 1);
   });
 });
 

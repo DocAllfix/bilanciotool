@@ -279,3 +279,92 @@ export async function inviaCandidaturaFondatori(d: {
   });
   return send(destinatario, `Programma Fondatori — ${d.nome}`, html);
 }
+
+// ── Assistenza ─────────────────────────────────────────────────────────────────────────
+//
+// ⚠️ Tre regole uguali in EvalisDeck e in Evalis Academy, concordate fra i due progetti:
+//  1. l'email parte DOPO che il ticket è scritto, e se non parte il ticket resta valido;
+//  2. nessuno riceve la notifica di ciò che ha scritto lui;
+//  3. nell'email c'è il testo del messaggio e nient'altro dello studio;
+//  4. gli amministratori stanno in `ASSISTENZA_NOTIFICHE_A`, non scritti nel codice.
+
+/** Gli indirizzi dello staff, dalla configurazione. Vuoto se non configurati. */
+export function destinatariAssistenza(): string[] {
+  // ⚠️ Letta da `process.env` e non da `env`, come `RESEND_REPLY_TO`: `env` si convalida
+  // una volta sola all'import, quindi un cambio di destinatari varrebbe solo dal riavvio
+  // successivo. La dichiarazione in `lib/env.ts` resta e serve a renderla VISIBILE — una
+  // variabile letta solo qui non compare da nessuna parte, ed è così che si dimentica.
+  return (process.env.ASSISTENZA_NOTIFICHE_A ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => /^[^@\s]+@[^@\s]+$/.test(s));
+}
+
+/**
+ * Un testo scritto da una persona, dentro un'email.
+ *
+ * ⚠️ Due cose, e nessuna è cosmetica.
+ *  1. **Reso innocuo**: `esc` prima di tutto. Il testo lo scrive chi apre la richiesta e
+ *     finisce dentro HTML che qualcun altro apre: `<img onerror=…>` nell'oggetto di un
+ *     ticket è il modo più economico di provarci.
+ *  2. **Troncato**: un ticket lungo dentro un'email è illeggibile, e l'email non è il
+ *     posto dove si legge — è l'avviso che porta alla conversazione, che è anche l'unico
+ *     posto dove si può rispondere.
+ */
+export const ANTEPRIMA_MAX = 600;
+
+export function anteprimaMessaggio(testo: string): string {
+  const t = testo.length > ANTEPRIMA_MAX ? `${testo.slice(0, ANTEPRIMA_MAX).trimEnd()}…` : testo;
+  return esc(t).replace(/\r?\n/g, "<br>");
+}
+
+/** Allo staff: una richiesta nuova, o una risposta di chi l'ha aperta. */
+export async function avvisaStaffAssistenza(d: {
+  nuovo: boolean;
+  nome: string;
+  email: string;
+  studio: string;
+  oggetto: string;
+  testo: string;
+  url: string;
+}): Promise<{ sent: boolean }> {
+  const a = destinatariAssistenza();
+  if (!a.length) {
+    console.error("[assistenza] ASSISTENZA_NOTIFICHE_A non configurata: nessuno sa di questa richiesta");
+    return { sent: false };
+  }
+  logLinkInDev("assistenza staff", d.url);
+  const titolo = d.nuovo ? "Nuova richiesta di assistenza" : "Nuova risposta in una richiesta";
+  const html = renderEmail({
+    previewText: `${d.nome}: ${d.oggetto}`,
+    heading: titolo,
+    body: [
+      `<strong>Da:</strong> ${esc(d.nome)} &lt;${esc(d.email)}&gt;<br><strong>Studio:</strong> ${esc(d.studio)}<br><strong>Oggetto:</strong> ${esc(d.oggetto)}`,
+      anteprimaMessaggio(d.testo),
+    ],
+    button: { label: "Apri nella coda", url: d.url },
+  });
+  // Un invio per destinatario: se uno degli indirizzi viene rifiutato, gli altri ricevono
+  // lo stesso, e `send` annota quale.
+  const esiti = await Promise.all(a.map((to) => send(to, `[Assistenza] ${d.oggetto}`, html)));
+  return { sent: esiti.some((e) => e.sent) };
+}
+
+/** A chi ha aperto la richiesta: lo staff ha risposto. */
+export async function avvisaUtenteAssistenza(
+  to: string,
+  d: { oggetto: string; testo: string; url: string },
+): Promise<{ sent: boolean }> {
+  logLinkInDev("assistenza utente", d.url);
+  return send(
+    to,
+    `Risposta alla tua richiesta: ${d.oggetto}`,
+    renderEmail({
+      previewText: "L'assistenza di EvalisDeck ti ha risposto",
+      heading: "Ti abbiamo risposto",
+      body: [`<strong>${esc(d.oggetto)}</strong>`, anteprimaMessaggio(d.testo)],
+      button: { label: "Apri la richiesta", url: d.url },
+      nota: "Per rispondere usa il pulsante: la conversazione resta tutta in un posto.",
+    }),
+  );
+}

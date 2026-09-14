@@ -87,6 +87,15 @@ const schema = z
      * trova il guasto e non lo dice a nessuno — la forma più inutile di sorveglianza.
      */
     BLOG_ALLARME_A: vuotaComeAssente(z.string().email().optional()),
+    /**
+     * Chi riceve le richieste di assistenza. Uno o più indirizzi separati da virgola.
+     *
+     * ⚠️ Dichiarata qui per essere VISIBILE, non per essere obbligatoria: senza, i ticket
+     * si aprono lo stesso — non devono poter fallire perché manca una configurazione — ma
+     * nessuno sa che sono arrivati, e resta solo una riga nei log. È lo stesso modo in cui
+     * `BLOG_ALLARME_A` può rendere muta una sorveglianza che gira.
+     */
+    ASSISTENZA_NOTIFICHE_A: vuotaComeAssente(z.string().optional()),
     // Test seam RLS (mai impostata in produzione)
     RLS_FORCE_ROLE: z.string().regex(/^[a-z_][a-z0-9_]*$/).optional(),
   })

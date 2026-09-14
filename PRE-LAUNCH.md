@@ -304,6 +304,20 @@ dati fiscali, ma nessuno le emette.
 
 Non bloccano il lancio, ma vanno saputi.
 
+0-assistenza. ⏳ **L'assistenza è pronta e NON è in produzione** (2026-09-14).
+
+   Tre passi, in quest'ordine, e nessuno dei tre ha un cancello che lo pretenda:
+   1. migrazione `0058_assistenza` sulla produzione (`DIRECT_URL`, con
+      `SO_CHE_E_PRODUZIONE=1` dichiarata);
+   2. `ASSISTENZA_NOTIFICHE_A` su Vercel, con l'indirizzo del committente. **Senza, i
+      ticket si aprono e nessuno lo sa**: resta una riga nei log;
+   3. `platform_role = 'admin'` sull'utente del committente. Senza, la coda risponde
+      «Questa pagina non c'è» anche a lui, e le email portano lì.
+
+   **Come si verifica**: `npm run qa -- assistenza --prod` scrive un ticket vero, quindi
+   si lancia **solo** dopo aver deciso di farlo sul database che incassa; senza, si
+   verifica a mano aprendo una richiesta e controllando che l'email arrivi.
+
 0-storage. ✅ **CHIUSA il 26 agosto 2026 — l'archivio dello sviluppo era quello della
    PRODUZIONE.**
 
