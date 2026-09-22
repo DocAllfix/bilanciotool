@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -101,7 +101,15 @@ await check("da qui si compra: il dialogo offre piano ed estensioni", async () =
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("il dialogo d'acquisto non si apre");
   const t = await d.innerText();
-  if (!/Blocchi da \d+ aziende/.test(t)) throw new Error("non offre le estensioni");
+  // Che cosa offre il dialogo dipende dalla FASCIA, e qui si preme la prima del listino:
+  // quella d'ingresso i blocchi non li vende, e propone invece la fascia superiore.
+  const prima = PIANI[fasceVendibili()[0]];
+  if (prima.senzaBlocchi) {
+    if (/Blocchi da \d+ aziende/.test(t)) throw new Error(`«${prima.nome}» non deve offrire blocchi`);
+    if (!/Più di un'azienda\?/.test(t)) throw new Error("non indica la fascia superiore");
+  } else if (!/Blocchi da \d+ aziende/.test(t)) {
+    throw new Error("non offre le estensioni");
+  }
   if (!/Primo anno/.test(t)) throw new Error("non mostra il totale");
   await page.keyboard.press("Escape");
 });
@@ -113,6 +121,44 @@ await check("chi cambia idea trova comunque la demo", async () => {
   await page.waitForTimeout(2500);
   const t = await page.locator("body").innerText();
   if (!/Meccanica Adriatica/.test(t)) throw new Error("l'azienda dimostrativa non c'è");
+});
+
+// ── La porta della singola fascia, che parte dalla vetrina ──────────────────────────────
+const INGRESSO = PIANI[fasceVendibili()[0]];
+
+await check("la home offre la porta della fascia d'ingresso, e ci porta davvero", async () => {
+  await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  const link = page.locator(`a[href="/attiva/${INGRESSO.key}"]`).first();
+  if (!(await link.count())) throw new Error("nessun richiamo alla fascia d'ingresso sulla home");
+  await link.click();
+  await page.waitForURL(`**/attiva/${INGRESSO.key}`, { timeout: 20_000 });
+  const t = await page.locator("main").innerText();
+  if (!t.includes(INGRESSO.nome)) throw new Error(`la pagina non nomina «${INGRESSO.nome}»`);
+  // ⚠️ Nessuna cifra qui: i prezzi stanno su /prezzi, per decisione del committente.
+  const v = prezzoDiVendita(INGRESSO, "anno1");
+  if (v && t.includes(euro(v.importo))) throw new Error("l'importo e' finito sulla porta d'iscrizione");
+});
+
+await check("una fascia che non esiste non iscrive nessuno", async () => {
+  const r = await page.goto(`${BASE}/attiva/inventata`, { waitUntil: "domcontentloaded" });
+  if (r.status() !== 404) throw new Error(`risponde ${r.status()} invece di 404`);
+});
+
+await check("la scelta arriva fino ai piani: il dialogo si apre gia' su quella fascia", async () => {
+  await page.goto(`${BASE}/impostazioni/abbonamento?fascia=${INGRESSO.key}`, { waitUntil: "domcontentloaded" });
+  const d = page.getByRole("dialog");
+  await d.waitFor({ timeout: 30_000 });
+  const t = await d.innerText();
+  if (!t.includes(INGRESSO.nome)) throw new Error(`si e' aperto su un'altra fascia: ${t.slice(0, 80)}`);
+});
+
+await check("chiudendo il dialogo la fascia sparisce dall'indirizzo, e non si riapre addosso", async () => {
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  if (page.url().includes("fascia=")) throw new Error(`l'indirizzo resta ${page.url()}`);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(1500);
+  if (await page.getByRole("dialog").count()) throw new Error("ricaricando il dialogo si riapre da solo");
 });
 
 await sql.end();

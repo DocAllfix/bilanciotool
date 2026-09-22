@@ -40,8 +40,16 @@ function Capacita({ etichetta, usati, totali }: { etichetta: string; usati: numb
   );
 }
 
-export default async function AbbonamentoPage() {
+export default async function AbbonamentoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ fascia?: string }>;
+}) {
   const s = await requireActiveOrg();
+  // La fascia scelta sulla vetrina (`/attiva/<fascia>`) arriva fin qui. Si valida contro
+  // il listino: un valore inventato nell'indirizzo non deve poter aprire niente.
+  const { fascia } = await searchParams;
+  const scelta = fasceVendibili().find((k) => k === fascia) ?? null;
   const a = await getQuadroAbbonamento(s.userId, s.orgId);
   const stato = ETICHETTA_STATO[a.status];
   // La stessa funzione che decide lato server se il checkout puo' partire: qui decide se
@@ -136,7 +144,13 @@ export default async function AbbonamentoPage() {
                   // ⚠️ `flex h-full flex-col` e il comando spinto in fondo: le descrizioni
                   // non vanno a capo tutte allo stesso modo, e senza questo i quattro pulsanti
                   // si disallineano — si vede solo guardando, nessun controllo lo coglie.
-                  <li key={k} className="flex h-full flex-col rounded-lg border p-4">
+                  <li
+                    key={k}
+                    className={
+                      "flex h-full flex-col rounded-lg border p-4 " +
+                      (scelta === k ? "border-primary/60 ring-1 ring-primary/20" : "")
+                    }
+                  >
                     <p className="font-medium">{p.nome}</p>
                     <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
                     <p className="mt-3 flex flex-wrap items-baseline gap-2">
@@ -170,7 +184,14 @@ export default async function AbbonamentoPage() {
                         Resta la nota per chi si riabbona dopo una disdetta: sapere quale
                         piano aveva prima gli evita di doverlo ricordare. */}
                     <div className="mt-auto space-y-2 pt-4">
-                      <DialogoAcquisto piano={p.key} etichetta="Attiva" variante="default" />
+                      <DialogoAcquisto
+                        piano={p.key}
+                        etichetta="Attiva"
+                        variante="default"
+                        // Chi arriva dalla vetrina ha già scelto: il dialogo si apre su
+                        // quella fascia, senza fargli ritrovare la scelta fra quattro.
+                        apriSubito={scelta === p.key}
+                      />
                       {a.piano === p.key && (
                         <p className="text-center text-[12px] text-muted-foreground">
                           Il tuo piano precedente

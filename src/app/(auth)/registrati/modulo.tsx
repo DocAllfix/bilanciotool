@@ -24,9 +24,16 @@ export function ModuloIscrizione({
   perAcquisto = false,
   emailFissa,
   senzaGuscio = false,
+  titolo,
+  sottotitolo,
 }: {
   destinazione: string;
   perAcquisto?: boolean;
+  /** Titolo e sottotitolo su misura: chi arriva da `/attiva/<fascia>` ha gia' scelto, e
+   *  leggere «Attiva il tuo studio» dopo aver premuto su una fascia precisa fa dubitare
+   *  di aver premuto il pulsante giusto. */
+  titolo?: string;
+  sottotitolo?: string;
   /** L'indirizzo e' gia' deciso: lo impone un invito, e cambiarlo lo renderebbe inutile.
    *  Chi si iscrivesse con un'altra email si vedrebbe poi rifiutare l'accettazione, e
    *  senza capire perche' — il posto giusto per dirglielo e' prima, non dopo. */
@@ -103,12 +110,13 @@ export function ModuloIscrizione({
     <Guscio>
       <CardHeader className={senzaGuscio ? "px-0 pt-0" : undefined}>
         <h1 className="text-lg font-semibold tracking-tight">
-          {perAcquisto ? "Attiva il tuo studio" : "Crea il tuo account"}
+          {titolo ?? (perAcquisto ? "Attiva il tuo studio" : "Crea il tuo account")}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {perAcquisto
+          {sottotitolo ??
+            (perAcquisto
             ? "Confermi l'indirizzo e ti portiamo dritto alla scelta del piano. La registrazione è gratuita: paghi solo quando decidi, e puoi vedere il listino prima."
-            : "Registrandoti apri il tuo studio in modalità demo: esplori tutto con un’azienda di esempio, senza impegno."}
+            : "Registrandoti apri il tuo studio in modalità demo: esplori tutto con un’azienda di esempio, senza impegno.")}
         </p>
       </CardHeader>
       <CardContent className={senzaGuscio ? "px-0 pb-0" : undefined}>

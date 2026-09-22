@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
-import { FONDATORI } from "@/lib/prezzi";
+import { FONDATORI, PIANI, fasceVendibili } from "@/lib/prezzi";
 
 /** Tutti i percorsi in fila, per i testi che li elencano. */
 const TUTTI_I_PERCORSI = AREE_VETRINA.flatMap((a) => a.percorsi);
@@ -410,7 +410,15 @@ export default function LandingPage() {
                     Nessuna cifra sulla home per scelta: il numero da solo ancora la lettura
                     sul costo prima che si sia capito cosa si compra, e il contesto che lo
                     rende leggibile (il ritorno) sta sulla pagina prezzi. */}
-                L&apos;unica cosa che scegli &egrave; la capienza: quante aziende gestisci in portafoglio.{" "}
+                {/* ⚠️ «da una sola fino a trenta» NON è una cifra di prezzo: è la capienza, ed
+                    è l'unico modo perché chi segue una sola azienda capisca che c'è una porta
+                    per lui. La fascia d'ingresso esiste dal 22 settembre 2026 e la home
+                    parlava solo al plurale — «per studio», «portafoglio» — mentre la testata
+                    dice già «studi e PMI». I numeri si DERIVANO dal listino: scritti a mano,
+                    al prossimo cambio di fasce questa riga resterebbe indietro in silenzio. */}
+                L&apos;unica cosa che scegli &egrave; la capienza: quante aziende gestisci in portafoglio, da{" "}
+                {PIANI[fasceVendibili()[0]].aziende === 1 ? "una sola" : PIANI[fasceVendibili()[0]].aziende}{" "}
+                fino a {PIANI[fasceVendibili().at(-1)!].aziende}.{" "}
                 <Link href="/prezzi" className="font-medium text-foreground underline underline-offset-4">
                   Vedi le fasce
                 </Link>
@@ -426,6 +434,25 @@ export default function LandingPage() {
                   <a href="mailto:info@evalisdeck.it?subject=Preventivo%20EvalisDeck">Chiedi un preventivo</a>
                 </Button>
               </div>
+
+              {/* ⚠️ La porta di chi segue UNA sola azienda. Senza questa riga la fascia
+                  d'ingresso si raggiungeva solo passando dal listino intero, e chi ha un
+                  cliente solo doveva capire da sé quale delle quattro fasce fosse la sua.
+                  Porta a `/attiva/<fascia>`: stessa iscrizione di «Attiva il servizio», ma
+                  la scelta viaggia con lui e il dialogo d'acquisto si apre già su quella.
+                  Nessuna cifra: il prezzo sta su /prezzi, per decisione del committente. */}
+              {PIANI[fasceVendibili()[0]].aziende === 1 && (
+                <p className="mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground">
+                  Segui una sola azienda?{" "}
+                  <Link
+                    href={`/attiva/${fasceVendibili()[0]}`}
+                    className="font-medium text-foreground underline underline-offset-4"
+                  >
+                    Attiva la fascia «{PIANI[fasceVendibili()[0]].nome}»
+                  </Link>
+                  : c&apos;&egrave; dentro tutto il resto, gli stessi percorsi e gli stessi documenti.
+                </p>
+              )}
             </Reveal>
 
             <Reveal delay={100}>

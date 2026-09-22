@@ -2806,3 +2806,38 @@ notava, e la presentazione sembrava muta. Ora è verde pieno con un alone che pu
 voce non è attivata; col movimento ridotto resta il pieno verde, statico. Il nome accessibile
 non cambia — lo usano due collaudi — e `data-invito-voce` dà l'appiglio al controllo nuovo,
 che misura **lo stile calcolato** e non la classe.
+
+**La fascia d'ingresso si compra DALLA VETRINA (2026-09-22, sera)** — prima si vedeva solo
+su `/prezzi`, e la home parlava tutta al plurale («per studio», «portafoglio») mentre la
+testata diceva già «studi e PMI»: chi segue una sola azienda non trovava una porta.
+
+- Nella sezione «Come si acquista»: «quante aziende gestisci in portafoglio, **da una sola
+  fino a 30**» (capienze derivate dal listino, **nessuna cifra**: i prezzi restano su
+  `/prezzi`) più il richiamo «Segui una sola azienda? Attiva la fascia «Un'azienda»».
+- **`/attiva/<fascia>`**: stessa iscrizione di `/attiva`, ma la scelta viaggia con chi si
+  iscrive. È una **rotta e non un parametro**, come `/attiva`, perché queste pagine sono
+  statiche e `useSearchParams` arriva solo dopo l'idratazione. Le pagine si generano dal
+  listino (`generateStaticParams` su `fasceVendibili`), e una fascia inventata risponde
+  **404** invece di iscrivere qualcuno a niente.
+- La scelta arriva fino alla pagina dei piani — l'unica dinamica — che apre il dialogo
+  **già su quella fascia** e la evidenzia. Chiudendolo la fascia **sparisce
+  dall'indirizzo**: senza, un ricarico o il tasto indietro da Stripe lo riaprirebbero
+  addosso a chi l'aveva appena chiuso.
+
+**Regole nate qui:**
+- **Un richiamo commerciale nuovo si prova dalla PORTA, non dalla destinazione.** Il
+  controllo parte dalla home, preme il collegamento e verifica dove si arriva: un `href`
+  presente nel markup non dimostra che la pagina esista, ed è proprio il caso in cui il 404
+  lo incontra chi stava per comprare — e se ne va senza dirlo.
+- **Due collaudi sceglievano la fascia premendo «il primo Attiva»**, e la prima fascia ora
+  non vende blocchi: chiedevano al listino che cosa aspettarsi, non lo danno per scontato.
+
+Gate: typecheck · build (le quattro porte compaiono come pagine statiche) · **1570 test** ·
+`qa -- attivazione` **10/10** (home → iscrizione → dialogo sulla fascia giusta → l'indirizzo
+si ripulisce) · `tutto-pubblico` 37/37 · guardia nuova `attiva-fascia-pure` messa in rosso
+togliendo il richiamo dalla home · sezione fotografata e guardata, zero sfondamento a 360px.
+
+⚠️ **Debito aperto, deciso col committente**: alla cassa il campo «Codice destinatario o
+PEC» è **obbligatorio** (`custom_fields`, `optional: false` in `checkout.ts`). Serve a non
+rincorrere il cliente per la fattura elettronica, ma non ha via d'uscita per un privato, per
+chi ha solo la PEC o per un cliente estero, che allo SdI non passa. Da riprendere.

@@ -83,16 +83,33 @@ export function DialogoAcquisto({
   piano,
   etichetta,
   variante = "default",
+  apriSubito = false,
 }: {
   piano: PianoKey;
   etichetta: string;
   variante?: "default" | "outline";
+  /** Chi arriva da `/attiva/<fascia>` ha già scelto sulla vetrina: il dialogo si apre da
+   *  solo su quella fascia. Chiudendolo si toglie la fascia dall'indirizzo, altrimenti
+   *  un ricarico — o il tasto indietro dopo essere usciti verso Stripe — lo riaprirebbe
+   *  addosso a chi l'aveva appena chiuso. */
+  apriSubito?: boolean;
 }) {
-  const [aperto, setAperto] = useState(false);
+  const [aperto, setAperto] = useState(apriSubito);
   const [blocchi, setBlocchi] = useState(0);
   const [accessi, setAccessi] = useState(0);
   const [marchio, setMarchio] = useState(false);
   const [inCorso, setInCorso] = useState(false);
+
+  function cambiaApertura(v: boolean) {
+    setAperto(v);
+    if (!v && apriSubito && typeof window !== "undefined") {
+      const u = new URL(window.location.href);
+      if (u.searchParams.has("fascia")) {
+        u.searchParams.delete("fascia");
+        window.history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
+      }
+    }
+  }
 
   const p = PIANI[piano];
   const anno1 = prezzoDiVendita(p, "anno1")!;
@@ -123,7 +140,7 @@ export function DialogoAcquisto({
   }
 
   return (
-    <Dialog open={aperto} onOpenChange={setAperto}>
+    <Dialog open={aperto} onOpenChange={cambiaApertura}>
       <DialogTrigger asChild>
         <Button variant={variante} size="sm" className="w-full">
           <CreditCard className="size-3.5" /> {etichetta}
@@ -196,7 +213,7 @@ export function DialogoAcquisto({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setAperto(false)} disabled={inCorso}>
+          <Button variant="outline" onClick={() => cambiaApertura(false)} disabled={inCorso}>
             Annulla
           </Button>
           <Button onClick={acquista} disabled={inCorso}>
