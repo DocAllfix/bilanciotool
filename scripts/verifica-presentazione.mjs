@@ -82,6 +82,22 @@ await agisci("la voce non parte da sola, e lo dichiara", async () => {
   return "audio in attesa, con il comando esplicito a schermo";
 });
 
+// ⚠️ Il comando esplicito deve anche VEDERSI. A bordo neutro nessuno lo notava (segnalato dal
+// committente il 22 settembre 2026): la presentazione sembrava muta. Si misura lo stile
+// calcolato, non la classe: l'animazione deve girare davvero e lo sfondo essere pieno.
+// ⚠️ Chromium di Playwright non chiede movimento ridotto, quindi `motion-safe` vale.
+await agisci("il pulsante Ascolta è pieno e pulsa finché la voce non è attivata", async () => {
+  const b = page.locator("[data-invito-voce]");
+  await b.waitFor({ state: "visible" });
+  const st = await b.evaluate((el) => {
+    const c = getComputedStyle(el);
+    return { anim: c.animationName, sfondo: c.backgroundColor };
+  });
+  if (st.anim !== "invitoVoce") throw new Error(`nessun invito animato (animation-name: ${st.anim})`);
+  if (/rgba\(0, 0, 0, 0\)|transparent/.test(st.sfondo)) throw new Error(`sfondo trasparente: ${st.sfondo}`);
+  return `anima «${st.anim}», sfondo ${st.sfondo}`;
+});
+
 // ── Avanti e indietro, tastiera compresa ────────────────────────────────────────────────
 await agisci("avanti porta alla slide dopo", async () => {
   await page.getByRole("button", { name: /Avanti/ }).click();
@@ -117,6 +133,9 @@ await agisci("premendo Ascolta la traccia si carica e parte", async () => {
   if (!Number.isFinite(s.audio.durata) || s.audio.durata < 30) {
     throw new Error(`durata implausibile: ${s.audio.durata}`);
   }
+  // E dopo il gesto l'invito se ne va: un alone che pulsa per tutta la lezione sarebbe un
+  // disturbo, non un invito.
+  if (await page.locator("[data-invito-voce]").count()) throw new Error("l'invito pulsa ancora a voce attivata");
   return `${s.audio.src.split("/").slice(-2).join("/")}, ${Math.round(s.audio.durata)} s`;
 });
 

@@ -286,3 +286,16 @@
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* L'invito ad ascoltare: un alone verde che si allarga e svanisce attorno al pulsante
+   «Ascolta», finché la voce non è attivata.
+   ⚠️ La voce non può partire da sola (i browser la bloccano senza un gesto), e il pulsante
+   a bordo neutro non lo notava nessuno: chi entrava nella formazione guardava una
+   presentazione muta senza sapere che parlava. Anima SOLO il box-shadow — niente testo
+   che sfarfalla, niente disposizione che si muove — e un ciclo ogni 1,6 s, molto sotto i
+   tre lampi al secondo. Con `prefers-reduced-motion` non parte: resta il pieno verde. */
+@keyframes invitoVoce {
+  0%   { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 55%, transparent); }
+  70%  { box-shadow: 0 0 0 10px color-mix(in oklch, var(--primary) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+}

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { CHIAVI_PIANO, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
+import { PIANI, euro, fasceVendibili, prezzoDiVendita, quanteFasceInLettere } from "@/lib/prezzi";
 
 // L'anteprima della pagina prezzi, quella che si vede quando qualcuno incolla il link
 // in una chat per far vedere a un socio quanto costa.
@@ -12,7 +12,7 @@ import { CHIAVI_PIANO, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
 // È la stessa ragione per cui `prezzoDiVendita` restituisce importo e chiave Stripe
 // insieme: ciò che si mostra e ciò che si addebita escono da un posto solo.
 
-export const alt = "EvalisDeck · un abbonamento solo, tre fasce";
+export const alt = `EvalisDeck · un abbonamento solo, ${quanteFasceInLettere().toLowerCase()} fasce`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -22,7 +22,7 @@ const PETROLIO = "#2f8f7f";
 const CHIARO = "#eef2f3";
 
 export default function Immagine() {
-  const fasce = CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa).map((k) => ({
+  const fasce = fasceVendibili().map((k) => ({
     nome: PIANI[k].nome,
     prezzo: euro(prezzoDiVendita(PIANI[k], "anno1")!.importo),
   }));
@@ -56,7 +56,9 @@ export default function Immagine() {
             Un abbonamento solo.
           </div>
           <div style={{ color: "#fff", fontSize: 62, fontWeight: 800, lineHeight: 1.05, letterSpacing: -2 }}>
-            Tre fasce.
+            {/* Una stringa sola: `{x} fasce.` sarebbero DUE nodi figli, e Satori pretende
+                `display: flex` su un div con più figli — il build si ferma. */}
+            {`${quanteFasceInLettere()} fasce.`}
           </div>
         </div>
 

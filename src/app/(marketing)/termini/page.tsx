@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PaginaLegale, Sezione } from "@/components/landing/pagina-legale";
-import { TITOLARE, SEDE_COMPLETA, LIMITI_PIANO } from "@/lib/legale";
+import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
+import { PIANI, fasceVendibili } from "@/lib/prezzi";
 
 export const metadata: Metadata = {
   title: "Termini e condizioni",
@@ -149,8 +150,13 @@ export default function TerminiPage() {
 
       <Sezione n={8} titolo="Limiti d'uso del piano">
         <p>
-          L&apos;abbonamento consente fino a <strong>{LIMITI_PIANO.aziendeAttive} aziende attive</strong>{" "}e{" "}
-          <strong>{LIMITI_PIANO.membri} utenti</strong>{" "}per studio. Le aziende archiviate non concorrono al limite e
+          {/* ⚠️ Diceva «fino a 10 aziende attive e 5 utenti»: una costante fissa, falsa da quando i
+              limiti sono una proprietà della fascia (5/15/30 aziende, 15/30/60 accessi) e ancora più
+              falsa con la fascia da un'azienda. I numeri ora si leggono dal listino. */}
+          L&apos;abbonamento consente il numero di aziende attive e di utenti previsto dalla fascia sottoscritta:
+          da <strong>{PIANI[fasceVendibili()[0]].aziende} a {PIANI[fasceVendibili().at(-1)!].aziende} aziende
+          attive</strong>{" "}e da <strong>{PIANI[fasceVendibili()[0]].accessi} a {PIANI[fasceVendibili().at(-1)!].accessi}{" "}
+          utenti</strong>{" "}per studio, più le eventuali estensioni acquistate. Le aziende archiviate non concorrono al limite e
           restano consultabili in sola lettura; l&apos;azienda dimostrativa è esclusa dal conteggio.
         </p>
         <p>

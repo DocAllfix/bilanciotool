@@ -26,7 +26,7 @@ export const SEDE_COMPLETA = `${TITOLARE.indirizzo}, ${TITOLARE.cap} ${TITOLARE.
 /** Data di ultima revisione dei testi legali, in ISO. Una sola per tutti e tre:
  *  si rivedono insieme, e tre date diverse in fondo a tre pagine sorelle sono
  *  solo un modo per far sembrare vecchia quella che non è cambiata. */
-export const AGGIORNATO_AL = "2026-08-05";
+export const AGGIORNATO_AL = "2026-09-22";
 
 export const AGGIORNATO_AL_ESTESO = new Date(AGGIORNATO_AL).toLocaleDateString("it-IT", {
   day: "numeric",
@@ -139,5 +139,5 @@ export const ARCHIVIAZIONE_LOCALE = [
   },
 ] as const;
 
-/** Limiti del piano, allineati ai valori applicati dal server (`platform_config`). */
-export const LIMITI_PIANO = { aziendeAttive: 10, membri: 5 } as const;
+// ⚠️ Qui c'era `LIMITI_PIANO = { 10 aziende, 5 utenti }`, stampato nei Termini. Era falso da
+// quando i limiti sono della fascia: i Termini leggono ora il listino (`@/lib/prezzi`).

@@ -75,6 +75,9 @@ describe("le chiavi Stripe dei listini precedenti", () => {
       enterprise: { aziende: 25, accessi: 10 },
     };
     for (const k of CHIAVI_PIANO) {
+      // Una fascia nata dopo quel listino non aveva abbonati da cui togliere niente: la
+      // fascia «Un'azienda» del 22 settembre 2026 è la prima.
+      if (!precedenti[k]) continue;
       expect(PIANI[k].aziende, `${k}: aziende`).toBeGreaterThanOrEqual(precedenti[k].aziende);
       expect(PIANI[k].accessi, `${k}: accessi`).toBeGreaterThanOrEqual(precedenti[k].accessi);
     }

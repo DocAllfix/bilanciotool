@@ -13,9 +13,10 @@
 // diventa un addebito cento volte più piccolo senza che nessuno se ne accorga fino al primo
 // pagamento vero.
 
-export type PianoKey = "professional" | "studio" | "studio_plus" | "enterprise";
+export type PianoKey = "singola" | "professional" | "studio" | "studio_plus" | "enterprise";
 
-export const CHIAVI_PIANO: readonly PianoKey[] = ["professional", "studio", "studio_plus", "enterprise"];
+/** In ordine di VENDITA: è l'ordine in cui le fasce compaiono ovunque si comprano. */
+export const CHIAVI_PIANO: readonly PianoKey[] = ["singola", "professional", "studio", "studio_plus", "enterprise"];
 
 export type Piano = {
   key: PianoKey;
@@ -31,6 +32,9 @@ export type Piano = {
   rinnovo: number;
   /** Vero solo per Enterprise: non si vende da solo, si tratta. */
   trattativa?: boolean;
+  /** Vero se su questa fascia NON si vendono blocchi di aziende: chi cresce sale di fascia.
+   *  Lo applica il server (`apriCheckoutAction`, `creaSessioneCheckout`), non solo il dialogo. */
+  senzaBlocchi?: boolean;
   /** Centesimi. Prezzo di lancio: quello che si paga davvero finché la promozione dura.
    *  Il campo `primoAnno` resta il LISTINO, ed è il numero che si mostra barrato. */
   primoAnnoLancio?: number;
@@ -43,10 +47,33 @@ export type Piano = {
 };
 
 export const PIANI: Record<PianoKey, Piano> = {
+  /* ⚠️ LA FASCIA D'INGRESSO (decisione del committente del 22 settembre 2026).
+   *
+   * Un'azienda sola, per chi parte dal primo cliente o segue un'unica realtà. Stesso schema
+   * delle altre: primo anno, poi rinnovo al −20%, nessun barrato.
+   *
+   * ⚠️ NIENTE BLOCCHI. Un'azienda più un blocco da cinque costerebbe 700 € per sei aziende,
+   * contro i 590 € della fascia «Fino a 5»: il prodotto venderebbe la strada più cara a chi
+   * non ha fatto il conto. Chi cresce passa alla fascia superiore.
+   *
+   * ⚠️ Chiavi `_v1`: la fascia è nuova, non sostituisce niente, e non ha listini storici. */
+  singola: {
+    key: "singola",
+    nome: "Un'azienda",
+    descrizione: "Per chi parte dal primo cliente: tutto incluso, su un'azienda.",
+    aziende: 1,
+    accessi: 3,
+    primoAnno: 35000,
+    rinnovo: 28000,
+    senzaBlocchi: true,
+    lookupAnno1: "evalisdeck_singola_anno1_v1",
+    lookupRinnovo: "evalisdeck_singola_rinnovo_v1",
+  },
   professional: {
     key: "professional",
     nome: "Fino a 5 aziende",
-    descrizione: "Per chi parte: i primi mandati, tutto gia' incluso.",
+    // Diceva «Per chi parte»: da quando esiste la fascia da un'azienda, chi parte è là.
+    descrizione: "Per i primi mandati in portafoglio, tutto gia' incluso.",
     aziende: 5,
     accessi: 15,
     primoAnno: 59000,
@@ -215,6 +242,8 @@ export const FONDATORI = {
  * le nuove a `PIANI` e spostare le vecchie qui, non sostituirle.
  */
 export const LOOKUP_STORICHE: Record<PianoKey, readonly string[]> = {
+  // Nata col listino del 22 settembre 2026: nessun listino precedente.
+  singola: [],
   professional: [
     "evalisdeck_professional_anno1_v1",
     "evalisdeck_professional_rinnovo_v1",
@@ -380,6 +409,56 @@ export function prezzoDiVendita(
   return { importo: pieno, lookup: lookupPieno };
 }
 
+/** Le fasce che si comprano online, in ordine di vendita. Enterprise si concorda. */
+export function fasceVendibili(): PianoKey[] {
+  return CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa);
+}
+
+/**
+ * Il primo anno più basso fra le fasce in vendita: il «da … l'anno» delle pagine pubbliche.
+ *
+ * ⚠️ Prima quel numero leggeva `PIANI.professional`: con la fascia da un'azienda la pagina
+ * avrebbe continuato a dire «da 590 €» mentre si vendeva a 350. Si chiede al listino.
+ */
+export function prezzoMinimo(quando: Date = new Date()): number {
+  return Math.min(...fasceVendibili().map((k) => prezzoDiVendita(PIANI[k], "anno1", quando)!.importo));
+}
+
+/**
+ * C'è davvero una promozione da annunciare?
+ *
+ * ⚠️ Non basta la data. `lancioAttivo()` dice solo che il periodo di lancio non è scaduto:
+ * dal 27 agosto 2026 nessuna fascia ha un prezzo di lancio, e la pastiglia «Prezzi di
+ * lancio, validi fino al…» annunciava una promozione che non esisteva — lo stesso rischio
+ * che ha fatto togliere i barrati. Si annuncia solo se un prezzo scontato c'è.
+ */
+export function promozioneInCorso(quando: Date = new Date()): boolean {
+  return fasceVendibili().some((k) => {
+    const v = prezzoDiVendita(PIANI[k], "anno1", quando);
+    return v?.listino !== undefined;
+  });
+}
+
+/**
+ * «Quattro», per i titoli che contano le fasce («Un abbonamento solo. Quattro fasce.»).
+ *
+ * ⚠️ Era scritto a mano «Tre fasce» sulla pagina prezzi e sull'immagine di condivisione:
+ * aggiungendo una fascia sarebbero rimasti bugiardi in silenzio. Un numero fuori elenco
+ * SOLLEVA al build invece di stampare una cifra in mezzo a un titolo.
+ */
+export function quanteFasceInLettere(): string {
+  const n = fasceVendibili().length;
+  const parole: Record<number, string> = { 2: "Due", 3: "Tre", 4: "Quattro", 5: "Cinque", 6: "Sei" };
+  const p = parole[n];
+  if (!p) throw new Error(`Numero di fasce senza parola: ${n}. Aggiungila in quanteFasceInLettere.`);
+  return p;
+}
+
+/** «1 azienda», «5 aziende». Con la fascia da un'azienda il plurale fisso si legge sbagliato. */
+export function aziendeTesto(n: number): string {
+  return `${n} ${n === 1 ? "azienda" : "aziende"}`;
+}
+
 /** Come sopra, per le estensioni: stessa regola, stessa scadenza. */
 export function prezzoEstensione(
   e: { prezzo: number; prezzoLancio?: number; lookup: string; lookupLancio?: string },
@@ -418,4 +497,42 @@ export function rinnovoPerLeRighe(lookups: readonly (string | null)[], piano: Pi
   const fondatore = lookups.some((l) => l === FONDATORI.lookupAnno1 || l === FONDATORI.lookupRinnovo);
   if (fondatore) return { importo: FONDATORI.rinnovo, lookup: FONDATORI.lookupRinnovo };
   return prezzoDiVendita(PIANI[piano], "rinnovo");
+}
+
+/** Una riga dell'abbonamento come la legge il preavviso: chiave, importo e quantità. */
+export type RigaPreavviso = {
+  lookup: string | null;
+  /** Centesimi, dal prezzo Stripe della riga. `null` se Stripe non lo dà. */
+  importoUnitario: number | null;
+  quantita: number;
+  /** Falso per gli addebiti una tantum, che al rinnovo non si ripetono. */
+  ricorrente: boolean;
+};
+
+/**
+ * Quanto si addebiterà al rinnovo, per il preavviso di sette giorni prima.
+ *
+ * ⚠️ Il cron annunciava `prezzoDiVendita(PIANI[piano], "rinnovo")` a tutti: a un Fondatore
+ * 1.032 € invece di 825,60 €, e a chi aveva comprato blocchi il solo piano. Le regole sono
+ * quelle della fase 2 dello Schedule (`vociDelRinnovo`): il piano al suo rinnovo — chiesto
+ * alle RIGHE, perché il Fondatore ha la fascia «studio» ma non il suo prezzo — più le righe
+ * ricorrenti che si portano dietro al prezzo a cui sono state comprate.
+ *
+ * `null` quando non si può sapere con certezza: meglio «l'importo del tuo piano» che una
+ * cifra sbagliata in un'email che annuncia un addebito.
+ *
+ * `righe = null` è lo studio attivato a mano (bonifico): nessun abbonamento Stripe da
+ * leggere, vale il rinnovo della fascia.
+ */
+export function importoDelPreavviso(piano: PianoKey, righe: readonly RigaPreavviso[] | null): number | null {
+  if (!righe) return prezzoDiVendita(PIANI[piano], "rinnovo")?.importo ?? null;
+  const base = rinnovoPerLeRighe(righe.map((r) => r.lookup), piano);
+  if (!base) return null;
+  let totale = base.importo;
+  for (const r of righe) {
+    if (chiavePiano(r.lookup) || !r.ricorrente) continue;
+    if (r.importoUnitario === null) return null;
+    totale += r.importoUnitario * Math.max(1, r.quantita);
+  }
+  return totale;
 }

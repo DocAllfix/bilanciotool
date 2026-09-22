@@ -414,6 +414,13 @@
       "when": 1788763427556,
       "tag": "0058_assistenza",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1788763427557,
+      "tag": "0059_piano_singola",
+      "breakpoints": true
     }
   ]
 }

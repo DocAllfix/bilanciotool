@@ -29,6 +29,16 @@ const check = async (nome, fn) => {
 
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+// ⚠️ La sequenza di benvenuto (video, poi giro guidato) ha il suo collaudo: QUI copre le
+// pagine con un velo che si prende i clic. Passava per fortuna di tempi — il velo arriva
+// con un ritardo — e il giorno in cui è arrivato prima ha reso rossi otto controlli su
+// quattordici, con «Timeout» su comandi che funzionano benissimo. Si spegne come fanno
+// gli altri collaudi, prima che la pagina si apra.
+await ctx.addInitScript(() => {
+  try {
+    localStorage.setItem("evalisdeck-benvenuto", "1");
+  } catch {}
+});
 const page = await ctx.newPage();
 page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(`[${page.url()}] ${m.text()}`); });
 page.on("pageerror", (e) => errori.push(`[pageerror] ${e.message}`));
@@ -156,12 +166,30 @@ await check("il titolare non puo' rimuovere se stesso", async () => {
   if (rimuovi !== 0) throw new Error("compare un comando di rimozione sull'unico membro");
 });
 
+/** Rilegge `main` finché il testo compare (o sparisce), ricaricando ogni tanto. */
+async function attendiTesto(atteso, { fino = "compare", entro = 60_000 } = {}) {
+  const scade = Date.now() + entro;
+  let t = "";
+  for (let giro = 0; ; giro++) {
+    t = await page.locator("main").innerText();
+    const c = t.includes(atteso);
+    if (fino === "compare" ? c : !c) return t;
+    if (Date.now() > scade) return t;
+    await page.waitForTimeout(700);
+    if (giro % 5 === 4) await page.reload({ waitUntil: "domcontentloaded" });
+  }
+}
+
 await check("un invito parte davvero e compare fra quelli in attesa", async () => {
   const invitato = `collega-${RUN}@example.com`;
   await page.fill("#invita-email", invitato);
   await page.getByRole("button", { name: /invia invito/i }).click();
-  await page.waitForTimeout(3000);
-  const t = await page.locator("main").innerText();
+  // ⚠️ Si aspetta che l'invito COMPAIA, non tre secondi: l'azione crea la riga, prova a
+  // mandare l'email e poi rinfresca la pagina, e su un ambiente lento tre secondi non
+  // bastano — il referto diceva «l'invito non compare» di un invito che il database
+  // aveva già. Ogni tanto si ricarica: se il rinfresco del client si è perso, l'elenco
+  // lo porta comunque la pagina.
+  const t = await attendiTesto(invitato);
   if (!t.includes(invitato)) throw new Error("l'invito non compare in attesa di risposta");
   if (!/scade il/i.test(t)) throw new Error("manca la scadenza dell'invito");
 });
@@ -169,8 +197,7 @@ await check("un invito parte davvero e compare fra quelli in attesa", async () =
 await check("l'invito si revoca, e sparisce", async () => {
   const invitato = `collega-${RUN}@example.com`;
   await page.getByRole("button", { name: new RegExp(`revoca l'invito a ${invitato}`, "i") }).click();
-  await page.waitForTimeout(3000);
-  const t = await page.locator("main").innerText();
+  const t = await attendiTesto(invitato, { fino: "sparisce" });
   if (t.includes(invitato)) throw new Error("l'invito revocato e' ancora li'");
 });
 await page.screenshot({ path: `${OUT}/03-membri.png`, fullPage: true });
@@ -179,6 +206,7 @@ await page.screenshot({ path: `${OUT}/03-membri.png`, fullPage: true });
 await ctx.close();
 
 const scuro = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+await scuro.addInitScript(() => { try { localStorage.setItem("evalisdeck-benvenuto", "1"); } catch {} });
 await scuro.addInitScript(() => window.localStorage.setItem("theme", "dark"));
 const pd = await scuro.newPage();
 pd.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(`[scuro] ${m.text()}`); });
@@ -197,6 +225,7 @@ await pd.screenshot({ path: `${OUT}/04-abbonamento-scuro.png`, fullPage: true })
 await scuro.close();
 
 const mob = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+await mob.addInitScript(() => { try { localStorage.setItem("evalisdeck-benvenuto", "1"); } catch {} });
 const pm = await mob.newPage();
 pm.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(`[mobile] ${m.text()}`); });
 await check("su telefono nessuna scheda sborda in orizzontale", async () => {

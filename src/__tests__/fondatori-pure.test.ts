@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FONDATORI, PIANI, chiavePiano, prezzoDiVendita, rinnovoPerLeRighe } from "@/lib/prezzi";
+import { ESTENSIONI, FONDATORI, PIANI, chiavePiano, prezzoDiVendita, rinnovoPerLeRighe, importoDelPreavviso } from "@/lib/prezzi";
 
 // IL PROGRAMMA FONDATORI, E LO SCONTO CHE DEVE RESTARE.
 //
@@ -72,5 +72,44 @@ describe("il Programma Fondatori", () => {
       FONDATORI.piano,
     )!;
     expect(v.lookup).toBe(FONDATORI.lookupRinnovo);
+  });
+});
+
+// Il preavviso di rinnovo, sette giorni prima dell'addebito. Diceva il rinnovo di LISTINO
+// a tutti: a un Fondatore 1.032 € invece di 825,60 €, e a chi aveva comprato blocchi il
+// solo piano. Un preavviso con la cifra sbagliata è peggio del silenzio: è la ragione per
+// cui un cliente apre una contestazione con la banca.
+describe("l'importo annunciato dal preavviso di rinnovo", () => {
+  const riga = (lookup: string | null, importoUnitario: number | null, quantita = 1, ricorrente = true) => ({
+    lookup, importoUnitario, quantita, ricorrente,
+  });
+
+  it("⚠️ a un Fondatore annuncia il prezzo del Programma, non il listino", () => {
+    expect(importoDelPreavviso("studio", [riga(FONDATORI.lookupAnno1, FONDATORI.primoAnno)])).toBe(FONDATORI.rinnovo);
+    expect(importoDelPreavviso("studio", [riga(FONDATORI.lookupRinnovo, FONDATORI.rinnovo)])).toBe(FONDATORI.rinnovo);
+  });
+
+  it("somma i blocchi aziende, che al rinnovo si pagano", () => {
+    const v = importoDelPreavviso("studio", [
+      riga(PIANI.studio.lookupAnno1!, PIANI.studio.primoAnno),
+      riga(ESTENSIONI.bloccoAziende.lookup, ESTENSIONI.bloccoAziende.prezzo, 2),
+    ]);
+    expect(v).toBe(PIANI.studio.rinnovo + 2 * ESTENSIONI.bloccoAziende.prezzo);
+  });
+
+  it("non somma gli addebiti una tantum, che al rinnovo non si ripetono", () => {
+    const v = importoDelPreavviso("studio", [
+      riga(PIANI.studio.lookupAnno1!, PIANI.studio.primoAnno),
+      riga(ESTENSIONI.avvioAssistito.lookup, ESTENSIONI.avvioAssistito.min, 1, false),
+    ]);
+    expect(v).toBe(PIANI.studio.rinnovo);
+  });
+
+  it("senza righe da Stripe (studio attivato a mano) annuncia il rinnovo della fascia", () => {
+    expect(importoDelPreavviso("singola", null)).toBe(PIANI.singola.rinnovo);
+  });
+
+  it("se una riga ricorrente non ha importo, non inventa un numero", () => {
+    expect(importoDelPreavviso("studio", [riga(PIANI.studio.lookupAnno1!, 1), riga("sconosciuta", null)])).toBeNull();
   });
 });

@@ -7,8 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { DialogoAcquisto } from "@/components/impostazioni/dialogo-acquisto";
 import { PulsantePortale } from "@/components/impostazioni/pulsante-portale";
 import {
-  PIANI, ESTENSIONI, CHIAVI_PIANO, euro,
-  prezzoDiVendita, prezzoEstensione, lancioAttivo, FINE_LANCIO,
+  PIANI, ESTENSIONI, euro, aziendeTesto, fasceVendibili,
+  prezzoDiVendita, prezzoEstensione, promozioneInCorso, FINE_LANCIO,
 } from "@/lib/prezzi";
 import { TITOLARE } from "@/lib/legale";
 import { bloccoAlCheckout } from "@/features/billing/gia-abbonato";
@@ -113,7 +113,9 @@ export default async function AbbonamentoPage() {
             {/* La scadenza sta scritta accanto al prezzo, non in fondo in piccolo: uno
                 sconto senza termine dichiarato e' un barrato che dopo sei mesi nessuno
                 crede piu', e la pubblicita' ingannevole e' vietata anche fra imprese. */}
-            {lancioAttivo() && (
+            {/* ⚠️ `promozioneInCorso`, non `lancioAttivo`: la sola data non basta. Senza un
+                prezzo scontato vero questa pastiglia annunciava una promozione inesistente. */}
+            {promozioneInCorso() && (
               <p className="mt-2 inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12.5px] font-medium text-primary">
                 Prezzi di lancio, validi fino al{" "}
                 {FINE_LANCIO.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
@@ -121,15 +123,20 @@ export default async function AbbonamentoPage() {
             )}
           </CardHeader>
           <CardContent>
-            <ul className="grid gap-3 sm:grid-cols-3">
-              {CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa).map((k) => {
+            {/* Quattro fasce: due per riga sugli schermi medi, tutte e quattro su quelli
+                larghi. Con tre colonne fisse la quarta andava a capo da sola. */}
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {fasceVendibili().map((k) => {
                 const p = PIANI[k];
                 // Prezzo mostrato e prezzo addebitato escono dalla STESSA funzione:
                 // e' l'unico modo perche' non possano divergere il giorno della scadenza.
                 const anno1 = prezzoDiVendita(p, "anno1")!;
                 const rinnovo = prezzoDiVendita(p, "rinnovo")!;
                 return (
-                  <li key={k} className="rounded-lg border p-4">
+                  // ⚠️ `flex h-full flex-col` e il comando spinto in fondo: le descrizioni
+                  // non vanno a capo tutte allo stesso modo, e senza questo i quattro pulsanti
+                  // si disallineano — si vede solo guardando, nessun controllo lo coglie.
+                  <li key={k} className="flex h-full flex-col rounded-lg border p-4">
                     <p className="font-medium">{p.nome}</p>
                     <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
                     <p className="mt-3 flex flex-wrap items-baseline gap-2">
@@ -148,7 +155,7 @@ export default async function AbbonamentoPage() {
                       {euro(rinnovo.importo)}{" "}l&apos;anno
                     </p>
                     <ul className="mt-3 space-y-1 text-[13px] text-muted-foreground">
-                      <li>{p.aziende} aziende</li>
+                      <li>{aziendeTesto(p.aziende)}</li>
                       <li>{p.accessi} accessi</li>
                     </ul>
                     {/* Se questa scheda si rende, NIENTE e' attivo: il blocco esterno lo
@@ -162,7 +169,7 @@ export default async function AbbonamentoPage() {
 
                         Resta la nota per chi si riabbona dopo una disdetta: sapere quale
                         piano aveva prima gli evita di doverlo ricordare. */}
-                    <div className="mt-4 space-y-2">
+                    <div className="mt-auto space-y-2 pt-4">
                       <DialogoAcquisto piano={p.key} etichetta="Attiva" variante="default" />
                       {a.piano === p.key && (
                         <p className="text-center text-[12px] text-muted-foreground">
@@ -183,7 +190,8 @@ export default async function AbbonamentoPage() {
                 Gli accessi per il tuo studio e i documenti col tuo marchio sono compresi in ogni
                 fascia. Servono più aziende? Si aggiungono al piano nella stessa schermata di
                 pagamento, {euro(prezzoEstensione(ESTENSIONI.bloccoAziende).importo)}{" "}l&apos;anno
-                ogni {ESTENSIONI.bloccoAziende.aziende}.
+                ogni {ESTENSIONI.bloccoAziende.aziende}. Nella fascia «{PIANI.singola.nome}» i blocchi non ci
+                sono: per più aziende si sceglie la fascia superiore, che costa meno di un&apos;azienda più un blocco.
               </p>
               <p>Per reti e gruppi, {PIANI.enterprise.nome}: condizioni su misura.</p>
             </div>
@@ -230,6 +238,17 @@ export default async function AbbonamentoPage() {
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* ⚠️ La fascia «Un'azienda» non vende blocchi (`senzaBlocchi`): un blocco lì
+                costerebbe più della fascia superiore. Mostrarli qui sarebbe proporre la
+                strada più cara; si indica invece quella giusta. */}
+            {PIANI[a.piano].senzaBlocchi ? (
+              <p className="rounded-lg border p-3 text-sm leading-relaxed text-muted-foreground">
+                La fascia «{PIANI[a.piano].nome}» comprende {aziendeTesto(PIANI[a.piano].aziende)}. Per seguirne
+                altre si passa alla fascia «{PIANI.professional.nome}»,{" "}
+                {euro(prezzoDiVendita(PIANI.professional, "anno1")!.importo)}{" "}l&apos;anno: scrivici all&apos;indirizzo
+                qui sotto e la attiviamo noi, senza rifare niente.
+              </p>
+            ) : (
             <ul className="grid gap-2 sm:grid-cols-3">
               {[
                 [`+${ESTENSIONI.bloccoAziende.aziende} aziende`, prezzoEstensione(ESTENSIONI.bloccoAziende)],
@@ -250,6 +269,7 @@ export default async function AbbonamentoPage() {
                 </li>
               ))}
             </ul>
+            )}
             {/* Fatture e carta se le prende da solo. Il cambio piano e la disdetta no,
                 e sta scritto perché non sembri una mancanza: ogni abbonamento porta uno
                 Schedule a due fasi, e cambiarlo dal portale lo scavalca. */}

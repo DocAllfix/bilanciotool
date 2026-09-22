@@ -117,7 +117,12 @@ await check("uno studio in prova arriva alla scelta del piano", async () => {
 });
 
 await check("il dialogo di acquisto si apre e offre la sola estensione in vendita", async () => {
-  await page.getByRole("button", { name: /^Attiva$/ }).nth(1).click(); // Studio è il secondo
+  // ⚠️ Si sceglie la fascia PER NOME, non per posizione. Era `nth(1)` con scritto «Studio è
+  // il secondo»: vero con tre fasce, falso dal 22 settembre 2026, quando la fascia
+  // d'ingresso «Un'azienda» è diventata la prima. Il collaudo comprava un'altra fascia e
+  // poi accusava il prodotto di non metterci le estensioni — che quella fascia non vende.
+  const scheda = page.locator("li").filter({ hasText: PIANI.studio.nome });
+  await scheda.getByRole("button", { name: /^Attiva$/ }).first().click();
   await page.waitForTimeout(800);
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("nessun dialogo");

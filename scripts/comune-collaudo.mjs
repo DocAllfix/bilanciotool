@@ -204,6 +204,10 @@ export function strumenta(page, { ignora = [] } = {}) {
   // Il bypass si mette qui perche' `strumenta` e' la prima cosa che un collaudo
   // fa con la pagina: un posto solo, e vale per tutti.
   void attraversaProtezione(page);
+  // Anche le NAVIGAZIONI seguono il fattore: i trenta secondi di `page.goto` non erano
+  // scalati, e su un ambiente lento scadevano da soli mentre le attese esplicite reggevano.
+  page.setDefaultNavigationTimeout(30_000 * FATTORE_ATTESA);
+  page.setDefaultTimeout(30_000 * FATTORE_ATTESA);
   const problemi = [];
   const nuovi = () => problemi.splice(0, problemi.length);
 
@@ -374,7 +378,16 @@ export function contatore(page, sonda) {
  */
 export const fattoreAttesa = () => FATTORE_ATTESA;
 
-const FATTORE_ATTESA = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(process.env.BASE ?? "") ? 1 : 3;
+// ⚠️ E si può imporre con `QA_ATTESA=<n>`, perché il criterio dell'indirizzo non basta.
+// Quel `1` su localhost nasce da «un viaggio al database costa 7 ms», che vale in
+// produzione (funzioni e database nella stessa regione) e NON qui: in sviluppo il
+// database è a Francoforte e un viaggio ne costa 70÷144. Con un database di sviluppo
+// carico i collaudi cedono a caso — un bersaglio diverso a ogni giro, che è la firma
+// della lentezza e non di un difetto. La manopola sta in un posto solo, come il fattore.
+const IMPOSTO = Number(process.env.QA_ATTESA);
+const FATTORE_ATTESA = Number.isFinite(IMPOSTO) && IMPOSTO > 0
+  ? IMPOSTO
+  : /^https?:\/\/(localhost|127\.0\.0\.1)/.test(process.env.BASE ?? "") ? 1 : 3;
 
 export async function attendi(condizione, { entro = 45000 * FATTORE_ATTESA, ogni = 500, cosa = "condizione" } = {}) {
   const scade = Date.now() + entro;

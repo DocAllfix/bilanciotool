@@ -67,7 +67,7 @@ export function NuovaAziendaDialog({
 
   if (atLimit) {
     return (
-      <Button disabled title={`Limite di ${limite} aziende attive raggiunto`}>
+      <Button disabled title={`Limite di aziende attive raggiunto (${limite} su ${limite})`}>
         <Plus className="size-4" /> Nuova azienda
       </Button>
     );

@@ -24,7 +24,7 @@ export const orgEntitlement = pgTable("org_entitlement", {
   // Quale piano è stato comprato. `null` finché non si paga: la capacità resta quella di
   // riserva della piattaforma. I CHECK sui valori ammessi stanno nella migrazione, perché
   // Drizzle per `text(enum)` genera solo `text` e nessun vincolo.
-  piano: text("piano", { enum: ["professional", "studio", "studio_plus", "enterprise"] }),
+  piano: text("piano", { enum: ["singola", "professional", "studio", "studio_plus", "enterprise"] }),
   // Capacità comprata OLTRE il piano. Conta AZIENDE e ACCESSI, non blocchi di vendita:
   // due blocchi da cinque scrivono 10 qui. Vedi `src/lib/prezzi.ts`.
   aziendeExtra: integer("aziende_extra").default(0).notNull(),

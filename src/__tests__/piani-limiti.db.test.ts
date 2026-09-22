@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { organization, member, orgEntitlement, company, auditLog, platformConfig, user } from "@/lib/db/schema";
 import { createCompany } from "@/features/companies";
 import { getCompanyUsage, getLimitiEffettivi, assertSeatAvailable } from "@/features/entitlement";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { PIANI, ESTENSIONI, sogliaAvviso } from "@/lib/prezzi";
 
 // La capacità comprata, applicata sui fatti del database.
@@ -128,5 +128,22 @@ describe.skipIf(!url)("piani: la capacità comprata è quella che vale", () => {
       await db.delete(member).where(eq(member.userId, id));
       await db.delete(user).where(eq(user.id, id));
     }
+  });
+
+  it("⚠️ la fascia «Un'azienda» si scrive nel database, e vale un'azienda e tre accessi", async () => {
+    // È la prova della migrazione 0059: col vincolo vecchio questo aggiornamento viene
+    // respinto, ed è esattamente ciò che farebbe il webhook di un cliente che ha pagato.
+    await db
+      .update(orgEntitlement)
+      .set({ piano: "singola", aziendeExtra: 0, accessiExtra: 0 })
+      .where(eq(orgEntitlement.organizationId, orgId));
+    const l = await getLimitiEffettivi(orgId, userId);
+    expect(l.maxActiveCompanies).toBe(PIANI.singola.aziende);
+    expect(l.maxMembers).toBe(PIANI.singola.accessi);
+    // Il vincolo resta chiuso per tutto il resto.
+    await expect(
+      db.execute(sql`update org_entitlement set piano = 'inventato' where organization_id = ${orgId}`),
+    ).rejects.toThrow();
+    await db.update(orgEntitlement).set({ piano: "professional" }).where(eq(orgEntitlement.organizationId, orgId));
   });
 });

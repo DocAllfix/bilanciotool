@@ -82,6 +82,15 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
     }
   });
 
+  it("la fascia «Un'azienda» si riconosce dalle sue chiavi, col marchio incluso", async () => {
+    for (const lookup of [PIANI.singola.lookupAnno1, PIANI.singola.lookupRinnovo]) {
+      const c = capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] }));
+      expect(c.piano, lookup).toBe("singola");
+      expect(c.whiteLabel, lookup).toBe(true);
+      expect(c.aziendeExtra, lookup).toBe(0);
+    }
+  });
+
   it("⚠️ un piano qualsiasi porta con se' il marchio dello studio", async () => {
     // Il white-label era un'estensione da 600 €/anno ed e' diventato parte
     // dell'abbonamento: e' l'unico modo di rendere vero «tutto incluso» sulla pagina

@@ -151,7 +151,10 @@ export async function assertCompanyCreatable(userId: string, orgId: string): Pro
   if (usage.atLimit) {
     throw new EntitlementError(
       "limit_companies",
-      `Limite di ${usage.limit} aziende attive raggiunto: archivia un'azienda o contattaci per il piano Studio`,
+      // Diceva «contattaci per il piano Studio»: un nome di piano che non esiste più, e
+      // «1 aziende» con la fascia d'ingresso. Il numero sta fra parentesi e non davanti a
+      // «attive», così non c'è un aggettivo da accordare.
+      `Limite di aziende attive raggiunto (${usage.active} su ${usage.limit}): archivia un'azienda o passa alla fascia superiore`,
     );
   }
 }

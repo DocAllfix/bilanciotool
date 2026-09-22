@@ -11,7 +11,10 @@ import { CalcolatoreRitorno } from "@/components/landing/calcolatore-ritorno";
 import { ModuloFondatori } from "@/components/landing/modulo-fondatori";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 import { Button } from "@/components/ui/button";
-import { CHIAVI_PIANO, ESTENSIONI, FONDATORI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
+import {
+  ESTENSIONI, FONDATORI, PIANI, euro, prezzoDiVendita,
+  aziendeTesto, fasceVendibili, prezzoMinimo, quanteFasceInLettere,
+} from "@/lib/prezzi";
 import { indirizzoCanonico } from "@/lib/indirizzo";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
@@ -25,11 +28,13 @@ export const metadata: Metadata = {
   description:
     `Un abbonamento annuale per studio, tutto incluso: ${QUANTI_PERCORSI} percorsi guidati, documenti senza ` +
     `limite di numero, accessi e marchio dello studio compresi. Si sceglie solo la capienza del portafoglio, ` +
-    `da ${euro(PIANI.professional.primoAnno)} l'anno.`,
+    // ⚠️ Il «da» si chiede al listino: leggeva `PIANI.professional`, e con la fascia da
+    // un'azienda avrebbe continuato a dire 590 € mentre si vende a 350.
+    `da ${euro(prezzoMinimo())} l'anno.`,
   alternates: { canonical: `${indirizzoCanonico()}/prezzi` },
 };
 
-const VENDIBILI = CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa);
+const VENDIBILI = fasceVendibili();
 
 /** Ciò che c'è in ogni fascia. Uguale per tutte: cambia solo la capienza. */
 const COMPRESO: [string, string][] = [
@@ -90,10 +95,10 @@ export default function Prezzi() {
                   Abbonamento per studio
                 </p>
                 <h1 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[46px]">
-                  Un abbonamento solo. Tre fasce.
+                  Un abbonamento solo. {quanteFasceInLettere()} fasce.
                 </h1>
                 <p className="mt-5 text-[16px] leading-relaxed text-muted-foreground">
-                  Si sottoscrive per studio e comprende sempre tutto: i {QUANTI_PERCORSI} percorsi, presenti e
+                  Si sottoscrive per studio e comprende sempre tutto: i {QUANTI_PERCORSI}{" "}percorsi, presenti e
                   futuri, gli accessi delle persone che lavorano con te, i documenti pubblicati senza limite di
                   numero. L&apos;unica cosa che scegli è la capienza: quante aziende gestisci in portafoglio.
                 </p>
@@ -105,7 +110,9 @@ export default function Prezzi() {
         {/* ============================================================== LE FASCE */}
         <section className="border-b bg-muted/30">
           <div className="mx-auto w-full max-w-6xl px-5 py-16">
-            <div className="grid gap-6 md:grid-cols-3">
+            {/* Quattro fasce: due per riga sugli schermi medi, tutte su quelli larghi. Con
+                tre colonne fisse la quarta andava a capo da sola, orfana. */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {VENDIBILI.map((k, i) => {
                 const p = PIANI[k];
                 const anno1 = prezzoDiVendita(p, "anno1")!;
@@ -133,7 +140,7 @@ export default function Prezzi() {
                         l&apos;anno, IVA esclusa · dal secondo anno {euro(rinnovo.importo)}
                       </p>
                       <p className="mt-5 border-t pt-4 text-[14px] font-medium">
-                        {p.aziende} aziende in portafoglio
+                        {aziendeTesto(p.aziende)} in portafoglio
                       </p>
                       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
                         Tutto il resto è compreso, ed è identico in ogni fascia.
@@ -171,7 +178,8 @@ export default function Prezzi() {
                 Se superi le aziende della tua fascia, la piattaforma te lo segnala prima che accada: puoi
                 aggiungere blocchi da {ESTENSIONI.bloccoAziende.aziende} aziende a{" "}
                 {euro(ESTENSIONI.bloccoAziende.prezzo)} l&apos;anno, oppure scriverci per passare alla fascia
-                superiore. Nessun lavoro si blocca e nulla va rifatto.
+                superiore. Dalla fascia «{PIANI.singola.nome}» si passa direttamente alla superiore, che costa
+                meno di un&apos;azienda più un blocco. Nessun lavoro si blocca e nulla va rifatto.
               </p>
             </Reveal>
           </div>
@@ -339,7 +347,7 @@ export default function Prezzi() {
                   Programma Fondatori
                 </h2>
                 <p className="mt-5 text-[15px] leading-relaxed text-sidebar-foreground/80">
-                  Selezioniamo {FONDATORI.posti} studi che useranno la piattaforma su mandati reali in
+                  Selezioniamo {FONDATORI.posti}{" "}studi che useranno la piattaforma su mandati reali in
                   questa fase di lancio. Dodici mesi a condizioni riservate, uno sconto che resta per tutta la
                   vita dell&apos;abbonamento, un canale diretto con chi sviluppa e voce sulla priorità dei
                   prossimi percorsi. In cambio chiediamo riscontri operativi e, se il servizio convince, una

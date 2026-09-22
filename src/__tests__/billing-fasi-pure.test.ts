@@ -25,6 +25,14 @@ describe("le righe della fase di rinnovo", () => {
     expect(v).toEqual([{ price: RINNOVO, quantity: 1 }]);
   });
 
+  it("la fascia «Un'azienda» si rinnova col proprio prezzo, e non diventa un'estensione", () => {
+    // Una riga di piano non riconosciuta verrebbe portata avanti INSIEME al rinnovo: due
+    // piani sulla stessa fattura. La fascia nuova deve risolvere a piano come le altre.
+    const rinnovoSingola = "price_rinnovo_singola";
+    const v = vociDelRinnovo([riga(PIANI.singola.lookupAnno1!)], rinnovoSingola);
+    expect(v).toEqual([{ price: rinnovoSingola, quantity: 1 }]);
+  });
+
   it("le estensioni si portano dietro, con la loro quantità", () => {
     const v = vociDelRinnovo(
       [

@@ -14,7 +14,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
 async function entra(page, sql, base, email) {
@@ -225,7 +225,19 @@ await agisci("GHG: cambiare un confine si salva", async () => {
   await vai(`${A}/ghg/2025?passo=1`);
   await page.locator("#b-responsabile").fill("Ing. Prova Collaudo");
   await page.locator("#b-periodo").click();
-  await page.waitForTimeout(1600);
+  // ⚠️ Si aspetta la RIGA nel database, non un tempo. L'attesa fissa di 1,6 secondi era
+  // tarata sul margine: sul database di sviluppo, dove un viaggio costa venti volte piu'
+  // che in produzione, il salvataggio automatico non faceva in tempo e il collaudo
+  // rileggeva il valore SEMINATO accusando il prodotto di non salvare. E' la stessa
+  // correzione gia' applicata al controllo del Fornitore, qui sotto.
+  await attendi(
+    async () => {
+      const [r] = await sql`select boundaries->>'responsabile' resp from ghg_inventory
+        where company_id = ${az.id} and anno = 2025 limit 1`;
+      return r?.resp === "Ing. Prova Collaudo";
+    },
+    { cosa: "il confine salvato nel database" },
+  );
   await vai(`${A}/ghg/2025?passo=1`);
   const v = await page.locator("#b-responsabile").inputValue();
   if (v !== "Ing. Prova Collaudo") throw new Error(`salvato «${v}»`);
@@ -386,7 +398,16 @@ await agisci("il dialogo d'acquisto è pronto a mandare al pagamento", async () 
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("il dialogo d'acquisto non si apre");
   const t = await d.innerText();
-  if (!/Blocchi da \d+ aziende/.test(t)) throw new Error("non offre le estensioni");
+  // ⚠️ Che cosa offre il dialogo dipende dalla FASCIA, e qui si preme la prima del listino:
+  // dal 22 settembre 2026 è «Un'azienda», che i blocchi non li vende (costerebbero più della
+  // fascia superiore). Il collaudo chiede al listino invece di aspettarsi sempre i blocchi.
+  const prima = PIANI[fasceVendibili()[0]];
+  if (prima.senzaBlocchi) {
+    if (/Blocchi da \d+ aziende/.test(t)) throw new Error(`«${prima.nome}» non deve offrire blocchi`);
+    if (!/Più di un'azienda\?/.test(t)) throw new Error("non indica la fascia superiore");
+  } else if (!/Blocchi da \d+ aziende/.test(t)) {
+    throw new Error("non offre le estensioni");
+  }
   if (!/Primo anno/.test(t)) throw new Error("non mostra il totale del primo anno");
   const paga = d.getByRole("button", { name: /^Paga / });
   if (!(await paga.count())) throw new Error("nessun comando per pagare");

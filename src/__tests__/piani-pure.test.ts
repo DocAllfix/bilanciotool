@@ -15,13 +15,60 @@ import {
   sogliaAvviso,
   limitiEffettivi,
   euro,
+  chiavePiano,
+  aziendeTesto,
+  fasceVendibili,
+  prezzoMinimo,
+  promozioneInCorso,
+  quanteFasceInLettere,
 } from "@/lib/prezzi";
 
 const RISERVA = { maxActiveCompanies: 10, warnAtCompanies: 8, maxMembers: 5 };
 
 describe("il listino", () => {
-  it("ha i quattro livelli, e solo quelli", () => {
-    expect(CHIAVI_PIANO).toEqual(["professional", "studio", "studio_plus", "enterprise"]);
+  it("ha i cinque livelli, in ordine di vendita, e solo quelli", () => {
+    expect(CHIAVI_PIANO).toEqual(["singola", "professional", "studio", "studio_plus", "enterprise"]);
+  });
+
+  it("la fascia d'ingresso: un'azienda, tre accessi, 350 € poi 280 €, niente blocchi", () => {
+    // Decisione del committente del 22 settembre 2026. Chi cresce passa alla fascia
+    // superiore: un'azienda più un blocco costerebbe 700 € per sei, contro i 590 € della
+    // fascia da cinque, e il prodotto non deve vendere la strada più cara.
+    expect(PIANI.singola.aziende).toBe(1);
+    expect(PIANI.singola.accessi).toBe(3);
+    expect(PIANI.singola.primoAnno).toBe(35000);
+    expect(PIANI.singola.rinnovo).toBe(28000);
+    expect(PIANI.singola.senzaBlocchi).toBe(true);
+    expect(chiavePiano(PIANI.singola.lookupAnno1)).toBe("singola");
+    expect(chiavePiano(PIANI.singola.lookupRinnovo)).toBe("singola");
+  });
+
+  it("il rinnovo è il primo anno meno il 20%, su OGNI fascia vendibile", () => {
+    // La regola, non i valori: una fascia nuova che la violasse lo direbbe qui.
+    for (const k of fasceVendibili()) {
+      expect(PIANI[k].rinnovo, k).toBe(Math.round(PIANI[k].primoAnno * 0.8));
+    }
+  });
+
+  it("le fasce vendibili sono tutte tranne quella a trattativa, e si parte dalla più economica", () => {
+    expect(fasceVendibili()).toEqual(["singola", "professional", "studio", "studio_plus"]);
+    expect(prezzoMinimo()).toBe(35000);
+  });
+
+  it("i titoli contano le fasce in lettere, e non restano a «Tre»", () => {
+    expect(quanteFasceInLettere()).toBe("Quattro");
+  });
+
+  it("«1 azienda», non «1 aziende»", () => {
+    expect(aziendeTesto(1)).toBe("1 azienda");
+    expect(aziendeTesto(5)).toBe("5 aziende");
+    expect(aziendeTesto(0)).toBe("0 aziende");
+  });
+
+  it("nessuna promozione dichiarata col listino attuale", () => {
+    // La pastiglia «Prezzi di lancio» compariva per la sola data, senza un prezzo scontato
+    // da nessuna parte: una promozione annunciata che non esiste.
+    expect(promozioneInCorso(new Date("2026-09-22T12:00:00Z"))).toBe(false);
   });
 
   it("le capacità crescono col prezzo", () => {
@@ -85,6 +132,16 @@ describe("il listino", () => {
     const saltoAPlus = (PIANI.studio_plus.primoAnno - PIANI.studio.primoAnno) / (PIANI.studio_plus.aziende - PIANI.studio.aziende);
     expect(perAzienda).toBeGreaterThanOrEqual(saltoAStudio);
     expect(perAzienda).toBeGreaterThan(saltoAPlus);
+    // E dalla fascia d'ingresso: salire da una a cinque aziende costa 60 € ad azienda,
+    // meno del blocco. Il blocco lì non si vende nemmeno (`senzaBlocchi`), ma se un giorno
+    // tornasse acquistabile non deve diventare la strada conveniente.
+    const saltoAProfessional =
+      (PIANI.professional.primoAnno - PIANI.singola.primoAnno) / (PIANI.professional.aziende - PIANI.singola.aziende);
+    expect(perAzienda).toBeGreaterThan(saltoAProfessional);
+    // ⚠️ E la frase che le pagine STAMPANO: «la fascia superiore costa meno di un'azienda
+    // più un blocco». Se il listino cambiasse, la frase diventerebbe falsa su una pagina
+    // pubblica: qui diventa rossa prima.
+    expect(PIANI.professional.primoAnno).toBeLessThan(PIANI.singola.primoAnno + ESTENSIONI.bloccoAziende.prezzo);
   });
 });
 
@@ -95,6 +152,9 @@ describe("sogliaAvviso — quando dire «stai per finire»", () => {
     expect(sogliaAvviso(5)).toBe(4);
     expect(sogliaAvviso(15)).toBe(12);
     expect(sogliaAvviso(30)).toBe(24);
+    // La fascia da un'azienda: avvisa quando è piena, cioè insieme al limite. Il portafoglio
+    // allora mostra una nota neutra, non l'avviso giallo (vedi `dashboard/page.tsx`).
+    expect(sogliaAvviso(PIANI.singola.aziende)).toBe(1);
   });
 
   it("non avvisa mai a zero né sopra il limite", () => {

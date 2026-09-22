@@ -172,14 +172,26 @@ export default async function DashboardPage() {
 
       {usage.nearLimit && !usage.atLimit && (
         <div className="mt-4 rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3 text-sm">
-          Stai per raggiungere il limite del piano: {usage.active} aziende attive su {usage.limit}.
+          Stai per raggiungere il limite del piano: aziende attive {usage.active} su {usage.limit}.
         </div>
       )}
-      {usage.atLimit && (
+      {/* ⚠️ Con la fascia «Un'azienda» essere al limite è lo stato NORMALE dopo la prima
+          azienda: un avviso giallo lì resterebbe acceso per sempre e insegnerebbe a non
+          leggerlo. Diventa una nota neutra che dice come crescere. */}
+      {usage.atLimit && usage.limit === 1 && (
+        <div className="mt-4 rounded-lg border px-4 py-3 text-sm text-muted-foreground">
+          La tua fascia comprende un&apos;azienda attiva. Per seguirne altre{" "}
+          <Link className="font-medium text-foreground underline" href="/impostazioni/abbonamento">
+            passa alla fascia superiore
+          </Link>
+          .
+        </div>
+      )}
+      {usage.atLimit && usage.limit !== 1 && (
         <div className="mt-4 rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3 text-sm">
           {/* Prima mandava a una email, che è un vicolo cieco travestito da aiuto: con i
               piani, la strada per allargare la capacità è una pagina del prodotto. */}
-          Hai raggiunto il limite di {usage.limit} aziende attive. Archivia un&apos;azienda oppure{" "}
+          Hai raggiunto il limite di aziende attive ({usage.active} su {usage.limit}). Archivia un&apos;azienda oppure{" "}
           <Link className="font-medium underline" href="/impostazioni/abbonamento">
             aggiungi capacità al tuo piano
           </Link>

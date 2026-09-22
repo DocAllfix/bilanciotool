@@ -105,6 +105,11 @@ export async function creaSessioneCheckout(opts: {
 }): Promise<EsitoCheckout> {
   const piano = PIANI[opts.piano];
   if (piano.trattativa) throw new Error("Il piano Enterprise si concorda, non si acquista online.");
+  // Secondo strato dopo `apriCheckoutAction`: chiunque chiami questa funzione non deve
+  // poter creare una sessione con blocchi su una fascia che non li prevede.
+  if (piano.senzaBlocchi && opts.aziendeExtra) {
+    throw new Error(`La fascia «${piano.nome}» non prevede blocchi aggiuntivi.`);
+  }
 
   const prezzo = prezzoDiVendita(piano, "anno1");
   if (!prezzo) throw new Error("Piano senza prezzo acquistabile.");

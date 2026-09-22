@@ -1,4 +1,4 @@
-import { ESTENSIONI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
+import { ESTENSIONI, PIANI, euro, prezzoDiVendita, fasceVendibili } from "@/lib/prezzi";
 
 // Le domande sui prezzi, con le risposte vere.
 //
@@ -14,12 +14,21 @@ import { ESTENSIONI, PIANI, euro, prezzoDiVendita } from "@/lib/prezzi";
 const anno1 = (k: keyof typeof PIANI) => euro(prezzoDiVendita(PIANI[k], "anno1")!.importo);
 const rinnovo = (k: keyof typeof PIANI) => euro(prezzoDiVendita(PIANI[k], "rinnovo")!.importo);
 
+/** «a, b e c»: le fasce si elencano dal listino, non a mano. Con la fascia da un'azienda
+ *  queste risposte elencavano ancora tre fasce, e alimentano anche il `FAQPage`. */
+function elenco(voci: string[]): string {
+  return voci.length < 2 ? voci.join("") : `${voci.slice(0, -1).join(", ")} e ${voci.at(-1)}`;
+}
+const [prima, ...altre] = fasceVendibili();
+const capienza = (k: keyof typeof PIANI) =>
+  PIANI[k].aziende === 1 ? "un'azienda" : `fino a ${PIANI[k].aziende} aziende`;
+
 export const DOMANDE_PREZZI: [string, string][] = [
   [
     "Quanto costa, e da cosa dipende?",
     `L'abbonamento è annuale e si sottoscrive per studio, non per documento e non per utente. ` +
-      `Si parte da ${anno1("professional")} l'anno per seguire fino a ${PIANI.professional.aziende} aziende, ` +
-      `${anno1("studio")} fino a ${PIANI.studio.aziende} e ${anno1("studio_plus")} fino a ${PIANI.studio_plus.aziende}. ` +
+      `Si parte da ${anno1(prima)} l'anno per seguire ${capienza(prima)}; poi ` +
+      `${elenco(altre.map((k) => `${anno1(k)} ${capienza(k)}`))}. ` +
       `IVA esclusa. L'unica cosa che scegli è la capienza del portafoglio: il contenuto è identico in ogni fascia.`,
   ],
   [
@@ -32,14 +41,15 @@ export const DOMANDE_PREZZI: [string, string][] = [
   ],
   [
     "Il secondo anno costa uguale?",
-    `No, costa il 20% in meno: ${rinnovo("professional")}, ${rinnovo("studio")} e ${rinnovo("studio_plus")} ` +
+    `No, costa il 20% in meno: ${elenco(fasceVendibili().map(rinnovo))} ` +
       `secondo la fascia. Il rinnovo è automatico e si disdice fino al giorno prima della scadenza.`,
   ],
   [
     "Cosa succede se supero le aziende della mia fascia?",
     `La piattaforma te lo segnala prima che accada. Puoi aggiungere blocchi da ` +
       `${ESTENSIONI.bloccoAziende.aziende} aziende a ${euro(ESTENSIONI.bloccoAziende.prezzo)} l'anno ciascuno, ` +
-      `oppure scriverci per passare alla fascia superiore. Nessun lavoro si blocca e nulla va rifatto.`,
+      `oppure scriverci per passare alla fascia superiore. Dalla fascia «${PIANI.singola.nome}» si passa ` +
+      `direttamente alla superiore, che costa meno di un'azienda più un blocco. Nessun lavoro si blocca e nulla va rifatto.`,
   ],
   [
     "Posso vedere il prodotto prima di pagare?",

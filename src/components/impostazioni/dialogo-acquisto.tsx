@@ -8,7 +8,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { apriCheckoutAction } from "@/features/billing/actions";
-import { PIANI, ESTENSIONI, euro, prezzoDiVendita, prezzoEstensione, type PianoKey, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI, euro, aziendeTesto, prezzoDiVendita, prezzoEstensione, type PianoKey, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
 
 // La scelta di che cosa si compra, prima di andare a pagare.
 //
@@ -133,8 +133,10 @@ export function DialogoAcquisto({
         <DialogHeader>
           <DialogTitle>{p.nome}</DialogTitle>
           <DialogDescription>
-            {p.aziende + blocchi * ESTENSIONI.bloccoAziende.aziende} aziende ·{" "}
-            {p.accessi + accessi} accessi · tutti e cinque i percorsi
+            {/* Diceva «tutti e cinque i percorsi»: sono quattordici, e il numero cresce a
+                ogni modulo. Senza numero la frase non invecchia. */}
+            {aziendeTesto(p.aziende + blocchi * ESTENSIONI.bloccoAziende.aziende)} ·{" "}
+            {p.accessi + accessi} accessi · tutti i percorsi
           </DialogDescription>
         </DialogHeader>
 
@@ -142,6 +144,18 @@ export function DialogoAcquisto({
           <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
             Serve altra capacità?
           </p>
+          {/* ⚠️ Nella fascia «Un'azienda» il contatore non c'è: un blocco costerebbe più della
+              fascia superiore. Il server rifiuta comunque i blocchi su questa fascia
+              (`apriCheckoutAction`): qui si indica la strada giusta invece di nasconderla. */}
+          {p.senzaBlocchi ? (
+            <p className="rounded-lg border p-3 text-[13px] leading-relaxed text-muted-foreground">
+              Più di un&apos;azienda? La fascia «{PIANI.professional.nome}» costa{" "}
+              <span className="font-medium text-foreground tabular-nums">
+                {euro(prezzoDiVendita(PIANI.professional, "anno1")!.importo)}
+              </span>{" "}
+              l&apos;anno e comprende tutto il resto allo stesso modo.
+            </p>
+          ) : (
           <Contatore
             etichetta={`Blocchi da ${ESTENSIONI.bloccoAziende.aziende} aziende`}
             dettaglio={`+${blocchi * ESTENSIONI.bloccoAziende.aziende} aziende`}
@@ -150,6 +164,7 @@ export function DialogoAcquisto({
             massimo={MAX_BLOCCHI}
             prezzo={pBlocco.importo}
           />
+          )}
           {/* ⚠️ Qui c'erano «Accessi aggiuntivi» e «Documenti col marchio del tuo studio».
               Non si vendono piu': gli accessi sono inclusi in ogni fascia (15/30/60, tetti
               che nessuno studio vero raggiunge) e il marchio dello studio e' compreso.

@@ -2724,3 +2724,80 @@ produzione salta da solo le prove che scrivono.
 ### Consegne al committente
 I documenti generati vanno raccolti in `Desktop/EvalisDeck - Documenti` (PDF reali, non mock), aggiornando la cartella a ogni nuovo tipo di documento prodotto.
 
+**La fascia d'ingresso «Un'azienda», e il preavviso che diceva il numero sbagliato (2026-09-22)**
+
+Quarta fascia, decisa dal committente: **350 € il primo anno, 280 € dal secondo** (il −20% di
+tutte le altre), **un'azienda e tre accessi**, e **niente blocchi** — un'azienda più un blocco
+costerebbe 700 € per sei aziende contro i 590 € della fascia da cinque, e il prodotto non
+vende la strada più cara. Il divieto vive sul server (`apriCheckoutAction` e
+`creaSessioneCheckout`), non solo nel dialogo, che al posto del contatore indica la fascia
+superiore. Chiavi `_v1`: la fascia è nuova, non sostituisce niente, `LOOKUP_STORICHE.singola`
+è vuoto. Migrazione `0059` che ALLARGA il CHECK sul piano, e va in produzione **prima** del
+codice: col vincolo vecchio il webhook di chi ha pagato fallisce nella transazione, risponde
+500, Stripe ritenta, e il cliente resta senza servizio.
+
+**Il preavviso di rinnovo diceva a tutti il listino.** A un Fondatore 1.032 € invece di
+825,60 €, e a chi aveva comprato blocchi il solo piano. Il nostro database non conserva le
+righe dell'abbonamento — sa il piano, non se è un Fondatore — quindi ora il cron le chiede a
+Stripe, come già fa il webhook per lo Schedule, e `importoDelPreavviso` applica le stesse
+regole della fase 2. Se Stripe non risponde si scrive «l'importo del tuo piano»: meglio
+generico che sbagliato in un'email che annuncia un addebito.
+
+**Trovati e corretti perché la fascia nuova li esponeva:** «1 aziende» ovunque
+(`aziendeTesto`); la pastiglia «Prezzi di lancio» che compariva per la sola data mentre
+nessuna fascia ha uno sconto (`promozioneInCorso`, non `lancioAttivo`); «tutti e cinque i
+percorsi» nel dialogo e nell'offerta, che sono quattordici; il messaggio del limite che
+rimandava al «piano Studio», che non esiste più; l'avviso giallo del portafoglio, che con una
+sola azienda sarebbe rimasto acceso per sempre — ora è una nota neutra; «i 14percorsi» e
+«10studi» su `/prezzi`, **già in produzione**; e i **Termini §8**, che dichiaravano «10
+aziende attive e 5 utenti» quando le fasce ne danno 5/15/30 e 15/30/60. I numeri dei Termini
+ora vengono dal listino, e `AGGIORNATO_AL` era fermo al 5 agosto pur essendo stato cambiato
+due volte dopo.
+
+**Regole nate qui:**
+- **Un collaudo che sceglie per POSIZIONE invecchia al primo elemento nuovo.** `nth(1)` con
+  scritto «Studio è il secondo» comprava un'altra fascia e poi accusava il prodotto di non
+  metterci le estensioni, che quella fascia non vende. Si aggancia al nome, che viene dal
+  listino.
+- **Il fattore d'attesa guardava l'INDIRIZZO, e il lento è il DATABASE.** «Su localhost un
+  viaggio costa 7 ms» vale in produzione, dove le funzioni girano accanto al database; in
+  sviluppo ne costa 70÷144, e i collaudi cedevano a caso — bersaglio diverso a ogni giro,
+  che è la firma della lentezza e non di un difetto. Ora c'è `QA_ATTESA=<n>`, e scala anche
+  i tempi di navigazione, che non erano scalati.
+- **Sei attese fisse sostituite dal fatto**: la riga nel database (confine GHG, inventario,
+  archiviazione, ripristino), l'elenco che si rilegge ricaricando (inviti), il contenuto
+  invece di `networkidle` (pagina dell'abbonamento, che interroga Stripe e non tace mai
+  mezzo secondo).
+- **Un velo che passa per fortuna di tempi prima o poi non passa.** `visual-check-impostazioni`
+  non ha mai spento la sequenza di benvenuto: il giorno in cui il video è arrivato prima, otto
+  controlli su quattordici sono diventati rossi con «Timeout» su comandi che funzionano.
+- **In `ImageResponse` un `<div>` con `{espressione} testo` ha DUE figli**, e Satori pretende
+  `display: flex`: il build si ferma. Si unisce in una stringa sola.
+- **Una chiave viva non si riconosce dal nome del file in cui sta**, ma chiedendo a Stripe di
+  chi è: la prima che è arrivata era di **Evalis Academy**, con incassi attivi. Ora sta in
+  `.env.stripe-vivo` (fuori da git, non letto da nessuno script) e prima di ogni uso si
+  verifica l'account.
+- **Una frase che confronta due prezzi diventa falsa da sola.** «La fascia superiore costa
+  meno di un blocco» era sbagliata (590 contro 350): è «meno di un'azienda più un blocco», ed
+  è un test.
+
+Gate: typecheck · build · **1566 test in entrambe le modalità**, `RLS_FORCE_ROLE=app_rls`
+compresa · migrazione `0059` applicata in sviluppo · prezzi **vivi** creati sull'account
+`acct_1U3GxSAOnVDvjrbP` e verificati (annuali, in euro, sul prodotto giusto) ·
+`qa -- checkout` 7/7 con Stripe che chiede 350 € · `tutto-demo` 68/68 · `tutto-attivo` 30/30 ·
+`rinnovo` 8/8 · `estensioni` 10/10 (fase 2 con le estensioni) · `impostazioni` 14/14 ·
+`presentazione` 12/12 con la controprova in rosso · `tracce` 15/15 · `legale` 26/26 ·
+`sitemap` 9/9 · `tutto-pubblico` 37/37 · `benvenuto` 12/12 · `guida` 7/7 · `formazione` 12/12
+e `formazione-comandi` 21/21 · `scheda-cliente` 16/16 · `portafoglio-aggiorna` 5/5 · foto di
+`/prezzi` e della pagina Abbonamento **guardate** in chiaro, scuro e da telefono.
+
+⚠️ **Non ancora in produzione**: restano la migrazione `0059` sul database vivo e la fusione
+su `main`. I prezzi vivi ci sono già, ed è l'ordine giusto — nessuno può comprarli finché il
+codice non è online.
+
+**Il pulsante «Ascolta» della formazione (2026-09-22)** — segnalato dal committente: non si
+notava, e la presentazione sembrava muta. Ora è verde pieno con un alone che pulsa
+(`@keyframes invitoVoce`, un ciclo ogni 1,6 s, molto sotto i tre lampi al secondo) finché la
+voce non è attivata; col movimento ridotto resta il pieno verde, statico. Il nome accessibile
+non cambia — lo usano due collaudi — e `data-invito-voce` dà l'appiglio al controllo nuovo,
+che misura **lo stile calcolato** e non la classe.

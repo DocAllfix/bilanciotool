@@ -35,6 +35,15 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
   if (PIANI[piano].trattativa) {
     return { ok: false, errore: "Il piano Enterprise si concorda: scrivici e prepariamo l'offerta." };
   }
+  // ⚠️ Il dialogo non mostra il contatore dei blocchi su questa fascia, ma una server action
+  // è un endpoint HTTP: il divieto vive qui. Un'azienda più un blocco costerebbe più della
+  // fascia da cinque, e non vendiamo la strada più cara.
+  if (PIANI[piano].senzaBlocchi && p.data.aziendeExtra) {
+    return {
+      ok: false,
+      errore: `La fascia «${PIANI[piano].nome}» non prevede blocchi aggiuntivi: per seguire più aziende scegli la fascia superiore.`,
+    };
+  }
   if (!stripeConfigurato()) {
     return { ok: false, errore: "Il pagamento non è ancora attivo su questo ambiente." };
   }

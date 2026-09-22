@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { PIANI, CHIAVI_PIANO, euro, prezzoDiVendita, lancioAttivo, FINE_LANCIO } from "@/lib/prezzi";
+import { PIANI, euro, aziendeTesto, fasceVendibili, prezzoDiVendita, promozioneInCorso, FINE_LANCIO } from "@/lib/prezzi";
 import { apriCheckoutAction } from "@/features/billing/actions";
 import type { PianoKey } from "@/lib/prezzi";
 import { fmtDataEstesa } from "@/lib/format";
@@ -17,13 +17,12 @@ import { fmtDataEstesa } from "@/lib/format";
 // professionista che si accorge di un'urgenza inventata smette di fidarsi anche del
 // resto.
 //
-// Il piano al centro è quello consigliato — Studio — perché nella scelta fra tre
-// opzioni quella di mezzo è il riferimento, e lasciarla senza indicazione costringe
-// ognuno a rifare il ragionamento da capo.
+// Il piano consigliato è Studio, e resta tale anche con la fascia d'ingresso: un
+// riferimento dichiarato evita che ognuno rifaccia il ragionamento da capo.
 
 export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
   const [inCorso, setInCorso] = useState<PianoKey | null>(null);
-  const acquistabili = CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa);
+  const acquistabili = fasceVendibili();
 
   async function acquista(piano: PianoKey) {
     setInCorso(piano);
@@ -64,14 +63,17 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
           </button>
         </div>
 
-        {lancioAttivo() && (
+        {/* Solo se un prezzo scontato c'è davvero: la data da sola annunciava una promozione
+            che non esisteva. */}
+        {promozioneInCorso() && (
           <p className="mt-4 inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12.5px] font-medium text-primary">
             Prezzi di lancio, validi fino al{" "}
             {fmtDataEstesa(FINE_LANCIO)}
           </p>
         )}
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        {/* Quattro fasce: due per riga sugli schermi medi, quattro su quelli larghi. */}
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {acquistabili.map((k) => {
             const p = PIANI[k];
             const anno1 = prezzoDiVendita(p, "anno1")!;
@@ -108,7 +110,7 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
                 <ul className="mt-3 space-y-1.5 text-[13px] text-muted-foreground">
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                    {p.aziende} aziende
+                    {aziendeTesto(p.aziende)}
                   </li>
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
@@ -116,7 +118,7 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
                   </li>
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                    Tutti e cinque i percorsi
+                    Tutti i percorsi
                   </li>
                 </ul>
 

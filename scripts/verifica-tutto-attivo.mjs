@@ -121,9 +121,16 @@ await agisci("si avvia un percorso GHG sull'azienda nuova", async () => {
   const crea = page.getByRole("button", { name: /^(Crea|Avvia|Nuovo)/ }).first();
   if (!(await crea.count())) throw new Error("nessun comando per avviare l'inventario");
   await crea.click();
-  await page.waitForTimeout(2500);
-  const [r] = await sql`select count(*)::int n from ghg_inventory where company_id=${mia}`;
-  if (!r.n) throw new Error("nessun inventario creato");
+  // ⚠️ Si aspetta la RIGA, non un tempo. Sul database di sviluppo un viaggio costa venti
+  // volte piu' che in produzione, e 2,5 secondi fissi facevano leggere «nessun inventario»
+  // mentre la creazione era ancora in volo: l'accusa sbagliata al prodotto.
+  await attendi(
+    async () => {
+      const [r] = await sql`select count(*)::int n from ghg_inventory where company_id=${mia}`;
+      return r.n > 0;
+    },
+    { cosa: "l'inventario creato nel database" },
+  );
 });
 
 console.log("\n— pubblicazione dei cinque documenti —");
@@ -238,9 +245,12 @@ await agisci("si genera il collegamento per il cliente", async () => {
   await page.locator("#cond-nota").fill("Amministrazione");
   await page.selectOption("#cond-durata", { index: 1 });
   await page.getByRole("button", { name: /Genera collegamento/i }).click();
-  await page.waitForTimeout(3000);
   // L'indirizzo sta in un CAMPO, per poterlo copiare: `innerText` non lo vede.
+  // ⚠️ E si ASPETTA che compaia, invece di guardare dopo tre secondi: il collegamento
+  // arrivava un istante dopo, e il collaudo riferiva «l'indirizzo non compare» mentre il
+  // controllo successivo lo trovava negli appunti.
   const campo = page.locator("main input[value*='documenti-cliente']").first();
+  await campo.waitFor({ state: "attached", timeout: 60_000 }).catch(() => {});
   if (!(await campo.count())) throw new Error("l'indirizzo non compare");
   url = await campo.inputValue();
   const t = await page.locator("main").innerText();
@@ -317,7 +327,15 @@ await agisci("dopo la revoca il collegamento non apre piu'", async () => {
 
 console.log("\n— abbonamento, membri, archiviazione —");
 await agisci("l'abbonamento mostra il piano e la capacita' usata", async () => {
-  await vai("/impostazioni/abbonamento");
+  // ⚠️ Non `networkidle`: questa pagina interroga Stripe e il database piu' volte, e sul
+  // database di sviluppo mezzo secondo di silenzio di rete entro trenta non arriva mai. Il
+  // referto diceva «Timeout» su una pagina che si apre benissimo — e il controllo subito
+  // dopo, sulla STESSA pagina, passava. Si aspetta il contenuto, che e' il fatto.
+  await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await attendi(
+    async () => (await page.locator("main").innerText()).includes(PIANI[PIANO_DEL_CONTO].nome),
+    { cosa: "la pagina dell'abbonamento con il piano attivo" },
+  );
   const t = await page.locator("main").innerText();
   if (!t.includes(PIANI[PIANO_DEL_CONTO].nome)) throw new Error("il piano non compare");
   if (!/Attivo/.test(t)) throw new Error("lo stato non compare");
@@ -382,9 +400,14 @@ await agisci("si archivia e si ripristina un'azienda", async () => {
   await page.getByRole("menuitem", { name: /Archivia/i }).first().click();
   await page.waitForTimeout(800);
   await page.getByRole("dialog").getByRole("button", { name: /^Archivia$/ }).click();
-  await page.waitForTimeout(3000);
-  let [r] = await sql`select stato from company where id=${mia}`;
-  if (r.stato !== "archived") throw new Error(`dopo l'archiviazione lo stato e' «${r.stato}»`);
+  // Anche qui si aspetta lo STATO nel database, non un tempo fisso.
+  await attendi(
+    async () => {
+      const [r] = await sql`select stato from company where id=${mia}`;
+      return r?.stato === "archived";
+    },
+    { cosa: "l'azienda archiviata nel database" },
+  );
 
   // E si ripristina dall'interfaccia, non a mano nel database. Il menu va cercato
   // sulla card di QUESTA azienda: le esecuzioni precedenti ne lasciano altre in
@@ -414,9 +437,13 @@ await agisci("si archivia e si ripristina un'azienda", async () => {
   const rip = page.getByRole("menuitem", { name: /Ripristina/i });
   if (!(await rip.count())) throw new Error("la card archiviata non offre «Ripristina»");
   await rip.first().click();
-  await page.waitForTimeout(3500);
-  [r] = await sql`select stato from company where id=${mia}`;
-  if (r.stato !== "active") throw new Error(`dopo il ripristino lo stato e' «${r.stato}»`);
+  await attendi(
+    async () => {
+      const [dopo] = await sql`select stato from company where id=${mia}`;
+      return dopo?.stato === "active";
+    },
+    { cosa: "l'azienda ripristinata nel database" },
+  );
 });
 
 // Pulizia: l'azienda creata da questa esecuzione si archivia. Le archiviate non

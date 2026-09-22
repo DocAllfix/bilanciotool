@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { orgEntitlement } from "@/lib/db/schema";
-import { and, eq, gte, lte, isNotNull } from "drizzle-orm";
-import { PIANI, prezzoDiVendita, euro, type PianoKey } from "@/lib/prezzi";
+import { orgEntitlement, stripeSubscription } from "@/lib/db/schema";
+import { and, desc, eq, gte, lte, isNotNull, notInArray } from "drizzle-orm";
+import { euro, importoDelPreavviso, type PianoKey, type RigaPreavviso } from "@/lib/prezzi";
+import { stripe, stripeConfigurato } from "@/lib/stripe/client";
 import { titolareDelloStudio } from "@/features/billing/provisioning";
 import { sendPreavvisoRinnovoEmail } from "@/lib/email";
 import { withTenant } from "@/lib/db/tenant";
@@ -23,6 +24,47 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const GIORNO = 86_400_000;
+
+/**
+ * Le righe dell'abbonamento Stripe dello studio, per sapere QUANTO si addebiterà.
+ *
+ * ⚠️ Il nostro database non le conserva: sa il piano, non se lo studio è un Fondatore né
+ * quanti blocchi ha comprato. La verità su cosa pagherà il cliente sta su Stripe, ed è lì
+ * che la chiede anche il webhook quando costruisce lo Schedule.
+ *
+ * - `null`: nessun abbonamento Stripe (studio attivato a mano, a bonifico);
+ * - `"ignoto"`: c'è, ma Stripe non ha risposto — si scrive un importo generico invece di
+ *   indovinarne uno.
+ */
+async function righeDelloStudio(orgId: string): Promise<RigaPreavviso[] | null | "ignoto"> {
+  const [sub] = await withTenant({ orgId, platformAdmin: true }, (tx) =>
+    tx
+      .select({ id: stripeSubscription.stripeSubscriptionId })
+      .from(stripeSubscription)
+      .where(
+        and(
+          eq(stripeSubscription.organizationId, orgId),
+          notInArray(stripeSubscription.status, ["canceled", "incomplete_expired"]),
+        ),
+      )
+      .orderBy(desc(stripeSubscription.updatedAt))
+      .limit(1),
+  );
+  if (!sub) return null;
+  if (!stripeConfigurato()) return "ignoto";
+  try {
+    const abb = await stripe().subscriptions.retrieve(sub.id, { expand: ["items.data.price"] });
+    return abb.items.data.map((r) => ({
+      lookup: r.price.lookup_key ?? null,
+      importoUnitario: r.price.unit_amount ?? null,
+      quantita: r.quantity ?? 1,
+      ricorrente: Boolean(r.price.recurring),
+    }));
+  } catch (e) {
+    console.error("[rinnovi] righe dell'abbonamento non lette per", orgId, e);
+    return "ignoto";
+  }
+}
 
 export async function GET(req: Request) {
   const segreto = process.env.CRON_SECRET;
@@ -72,11 +114,14 @@ export async function GET(req: Request) {
     // Il rinnovo si paga al prezzo di RINNOVO, che è quello che l'abbonamento ha nella
     // seconda fase: dire l'importo del primo anno sarebbe un preavviso sbagliato, e
     // peggiore del silenzio.
-    const prezzo = prezzoDiVendita(PIANI[piano], "rinnovo");
+    // ⚠️ E si chiede alle RIGHE dell'abbonamento, non al solo piano: prima un Fondatore
+    // leggeva 1.032 € invece di 825,60 €, e chi aveva blocchi il solo piano.
+    const righe = await righeDelloStudio(riga.orgId);
+    const importo = righe === "ignoto" ? null : importoDelPreavviso(piano, righe);
     const base = indirizzoCorrente();
     try {
       const r = await sendPreavvisoRinnovoEmail(destinatario, {
-        importo: prezzo ? euro(prezzo.importo) : "l'importo del tuo piano",
+        importo: importo !== null ? euro(importo) : "l'importo del tuo piano",
         quando: riga.quando.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" }),
         url: `${base}/impostazioni/abbonamento`,
       });

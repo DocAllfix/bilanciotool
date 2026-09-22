@@ -321,10 +321,15 @@ export function Presentazione({
                 <span className="hidden sm:inline">{inRiproduzione ? "Pausa" : "Riprendi"}</span>
               </button>
             ) : (
+              // ⚠️ Pieno verde e alone pulsante finché la voce non è attivata: a bordo
+              // neutro nessuno lo vedeva, e la presentazione sembrava muta. Il nome
+              // accessibile resta «Ascolta» (lo usano i collaudi); dopo il clic compare
+              // Pausa/Riprendi con lo stile sobrio, e l'alone smette.
               <button
                 type="button"
                 onClick={() => setConVoce(true)}
-                className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-[13px] transition-colors hover:bg-muted"
+                data-invito-voce
+                className="flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90 motion-safe:animate-[invitoVoce_1.6s_ease-out_infinite]"
               >
                 <Volume2 className="size-3.5" aria-hidden />
                 Ascolta

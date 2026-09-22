@@ -6,6 +6,7 @@ import {
   lancioAttivo,
   prezzoDiVendita,
   euro,
+  fasceVendibili,
 } from "@/lib/prezzi";
 
 // Il prezzo di lancio e il listino barrato.
@@ -91,7 +92,7 @@ describe("gli importi", () => {
     // hanno piu' prezzi scontati. `prezzoDiVendita` deve quindi restituire il pieno e
     // NESSUN listino da barrare: un barrato senza uno sconto vero e' pubblicita'
     // ingannevole, ed e' vietata anche fra professionisti.
-    for (const piano of [PIANI.professional, PIANI.studio, PIANI.studio_plus]) {
+    for (const piano of fasceVendibili().map((k) => PIANI[k])) {
       for (const fase of ["anno1", "rinnovo"] as const) {
         const v = prezzoDiVendita(piano, fase)!;
         expect(v.importo).toBe(fase === "anno1" ? piano.primoAnno : piano.rinnovo);
@@ -103,13 +104,13 @@ describe("gli importi", () => {
   it("il rinnovo costa meno del primo anno, in ogni fascia", () => {
     // La struttura del listino dice al cliente che il secondo anno costa meno: se si
     // ribaltasse, al rinnovo si troverebbe un aumento e disdirebbe.
-    for (const piano of [PIANI.professional, PIANI.studio, PIANI.studio_plus]) {
+    for (const piano of fasceVendibili().map((k) => PIANI[k])) {
       expect(piano.rinnovo).toBeLessThan(piano.primoAnno);
     }
   });
 
   it("il rinnovo e' esattamente il 20% in meno del primo anno", () => {
-    for (const piano of [PIANI.professional, PIANI.studio, PIANI.studio_plus]) {
+    for (const piano of fasceVendibili().map((k) => PIANI[k])) {
       expect(piano.rinnovo).toBe(Math.round(piano.primoAnno * 0.8));
     }
   });

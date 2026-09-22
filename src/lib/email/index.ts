@@ -1,5 +1,7 @@
 import { env } from "@/lib/env";
 import { renderEmail, esc } from "./modello";
+// Pura, senza `env`: il plurale dell'email di benvenuto con la fascia da un'azienda.
+import { aziendeTesto } from "@/lib/prezzi";
 
 export { renderEmail, esc };
 
@@ -184,10 +186,10 @@ export async function sendBenvenutoEmail(
     to,
     `Il tuo abbonamento è attivo — piano ${d.piano}`,
     renderEmail({
-      previewText: `Piano ${d.piano} attivo: ${d.aziende} aziende, ${d.accessi} accessi.`,
+      previewText: `Piano ${d.piano} attivo: ${aziendeTesto(d.aziende)}, ${d.accessi} accessi.`,
       heading: "Il tuo abbonamento è attivo",
       body: [
-        `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire fino a <b>${d.aziende} aziende</b> e invitare <b>${d.accessi} persone</b> nello studio.`,
+        `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire <b>${d.aziende === 1 ? "un'azienda" : `fino a ${d.aziende} aziende`}</b> e invitare <b>${d.accessi} persone</b> nello studio.`,
         "Pubblicare documenti, generare i PDF e creare aziende non è più bloccato.",
         "La ricevuta del pagamento ti arriva separatamente da Stripe.",
       ],
