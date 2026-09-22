@@ -2791,9 +2791,14 @@ compresa · migrazione `0059` applicata in sviluppo · prezzi **vivi** creati su
 e `formazione-comandi` 21/21 · `scheda-cliente` 16/16 · `portafoglio-aggiorna` 5/5 · foto di
 `/prezzi` e della pagina Abbonamento **guardate** in chiaro, scuro e da telefono.
 
-⚠️ **Non ancora in produzione**: restano la migrazione `0059` sul database vivo e la fusione
-su `main`. I prezzi vivi ci sono già, ed è l'ordine giusto — nessuno può comprarli finché il
-codice non è online.
+✅ **In produzione dal 22 settembre 2026**, nell'ordine: prezzi vivi, migrazione `0059` sul
+database vivo, fusione su `main`. Prima di scrivere si è chiesto al database vivo — 11
+organizzazioni, 59 migrazioni registrate, tutti i valori di `piano` già dentro il vincolo
+nuovo — e dopo si è provato che `singola` si scrive e che un piano inventato viene ancora
+respinto, in una transazione annullata: i conteggi sono identici a prima. La guardia è stata
+vista rifiutarsi **prima** dell'override, non dopo.
+Verifica sul sito vero: `/prezzi` dice «Quattro fasce», porta i quattro importi e quattro
+`Offer` nei dati strutturati · `tutto-pubblico` 37/37 · `legale` 26/26 · `sitemap` 9/9.
 
 **Il pulsante «Ascolta» della formazione (2026-09-22)** — segnalato dal committente: non si
 notava, e la presentazione sembrava muta. Ora è verde pieno con un alone che pulsa
