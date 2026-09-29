@@ -2964,3 +2964,79 @@ vera e non le scrive Claude.
 segnaposto va incollato in un articolo, e finché non c'è, quello che possiamo dimostrare è
 che la pagina di destinazione risponde, che il blocco si rende e che gli articoli senza
 segnaposto restano identici a prima.
+
+**Il giro guidato comincia dal risultato, e il popover entra nel sistema (2026-09-29)** —
+segnalato dal committente guardando la vetrina in produzione: «fallo partire da questa
+schermata, e il tour rendilo con una card che abbia lo stile del sito, non quella roba che
+sembrano pezzetti di carta».
+
+**Aveva ragione sull'ordine.** Il giro cominciava dai consumi da compilare e la prima tappa
+diceva «questo è un pezzo vero del percorso» a chi aveva davanti una tabella vuota: si
+spiegava il mezzo a qualcuno che non aveva ancora visto il fine. È lo stesso ordine che il
+benvenuto in app aveva già risolto — prima il video che mostra cosa si ottiene, poi il giro
+che lo fa toccare. Ora il giro porta sul passo 4, mostra la diagnosi finita (le sei tessere,
+il Sankey, il Pareto) e solo dopo dice **che cosa devi fare** per rifarla coi tuoi numeri.
+
+⚠️ **Tutte le tappe sono ancorate a elementi del passo 4, e non è una scelta estetica.** La
+vetrina rende un passo per volta: un bersaglio che vive sul passo 2 non è nel documento
+mentre si guardano i risultati, e `avviaTour` lo scarterebbe in silenzio. L'unica eccezione è
+la riga dei passi, che sta sempre lì — ed è proprio quella che serve per dire «adesso tocca a
+te». E `setPasso` non è sincrono: il tour si avvia dopo `attendiElemento`, altrimenti
+cercherebbe bersagli che React non ha ancora reso.
+
+⚠️ **Il difetto che questo cambio creava è stato chiuso PRIMA di causarlo.** Il richiamo
+all'acquisto compare «quando si arriva ai risultati»: aprendo il giro lì, quella condizione è
+vera dal primo istante, e il banner si sarebbe aperto **sotto il velo**, col pulsante che non
+risponde al clic — la famiglia del velo sopra il video di benvenuto. Il velo è ora fra i
+marcatori che tengono chiuso il richiamo, e siccome il cancello si rilegge ogni mezzo
+secondo, il banner si arma da solo quando il giro finisce, comunque finisca. Messo in rosso
+di proposito: fallisce sull'asserzione giusta.
+
+**Il popover era già tematizzato, e il difetto era il CARATTERE.** Misurato prima di
+toccarlo: `font-family: "Helvetica Neue", Inter`. `driver.css` impone il proprio font e
+l'override dei token non lo toccava, quindi in mezzo a una pagina tutta Geist quel riquadro
+era letteralmente di un'altra tipografia. I colori erano a posto: era il testo a tradire, ed
+è il motivo per cui si leggeva come un foglietto incollato sopra il prodotto. Corretti anche
+i 300 px che mandavano a capo cinque volte una frase di due righe, il titolo a 14 px senza
+rapporto con la nostra scala, e il fatto che **al buio il riquadro spariva nel fondo** — ora
+ha un filo chiaro, come le slide, perché un'ombra scura su scuro non si vede. Vale per tutti
+e quindici i tour.
+
+⚠️ **Il restyle ha rotto tre collaudi, e la trappola era già scritta in questo documento.**
+`text-transform: uppercase` sull'indicatore di avanzamento fa leggere «1 DI 3», e tre
+controlli che contavano le tappe con `innerText` hanno riferito **zero tappe**, accusando i
+tour di non esistere. `innerText` restituisce il testo RESO, con le trasformazioni del CSS
+applicate: è identico al controllo dell'agenda che cercava «Chiuse» su un'intestazione resa
+«CHIUSE». Invece di inseguire le maiuscole, il popover dichiara ora `data-tappe`: un numero
+che la grafica non può toccare.
+
+⚠️ **E la prima correzione ne ha sistemata UNA su tre**, perché la sostituzione aveva contato
+male: «le sostituzioni si contano, non si sperano», terza occorrenza. Il secondo rosso era
+identico al primo, dodici righe più sotto.
+
+**Un difetto della vetrina trovato guardando le foto**: nel tema scuro le etichette del
+Sankey erano illeggibili. Quei grafici portano la palette della stampa — nascono per finire
+su carta — e sul fondo scuro il testo spariva. Ora i due grafici stanno su **foglio bianco
+anche al buio**, ed è dichiarato accanto al codice: ridisegnarli per lo schermo vorrebbe dire
+due figure diverse dalla stessa funzione, cioè una vetrina che mostra qualcosa di diverso da
+ciò che il cliente riceverà.
+
+**Regole nate qui:**
+- **Un tour si progetta sull'ordine in cui si convince, non su quello in cui si lavora.** La
+  prima tappa è la più cara che si abbia: spenderla a spiegare un campo da compilare, a
+  qualcuno che non sa ancora perché dovrebbe, è spenderla male.
+- **Cambiare il punto di partenza di un giro guidato cambia le condizioni di tutto ciò che
+  aspettava un traguardo.** Il richiamo all'acquisto non è stato toccato da nessuno: si è
+  trovato vera dal primo istante una condizione che prima arrivava a metà strada.
+- **Un collaudo che legge un numero dalla prosa resa dipende dal CSS.** L'ancora costa un
+  attributo e toglie di mezzo una classe intera di rossi che accusano il prodotto.
+- **Prima di riscrivere qualcosa che si crede brutto, si misura che cosa lo rende brutto.**
+  Qui i colori erano giusti da mesi e il problema era una riga di `font-family` mai scritta:
+  senza la fotografia e lo stile calcolato avrei riscritto la parte che funzionava.
+
+Gate: typecheck · build · **1596 test in entrambe le modalità**, `RLS_FORCE_ROLE=app_rls`
+compresa · `qa -- vetrina-tour` **7/7** con la prova nuova sul velo, messa in rosso
+rimettendo il difetto · `vetrina-energia` 11/11 · `vetrina-cta` 9/9 · `benvenuto` 12/12 ·
+`benvenuto-velo` 3/3 · `formazione` 12/12 · `formazione-comandi` 21/21 · `guida` 7/7 · foto
+del giro in chiaro e scuro **guardate** prima e dopo, con lo stile calcolato letto dal
+browser invece che giudicato a occhio.

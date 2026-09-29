@@ -536,34 +536,46 @@ export const TOURS: TourDef[] = [
   {
     pageId: "vetrina-energia",
     pathPattern: /^\/percorsi\/bilancio-energetico/,
+    // ⚠️ IL GIRO COMINCIA DAL RISULTATO, NON DAL LAVORO.
+    //
+    // Prima la prima tappa diceva «questo è un pezzo vero del percorso» mentre chi guardava
+    // aveva davanti una tabella di consumi da compilare: si spiegava il mezzo a qualcuno che
+    // non aveva ancora visto il fine. È lo stesso ordine che il benvenuto in app ha già
+    // risolto — prima il video che mostra che cosa si ottiene, poi il giro che lo fa toccare.
+    //
+    // ⚠️ E PER QUESTO OGNI TAPPA È ANCORATA A QUALCOSA CHE STA SUL PASSO 4. Nella vetrina è
+    // reso un passo per volta: un bersaglio che vive sul passo 2 non è nel documento mentre
+    // si guardano i risultati, e `avviaTour` lo scarterebbe. L'unica eccezione è la riga dei
+    // passi, che sta sempre lì — ed è proprio quella che serve per dire «adesso tocca a te».
     steps: [
       {
-        title: "Questo è un pezzo vero del percorso",
+        element: '[data-vetrina="tessere"]',
+        title: "Questa è la diagnosi finita",
         description:
-          "Non una dimostrazione finta: i numeri li calcolano le stesse funzioni del prodotto, con i fattori di conversione della norma. Si tocca subito, senza registrarsi, e da qui non parte niente verso di noi.",
+          "Energia finale, energia primaria, emissioni, spesa, costo medio e quota rinnovabile: è il quadro che un bilancio energetico deve produrre. Questi sei numeri sono già calcolati sui consumi di un'azienda d'esempio, e li rifà il motore vero del prodotto coi fattori di conversione della norma.",
+      },
+      {
+        element: '[data-vetrina="sankey"]',
+        title: "Dove finisce l'energia che entra",
+        description:
+          "A sinistra le forme che entrano nello stabilimento, a destra le aree in cui vengono consumate. È la figura che risponde alla domanda che fa il verificatore: non quanto consumi, ma dove.",
+      },
+      {
+        element: '[data-vetrina="pareto"]',
+        title: "E quali usi pesano davvero",
+        description:
+          "Ordinati per consumo, con la curva cumulata. Di solito due o tre utenze fanno la bolletta, e sono quelle su cui conviene intervenire: qui si legge in un colpo d'occhio quali sono.",
       },
       {
         element: '[data-tour="vetrina-passi"]',
-        title: "Gli otto passi della diagnosi",
+        title: "Adesso tocca a te",
         description:
-          "I primi tre si provano qui: i consumi, la ripartizione sugli usi finali, i risultati. Gli altri cinque — indicatori, interventi, racconto e documento — stanno nell'account, e il lucchetto lo dice invece di nasconderlo.",
+          "Torna al passo 2 e scrivi i consumi della tua azienda come stanno in bolletta — il gas in Smc, il gasolio in litri. Al passo 3 dici dove va quell'energia, e la quadratura ti avvisa finché un vettore non è ripartito per intero. Poi torna qui: questi sei numeri e le due figure si rifanno sui tuoi dati.",
       },
       {
-        element: '[data-vetrina="passo-vettori"]',
-        title: "I consumi, nell'unità del vettore",
+        title: "Gli altri cinque passi stanno nell'account",
         description:
-          "Il gas in Smc, il gasolio in litri, l'elettricità in kWh: si scrivono come stanno in bolletta. La conversione in kWh, tep e tonnellate di CO₂e è la colonna a destra, e cambia mentre scrivi.",
-      },
-      {
-        element: '[data-vetrina="kwh-totale"]',
-        title: "Il totale del sito",
-        description:
-          "Qui sotto ci sono le garanzie d'origine, che nel totale non si sommano: sono un dettaglio dell'elettrica, e contarle due volte è l'errore più comune di chi rifà questo conto a mano.",
-      },
-      {
-        title: "Poi la ripartizione, e i risultati",
-        description:
-          "Al passo 3 si dice dove va l'energia, e la quadratura avvisa finché un vettore non è ripartito per intero. Al passo 4 arrivano il diagramma di flusso e la graduatoria degli usi: le stesse figure che finiscono nel documento.",
+          "Indicatori sui due anni, interventi col tempo di ritorno, il racconto e il documento impaginato secondo la norma. Il lucchetto lo dice invece di nasconderlo: qui si prova la parte che si può provare senza registrarsi, e da questa pagina non parte niente verso di noi.",
       },
     ],
   },

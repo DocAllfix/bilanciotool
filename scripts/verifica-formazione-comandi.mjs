@@ -162,8 +162,14 @@ async function faiComparireInvito() {
   });
   await page.getByRole("button", { name: /Tour/ }).click();
   await page.waitForSelector(".driver-popover", { timeout: 30_000 });
-  const progresso = await page.locator(".driver-popover-progress-text").innerText();
-  const totale = Number(progresso.match(/di\s+(\d+)/)?.[1] ?? 0);
+  // ⚠️ `innerText` restituisce il testo RESO, con le trasformazioni del CSS applicate.
+  // L'indicatore di avanzamento del popover porta `text-transform: uppercase`, quindi a
+  // schermo si legge «1 DI 3»: un confronto sensibile alle maiuscole leggeva zero tappe e
+  // accusava il tour di non esistere. Stessa famiglia del controllo dell'agenda che cercava
+  // «Chiuse» su un'intestazione resa «CHIUSE», e non poteva passare mai.
+  // Il numero di tappe si legge dall'ANCORA, non dal testo reso: `data-tappe` non cambia
+  // se domani l'indicatore di avanzamento diventa maiuscolo o sparisce dal disegno.
+  const totale = Number(await page.locator(".driver-popover").getAttribute("data-tappe") ?? 0);
   for (let i = 0; i < totale; i++) {
     await page.evaluate(() => document.querySelector(".driver-popover-next-btn")?.click());
     await page.waitForTimeout(200);
@@ -259,8 +265,9 @@ await agisci("⚠️ il tour del dodicesimo percorso parte, ha le sue tappe e si
   });
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForSelector(".driver-popover", { timeout: 60_000 });
-  const progresso = await page.locator(".driver-popover-progress-text").innerText();
-  const totale = Number(progresso.match(/di\s+(\d+)/)?.[1] ?? 0);
+  // Il numero di tappe si legge dall'ANCORA, non dal testo reso: `data-tappe` non cambia
+  // se domani l'indicatore di avanzamento diventa maiuscolo o sparisce dal disegno.
+  const totale = Number(await page.locator(".driver-popover").getAttribute("data-tappe") ?? 0);
   if (totale !== 3) throw new Error(`il tour ha ${totale} tappe invece di 3`);
   for (let i = 0; i < totale; i++) {
     await page.evaluate(() => document.querySelector(".driver-popover-next-btn")?.click());

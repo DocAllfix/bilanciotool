@@ -35,12 +35,31 @@ await agisci("⚠️ col consenso aperto il giro NON parte", async () => {
   return "il banner è lì, il giro aspetta";
 });
 
-await agisci("fatta la scelta, il giro parte da solo", async () => {
+await agisci("fatta la scelta, il giro parte da solo — E DAL RISULTATO", async () => {
+  // ⚠️ IL CONTROLLO CHE CONTA È IL PASSO, non la frase. Il giro cominciava dai consumi, cioè
+  // dal lavoro: spiegava il mezzo a chi non aveva ancora visto il fine. Ora porta la persona
+  // sul passo 4 e le mostra la diagnosi finita. Un controllo sul solo testo della prima
+  // tappa sarebbe verde anche se la pagina fosse rimasta sui consumi.
   await page.getByRole("button", { name: "Rifiuta", exact: true }).click();
   await finestra().waitFor({ state: "detached", timeout: 15_000 * fattoreAttesa() });
   await velo().waitFor({ timeout: 20_000 * fattoreAttesa() });
+  if (!(await page.locator('[data-vetrina="passo-risultati"]').count())) {
+    throw new Error("il giro è partito, ma non sui risultati");
+  }
   const t = await page.locator(".driver-popover").innerText();
-  if (!/pezzo vero del percorso/i.test(t)) throw new Error(`la prima tappa dice: ${t.slice(0, 60)}`);
+  if (!/diagnosi finita/i.test(t)) throw new Error(`la prima tappa dice: ${t.slice(0, 60)}`);
+});
+
+await agisci("⚠️ col giro aperto il richiamo all'acquisto NON si mostra", async () => {
+  // Aprendo sul risultato, la condizione «valore consegnato» è vera dal primo istante:
+  // senza il velo fra i marcatori, il banner si aprirebbe SOTTO il giro, col pulsante che
+  // non risponde al clic. È la famiglia del velo sopra il video di benvenuto, prevista
+  // invece che scoperta — e la prova è che il richiamo non c'è mentre il velo c'è.
+  if (!(await velo().count())) throw new Error("il velo non c'è: il controllo non prova niente");
+  await page.waitForTimeout(1500 * fattoreAttesa());
+  if (await page.locator('[data-vetrina="richiamo"]').count()) {
+    throw new Error("il richiamo si è aperto sotto il velo del giro");
+  }
 });
 
 await agisci("le tappe si percorrono fino in fondo", async () => {
@@ -58,9 +77,10 @@ await agisci("le tappe si percorrono fino in fondo", async () => {
   return `${tappe} tappe`;
 });
 
-await agisci("finito il giro, il richiamo può aprirsi", async () => {
+await agisci("finito il giro, il richiamo si arma da solo", async () => {
   // L'ordine conta: il velo se n'è andato, quindi il banner d'acquisto non finisce sotto.
-  await page.getByRole("button", { name: /Risultati/ }).click();
+  // E non serve premere niente: si è già sui risultati, quindi il richiamo deve comparire
+  // per conto proprio entro il giro di controllo del cancello (mezzo secondo).
   await page.locator('[data-vetrina="richiamo"]').waitFor({ timeout: 20_000 * fattoreAttesa() });
   if (await velo().count()) throw new Error("velo e richiamo insieme");
 });

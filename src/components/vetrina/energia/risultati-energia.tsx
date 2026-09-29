@@ -61,6 +61,13 @@ export function RisultatiEnergia({ risultati: r }: { risultati: RisultatiVetrina
         ))}
       </dl>
 
+      {/* ⚠️ I DUE GRAFICI STANNO SU FONDO BIANCO ANCHE NEL TEMA SCURO, e non è una svista.
+          Sono gli stessi SVG che finiscono nel documento stampato, quindi portano la palette
+          della carta: testo scuro, righe sottili, nessun colore che dipenda dal tema. Sul
+          fondo scuro della pagina le etichette del Sankey diventavano illeggibili — visto
+          fotografando, non dedotto. Ridisegnarli per lo schermo significherebbe avere due
+          figure diverse dalla stessa funzione, cioè una vetrina che mostra qualcosa di
+          diverso da ciò che il cliente riceverà. Meglio dichiarare che è un foglio. */}
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <figure className="rounded-xl border bg-card p-4" data-vetrina="sankey">
           <figcaption className="text-[13px] font-medium">
@@ -69,7 +76,7 @@ export function RisultatiEnergia({ risultati: r }: { risultati: RisultatiVetrina
               Quanta energia entra da ciascuna forma, e in quale parte dello stabilimento finisce.
             </span>
           </figcaption>
-          <div className="mt-3 overflow-x-auto">
+          <div className="mt-3 overflow-x-auto rounded-lg bg-white p-2">
             <Sankey sorgenti={sorgenti} destinazioni={destinazioni} flussi={flussi} />
           </div>
         </figure>
@@ -81,7 +88,7 @@ export function RisultatiEnergia({ risultati: r }: { risultati: RisultatiVetrina
               Ordinati per consumo, con la cumulata: di solito due o tre utenze fanno la bolletta.
             </span>
           </figcaption>
-          <div className="mt-3 overflow-x-auto">
+          <div className="mt-3 overflow-x-auto rounded-lg bg-white p-2">
             <Pareto voci={voci} />
           </div>
         </figure>

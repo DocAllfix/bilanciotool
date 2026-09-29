@@ -114,6 +114,19 @@ export function avviaTour(tour: TourDef, alTermine?: (completato: boolean) => vo
     doneBtnText: "Fine",
     progressText: "{{current}} di {{total}}",
     steps,
+    // ⚠️ L'ANCORA, perché un collaudo non debba leggere la prosa resa.
+    //
+    // Tre controlli contavano le tappe con `innerText` sull'indicatore di avanzamento. Il
+    // giorno in cui quell'indicatore ha preso `text-transform: uppercase` — una scelta di
+    // grafica, niente di più — a schermo si è letto «1 DI 3» e i tre hanno riferito ZERO
+    // tappe, accusando i tour di non esistere. `innerText` restituisce il testo RESO, con
+    // le trasformazioni del CSS applicate: è la stessa trappola del controllo dell'agenda
+    // che cercava «Chiuse» su un'intestazione resa «CHIUSE».
+    //
+    // Qui il numero è un attributo: la grafica può fare quello che vuole al testo.
+    onPopoverRender: (popover) => {
+      popover.wrapper.setAttribute("data-tappe", String(steps.length));
+    },
     // ⚠️ LA X PASSA DA QUI COME TUTTO IL RESTO.
     //
     // Prima faceva `d.destroy()`, che è la via che SALTA `onDestroyStarted`: misurato il

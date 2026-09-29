@@ -237,26 +237,64 @@
   font-family: var(--font-display, var(--font-geist-sans));
 }
 
-/* Popover dei tour guidati (driver.js) allineato ai token */
+/* Popover dei tour guidati (driver.js), portato dentro il sistema di disegno.
+   ------------------------------------------------------------------------------------
+   ⚠️ IL CARATTERE È LA COSA CHE CONTA DI PIÙ, ed è quella che mancava. `driver.css`
+   dichiara `font-family: "Helvetica Neue", sans-serif` sul popover — misurato — quindi in
+   mezzo a una pagina tutta Geist quel riquadro è letteralmente di un'altra tipografia, e si
+   legge come un foglietto incollato sopra il prodotto invece che come una sua parte. I
+   colori erano già a posto: era il testo a tradire.
+
+   Le altre tre correzioni, tutte misurate sulla stessa fotografia: 300px di larghezza
+   mandavano a capo cinque volte una frase di due righe; il titolo a 14px non aveva nessun
+   rapporto con la nostra scala; e al buio il riquadro spariva nel fondo, perché l'ombra era
+   tarata per il chiaro e un'ombra scura su scuro non si vede — la stessa cosa imparata
+   sulle slide, dove si è dovuto aggiungere un filo chiaro. */
 .evalisdeck-popover.driver-popover {
   background: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 30px oklch(0.2 0.02 230 / 0.18);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 1px 2px oklch(0.2 0.02 230 / 0.06),
+    0 12px 40px -8px oklch(0.2 0.02 230 / 0.22);
+  /* ⚠️ Senza questa riga il popover resta in Helvetica: è l'unico punto in cui il carattere
+     del prodotto non arriverebbe da solo. */
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  padding: 18px 20px 16px;
+  max-width: 360px;
+}
+/* Al buio un bordo sottile non basta a staccare il riquadro dal fondo: serve un filo
+   chiaro, come sulle slide. Un'ombra scura su scuro non esiste. */
+.dark .evalisdeck-popover.driver-popover {
+  border-color: oklch(1 0 0 / 0.14);
+  box-shadow: 0 16px 48px -12px oklch(0 0 0 / 0.6);
 }
 .evalisdeck-popover .driver-popover-title {
-  font-size: 14px;
+  font-family: var(--font-display, var(--font-geist-sans));
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--popover-foreground);
+  /* La X sta in alto a destra: il titolo non le deve finire sotto. */
+  padding-right: 20px;
 }
 .evalisdeck-popover .driver-popover-description {
-  font-size: 13px;
+  margin-top: 8px;
+  font-size: 13.5px;
   color: var(--muted-foreground);
-  line-height: 1.5;
+  line-height: 1.6;
+}
+.evalisdeck-popover .driver-popover-footer {
+  margin-top: 16px;
+  gap: 8px;
 }
 .evalisdeck-popover .driver-popover-progress-text {
   font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--muted-foreground);
 }
 .evalisdeck-popover button.driver-popover-next-btn,
@@ -265,13 +303,37 @@
   color: var(--primary-foreground);
   border: 0;
   border-radius: var(--radius-md);
-  padding: 5px 12px;
+  padding: 7px 14px;
+  font-size: 13px;
   font-weight: 600;
   text-shadow: none;
+  transition: opacity 150ms ease-out;
+}
+.evalisdeck-popover button.driver-popover-next-btn:hover,
+.evalisdeck-popover button.driver-popover-prev-btn:hover {
+  opacity: 0.9;
 }
 .evalisdeck-popover button.driver-popover-prev-btn {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
+  background: transparent;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+/* La chiusura era un carattere nudo appoggiato nell'angolo, e al buio non si vedeva.
+   Diventa un comando: area toccabile vera, e uno stato al passaggio del mouse. */
+.evalisdeck-popover button.driver-popover-close-btn {
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  opacity: 1;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+.evalisdeck-popover button.driver-popover-close-btn:hover {
+  background: var(--muted);
+  color: var(--foreground);
 }
 .evalisdeck-popover .driver-popover-arrow-side-left { border-left-color: var(--popover); }
 .evalisdeck-popover .driver-popover-arrow-side-right { border-right-color: var(--popover); }

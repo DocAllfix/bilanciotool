@@ -196,9 +196,10 @@ await agisci("⚠️ il tour COMPLETATO propone il corso", async () => {
 
   // Quante tappe ci sono lo dice il tour stesso, dal proprio contatore: scriverlo qui
   // vorrebbe dire tenere allineato a mano il numero di passi di un tour che cambia.
-  const progresso = await page.locator(".driver-popover-progress-text").innerText();
-  const totale = Number(progresso.match(/di\s+(\d+)/)?.[1]);
-  if (!Number.isFinite(totale) || totale < 2) throw new Error(`contatore del tour illeggibile: «${progresso}»`);
+  // Il numero di tappe si legge dall'ANCORA, non dal testo reso: `data-tappe` non cambia
+  // se domani l'indicatore di avanzamento diventa maiuscolo o sparisce dal disegno.
+  const totale = Number(await page.locator(".driver-popover").getAttribute("data-tappe"));
+  if (!Number.isFinite(totale) || totale < 2) throw new Error(`il popover non dichiara le tappe: data-tappe = ${totale}`);
 
   // ⚠️ IL PULSANTE SI PREME DAL DOM, non con un clic a coordinate.
   //

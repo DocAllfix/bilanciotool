@@ -71,12 +71,25 @@ export function RichiamoAcquisto({ visto }: { visto: boolean }) {
   // clic. L'ha trovato il collaudo, che non riusciva a premerlo — ed è la stessa famiglia
   // del velo del tour sopra il video di benvenuto.
   //
-  // Si guardano ENTRAMBI i marcatori: `data-modale`, che dichiara una finestra vera, e
-  // `data-consenso`, che è solo del banner dei cookie — separato apposta, perché segnarlo
-  // come finestra impediva al giro guidato del benvenuto di partire.
+  // Si guardano TRE marcatori: `data-modale`, che dichiara una finestra vera; `data-consenso`,
+  // che è solo del banner dei cookie — separato apposta, perché segnarlo come finestra
+  // impediva al giro guidato del benvenuto di partire; e il velo del giro guidato.
+  //
+  // ⚠️ IL VELO È ENTRATO QUI QUANDO IL GIRO HA COMINCIATO DAI RISULTATI. Finché il tour
+  // partiva dai consumi, il passo 4 non era ancora stato raggiunto e il richiamo non poteva
+  // scattare a giro aperto. Aprendo direttamente sul risultato, la condizione «valore
+  // consegnato» è vera dal primo istante: senza questa riga il banner si aprirebbe SOTTO il
+  // velo, col pulsante che non risponde al clic. È la stessa famiglia del velo sopra il
+  // video di benvenuto, e stavolta è stata prevista invece che scoperta.
+  //
+  // Il controllo si rifà ogni mezzo secondo, quindi il richiamo si arma da solo quando il
+  // giro si chiude — comunque si chiuda, anche a metà.
   const [modale, setModale] = useState(true);
   useEffect(() => {
-    const guarda = () => setModale(Boolean(document.querySelector("[data-modale], [data-consenso]")));
+    const guarda = () =>
+      setModale(
+        Boolean(document.querySelector("[data-modale], [data-consenso], .driver-overlay, .driver-popover")),
+      );
     guarda();
     const t = setInterval(guarda, 500);
     return () => clearInterval(t);

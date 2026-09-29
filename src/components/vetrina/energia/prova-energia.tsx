@@ -13,7 +13,7 @@ import {
 import { numero, percentuale } from "@/features/vetrina/formato";
 import { euro } from "@/lib/prezzi";
 import type { Cella } from "@/lib/calc/energy/allocation";
-import { avviaTour } from "@/lib/tour/avvia";
+import { attendiElemento, avviaTour } from "@/lib/tour/avvia";
 import { findTourForPath } from "@/lib/tour/registry";
 import { RisultatiEnergia } from "./risultati-energia";
 
@@ -87,10 +87,29 @@ export function ProvaEnergia({ onRisultati }: { onRisultati?: () => void }) {
 
   const r = useMemo(() => calcola(stato.vettori, stato.celle), [stato]);
 
+  /**
+   * Il giro guidato, che comincia DAL RISULTATO.
+   *
+   * ⚠️ Prima cominciava dai consumi, cioè dal lavoro: la prima tappa diceva «questo è un
+   * pezzo vero del percorso» mentre chi guardava aveva davanti una tabella da compilare.
+   * È l'ordine sbagliato, ed è lo stesso che il benvenuto in app ha già risolto — prima il
+   * video che mostra che cosa si ottiene, poi il giro che lo fa toccare. Qui si porta la
+   * persona sul passo 4, le si fa vedere la diagnosi finita, e solo dopo le si dice da dove
+   * viene e che cosa deve fare per rifarla coi propri numeri.
+   *
+   * ⚠️ E SI ASPETTA CHE LE TESSERE SIANO MONTATE. `setPasso` non è sincrono: avviare il
+   * tour nello stesso istante lo farebbe cercare bersagli che React non ha ancora reso,
+   * `avviaTour` li scarterebbe tutti e il giro si salterebbe **in silenzio** — è il difetto
+   * che il collaudo della formazione ha colto il 1° settembre, e la funzione per aspettare
+   * un elemento esiste da allora.
+   */
   const giro = (forzato: boolean) => {
     const tour = findTourForPath(window.location.pathname);
     if (!tour) return;
-    avviaTour(tour);
+    setPasso(PASSO_RISULTATI);
+    void attendiElemento('[data-vetrina="tessere"]').then((c) => {
+      if (c) avviaTour(tour);
+    });
     if (!forzato) {
       try {
         localStorage.setItem(CHIAVE_TOUR, "1");
@@ -143,7 +162,7 @@ export function ProvaEnergia({ onRisultati }: { onRisultati?: () => void }) {
   // Il richiamo all'acquisto arriva quando il valore è stato consegnato, cioè quando la
   // persona ha visto i PROPRI numeri: non prima, mentre sta ancora capendo che cos'è.
   useEffect(() => {
-    if (passo === 4) onRisultati?.();
+    if (passo === PASSO_RISULTATI) onRisultati?.();
   }, [passo, onRisultati]);
 
   const vettoriInUso = VETTORI_CATALOGO.filter(
