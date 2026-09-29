@@ -10,7 +10,20 @@
 // per cui la sanificazione è a lista bianca stretta e non a lista nera: quello che non
 // è esplicitamente permesso non passa.
 
+import { dividiPerRichiami } from "@/features/blog/richiami";
+import { RichiamoPercorso } from "./richiamo-percorso";
+
 export function ContenutoArticolo({ html }: { html: string }) {
+  // ⚠️ Il corpo si spezza sui SEGNAPOSTO che il consulente SEO incolla in WordPress: dove
+  // c'è `<div class="evalis-percorso" id="…"></div>` si rende il nostro richiamo, il resto
+  // resta l'HTML del CMS. Senza questa divisione il segnaposto sarebbe un div vuoto — che è
+  // anche il comportamento di riserva, e va bene così: invisibile, mai rotto.
+  const pezzi = dividiPerRichiami(html);
+  // ⚠️ Senza segnaposto si rende ESATTAMENTE come prima, in un colpo solo. Avvolgere sempre
+  // i pezzi in un `div` in più cambierebbe di un soffio i margini dei venti articoli già
+  // pubblicati, per servire un caso che in quegli articoli non c'è.
+  const soloHtml = pezzi.length === 1 && pezzi[0].tipo === "html";
+
   return (
     <div
       className={[
@@ -46,7 +59,15 @@ export function ContenutoArticolo({ html }: { html: string }) {
         "[&_td]:border-b [&_td]:py-2.5 [&_td]:pr-4 [&_td]:align-top",
         "[&_hr]:my-10 [&_hr]:border-border",
       ].join(" ")}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+      {...(soloHtml ? { dangerouslySetInnerHTML: { __html: html } } : {})}
+    >
+      {soloHtml ? null : pezzi.map((p, i) =>
+        p.tipo === "richiamo" ? (
+          <RichiamoPercorso key={`r-${i}`} slug={p.slug} />
+        ) : (
+          <div key={`h-${i}`} dangerouslySetInnerHTML={{ __html: p.html }} />
+        ),
+      )}
+    </div>
   );
 }

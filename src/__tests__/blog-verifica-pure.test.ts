@@ -10,6 +10,7 @@
 
 import { describe, it, expect } from "vitest";
 import { eRimosso } from "@/features/blog/rimossi";
+import { SEGMENTI_ARCHIVIO } from "@/features/blog/tassonomia";
 import {
   urlArticoliDaSitemap,
   urlArticoliDaIndice,
@@ -118,11 +119,23 @@ describe("urlArticoliDaSitemap", () => {
 <url><loc>${SITO}/blog/primo</loc></url>
 <url><loc>${SITO}/blog/secondo</loc></url>
 <url><loc>${SITO}/blog/autore/redazione</loc></url>
+<url><loc>${SITO}/blog/categoria/rendicontazione</loc></url>
+<url><loc>${SITO}/blog/tag/iso-14064</loc></url>
 <url><loc>${SITO}/privacy</loc></url>
 </urlset>`;
 
-  it("prende gli articoli e lascia fuori indice, autori e pagine di prodotto", () => {
+  it("prende gli articoli e lascia fuori indice, archivi e pagine di prodotto", () => {
     expect(urlArticoliDaSitemap(xml, SITO)).toEqual([`${SITO}/blog/primo`, `${SITO}/blog/secondo`]);
+  });
+
+  it("⚠️ un archivio non è un articolo, e non gli si chiede lo schema di un articolo", () => {
+    // Gli archivi entrano nella sitemap da soli quando superano la soglia: se finissero qui,
+    // il collaudo del blog diventerebbe rosso accusando di un difetto inesistente pagine che
+    // uno schema `Article` non devono averlo. È esattamente quello che è successo.
+    const presi = urlArticoliDaSitemap(xml, SITO);
+    for (const segmento of SEGMENTI_ARCHIVIO) {
+      expect(presi.some((u) => u.includes(`/blog/${segmento}/`)), segmento).toBe(false);
+    }
   });
 
   it("su una sitemap senza blog non trova nulla", () => {

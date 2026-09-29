@@ -34,11 +34,24 @@ export function BannerCookie() {
 
   if (consenso !== null || dentroUnDocumento) return null;
 
+  // ⚠️ `data-consenso` e NON `data-modale`, ed è una scelta pagata con un rosso.
+  //
+  // `data-modale` è ciò che il cancello di `avviaTour` guarda per non aprire un velo sopra
+  // una finestra. Segnandolo così, il giro guidato del BENVENUTO smetteva di partire: chi si
+  // è appena registrato non ha ancora scelto sui cookie, quindi il banner c'è sempre, e la
+  // sequenza video → giro → offerta restava appesa. Due controlli di `qa -- benvenuto`
+  // l'hanno detto subito.
+  //
+  // Quindi il comportamento dei tour dell'applicazione resta quello di prima (il velo copre
+  // il banner: non bello, ma è così da sempre e si chiude in un clic), e la vetrina pubblica
+  // — dove il richiamo all'acquisto vive nello stesso angolo in basso — guarda questo
+  // marcatore per non finirgli sotto.
   return (
     <div
       role="dialog"
       aria-live="polite"
       aria-label="Consenso ai cookie di misurazione"
+      data-consenso=""
       className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border bg-card p-4 shadow-lg print:hidden sm:inset-x-5 sm:bottom-5 sm:p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">

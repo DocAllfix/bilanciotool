@@ -10,6 +10,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { RichiamoPercorso } from "@/components/blog/richiamo-percorso";
+import { CLASSE_RICHIAMO } from "@/features/blog/richiami";
 
 export const metadata: Metadata = { title: "Design system" };
 
@@ -133,6 +135,24 @@ export default function DesignPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* ⚠️ Il richiamo che il consulente SEO incolla negli articoli sta QUI per essere
+          GUARDATO: nel blog vive dentro un contenuto che arriva da WordPress, quindi non
+          c'è modo di vederlo in chiaro/scuro e da telefono senza toccare il suo CMS. Questa
+          pagina è la vetrina interna dei componenti, ed è il posto giusto. */}
+      <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Richiamo al percorso (dentro un articolo del blog)
+      </h2>
+      <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+        Si ottiene incollando in WordPress{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[13px]">
+          &lt;div class=&quot;{CLASSE_RICHIAMO}&quot; id=&quot;bilancio-energetico&quot;&gt;&lt;/div&gt;
+        </code>
+        . Uno slug che non esiste non rende niente.
+      </p>
+      <div className="mt-3 max-w-3xl">
+        <RichiamoPercorso slug="bilancio-energetico" />
       </div>
     </div>
   );

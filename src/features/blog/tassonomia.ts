@@ -73,3 +73,19 @@ export function schemaBriciole(briciole: Briciola[]) {
     })),
   };
 }
+
+/**
+ * I segmenti di indirizzo che sotto `/blog/` NON sono articoli ma archivi.
+ *
+ * ⚠️ Sta qui, accanto alla soglia, perché è la stessa decisione: gli archivi entrano nella
+ * sitemap da soli quando si riempiono, e da quel momento un controllo che pescasse «tutto ciò
+ * che sta sotto /blog/» comincerebbe a chiedere a una pagina di categoria lo schema di un
+ * articolo — che un archivio non ha e non deve avere. È successo: tre categorie hanno passato
+ * la soglia e `qa -- blog` è diventato rosso accusando il prodotto di un difetto inesistente.
+ */
+export const SEGMENTI_ARCHIVIO = ["categoria", "tag", "autore"] as const;
+
+/** Vero se l'indirizzo è un archivio del blog, non un articolo. */
+export function eArchivio(url: string): boolean {
+  return SEGMENTI_ARCHIVIO.some((s) => url.includes(`/blog/${s}/`));
+}

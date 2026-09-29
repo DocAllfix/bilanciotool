@@ -16,6 +16,10 @@ import {
   chainProgram, chainPartner, chainPartnerScore,
   sgesgProgramma, sgesgFase,
 } from "@/lib/db/schema";
+import {
+  VETTORI, MENSILI, RIPARTIZIONE, USI, VARIABILI, INTERVENTI, PROFILO,
+  ANNO_SCENARIO, ANNO_BASE_SCENARIO,
+} from "./scenario-energia";
 import { latestEnergySetId } from "@/features/energy/balances";
 import { latestSupplierSetId } from "@/features/supplier/assessments";
 import { latestSoaSetId } from "@/features/soa/declarations";
@@ -45,78 +49,10 @@ type Tx = Parameters<Parameters<typeof withTenant>[1]>[0];
 
 /* ─────────────────────────────── diagnosi energetica ─────────────────────────── */
 
-// [vettore, quantità nell'unità del vettore, costo €]
-const VETTORI: [string, string, string | null][] = [
-  ["ele", "612000", "128520"],
-  ["ele_go", "180000", null],
-  ["fv", "42000", "0"],
-  ["gas", "42500", "38250"],
-  ["gasolio_t", "8600", "14620"],
-];
-
-// I dodici mesi devono sommare al totale del vettore, altrimenti il grafico
-// mensile racconta un anno diverso da quello del bilancio.
-const MENSILI: Record<string, string[]> = {
-  ele: ["56000", "54000", "52000", "50000", "48000", "50000", "42000", "36000", "50000", "54000", "58000", "62000"],
-  gas: ["6800", "6200", "5100", "3400", "1700", "850", "400", "400", "1200", "3200", "5450", "7800"],
-};
-
-// [uso, vettore, quantità]. Per ciascun vettore la somma fa il totale: è la
-// quadratura, ed è il controllo che il passo 3 mostra per primo.
-const RIPARTIZIONE: [string, string, string][] = [
-  ["U02", "ele", "68000"], ["U03", "ele", "214000"], ["U07", "ele", "118000"],
-  ["U08", "ele", "46000"], ["U10", "ele", "38000"], ["U13", "ele", "12000"],
-  ["U15", "ele", "54000"], ["U16", "ele", "32000"], ["U19", "ele", "30000"],
-  ["U03", "fv", "26000"], ["U07", "fv", "16000"],
-  ["U02", "gas", "9500"], ["U13", "gas", "33000"],
-  ["U20", "gasolio_t", "8600"],
-];
-
-// [uso, attivo, metodo, nota]
-const USI: [string, boolean, "mis" | "cal" | "sti" | null, string | null][] = [
-  ["U01", false, null, "Nessun forno fusorio: i semilavorati arrivano già colati."],
-  ["U02", true, "mis", "Contatore dedicato sul forno di trattamento termico."],
-  ["U03", true, "mis", "Somma dei contatori di reparto (torni, centri di lavoro, rettifiche)."],
-  ["U07", true, "mis", "Contatore sulla sala compressori."],
-  ["U08", true, "cal", "Assorbimento di targa dei gruppi frigo per le ore di funzionamento registrate."],
-  ["U10", true, "sti", "Stima da potenza installata e ore di aspirazione dei reparti."],
-  ["U13", true, "cal", "Ripartizione della centrale termica sulle volumetrie riscaldate."],
-  ["U15", true, "cal", "Censimento dei corpi illuminanti per le ore di accensione."],
-  ["U16", true, "sti", "Sala server e postazioni uffici: stima da potenza assorbita media."],
-  ["U19", true, "cal", "Consumi di ricarica dei carrelli elettrici."],
-  ["U20", true, "mis", "Litri di gasolio dai rifornimenti della flotta."],
-];
-
-// [variabile, 2025, 2024]
-const VARIABILI: [string, string, string][] = [
-  ["prod", "1250", "1180"],
-  ["add", "48", "46"],
-  ["sup", "4200", "4200"],
-  ["suptot", "6800", "6800"],
-  ["gg", "228", "226"],
-  ["fatt", "5200000", "4900000"],
-];
-
-const INTERVENTI = [
-  {
-    descrizione: "Sostituzione del compressore a vite con macchina a inverter e rifacimento della rete aria",
-    vettoreKey: "ele", quantita: "68000", investimento: "42000", incentivo: null,
-    usoKey: "U07", stato: "approvato" as const, annoPrevisto: 2026,
-    note: "Risparmio stimato dal confronto fra assorbimento specifico attuale (0,118 kWh/Nm³) e dichiarato della macchina nuova, sulle ore di funzionamento registrate. Non include il recupero delle perdite di rete, quantificate a parte.",
-  },
-  {
-    descrizione: "Relamping a LED dei reparti produttivi e del piazzale",
-    vettoreKey: "ele", quantita: "39000", investimento: "28000", incentivo: "5600",
-    usoKey: "U15", stato: "realizzato" as const, annoPrevisto: 2025,
-    note: "Censimento di 214 corpi illuminanti sostituiti; risparmio a parità di illuminamento misurato in cinque punti campione.",
-  },
-  {
-    descrizione: "Recupero del calore dai compressori per il preriscaldo dell'acqua tecnica",
-    vettoreKey: "gas", quantita: "4200", investimento: "16000", incentivo: null,
-    usoKey: "U13", stato: "valutato" as const, annoPrevisto: 2027,
-    note: "Ipotesi: recupero del 60% del calore dissipato nelle ore di contemporaneità fra sala compressori e fabbisogno termico. Da confermare con una campagna di misura invernale.",
-  },
-];
+// ⚠️ I numeri NON stanno qui: stanno in `scenario-energia.ts`, puro, perché li legge anche
+// la vetrina pubblica del percorso, che gira nel browser e non può importare questo file
+// (da qui passa lo schema del database). Due elenchi di consumi che divergono darebbero una
+// vetrina diversa dalla dimostrativa che la stessa persona apre dopo essersi registrata.
 
 const CAPITOLI_ENE: [string, string][] = [
   ["sintesi", "Nel 2025 il sito ha consumato 1.017 MWh di energia primaria, per 181.390 euro. Il 60% dell'elettricità va alle macchine di lavorazione e all'aria compressa: sono le due utenze su cui si decide la bolletta.\n\nTre interventi sono stati valutati. Il relamping è già stato realizzato. La sostituzione del compressore, approvata, vale da sola 68.000 kWh l'anno e rientra in poco più di tre anni."],
@@ -296,15 +232,9 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   /* ── diagnosi energetica ─────────────────────────────────────────────────── */
   const balanceId = randomUUID();
   await tx.insert(energyBalance).values({
-    id: balanceId, organizationId: orgId, companyId, anno: 2025, annoBase: 2024, contentSetId: energySet,
-    profilo: {
-      forma: "S.r.l.", piva: "07566620723", sede: "Bari", settore: "Componenti meccanici di precisione",
-      ateco: "25.62", sito: "Stabilimento di Bari, via delle Officine 12",
-      attivita: "Tornitura, fresatura e rettifica di componenti di precisione per automotive e meccanica agricola.",
-      turni: "Due turni, 228 giorni lavorativi", referente: "Ing. Paola Ranieri — HSE Manager",
-      perimetro: "Stabilimento di Bari. Il deposito di Modugno, privo di lavorazioni, è escluso dalla diagnosi e dichiarato tale.",
-      unitaProd: "t di prodotto finito",
-    },
+    id: balanceId, organizationId: orgId, companyId, anno: ANNO_SCENARIO, annoBase: ANNO_BASE_SCENARIO,
+    contentSetId: energySet,
+    profilo: { ...PROFILO },
   });
   await tx.insert(energyVectorInput).values(
     VETTORI.map(([k, q, c]) => ({

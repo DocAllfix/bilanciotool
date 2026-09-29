@@ -2841,3 +2841,126 @@ togliendo il richiamo dalla home · sezione fotografata e guardata, zero sfondam
 PEC» è **obbligatorio** (`custom_fields`, `optional: false` in `checkout.ts`). Serve a non
 rincorrere il cliente per la fattura elettronica, ma non ha via d'uscita per un privato, per
 chi ha solo la PEC o per un cliente estero, che allo SdI non passa. Da riprendere.
+
+**La vetrina pubblica del Bilancio energetico (2026-09-29)** — il primo percorso che si
+prova senza registrarsi, e il blocco che il consulente SEO incolla in WordPress.
+
+Nato da una misura sua: `evalisdeck.it/blog/vettori-energetici-usi-finali` ha preso **+148%
+di impressioni** in Search Console, e lui chiedeva di collegare quell'articolo «via codice»
+al modulo affine. Verificato prima di rispondere: quell'articolo (2.036 parole) **non ha un
+solo collegamento verso il prodotto**, e non poteva averlo — **nessuno dei quattordici
+percorsi aveva una pagina pubblica**. Fuori dall'accesso c'erano solo la home e `/prezzi`.
+
+**`/percorsi/bilancio-energetico`** è un indirizzo normale, statico, che si incolla sotto una
+parola qualsiasi. Otto passi, di cui **tre vivi** (vettori, usi finali, risultati) e cinque
+in anteprima **dichiarata**. La pagina calcola davvero: chiama `src/lib/calc/energy/` — lo
+stesso motore del prodotto, che importa solo aritmetica decimale e quindi gira nel browser
+così com'è — legge i cataloghi dai **JSON del seme** e disegna Sankey e Pareto con i
+**grafici veri** di `components/documento/charts-energia.tsx`. La forma dell'indirizzo è
+riusabile per gli altri tredici: `VETRINE` è un registro, e uno slug che non c'è risponde
+**404** invece di una pagina vuota.
+
+⚠️ **Zero scritture, e la prova è la lista di ciò che esce.** Nessuna server action, nessun
+`fetch` verso di noi dopo il caricamento: il collaudo lo misura sulle **richieste reali**
+(escluso il tunnel di Sentry), perché «non scrive niente» letto nel codice e «non scrive
+niente» misurato nel browser sono due affermazioni diverse, ed è la regola del consenso GA4.
+
+**Lo scenario d'esempio sta in un posto solo.** `src/features/demo/scenario-energia.ts` è
+puro e lo importano **sia il seme sia la vetrina**: il seme non si poteva tirare nel browser
+(importa lo schema del database), e ricopiare i numeri avrebbe prodotto una dimostrativa e
+una vetrina che dicono consumi diversi dello stesso impianto. Un dato in due posti è un dato
+in nessun posto.
+
+⚠️ **Il barrato finto non è stato costruito, ed è la parte da ricordare.** Era stato chiesto
+un prezzo barrato e una scadenza inventati. Oltre a essere pubblicità ingannevole, **non
+avrebbe funzionato**: prezzo mostrato e prezzo addebitato escono dalla stessa funzione
+(`prezzoDiVendita`), quindi alla cassa Stripe avrebbe chiesto il pieno e lo sconto sarebbe
+sparito davanti al cliente che sta pagando. Il blocco prezzo è scritto come **slot**: legge
+il listino e `promozioneInCorso()`, e il giorno in cui una promozione esisterà davvero il
+barrato si accende da solo, senza una riga da riscrivere. Al posto della scarsità inventata
+ce ne sono due vere: il **prezzo d'introduzione a posti contati** (`POSTI_INTRODUZIONE`, con
+il rimasto letto da `/api/vetrina/posti` che conta le attivazioni `singola` nel database) e
+il **Programma Fondatori**, 10 posti, che è un impegno già scritto nella lettera d'intenti.
+Esauriti i posti la frase **sparisce da sola**: il sistema non deve poter diventare bugiardo
+per inerzia.
+
+**Il collaudo sui posti confronta il banner con la RIGA DEL DATABASE**, non col numero
+scritto nel banner. Un contatore che non scende è esattamente la cosa che questo meccanismo
+è stato costruito per non essere.
+
+**Il giro guidato è il primo su una pagina pubblica**, e lì convivono tre cose che possono
+coprirsi a vicenda: il velo del tour, la scelta sui cookie e il richiamo all'acquisto. Il
+banner dei cookie è una finestra vera, quindi il giro **aspetta la scelta** e il richiamo non
+si apre finché sta lì: meglio non comparire che comparire con un pulsante che non risponde al
+clic.
+
+⚠️ **E marcare il banner dei cookie come `data-modale` ha rotto il benvenuto.** Sembrava la
+cosa giusta — è una finestra, il cancello di `avviaTour` guarda proprio quello — e due
+controlli di `qa -- benvenuto` sono diventati rossi in un colpo: **chi si registra non ha
+ancora scelto i cookie**, quindi il giro del benvenuto non sarebbe partito mai. Ora il banner
+porta `data-consenso`, che è suo, e chi vuole aspettarlo lo nomina.
+
+**Il blocco per WordPress è un SEGNAPOSTO, non HTML vero.**
+
+    <div class="evalis-percorso" id="bilancio-energetico"></div>
+
+Tre ragioni, tutte misurate: la sanificazione degli articoli è a lista bianca stretta (passano
+`div` e `span` coi soli `class` e `id` — un `data-*`, uno `style` o un `onclick` vengono
+buttati via, ed è la difesa che impedisce a chi ha accesso al CMS di infilare codice nelle
+nostre pagine); **Tailwind genera il CSS leggendo i NOSTRI sorgenti**, quindi un riquadro
+incollato con le nostre classi uscirebbe senza stile, che è il difetto che lasciò cinque aree
+senza colore; e l'HTML incollato congela il disegno dentro il CMS, non segue il tema scuro,
+non si stringe sul telefono e resta indietro in venti articoli il giorno in cui cambia il nome
+di una fascia. Il segnaposto lo rende un componente nostro, e **se punta a un percorso che non
+esiste non si vede niente**: chi lo incolla non può rompere la pagina.
+Il test che conta è quello che prova il segnaposto **dopo `sanificaHtml`**, cioè sull'HTML che
+arriva davvero al renderer: provarlo su una stringa scritta a mano direbbe che funziona anche
+se la lista bianca lo buttasse via per strada.
+
+⚠️ **Un rosso di `qa -- blog` che non era nostro, e si era acceso da solo.** Il controllo
+`articoli` chiedeva lo schema `Article` a tre **archivi di categoria**: `urlArticoliDaSitemap`
+pescava tutto ciò che sta sotto `/blog/` escludendo i soli autori, e gli archivi entrano nella
+sitemap **da soli** quando superano `SOGLIA_ARCHIVIO`. Nessuno aveva toccato niente: si sono
+riempite tre categorie. I segmenti d'archivio ora si chiedono a `tassonomia.ts`, che è lo
+stesso posto da cui la sitemap li costruisce.
+
+**Regole nate qui:**
+- **Una finestra si dichiara con un marcatore suo, non con quello generico.** `data-modale` è
+  una promessa fatta a tutti i tour del prodotto: metterla su un banner che compare a ogni
+  primo accesso significa spegnere il giro del benvenuto per tutti.
+- **Il banner del consenso esiste solo dopo l'idratazione**, perché sul server finge che la
+  scelta sia fatta per non lampeggiare. Un `count()` subito dopo `domcontentloaded` dice zero,
+  il collaudo salta il clic, e il banner arriva un istante dopo restando lì per tutto il giro:
+  sei controlli rossi che accusavano il richiamo di non comparire, mentre non compariva
+  **perché il banner era aperto**, cioè facendo il suo mestiere.
+- **Un controllo che pesca «tutto ciò che sta sotto un prefisso» invecchia col contenuto.**
+  Non è rotto il giorno in cui lo scrivi: lo diventa il giorno in cui una soglia fa entrare
+  nell'elenco una cosa di un altro genere, e allora accusa il prodotto.
+- **Un test scritto contro un'API immaginata accusa il prodotto.** La quadratura del motore
+  non ha `scarto`/`quadra` in un array: è una Map con `residuo`/`ok`. Il rosso era mio.
+- **Una guardia di purezza si scrive sull'import esatto, non sul prefisso.** Vietare
+  `@/lib/db` come prefisso vietava anche i JSON del seme sotto `@/lib/db/seeds/data/`, che
+  sono file e non connessioni.
+- **In `ImageResponse` un elemento con due figli pretende `display: flex`**, e il build si
+  ferma: `{espressione} testo` sono due figli, e si uniscono in una stringa sola.
+
+Gate: typecheck · build con `/percorsi/bilancio-energetico` **statica** (`●` SSG) ·
+**1596 test su 148 file in entrambe le modalità**, `RLS_FORCE_ROLE=app_rls` compresa ·
+`pagine-statiche-pure` verde, cioè la pagina non legge la richiesta ·
+`qa -- vetrina-energia` 11/11 (compresa la prova che **nessuna richiesta esce**) ·
+`qa -- vetrina-tour` 6/6 · `qa -- vetrina-cta` 9/9 (fino al dialogo aperto sulla fascia
+giusta, coi posti confrontati col database) · `qa -- blog` con `articoli` di nuovo verde ·
+`qa -- benvenuto` 12/12 dopo il rimedio del marcatore · `tutto-pubblico` 37/37 · `sitemap`
+9/9 · `consenso` 17/17 · `guida` 7/7 · `landing` · `design` · `attivazione` 10/10 ·
+`demo-completa` 9/9 · `energetico` 40/40 · foto della vetrina e del blocco in chiaro, scuro e da
+telefono **guardate**, console pulita, zero sfondamento orizzontale.
+
+⚠️ **Restano rossi in `qa -- blog` due controlli che sono CONTENUTO, non codice**, ed è dove
+si risolvono: un'immagine da 643 KB caricata nel CMS (soglia 400) e la biografia mancante di
+`bruno.santini`, che è la stessa voce aperta dal 10 agosto — sono l'identità di una persona
+vera e non le scrive Claude.
+
+⚠️ **La prova finale della catena col blog la può chiudere solo il consulente**: il
+segnaposto va incollato in un articolo, e finché non c'è, quello che possiamo dimostrare è
+che la pagina di destinazione risponde, che il blocco si rende e che gli articoli senza
+segnaposto restano identici a prima.

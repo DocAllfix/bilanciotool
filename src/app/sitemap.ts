@@ -4,6 +4,7 @@ import { elencoBlog, terminiBlog, blogVisibileAiMotori } from "@/features/blog/f
 import { archivioIndicizzabile } from "@/features/blog/tassonomia";
 import { AGGIORNATO_AL } from "@/lib/legale";
 import { indirizzoCanonico } from "@/lib/indirizzo";
+import { VETRINE } from "@/features/vetrina/registro";
 
 // La sitemap.
 //
@@ -44,6 +45,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // riceve un documento non sa che esiste, e la cerca. Non espone niente finche' non
     // le si da' un codice, quindi non ha la riserva del portale cliente.
     { url: `${base}/verifica`, changeFrequency: "yearly", priority: 0.5 },
+    // Le vetrine dei percorsi: pagine pubbliche che si provano senza account, e la
+    // destinazione che il blog non aveva. L'elenco viene dal registro, così una vetrina
+    // nuova entra in sitemap da sola.
+    ...VETRINE.map((v) => ({
+      url: `${base}/percorsi/${v.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     { url: `${base}/privacy`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/termini`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/cookie`, lastModified: legali, changeFrequency: "yearly", priority: 0.2 },

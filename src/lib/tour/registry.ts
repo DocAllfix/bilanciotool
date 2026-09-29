@@ -530,6 +530,43 @@ export const TOURS: TourDef[] = [
       },
     ],
   },
+  // ⚠️ L'UNICO TOUR SU UNA PAGINA PUBBLICA: la vetrina del Bilancio energetico si apre senza
+  // account, quindi questo giro lo vede anche chi non si è mai registrato. Parla di
+  // conseguenza a chi non sa ancora che cosa sia il prodotto, e non dà per scontato niente.
+  {
+    pageId: "vetrina-energia",
+    pathPattern: /^\/percorsi\/bilancio-energetico/,
+    steps: [
+      {
+        title: "Questo è un pezzo vero del percorso",
+        description:
+          "Non una dimostrazione finta: i numeri li calcolano le stesse funzioni del prodotto, con i fattori di conversione della norma. Si tocca subito, senza registrarsi, e da qui non parte niente verso di noi.",
+      },
+      {
+        element: '[data-tour="vetrina-passi"]',
+        title: "Gli otto passi della diagnosi",
+        description:
+          "I primi tre si provano qui: i consumi, la ripartizione sugli usi finali, i risultati. Gli altri cinque — indicatori, interventi, racconto e documento — stanno nell'account, e il lucchetto lo dice invece di nasconderlo.",
+      },
+      {
+        element: '[data-vetrina="passo-vettori"]',
+        title: "I consumi, nell'unità del vettore",
+        description:
+          "Il gas in Smc, il gasolio in litri, l'elettricità in kWh: si scrivono come stanno in bolletta. La conversione in kWh, tep e tonnellate di CO₂e è la colonna a destra, e cambia mentre scrivi.",
+      },
+      {
+        element: '[data-vetrina="kwh-totale"]',
+        title: "Il totale del sito",
+        description:
+          "Qui sotto ci sono le garanzie d'origine, che nel totale non si sommano: sono un dettaglio dell'elettrica, e contarle due volte è l'errore più comune di chi rifà questo conto a mano.",
+      },
+      {
+        title: "Poi la ripartizione, e i risultati",
+        description:
+          "Al passo 3 si dice dove va l'energia, e la quadratura avvisa finché un vettore non è ripartito per intero. Al passo 4 arrivano il diagramma di flusso e la graduatoria degli usi: le stesse figure che finiscono nel documento.",
+      },
+    ],
+  },
 ];
 
 export const findTourForPath = (path: string): TourDef | null =>

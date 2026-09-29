@@ -483,6 +483,27 @@ export function prezzoEstensione(
  * Non sono soglie di sicurezza — l'importo va solo verso l'alto, non è una perdita — ma
  * un tetto che il prodotto dichiara e non applica è un tetto che non esiste.
  */
+/**
+ * QUANTI STUDI ENTRANO AL PREZZO D'INTRODUZIONE.
+ *
+ * La vetrina pubblica dei percorsi dice «350 € per i primi N studi che attivano, poi si va a
+ * listino». È l'unica urgenza che abbiamo senza toccare Stripe, ed è vera a una condizione:
+ * che il contatore sia reale e che dopo gli N posti il prezzo salga davvero.
+ *
+ * ⚠️ IL NUMERO NON SI GONFIA. Un «restano 3 posti» inventato è pubblicità ingannevole, e su
+ * un prodotto che vende conformità è anche il peggior biglietto da visita: chi se ne accorge
+ * smette di credere a tutto il resto, compresi i numeri dei documenti. Il tetto invece si
+ * SCEGLIE — più è piccolo, più il richiamo morde, e resta vero. Qui è cinque.
+ *
+ * Il conteggio lo fa `/api/vetrina/posti` sulle attivazioni vere. Esauriti i posti la frase
+ * cambia da sola: il sistema non deve poter diventare bugiardo per inerzia, che è la stessa
+ * ragione per cui il barrato del lancio sparisce alla scadenza.
+ */
+export const POSTI_INTRODUZIONE = 5;
+
+/** La fascia a cui si riferisce il prezzo d'introduzione: quella d'ingresso. */
+export const FASCIA_INTRODUZIONE: PianoKey = "singola";
+
 export const MAX_BLOCCHI_AZIENDE = 10;
 export const MAX_ACCESSI_EXTRA = 20;
 

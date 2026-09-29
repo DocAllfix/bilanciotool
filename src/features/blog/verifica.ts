@@ -10,6 +10,7 @@
 // un controllo che guarda le stesse strutture che genera la pagina non verifica niente.
 
 import { SLUG_RIMOSSI } from "./rimossi";
+import { eArchivio } from "./tassonomia";
 
 export type Esito = {
   nome: string;
@@ -64,11 +65,23 @@ function hostDi(u: string): string {
   return u.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
 }
 
-/** Gli URL degli articoli elencati nella sitemap del sito. */
+/**
+ * Gli URL degli ARTICOLI elencati nella sitemap del sito.
+ *
+ * ⚠️ Gli archivi (categoria, tag, autore) stanno nella stessa sitemap e non sono articoli:
+ * non hanno uno schema `Article`, non hanno una data di pubblicazione, e non devono averli.
+ * Pescarli qui faceva chiedere loro cose che un archivio non possiede — ed è un rosso che si
+ * è acceso da solo il giorno in cui tre categorie hanno superato la soglia e sono entrate in
+ * sitemap, senza che nessuno avesse toccato niente. Che gli archivi si aprano lo prova
+ * `pagine-collegate`, che li visita partendo dai collegamenti dell'articolo.
+ *
+ * I segmenti si chiedono a `tassonomia.ts`, che è lo stesso posto da cui la sitemap li
+ * costruisce: un elenco ricopiato qui tornerebbe a divergere al primo tipo nuovo.
+ */
 export function urlArticoliDaSitemap(xml: string, sito: string): string[] {
   const pubblico = senzaBarra(sito);
   const loc = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
-  return loc.filter((u) => u.startsWith(`${pubblico}/blog/`) && !u.includes("/blog/autore/"));
+  return loc.filter((u) => u.startsWith(`${pubblico}/blog/`) && !eArchivio(u));
 }
 
 /** Per usare un indirizzo dentro un'espressione regolare senza che i punti facciano danni. */

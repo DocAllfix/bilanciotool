@@ -86,7 +86,10 @@ const PERCHE_INSIEME: Record<AreaModuli, string> = {
  * `vetrina-percorsi-pure.test.ts` pretende che ogni pezzo della norma del registro
  * compaia nella citazione pubblica.
  */
-const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = {
+// ⚠️ Esportato perché lo legge anche la vetrina pubblica del percorso
+// (`/percorsi/<slug>`): norma e passi di un modulo si dichiarano una volta sola, altrimenti
+// la pagina del percorso e la sezione della home finiscono per raccontare due cose diverse.
+export const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = {
   ghg: {
     norma: "ISO 14064-1:2018",
     passi: [
