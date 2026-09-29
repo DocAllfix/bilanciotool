@@ -270,6 +270,7 @@ async function avvisaSeCambiato(
         aziende: p.aziende,
         accessi: p.accessi,
         url: `${base}/dashboard`,
+        urlAbbonamento: `${base}/impostazioni/abbonamento`,
       });
     } else if (adesso === "past_due") {
       await email.sendPagamentoFallitoEmail(destinatario, {

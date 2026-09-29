@@ -3040,3 +3040,69 @@ rimettendo il difetto · `vetrina-energia` 11/11 · `vetrina-cta` 9/9 · `benven
 `benvenuto-velo` 3/3 · `formazione` 12/12 · `formazione-comandi` 21/21 · `guida` 7/7 · foto
 del giro in chiaro e scuro **guardate** prima e dopo, con lo stile calcolato letto dal
 browser invece che giudicato a occhio.
+
+**Le fatture: dove sono, e chi le può aprire (2026-09-29)** — nato dalla domanda «quando
+pago su altri siti Stripe mi fa vedere la fattura o me la manda: noi cosa facciamo?»,
+arrivata dalla sessione di Evalis Academy.
+
+**La risposta breve: le emette Stripe, noi no.** Ogni pagamento di un abbonamento genera un
+Invoice vero — numero, PDF, pagina web — al primo addebito e a ogni rinnovo, senza una riga
+di codice nostro. Coerente con la decisione della migrazione `0017`: **il nostro database
+non contiene un solo importo**, perché il denaro vive in Stripe, che è già immutabile e
+autorevole, e una nostra copia divergerebbe in silenzio al primo tocco sul cruscotto. Il
+cliente le trova nel **portale clienti**, acceso dal 13 agosto, con `invoice_history`.
+
+⚠️ **Quella di Stripe NON è la fattura elettronica italiana.** Resta la casella aperta in
+`PRE-LAUNCH.md`, e un test lo difende: l'email di benvenuto **non deve** nominare «fattura
+elettronica» o «SdI», perché sarebbe una promessa che il prodotto non mantiene.
+
+**L'email di benvenuto diceva una cosa vera e insufficiente.** «La ricevuta del pagamento ti
+arriva separatamente da Stripe» nominava il documento che serve meno: alla cassa chiediamo
+partita IVA e codice destinatario **obbligatori** — cioè chiediamo i dati per fatturare — e
+poi la fattura, che è quella che uno studio gira al commercialista, restava in un portale di
+cui nessuno gli aveva parlato. Ora la riga nomina le fatture e ci porta con un collegamento.
+
+⚠️ **E quella frase è un impegno che dipende da un interruttore.** «La ricevuta te la manda
+Stripe» è vera finché «Successful payments» è acceso nel pannello, in modalità viva. Il
+controllo tiene il testo agganciato a Stripe come mittente proprio perché chi lo cambia
+passi di lì. Nel giro di spegnimenti del 29 settembre sono state tolte le email di Stripe
+sui rinnovi e sui pagamenti falliti — giusto, le mandiamo noi — ma con esse **la fattura non
+raggiunge più nessuno per email**: resta solo nel portale, ed è la ragione per cui quella
+riga adesso c'è.
+
+⚠️ **Un difetto trovato verificando la sezione, non cercandolo.** Il comando «Fatture e
+metodo di pagamento» era visibile a **tutti i membri dello studio**, mentre la server action
+pretende `requireStudioAdmin`. A un collaboratore invitato rispondeva sempre no, e
+rispondeva **«Non riesco ad aprire la gestione dell'abbonamento. Riprova fra poco.»**: due
+cose sbagliate insieme — mandava a ripremere un pulsante che non avrebbe funzionato mai, e
+nascondeva l'unica informazione utile, cioè chi glielo può aprire. In più finiva nei log
+come errore di sistema, fra i guasti veri. Ora la pagina mostra il comando solo a chi
+amministra e agli altri dice dove sono le fatture e chi le apre; il server risponde col
+motivo giusto. Il divieto resta sul server: quella in pagina è presentazione, non
+protezione.
+
+⚠️ **E il primo test che ho scritto era sbagliato, nel modo che avevo appena criticato
+altrove.** Ricomponeva il corpo dell'email da sé e lo confrontava con la propria copia: due
+copie della stessa cosa sono sempre d'accordo, e sarebbe rimasto verde con la funzione vera
+cambiata sotto — lo stesso difetto del controllo della vetrina che contava i percorsi
+leggendo il file della vetrina. Riscritto: intercetta la chiamata a Resend e guarda l'HTML
+che parte davvero.
+
+**Regole nate qui:**
+- **Un divieto non è un guasto.** «Riprova fra poco» detto a chi non ha il ruolo è la
+  risposta peggiore possibile: promette che funzionerà, tace chi può aiutare, e sporca i log
+  dove si cercano i guasti veri.
+- **Se un'email promette che arriverà qualcosa, quella promessa dipende da qualcosa**, e di
+  solito è un interruttore fuori dal repository. Va scritto accanto al testo, perché chi lo
+  spegne non passa di qui.
+- **Chiedere i dati per fatturare e poi non dire dov'è la fattura è un attrito che ci
+  torna indietro come assistenza.** Il documento che il cliente cerca non è quello che
+  dimostra che ha pagato, è quello che può girare al commercialista.
+- **Un'email si guarda resa, non letta nel sorgente.** L'HTML che passa i controlli può
+  essere comunque illeggibile: si rende in un browser e si guarda, come le pagine.
+
+Gate: typecheck · build · **1602 test su 149 file in entrambe le modalità**,
+`RLS_FORCE_ROLE=app_rls` compresa · `email-benvenuto-pure` 6/6, messo in rosso rimettendo la
+frase vecchia (fallisce sulle due asserzioni giuste) · `qa -- tutto-attivo` **31/31** col
+controllo nuovo sulle fatture, messo in rosso togliendo il pulsante · `qa -- impostazioni`
+14/14 · email renderizzata e **guardata**, coi collegamenti verificati uno per uno.

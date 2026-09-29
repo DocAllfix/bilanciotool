@@ -372,6 +372,18 @@ await agisci("chi ha un piano vede le estensioni e come ottenerle", async () => 
   if (!(await page.locator("main a[href^='mailto:']").count())) throw new Error("nessun recapito su cui agire");
 });
 
+await agisci("⚠️ il titolare raggiunge le fatture, e la pagina dice chi le emette", async () => {
+  // La fattura e' il documento che uno studio con partita IVA gira al commercialista, e
+  // alla cassa gli chiediamo P. IVA e codice destinatario OBBLIGATORI: se poi non sa dove
+  // trovarla, scrive a noi. Il comando esiste, ha un nome che si capisce, e la riga
+  // accanto dice che le emette Stripe a ogni pagamento — non noi.
+  const t = await page.locator("main").innerText();
+  const comando = page.getByRole("button", { name: /Fatture e metodo di pagamento/i });
+  if (!(await comando.count())) throw new Error("il titolare non ha un comando per le fatture");
+  if (!/Ricevute, fatture/i.test(t)) throw new Error("non dice che cosa ci trova dentro");
+  if (!/Stripe/.test(t)) throw new Error("non dice chi emette le fatture");
+});
+
 await agisci("chi ha un piano non se lo vede riproposto in vendita", async () => {
   const t = await page.locator("main").innerText();
   if (/Prezzi di lancio, validi fino al/.test(t)) throw new Error("il listino compare a chi ha gia' comprato");

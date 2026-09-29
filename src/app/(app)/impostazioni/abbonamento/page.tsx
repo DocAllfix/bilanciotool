@@ -55,6 +55,8 @@ export default async function AbbonamentoPage({
   // La stessa funzione che decide lato server se il checkout puo' partire: qui decide se
   // ha senso mostrarlo. Una domanda, una risposta.
   const blocco = await bloccoAlCheckout(s.userId, s.orgId);
+  // Chi puo' aprire il portale: la stessa domanda che si fa la server action.
+  const amministra = s.role === "owner" || s.role === "admin";
 
   return (
     <div className="space-y-6">
@@ -294,11 +296,25 @@ export default async function AbbonamentoPage({
             {/* Fatture e carta se le prende da solo. Il cambio piano e la disdetta no,
                 e sta scritto perché non sembri una mancanza: ogni abbonamento porta uno
                 Schedule a due fasi, e cambiarlo dal portale lo scavalca. */}
+            {/* ⚠️ Il comando si mostra SOLO a chi lo può usare. La server action pretende
+                `requireStudioAdmin`, quindi a un collaboratore invitato quel pulsante
+                rispondeva sempre no — e prima rispondeva pure «riprova fra poco», che lo
+                mandava a ripremerlo. Qui la pagina dice invece dove sono le fatture e chi
+                le apre: un'informazione utile al posto di un vicolo cieco. Il divieto resta
+                comunque sul server: questa è presentazione, non protezione. */}
             <div className="flex flex-wrap items-center gap-3 border-t pt-4">
-              <PulsantePortale />
-              <p className="text-[12.5px] text-muted-foreground">
-                Ricevute, fatture, carta e dati fiscali.
-              </p>
+              {amministra ? (
+                <>
+                  <PulsantePortale />
+                  <p className="text-[12.5px] text-muted-foreground">
+                    Ricevute, fatture, carta e dati fiscali. Le emette Stripe a ogni pagamento.
+                  </p>
+                </>
+              ) : (
+                <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+                  Le fatture e il metodo di pagamento li apre chi amministra lo studio.
+                </p>
+              )}
             </div>
 
             <div className="rounded-lg border border-primary/30 bg-accent p-4 text-[13px] leading-relaxed text-accent-foreground">

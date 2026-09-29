@@ -178,9 +178,21 @@ export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean
  * Il momento in cui nasce il rimpianto: si è appena speso qualche migliaio di euro e
  * si vorrebbe sapere cosa è cambiato. Dice quello, e indica un primo passo solo.
  */
+/**
+ * ⚠️ QUESTA EMAIL DICE DOVE SONO LE FATTURE, e la riga non è di cortesia.
+ *
+ * Alla cassa chiediamo partita IVA e codice destinatario, obbligatori: stiamo chiedendo al
+ * cliente i dati per fatturare. Poi Stripe gli manda la RICEVUTA del pagamento — la prova
+ * che la carta è passata — e la fattura vera resta nel portale, dove nessuno gli aveva mai
+ * detto di cercarla. Uno studio con partita IVA quella fattura la gira al commercialista:
+ * se non sa dov'è, scrive a noi.
+ *
+ * La frase di prima diceva solo «la ricevuta ti arriva separatamente da Stripe», il che era
+ * vero e insufficiente: nominava il documento che serve meno.
+ */
 export async function sendBenvenutoEmail(
   to: string,
-  d: { piano: string; aziende: number; accessi: number; url: string },
+  d: { piano: string; aziende: number; accessi: number; url: string; urlAbbonamento: string },
 ) {
   return send(
     to,
@@ -191,7 +203,7 @@ export async function sendBenvenutoEmail(
       body: [
         `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire <b>${d.aziende === 1 ? "un'azienda" : `fino a ${d.aziende} aziende`}</b> e invitare <b>${d.accessi} persone</b> nello studio.`,
         "Pubblicare documenti, generare i PDF e creare aziende non è più bloccato.",
-        "La ricevuta del pagamento ti arriva separatamente da Stripe.",
+        `La ricevuta del pagamento te la manda Stripe per email. Le <b>fatture</b> dell'abbonamento, insieme al metodo di pagamento e ai dati fiscali, le trovi in <a href="${esc(d.urlAbbonamento)}" style="color:#115952">Impostazioni → Abbonamento</a>.`,
       ],
       button: { label: "Crea la prima azienda", url: d.url },
     }),

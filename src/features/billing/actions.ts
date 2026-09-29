@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { requireStudioAdmin } from "@/features/auth/guards";
+import { ForbiddenError, requireStudioAdmin } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
 import { CHIAVI_PIANO, PIANI, ESTENSIONI, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
 import { stripeConfigurato } from "@/lib/stripe/client";
@@ -98,6 +98,17 @@ export async function apriPortaleAction(): Promise<ActionEsito<{ url: string }>>
     return { ok: true, dati: { url } };
   } catch (e) {
     if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
+    // ⚠️ UN DIVIETO NON È UN GUASTO, e dirgli «riprova fra poco» è due volte sbagliato:
+    // manda una persona a ripremere un pulsante che non funzionerà mai, e nasconde la sola
+    // informazione utile, cioè chi glielo può aprire. Finiva anche nei log come errore del
+    // sistema, sporcando il posto dove si cercano i guasti veri.
+    if (e instanceof ForbiddenError) {
+      return {
+        ok: false,
+        errore:
+          "Le fatture e il metodo di pagamento li vede chi amministra lo studio. Chiedi al titolare, oppure fatti dare il ruolo di amministratore.",
+      };
+    }
     console.error("[billing] portale non aperto:", e);
     return { ok: false, errore: "Non riesco ad aprire la gestione dell'abbonamento. Riprova fra poco." };
   }
