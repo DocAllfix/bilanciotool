@@ -164,6 +164,53 @@ await agisci("⚠️ nessun comando finisce sotto il velo del tour", async () =>
   }
 });
 
+await agisci("⚠️ il banner dei cookie resta PREMIBILE sotto il giro guidato della dashboard", async () => {
+  // Trovato il 30 settembre 2026 sull'anteprima: il giro della dashboard si apriva sopra il
+  // banner, e «Rifiuta» era visibile, fermo — e morto. In locale il collaudo delle
+  // impostazioni lo premeva PRIMA che il giro arrivasse, ed era verde per fortuna di tempi.
+  // Qui la corsa non c'è: si aspetta che il giro sia aperto, POI si guarda chi sta sotto il
+  // puntatore. Il video di benvenuto si segna visto, come nei collaudi che non parlano di lui.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  await ctx.addInitScript(() => {
+    try {
+      localStorage.setItem("evalisdeck-benvenuto", "1");
+    } catch {}
+  });
+  const page = await ctx.newPage();
+  try {
+    await registraEEntra(page, sql, {
+      base: BASE, nome: "Banner Velo", email: `banner-velo-${RUN}@example.com`, pwd: PWD_COLLAUDO,
+    });
+    // `registraEEntra` la scelta sui cookie la fa già (è il clic che scadeva): la si
+    // dimentica, così il banner torna com'è per chi entra senza aver ancora scelto.
+    await page.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1"));
+    await page.goto(`${BASE}/dashboard`, { waitUntil: "domcontentloaded" });
+    await page.locator(".driver-popover").waitFor({ timeout: 60_000 });
+    const banner = page.locator("[data-consenso]");
+    if (!(await banner.count())) throw new Error("il banner dei cookie non c'è: la prova non misurerebbe niente");
+
+    const rifiuta = banner.getByRole("button", { name: "Rifiuta", exact: true });
+    const chi = await rifiuta.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const sopra = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      if (!sopra) return "niente";
+      if (el === sopra || el.contains(sopra)) return "se stesso";
+      if (sopra.closest(".driver-overlay, .driver-popover")) return "IL VELO DEL TOUR";
+      return sopra.tagName.toLowerCase();
+    });
+    if (chi !== "se stesso") throw new Error(`sopra «Rifiuta» c'è: ${chi}`);
+    if (process.env.FOTO) await page.screenshot({ path: `${process.env.FOTO}/banner-sopra-il-giro.png` });
+
+    // Il clic deve ARRIVARE, non solo poter arrivare: `trial` no, clic vero, e il banner sparisce.
+    await rifiuta.click({ timeout: 5_000 });
+    await banner.waitFor({ state: "detached", timeout: 5_000 });
+    // E il giro è ancora lì: la scelta sui cookie non deve chiudere il giro di nessuno.
+    if (!(await page.locator(".driver-popover").count())) throw new Error("scegliendo sui cookie si è chiuso il giro");
+  } finally {
+    await ctx.close().catch(() => {});
+  }
+});
+
 await sql.end().catch(() => {});
 await browser.close().catch(() => {});
 

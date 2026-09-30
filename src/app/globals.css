@@ -250,6 +250,15 @@
    rapporto con la nostra scala; e al buio il riquadro spariva nel fondo, perché l'ombra era
    tarata per il chiaro e un'ombra scura su scuro non si vede — la stessa cosa imparata
    sulle slide, dove si è dovuto aggiungere un filo chiaro. */
+/* La scelta sui cookie resta premibile anche sotto un giro guidato. driver.js spegne i clic
+   su tutta la pagina (`.driver-active * { pointer-events: none }`) tranne che sul proprio
+   riquadro e sull'elemento evidenziato: senza questa regola il banner, pur alzato sopra il
+   velo, resterebbe visibile e morto. Vedi `banner-cookie.tsx`. */
+.driver-active [data-consenso],
+.driver-active [data-consenso] * {
+  pointer-events: auto;
+}
+
 .evalisdeck-popover.driver-popover {
   background: var(--popover);
   color: var(--popover-foreground);

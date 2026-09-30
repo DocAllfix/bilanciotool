@@ -42,17 +42,25 @@ export function BannerCookie() {
   // sequenza video → giro → offerta restava appesa. Due controlli di `qa -- benvenuto`
   // l'hanno detto subito.
   //
-  // Quindi il comportamento dei tour dell'applicazione resta quello di prima (il velo copre
-  // il banner: non bello, ma è così da sempre e si chiude in un clic), e la vetrina pubblica
-  // — dove il richiamo all'acquisto vive nello stesso angolo in basso — guarda questo
-  // marcatore per non finirgli sotto.
+  // La vetrina pubblica — dove il richiamo all'acquisto vive nello stesso angolo in basso —
+  // guarda questo marcatore per non finirgli sotto.
+  //
+  // ⚠️ E IL BANNER STA SOPRA IL VELO DEI GIRI GUIDATI (30 settembre 2026). Prima il velo lo
+  // copriva: driver.js mette il suo velo a `z-index: 10000` e spegne i clic su tutta la
+  // pagina, e «Rifiuta» e «Accetta» restavano visibili e impremibili finché non si chiudeva
+  // il giro. Trovato dal collaudo delle impostazioni sull'anteprima, dove la pagina è più
+  // lenta e il giro della dashboard arriva PRIMA del clic sul banner; in locale arrivava
+  // dopo, ed era verde per fortuna di tempi. Il rimedio non blocca nessun giro — il
+  // benvenuto deve poter partire col banner aperto — rende la scelta raggiungibile sempre:
+  // `z-[10001]` qui, e i clic restituiti in `globals.css` (`.driver-active [data-consenso]`).
+  // Sta sotto il riquadro del giro, che è a un miliardo: non lo copre.
   return (
     <div
       role="dialog"
       aria-live="polite"
       aria-label="Consenso ai cookie di misurazione"
       data-consenso=""
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-xl border bg-card p-4 shadow-lg print:hidden sm:inset-x-5 sm:bottom-5 sm:p-5"
+      className="fixed inset-x-3 bottom-3 z-[10001] mx-auto max-w-3xl rounded-xl border bg-card p-4 shadow-lg print:hidden sm:inset-x-5 sm:bottom-5 sm:p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         <p className="text-[13.5px] leading-relaxed text-muted-foreground">

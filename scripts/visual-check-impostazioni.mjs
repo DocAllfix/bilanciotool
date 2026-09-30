@@ -13,7 +13,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
-import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
+import { rumoreDiPiattaforma, spegniTour } from "./comune-collaudo.mjs";
 import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
@@ -54,6 +54,12 @@ const email = `imp-${RUN}@example.com`;
 // ---------------------------------------------------------------- registrazione
 await check("un utente nuovo arriva al portafoglio", async () => {
   await registraEEntra(page, sql, { base: BASE, nome: "Chiara Bianchi", email: email, pwd: PWD_COLLAUDO });
+  // ⚠️ E il giro guidato della dashboard, che per un utente nuovo parte da solo e col suo
+  // velo si prende i clic. Qui mancava: il collaudo passava quando il giro arrivava DOPO i
+  // suoi clic (server caldo) e cadeva quando arrivava prima (anteprima, server appena
+  // avviato), con «Timeout» su comandi che funzionano. Stessa famiglia del benvenuto qui
+  // sopra, e stesso rimedio degli altri collaudi.
+  await spegniTour(page);
 });
 
 // ------------------------------------------------- il vicolo cieco e' chiuso
