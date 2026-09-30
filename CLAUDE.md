@@ -3231,3 +3231,22 @@ build di produzione, un collaudo alla volta: `ghg-percorso` 24/24 · `bilancio-p
 ⚠️ **Per il rilascio conta l'ordine**: la migrazione `0060` va sulla produzione **prima** del
 codice. Il codice legge `company.copertina_modo` alla pubblicazione di tutti i documenti:
 online senza la colonna, **nessuno riesce più a pubblicare**.
+
+✅ **In produzione dal 30 settembre 2026**, nell'ordine: stato della produzione chiesto in
+sola lettura (60 migrazioni, manca solo la `0060`, nessuna riga fuori dominio), guardia vista
+**rifiutarsi** sulla produzione prima dell'override dichiarato, migrazione `0060` applicata,
+colonna verificata (`text`, non nulla, predefinito `'foto'`, **21 aziende su 21 a `'foto'`**)
+e vincolo provato dentro una transazione annullata (`'pagina'` passa, `'poster'` respinto,
+conteggi identici dopo). Solo allora la fusione su `main`, come **un commit solo**: il ramo di
+lavoro aveva un commit intitolato «IN CORSO, NON RILASCIARE», che nella storia di `main`
+avrebbe detto il falso. Build nuovo riconosciuto dall'impronta dei file JavaScript della home.
+
+⚠️ **Il reperto che ha dato peso al rilascio, misurato in sola lettura prima di scrivere**: in
+produzione un bilancio 2025 aveva **tre versioni pubblicate (v1, v2, v3) già inapribili**, che
+puntavano a una copertina cambiata dopo la pubblicazione e quindi cancellata. Col rilascio si
+riaprono, senza quella copertina: il file è stato cancellato allora e non si recupera. Da qui
+in avanti non può più succedere.
+
+Verifica sul sito vero, tutta in sola lettura: `tutto-pubblico` 37/37 · `sitemap` 9/9 ·
+`legale` 26/26 · `vetrina-energia` 11/11 · `vetrina-tour` 7/7. La riapertura delle tre versioni
+sta dietro l'accesso del loro studio: la verifica spetta a chi ci può entrare.
