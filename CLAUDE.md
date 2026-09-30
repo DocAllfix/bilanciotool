@@ -3342,3 +3342,30 @@ sul passo 1 · `bilancio-percorso` 20/20 · foto della nota e dell'avviso **guar
 
 ⚠️ **Per chi ha già la v7 tagliata**: il modo di EVALIS SRL è già «pagina intera», quindi basta
 ripubblicare il bilancio 2025. La v7 resta com'è.
+
+✅ **In produzione dal 30 settembre 2026 (12:23 UTC, `c1ac8b5`)**, col metodo: ramo
+`anteprima/copertina-connessioni`, primo build **annullato** (ereditava le variabili di
+produzione), sette variabili legate al ramo, ridistribuzione, e la precedenza **misurata**: un
+conto creato dall'anteprima c'è nel database di sviluppo (1) e non in produzione (0). Nessuna
+migrazione, nessun seme. Dopo: `tutto-pubblico` 37/37 · `legale` 26/26 · `vetrina-energia`
+11/11 · `sitemap` verde · in produzione zero transazioni appese.
+
+Giro sull'anteprima: **57 su 60**, due al secondo tentativo (`demo-completa`,
+`sgesg-percorso`). I tre rossi sono **precedenti e fuori da questo rilascio**, verificato sui
+file cambiati: nessuno tocca giri guidati, consenso, formazione o CSP.
+
+⚠️ **Tre debiti aperti, trovati dall'anteprima:**
+1. **Il giro guidato della dashboard si apre SOPRA il banner dei cookie**, e il velo rende
+   «Rifiuta» e «Accetta» impremibili finché non si chiude il giro. Lo vede chi arriva sulla
+   dashboard senza aver ancora scelto i cookie e senza il video di benvenuto davanti (per
+   esempio da un altro dispositivo). Fotografato: è la causa di `impostazioni` 5÷6 su 14
+   sull'anteprima, 14 su 14 in locale dove il banner non compare. Il rimedio naturale è quello
+   già usato dalla vetrina: il giro aspetta la scelta sui cookie (`[data-consenso]`).
+2. **Dopo il consenso, il tag Google si collega a `pagead2.googlesyndication.com` con un
+   identificativo `AW-…` (Google Ads)**, e la CSP lo blocca. Nel codice non c'è nessun `AW-`:
+   lo carica Google dalla configurazione del tag GA4, quindi succede anche in produzione. Va
+   deciso col committente: o si toglie il collegamento a Google Ads dalla proprietà, o si
+   allarga la CSP — e allora anche cookie policy e privacy, che oggi dichiarano «nessuna
+   pubblicità, nessuna profilazione».
+3. `formazione-comandi` ha ceduto una volta («una tabella non sta in un contenitore che
+   scorre») ed è passato al secondo tentativo: da tenere d'occhio, non ancora un difetto.
