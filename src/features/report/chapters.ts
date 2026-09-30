@@ -3,6 +3,7 @@ import { mediaAsset, narrativeSection, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { assertSegmentoChiave, deleteObject, immagineValida, parseDataUrl, uploadObject } from "@/lib/storage";
+import { chiaveUsataDaDocumenti } from "@/features/documents/immagini";
 import { and, asc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { mediaSchema, sanificaTiptap } from "./validation";
@@ -120,7 +121,12 @@ export async function removeMedia(userId: string, orgId: string, mediaId: string
     const [m] = await tx.select().from(mediaAsset).where(eq(mediaAsset.id, mediaId));
     if (!m) throw new Error("Elemento inesistente o di un altro tenant");
     await tx.delete(mediaAsset).where(eq(mediaAsset.id, mediaId));
-    if (m.storageKey) await deleteObject(orgId, m.storageKey);
+    // ⚠️ Un file che un documento pubblicato usa ancora NON si cancella: i documenti
+    // pubblicati prima che le immagini si congelassero puntano proprio qui, e il loro
+    // `dati` non si può riscrivere. Resta in archivio, perché appartiene alla storia.
+    if (m.storageKey && !(await chiaveUsataDaDocumenti(tx, orgId, m.storageKey))) {
+      await deleteObject(orgId, m.storageKey);
+    }
     await logAudit(tx, { organizationId: orgId, userId, azione: "report.media.remove", entita: "media_asset", entitaId: mediaId });
   });
 }

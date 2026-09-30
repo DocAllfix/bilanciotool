@@ -4,6 +4,7 @@ import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestContentSetId } from "@/features/ghg/inventories";
 import { deleteObject, parseDataUrl, uploadObject, immagineValida } from "@/lib/storage";
+import { chiaveUsataDaDocumenti } from "@/features/documents/immagini";
 import { and, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { progettoSchema, profiloSchema, sogliaSchema } from "./validation";
@@ -94,8 +95,14 @@ export async function setCompanyImage(
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
     const attuale = tipo === "logo" ? co.logoStorageKey : co.coverStorageKey;
 
+    // Si decide PRIMA di toccare niente, nella stessa transazione che legge l'azienda.
+    const cancellabile = attuale ? !(await chiaveUsataDaDocumenti(tx, orgId, attuale)) : false;
+
     if (dataUrl === null) {
-      if (attuale) await deleteObject(orgId, attuale);
+      // ⚠️ Un file che un documento pubblicato usa ancora NON si cancella: i documenti
+      // pubblicati prima che le immagini si congelassero puntano proprio qui, e il loro
+      // `dati` non si può riscrivere. Resta in archivio, perché appartiene alla storia.
+      if (attuale && cancellabile) await deleteObject(orgId, attuale);
       await tx.update(company).set({ [colonna]: null }).where(eq(company.id, companyId));
     } else {
       const parsed = parseDataUrl(dataUrl);
@@ -107,7 +114,7 @@ export async function setCompanyImage(
       const ext = immagine.ext;
       const key = `${orgId}/companies/${companyId}/${tipo}-${Date.now()}.${ext}`;
       await uploadObject(orgId, key, parsed.buffer, immagine.contentType);
-      if (attuale) await deleteObject(orgId, attuale);
+      if (attuale && cancellabile) await deleteObject(orgId, attuale);
       await tx.update(company).set({ [colonna]: key }).where(eq(company.id, companyId));
     }
     await logAudit(tx, { organizationId: orgId, userId, azione: `company.${tipo}.set`, entita: "company", entitaId: companyId });

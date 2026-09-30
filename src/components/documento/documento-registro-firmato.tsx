@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // I due documenti FIRMATI del sistema integrato: Analisi ambientale e Valutazione dei
 // rischi per la salute e la sicurezza.
 //
@@ -58,6 +59,7 @@ export function DocumentoRegistroFirmato({
   gravi,
   premessa,
   firme,
+  immagini,
 }: {
   dati: Snapshot;
   titolo: string;
@@ -68,6 +70,7 @@ export function DocumentoRegistroFirmato({
   gravi: string[];
   premessa: React.ReactNode;
   firme: string[];
+  immagini: ImmaginiCopertina;
 }) {
   const { azienda, sistema: s, righe } = dati;
   const marchio = marchioDelloSnapshot(dati);
@@ -82,18 +85,17 @@ export function DocumentoRegistroFirmato({
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">{kicker}</p>
-          <h1>{s.ragione || azienda.nome}</h1>
-          <p className="sotto">{[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            {norma}
-            {s.revisione ? ` · revisione ${s.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={kicker}
+        titolo={s.ragione || azienda.nome}
+        sotto={[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          {norma}
+          {s.revisione ? ` · revisione ${s.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto</h2>

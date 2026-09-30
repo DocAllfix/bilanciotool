@@ -1,6 +1,7 @@
 import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Matrice di conformità UNI ISO 37001.
 //
 // È il documento che un auditor sfoglia riga per riga. A differenza della Relazione
@@ -38,23 +39,22 @@ type Snapshot = {
   requisitiValutati: number;
 };
 
-export function DocumentoMatricePc({ dati }: { dati: Snapshot }) {
+export function DocumentoMatricePc({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, sistema: s, capitoli } = dati;
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Matrice di conformità</p>
-          <h1>{s.ragione || azienda.nome}</h1>
-          <p className="sotto">{[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            UNI ISO 37001 · {dati.requisitiTotali} requisiti
-            {s.revisione ? ` · revisione ${s.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Matrice di conformità</>}
+        titolo={s.ragione || azienda.nome}
+        sotto={[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          UNI ISO 37001 · {dati.requisitiTotali} requisiti
+          {s.revisione ? ` · revisione ${s.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>Come si legge</h2>

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BookOpenCheck, ExternalLink } from "lucide-react";
+import { ImmaginiDocumento } from "./immagini-documento";
 
 // Passo finale di entrambi i percorsi: pubblicazione con snapshot immutabile.
 // Ogni pubblicazione è una NUOVA versione; le precedenti restano consultabili.
@@ -63,6 +64,9 @@ export function PannelloPubblicazione({
               Completamento al {readyPct}%: puoi comunque pubblicare una bozza, ma il documento mostrerà le sezioni mancanti.
             </div>
           )}
+          {/* Logo e copertina che il documento congelerà pubblicando: si vedono PRIMA di
+              premere, perché dopo non si cambiano più su quella versione. */}
+          <ImmaginiDocumento companyId={companyId} />
           {errore && <p role="alert" className="text-sm text-destructive">{errore}</p>}
           <Button onClick={pubblica} disabled={inCorso} data-tour="pubblica-documento">
             <BookOpenCheck className="size-4" /> {inCorso ? "Pubblicazione…" : `Pubblica ${etichettaDocumento(tipo, anno)}`}

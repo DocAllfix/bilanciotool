@@ -108,6 +108,19 @@ figure.doc-fig figcaption {
 .doc-cover .logo img { max-width: 100%; max-height: 16mm; display: block; }
 .doc-cover .filo { height: 3mm; background: var(--doc-accent); }
 
+/* Copertina a PAGINA INTERA (modo «pagina»): l'immagine caricata È la copertina.
+   ⚠️ Mai `object-fit: cover` qui: è quello che riduceva una copertina A4 già impaginata a
+   una fascia presa dal centro, tagliando testata e fondo. `contain` non perde un millimetro;
+   se le proporzioni non sono esattamente A4 restano due bordi bianchi, che sono un margine. */
+.doc-cover.doc-cover-pagina { background: #fff; color: inherit; min-height: 0; display: block; padding: 0; }
+.doc-cover-pagina img { display: block; width: 100%; height: auto; }
+
+/* Nascosto alla vista, presente per i lettori di schermo e per la ricerca nel PDF. */
+.doc-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 /* Toolbar (solo schermo) */
 .doc-toolbar {
   position: sticky; top: 0; z-index: 10;
@@ -125,6 +138,17 @@ figure.doc-fig figcaption {
   .doc-cover { height: 258mm; min-height: 0; break-after: page; break-inside: avoid; overflow: hidden; }
   .doc-cover .foto { height: 108mm; flex: 0 0 auto; }
   .doc-cover .filo { display: none; }
+  /* ⚠️ La copertina a pagina intera sta DENTRO i margini, come tutte le altre copertine.
+     La prima versione la metteva su una pagina con nome, margini a zero e `width: 210mm`,
+     per portarla fino al bordo del foglio: nel PDF vero la copertina usciva comunque
+     spostata in alto a sinistra, e — peggio — Chromium impaginava TUTTO il documento su
+     quella larghezza, più ampia dei 180 mm stampabili, e poi ritagliava ogni pagina ai
+     margini. Il testo delle pagine successive finiva tagliato sul bordo destro.
+     I controlli erano verdi: guardavano la proprietà `page`, non la geometria. L'ha
+     detto il PDF, guardato. Qui l'immagine riempie l'area della copertina senza
+     allargare niente, centrata, e `contain` non la taglia mai. */
+  .doc-cover.doc-cover-pagina { display: flex; align-items: center; justify-content: center; background: #fff; }
+  .doc-cover-pagina img { width: 100%; height: 100%; object-fit: contain; }
   .doc-corpo { padding: 0; }
   h2, h3 { break-after: avoid; }
   table, figure.doc-fig { break-inside: avoid; }

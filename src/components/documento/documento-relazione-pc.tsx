@@ -1,6 +1,7 @@
 import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Relazione annuale sulla prevenzione della corruzione (UNI ISO 37001 §9.3, §5.3.2).
 //
 // Ha un destinatario preciso: l'organo di governo, o l'alta direzione quando un organo
@@ -43,7 +44,7 @@ type Snapshot = {
 
 const LIVELLI = ["Critico", "Alto", "Medio", "Basso"] as const;
 
-export function DocumentoRelazionePc({ dati }: { dati: Snapshot }) {
+export function DocumentoRelazionePc({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, sistema: s, soci, capitoli, indicatori: k } = dati;
   const attivi = soci.filter((x) => x.stato !== "Cessato");
   const perLivello = LIVELLI.map((l) => ({ livello: l, n: attivi.filter((x) => x.livello === l).length }));
@@ -51,18 +52,17 @@ export function DocumentoRelazionePc({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Relazione sulla prevenzione della corruzione</p>
-          <h1>{s.ragione || azienda.nome}</h1>
-          <p className="sotto">{[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Sistema di gestione per la prevenzione della corruzione · UNI ISO 37001
-            {s.revisione ? ` · revisione ${s.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Relazione sulla prevenzione della corruzione</>}
+        titolo={s.ragione || azienda.nome}
+        sotto={[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Sistema di gestione per la prevenzione della corruzione · UNI ISO 37001
+          {s.revisione ? ` · revisione ${s.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Destinatario e oggetto</h2>

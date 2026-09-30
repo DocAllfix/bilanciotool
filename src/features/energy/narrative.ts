@@ -6,6 +6,7 @@ import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { conteggioParole, sanificaTiptap } from "@/features/report/validation";
 import { assertSegmentoChiave, deleteObject, immagineValida, parseDataUrl, signedUrl, uploadObject } from "@/lib/storage";
+import { chiaveUsataDaDocumenti } from "@/features/documents/immagini";
 import { z } from "zod";
 
 // Capitoli discorsivi del bilancio energetico. La sanificazione Tiptap è la
@@ -214,7 +215,11 @@ export async function removeMedia(userId: string, orgId: string, mediaId: string
       entita: "energy_media",
       entitaId: mediaId,
     });
-    return m.tipo === "img" ? m.storageKey : null;
+    // ⚠️ Un file che un documento pubblicato usa ancora NON si cancella: i documenti
+    // pubblicati prima che le immagini si congelassero puntano proprio qui, e il loro
+    // `dati` non si può riscrivere. Resta in archivio, perché appartiene alla storia.
+    if (m.tipo !== "img" || !m.storageKey) return null;
+    return (await chiaveUsataDaDocumenti(tx, orgId, m.storageKey)) ? null : m.storageKey;
   });
   // Il file si rimuove solo dopo che la transazione è andata a buon fine:
   // se fallisse, l'archivio resterebbe coerente con il database.

@@ -4,6 +4,7 @@ import { DOC, COLORE_AREA_DOC } from "./charts";
 import { BarreDivergenti, BarreMensili, Pareto, Sankey } from "./charts-energia";
 import { TiptapRender, tiptapVuoto } from "./tiptap-render";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Diagnosi energetica impaginata (UNI CEI EN 16247-1/3, ISO 50001,
 // art. 8 D.Lgs. 102/2014). Renderizza ESCLUSIVAMENTE dallo snapshot: le
 // modifiche successive ai dati vivi non toccano un documento già pubblicato.
@@ -87,7 +88,15 @@ const nauto = (v: string | null | undefined, max = 2) => {
   return fmtNum(x, Number.isInteger(x) ? 0 : max);
 };
 
-export function DocumentoEnergetico({ dati, imageUrls }: { dati: Snapshot; imageUrls: Map<string, string> }) {
+export function DocumentoEnergetico({
+  dati,
+  imageUrls,
+  immagini,
+}: {
+  dati: Snapshot;
+  imageUrls: Map<string, string>;
+  immagini: ImmaginiCopertina;
+}) {
   const { azienda, bilancio: b, catalogo, stato, risultati: r } = dati;
   const p = b.profilo;
   const anno = b.anno;
@@ -235,19 +244,16 @@ export function DocumentoEnergetico({ dati, imageUrls }: { dati: Snapshot; image
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Bilancio energetico · esercizio {anno}</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">
-            {[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
-          </p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Diagnosi energetica redatta secondo UNI CEI EN 16247-1 e 16247-3
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Bilancio energetico · esercizio {anno}</>}
+        titolo={azienda.nome}
+        sotto={[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Diagnosi energetica redatta secondo UNI CEI EN 16247-1 e 16247-3
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         {/* 1 ─────────────────────────────────────────────── sintesi */}

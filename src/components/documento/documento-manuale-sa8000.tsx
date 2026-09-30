@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Manuale del sistema di gestione SA8000/2026.
 //
 // È il documento che si esibisce in audit di certificazione. Descrive il sistema e
@@ -67,7 +68,7 @@ const ETICHETTA: Record<NonNullable<Criterio["stato"]>, string> = {
   na: "Non applicabile",
 };
 
-export function DocumentoManualeSa8000({ dati }: { dati: Snapshot }) {
+export function DocumentoManualeSa8000({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, sistema: s, criteri, completamento: c, dettaglio: d } = dati;
   const marchio = marchioDelloSnapshot(dati);
 
@@ -77,18 +78,17 @@ export function DocumentoManualeSa8000({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Manuale del sistema di gestione</p>
-          <h1>{s.ragione || azienda.nome}</h1>
-          <p className="sotto">{[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            SA8000:2026 · Responsabilità sociale
-            {s.revisione ? ` · revisione ${s.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Manuale del sistema di gestione</>}
+        titolo={s.ragione || azienda.nome}
+        sotto={[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          SA8000:2026 · Responsabilità sociale
+          {s.revisione ? ` · revisione ${s.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto</h2>

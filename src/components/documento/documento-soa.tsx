@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Dichiarazione di Applicabilità (ISO/IEC 27001:2022 §6.1.3 d).
 //
 // È il documento più formale dei cinque: un organismo di certificazione lo
@@ -67,7 +68,7 @@ const RUOLO_CLOUD: Record<string, string> = {
 
 const chiave = (fw: string, id: string) => `${fw}|${id}`;
 
-export function DocumentoSoa({ dati }: { dati: Snapshot }) {
+export function DocumentoSoa({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, dichiarazione: d, catalogo, stato, esito } = dati;
   const p = d.profilo;
   const decisionePer = new Map(stato.decisioni.map((x) => [chiave(x.frameworkKey, x.controlloId), x]));
@@ -78,20 +79,17 @@ export function DocumentoSoa({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Statement of Applicability (SoA)</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">
-            {[p.sede || azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
-          </p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Dichiarazione di Applicabilità · ISO/IEC 27001:2022 · revisione {p.versione || "1.0"}
-            {p.data ? ` del ${fmtData(p.data)}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Statement of Applicability (SoA)</>}
+        titolo={azienda.nome}
+        sotto={[p.sede || azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Dichiarazione di Applicabilità · ISO/IEC 27001:2022 · revisione {p.versione || "1.0"}
+          {p.data ? ` del ${fmtData(p.data)}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         {/* ── 1. identificazione ────────────────────────────────────────── */}

@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Riesame di direzione del sistema di gestione integrato (ISO 9001 · 14001 · 45001, §9.3).
 //
 // È il documento che un auditor chiede per primo, e il suo destinatario è l'alta
@@ -59,7 +60,7 @@ const STATO: Record<Indicatore["stato"], string> = {
   nd: "non rilevato",
 };
 
-export function DocumentoRiesameQas({ dati }: { dati: Snapshot }) {
+export function DocumentoRiesameQas({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, sistema: s, indicatori, nonConformi } = dati;
   const marchio = marchioDelloSnapshot(dati);
 
@@ -69,18 +70,17 @@ export function DocumentoRiesameQas({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Riesame di direzione</p>
-          <h1>{s.ragione || azienda.nome}</h1>
-          <p className="sotto">{[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Sistema di gestione integrato · {dati.norme.map((n) => n.norma).join(" · ")}
-            {s.revisione ? ` · revisione ${s.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Riesame di direzione</>}
+        titolo={s.ragione || azienda.nome}
+        sotto={[s.sede || azienda.sede, s.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Sistema di gestione integrato · {dati.norme.map((n) => n.norma).join(" · ")}
+          {s.revisione ? ` · revisione ${s.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto e perimetro</h2>

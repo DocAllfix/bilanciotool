@@ -155,6 +155,12 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "company.archive": "Azienda archiviata",
   "company.restore": "Azienda ripristinata",
   "company.update": "Anagrafica del cliente aggiornata",
+  // ⚠️ Le due righe sotto mancavano, e la guardia non poteva vederlo: `setCompanyImage`
+  // compone l'azione a runtime (`company.${tipo}.set`), e il controllo cerca le azioni
+  // scritte per esteso. Nell'attività recente dello studio si leggeva «company.logo.set».
+  "company.logo.set": "Logo dell'azienda aggiornato",
+  "company.cover.set": "Copertina dei documenti aggiornata",
+  "company.copertina_modo.set": "Cambiato il modo della copertina",
   // ⚠️ Le etichette dei contatti NON nominano la persona, e non e' una svista.
   // Questa cronologia si vede nel quadro dello studio, cioe' anche da un socio che con
   // quel cliente non lavora: «Contatto aggiunto» dice che e' successo qualcosa, «Aggiunta

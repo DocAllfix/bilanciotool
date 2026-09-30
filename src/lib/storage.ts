@@ -125,6 +125,30 @@ export async function uploadObject(
   }
 }
 
+/**
+ * Copia un file dentro l'archivio, senza scaricarlo e ricaricarlo.
+ *
+ * Serve alla pubblicazione: un documento pubblicato si fa una copia PROPRIA delle immagini
+ * che mostra, perché le originali appartengono all'azienda e l'azienda le può cambiare o
+ * togliere. Entrambe le chiavi stanno nel perimetro dello stesso studio: una copia fra due
+ * studi non ha nessuna ragione di esistere, e `assertScoped` la rifiuta su tutti e due i capi.
+ */
+export async function copyObject(orgId: string, sorgente: string, destinazione: string): Promise<void> {
+  assertScoped(orgId, sorgente);
+  assertScoped(orgId, destinazione);
+  const { url, key } = base();
+  const res = await fetch(`${url}/object/copy`, {
+    method: "POST",
+    headers: headers(key, { "Content-Type": "application/json" }),
+    body: JSON.stringify({ bucketId: BUCKET, sourceKey: sorgente, destinationKey: destinazione }),
+  });
+  if (!res.ok) {
+    // Come per il caricamento: il motivo di Supabase resta nei log, non nel messaggio.
+    console.error("[storage] copia fallita", res.status, sorgente, "->", destinazione, await res.text());
+    throw new Error("Non riesco a preparare le immagini del documento. Riprova fra poco.");
+  }
+}
+
 export async function deleteObject(orgId: string, storageKey: string): Promise<void> {
   assertScoped(orgId, storageKey);
   const { url, key } = base();

@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Relazione periodica sulla gestione delle segnalazioni (D.Lgs. 24/2023).
 //
 // Il destinatario è l'organo di controllo — o l'organismo di vigilanza, dove esiste — e
@@ -104,28 +105,27 @@ const RIQUADRO = {
   margin: "22px 0",
 } as const;
 
-export function DocumentoRelazioneWb({ dati }: { dati: Snapshot }) {
+export function DocumentoRelazioneWb({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, assetto: a, canale, statistiche: k, capitoli, prospetto } = dati;
   const marchio = marchioDelloSnapshot(dati);
   const pochi = k.totali > 0 && k.totali < SOGLIA_RISERVATEZZA;
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Relazione periodica sulle segnalazioni</p>
-          <h1>{a.ragione || azienda.nome}</h1>
-          <p className="sotto">{[a.sede || azienda.sede, a.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Canale interno di segnalazione · D.Lgs. 10 marzo 2023, n. 24
-            {a.revisione ? ` · revisione ${a.revisione}` : ""}
-          </p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Situazione al {fmtData(dati.riferitaAl)}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Relazione periodica sulle segnalazioni</>}
+        titolo={a.ragione || azienda.nome}
+        sotto={[a.sede || azienda.sede, a.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Canale interno di segnalazione · D.Lgs. 10 marzo 2023, n. 24
+          {a.revisione ? ` · revisione ${a.revisione}` : ""}
+        </NotaCopertina>
+        <NotaCopertina>
+          Situazione al {fmtData(dati.riferitaAl)}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Destinatario e oggetto</h2>

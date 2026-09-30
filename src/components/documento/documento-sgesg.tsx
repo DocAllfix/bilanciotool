@@ -2,6 +2,7 @@ import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // I QUATTRO DOCUMENTI DEL METODO ESG, resi da UN template solo.
 //
 // ⚠️ Offerta, verbale di avvio, rapporto di diagnosi e dossier di chiusura non hanno
@@ -58,7 +59,7 @@ function valore(v: unknown): string | null {
   return s === "" ? null : s;
 }
 
-export function DocumentoSgesg({ dati }: { dati: Snapshot }) {
+export function DocumentoSgesg({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, programma, schede } = dati;
   const marchio = marchioDelloSnapshot(dati);
 
@@ -72,20 +73,19 @@ export function DocumentoSgesg({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">{dati.kicker}</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">{[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            {dati.titolo} · esercizio {dati.anno}
-          </p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Sistema di gestione ESG · rendicontazione {programma.standard}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={dati.kicker}
+        titolo={azienda.nome}
+        sotto={[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          {dati.titolo} · esercizio {dati.anno}
+        </NotaCopertina>
+        <NotaCopertina>
+          Sistema di gestione ESG · rendicontazione {programma.standard}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto</h2>

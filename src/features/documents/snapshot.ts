@@ -8,6 +8,7 @@ import {
 } from "@/lib/db/schema";
 import { assegnaCodice } from "./codice";
 import { marchioDaCongelare } from "./marchio";
+import { chiaviImmagini, congelaImmagini, rimuoviCopie } from "./immagini";
 import { logAudit } from "@/lib/audit";
 import { getQuadro as getQuadroNis2 } from "@/features/nis2/profilo";
 import { getSistema as getSistemaNis2 } from "@/features/sgnis2/sistema";
@@ -135,16 +136,15 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
     db.select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
   ]);
 
-  // Immagini: nello snapshot vanno le CHIAVI storage (stabili); gli URL firmati
-  // si generano alla visualizzazione.
+  // Logo e copertina NON stanno più qui: li aggiunge `salvaSnapshot` in `copertina`, per
+  // tutti i documenti, e ne fa una copia propria del documento. I bilanci pubblicati prima
+  // li hanno ancora in `azienda`, e `copertinaDelloSnapshot` li legge da lì.
   const dati = {
     generatoIl: new Date().toISOString(),
     azienda: {
       nome: az.nome,
       settore: az.settore,
       sede: az.sede,
-      logoKey: az.logoStorageKey,
-      coverKey: az.coverStorageKey,
     },
     progetto: {
       anno: proj.anno,
@@ -1015,10 +1015,28 @@ async function salvaSnapshot(
   // dice fra due anni.
   const [az] = await withTenant({ userId, orgId }, (tx) =>
     tx
-      .select({ nome: company.nome })
+      .select({
+        nome: company.nome,
+        logoKey: company.logoStorageKey,
+        coverKey: company.coverStorageKey,
+        modo: company.copertinaModo,
+      })
       .from(company)
       .where(and(eq(company.id, companyId), eq(company.organizationId, orgId))),
   );
+
+  // ⚠️ LOGO E COPERTINA SI AGGIUNGONO QUI, per tutti e ventidue i tipi di documento. Stavano
+  // solo nel bilancio, e i ventuno altri uscivano senza il logo dell'azienda anche quando
+  // era stato caricato. Qui, nella strozzatura comune, il ventitreesimo li avrà senza che
+  // nessuno se ne ricordi — come il marchio, l'edizione e il codice di verifica.
+  const copertina = { logoKey: az?.logoKey ?? null, coverKey: az?.coverKey ?? null, modo: az?.modo ?? "foto" };
+
+  // ⚠️ LE IMMAGINI SI CONGELANO QUI, PRIMA DELL'INSERIMENTO — dopo non si potrebbe: il
+  // trigger della migrazione 0002 vieta di riscrivere `dati`. Il documento si fa una copia
+  // propria di logo, copertina e foto, così l'azienda può cambiarle o toglierle senza che
+  // una versione già consegnata smetta di aprirsi. Vedi `immagini.ts` per il difetto che
+  // questo chiude: era provato, non ipotizzato.
+  const { dati: datiCongelati, copiate } = await congelaImmagini(orgId, id, { ...dati, copertina });
 
   await withTenant({ userId, orgId }, async (tx) => {
     await tx.insert(documentSnapshot).values({
@@ -1028,7 +1046,7 @@ async function salvaSnapshot(
       tipo,
       anno,
       versione,
-      dati: { ...dati, marchio, edizione: contentSetId },
+      dati: { ...datiCongelati, marchio, edizione: contentSetId },
       publishedBy: userId,
     });
     // ⚠️ Il codice si assegna QUI, nella stessa strozzatura e nella stessa transazione
@@ -1053,6 +1071,10 @@ async function salvaSnapshot(
       entitaId: id,
       dettagli: { anno, versione },
     });
+  }).catch(async (e) => {
+    // La pubblicazione non è riuscita: le copie fatte per lei non appartengono a nessuno.
+    await rimuoviCopie(orgId, copiate);
+    throw e;
   });
 
   await festeggiaIlPrimoDocumento(userId, orgId, companyId, tipo, id);
@@ -1130,16 +1152,26 @@ export async function listSnapshots(userId: string, orgId: string, companyId: st
   );
 }
 
-// URL firmati per le immagini referenziate dallo snapshot (alla visualizzazione).
-export async function resolveSnapshotImages(orgId: string, dati: { azienda?: { logoKey?: string | null; coverKey?: string | null }; capitoli?: { media: { storageKey: string | null }[] }[] }) {
+/**
+ * URL firmati per le immagini referenziate dallo snapshot (alla visualizzazione).
+ *
+ * ⚠️ UN'IMMAGINE CHE MANCA NON FA SALTARE IL DOCUMENTO. Prima una sola firma fallita
+ * rigettava il `Promise.all`, e la pagina del documento pubblicato non si apriva: non
+ * mancava un logo, mancava tutto. Ora l'immagine assente si omette — il template sa già
+ * rendere un documento senza — e il motivo resta nei log, dove si cerca un guasto.
+ *
+ * È una difesa in profondità, non il rimedio: il rimedio è `congelaImmagini`, che fa sì che
+ * un documento pubblicato non punti più a file che qualcun altro può cancellare.
+ */
+export async function resolveSnapshotImages(orgId: string, dati: unknown) {
   const urls = new Map<string, string>();
-  const chiavi = new Set<string>();
-  if (dati.azienda?.logoKey) chiavi.add(dati.azienda.logoKey);
-  if (dati.azienda?.coverKey) chiavi.add(dati.azienda.coverKey);
-  for (const c of dati.capitoli ?? []) for (const m of c.media) if (m.storageKey) chiavi.add(m.storageKey);
   await Promise.all(
-    [...chiavi].map(async (k) => {
-      urls.set(k, await signedUrl(orgId, k, 1800));
+    chiaviImmagini(dati).map(async (k) => {
+      try {
+        urls.set(k, await signedUrl(orgId, k, 1800));
+      } catch (e) {
+        console.error("[documento] immagine non disponibile, omessa:", k, e);
+      }
     }),
   );
   return urls;

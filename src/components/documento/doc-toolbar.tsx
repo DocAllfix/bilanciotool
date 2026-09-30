@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { etichettaDocumento, nomeFileDocumento, type TipoDocumento } from "@/features/documents/tipi";
 import { ArrowLeft, FileDown, Printer } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -12,18 +12,29 @@ export function DocToolbar({
   tipo,
   anno,
   versione,
+  ritorno,
 }: {
   snapshotId: string;
   tipo: TipoDocumento;
   anno: number;
   versione: number;
+  /**
+   * Dove porta «Torna al percorso». Lo calcola il server dal registro dei moduli.
+   *
+   * ⚠️ Prima era `router.back()`, e il documento si apre in una SCHEDA NUOVA: una scheda
+   * nuova non ha cronologia, quindi il pulsante non faceva niente, su tutti i moduli. Un
+   * indirizzo vero funziona anche aprendo il documento dall'archivio, da un collegamento
+   * salvato o dopo un ricarico.
+   */
+  ritorno: { href: string; etichetta: string };
 }) {
-  const router = useRouter();
   const [inCorso, setInCorso] = useState(false);
   return (
     <div className="doc-toolbar noprint">
-      <Button variant="outline" size="sm" onClick={() => router.back()}>
-        <ArrowLeft className="size-3.5" /> Torna al percorso
+      <Button variant="outline" size="sm" asChild>
+        <Link href={ritorno.href} data-doc="ritorno">
+          <ArrowLeft className="size-3.5" /> {ritorno.etichetta}
+        </Link>
       </Button>
       <span className="text-sm" style={{ color: "var(--doc-muted)" }}>
         {etichettaDocumento(tipo, anno, true)} · versione {versione}

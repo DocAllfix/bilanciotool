@@ -408,6 +408,39 @@ export function areaDelDocumento(tipo: TipoDocumento): AreaModuli | null {
   return m ? m.area : null;
 }
 
+/**
+ * Il modulo che produce un tipo di documento, o `null` se non lo produce nessun percorso.
+ *
+ * Serve al «Torna al percorso» del documento pubblicato. Quel pulsante faceva
+ * `router.back()`, e il documento si apre IN UNA SCHEDA NUOVA (`window.open(…, "_blank")`):
+ * una scheda nuova non ha cronologia, quindi il pulsante non faceva niente — su tutti i
+ * moduli, perché il componente è uno solo. E non avrebbe funzionato nemmeno aprendo il
+ * documento dall'archivio o da un collegamento salvato. Un indirizzo vero funziona sempre.
+ */
+export function moduloDelDocumento(tipo: TipoDocumento): ModuloAzienda | null {
+  const m = MODULI_AZIENDA.find((x) => (x.documenti as readonly TipoDocumento[]).includes(tipo));
+  return m ? m.href : null;
+}
+
+/**
+ * Dove porta «Torna al percorso» da un documento pubblicato.
+ *
+ * Al percorso di QUELL'azienda e di QUELL'esercizio: chi rilegge il bilancio 2024 e torna
+ * indietro vuole il 2024, non l'ultimo aperto. Un tipo che nessun percorso produce torna
+ * all'archivio, e l'etichetta lo dice — un pulsante «Torna al percorso» che porta altrove
+ * sarebbe una piccola bugia.
+ */
+export function ritornoDelDocumento(
+  companyId: string,
+  tipo: TipoDocumento,
+  anno: number,
+): { href: string; etichetta: string } {
+  const modulo = moduloDelDocumento(tipo);
+  if (!modulo) return { href: "/documenti", etichetta: "Torna all'archivio" };
+  // `anno` vale 0 per i documenti senza esercizio (SENZA_ESERCIZIO): non è un anno.
+  return { href: percorsoModulo(companyId, modulo, anno > 0 ? anno : undefined), etichetta: "Torna al percorso" };
+}
+
 /** I tipi di documento prodotti dai moduli di un'area, nell'ordine del registro. */
 export function tipiDellArea(area: AreaModuli): TipoDocumento[] {
   return MODULI_AZIENDA.filter((m) => m.area === area).flatMap((m) => [...m.documenti]);

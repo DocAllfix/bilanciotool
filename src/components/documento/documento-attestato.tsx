@@ -3,6 +3,7 @@ import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 import { codiceVerifica, validoFino } from "@/lib/calc/supplier/attestation";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Attestato di autovalutazione ESG del fornitore.
 //
 // È il documento più delicato dei quattro, non per la tecnica ma per ciò che
@@ -49,7 +50,17 @@ const STATO_AZIONE: Record<string, string> = {
 
 const COLORE_AREA = [DOC.scope1, DOC.e, DOC.s, DOC.scope3, DOC.scope2];
 
-export function DocumentoAttestato({ dati, snapshotId, versione }: { dati: Snapshot; snapshotId: string; versione: number }) {
+export function DocumentoAttestato({
+  dati,
+  snapshotId,
+  versione,
+  immagini,
+}: {
+  dati: Snapshot;
+  snapshotId: string;
+  versione: number;
+  immagini: ImmaginiCopertina;
+}) {
   const { azienda, valutazione: v, catalogo, esito } = dati;
   const p = v.profilo;
   const codice = codiceVerifica(snapshotId, azienda.id, esito.indice, versione);
@@ -60,21 +71,14 @@ export function DocumentoAttestato({ dati, snapshotId, versione }: { dati: Snaps
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Attestato di autovalutazione ESG</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">
-            {[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
-          </p>
-          {p.committente && (
-            <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-              Su richiesta di {p.committente}
-            </p>
-          )}
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker="Attestato di autovalutazione ESG"
+        titolo={azienda.nome}
+        sotto={[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        {p.committente && <NotaCopertina>Su richiesta di {p.committente}</NotaCopertina>}
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>Esito della valutazione</h2>

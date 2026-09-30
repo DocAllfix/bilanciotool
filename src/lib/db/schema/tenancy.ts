@@ -34,6 +34,14 @@ export const company = pgTable(
     // Immagini del documento (chiavi Storage, mai dataURL in colonna).
     logoStorageKey: text("logo_storage_key"),
     coverStorageKey: text("cover_storage_key"),
+    /**
+     * Come si usa la copertina. 'foto' = una fotografia sopra il titolo del documento, come
+     * è sempre stato; 'pagina' = la copertina È la pagina intera, già impaginata con titolo
+     * e loghi, e si mostra senza tagli e senza scriverci sopra. Lo decide chi carica: una
+     * proporzione verticale non dice se l'immagine è una foto o una copertina finita.
+     * Vincolo di dominio nella migrazione 0060.
+     */
+    copertinaModo: text("copertina_modo", { enum: ["foto", "pagina"] }).default("foto").notNull(),
     // Flag per l'azienda demo pre-compilata: esclusa dai limiti e dalle statistiche.
     isDemo: boolean("is_demo").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

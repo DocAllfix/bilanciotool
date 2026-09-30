@@ -1,6 +1,7 @@
 import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Relazione dell'Organismo di Vigilanza all'organo amministrativo (D.Lgs. 231/2001,
 // art. 6 c. 1 lett. b e d).
 //
@@ -26,25 +27,24 @@ type Snapshot = {
   };
 };
 
-export function DocumentoRelazioneOdv({ dati }: { dati: Snapshot }) {
+export function DocumentoRelazioneOdv({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, modello: m, pilastri, indicatori: k } = dati;
   const nonValutati = dati.daDeliberare.filter((x) => !x.valutato);
   const valutatiNonAccettabili = dati.daDeliberare.filter((x) => x.valutato);
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Relazione dell&apos;Organismo di Vigilanza</p>
-          <h1>{m.ragione || azienda.nome}</h1>
-          <p className="sotto">{[m.sede || azienda.sede, m.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            D.Lgs. 231/2001 · vigilanza sul funzionamento e l&apos;osservanza del Modello
-            {m.revisione ? ` · revisione ${m.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Relazione dell&apos;Organismo di Vigilanza</>}
+        titolo={m.ragione || azienda.nome}
+        sotto={[m.sede || azienda.sede, m.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          D.Lgs. 231/2001 · vigilanza sul funzionamento e l&apos;osservanza del Modello
+          {m.revisione ? ` · revisione ${m.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Destinatario e oggetto</h2>

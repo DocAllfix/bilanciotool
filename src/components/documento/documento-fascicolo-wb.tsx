@@ -12,6 +12,7 @@ import { ammissibilita, contattabile, livelloRitorsione } from "@/lib/calc/segna
 import { fattoriRitorsione, statoTermine } from "@/lib/calc/segnalazioni/relazione";
 import type { wbReport } from "@/lib/db/schema";
 
+import { Copertina, NotaCopertina, SENZA_IMMAGINI } from "./copertina";
 // Il fascicolo di una segnalazione, stampato.
 //
 // ⚠️ NON è un documento pubblicabile, ed è una decisione presa e motivata. Quattro
@@ -107,17 +108,16 @@ export function DocumentoFascicoloWb({
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Fascicolo della segnalazione</p>
-          <h1>N. {f.numero}</h1>
-          <p className="sotto">{azienda}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            D.Lgs. 24/2023 · documento riservato
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Fascicolo della segnalazione</>}
+        titolo={<>N. {f.numero}</>}
+        sotto={azienda}
+        immagini={SENZA_IMMAGINI}
+      >
+        <NotaCopertina>
+          D.Lgs. 24/2023 · documento riservato
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         {/* ⚠️ L'avvertenza sta in CHIARO nel corpo e non in un piede: chi riceve questo

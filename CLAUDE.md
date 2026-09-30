@@ -3106,3 +3106,128 @@ Gate: typecheck · build · **1602 test su 149 file in entrambe le modalità**,
 frase vecchia (fallisce sulle due asserzioni giuste) · `qa -- tutto-attivo` **31/31** col
 controllo nuovo sulle fatture, messo in rosso togliendo il pulsante · `qa -- impostazioni`
 14/14 · email renderizzata e **guardata**, coi collegamenti verificati uno per uno.
+
+**Logo e copertina su tutti i documenti, e tre difetti trovati per strada (2026-09-29)** — dalla
+domanda del committente «diamo la possibilità di inserire il logo e una copertina
+personalizzata?», più due segnalazioni sue: una copertina A4 caricata «tagliava e non usciva
+bene», e «Torna al percorso» non funzionava.
+
+**Che cosa c'era, verificato sul codice**: logo e copertina esistevano, stavano sull'AZIENDA
+(si caricano una volta), si caricavano solo dal passo 1 del Bilancio — e comparivano in **un
+documento su ventidue**. Il logo dello studio non esiste: il white-label mette il nome.
+
+⚠️ **Difetto 1 — cambiare il logo rendeva inapribile il bilancio già pubblicato.** Lo snapshot
+congelava la CHIAVE del file, col commento «chiavi stabili»; `setCompanyImage` caricava il
+nuovo e CANCELLAVA il vecchio, e così le due `removeMedia` delle foto dei capitoli. Provato
+con le funzioni vere prima di correggerlo: prima del cambio il documento risolveva il logo,
+dopo `Firma URL fallita (400)` — e dentro un `Promise.all` non mancava il logo, **non si apriva
+la pagina**. Tre difese indipendenti, ognuna provata da sola:
+- alla pubblicazione il documento si fa una **copia propria** delle immagini
+  (`${org}/snapshot/${id}/…`, in `salvaSnapshot`, prima dell'inserimento — dopo il trigger
+  0002 non lo permetterebbe);
+- i documenti pubblicati PRIMA puntano ancora ai file dell'azienda e non si possono
+  riscrivere: quei file **non si cancellano finché un documento li usa**
+  (`chiaveUsataDaDocumenti`, `position()` e non `LIKE`, perché `_` è un jolly);
+- un'immagine che manca comunque **non fa più saltare la pagina**.
+Controprove: tolte copia e protezione, 5 rossi (il difetto originale per intero); tolta solo
+la copia, cambiare e togliere il logo restano verdi grazie alla protezione; tolta solo la
+protezione, un rosso sui documenti di prima.
+
+⚠️ **Difetto 2 — «Torna al percorso» non faceva niente, su tutti i moduli.** Era
+`router.back()`, e il documento si apre IN UNA SCHEDA NUOVA: una scheda nuova non ha
+cronologia. Ora è un collegamento vero, calcolato dal server dal registro dei moduli
+(`ritornoDelDocumento`), che torna al percorso **e all'esercizio** del documento. Un test
+verifica che ogni tipo di documento abbia un percorso che lo produce, e che nel sorgente della
+barra non torni `router.back()`.
+
+⚠️ **Difetto 3 — la copertina A4 tagliata.** Il CSS trattava la copertina come FOTO
+decorativa: una fascia alta 118 mm con `object-fit: cover`. Una copertina già impaginata
+veniva ridotta a una striscia presa dal centro, senza testata e senza fondo, col nostro
+titolo scritto sotto. Ora chi carica sceglie (`company.copertina_modo`, migrazione `0060`):
+**fotografia sopra il titolo**, come prima, o **pagina intera**, mostrata con `contain` senza
+tagli e senza scriverci sopra; il titolo resta nel documento, nascosto alla vista, per i
+lettori di schermo e per la ricerca nel PDF. Il modo si congela nello snapshot come tutto il
+resto. È una scelta di chi carica, non una deduzione dalle proporzioni.
+
+**Diciassette copertine scritte a mano diventano un componente** (`copertina.tsx`), e il
+GHG — che una copertina non l'aveva — ne ha una. Le immagini sono un parametro
+**obbligatorio**: il compilatore ha elencato da sé i diciotto punti della pagina che dovevano
+passarle, e ne elencherà uno in più al ventitreesimo template. Logo e copertina si
+congelano nella strozzatura comune (`salvaSnapshot`), per tutti e ventidue i tipi. Un test
+pretende che nessun template torni a scrivere una copertina a mano, e che senza immagini la
+copertina renda **esattamente** il markup di prima.
+
+**Si caricano da ogni percorso**: nel pannello di pubblicazione (uno solo per i quattordici
+moduli) c'è una riga che dice che cosa userà QUEL documento, e un pulsante che apre l'editor
+in un dialogo. Non un editor nel pannello: il sistema integrato mostra tre pannelli nella
+stessa pagina, e l'editor sarebbe comparso tre volte per le stesse due immagini. Più
+riepiloghi nella stessa pagina si aggiornano insieme con un evento. Copertina caricata a
+2.480 px in JPEG (1.800 in PNG facevano ~150 dpi su un A4, e un PNG grande supera i 3 MB).
+
+⚠️ **E il quarto difetto l'ho introdotto io, e l'ha trovato solo il PDF guardato.** Per
+portare la copertina fino al bordo del foglio le avevo dato una pagina con nome, margini a
+zero e `width: 210mm`. Dodici controlli verdi. Nel PDF vero la copertina era intera ma
+spostata in alto a sinistra — e **il testo di ogni pagina successiva era tagliato sul bordo
+destro**: Chromium impagina tutto il documento su una larghezza sola, e quella copertina
+l'aveva allargata oltre i 180 mm stampabili. Il controllo guardava la proprietà `page`, non
+la geometria. Ora la copertina a pagina intera sta nei margini come tutte le altre, e il
+collaudo misura la geometria su una finestra larga quanto l'area stampabile di un A4:
+rimettendo `width: 210mm` dice «il documento sborda di 146px».
+
+**Trovato di passaggio**: `setCompanyImage` registra `company.${tipo}.set`, un'azione composta
+a runtime che la guardia sulle etichette non vede. Non aveva etichetta, e nell'attività
+recente si leggeva `company.logo.set`.
+
+**Regole nate qui:**
+- **Un commento che dichiara una proprietà del dato va verificato contro il codice che quel
+  dato lo cancella.** «Chiavi stabili» era scritto sopra uno snapshot, e la funzione che le
+  rendeva instabili stava in un altro file.
+- **Un documento immutabile che punta a una risorsa mutabile non è immutabile.** Si congela
+  ciò che il documento mostra, non il riferimento a ciò che mostra.
+- **`router.back()` non è un «torna»: è «torna a dove eri», e in una scheda nuova non eri da
+  nessuna parte.** Un pulsante che dice dove porta deve portarci con un indirizzo.
+- **Un controllo sulla proprietà CSS non prova la geometria, e la stampa si prova sul
+  PDF.** `emulateMedia` cambia le regole, non le misure: su una finestra da 1440 px una
+  copertina larga 210 mm ci sta comoda e il difetto non si vede. Si misura su una finestra
+  larga quanto l'area stampabile.
+- **Un nome di controllo non deve dire più di quanto verifica.** «La prima pagina è la
+  copertina» contava le pagine: ora si chiama per quello che fa, e la prima pagina si guarda.
+- **Il verde al primo colpo su un collaudo nuovo è il momento di dubitare, non di
+  festeggiare.** Dodici su dodici, e il PDF era rotto.
+
+⚠️ **E un difetto PREESISTENTE trovato dal giro di regressione, non corretto qui.** Con sei
+pagine autenticate caricate insieme il server locale resta appeso per sempre: il gruppo di
+connessioni è di **3** (`max: 3` in `src/lib/db/index.ts`), la resa di una pagina apre una
+transazione e, dentro, ne chiede un'altra quando il contesto di `withTenant` non è identico
+— e tre richieste insieme tengono le tre connessioni aspettando una quarta. Nel database si
+vedono tre transazioni `idle in transaction` ferme sulla lettura di `aziendeDelloStudio`.
+È la forma dell'«abbraccio mortale» del 24 agosto. **Provato che non l'ho causato io con un
+esperimento a variabile singola**: la stessa sonda sul codice già in produzione (le mie
+modifiche messe da parte con `git stash`, i file nuovi parcheggiati fuori da `src`) si è
+appesa **al primo giro**. Quattro collaudi del giro sono caduti per questo, tutti dopo lo
+stesso istante, e sono tornati verdi a server riavviato con zero transazioni appese prima e
+dopo. In produzione ogni istanza Vercel ha il proprio gruppo da 3: se le istanze servono più
+richieste insieme, un'istanza può bloccarsi finché la funzione non scade. **Debito aperto**,
+da trattare come lavoro a sé: trovare con `DB_TRACCIA=1` quale chiamata apre la seconda
+transazione nel percorso di resa e farla riusare la prima.
+
+- **Un blocco che si riproduce va provato anche sul codice di prima**, prima di accusarsi o
+  di assolversi: è l'unico modo di sapere se il rilascio lo introduce o lo trova.
+- **Un collaudo lanciato contro un server già appeso non prova niente**, né verde né rosso:
+  il giro di regressione ora registra le transazioni appese prima e dopo ogni collaudo.
+
+Gate: typecheck · build · **1627 test su 152 file in entrambe le modalità**,
+`RLS_FORCE_ROLE=app_rls` compresa · `qa -- copertina` **12/12** con la copertina vera del
+committente e il PDF **guardato** · `documenti-immagini.db` 11/11 con tre controprove
+indipendenti · `copertina-pure` 9/9 · `documento-ritorno-pure` 5/5 · regressione completa sul
+build di produzione, un collaudo alla volta: `ghg-percorso` 24/24 · `bilancio-percorso` 20/20 ·
+`energetico` **41/41** (con la prova nuova sul ritorno) · `fornitore` 28/28 · `soa-percorso`
+34/34 · `mog231-percorso` 20/20 · `anticorruzione-percorso` 27/27 · `segnalazioni-percorso`
+47/47 · `sgiqas-percorso` 32/32 · `sa8000-percorso` 31/31 · `filiera-percorso` 35/35 ·
+`nis2-percorso` 44/44 · `sgesg-documenti` 10/10 · `codice-documento` 22/22 · `marchio` 7/7 ·
+`pdf-archivio` 5/5 · `documenti-qas` 18/18 · `condivisione` 9/9 · `tutto-attivo` 31/31 ·
+`tutto-demo` 68/68 · `benvenuto` 12/12 · `demo-completa` 9/9 · `guida` 7/7.
+
+⚠️ **Per il rilascio conta l'ordine**: la migrazione `0060` va sulla produzione **prima** del
+codice. Il codice legge `company.copertina_modo` alla pubblicazione di tutti i documenti:
+online senza la colonna, **nessuno riesce più a pubblicare**.

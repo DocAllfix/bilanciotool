@@ -20,12 +20,41 @@
  * `scala` non supera mai 1: un'immagine più piccola del limite non viene ingrandita,
  * che la renderebbe solo più sfocata e più pesante.
  */
-export async function fileADataUrl(file: File, maxLato = 1600, qualita = 0.85): Promise<string> {
+export async function fileADataUrl(
+  file: File,
+  maxLato = 1600,
+  qualita = 0.85,
+  /**
+   * Converte in JPEG anche un PNG. Serve alle COPERTINE: non hanno trasparenza, e una
+   * copertina a pagina intera in PNG a risoluzione di stampa pesa facilmente più dei 3 MB
+   * che il server accetta — e il rifiuto arriverebbe con un messaggio che chi ha caricato
+   * un file normalissimo non capirebbe. Il logo resta PNG: lì la trasparenza serve.
+   */
+  forzaJpeg = false,
+): Promise<string> {
   const bitmap = await createImageBitmap(file);
   const scala = Math.min(1, maxLato / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scala);
   canvas.height = Math.round(bitmap.height * scala);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", qualita);
+  const g = canvas.getContext("2d")!;
+  const jpeg = forzaJpeg || file.type !== "image/png";
+  // Un PNG trasparente convertito in JPEG avrebbe il fondo NERO: il JPEG non ha canale
+  // alfa, e i pixel trasparenti diventano neri. Si dipinge prima il bianco della carta.
+  if (jpeg) {
+    g.fillStyle = "#ffffff";
+    g.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  g.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL(jpeg ? "image/jpeg" : "image/png", qualita);
 }
+
+/**
+ * La misura con cui si carica una copertina.
+ *
+ * 2.480 px sul lato lungo sono i 300 dpi di un A4 sul lato corto (210 mm), cioè ~210 dpi
+ * sul lato lungo: abbastanza per una copertina a pagina intera stampata, e un JPEG a
+ * quella misura sta abbondantemente sotto i 3 MB. Con i 1.800 di prima una copertina
+ * a pagina intera usciva a circa 150 dpi.
+ */
+export const LATO_COPERTINA = 2480;

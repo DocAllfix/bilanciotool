@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
 import { getSnapshot, resolveSnapshotImages } from "@/features/documents/snapshot";
+import { copertinaDelloSnapshot } from "@/features/documents/immagini";
+import type { ImmaginiCopertina } from "@/components/documento/copertina";
 import { Colophon } from "@/components/documento/colophon";
 import { codiceDelloSnapshot } from "@/features/documents/codice";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
-import { DOCUMENTI } from "@/features/documents/tipi";
 import { DocumentoGhg } from "@/components/documento/documento-ghg";
 import { DocumentoBilancio } from "@/components/documento/documento-bilancio";
 import { DocumentoEnergetico } from "@/components/documento/documento-energetico";
@@ -23,6 +24,7 @@ import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qa
 import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
+import { ritornoDelDocumento } from "@/features/companies/moduli";
 import { indirizzoCanonico } from "@/lib/indirizzo";
 
 export const dynamic = "force-dynamic";
@@ -41,41 +43,47 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
     /^https?:\/\//,
     "",
   );
-  // Gli URL firmati si generano solo per i documenti che portano immagini nello snapshot.
-  const imageUrls = DOCUMENTI[snap.tipo].haMedia
-    ? await resolveSnapshotImages(s.orgId, snap.dati as never)
-    : new Map<string, string>();
+  // ⚠️ Le immagini si risolvono per TUTTI i documenti: logo e copertina li hanno tutti e
+  // ventidue dal 29 settembre 2026, non solo quelli coi capitoli illustrati. Per un documento
+  // senza immagini la funzione non fa nessuna chiamata — le chiavi sono zero.
+  const imageUrls = await resolveSnapshotImages(s.orgId, snap.dati);
+  const cop = copertinaDelloSnapshot(snap.dati);
+  const immagini: ImmaginiCopertina = {
+    logoUrl: cop.logoKey ? (imageUrls.get(cop.logoKey) ?? null) : null,
+    coverUrl: cop.coverKey ? (imageUrls.get(cop.coverKey) ?? null) : null,
+    modo: cop.modo,
+  };
 
   // Switch esaustivo: aggiungendo un tipo in TIPI_DOCUMENTO senza il suo template,
   // il compilatore fallisce qui invece di rendere silenziosamente il template sbagliato.
   const corpo = (() => {
     switch (snap.tipo) {
       case "ghg":
-        return <DocumentoGhg dati={dati} />;
+        return <DocumentoGhg immagini={immagini} dati={dati} />;
       case "bilancio":
-        return <DocumentoBilancio dati={dati} imageUrls={imageUrls} />;
+        return <DocumentoBilancio immagini={immagini} dati={dati} imageUrls={imageUrls} />;
       case "energetico":
-        return <DocumentoEnergetico dati={dati} imageUrls={imageUrls} />;
+        return <DocumentoEnergetico immagini={immagini} dati={dati} imageUrls={imageUrls} />;
       case "soa":
-        return <DocumentoSoa dati={dati} />;
+        return <DocumentoSoa immagini={immagini} dati={dati} />;
       case "relazione_pc":
-        return <DocumentoRelazionePc dati={dati} />;
+        return <DocumentoRelazionePc immagini={immagini} dati={dati} />;
       case "matrice_pc":
-        return <DocumentoMatricePc dati={dati} />;
+        return <DocumentoMatricePc immagini={immagini} dati={dati} />;
       case "matrice_231":
-        return <DocumentoMatrice231 dati={dati} />;
+        return <DocumentoMatrice231 immagini={immagini} dati={dati} />;
       case "relazione_odv":
-        return <DocumentoRelazioneOdv dati={dati} />;
+        return <DocumentoRelazioneOdv immagini={immagini} dati={dati} />;
       case "relazione_wb":
-        return <DocumentoRelazioneWb dati={dati} />;
+        return <DocumentoRelazioneWb immagini={immagini} dati={dati} />;
       case "riesame_qas":
-        return <DocumentoRiesameQas dati={dati} />;
+        return <DocumentoRiesameQas immagini={immagini} dati={dati} />;
       case "analisi_ambientale": {
         const d = snap.dati as never as {
           aspetti: { riferimento: string | null; dati: Record<string, unknown>; significativita: string | null }[];
         };
         return (
-          <DocumentoRegistroFirmato
+          <DocumentoRegistroFirmato immagini={immagini}
             dati={{ ...(snap.dati as never as object), righe: d.aspetti.map((a) => ({ ...a, verdetto: a.significativita })) } as never}
             titolo="Analisi ambientale"
             kicker="Analisi ambientale iniziale"
@@ -103,7 +111,7 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
           pericoli: { riferimento: string | null; dati: Record<string, unknown>; livello: string | null }[];
         };
         return (
-          <DocumentoRegistroFirmato
+          <DocumentoRegistroFirmato immagini={immagini}
             dati={{ ...(snap.dati as never as object), righe: d.pericoli.map((p) => ({ ...p, verdetto: p.livello })) } as never}
             titolo="Valutazione dei rischi"
             kicker="Valutazione dei rischi per la salute e la sicurezza"
@@ -129,9 +137,9 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
         );
       }
       case "dichiarazione_filiera":
-      return <DocumentoDichiarazioneFiliera dati={snap.dati as never} />;
+      return <DocumentoDichiarazioneFiliera immagini={immagini} dati={snap.dati as never} />;
     case "manuale_sa8000":
-        return <DocumentoManualeSa8000 dati={dati} />;
+        return <DocumentoManualeSa8000 immagini={immagini} dati={dati} />;
       // ⚠️ I quattro del metodo ESG condividono il template: il loro contenuto e' il
       // compilato di schede diverse, gia' congelato nello snapshot con titolo, kicker e
       // avvertenza. Il template non deve sapere quale dei quattro sta rendendo.
@@ -139,18 +147,18 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
       case "verbale_avvio":
       case "diagnosi_esg":
       case "dossier_finale":
-        return <DocumentoSgesg dati={snap.dati as never} />;
+        return <DocumentoSgesg immagini={immagini} dati={snap.dati as never} />;
       case "conformita_nis2":
-        return <DocumentoConformitaNis2 dati={snap.dati as never} />;
+        return <DocumentoConformitaNis2 immagini={immagini} dati={snap.dati as never} />;
       // ⚠️ I due del sistema di gestione da UN template solo, che riceve il tipo: cambia
       // quale parte dello stesso stato si stampa, non da dove viene.
       case "relazione_nis2":
       case "controlli_nis2":
-        return <DocumentoSistemaNis2 dati={snap.dati as never} tipo={snap.tipo} />;
+        return <DocumentoSistemaNis2 immagini={immagini} dati={snap.dati as never} tipo={snap.tipo} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.
-        return <DocumentoAttestato dati={dati} snapshotId={snap.id} versione={snap.versione} />;
+        return <DocumentoAttestato immagini={immagini} dati={dati} snapshotId={snap.id} versione={snap.versione} />;
       default: {
         const mai: never = snap.tipo;
         throw new Error(`Tipo di documento senza template: ${String(mai)}`);
@@ -160,7 +168,13 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
 
   return (
     <div className="px-4 py-4">
-      <DocToolbar snapshotId={snap.id} tipo={snap.tipo} anno={snap.anno} versione={snap.versione} />
+      <DocToolbar
+        snapshotId={snap.id}
+        tipo={snap.tipo}
+        anno={snap.anno}
+        versione={snap.versione}
+        ritorno={ritornoDelDocumento(snap.companyId, snap.tipo, snap.anno)}
+      />
       <article className="doc-pagina">
         {corpo}
         {/* ⚠️ Il colophon si aggiunge QUI, una volta per tutti i documenti: e' la stessa

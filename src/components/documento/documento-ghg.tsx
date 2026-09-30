@@ -3,6 +3,7 @@ import { FirmaDocumento } from "./firma";
 import { Donut, HBars, DOC } from "./charts";
 import GWP from "@/lib/db/seeds/data/ghg-gwp-sets.json";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Rapporto d'inventario GHG conforme ai contenuti minimi del §9.3.1
 // (ISO 14064-1:2018). Renderizza ESCLUSIVAMENTE dallo snapshot.
 
@@ -39,7 +40,7 @@ type Snapshot = {
 
 const AMBITI: Record<string, string> = { "1": "Categoria 1", "2": "Categoria 2", "12": "Categorie 1 e 2", "3": "Categorie 3-6", tot: "Totale" };
 
-export function DocumentoGhg({ dati }: { dati: Snapshot }) {
+export function DocumentoGhg({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, inventario: inv, catalogo, risultati: r } = dati;
   const b = inv.boundaries;
   const gwp = (GWP as Record<string, { n: string; ch4: number; ch4b: number; n2o: number }>)[inv.gwpSetKey] ?? (GWP as never)["AR6"];
@@ -76,6 +77,19 @@ export function DocumentoGhg({ dati }: { dati: Snapshot }) {
   };
 
   return (
+    <>
+      {/* ⚠️ IL GHG NON AVEVA UNA COPERTINA: era l'unico dei ventidue documenti che si apriva
+          direttamente sul corpo. Senza, il logo e la copertina dell'azienda non avevano
+          dove stare, e «cambiare la copertina su tutti i documenti» sarebbe stato vero per
+          ventuno su ventidue. Stessa ossatura degli altri. */}
+      <Copertina
+        kicker={<>Inventario dei gas a effetto serra · esercizio {inv.anno}</>}
+        titolo={azienda.nome}
+        sotto={[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>Rapporto d&apos;inventario redatto secondo UNI EN ISO 14064-1:2018</NotaCopertina>
+      </Copertina>
     <div className="doc-corpo">
       <h2>Rapporto d&apos;inventario dei gas a effetto serra</h2>
       <p className="doc-meta">
@@ -275,5 +289,6 @@ export function DocumentoGhg({ dati }: { dati: Snapshot }) {
       </p>
       <FirmaDocumento dati={dati} />
     </div>
+    </>
   );
 }

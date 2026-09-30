@@ -2,6 +2,7 @@ import { fmtData, fmtNum } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 import { DOC } from "./charts";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Dichiarazione annuale sulla due diligence di filiera (OCSE · CSDDD art. 16).
 //
 // ⚠️ È l'unico documento del prodotto con un obbligo di PUBBLICAZIONE dietro: la
@@ -69,7 +70,7 @@ const ORDINE_RESIDUO = ["Critico", "Alto", "Medio", "Basso"] as const;
 const euro = (v: string | number | null) =>
   v === null || v === undefined || v === "" ? "—" : `${fmtNum(Number(v), 0)} €`;
 
-export function DocumentoDichiarazioneFiliera({ dati }: { dati: Snapshot }) {
+export function DocumentoDichiarazioneFiliera({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, programma: p, partner, quadro: q, flags } = dati;
   const marchio = marchioDelloSnapshot(dati);
 
@@ -83,18 +84,17 @@ export function DocumentoDichiarazioneFiliera({ dati }: { dati: Snapshot }) {
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Dichiarazione annuale</p>
-          <h1>{p.ragione || azienda.nome}</h1>
-          <p className="sotto">{[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Due diligence di filiera · Linee guida OCSE · Direttiva (UE) 2024/1760
-            {p.revisione ? ` · revisione ${p.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Dichiarazione annuale</>}
+        titolo={p.ragione || azienda.nome}
+        sotto={[p.sede || azienda.sede, p.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Due diligence di filiera · Linee guida OCSE · Direttiva (UE) 2024/1760
+          {p.revisione ? ` · revisione ${p.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto</h2>

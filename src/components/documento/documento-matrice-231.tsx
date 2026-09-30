@@ -1,6 +1,7 @@
 import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Matrice reati-processi (D.Lgs. 231/2001, art. 6 c. 2 lett. a).
 //
 // È il documento che un giudice guarda per primo, e la domanda a cui deve rispondere è
@@ -58,25 +59,24 @@ type Snapshot = {
 const SCALA_P = ["", "remota", "possibile", "probabile", "attesa"];
 const SCALA_I = ["", "lieve", "moderato", "grave", "molto grave"];
 
-export function DocumentoMatrice231({ dati }: { dati: Snapshot }) {
+export function DocumentoMatrice231({ dati, immagini }: { dati: Snapshot; immagini: ImmaginiCopertina }) {
   const { azienda, modello: m, processi, reati, indicatori: k } = dati;
   const scoperti = reati.filter((r) => r.applicabile === "Sì" && r.processi === 0);
   const nomeFamiglia = new Map(dati.famiglie.map((f) => [f.key, f.nome]));
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Matrice reati-processi</p>
-          <h1>{m.ragione || azienda.nome}</h1>
-          <p className="sotto">{[m.sede || azienda.sede, m.settore || azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Modello di organizzazione, gestione e controllo · D.Lgs. 231/2001
-            {m.revisione ? ` · revisione ${m.revisione}` : ""}
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Matrice reati-processi</>}
+        titolo={m.ragione || azienda.nome}
+        sotto={[m.sede || azienda.sede, m.settore || azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Modello di organizzazione, gestione e controllo · D.Lgs. 231/2001
+          {m.revisione ? ` · revisione ${m.revisione}` : ""}
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>1. Oggetto</h2>

@@ -382,8 +382,16 @@ await doc.getByRole("button", { name: /Scarica PDF/ }).click();
 const file = await scarico;
 verifica("Il pulsante «Scarica PDF» produce davvero il file",
   file !== null, file ? await file.suggestedFilename() : "nessun download");
-await doc.getByRole("button", { name: /Torna al percorso/ }).click();
-await doc.waitForTimeout(1500);
+// ⚠️ Questo passo premeva «Torna al percorso», aspettava e chiudeva la scheda, SENZA
+// controllare dove fosse arrivato. Il pulsante era `router.back()` in una scheda nuova e non
+// faceva niente — e un controllo che non guarda niente l'ha lasciato passare per settimane.
+// Ora è un collegamento, e si verifica che porti al percorso di quell'esercizio.
+await doc.getByRole("link", { name: /Torna al percorso/ }).click();
+const tornato = await doc
+  .waitForURL(/\/aziende\/[^/]+\/energetico\/2025/, { timeout: 30000 })
+  .then(() => true)
+  .catch(() => false);
+verifica("«Torna al percorso» riporta al bilancio energetico di quell'esercizio", tornato, doc.url());
 await doc.close();
 
 // Ripubblicando nasce la versione 2: la prima resta consultabile.

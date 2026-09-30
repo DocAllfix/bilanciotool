@@ -4,6 +4,7 @@ import { DOC, Donut, GroupBars, HBars, MatriceMaterialita } from "./charts";
 import { TiptapRender, tiptapVuoto } from "./tiptap-render";
 import { DEFAULT_CONVERSION_FACTORS } from "@/lib/calc/report/derived-kpi";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // Bilancio di sostenibilità impaginato (registro editoriale, copertina, indice
 // GRI/ESRS). Renderizza ESCLUSIVAMENTE dallo snapshot.
 
@@ -19,7 +20,9 @@ type Media = {
 
 type Snapshot = {
   generatoIl: string;
-  azienda: { nome: string; settore: string | null; sede: string | null; logoKey: string | null; coverKey: string | null };
+  // `logoKey`/`coverKey` li hanno solo i bilanci pubblicati prima del 29/09/2026: ora stanno in
+  // `copertina`, per tutti i documenti. Si leggono con `copertinaDelloSnapshot`, non da qui.
+  azienda: { nome: string; settore: string | null; sede: string | null; logoKey?: string | null; coverKey?: string | null };
   progetto: { anno: number; standard: string; perimetro: string | null; profilo: Record<string, string>; soglia: number };
   catalogo: {
     temi: { key: string; pillar: "E" | "S" | "G"; nome: string; riferimenti: string }[];
@@ -47,7 +50,15 @@ type Snapshot = {
 
 const PIL: Record<string, string> = { E: "Ambiente", S: "Sociale", G: "Governance" };
 
-export function DocumentoBilancio({ dati, imageUrls }: { dati: Snapshot; imageUrls: Map<string, string> }) {
+export function DocumentoBilancio({
+  dati,
+  imageUrls,
+  immagini,
+}: {
+  dati: Snapshot;
+  imageUrls: Map<string, string>;
+  immagini: ImmaginiCopertina;
+}) {
   const { azienda, progetto: p, kpi, catalogo } = dati;
   const anno = p.anno;
   const d = kpi.derivati;
@@ -131,34 +142,16 @@ export function DocumentoBilancio({ dati, imageUrls }: { dati: Snapshot; imageUr
     </>
   );
 
-  const coverUrl = azienda.coverKey ? imageUrls.get(azienda.coverKey) : null;
-  const logoUrl = azienda.logoKey ? imageUrls.get(azienda.logoKey) : null;
-
   return (
     <>
-      <div className="doc-cover">
-        {logoUrl && (
-          <div className="logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logoUrl} alt={`Logo ${azienda.nome}`} />
-          </div>
-        )}
-        {coverUrl && (
-          <div className="foto">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={coverUrl} alt="" />
-          </div>
-        )}
-        <div className="testo">
-          <p className="kicker">Bilancio di sostenibilità e conformità ESG · esercizio {anno}</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">
-            {[p.profilo.settore || azienda.settore, p.profilo.sede || azienda.sede].filter(Boolean).join(" · ")}
-          </p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>Redatto secondo {p.standard}</p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Bilancio di sostenibilità e conformità ESG · esercizio {anno}</>}
+        titolo={azienda.nome}
+        sotto={[p.profilo.settore || azienda.settore, p.profilo.sede || azienda.sede].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>Redatto secondo {p.standard}</NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <h2>Lettera agli stakeholder</h2>

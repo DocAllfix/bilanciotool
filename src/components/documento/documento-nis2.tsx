@@ -1,6 +1,7 @@
 import { fmtData } from "@/lib/format";
 import { marchioDelloSnapshot } from "@/features/documents/marchio";
 
+import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
 // I TRE DOCUMENTI NIS2 — D.Lgs. 138/2024, di recepimento della Direttiva (UE) 2022/2555.
 //
 // ⚠️ La classificazione d'ambito qui e' CONGELATA, e nel dato vivo non esiste: si calcola
@@ -162,25 +163,24 @@ type SnapshotConformita = {
   }[];
 };
 
-export function DocumentoConformitaNis2({ dati }: { dati: SnapshotConformita }) {
+export function DocumentoConformitaNis2({ dati, immagini }: { dati: SnapshotConformita; immagini: ImmaginiCopertina }) {
   const { azienda, profilo, ambito, conformita: k, requisiti } = dati;
   const criteriSpuntati = (profilo.criteri as string[] | undefined) ?? [];
   const capitoli = [...new Set(requisiti.map((r) => r.capitolo))];
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">Relazione sul livello di conformità</p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto">{[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}</p>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Misure di gestione dei rischi per la sicurezza informatica · D.Lgs. 4 settembre 2024, n.
-            138
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={<>Relazione sul livello di conformità</>}
+        titolo={azienda.nome}
+        sotto={[azienda.sede, azienda.settore].filter(Boolean).join(" · ")}
+        immagini={immagini}
+      >
+        <NotaCopertina>
+          Misure di gestione dei rischi per la sicurezza informatica · D.Lgs. 4 settembre 2024, n.
+          138
+        </NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <Perimetro
@@ -457,9 +457,11 @@ const STATO_IND: Record<string, string> = {
 export function DocumentoSistemaNis2({
   dati,
   tipo,
+  immagini,
 }: {
   dati: SnapshotSistema;
   tipo: "relazione_nis2" | "controlli_nis2";
+  immagini: ImmaginiCopertina;
 }) {
   const { azienda, ambito, profilo, controlli, roadmap, indicatori } = dati;
   const capitoli = [...new Set(controlli.map((c) => c.capitolo))];
@@ -468,18 +470,13 @@ export function DocumentoSistemaNis2({
 
   return (
     <>
-      <div className="doc-cover">
-        <div className="testo">
-          <p className="kicker">
-            {soloControlli ? "Catalogo dei controlli" : "Relazione sul sistema di gestione"}
-          </p>
-          <h1>{azienda.nome}</h1>
-          <p className="sotto" style={{ marginTop: 8, opacity: 0.7 }}>
-            Sicurezza informatica · D.Lgs. 4 settembre 2024, n. 138
-          </p>
-        </div>
-        <div className="filo" />
-      </div>
+      <Copertina
+        kicker={soloControlli ? "Catalogo dei controlli" : "Relazione sul sistema di gestione"}
+        titolo={azienda.nome}
+        immagini={immagini}
+      >
+        <NotaCopertina>Sicurezza informatica · D.Lgs. 4 settembre 2024, n. 138</NotaCopertina>
+      </Copertina>
 
       <div className="doc-corpo">
         <Perimetro

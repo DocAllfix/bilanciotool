@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, Trash2 } from "lucide-react";
 import type { AziendaReport, ProgettoReport } from "./types";
-import { fileADataUrl } from "@/lib/immagini-client";
+import { fileADataUrl, LATO_COPERTINA } from "@/lib/immagini-client";
 
 // Passo 1 — Organizzazione: profilo, standard, perimetro, logo e copertina
 // (compaiono sulla prima pagina del documento).
@@ -47,7 +47,10 @@ export function PassoOrganizzazione({
     if (!file) return;
     setErrore(null);
     try {
-      const dataUrl = await fileADataUrl(file, tipo === "logo" ? 600 : 1800);
+      // La copertina alla stessa misura del riquadro «Logo e copertina» dei percorsi: può
+      // finire a pagina intera, e a 1.800 px un A4 usciva a circa 150 dpi.
+      const dataUrl =
+        tipo === "logo" ? await fileADataUrl(file, 600) : await fileADataUrl(file, LATO_COPERTINA, 0.88, true);
       const esito = await setCompanyImageAction(companyId, tipo, dataUrl);
       if (!esito.ok) return setErrore(esito.errore);
       router.refresh();
