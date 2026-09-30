@@ -3355,12 +3355,18 @@ Giro sull'anteprima: **57 su 60**, due al secondo tentativo (`demo-completa`,
 file cambiati: nessuno tocca giri guidati, consenso, formazione o CSP.
 
 ⚠️ **Tre debiti aperti, trovati dall'anteprima:**
-1. **Il giro guidato della dashboard si apre SOPRA il banner dei cookie**, e il velo rende
-   «Rifiuta» e «Accetta» impremibili finché non si chiude il giro. Lo vede chi arriva sulla
-   dashboard senza aver ancora scelto i cookie e senza il video di benvenuto davanti (per
-   esempio da un altro dispositivo). Fotografato: è la causa di `impostazioni` 5÷6 su 14
-   sull'anteprima, 14 su 14 in locale dove il banner non compare. Il rimedio naturale è quello
-   già usato dalla vetrina: il giro aspetta la scelta sui cookie (`[data-consenso]`).
+1. ✅ **CHIUSO lo stesso giorno (`b46008d`): il giro guidato della dashboard si apriva SOPRA
+   il banner dei cookie**, e il velo rendeva «Rifiuta» e «Accetta» impremibili finché non si
+   chiudeva il giro. Il rimedio NON è far aspettare i giri la scelta sui cookie — il benvenuto
+   deve partire col banner aperto, ed è scritto nel banner perché — ma l'opposto: il banner
+   sale sopra il velo (`z-[10001]`, il velo di driver.js è a 10000) e riprende i clic
+   (`.driver-active [data-consenso]` in `globals.css`, perché driver.js spegne i clic su tutta
+   la pagina). Prova nuova in `benvenuto-velo`: aspetta che il giro sia aperto e POI guarda
+   chi sta sotto «Rifiuta» — rossa sul codice di prima («IL VELO DEL TOUR»), verde dopo. E
+   `impostazioni` ora spegne i giri come gli altri collaudi: passava solo quando il giro
+   arrivava dopo i suoi clic. Anteprima: 7 su 7, `impostazioni` da rosso a 14/14.
+   **Regola**: un elemento che chiede una scelta dovuta non sta mai sotto un velo — se ne
+   alza lui, invece di tenere fermi gli altri.
 2. **Dopo il consenso, il tag Google si collega a `pagead2.googlesyndication.com` con un
    identificativo `AW-…` (Google Ads)**, e la CSP lo blocca. Nel codice non c'è nessun `AW-`:
    lo carica Google dalla configurazione del tag GA4, quindi succede anche in produzione. Va
