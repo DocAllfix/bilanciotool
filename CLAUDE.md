@@ -3250,3 +3250,95 @@ in avanti non può più succedere.
 Verifica sul sito vero, tutta in sola lettura: `tutto-pubblico` 37/37 · `sitemap` 9/9 ·
 `legale` 26/26 · `vetrina-energia` 11/11 · `vetrina-tour` 7/7. La riapertura delle tre versioni
 sta dietro l'accesso del loro studio: la verifica spetta a chi ci può entrare.
+
+**Il blocco del gruppo di connessioni, chiuso (2026-09-30)** — il debito aperto il 29.
+
+**La causa non era quella che avevo scritto.** Avevo dato la colpa a una `withTenant` annidata
+con un contesto diverso: una spia messa lì ha contato **zero** casi. La causa vera l'ha trovata
+una seconda spia, `DB_SPIA_CONN=1`, che segnala ogni query partita su un'ALTRA connessione
+mentre la transazione della stessa catena tiene la sua: dentro le transazioni si leggevano
+**cataloghi e configurazione con `db`** invece che con la transazione. La dashboard leggeva così
+`platform_config` a ogni apertura; l'iscrizione una ventina di cataloghi. Con un gruppo da tre,
+tre richieste insieme tenevano le tre connessioni aspettando ciascuna la quarta, per sempre.
+
+**In produzione il rischio c'era, e non ha morso.** Fluid Compute è acceso (una istanza serve
+più richieste insieme) e la funzione vive 300 secondi; misurato in sola lettura: zero
+transazioni appese, e statistiche normali su settantasette giorni.
+
+- **`dbCorrente()`** in `tenant.ts`: dentro una transazione aperta legge da quella, fuori
+  apre una connessione come `db`. **Solo per le tabelle di piattaforma**, quelle senza
+  `organization_id`: per loro dentro e fuori danno lo stesso risultato. Una tabella di uno
+  studio letta così vedrebbe ciò che vede la transazione, che è un cambio di perimetro.
+  Restituisce il solo `select`: una scrittura finirebbe dentro la transazione di un altro.
+- **58 letture convertite in 19 file.** Due stavano nelle SCRITTURE del Modello 231, già dentro
+  la transazione. Le letture su utenti, membri, organizzazioni e contatori restano com'erano.
+- **`DB_SPIA_CONN=1` resta**, spento e documentato come `DB_TRACCIA`. `withTenant` mette la
+  transazione nel contesto PRIMA della sua prima istruzione, così la spia sa su quale
+  connessione gira.
+- **`connessione-unica.db.test.ts`**: le letture della dashboard e dell'iscrizione dentro una
+  transazione non chiedono una seconda connessione; la controprova fa la stessa lettura con
+  `db` e la spia deve accendersi. Rimettendo `db` in `latestSetId`, rosso sull'asserzione giusta.
+
+**Regole nate qui:**
+- **Un'ipotesi che spiega tutto va contata, non creduta.** La spia sulle transazioni annidate
+  ha detto zero: senza, avrei corretto la cosa sbagliata e il blocco sarebbe rimasto.
+- **Una lettura «innocua» fuori dalla transazione non è innocua dentro una transazione.** Il
+  commento su `latestSetId` diceva «si legge con `db`, ed è corretto»: era corretto sul
+  perimetro e sbagliato sulle connessioni.
+
+Gate: typecheck · build · **1645 test in entrambe le modalità** · la sonda che caricava sei
+pagine insieme — bloccata al PRIMO giro sul codice di produzione — ora **4 giri su 4**, tutte 200
+e zero transazioni appese · `tutto-attivo` 31/31 · `tutto-demo` 68/68 · `benvenuto` 12/12 ·
+`demo-completa` 9/9 · `guida` 7/7 · `ghg-percorso` 24/24 · `energetico` 41/41 ·
+`portafoglio-aggiorna` 5/5.
+
+**La copertina che si fondeva col titolo (2026-09-30)** — segnalata dal committente con una
+foto: la locandina A4 di EVALIS SRL usciva tagliata a metà, col titolo nostro scritto sotto.
+
+**Misurato in sola lettura prima di toccare niente**: copertina caricata alle 09:14:36, v7
+pubblicata **nove secondi dopo** col modo ancora «fotografia» (il predefinito), modo cambiato in
+«pagina intera» **due minuti dopo** la pubblicazione. Il documento faceva il suo mestiere:
+congelato, resta com'era. Tre trappole nostre intorno:
+
+1. **Il modo partiva sempre «fotografia».** Ora lo decide il server dalla FORMA dell'immagine,
+   all'unica strada di caricamento (`setCompanyImage`, nella stessa istruzione che salva la
+   chiave): verticale con le proporzioni di un foglio (1,27÷1,6: Letter, A4, 2:3) → pagina
+   intera; tutto il resto → fotografia. **Non «pagina» predefinito per tutti**: con quella
+   modalità il documento non scrive il titolo, e una foto orizzontale uscirebbe piccola su un
+   foglio bianco. Le misure si leggono dall'intestazione del file (`copertina-modo.ts`, PNG,
+   JPEG, WebP, GIF), senza decodificare; se non si leggono, il modo resta com'era. Il riquadro
+   dice che cosa ha scelto e perché, e si cambia con un clic.
+2. **Il passo 1 del Bilancio aveva un secondo caricatore**, senza scelta del modo e con
+   l'anteprima sempre tagliata a fascia. Ora usa lo stesso riquadro di tutti i percorsi; tolti
+   il caricatore, la sua azione e le due firme d'indirizzo che la pagina calcolava a ogni
+   apertura solo per lui.
+3. **Niente diceva che la versione pubblicata restava con le immagini di prima.** Ora il
+   pannello avvisa («Logo o copertina sono cambiati dopo la v7…») confrontando le immagini
+   congelate nell'ultima versione con quelle dell'azienda, **per nome di file** (la copia nel
+   documento è `<indice>-<nome originale>`). Tornando al modo di allora l'avviso sparisce: dice
+   ciò che è vero, non «qualcosa è stato toccato». Sulle versioni uscite prima che le immagini
+   si congelassero non dice niente, perché non può saperlo.
+
+**Dove si usano logo e copertina**: in tutti e quattordici i percorsi, dal pannello di
+pubblicazione (uno solo per tutti), e ora anche dal passo 1 del Bilancio con lo stesso riquadro.
+
+**Regole nate qui:**
+- **Due caricatori per le stesse immagini divergono**, e quello vecchio resta senza le difese
+  aggiunte al nuovo. Il difetto è passato proprio da lì.
+- **Un predefinito si sceglie guardando il dato, quando il dato lo dice.** «Sempre foto»
+  sbagliava sulle locandine, «sempre pagina» sbaglierebbe sulle fotografie: la forma
+  dell'immagine distingue i due casi quasi sempre.
+- **Uno stato congelato va dichiarato quando diverge da quello vivo.** L'immutabilità era
+  giusta; tacerla ha fatto sembrare rotto un documento che faceva il suo mestiere.
+- **Una suite lanciata mentre si modifica il codice non misura niente**: quattro rossi erano
+  una lettura presa a metà di una mia modifica («is not a function»). La suite finale si
+  lancia sul codice fermo.
+
+Gate: typecheck · build · **1645 test in entrambe le modalità** · `copertina-modo-pure` 10/10
+(misure provate anche su file veri contro PIL) · `copertina-automatica.db` 6/6 · due controprove:
+tolto il modo dalla forma → rosso sulla locandina; tolto il modo dal confronto → rosso sul caso
+del 30 settembre · `qa -- copertina` **14/14** con i controlli nuovi sulla nota, sull'avviso e
+sul passo 1 · `bilancio-percorso` 20/20 · foto della nota e dell'avviso **guardate**.
+
+⚠️ **Per chi ha già la v7 tagliata**: il modo di EVALIS SRL è già «pagina intera», quindi basta
+ripubblicare il bilancio 2025. La v7 resta com'è.

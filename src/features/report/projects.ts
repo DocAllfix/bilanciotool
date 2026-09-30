@@ -5,6 +5,7 @@ import { requireEntitlement } from "@/features/entitlement";
 import { latestContentSetId } from "@/features/ghg/inventories";
 import { deleteObject, parseDataUrl, uploadObject, immagineValida } from "@/lib/storage";
 import { chiaveUsataDaDocumenti } from "@/features/documents/immagini";
+import { dimensioniImmagine, modoPerProporzioni, type ModoCopertina } from "@/lib/copertina-modo";
 import { and, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { progettoSchema, profiloSchema, sogliaSchema } from "./validation";
@@ -90,6 +91,7 @@ export async function setCompanyImage(
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
   const colonna = tipo === "logo" ? "logoStorageKey" : "coverStorageKey";
+  let modoDallaForma: ModoCopertina | null = null;
   await withTenant({ userId, orgId }, async (tx) => {
     const [co] = await tx.select().from(company).where(eq(company.id, companyId));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
@@ -115,9 +117,27 @@ export async function setCompanyImage(
       const key = `${orgId}/companies/${companyId}/${tipo}-${Date.now()}.${ext}`;
       await uploadObject(orgId, key, parsed.buffer, immagine.contentType);
       if (attuale && cancellabile) await deleteObject(orgId, attuale);
-      await tx.update(company).set({ [colonna]: key }).where(eq(company.id, companyId));
+      // ⚠️ La copertina nuova porta con sé il MODO, deciso dalla forma (`copertina-modo.ts`):
+      // una locandina A4 a pagina intera, una fotografia sopra il titolo. Prima partiva
+      // sempre «foto», e la prima locandina vera è uscita tagliata a metà e fusa col nostro
+      // titolo. Nella STESSA istruzione che salva la chiave: una copertina non esiste mai,
+      // nemmeno per un istante, col modo della copertina di prima. Se le misure non si
+      // leggono il modo resta com'era: meglio non decidere che decidere a caso.
+      const misure = tipo === "cover" ? dimensioniImmagine(parsed.buffer) : null;
+      modoDallaForma = misure ? modoPerProporzioni(misure.larghezza, misure.altezza) : null;
+      await tx
+        .update(company)
+        .set(modoDallaForma ? { [colonna]: key, copertinaModo: modoDallaForma } : { [colonna]: key })
+        .where(eq(company.id, companyId));
     }
-    await logAudit(tx, { organizationId: orgId, userId, azione: `company.${tipo}.set`, entita: "company", entitaId: companyId });
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: `company.${tipo}.set`,
+      entita: "company",
+      entitaId: companyId,
+      ...(modoDallaForma ? { dettagli: { modo: modoDallaForma, dallaForma: true } } : {}),
+    });
   });
 }
 

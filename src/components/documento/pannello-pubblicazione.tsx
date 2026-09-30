@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BookOpenCheck, ExternalLink } from "lucide-react";
-import { ImmaginiDocumento } from "./immagini-documento";
+import { EVENTO_IMMAGINI, ImmaginiDocumento } from "./immagini-documento";
+import { versioneConImmaginiSuperateAction } from "@/features/companies/immagini-actions";
 
 // Passo finale di entrambi i percorsi: pubblicazione con snapshot immutabile.
 // Ogni pubblicazione è una NUOVA versione; le precedenti restano consultabili.
@@ -26,13 +27,30 @@ export function PannelloPubblicazione({
   const [errore, setErrore] = useState<string | null>(null);
   const [inCorso, setInCorso] = useState(false);
 
+  // ⚠️ La versione pubblicata le cui immagini non sono più quelle dell'azienda. Il 30
+  // settembre una copertina è stata cambiata due minuti DOPO la pubblicazione, e niente
+  // diceva che la versione pubblicata restava con quella di prima.
+  const [superata, setSuperata] = useState<number | null>(null);
+  const leggiSuperata = async () => {
+    const e = await versioneConImmaginiSuperateAction(companyId, tipo, anno);
+    if (e.ok) setSuperata(e.dati ?? null);
+  };
+
   const carica = async () => {
     const esito = await listSnapshotsAction(companyId);
     if (esito.ok) setVersioni(esito.dati!.filter((v) => v.tipo === tipo && v.anno === anno));
     else setErrore(esito.errore);
+    await leggiSuperata();
   };
   useEffect(() => {
     carica();
+    // Il riquadro «Logo e copertina» avvisa quando cambia le immagini: si rilegge subito,
+    // così l'avviso compare nel momento in cui il cambio lo rende vero.
+    const cambio = (ev: Event) => {
+      if ((ev as CustomEvent<string>).detail === companyId) void leggiSuperata();
+    };
+    window.addEventListener(EVENTO_IMMAGINI, cambio);
+    return () => window.removeEventListener(EVENTO_IMMAGINI, cambio);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId, tipo, anno]);
 
@@ -67,6 +85,16 @@ export function PannelloPubblicazione({
           {/* Logo e copertina che il documento congelerà pubblicando: si vedono PRIMA di
               premere, perché dopo non si cambiano più su quella versione. */}
           <ImmaginiDocumento companyId={companyId} />
+          {superata !== null && (
+            <div
+              role="status"
+              className="rounded-lg border border-warning/40 bg-warning-subtle px-4 py-3 text-sm"
+              data-immagini="superate"
+            >
+              Logo o copertina sono cambiati dopo la <b>v{superata}</b>, che resta con le immagini di allora: un
+              documento pubblicato non cambia più. Per usare quelle nuove pubblica la versione successiva.
+            </div>
+          )}
           {errore && <p role="alert" className="text-sm text-destructive">{errore}</p>}
           <Button onClick={pubblica} disabled={inCorso} data-tour="pubblica-documento">
             <BookOpenCheck className="size-4" /> {inCorso ? "Pubblicazione…" : `Pubblica ${etichettaDocumento(tipo, anno)}`}

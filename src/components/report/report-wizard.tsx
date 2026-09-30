@@ -120,7 +120,7 @@ export function ReportWizard(props: {
       </nav>
 
       <div className="mt-6">
-        {passo === 1 && <PassoOrganizzazione companyId={companyId} azienda={azienda} progetto={progetto} />}
+        {passo === 1 && <PassoOrganizzazione companyId={companyId} progetto={progetto} />}
         {passo === 2 && <PassoMaterialita companyId={companyId} progetto={progetto} catalogo={catalogo} stato={stato} />}
         {passo === 3 && <PassoKpi companyId={companyId} progetto={progetto} catalogo={catalogo} stato={stato} />}
         {passo === 4 && <PassoPolitiche companyId={companyId} progetto={progetto} catalogo={catalogo} stato={stato} />}

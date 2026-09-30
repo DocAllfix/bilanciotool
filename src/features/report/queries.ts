@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { company, kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, reportProject } from "@/lib/db/schema";
 import { asc, eq } from "drizzle-orm";
 import { getMateriality } from "./materiality";
@@ -37,17 +36,15 @@ export async function getReportWizardData(userId: string, orgId: string, company
     nome: base.az.nome,
     settore: base.az.settore,
     sede: base.az.sede,
-    logoUrl: base.az.logoStorageKey ? await signedUrl(orgId, base.az.logoStorageKey, 3600) : null,
-    coverUrl: base.az.coverStorageKey ? await signedUrl(orgId, base.az.coverStorageKey, 3600) : null,
   };
   if (!base.proj) return { azienda, progetto: null, progetti, catalogo: null, stato: null };
   const proj = base.proj;
 
   const [temi, sezioni, defs, templates, materialita, kpiAnni, gestione, capitoli, gap, bridge] = await Promise.all([
-    db.select().from(materialityTopic).where(eq(materialityTopic.setId, proj.contentSetId)).orderBy(asc(materialityTopic.ordine)),
-    db.select().from(kpiSection).where(eq(kpiSection.setId, proj.contentSetId)).orderBy(asc(kpiSection.ordine)),
-    db.select().from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)).orderBy(asc(kpiDefinition.ordine)),
-    db.select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
+    dbCorrente().select().from(materialityTopic).where(eq(materialityTopic.setId, proj.contentSetId)).orderBy(asc(materialityTopic.ordine)),
+    dbCorrente().select().from(kpiSection).where(eq(kpiSection.setId, proj.contentSetId)).orderBy(asc(kpiSection.ordine)),
+    dbCorrente().select().from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)).orderBy(asc(kpiDefinition.ordine)),
+    dbCorrente().select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
     getMateriality(userId, orgId, proj.id),
     getKpiYears(userId, orgId, companyId, [anno, anno - 1]),
     listTopicManagement(userId, orgId, proj.id),

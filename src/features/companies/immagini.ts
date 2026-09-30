@@ -1,6 +1,6 @@
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { withTenant } from "@/lib/db/tenant";
-import { company } from "@/lib/db/schema";
+import { company, documentSnapshot } from "@/lib/db/schema";
 import { signedUrl } from "@/lib/storage";
 import { requireEntitlement } from "@/features/entitlement";
 import { logAudit } from "@/lib/audit";
@@ -14,7 +14,11 @@ import { logAudit } from "@/lib/audit";
 // bilancio — e qui si aggiunge ciò che mancava: leggerle da qualunque percorso, e
 // scegliere come si usa la copertina.
 
-export type ModoCopertina = "foto" | "pagina";
+// Il tipo sta accanto alla regola che sceglie il modo dalla forma dell'immagine: due
+// definizioni della stessa unione prima o poi divergono.
+import { immaginiCambiate, type ImmaginiDiCopertina, type ModoCopertina } from "@/lib/copertina-modo";
+import type { TipoDocumento } from "@/features/documents/tipi";
+export type { ModoCopertina };
 
 export type ImmaginiAzienda = {
   logoUrl: string | null;
@@ -70,5 +74,45 @@ export async function setCopertinaModo(
       entitaId: companyId,
       dettagli: { modo },
     });
+  });
+}
+
+/**
+ * L'ultima versione pubblicata di questo documento usa immagini diverse da quelle che
+ * l'azienda ha adesso? Restituisce il numero di quella versione, o `null`.
+ *
+ * `null` anche quando non si può sapere: nessuna versione pubblicata, o una versione
+ * uscita prima che logo e copertina si congelassero nei documenti. Un avviso che scatta
+ * senza poterlo sapere si smette di leggerlo.
+ */
+export async function versioneConImmaginiSuperate(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: TipoDocumento,
+  anno: number,
+): Promise<number | null> {
+  return withTenant({ userId, orgId }, async (tx) => {
+    // Il filtro esplicito sull'organizzazione sta qui IN AGGIUNTA a RLS (regola del 3 agosto).
+    const [az] = await tx
+      .select({ logoKey: company.logoStorageKey, coverKey: company.coverStorageKey, modo: company.copertinaModo })
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId)));
+    if (!az) return null;
+    const [ultima] = await tx
+      .select({ versione: documentSnapshot.versione, copertina: sql<ImmaginiDiCopertina | null>`${documentSnapshot.dati}->'copertina'` })
+      .from(documentSnapshot)
+      .where(
+        and(
+          eq(documentSnapshot.companyId, companyId),
+          eq(documentSnapshot.organizationId, orgId),
+          eq(documentSnapshot.tipo, tipo),
+          eq(documentSnapshot.anno, anno),
+        ),
+      )
+      .orderBy(desc(documentSnapshot.versione))
+      .limit(1);
+    if (!ultima?.copertina) return null;
+    return immaginiCambiate(ultima.copertina, az) ? ultima.versione : null;
   });
 }

@@ -6,8 +6,6 @@ export type AziendaReport = {
   nome: string;
   settore: string | null;
   sede: string | null;
-  logoUrl: string | null;
-  coverUrl: string | null;
 };
 
 export type ProgettoReport = {

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireConsultant } from "@/features/auth/guards";
-import { createReportProject, setCompanyImage, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
+import { createReportProject, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
 import { setTopicScoreField, getAtecoSuggestions } from "./materiality";
 import { setKpiValue } from "./kpi";
 import { setTopicManagement, setTopicManagementField, type CampoGestione } from "./policies";
@@ -49,17 +49,6 @@ export async function updateImpostazioniAction(
   try {
     const s = await requireConsultant();
     await updateStandardEPerimetro(s.userId, s.orgId, projectId, patch);
-    revalidatePath(percorso(companyId));
-    return { ok: true };
-  } catch (e) {
-    return daErrore(e);
-  }
-}
-
-export async function setCompanyImageAction(companyId: string, tipo: "logo" | "cover", dataUrl: string | null): Promise<ActionEsito> {
-  try {
-    const s = await requireConsultant();
-    await setCompanyImage(s.userId, s.orgId, companyId, tipo, dataUrl);
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

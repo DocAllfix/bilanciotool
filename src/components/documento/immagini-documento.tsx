@@ -29,7 +29,8 @@ import type { ImmaginiAzienda, ModoCopertina } from "@/features/companies/immagi
 // pubblicati si sono fatti una copia propria, e non cambiano.
 
 /** Più riepiloghi nella stessa pagina: quando uno cambia le immagini, gli altri rileggono. */
-const EVENTO = "evalisdeck:immagini-azienda";
+export const EVENTO_IMMAGINI = "evalisdeck:immagini-azienda";
+const EVENTO = EVENTO_IMMAGINI;
 
 export function ImmaginiDocumento({ companyId }: { companyId: string }) {
   const [imm, setImm] = useState<ImmaginiAzienda | null>(null);
@@ -135,6 +136,10 @@ function Editor({
   // server prima di muoversi si legge come rotto. Se il server rifiuta, torna indietro.
   const [modo, setModo] = useState<ModoCopertina>(imm.modo);
   useEffect(() => setModo(imm.modo), [imm.modo]);
+  // Dopo un caricamento il modo l'ha scelto il server dalla FORMA dell'immagine: si dice
+  // quale e perché, così chi ha caricato non deve indovinare che cosa uscirà. Sparisce
+  // appena si sceglie a mano, perché da lì in poi la scelta è sua.
+  const [daForma, setDaForma] = useState(false);
 
   async function carica(tipo: "logo" | "cover", file: File | undefined) {
     if (!file) return;
@@ -145,6 +150,7 @@ function Editor({
       const e = await setImmagineAziendaAction(companyId, tipo, dataUrl);
       if (!e.ok) return void toast.error(e.errore);
       onCambio(e.dati!);
+      if (tipo === "cover") setDaForma(true);
       toast.success(tipo === "logo" ? "Logo aggiornato" : "Copertina aggiornata");
     } catch {
       toast.error("Non riesco a leggere questo file: serve un'immagine PNG, JPEG o WebP.");
@@ -165,6 +171,7 @@ function Editor({
     if (nuovo === modo) return;
     const prima = modo;
     setModo(nuovo);
+    setDaForma(false);
     const e = await setCopertinaModoAction(companyId, nuovo);
     if (!e.ok) {
       setModo(prima);
@@ -186,7 +193,7 @@ function Editor({
       />
       <Casella
         titolo="Copertina"
-        spiega="Un'immagine per la prima pagina di ogni documento."
+        spiega="Un'immagine per la prima pagina di ogni documento. Una locandina A4 già impaginata va a pagina intera, una fotografia sopra il titolo: lo decidiamo dalla forma dell'immagine, e sotto puoi cambiarlo."
         url={imm.coverUrl}
         tipo="cover"
         pagina={modo === "pagina"}
@@ -199,6 +206,14 @@ function Editor({
         <legend className="text-sm font-medium">Come si usa la copertina</legend>
         {!imm.coverUrl && (
           <p className="text-[12.5px] text-muted-foreground">Carica prima una copertina per scegliere come usarla.</p>
+        )}
+        {imm.coverUrl && daForma && (
+          <p className="text-[12.5px] leading-relaxed text-muted-foreground" data-immagini="modo-dalla-forma">
+            {modo === "pagina"
+              ? "Impostata a pagina intera: l'immagine ha le proporzioni di un foglio A4, quindi la trattiamo come una copertina già impaginata."
+              : "Impostata come fotografia: l'immagine non ha le proporzioni di un foglio, quindi fa da fascia sopra il titolo."}{" "}
+            Se non è quello che volevi, scegli l&apos;altra.
+          </p>
         )}
         <div className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label="Come si usa la copertina">
           <Scelta

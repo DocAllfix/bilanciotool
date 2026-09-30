@@ -3,7 +3,10 @@
 import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { setCompanyImage } from "@/features/report/projects";
-import { getImmaginiAzienda, setCopertinaModo, type ImmaginiAzienda, type ModoCopertina } from "./immagini";
+import {
+  getImmaginiAzienda, setCopertinaModo, versioneConImmaginiSuperate, type ImmaginiAzienda, type ModoCopertina,
+} from "./immagini";
+import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Le azioni del riquadro «Logo e copertina», che sta nel pannello di pubblicazione di
 // tutti i percorsi. Restituiscono `{ok}|{ok:false,errore}`, mai eccezioni nude al client.
@@ -48,6 +51,20 @@ export async function setCopertinaModoAction(
     const s = await requireConsultant();
     await setCopertinaModo(s.userId, s.orgId, companyId, modo);
     return { ok: true, dati: await getImmaginiAzienda(s.userId, s.orgId, companyId) };
+  } catch (e) {
+    return daErrore(e);
+  }
+}
+
+/** Per l'avviso del pannello: la versione pubblicata le cui immagini sono superate, o `null`. */
+export async function versioneConImmaginiSuperateAction(
+  companyId: string,
+  tipo: TipoDocumento,
+  anno: number,
+): Promise<ActionEsito<number | null>> {
+  try {
+    const s = await requireConsultant();
+    return { ok: true, dati: await versioneConImmaginiSuperate(s.userId, s.orgId, companyId, tipo, anno) };
   } catch (e) {
     return daErrore(e);
   }

@@ -120,6 +120,17 @@ await agisci("⚠️ dal percorso si caricano logo e copertina, e finiscono sull
   await attendi(async () => !!(await azienda()).cover_storage_key, { cosa: "copertina nel database" });
 });
 
+await agisci("⚠️ la copertina 2:3 va a PAGINA INTERA DA SOLA, e il riquadro dice perché", async () => {
+  // Il 30 settembre una locandina A4 è uscita tagliata perché il modo partiva sempre
+  // «fotografia». Ora lo sceglie il server dalla forma: qui NON si clicca niente.
+  const d = page.getByRole("dialog");
+  await attendi(async () => (await azienda()).copertina_modo === "pagina", { cosa: "modo pagina nel database" });
+  const nota = d.locator('[data-immagini="modo-dalla-forma"]');
+  await nota.waitFor({ timeout: 15_000 * fattoreAttesa() });
+  if (!/pagina intera/.test(await nota.innerText())) throw new Error(`nota: «${await nota.innerText()}»`);
+  if (process.env.FOTO) await d.screenshot({ path: path.join(process.env.FOTO, "copertina-modo-dalla-forma.png") });
+});
+
 await agisci("⚠️ si sceglie la copertina a PAGINA INTERA, e il database lo sa", async () => {
   const d = page.getByRole("dialog");
   await d.locator('[data-immagini="modo-pagina"]').click();
@@ -228,6 +239,14 @@ await agisci("⚠️ cambiare modo e logo DOPO non tocca il documento pubblicato
   await attendi(async () => (await azienda()).logo_storage_key !== logoPrima, { cosa: "logo nuovo" });
   await page.keyboard.press("Escape");
 
+  // ⚠️ Il pannello lo DICE: la versione pubblicata resta con le immagini di allora. Senza
+  // questo avviso, il 30 settembre la copertina è stata cambiata due minuti dopo la
+  // pubblicazione e nessuno sapeva che la v7 era rimasta quella tagliata.
+  const avviso = page.locator('[data-immagini="superate"]');
+  await avviso.waitFor({ timeout: 15_000 * fattoreAttesa() });
+  if (!/v1/.test(await avviso.innerText())) throw new Error(`avviso: «${await avviso.innerText()}»`);
+  if (process.env.FOTO) await avviso.locator("xpath=..").screenshot({ path: path.join(process.env.FOTO, "copertina-avviso-superate.png") });
+
   const p = await ctx.newPage();
   await p.goto(`${BASE}/documento/${idGhg}`, { waitUntil: "domcontentloaded" });
   await p.locator("article.doc-pagina").waitFor({ timeout: 60_000 * fattoreAttesa() });
@@ -254,6 +273,22 @@ await agisci("il Bilancio pubblicato ora porta la fotografia sopra il titolo, co
   await doc.waitForURL(`**/aziende/${companyId}/bilancio/${ANNO}**`, { timeout: 30_000 * fattoreAttesa() });
   await doc.close();
   if (n !== 2) throw new Error(`${n} immagini sulla copertina, attese 2 (logo e fotografia)`);
+});
+
+await agisci("⚠️ il passo 1 del Bilancio usa lo STESSO riquadro, non un caricatore proprio", async () => {
+  // Il caricatore vecchio non aveva la scelta del modo e mostrava la copertina già tagliata
+  // a fascia: la locandina del 30 settembre è passata da lì.
+  await page.goto(`${BASE}/aziende/${companyId}/bilancio/${ANNO}`, { waitUntil: "domcontentloaded" });
+  await spegniTour(page);
+  await page.click('[data-tour="bil-passo-1"]');
+  const r = page.locator('[data-immagini="riepilogo"]');
+  await r.waitFor({ timeout: 30_000 * fattoreAttesa() });
+  if ((await page.locator('input[type="file"][accept="image/*"]').count()) > 0) {
+    throw new Error("c'è ancora il caricatore vecchio del passo 1");
+  }
+  await r.locator('[data-immagini="apri"]').click();
+  await page.getByRole("dialog").locator('[data-immagini="modo-pagina"]').waitFor();
+  await page.keyboard.press("Escape");
 });
 
 const ko = riepilogo("Logo, copertina e ritorno al percorso");
