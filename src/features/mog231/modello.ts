@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, inArray } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestSetId } from "@/features/content-set";
@@ -228,7 +227,7 @@ export async function aggiungiScenario(
       .from(mogModel)
       .where(and(eq(mogModel.id, p.modelId), eq(mogModel.organizationId, orgId)));
     if (!m) throw new Error("Modello inesistente o di un altro tenant");
-    const [r] = await db
+    const [r] = await dbCorrente()
       .select({ key: mogCrime.key })
       .from(mogCrime)
       .where(and(eq(mogCrime.setId, m.setId), eq(mogCrime.key, crimeKey)));
@@ -350,7 +349,7 @@ export async function setCampoRequisito(
       .where(and(eq(mogModel.id, modelId), eq(mogModel.organizationId, orgId)));
     if (!m) throw new Error("Modello inesistente o di un altro tenant");
 
-    const [r] = await db
+    const [r] = await dbCorrente()
       .select({ key: mogRequirement.key })
       .from(mogRequirement)
       .where(and(eq(mogRequirement.setId, m.setId), eq(mogRequirement.key, v.requirementKey)));
@@ -419,10 +418,10 @@ export async function listaRequisiti(userId: string, orgId: string, modelId: str
 /** I cataloghi non portano `organization_id`: si leggono senza contesto di tenant. */
 export async function getCatalogo(setId: string) {
   const [famiglie, reati, pilastri, requisiti] = await Promise.all([
-    db.select().from(mogFamily).where(eq(mogFamily.setId, setId)).orderBy(asc(mogFamily.ordine)),
-    db.select().from(mogCrime).where(eq(mogCrime.setId, setId)).orderBy(asc(mogCrime.ordine)),
-    db.select().from(mogPillar).where(eq(mogPillar.setId, setId)).orderBy(asc(mogPillar.ordine)),
-    db.select().from(mogRequirement).where(eq(mogRequirement.setId, setId)).orderBy(asc(mogRequirement.ordine)),
+    dbCorrente().select().from(mogFamily).where(eq(mogFamily.setId, setId)).orderBy(asc(mogFamily.ordine)),
+    dbCorrente().select().from(mogCrime).where(eq(mogCrime.setId, setId)).orderBy(asc(mogCrime.ordine)),
+    dbCorrente().select().from(mogPillar).where(eq(mogPillar.setId, setId)).orderBy(asc(mogPillar.ordine)),
+    dbCorrente().select().from(mogRequirement).where(eq(mogRequirement.setId, setId)).orderBy(asc(mogRequirement.ordine)),
   ]);
   return { famiglie, reati, pilastri, requisiti };
 }

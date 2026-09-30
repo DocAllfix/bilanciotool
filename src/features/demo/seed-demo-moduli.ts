@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import { asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
 import {
   energyBalance, energyVectorInput, energyAllocation, energyEndUseState,
   energyDriverValue, energyMeasure, energyNarrative,
@@ -30,7 +29,7 @@ import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
 import { latestSa8000SetId } from "@/features/sa8000/sistema";
 import { latestSetId } from "@/features/content-set";
 import { latestFilieraSetId } from "@/features/filiera/programma";
-import type { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, type withTenant } from "@/lib/db/tenant";
 
 // Gli altri tre percorsi dell'azienda dimostrativa: diagnosi energetica,
 // autovalutazione ESG, Dichiarazione di Applicabilità.
@@ -131,12 +130,12 @@ function statoDi(cardine: boolean, i: number): "nd" | "pl" | "pa" | "at" | "av" 
  * stessa azienda e trova due classificazioni smette di fidarsi di entrambi.
  */
 async function seedDemoNis2(tx: Tx, orgId: string, companyId: string): Promise<void> {
-  const requisiti = await db
+  const requisiti = await dbCorrente()
     .select()
     .from(nis2Requirement)
     .where(eq(nis2Requirement.contentSetId, "nis2-v1"))
     .orderBy(asc(nis2Requirement.ordine));
-  const controlli = await db
+  const controlli = await dbCorrente()
     .select()
     .from(nis2Control)
     .where(eq(nis2Control.contentSetId, "nis2-v1"))
@@ -225,8 +224,8 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
     latestEnergySetId(), latestSupplierSetId(), latestSoaSetId(),
   ]);
   const [domande, controlli] = await Promise.all([
-    db.select().from(supplierQuestion).where(eq(supplierQuestion.setId, supplierSet)).orderBy(asc(supplierQuestion.ordine)),
-    db.select().from(soaControl).where(eq(soaControl.setId, soaSet)).orderBy(asc(soaControl.ordine)),
+    dbCorrente().select().from(supplierQuestion).where(eq(supplierQuestion.setId, supplierSet)).orderBy(asc(supplierQuestion.ordine)),
+    dbCorrente().select().from(soaControl).where(eq(soaControl.setId, soaSet)).orderBy(asc(soaControl.ordine)),
   ]);
 
   /* ── diagnosi energetica ─────────────────────────────────────────────────── */
@@ -432,7 +431,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
 
   // Circa due terzi dei requisiti valutati: la conformita' della demo non e' ne' 0
   // (sistema mai toccato) ne' 100 (sistema perfetto, che non esiste).
-  const requisitiAc = await db
+  const requisitiAc = await dbCorrente()
     .select({ key: briberyRequirement.key })
     .from(briberyRequirement)
     .where(eq(briberyRequirement.setId, acSet))
@@ -538,7 +537,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   }
 
   // Due terzi dei presidi valutati: l'idoneita' della demo non e' ne' 0 ne' 100.
-  const presidi231 = await db
+  const presidi231 = await dbCorrente()
     .select({ key: mogRequirement.key })
     .from(mogRequirement)
     .where(eq(mogRequirement.setId, mogSet))
@@ -658,7 +657,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
 
   // Due terzi dei requisiti valutati, come per gli altri moduli: la conformita' della
   // demo non e' ne' zero ne' cento.
-  const requisitiWb = await db
+  const requisitiWb = await dbCorrente()
     .select({ key: wbRequirement.key })
     .from(wbRequirement)
     .where(eq(wbRequirement.setId, wbSet))
@@ -702,7 +701,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   });
 
   // Due terzi dei requisiti IN PERIMETRO valutati: l'indice della demo non e' ne' 0 ne' 100.
-  const reqQas = await db
+  const reqQas = await dbCorrente()
     .select({ key: qasRequirement.key, norme: qasRequirement.norme })
     .from(qasRequirement)
     .where(eq(qasRequirement.setId, qasSet))
@@ -722,7 +721,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
 
   // Gli indicatori di partenza, con qualche serie storica vera: senza rilevazioni il
   // riesame non puo' riferire sulle prestazioni, ed e' meta' del suo scopo.
-  const baseQas = await db
+  const baseQas = await dbCorrente()
     .select()
     .from(qasIndicatorDefault)
     .where(eq(qasIndicatorDefault.setId, qasSet))
@@ -779,7 +778,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
     dataAdozione: "2026-02-10", revisione: "1.0",
   });
 
-  const critSa = await db
+  const critSa = await dbCorrente()
     .select({ key: saCriterion.key })
     .from(saCriterion)
     .where(eq(saCriterion.setId, saSet))

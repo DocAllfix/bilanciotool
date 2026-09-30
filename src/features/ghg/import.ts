@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { company, emissionFactor, ghgActivityRow, ghgChecklistStatus, ghgInventory, ghgOrgFactor, ghgSourceSelection, ghgTarget } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -35,7 +34,7 @@ export async function importGhgFromJson(
   }
   const o = parsed.organizzazioni[0];
   const setId = await latestContentSetId("ghg");
-  const platformFactors = await db.select().from(emissionFactor).where(eq(emissionFactor.setId, setId));
+  const platformFactors = await dbCorrente().select().from(emissionFactor).where(eq(emissionFactor.setId, setId));
   const platByKey = new Map(platformFactors.map((f) => [f.key, f]));
 
   return withTenant({ userId, orgId }, async (tx) => {

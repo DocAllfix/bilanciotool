@@ -1,6 +1,5 @@
 import { and, asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { company, ratingScale, soaControl, soaFramework, soaSection } from "@/lib/db/schema";
 import {
   chiaveControllo, computeSoa,
@@ -33,10 +32,10 @@ export async function getSoaData(userId: string, orgId: string, companyId: strin
 
   const setId = dichiarazione.contentSetId;
   const [quadri, sezioni, controlli, scale, moduli, decisioni] = await Promise.all([
-    db.select().from(soaFramework).where(eq(soaFramework.setId, setId)).orderBy(asc(soaFramework.ordine)),
-    db.select().from(soaSection).where(eq(soaSection.setId, setId)).orderBy(asc(soaSection.ordine)),
-    db.select().from(soaControl).where(eq(soaControl.setId, setId)).orderBy(asc(soaControl.ordine)),
-    db.select().from(ratingScale).where(eq(ratingScale.setId, setId)),
+    dbCorrente().select().from(soaFramework).where(eq(soaFramework.setId, setId)).orderBy(asc(soaFramework.ordine)),
+    dbCorrente().select().from(soaSection).where(eq(soaSection.setId, setId)).orderBy(asc(soaSection.ordine)),
+    dbCorrente().select().from(soaControl).where(eq(soaControl.setId, setId)).orderBy(asc(soaControl.ordine)),
+    dbCorrente().select().from(ratingScale).where(eq(ratingScale.setId, setId)),
     listModules(userId, orgId, dichiarazione.id),
     listDecisions(userId, orgId, dichiarazione.id),
   ]);

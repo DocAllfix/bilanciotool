@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestSetId } from "@/features/content-set";
@@ -309,14 +308,14 @@ export async function listaRequisiti(userId: string, orgId: string, systemId: st
  */
 export async function getCatalogo(setId: string) {
   const [capitoli, requisiti, dimensioni, fattori] = await Promise.all([
-    db.select().from(briberyChapter).where(eq(briberyChapter.setId, setId)).orderBy(asc(briberyChapter.ordine)),
-    db
+    dbCorrente().select().from(briberyChapter).where(eq(briberyChapter.setId, setId)).orderBy(asc(briberyChapter.ordine)),
+    dbCorrente()
       .select()
       .from(briberyRequirement)
       .where(eq(briberyRequirement.setId, setId))
       .orderBy(asc(briberyRequirement.ordine)),
-    db.select().from(briberyDimension).where(eq(briberyDimension.setId, setId)).orderBy(asc(briberyDimension.ordine)),
-    db.select().from(briberyFlag).where(eq(briberyFlag.setId, setId)).orderBy(asc(briberyFlag.ordine)),
+    dbCorrente().select().from(briberyDimension).where(eq(briberyDimension.setId, setId)).orderBy(asc(briberyDimension.ordine)),
+    dbCorrente().select().from(briberyFlag).where(eq(briberyFlag.setId, setId)).orderBy(asc(briberyFlag.ordine)),
   ]);
   return { capitoli, requisiti, dimensioni, fattori };
 }

@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { checklistRequirement, company, ghgActivityRow, ghgCategory, ghgInventory, ghgSourceType, ghgTarget } from "@/lib/db/schema";
 import { asc, eq } from "drizzle-orm";
 import { listFactors, type FactorView } from "./factors";
@@ -33,9 +32,9 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
 
   const [categorie, sorgenti, requisiti, fattori, statiSorgenti, statiChecklist, righe, targets, risultati, progresso] =
     await Promise.all([
-      db.select().from(ghgCategory).where(eq(ghgCategory.setId, inv.contentSetId)).orderBy(asc(ghgCategory.key)),
-      db.select().from(ghgSourceType).where(eq(ghgSourceType.setId, inv.contentSetId)).orderBy(asc(ghgSourceType.key)),
-      db.select().from(checklistRequirement).where(eq(checklistRequirement.setId, inv.contentSetId)).orderBy(asc(checklistRequirement.ordine)),
+      dbCorrente().select().from(ghgCategory).where(eq(ghgCategory.setId, inv.contentSetId)).orderBy(asc(ghgCategory.key)),
+      dbCorrente().select().from(ghgSourceType).where(eq(ghgSourceType.setId, inv.contentSetId)).orderBy(asc(ghgSourceType.key)),
+      dbCorrente().select().from(checklistRequirement).where(eq(checklistRequirement.setId, inv.contentSetId)).orderBy(asc(checklistRequirement.ordine)),
       listFactors(userId, orgId, inv.contentSetId),
       listSourceStates(userId, orgId, inv.id),
       listChecklistStates(userId, orgId, inv.id),

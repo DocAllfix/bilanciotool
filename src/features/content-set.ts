@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { dbCorrente } from "@/lib/db/tenant";
 import { contentSet } from "@/lib/db/schema";
 
 // Qual è la versione corrente dei contenuti metodologici di un dominio.
@@ -8,8 +8,11 @@ import { contentSet } from "@/lib/db/schema";
 // due domini, e la parametrizzazione non è stata riusata le altre tre volte),
 // `energy/balances.ts`, `soa/declarations.ts`, `supplier/assessments.ts`.
 //
-// Si legge con `db` e non da `withTenant`, ed è corretto: i cataloghi sono contenuti di
-// piattaforma, uguali per tutti gli studi, e la loro tabella non ha `organization_id`.
+// Non passa da `withTenant`, ed è corretto: i cataloghi sono contenuti di piattaforma,
+// uguali per tutti gli studi, e la loro tabella non ha `organization_id`. Ma si legge con
+// `dbCorrente()` e non con `db`: chiamata dentro una transazione già aperta, con `db`
+// chiederebbe una seconda connessione — ed è così che il gruppo da tre si esauriva
+// (vedi `dbCorrente` in `lib/db/tenant.ts`).
 //
 // ⚠️ Il valore che restituisce viene **congelato** nell'esercizio al momento della
 // creazione (`contentSetId`). È la ragione per cui un catalogo nuovo non cambia i
@@ -43,7 +46,7 @@ export type DominioContenuti =
  * del dominio le renderebbe tutte uguali e tutte più povere.
  */
 export async function latestSetId(dominio: DominioContenuti, seNonCe: string): Promise<string> {
-  const rows = await db
+  const rows = await dbCorrente()
     .select({ id: contentSet.id })
     .from(contentSet)
     .where(eq(contentSet.dominio, dominio))

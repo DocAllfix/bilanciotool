@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { emissionFactor, ghgActivityRow, ghgOrgFactor } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -29,7 +28,7 @@ export type FactorView = {
 };
 
 export async function listFactors(userId: string, orgId: string, contentSetId: string): Promise<FactorView[]> {
-  const base = await db.select().from(emissionFactor).where(eq(emissionFactor.setId, contentSetId));
+  const base = await dbCorrente().select().from(emissionFactor).where(eq(emissionFactor.setId, contentSetId));
   const overrides = await withTenant({ userId, orgId }, (tx) =>
     tx.select().from(ghgOrgFactor).where(eq(ghgOrgFactor.organizationId, orgId)),
   );

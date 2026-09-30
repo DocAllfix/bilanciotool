@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { dbCorrente } from "@/lib/db/tenant";
 import { contentSet } from "@/lib/db/schema";
 
 // L'edizione corrente dei contenuti di un dominio.
@@ -19,14 +19,14 @@ import { contentSet } from "@/lib/db/schema";
  * «superata» a chi ha in mano un documento buono.
  */
 export async function edizionePiuRecente(edizione: string): Promise<string | null> {
-  const [voce] = await db
+  const [voce] = await dbCorrente()
     .select({ dominio: contentSet.dominio })
     .from(contentSet)
     .where(eq(contentSet.id, edizione))
     .limit(1);
   if (!voce) return null;
 
-  const [corrente] = await db
+  const [corrente] = await dbCorrente()
     .select({ id: contentSet.id })
     .from(contentSet)
     .where(eq(contentSet.dominio, voce.dominio))

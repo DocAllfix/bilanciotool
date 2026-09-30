@@ -21,6 +21,28 @@ const client = postgres(env.DATABASE_URL, {
   // leggendo il codice: cinque letture che sembrano indipendenti possono interrogare la
   // stessa tabella cinque volte, e la duplicazione si vede solo guardando il traffico.
   // Non e' un logger di produzione: stampa su stderr e va acceso a mano.
+  //
+  // ⚠️ Secondo strumento, `DB_SPIA_CONN=1`: segnala ogni query partita su un'ALTRA
+  // connessione mentre la transazione della stessa catena di chiamate tiene la sua. È la
+  // forma che esaurisce il gruppo da tre e blocca l'istanza (vedi `dbCorrente` in
+  // `tenant.ts`): stampa la query e la pila di chiamate, così il colpevole ha un nome.
+  // I due strumenti non si accendono insieme: vince l'ultimo.
+  ...(process.env.DB_SPIA_CONN === "1"
+    ? {
+        debug: (conn: number, query: string) => {
+          const st = (globalThis as { __txAperta?: { getStore(): { conn?: number | null } | undefined } })
+            .__txAperta?.getStore();
+          if (!st) return;
+          if (st.conn == null) {
+            st.conn = conn;
+            return;
+          }
+          if (conn === st.conn) return;
+          const pila = (new Error().stack ?? "").split(String.fromCharCode(10)).slice(2, 22).map((r) => r.trim()).join(" <- ");
+          console.error(`[seconda-connessione] tx=${st.conn} query=${conn} :: ${query.replace(/\s+/g, " ").slice(0, 90)} :: ${pila}`);
+        },
+      }
+    : {}),
   ...(process.env.DB_TRACCIA === "1"
     ? {
         debug: (_conn: number, query: string) => {

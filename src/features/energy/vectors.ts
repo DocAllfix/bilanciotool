@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { energyBalance, energyCompanyFactor, energyVector, energyVectorInput } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -39,7 +38,7 @@ export async function listVectors(
   contentSetId: string,
 ): Promise<VettoreRisolto[]> {
   const [base, override] = await Promise.all([
-    db
+    dbCorrente()
       .select()
       .from(energyVector)
       .where(eq(energyVector.setId, contentSetId))

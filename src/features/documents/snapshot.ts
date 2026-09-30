@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import {
   company, documentSnapshot,
   kpiDefinition, kpiSection, materialityTopic, narrativeTemplate, organization,
@@ -130,10 +130,10 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
     listTopicManagement(userId, orgId, proj.id),
     listChapters(userId, orgId, proj.id),
     getEmissionsBridge(userId, orgId, companyId, anno),
-    db.select().from(materialityTopic).where(eq(materialityTopic.setId, proj.contentSetId)).orderBy(asc(materialityTopic.ordine)),
-    db.select().from(kpiSection).where(eq(kpiSection.setId, proj.contentSetId)).orderBy(asc(kpiSection.ordine)),
-    db.select().from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)).orderBy(asc(kpiDefinition.ordine)),
-    db.select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
+    dbCorrente().select().from(materialityTopic).where(eq(materialityTopic.setId, proj.contentSetId)).orderBy(asc(materialityTopic.ordine)),
+    dbCorrente().select().from(kpiSection).where(eq(kpiSection.setId, proj.contentSetId)).orderBy(asc(kpiSection.ordine)),
+    dbCorrente().select().from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)).orderBy(asc(kpiDefinition.ordine)),
+    dbCorrente().select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)).orderBy(asc(narrativeTemplate.ordine)),
   ]);
 
   // Logo e copertina NON stanno più qui: li aggiunge `salvaSnapshot` in `copertina`, per
@@ -913,7 +913,7 @@ export async function publishSgesgSnapshot(
 
   const [az, defs, compilati] = await Promise.all([
     withTenant({ userId, orgId }, async (tx) => (await tx.select().from(company).where(eq(company.id, companyId)))[0]!),
-    db
+    dbCorrente()
       .select()
       .from(sgesgSchedaDef)
       .where(and(eq(sgesgSchedaDef.setId, p.contentSetId), inArray(sgesgSchedaDef.key, def.schede))),

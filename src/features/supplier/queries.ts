@@ -1,6 +1,5 @@
 import { asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { company, ratingScale, supplierArea, supplierQuestion } from "@/lib/db/schema";
 import { computeSupplier, type Domanda, type Risposta } from "@/lib/calc/supplier/scoring";
 import { buildPlan } from "@/lib/calc/supplier/plan";
@@ -26,9 +25,9 @@ export async function getSupplierData(userId: string, orgId: string, companyId: 
 
   const setId = valutazione.contentSetId;
   const [aree, domande, scale, risposte] = await Promise.all([
-    db.select().from(supplierArea).where(eq(supplierArea.setId, setId)).orderBy(asc(supplierArea.ordine)),
-    db.select().from(supplierQuestion).where(eq(supplierQuestion.setId, setId)).orderBy(asc(supplierQuestion.ordine)),
-    db.select().from(ratingScale).where(eq(ratingScale.setId, setId)),
+    dbCorrente().select().from(supplierArea).where(eq(supplierArea.setId, setId)).orderBy(asc(supplierArea.ordine)),
+    dbCorrente().select().from(supplierQuestion).where(eq(supplierQuestion.setId, setId)).orderBy(asc(supplierQuestion.ordine)),
+    dbCorrente().select().from(ratingScale).where(eq(ratingScale.setId, setId)),
     listAnswers(userId, orgId, valutazione.id),
   ]);
 

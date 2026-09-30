@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { kpiDefinition, narrativeTemplate, reportProject } from "@/lib/db/schema";
 import { computeGap } from "@/lib/calc/report/gap-analysis";
 import { eq } from "drizzle-orm";
@@ -22,8 +21,8 @@ export async function getGapAnalysis(userId: string, orgId: string, projectId: s
   });
 
   const [defsKpi, templates, kpiAnni, materialita, gestione, capitoli] = await Promise.all([
-    db.select({ key: kpiDefinition.key }).from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)),
-    db.select({ key: narrativeTemplate.key }).from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)),
+    dbCorrente().select({ key: kpiDefinition.key }).from(kpiDefinition).where(eq(kpiDefinition.setId, proj.contentSetId)),
+    dbCorrente().select({ key: narrativeTemplate.key }).from(narrativeTemplate).where(eq(narrativeTemplate.setId, proj.contentSetId)),
     getKpiYears(userId, orgId, proj.companyId, [proj.anno, proj.anno - 1]),
     getMateriality(userId, orgId, projectId),
     listTopicManagement(userId, orgId, projectId),

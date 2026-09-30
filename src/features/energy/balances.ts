@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { company, energyBalance, energyEndUse, energyEndUseState } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -28,7 +27,7 @@ export async function createBalance(
   const setId = await latestEnergySetId();
   // Gli usi finali predefiniti si accendono alla creazione: un elenco di venti
   // righe di cui dodici a zero renderebbe il bilancio illeggibile.
-  const predefiniti = await db
+  const predefiniti = await dbCorrente()
     .select({ key: energyEndUse.key })
     .from(energyEndUse)
     .where(and(eq(energyEndUse.setId, setId), eq(energyEndUse.predefinito, true)))

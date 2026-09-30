@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { atecoSuggestion, materialityAssessment, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -102,7 +101,7 @@ export async function getAtecoSuggestions(codiceAteco: string, contentSetId: str
     ? codiceAtecoToMacro(codiceAteco.trim())
     : codiceAteco.trim().charAt(0).toUpperCase();
   if (!lettera) return null;
-  const rows = await db
+  const rows = await dbCorrente()
     .select()
     .from(atecoSuggestion)
     .where(eq(atecoSuggestion.setId, contentSetId));

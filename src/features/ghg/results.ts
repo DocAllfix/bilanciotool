@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { checklistRequirement, ghgActivityRow, ghgInventory, ghgSourceType, ghgTarget } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { computeInventory, type InventoryRowInput } from "@/lib/calc/ghg/totals";
@@ -122,8 +121,8 @@ export async function getProgress(userId: string, orgId: string, inventoryId: st
         .where(eq(ghgActivityRow.inventoryId, inventoryId)),
     ),
     withTenant({ userId, orgId }, (tx) => tx.select({ id: ghgTarget.id }).from(ghgTarget).where(eq(ghgTarget.companyId, inv.companyId))),
-    db.select({ key: ghgSourceType.key }).from(ghgSourceType).where(eq(ghgSourceType.setId, inv.contentSetId)),
-    db.select({ key: checklistRequirement.key }).from(checklistRequirement).where(eq(checklistRequirement.setId, inv.contentSetId)),
+    dbCorrente().select({ key: ghgSourceType.key }).from(ghgSourceType).where(eq(ghgSourceType.setId, inv.contentSetId)),
+    dbCorrente().select({ key: checklistRequirement.key }).from(checklistRequirement).where(eq(checklistRequirement.setId, inv.contentSetId)),
     listFactors(userId, orgId, inv.contentSetId),
   ]);
 

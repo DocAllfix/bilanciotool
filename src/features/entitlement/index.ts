@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { platformConfig, orgEntitlement, company, member } from "@/lib/db/schema";
 import { and, eq, count } from "drizzle-orm";
 import { limitiEffettivi, type Limiti } from "@/lib/prezzi";
@@ -32,7 +32,7 @@ const DEFAULT_LIMITS: Limits = { maxActiveCompanies: 10, warnAtCompanies: 8, max
  * l'abbonamento, e si leggono con `getLimitiEffettivi`.
  */
 export const getLimits = cache(async function getLimits(): Promise<Limits> {
-  const rows = await db.select().from(platformConfig).where(eq(platformConfig.key, "limits")).limit(1);
+  const rows = await dbCorrente().select().from(platformConfig).where(eq(platformConfig.key, "limits")).limit(1);
   const v = (rows[0]?.value ?? {}) as Partial<Limits>;
   return { ...DEFAULT_LIMITS, ...v };
 });

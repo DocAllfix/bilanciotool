@@ -1,6 +1,5 @@
 import { and, asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import {
   company, energyArea, energyBalance, energyDriverDefinition, energyEndUse,
   energyIndicator, energyVectorInput, narrativeTemplate, ratingScale,
@@ -52,12 +51,12 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
   const annoBase = bilancio.annoBase;
 
   const [aree, usiCat, driverDef, indicatoriDef, capitoliDef, scale] = await Promise.all([
-    db.select().from(energyArea).where(eq(energyArea.setId, setId)).orderBy(asc(energyArea.ordine)),
-    db.select().from(energyEndUse).where(eq(energyEndUse.setId, setId)).orderBy(asc(energyEndUse.ordine)),
-    db.select().from(energyDriverDefinition).where(eq(energyDriverDefinition.setId, setId)).orderBy(asc(energyDriverDefinition.ordine)),
-    db.select().from(energyIndicator).where(eq(energyIndicator.setId, setId)).orderBy(asc(energyIndicator.ordine)),
-    db.select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, setId)).orderBy(asc(narrativeTemplate.ordine)),
-    db.select().from(ratingScale).where(and(eq(ratingScale.setId, setId), eq(ratingScale.key, "metodo"))),
+    dbCorrente().select().from(energyArea).where(eq(energyArea.setId, setId)).orderBy(asc(energyArea.ordine)),
+    dbCorrente().select().from(energyEndUse).where(eq(energyEndUse.setId, setId)).orderBy(asc(energyEndUse.ordine)),
+    dbCorrente().select().from(energyDriverDefinition).where(eq(energyDriverDefinition.setId, setId)).orderBy(asc(energyDriverDefinition.ordine)),
+    dbCorrente().select().from(energyIndicator).where(eq(energyIndicator.setId, setId)).orderBy(asc(energyIndicator.ordine)),
+    dbCorrente().select().from(narrativeTemplate).where(eq(narrativeTemplate.setId, setId)).orderBy(asc(narrativeTemplate.ordine)),
+    dbCorrente().select().from(ratingScale).where(and(eq(ratingScale.setId, setId), eq(ratingScale.key, "metodo"))),
   ]);
 
   const [vettori, inputs, celle, statiUso, driverValori, misure, capitoli] = await Promise.all([
