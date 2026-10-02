@@ -3428,3 +3428,13 @@ soglia del rilascio, con la chiave del codice sbagliata: rosso ogni volta sull'a
 (ragione sociale, partita IVA, codice fiscale, codice destinatario, indirizzo, sessione ritrovata
 dalla fattura come al rinnovo) e **guardata**, senza invio · `checkout` 7/7 · `rinnovo` 8/8 ·
 `estensioni` 10/10 · `tutto-attivo` 31/31.
+
+✅ **In produzione dal 2 ottobre 2026 (12:01 UTC, `5e0b739`)**: `VENDITE_NOTIFICHE_A` creata
+PRIMA del codice, solo in produzione (verificato: nessuna anteprima la vede) · anteprima sul ramo
+`anteprima/copertina-connessioni` con le variabili di sviluppo · `checkout` 7/7 sulla cassa
+dell'anteprima coi due campi facoltativi · `benvenuto` 12/12 · `impostazioni` 14/14 ·
+`tutto-attivo` 31/31 (al secondo tentativo) · `tutto-pubblico` 37/37 · dopo il rilascio
+`tutto-pubblico` 37/37, `legale` 26/26 e il webhook vivo (400 senza firma).
+⚠️ **La prima mail vera arriverà col primo acquisto vero**: per costruzione non si può provare in
+produzione senza un pagamento, e il committente ha chiesto che non arrivino mail di prova. Se al
+primo acquisto la mail non arriva, il motivo è nei log di Vercel alla riga `[billing] vendita`.
