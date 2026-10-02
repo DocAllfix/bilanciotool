@@ -3375,3 +3375,56 @@ file cambiati: nessuno tocca giri guidati, consenso, formazione o CSP.
    pubblicità, nessuna profilazione».
 3. `formazione-comandi` ha ceduto una volta («una tabella non sta in un contenitore che
    scorre») ed è passato al secondo tentativo: da tenere d'occhio, non ancora un difetto.
+
+**La mail di vendita al committente, e la cassa coi campi facoltativi (2026-10-02)** — dalla
+domanda della sessione di Evalis Academy («servono anche a voi i dati per la fattura?»).
+
+**Il difetto che c'era sotto**: il codice destinatario lo chiedevamo alla cassa, obbligatorio,
+e poi restava dentro la singola sessione di pagamento — il webhook non lo leggeva, non finiva
+sul cliente Stripe né nel database, e la notifica di Stripe al venditore non lo riporta. Al
+rinnovo, un anno dopo, non c'era più da nessuna parte. E l'obbligo lasciava fuori dalla cassa
+privati, chi ha solo la PEC e i clienti esteri (debito del 22 settembre).
+
+- **Cassa**: codice destinatario o PEC e codice fiscale, **entrambi facoltativi** (decisione
+  del committente). Chiavi `sdi` e `codicefiscale`; una guardia sul sorgente impedisce di
+  rinominarle senza che la mail se ne accorga.
+- **Mail a ogni fattura PAGATA** (`invoice.paid`), primo acquisto e rinnovi: sono abbonamenti
+  annuali, e ogni pagamento va fatturato allo SdI. Importi e dati del cliente dalla fattura
+  riletta da Stripe (`parent.subscription_details`, la versione nuova delle API); codici dalla
+  sessione che ha creato l'abbonamento, che si ritrova anche al rinnovo; una correzione scritta
+  a mano sul cliente Stripe (`metadata.sdi`, `metadata.codice_fiscale`) vince.
+- **Tre cancelli**, perché il committente non riceva mai una vendita finta: `VENDITE_NOTIFICHE_A`
+  esiste **solo in produzione** (creata con `scripts/vercel-variabile-produzione.mjs`, che rifiuta
+  qualunque altro bersaglio); solo fatture `livemode`; solo pagate da `NOTIFICHE_VENDITA_DAL`
+  (2 ottobre 2026, 07:45 UTC) in avanti — «solo dai prossimi acquisti». Più: niente fatture a zero.
+- **Dopo `segnaCompletato`**, mai prima: altrimenti un guasto successivo rilascerebbe l'evento
+  e ogni ritentativo di Stripe rimanderebbe la mail. Best-effort, non solleva.
+- **Nessun dato fiscale né importo nel nostro database**: regola della migrazione `0017`.
+
+⚠️ **Reperto da decidere col committente, NON corretto**: il sito dichiara i prezzi **«IVA
+esclusa»** (su `/prezzi`, nel dialogo d'acquisto, nelle domande), ma Stripe addebita **350,00 €
+tondi senza IVA**: nessuna imposta è configurata. Misurato su un pagamento vero della sandbox; in
+produzione i prezzi vengono dallo stesso listino. O si attiva l'IVA su Stripe, o i prezzi si
+dichiarano IVA inclusa: è una scelta fiscale. Intanto la mail **non** scrive «IVA 0,00 €» — si
+leggerebbe come vendita esente — ma «non calcolata da Stripe».
+
+**Regole nate qui:**
+- **Un dato raccolto e mai letto è un dato perso.** Il codice destinatario era obbligatorio alla
+  cassa, quindi sembrava gestito; nessuno lo leggeva.
+- **Una mail di vendita si aggancia alla FATTURA, non al checkout**: i rinnovi non passano dalla
+  cassa, e agganciarsi al checkout li avrebbe persi tutti.
+- **Un «0» in un campo fiscale non è un dato neutro**: se Stripe non ha calcolato l'IVA si dice
+  così, non si scrive zero.
+- **Un collaudo che non si rilancia invecchia col prodotto**: `estensioni` pretendeva ancora il
+  pulsante del portale per un collaboratore, che dal 29 settembre non lo vede per scelta.
+- **Una rete che va e viene si riconosce dagli errori, non dai test**: `CONNECT_TIMEOUT`,
+  `ENOTFOUND` ed `ECONNRESET` su file mai toccati; rilanciati, tutti verdi.
+
+Gate: typecheck · build · **1146 test puri** · test su database tutti verdi (i file caduti per la
+rete rilanciati e passati) · `app_rls` sui file di pagamento e webhook 95/95 ·
+`notifica-vendita-pure` **21/21**, con tre controprove (senza il cancello della prova, senza la
+soglia del rilascio, con la chiave del codice sbagliata: rosso ogni volta sull'asserzione giusta) ·
+**pagamento vero nella sandbox** coi campi compilati e la mail composta dagli oggetti Stripe reali
+(ragione sociale, partita IVA, codice fiscale, codice destinatario, indirizzo, sessione ritrovata
+dalla fattura come al rinnovo) e **guardata**, senza invio · `checkout` 7/7 · `rinnovo` 8/8 ·
+`estensioni` 10/10 · `tutto-attivo` 31/31.

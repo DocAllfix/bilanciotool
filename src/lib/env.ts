@@ -96,6 +96,17 @@ const schema = z
      * `BLOG_ALLARME_A` può rendere muta una sorveglianza che gira.
      */
     ASSISTENZA_NOTIFICHE_A: vuotaComeAssente(z.string().optional()),
+    /**
+     * Chi riceve la mail di vendita con i dati per la fattura elettronica.
+     *
+     * ⚠️ Va impostata SOLO in produzione su Vercel, mai in sviluppo, nelle anteprime o nel
+     * `.env` locale: è il primo dei tre cancelli che impediscono a un collaudo di mandare al
+     * committente una vendita finta (gli altri due stanno in `notifica-vendita.ts`).
+     */
+    // Stringa e non `.email()`: un refuso nella variabile non deve impedire l'avvio
+    // dell'applicazione per una mail di servizio. Se l'indirizzo è sbagliato, Resend
+    // rifiuta e `send` lo scrive nei log.
+    VENDITE_NOTIFICHE_A: vuotaComeAssente(z.string().optional()),
     // Test seam RLS (mai impostata in produzione)
     RLS_FORCE_ROLE: z.string().regex(/^[a-z_][a-z0-9_]*$/).optional(),
   })

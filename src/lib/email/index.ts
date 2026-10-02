@@ -2,6 +2,8 @@ import { env } from "@/lib/env";
 import { renderEmail, esc } from "./modello";
 // Pura, senza `env`: il plurale dell'email di benvenuto con la fascia da un'azienda.
 import { aziendeTesto } from "@/lib/prezzi";
+// Solo il TIPO: chi decide quando mandare la mail di vendita sta in features/billing.
+import type { Vendita } from "@/features/billing/notifica-vendita";
 
 export { renderEmail, esc };
 
@@ -181,7 +183,7 @@ export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean
 /**
  * ⚠️ QUESTA EMAIL DICE DOVE SONO LE FATTURE, e la riga non è di cortesia.
  *
- * Alla cassa chiediamo partita IVA e codice destinatario, obbligatori: stiamo chiedendo al
+ * Alla cassa chiediamo partita IVA e codice destinatario: stiamo chiedendo al
  * cliente i dati per fatturare. Poi Stripe gli manda la RICEVUTA del pagamento — la prova
  * che la carta è passata — e la fattura vera resta nel portale, dove nessuno gli aveva mai
  * detto di cercarla. Uno studio con partita IVA quella fattura la gira al commercialista:
@@ -381,4 +383,50 @@ export async function avvisaUtenteAssistenza(
       nota: "Per rispondere usa il pulsante: la conversazione resta tutta in un posto.",
     }),
   );
+}
+
+// ── Vendite ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Una vendita, al committente: tutto ciò che serve per emettere la fattura elettronica.
+ *
+ * Chi la manda e quando lo decide `features/billing/notifica-vendita.ts`, che ha i tre
+ * cancelli (destinatario solo in produzione, solo pagamenti veri, solo dal rilascio in
+ * avanti). Qui si compone e basta. Un dato che manca si scrive «non indicato» invece di
+ * sparire: chi fattura deve accorgersene, e una riga assente non la nota nessuno.
+ */
+export async function inviaNotificaVendita(to: string, v: Vendita): Promise<{ sent: boolean }> {
+  const mancante = `<span style="color:#9a3412">non indicato</span>`;
+  const riga = (k: string, val: string | null) => `<strong>${esc(k)}:</strong> ${val ? esc(val) : mancante}`;
+
+  const html = renderEmail({
+    previewText: `${v.tipo}: ${v.totale} da ${v.ragioneSociale ?? "cliente senza ragione sociale"}`,
+    heading: `${v.tipo} — ${v.totale}`,
+    body: [
+      `Pagamento ricevuto il <b>${esc(v.pagataIl)}</b>${v.numero ? `, fattura Stripe <b>${esc(v.numero)}</b>` : ""}.`,
+      [
+        riga("Ragione sociale", v.ragioneSociale),
+        riga("Partita IVA", v.partitaIva),
+        riga("Codice fiscale", v.codiceFiscale),
+        riga("Codice destinatario o PEC", v.sdi),
+        riga("Indirizzo", v.indirizzo),
+        riga("Email", v.email),
+      ].join("<br>"),
+      [
+        ...v.righe.map((r) => `${esc(r.descrizione)}: ${esc(r.importo)}`),
+        ...(v.iva === null
+          ? [`<strong>IVA:</strong> non calcolata da Stripe (il listino indica i prezzi IVA esclusa)`]
+          : [`<strong>Imponibile:</strong> ${esc(v.imponibile ?? "")}`, `<strong>IVA:</strong> ${esc(v.iva)}`]),
+        `<strong>Totale incassato:</strong> ${esc(v.totale)}`,
+      ].join("<br>"),
+      ...(v.sdi
+        ? []
+        : [
+            "Il cliente non ha indicato il codice destinatario: la fattura elettronica si può emettere con il codice 0000000, e il cliente la ritrova nel proprio cassetto fiscale.",
+          ]),
+    ],
+    ...(v.urlFattura ? { button: { label: "Apri la fattura Stripe", url: v.urlFattura } } : {}),
+    nota: `Questa NON è la fattura elettronica: Stripe non trasmette allo SdI. Il dettaglio del pagamento è nel pannello di Stripe: ${esc(v.urlPannello)}`,
+  });
+  return send(to, `[EvalisDeck] ${v.tipo}: ${v.totale} — ${v.ragioneSociale ?? "cliente"}`, html);
 }

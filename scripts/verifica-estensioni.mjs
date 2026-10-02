@@ -330,17 +330,20 @@ await check("un collaboratore non apre il portale dello studio", async () => {
   // dal database, abbassando il ruolo e richiamando la pagina.
   const [u] = await sql`select id from "user" where email = ${EMAIL}`;
   await sql`update member set role='member' where user_id=${u.id} and organization_id=${orgId}`;
-  await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
-  const b = page.getByRole("button", { name: /Fatture e metodo di pagamento/i });
-  if (!(await b.count())) throw new Error("il comando non c'è nemmeno per il titolare: prova inconcludente");
-  let respinto = true;
-  if (await b.count()) {
-    await b.click();
-    await page.waitForTimeout(4000);
-    respinto = !/billing\.stripe\.com/.test(page.url());
+  // ⚠️ Dal 29 settembre 2026 il comando NON si mostra a chi non amministra: prima compariva
+  // e rispondeva «Riprova fra poco», che prometteva un pulsante che non avrebbe funzionato
+  // mai. Questo controllo pretendeva ancora di trovarlo e di vederlo respinto, quindi per
+  // il prodotto di oggi non poteva che cadere — e da allora nessuno l'aveva rilanciato.
+  // Il fatto da provare ora è doppio: il comando non c'è, e la pagina dice chi lo apre.
+  // Il divieto vero resta sul server (`requireStudioAdmin`), e lo prova `tutto-attivo`.
+  try {
+    await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "domcontentloaded" });
+    await page.getByText(/apre chi amministra lo studio/i).waitFor({ timeout: 30_000 });
+    const b = page.getByRole("button", { name: /Fatture e metodo di pagamento/i });
+    if (await b.count()) throw new Error("un collaboratore vede ancora il comando del portale");
+  } finally {
+    await sql`update member set role='owner' where user_id=${u.id} and organization_id=${orgId}`;
   }
-  await sql`update member set role='owner' where user_id=${u.id} and organization_id=${orgId}`;
-  if (!respinto) throw new Error("un collaboratore è entrato nel portale");
 });
 
 // SI RIPULISCE ANCHE ALLA FINE, non solo all'inizio.

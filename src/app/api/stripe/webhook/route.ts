@@ -3,6 +3,7 @@ import { stripe } from "@/lib/stripe/client";
 import { env } from "@/lib/env";
 import { prendiInCarico, rilascia, segnaCompletato } from "@/features/billing/idempotenza";
 import { gestisciEvento } from "@/features/billing/webhook";
+import { notificaVendita } from "@/features/billing/notifica-vendita";
 
 // L'orecchio che sente Stripe.
 //
@@ -54,6 +55,13 @@ export async function POST(req: Request) {
     // meta' viene ripescato al ritentativo di Stripe invece di essere scambiato per
     // lavoro gia' fatto.
     await segnaCompletato(evento.id);
+    // ⚠️ La mail di vendita al committente sta DOPO `segnaCompletato`, non dentro
+    // `gestisciEvento`: se partisse prima, un guasto successivo rilascerebbe l'evento e
+    // ogni ritentativo di Stripe la manderebbe di nuovo. Non deve sollevare — il `catch`
+    // qui sotto rilascerebbe un evento già completato — e il `.catch` lo garantisce anche
+    // se un giorno `notificaVendita` cambiasse. I suoi tre cancelli stanno nel suo file.
+    const vendita = await notificaVendita(evento).catch(() => "mail di vendita fallita");
+    if (evento.type === "invoice.paid") console.log("[billing] vendita", evento.id, vendita);
     return NextResponse.json({ ok: true, ...esito });
   } catch (e) {
     // Il claim si RILASCIA: senza, l'evento resterebbe marcato come fatto mentre non

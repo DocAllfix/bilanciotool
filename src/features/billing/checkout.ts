@@ -165,12 +165,27 @@ export async function creaSessioneCheckout(opts: {
     // sta per chiedere. Sono anche i dati che serviranno alla fattura elettronica,
     // quindi vogliamo proprio che finiscano sul cliente e non solo sulla sessione.
     customer_update: { name: "auto", address: "auto" },
+    // ⚠️ FACOLTATIVI ENTRAMBI (deciso col committente il 2 ottobre 2026). Il codice
+    // destinatario era obbligatorio, e lasciava fuori dalla cassa chi non ce l'ha: un
+    // privato, chi ha solo la PEC, un cliente estero che allo SdI non passa. Stripe non sa
+    // renderlo obbligatorio solo per le aziende, quindi è facoltativo per tutti; se manca,
+    // la fattura si emette col codice 0000000 e il cliente la ritrova nel cassetto fiscale.
+    // Il codice fiscale serve a fatturare a un privato. Le CHIAVI (`sdi`, `codicefiscale`)
+    // le legge la mail di vendita (`notifica-vendita.ts`): cambiarle qui la renderebbe muta.
+    // Le etichette stanno sotto i 50 caratteri, il limite di Stripe.
     custom_fields: [
       {
-        key: "sdi",
-        label: { type: "custom", custom: "Codice destinatario o PEC" },
+        key: "codicefiscale",
+        label: { type: "custom", custom: "Codice fiscale (per la fattura)" },
         type: "text",
-        optional: false,
+        optional: true,
+        text: { minimum_length: 11, maximum_length: 16 },
+      },
+      {
+        key: "sdi",
+        label: { type: "custom", custom: "Codice destinatario o PEC (per la fattura)" },
+        type: "text",
+        optional: true,
         text: { minimum_length: 6, maximum_length: 60 },
       },
     ],
