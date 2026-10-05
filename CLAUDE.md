@@ -3452,3 +3452,36 @@ Gate: typecheck · build · 1148 test puri, più 36 sui pagamenti · guardia in
 `notifica-vendita-pure` messa in rosso rimettendo `optional: true` · sessione letta da Stripe
 (`sdi optional: false`, messaggio presente) · `checkout` 7/7 in locale e sull'anteprima ·
 `benvenuto` 12/12 · `tutto-attivo` 31/31 sull'anteprima.
+
+**L'IVA alla cassa, con Stripe Tax (2026-10-05)** — il sito diceva «IVA esclusa» e Stripe
+incassava l'imponibile tondo. Decisione del committente: prezzi **IVA esclusa**, cifra più IVA.
+Nessun pagamento vero era stato incassato: l'unico abbonamento vivo è il collaudo da 3,50 € del
+22 settembre.
+- **Stripe Tax configurato via API su entrambi gli account** (sandbox `acct_1U3Gy0…`, vivo
+  `acct_1U3GxS…`, verificati prima di scrivere): sede di Aversa da `src/lib/legale.ts`,
+  `tax_behavior` predefinito `exclusive` (i 33 prezzi sono `unspecified` e lo ereditano: nessun
+  prezzo toccato), codice fiscale di prodotto `txcd_10103001` (SaaS uso aziendale),
+  registrazione **Italia**. Niente OSS: ai privati UE non si applica l'IVA del loro paese finché
+  non ci si iscrive.
+- **Ordine vincolante**: configurazione sull'account vivo PRIMA del codice. Con
+  `automatic_tax` acceso e senza sede o registrazione Stripe rifiuta la sessione.
+- Codice: `automatic_tax: { enabled: true }` in `checkout.ts`; le due fasi dello Schedule lo
+  dichiarano copiandolo dall'abbonamento; il preavviso di rinnovo dice l'importo «(IVA esclusa)».
+- Anteprima di fattura sui due account (`invoices/create_preview`, non scrive): azienda o privato
+  IT 350 + 77 = 427 €; azienda DE con partita IVA in inversione contabile; USA niente IVA.
+
+**Regola nata qui: una controprova che non morde può dire che la difesa è superflua, non che
+il collaudo è cieco.** Tolte le righe sulle fasi, il rinnovo arrivava lo stesso con l'IVA: lo
+Schedule creato con `from_subscription` la eredita. Il commento che diceva il contrario è stato
+corretto prima del commit; le righe restano come dichiarazione. Che il collaudo sapesse
+mordere si è provato a parte: abbonamento senza IVA → «IVA del rinnovo 0 €, attesa 430,54 €».
+
+Gate: typecheck · build · 1149 test puri · 36 sui pagamenti · `rinnovo` 8/8 con l'orologio di
+prova (1.957 € + IVA 430,54 €) · pagamento vero nella sandbox fino alla fattura pagata (262,50 €
+scontati + IVA 57,75 € = 320,25 €), pagina **guardata** · `checkout` 7/7 · `benvenuto` 12/12 ·
+`tutto-attivo` 31/31 sull'anteprima.
+⚠️ Stripe scrive sulla cassa «Poi 427,00 € all'anno»: legge il prezzo del primo anno perché lo
+Schedule col prezzo di rinnovo (280 €) si crea dopo il pagamento. Era già così prima dell'IVA
+(«Poi 350,00 €»). Il rinnovo vero è 280 € + IVA, e lo dice il preavviso.
+⚠️ L'abbonamento di collaudo da 3,50 € del 22 settembre si rinnoverebbe a 280 € veri il 22
+settembre 2027, senza IVA: va disdetto dal cruscotto di Stripe.
