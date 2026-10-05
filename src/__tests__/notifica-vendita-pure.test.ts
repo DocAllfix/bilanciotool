@@ -230,7 +230,33 @@ describe("la cassa e la mail parlano delle stesse chiavi", () => {
     expect(cassa).toMatch(/key:\s*"codicefiscale"/);
   });
 
-  it("⚠️ sono facoltativi: obbligatori lasciavano fuori privati, chi ha solo PEC e clienti esteri", () => {
-    expect(cassa).not.toMatch(/optional:\s*false/);
+  // Il blocco di un campo, dalla sua chiave alla chiusura: basta a leggerne `optional` e
+  // l'etichetta senza confondere i due campi fra loro.
+  const blocco = (chiave: string) => {
+    const i = cassa.indexOf(`key: "${chiave}"`);
+    expect(i).toBeGreaterThan(-1);
+    return cassa.slice(i, cassa.indexOf("},\n      }", i) + 1 || undefined);
+  };
+
+  it("⚠️ il codice destinatario è obbligatorio, ma con la via d'uscita scritta per privati ed esteri", () => {
+    const sdi = blocco("sdi");
+    expect(sdi).toMatch(/optional:\s*false/);
+    // Obbligatorio senza dire che cosa scrive chi non ce l'ha lasciava fuori dalla cassa
+    // privati e clienti esteri: è il motivo per cui il 2 ottobre era diventato facoltativo.
+    expect(sdi).toMatch(/0000000/);
+    expect(cassa).toMatch(/custom_text:[\s\S]*0000000[\s\S]*XXXXXXX/);
+  });
+
+  it("⚠️ il codice fiscale resta facoltativo: un cliente estero non ce l'ha", () => {
+    expect(blocco("codicefiscale")).toMatch(/optional:\s*true/);
+  });
+
+  it("le etichette stanno nei 50 caratteri di Stripe, la spiegazione nei 1200", () => {
+    const etichette = [...cassa.matchAll(/custom:\s*"([^"]+)"/g)].map((m) => m[1]);
+    expect(etichette.length).toBe(2);
+    for (const e of etichette) expect(e.length).toBeLessThanOrEqual(50);
+    const msg = cassa.match(/message:\s*"([^"]+)"/)?.[1] ?? "";
+    expect(msg.length).toBeGreaterThan(0);
+    expect(msg.length).toBeLessThanOrEqual(1200);
   });
 });

@@ -217,6 +217,12 @@ await check("il codice sconto si applica, e toglie davvero il 25%", async () => 
 await check("chiede i dati fiscali italiani (partita IVA e codice destinatario)", async () => {
   const t = await page.locator("body").innerText();
   if (!/Codice destinatario o PEC/i.test(t)) throw new Error("manca il campo per la fattura elettronica");
+  // Dal 5 ottobre il campo è obbligatorio per tutti: chi non ha un codice deve leggere QUI
+  // che cosa scrivere, altrimenti privati ed esteri restano fuori dalla cassa.
+  if (!/privati:\s*0000000/i.test(t)) throw new Error("l'etichetta non dice al privato di scrivere 0000000");
+  if (!/XXXXXXX/.test(t)) throw new Error("la spiegazione non dice al cliente estero di scrivere XXXXXXX");
+  const riga = t.split("\n").find((r) => /Codice destinatario o PEC/i.test(r)) ?? "";
+  if (/facoltativ|optional/i.test(riga)) throw new Error(`il codice destinatario risulta ancora facoltativo: «${riga}»`);
   if (!/(Partita IVA|codice fiscale|Aggiungi.*IVA|Tax ID|IVA)/i.test(t)) {
     throw new Error("non è possibile inserire la partita IVA");
   }

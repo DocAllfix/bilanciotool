@@ -165,14 +165,24 @@ export async function creaSessioneCheckout(opts: {
     // sta per chiedere. Sono anche i dati che serviranno alla fattura elettronica,
     // quindi vogliamo proprio che finiscano sul cliente e non solo sulla sessione.
     customer_update: { name: "auto", address: "auto" },
-    // ⚠️ FACOLTATIVI ENTRAMBI (deciso col committente il 2 ottobre 2026). Il codice
-    // destinatario era obbligatorio, e lasciava fuori dalla cassa chi non ce l'ha: un
-    // privato, chi ha solo la PEC, un cliente estero che allo SdI non passa. Stripe non sa
-    // renderlo obbligatorio solo per le aziende, quindi è facoltativo per tutti; se manca,
-    // la fattura si emette col codice 0000000 e il cliente la ritrova nel cassetto fiscale.
-    // Il codice fiscale serve a fatturare a un privato. Le CHIAVI (`sdi`, `codicefiscale`)
-    // le legge la mail di vendita (`notifica-vendita.ts`): cambiarle qui la renderebbe muta.
-    // Le etichette stanno sotto i 50 caratteri, il limite di Stripe.
+    // ⚠️ CODICE DESTINATARIO O PEC OBBLIGATORIO PER TUTTI, con la via d'uscita scritta
+    // (deciso col committente il 5 ottobre 2026). Facoltativo, un'azienda lo lasciava vuoto
+    // senza pensarci e la fattura finiva col codice 0000000 nel cassetto fiscale, dove
+    // nessuno la cerca. Stripe non sa renderlo obbligatorio SOLO per le aziende, quindi è
+    // obbligatorio per tutti e chi non ce l'ha ha una risposta valida da dare: il privato
+    // scrive 0000000, il cliente estero XXXXXXX (il codice SdI per l'estero), chi ha solo la
+    // PEC scrive la PEC. L'etichetta lo dice, la riga sopra il pulsante lo spiega.
+    // ⚠️ Il codice fiscale resta FACOLTATIVO: obbligatorio fermerebbe il cliente estero, che
+    // non ce l'ha. La riga sopra il pulsante lo chiede al privato.
+    // Le CHIAVI (`sdi`, `codicefiscale`) le legge la mail di vendita (`notifica-vendita.ts`):
+    // cambiarle qui la renderebbe muta. Le etichette stanno sotto i 50 caratteri, il limite
+    // di Stripe; la lunghezza minima 6 lascia passare 0000000, XXXXXXX e la PEC più corta.
+    custom_text: {
+      submit: {
+        message:
+          "Fattura elettronica: indica il codice destinatario SdI o la PEC. Se sei un privato scrivi 0000000 (la fattura la trovi nel tuo cassetto fiscale) e indica il codice fiscale; se sei un cliente estero scrivi XXXXXXX.",
+      },
+    },
     custom_fields: [
       {
         key: "codicefiscale",
@@ -183,9 +193,9 @@ export async function creaSessioneCheckout(opts: {
       },
       {
         key: "sdi",
-        label: { type: "custom", custom: "Codice destinatario o PEC (per la fattura)" },
+        label: { type: "custom", custom: "Codice destinatario o PEC (privati: 0000000)" },
         type: "text",
-        optional: true,
+        optional: false,
         text: { minimum_length: 6, maximum_length: 60 },
       },
     ],
