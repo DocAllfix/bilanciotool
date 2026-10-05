@@ -3438,3 +3438,17 @@ dell'anteprima coi due campi facoltativi · `benvenuto` 12/12 · `impostazioni` 
 ⚠️ **La prima mail vera arriverà col primo acquisto vero**: per costruzione non si può provare in
 produzione senza un pagamento, e il committente ha chiesto che non arrivino mail di prova. Se al
 primo acquisto la mail non arriva, il motivo è nei log di Vercel alla riga `[billing] vendita`.
+
+**Il codice destinatario o PEC obbligatorio alla cassa (2026-10-05)** — deciso col committente.
+Facoltativo, un'azienda lo lasciava vuoto senza pensarci. Stripe non sa renderlo obbligatorio
+**solo per le aziende**, e la domanda «azienda o privato» prima della cassa avrebbe toccato il
+dialogo d'acquisto, l'offerta di fine giro e sei collaudi: scelta la strada semplice. Il campo
+`sdi` è **obbligatorio per tutti**, e chi non ha un codice ha una risposta valida, scritta
+nell'etichetta («privati: 0000000») e nella riga sopra il pulsante (`custom_text.submit`):
+privato → 0000000 con il codice fiscale, estero → XXXXXXX, solo PEC → la PEC. Il **codice
+fiscale resta facoltativo**: obbligatorio fermerebbe l'estero. Limite accettato: un'azienda
+distratta può ancora scrivere 0000000, ma deve leggere per chi è.
+Gate: typecheck · build · 1148 test puri, più 36 sui pagamenti · guardia in
+`notifica-vendita-pure` messa in rosso rimettendo `optional: true` · sessione letta da Stripe
+(`sdi optional: false`, messaggio presente) · `checkout` 7/7 in locale e sull'anteprima ·
+`benvenuto` 12/12 · `tutto-attivo` 31/31 sull'anteprima.
