@@ -247,6 +247,10 @@ describe("la cassa e la mail parlano delle stesse chiavi", () => {
     expect(cassa).toMatch(/custom_text:[\s\S]*0000000[\s\S]*XXXXXXX/);
   });
 
+  it("⚠️ l'IVA la calcola Stripe Tax: il listino è IVA esclusa, e senza la cassa incasserebbe il solo imponibile", () => {
+    expect(cassa).toMatch(/automatic_tax:\s*\{\s*enabled:\s*true\s*\}/);
+  });
+
   it("⚠️ il codice fiscale resta facoltativo: un cliente estero non ce l'ha", () => {
     expect(blocco("codicefiscale")).toMatch(/optional:\s*true/);
   });

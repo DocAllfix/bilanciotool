@@ -121,7 +121,11 @@ export async function GET(req: Request) {
     const base = indirizzoCorrente();
     try {
       const r = await sendPreavvisoRinnovoEmail(destinatario, {
-        importo: importo !== null ? euro(importo) : "l'importo del tuo piano",
+        // «IVA esclusa» e non «+ IVA»: dal 5 ottobre 2026 Stripe Tax aggiunge l'IVA che è
+        // dovuta, cioè il 22% a chi è in Italia e niente a un'azienda UE con partita IVA
+        // (inversione contabile) o a un cliente extra UE. L'imponibile è l'unico numero
+        // vero per tutti.
+        importo: importo !== null ? `${euro(importo)} (IVA esclusa)` : "l'importo del tuo piano",
         quando: riga.quando.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" }),
         url: `${base}/impostazioni/abbonamento`,
       });

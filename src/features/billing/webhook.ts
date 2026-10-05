@@ -59,6 +59,14 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
     ricorrente: Boolean(i.price.recurring),
   }));
 
+  // Il calcolo dell'IVA si dichiara su entrambe le fasi, copiato dall'abbonamento. Oggi
+  // Stripe lo porterebbe comunque dalle impostazioni dello Schedule creato con
+  // `from_subscription`: MISURATO il 5 ottobre 2026 togliendo queste righe, il rinnovo con
+  // l'orologio di prova arrivava lo stesso con l'IVA. Restano perché un rinnovo senza IVA si
+  // scoprirebbe fra dodici mesi, su un cliente vero, e dichiararlo costa una riga. Un
+  // abbonamento che non lo aveva resta com'era.
+  const automatic_tax = { enabled: Boolean(sub.automatic_tax?.enabled) };
+
   await stripe().subscriptionSchedules.update(schedule.id, {
     end_behavior: "release",
     phases: [
@@ -71,6 +79,7 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
         })),
         start_date: fase.start_date,
         end_date: fase.end_date,
+        automatic_tax,
       },
       {
         // Piano al prezzo di rinnovo PIÙ le estensioni comprate: prima c'era la sola
@@ -80,6 +89,7 @@ async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Prom
         // corrente dell'API, e il compilatore l'ha intercettato prima che diventasse
         // un errore in produzione su un rinnovo fra dodici mesi.
         duration: { interval: "year", interval_count: 1 },
+        automatic_tax,
       },
     ],
   });

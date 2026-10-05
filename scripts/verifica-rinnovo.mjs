@@ -152,6 +152,9 @@ try {
     const cliente = await stripe.customers.create({
       email: `rinnovo-${RUN}@example.com`,
       name: "Studio Rinnovo",
+      // Un cliente in Italia, come quelli che passano dalla cassa: e' l'indirizzo a far
+      // calcolare a Stripe Tax il 22%. Senza, la prova sull'IVA del rinnovo non misurerebbe niente.
+      address: { line1: "Via Roma 1", postal_code: "80100", city: "Napoli", country: "IT" },
       test_clock: clockId,
       metadata: { organizationId: orgId },
     });
@@ -174,6 +177,8 @@ try {
         { price: await idDi(pBlocco.lookup), quantity: BLOCCHI },
         { price: await idDi(pAccesso.lookup), quantity: ACCESSI },
       ],
+      // Come la cassa (`automatic_tax` in `checkout.ts`): l'IVA la calcola Stripe Tax.
+      automatic_tax: { enabled: true },
       metadata: { organizationId: orgId, piano: piano.key },
     });
     subId = sub.id;
@@ -289,9 +294,17 @@ try {
       throw new Error(`fatture pagate: ${pagate.length} (${fatture.data.map((f) => f.status).join(", ")})`);
     }
     const seconda = pagate[0];
-    if (seconda.amount_paid !== ATTESO_RINNOVO) {
-      throw new Error(`la seconda fattura è di ${euro(seconda.amount_paid)}, atteso ${euro(ATTESO_RINNOVO)}`);
+    // ⚠️ L'imponibile e' quello della fase 2, e sopra c'e' l'IVA al 22%: un rinnovo che
+    // partisse SENZA IVA mentre il primo anno l'aveva si scoprirebbe solo fra dodici mesi.
+    if (seconda.subtotal !== ATTESO_RINNOVO) {
+      throw new Error(`l'imponibile della seconda fattura è ${euro(seconda.subtotal)}, atteso ${euro(ATTESO_RINNOVO)}`);
     }
+    const iva = seconda.total - seconda.subtotal;
+    if (Math.abs(iva - ATTESO_RINNOVO * 0.22) > 2) {
+      throw new Error(`IVA del rinnovo ${euro(iva)}, attesa ${euro(Math.round(ATTESO_RINNOVO * 0.22))}`);
+    }
+    if (seconda.amount_paid !== seconda.total) throw new Error(`pagato ${euro(seconda.amount_paid)} su ${euro(seconda.total)}`);
+    console.log(`       rinnovo: ${euro(seconda.subtotal)} + IVA ${euro(iva)} = ${euro(seconda.total)}`);
   });
 } finally {
   // Pulizia: l'orologio si porta via clienti, abbonamenti e fatture creati sopra.

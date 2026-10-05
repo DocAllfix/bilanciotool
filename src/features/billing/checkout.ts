@@ -149,6 +149,13 @@ export async function creaSessioneCheckout(opts: {
     // ha già pagato per farsi dare un dato è il modo peggiore di iniziare un rapporto.
     billing_address_collection: "required",
     tax_id_collection: { enabled: true },
+    // ⚠️ L'IVA la calcola Stripe Tax (acceso il 5 ottobre 2026): i prezzi del listino sono
+    // IVA ESCLUSA, come dice il sito. 22% a chi è in Italia, inversione contabile a
+    // un'azienda UE con partita IVA valida, niente fuori UE. L'abbonamento creato da questa
+    // sessione eredita l'impostazione, e la fase di rinnovo se la porta dietro
+    // (`creaPianoADueFasi` nel webhook). Richiede sede e registrazione Italia nelle
+    // impostazioni fiscali dell'account: senza, Stripe rifiuta la sessione e nessuno paga.
+    automatic_tax: { enabled: true },
     // Il campo per il codice sconto. Serve a due cose, e la seconda vale più della prima:
     //  · vendere — una promozione si fa creando un codice su Stripe, senza toccare il
     //    codice e senza aspettare una distribuzione;
