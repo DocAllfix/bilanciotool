@@ -23,9 +23,11 @@ import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { spegniTour, attraversaProtezione, rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
-if (!/localhost|127\.0\.0\.1/.test(BASE) && process.env.SO_CHE_E_PRODUZIONE !== "1") {
-  // Il collaudo scrive nel database (azienda, esercizio, archiviazione): solo in locale.
-  console.error(`Questo collaudo scrive nel database: si rifiuta di girare contro ${BASE}.`);
+// Il collaudo scrive nel database (azienda, esercizio, archiviazione): mai contro la
+// produzione. Un'anteprima invece sì — ha le variabili del ramo e parla con lo sviluppo — e
+// il criterio è quale database si tocca, non se l'indirizzo è locale.
+if (/^https?:\/\/(www\.)?evalisdeck\.it(\/|$)/.test(BASE)) {
+  console.error(`Questo collaudo scrive nel database: si rifiuta di girare contro la produzione (${BASE}).`);
   process.exit(1);
 }
 
