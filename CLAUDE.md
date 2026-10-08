@@ -3485,3 +3485,67 @@ Schedule col prezzo di rinnovo (280 €) si crea dopo il pagamento. Era già cos
 («Poi 350,00 €»). Il rinnovo vero è 280 € + IVA, e lo dice il preavviso.
 ⚠️ L'abbonamento di collaudo da 3,50 € del 22 settembre si rinnoverebbe a 280 € veri il 22
 settembre 2027, senza IVA: va disdetto dal cruscotto di Stripe.
+
+**L'audit di sicurezza e le sue correzioni (2026-10-07/08)** — skill `security-audit` di
+Cloudflare, profilo `deep`, rapporti in `~/security-audit-skill/evalisdeck/run-2/` (fuori dal
+repository). 12 reperti confermati, tutti di gravità bassa, e 6 ipotesi da validare. Corretti in
+sei commit (`0a19dea` … `e03b7b7`), ognuno col suo test messo in rosso rimettendo il difetto.
+
+- **Fase 0**: `/.playwright-mcp/` fuori dal versionamento. Due registri portavano il bypass di
+  Vercel di un'anteprima dentro un URL. ⚠️ **Resta al committente**: confrontare quel valore col
+  segreto attivo e ruotarlo se coincide.
+- **Fase 1**: il reset della password chiude le sessioni; le impostazioni del bilancio e le
+  immagini del bilancio energetico accettano solo i campi previsti (`.strict()`); i fattori
+  energetici verificano l'azienda; la shell verifica l'appartenenza (`orgAttivaVerificata`,
+  condivisa con `requireActiveOrg`); `/verifica` dice «Emittente indicato nel documento» e che
+  l'identità non è verificata (non la partita IVA: non si conservano dati fiscali); il giro del
+  blog va in rete solo verso sito e CMS; l'import GHG ha i tetti; GA4 non gira sulle pagine con
+  un token nell'indirizzo.
+- **Fase 2**: `src/lib/freno.ts`, un freno in UNA istruzione (`insert … on conflict … returning`),
+  usato da Fondatori, verifica e blog; inviti contati nei posti e frenati per destinatario e per
+  studio; notifiche dell'assistenza limitate (il messaggio si salva sempre).
+- **Fase 3**: aziende e posti sotto richieste parallele. `conCapienzaAziende` mette conteggio e
+  scrittura nella stessa transazione dietro un blocco consultivo; per i posti un aggancio `after`
+  riconta sotto blocco e fa uscire l'ultimo arrivato se lo studio è oltre il limite.
+- **Fase 4**: lo studio si salta alla registrazione SOLO se si arriva dal link del proprio invito
+  (`invitoDellaRegistrazione`); prima bastava che un estraneo invitasse l'indirizzo. Con due
+  appartenenze la sessione punta alla più recente.
+- **Fase 5**: migrazione `0061`, trigger `azienda_scrivibile` su ogni tabella con FK verso
+  `company` (trovate dal catalogo): una riga non punta mai all'azienda di un altro studio, e su
+  un'azienda archiviata non nasce lavoro nuovo (decisione del committente: restano liberi
+  contatti, agenda e compensi). `daErrore` traduce i due rifiuti; fascia «sola lettura» nel layout
+  dell'azienda; collaudo nuovo `qa -- archiviata`.
+
+**Regole nate qui:**
+- **Un freno è una riga sola.** «Leggi, confronta, scrivi» in tre istruzioni è giusto finché le
+  richieste arrivano una per volta, cioè mai quando conta. Un test in sequenza non lo vede: le
+  prove dei limiti si fanno con `Promise.all`.
+- **Quando il codice che inserisce non è nostro** (il plugin degli inviti), il limite si chiude
+  DOPO, sotto blocco, facendo uscire l'eccedenza: è l'unico punto in cui si conta ciò che è già
+  scritto. E il limite resta in `limitiEffettivi`, mai copiato in SQL.
+- **Un freno che conta prima dei permessi è un'arma contro la vittima**: l'aggancio sugli inviti
+  conta solo per chi può davvero invitare in quello studio.
+- **La chiave esterna non passa dalle policy.** Una riga con `organization_id` nostro e
+  `company_id` altrui è accettata da RLS: serve un controllo sull'azienda nel codice e, come terzo
+  strato, il trigger.
+- **Il comportamento predefinito di un invito non è un consenso.** Chi si registra decide lui in
+  che studio entra; un terzo non può deciderlo mandandogli un invito.
+- **L'inventario delle scritture «all'apertura» precede ogni regola che rifiuta scritture**: una
+  pagina che crea la propria riga solo per essere aperta si romperebbe proprio dove la regola
+  morde. Oggi non ce ne sono; `qa -- archiviata` lo dice contando le righe.
+- **Un heredoc dimezza i backslash anche nelle espressioni regolari**: due volte in questo lavoro.
+  Le espressioni regolari si scrivono con lo strumento di modifica.
+
+Gate: typecheck · build · **1715 test** in entrambe le modalità · `qa`: recupero-password 8/8,
+invito 14/14, impostazioni 14/14, portafoglio 5/5, tutto-attivo 31/31, tutto-demo 68/68,
+scheda-cliente 16/16, limiti 6/6, tutto-pubblico 37/37, assistenza 14/14, codice-documento 22/22,
+condivisione 9/9, agenda 16/16, compensi 12/12, demo-completa 9/9, ghg 24/24, bilancio 20/20,
+energetico verde, archiviata 31/31 (al secondo tentativo: il primo diede `ERR_ABORTED` su una
+pagina sola, dichiarato).
+
+⚠️ **Non ancora in produzione.** Per il rilascio: anteprima col metodo; in produzione, in sola
+lettura, le righe con `organization_id` diverso da quello della loro azienda (attese 0) e gli
+utenti verificati senza appartenenza (possibili vittime della Fase 4, da portare al
+committente); poi la migrazione `0061`, poi la fusione. Restano aperti, con la ragione nel
+piano: tempo della registrazione e Chromium per richiesta (da misurare su anteprima), FK
+composte sulle relazioni figlio→padre, comandi disabilitati nei 14 percorsi per le archiviate.
