@@ -1,8 +1,8 @@
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { dbCorrente, withTenant } from "@/lib/db/tenant";
+import { dbCorrente, withTenant, type Tx } from "@/lib/db/tenant";
 import { platformConfig, orgEntitlement, company, member, invitation } from "@/lib/db/schema";
-import { and, eq, count, gt } from "drizzle-orm";
+import { and, eq, count, gt, sql } from "drizzle-orm";
 import { limitiEffettivi, type Limiti } from "@/lib/prezzi";
 import { conteggioAttive } from "@/features/companies/lettori-condivisi";
 
@@ -157,6 +157,48 @@ export async function assertCompanyCreatable(userId: string, orgId: string): Pro
       `Limite di aziende attive raggiunto (${usage.active} su ${usage.limit}): archivia un'azienda o passa alla fascia superiore`,
     );
   }
+}
+
+/**
+ * Esegue `fn` solo se lo studio ha ancora posto per un'azienda attiva, e tiene il posto
+ * finché `fn` non ha finito.
+ *
+ * ⚠️ Perché non basta `assertCompanyCreatable` seguito dall'inserimento. Erano due passi in
+ * due transazioni: otto richieste arrivate insieme leggevano tutte «zero aziende su una»,
+ * passavano tutte, e ne nascevano otto su un piano da una (audit di sicurezza, ottobre
+ * 2026). Qui il controllo e la scrittura stanno nella STESSA transazione, dietro un blocco
+ * consultivo sullo studio: la seconda richiesta aspetta che la prima abbia finito, e
+ * quando conta trova l'azienda che la prima ha appena creato.
+ *
+ * ⚠️ Tre attenzioni, tutte pagate altrove in questo progetto:
+ * - abbonamento e limiti si leggono PRIMA di aprire la transazione: dentro, una
+ *   `withTenant` di contesto diverso prenderebbe una seconda connessione da un gruppo di
+ *   tre, cioè l'abbraccio mortale del 30 settembre;
+ * - il conto si fa con `tx` e una query fresca, NON con `conteggioAttive`: quella passa da
+ *   `cache()` di React e restituirebbe la lettura fatta prima del blocco;
+ * - il limite resta quello di `limitiEffettivi`: nessuna copia in SQL.
+ */
+export async function conCapienzaAziende<T>(
+  userId: string,
+  orgId: string,
+  fn: (tx: Tx) => Promise<T>,
+): Promise<T> {
+  await requireEntitlement(userId, orgId, "create_company");
+  const limits = await getLimitiEffettivi(orgId, userId);
+  return withTenant({ userId, orgId }, async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${"aziende:" + orgId}))`);
+    const [r] = await tx
+      .select({ n: count() })
+      .from(company)
+      .where(and(eq(company.organizationId, orgId), eq(company.stato, "active"), eq(company.isDemo, false)));
+    if (r.n >= limits.maxActiveCompanies) {
+      throw new EntitlementError(
+        "limit_companies",
+        `Limite di aziende attive raggiunto (${r.n} su ${limits.maxActiveCompanies}): archivia un'azienda o passa alla fascia superiore`,
+      );
+    }
+    return fn(tx);
+  });
 }
 
 // Blocco server-side al 6° membro (invito E accettazione).

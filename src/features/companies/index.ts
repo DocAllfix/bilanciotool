@@ -1,7 +1,7 @@
 import { withTenant } from "@/lib/db/tenant";
 import { company } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
-import { assertCompanyCreatable, requireEntitlement } from "@/features/entitlement";
+import { conCapienzaAziende, requireEntitlement } from "@/features/entitlement";
 import { and, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
@@ -17,10 +17,10 @@ export type NewCompany = {
 };
 
 export async function createCompany(userId: string, orgId: string, data: NewCompany): Promise<string> {
-  // Blocco anti-abuso server-side (11ª azienda) + paywall (demo non crea aziende proprie).
-  await assertCompanyCreatable(userId, orgId);
+  // Paywall (la prova non crea aziende proprie) e limite del piano, con il controllo e
+  // l'inserimento nella STESSA transazione: vedi `conCapienzaAziende`.
   const id = randomUUID();
-  await withTenant({ userId, orgId }, async (tx) => {
+  await conCapienzaAziende(userId, orgId, async (tx) => {
     await tx.insert(company).values({ id, organizationId: orgId, ...data });
     await logAudit(tx, { organizationId: orgId, userId, azione: "company.create", entita: "company", entitaId: id });
   });
@@ -47,9 +47,9 @@ export async function archiveCompany(userId: string, orgId: string, companyId: s
 }
 
 export async function restoreCompany(userId: string, orgId: string, companyId: string): Promise<void> {
-  // Il ripristino ri-conta nei limiti: passa dallo stesso assert della creazione.
-  await assertCompanyCreatable(userId, orgId);
-  await withTenant({ userId, orgId }, async (tx) => {
+  // Il ripristino ri-conta nei limiti: passa dallo stesso cancello della creazione, e
+  // per la stessa ragione — otto ripristini insieme rientravano tutti.
+  await conCapienzaAziende(userId, orgId, async (tx) => {
     const updated = await tx
       .update(company)
       .set({ stato: "active", archivedAt: null })

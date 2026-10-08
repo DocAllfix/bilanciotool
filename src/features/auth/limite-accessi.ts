@@ -1,8 +1,9 @@
 import { APIError, getSessionFromCtx } from "better-auth/api";
 import { db } from "@/lib/db";
 import { invitation, member } from "@/lib/db/schema";
-import { and, eq } from "drizzle-orm";
-import { assertSeatAvailable, EntitlementError } from "@/features/entitlement";
+import { and, count, eq, sql } from "drizzle-orm";
+import { withTenant } from "@/lib/db/tenant";
+import { assertSeatAvailable, EntitlementError, getLimitiEffettivi } from "@/features/entitlement";
 import { frenato } from "@/lib/freno";
 
 // Il limite di accessi, applicato dove si invita davvero.
@@ -72,6 +73,58 @@ export async function verificaAccessiDisponibili(ctx: Contesto): Promise<void> {
     throw e;
   }
   if (invito && destinatario) await frenaInviti(ctx, orgId, destinatario);
+}
+
+/**
+ * Dopo un'accettazione: se lo studio è finito OLTRE il limite, l'ultimo arrivato esce.
+ *
+ * ⚠️ Perché serve anche col controllo di prima. Il controllo nel `before` conta i membri
+ * e poi lascia che il plugin inserisca: sei accettazioni arrivate insieme contavano tutte
+ * «due su tre» e entravano tutte e sei (audit di sicurezza, ottobre 2026: da 2 a 8 membri
+ * su un tetto di 3). L'inserimento lo fa il plugin in una transazione sua, quindi non c'è
+ * modo di tenere un blocco attorno a «conta e inserisci».
+ *
+ * ⚠️ Come si chiude. Qui il membro è già scritto. Si prende un blocco consultivo sullo
+ * studio e si riconta: chi trova lo studio oltre il limite toglie SÉ STESSO e rimette il
+ * proprio invito in attesa. Sotto il blocco gli agganci passano uno alla volta, e ognuno
+ * esce solo se in quel momento c'è eccedenza: il totale finale è esattamente il limite,
+ * mai di più e mai di meno, qualunque sia l'ordine in cui le richieste sono arrivate.
+ *
+ * ⚠️ Il limite NON si copia nel database (un trigger avrebbe bisogno del listino in SQL,
+ * cioè di una seconda fonte dei prezzi): si legge da `getLimitiEffettivi`, prima di aprire
+ * la transazione, per non annidarne una di contesto diverso.
+ *
+ * L'invito torna `pending` e non `rejected`: la persona non ha rifiutato niente, e potrà
+ * rientrare appena lo studio libera un posto o ne compra uno.
+ */
+export async function riconciliaPostiDopoAccettazione(ctx: Contesto): Promise<void> {
+  if (ctx.path !== "/organization/accept-invitation") return;
+  const invitationId = ctx.body?.invitationId;
+  const ritorno = (ctx.context as { returned?: unknown } | null | undefined)?.returned as
+    | { member?: { id?: string; organizationId?: string } }
+    | null
+    | undefined;
+  const nuovo = ritorno?.member;
+  // Niente membro nel ritorno = l'accettazione non è avvenuta (il plugin ha rifiutato).
+  if (!nuovo?.id || !nuovo.organizationId || typeof invitationId !== "string") return;
+  const orgId = nuovo.organizationId;
+  const membroId = nuovo.id;
+
+  const limiti = await getLimitiEffettivi(orgId);
+  const uscito = await withTenant({ orgId, platformAdmin: true }, async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${"posti:" + orgId}))`);
+    const [r] = await tx.select({ n: count() }).from(member).where(eq(member.organizationId, orgId));
+    if (r.n <= limiti.maxMembers) return false;
+    await tx.delete(member).where(and(eq(member.id, membroId), eq(member.organizationId, orgId)));
+    await tx.update(invitation).set({ status: "pending" }).where(eq(invitation.id, invitationId));
+    return true;
+  });
+  if (uscito) {
+    throw new APIError("FORBIDDEN", {
+      message: `Limite di ${limiti.maxMembers} membri per studio raggiunto`,
+      code: "limit_members",
+    });
+  }
 }
 
 /** Due invii allo stesso indirizzo in dieci minuti: il secondo assorbe un doppio clic o un errore. */

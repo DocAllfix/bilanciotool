@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { verificaAccessiDisponibili } from "@/features/auth/limite-accessi";
+import { riconciliaPostiDopoAccettazione, verificaAccessiDisponibili } from "@/features/auth/limite-accessi";
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { user as schemaUser } from "@/lib/db/schema";
@@ -170,6 +170,11 @@ export const auth = betterAuth({
     before: createAuthMiddleware(async (ctx) => {
       await verificaAccessiDisponibili(ctx as never);
       await avvisaSeHaGiaUnAccount(ctx as never);
+    }),
+    // Dopo l'accettazione di un invito si riconta, sotto blocco: è l'unico punto in cui il
+    // limite dei posti regge ad accettazioni arrivate insieme (vedi `limite-accessi.ts`).
+    after: createAuthMiddleware(async (ctx) => {
+      await riconciliaPostiDopoAccettazione(ctx as never);
     }),
   },
   plugins: [
