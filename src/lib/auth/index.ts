@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { user as schemaUser } from "@/lib/db/schema";
 import { env } from "@/lib/env";
 import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail, sendAccountEsistenteEmail } from "@/lib/email";
-import { createStudioOrg, firstMembershipOrgId, hasPendingInvitation } from "@/features/auth/orgs";
+import { createStudioOrg, firstMembershipOrgId, invitoDellaRegistrazione } from "@/features/auth/orgs";
 import { indirizzoCorrente } from "@/lib/indirizzo";
 
 /**
@@ -139,11 +139,14 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        after: async (user) => {
+        after: async (user, context) => {
           // Ogni self-signup crea il proprio studio (tenant) in stato demo,
           // con l'azienda dimostrativa già compilata (il cuore del funnel).
-          // Gli invitati NON ricevono uno studio proprio: entreranno in quello che li invita.
-          if (await hasPendingInvitation(user.email)) return;
+          // Chi si registra DAL LINK del proprio invito non riceve uno studio proprio:
+          // entra in quello che lo invita. Solo dal link, non per il solo fatto di avere un
+          // invito in attesa — vedi `invitoDellaRegistrazione`.
+          const corpo = (context as { body?: { callbackURL?: unknown } } | null | undefined)?.body;
+          if (await invitoDellaRegistrazione(user.email, corpo?.callbackURL)) return;
           const orgId = await createStudioOrg(user.id, user.name ?? "");
           try {
             const { seedDemoCompany } = await import("@/features/demo/seed-demo-org");
