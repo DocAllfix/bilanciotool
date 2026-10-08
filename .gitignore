@@ -50,6 +50,11 @@ next-env.d.ts
 coverage/
 test-results/
 playwright-report/
+# I registri di sessione del server MCP di Playwright portano gli indirizzi visitati
+# per intero, parametri compresi: due erano finiti versionati con il bypass di Vercel
+# di un'anteprima dentro l'URL (audit di sicurezza, 7 ottobre 2026). Ancorata alla
+# radice: e' una cartella di lavoro, non un nome da escludere a ogni livello.
+/.playwright-mcp/
 shots*
 shot-*
 
