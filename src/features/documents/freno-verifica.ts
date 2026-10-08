@@ -1,7 +1,4 @@
-import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { rateLimit } from "@/lib/db/schema";
+import { contaColpo } from "@/lib/freno";
 
 // Il freno della pagina pubblica di verifica.
 //
@@ -31,34 +28,14 @@ export type EsitoFreno = { passa: true } | { passa: false; riprovaFra: number };
  * dei due — chi ha in mano il PDF concluderebbe che è falso.
  */
 export async function consumaColpo(indirizzo: string): Promise<EsitoFreno> {
-  const chiave = `verifica:${indirizzo}`;
   const adesso = Date.now();
   try {
-    const [riga] = await db.select().from(rateLimit).where(eq(rateLimit.key, chiave)).limit(1);
-
-    if (!riga || adesso - riga.lastRequest > FINESTRA_MS) {
-      if (riga) {
-        await db
-          .update(rateLimit)
-          .set({ count: 1, lastRequest: adesso })
-          .where(eq(rateLimit.key, chiave));
-      } else {
-        await db
-          .insert(rateLimit)
-          .values({ id: randomUUID(), key: chiave, count: 1, lastRequest: adesso })
-          .onConflictDoNothing();
-      }
-      return { passa: true };
+    // Un'istruzione sola: contare e confrontare in tre passi lasciava passare qualunque
+    // raffica arrivata insieme, che è esattamente il modo in cui si sonda un oracolo.
+    const colpo = await contaColpo(`verifica:${indirizzo}`, FINESTRA_MS, adesso);
+    if (colpo.conteggio > MASSIMO) {
+      return { passa: false, riprovaFra: Math.max(1, Math.ceil((FINESTRA_MS - (adesso - colpo.inizio)) / 1000)) };
     }
-
-    if (riga.count >= MASSIMO) {
-      return { passa: false, riprovaFra: Math.ceil((FINESTRA_MS - (adesso - riga.lastRequest)) / 1000) };
-    }
-
-    await db
-      .update(rateLimit)
-      .set({ count: riga.count + 1, lastRequest: riga.lastRequest })
-      .where(eq(rateLimit.key, chiave));
     return { passa: true };
   } catch {
     return { passa: true };

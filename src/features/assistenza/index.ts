@@ -5,6 +5,7 @@ import { assistenzaMessaggio, assistenzaTicket, organization, user } from "@/lib
 import { logAudit } from "@/lib/audit";
 import { indirizzoCorrente } from "@/lib/indirizzo";
 import { avvisaStaffAssistenza, avvisaUtenteAssistenza } from "@/lib/email";
+import { frenato } from "@/lib/freno";
 
 // L'assistenza: la logica, SENZA guardie.
 //
@@ -47,6 +48,27 @@ async function inBuonaFede(cosa: string, fn: () => Promise<unknown>): Promise<vo
   }
 }
 
+/**
+ * Il freno sulle NOTIFICHE, non sui messaggi.
+ *
+ * ⚠️ Il messaggio si salva sempre: l'assistenza sta fuori dal paywall apposta, e chi
+ * scrive tre volte di fila ha tre cose da dire. Quello che si limita è la posta allo
+ * staff: ogni richiesta e ogni risposta mandava un'email per destinatario, senza tetto, e
+ * dallo stesso conto Resend da cui partono verifica dell'indirizzo e recupero della
+ * password (audit di sicurezza, ottobre 2026). Lo staff non perde niente: la coda mostra
+ * tutti i messaggi, e la prima notifica di una serie dice già che c'è da guardare.
+ *
+ * Se il contatore non risponde la notifica PARTE: meglio un'email in più che una
+ * richiesta d'aiuto che nessuno vede.
+ */
+async function notificaFrenata(chiave: string, finestraMs: number, massimo: number): Promise<boolean> {
+  try {
+    return await frenato(chiave, finestraMs, massimo);
+  } catch {
+    return false;
+  }
+}
+
 // ── Chi scrive ────────────────────────────────────────────────────────────────────────
 
 export async function apriTicket(
@@ -67,9 +89,10 @@ export async function apriTicket(
     return leggiPersona(tx, userId, orgId);
   });
 
-  await inBuonaFede("notifica allo staff", () =>
-    avvisaStaffAssistenza({ nuovo: true, ...chi, oggetto, testo, url: `${indirizzoCorrente()}/staff/assistenza/${id}` }),
-  );
+  await inBuonaFede("notifica allo staff", async () => {
+    if (await notificaFrenata(`assistenza-nuove:${userId}`, 3_600_000, 5)) return;
+    await avvisaStaffAssistenza({ nuovo: true, ...chi, oggetto, testo, url: `${indirizzoCorrente()}/staff/assistenza/${id}` });
+  });
   return { id };
 }
 
@@ -108,9 +131,10 @@ export async function rispondiComeUtente(userId: string, orgId: string, ticketId
     return { oggetto: tk.oggetto, chi: await leggiPersona(tx, userId, tk.organizationId) };
   });
 
-  await inBuonaFede("notifica allo staff", () =>
-    avvisaStaffAssistenza({ nuovo: false, ...esito.chi, oggetto: esito.oggetto, testo: t, url: `${indirizzoCorrente()}/staff/assistenza/${ticketId}` }),
-  );
+  await inBuonaFede("notifica allo staff", async () => {
+    if (await notificaFrenata(`assistenza-risposte:${ticketId}`, 5 * 60_000, 1)) return;
+    await avvisaStaffAssistenza({ nuovo: false, ...esito.chi, oggetto: esito.oggetto, testo: t, url: `${indirizzoCorrente()}/staff/assistenza/${ticketId}` });
+  });
 }
 
 // ── Staff ─────────────────────────────────────────────────────────────────────────────

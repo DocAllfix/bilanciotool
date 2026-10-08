@@ -122,6 +122,12 @@ export const auth = betterAuth({
       "/forget-password": { window: 3600, max: 5 },
       "/request-password-reset": { window: 3600, max: 5 },
       "/reset-password": { window: 3600, max: 10 },
+      // Ogni invito, e ogni rinvio, manda un'email a un indirizzo scelto da chi invita.
+      // Questo è il tetto per indirizzo di rete; quello per destinatario e per studio sta
+      // in `limite-accessi.ts`, perché qui la chiave è solo l'indirizzo e la rotta.
+      // Sessanta l'ora: il piano più capiente vende sessanta accessi, e chi invita tutto lo
+      // studio in una seduta esce da un indirizzo solo.
+      "/organization/invite-member": { window: 3600, max: 60 },
     },
   },
   user: {

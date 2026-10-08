@@ -1,6 +1,4 @@
-import { db } from "@/lib/db";
-import { rateLimit } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { contaColpo } from "@/lib/freno";
 
 // Il freno sul webhook del blog, e perche' frena la coda invece dell'ingresso.
 //
@@ -34,18 +32,9 @@ const PAUSA_MS = 60_000;
  */
 export async function verificaConsentita(adesso = Date.now()): Promise<boolean> {
   try {
-    const [riga] = await db.select().from(rateLimit).where(eq(rateLimit.key, CHIAVE)).limit(1);
-    if (riga && adesso - riga.lastRequest < PAUSA_MS) return false;
-
-    if (riga) {
-      await db
-        .update(rateLimit)
-        .set({ lastRequest: adesso, count: riga.count + 1 })
-        .where(eq(rateLimit.id, riga.id));
-    } else {
-      await db.insert(rateLimit).values({ id: CHIAVE, key: CHIAVE, count: 1, lastRequest: adesso });
-    }
-    return true;
+    // Passa solo la PRIMA chiamata della finestra, e lo decide il database in
+    // un'istruzione sola: due webhook arrivati insieme non fanno più partire due giri.
+    return (await contaColpo(CHIAVE, PAUSA_MS, adesso)).conteggio === 1;
   } catch (e) {
     console.error("[blog] freno della verifica non leggibile:", e);
     return true;

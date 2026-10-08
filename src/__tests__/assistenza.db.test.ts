@@ -153,6 +153,26 @@ describe("la conversazione e le notifiche", () => {
     expect(spia.mock.calls.some((c) => String(c[0]).includes("[assistenza]"))).toBe(true);
     spia.mockRestore();
   });
+
+  it("⚠️ tre risposte di fila salvano tre messaggi e mandano UNA notifica", async () => {
+    // Il freno è sulla posta, non sulla parola: chi scrive tre volte ha tre cose da dire,
+    // e lo staff le trova tutte nella coda. Senza freno ogni risposta mandava un'email
+    // per destinatario, dallo stesso conto da cui partono verifica e recupero password.
+    const { rateLimit } = await import("@/lib/db/schema");
+    const { id } = await apriTicket(A.userId, A.orgId, { oggetto: "Raffica", testo: "primo" });
+    posta.staff.length = 0;
+    try {
+      await rispondiComeUtente(A.userId, A.orgId, id, "uno");
+      await rispondiComeUtente(A.userId, A.orgId, id, "due");
+      await rispondiComeUtente(A.userId, A.orgId, id, "tre");
+      expect(posta.staff).toHaveLength(1);
+      const t = await mioTicket(A.userId, A.orgId, id);
+      expect(t?.messaggi).toHaveLength(4);
+    } finally {
+      await db.delete(rateLimit).where(eq(rateLimit.key, `assistenza-risposte:${id}`));
+      await db.delete(rateLimit).where(eq(rateLimit.key, `assistenza-nuove:${A.userId}`));
+    }
+  });
 });
 
 // ⚠️ LA POLICY, provata assumendo il ruolo a mano. È la verifica che conta per la

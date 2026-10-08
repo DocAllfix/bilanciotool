@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { randomUUID } from "node:crypto";
-import { and, eq } from "drizzle-orm";
-
-import { db } from "@/lib/db";
-import { rateLimit } from "@/lib/db/schema";
+import { frenato as oltreIlLimite } from "@/lib/freno";
 import { inviaCandidaturaFondatori } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
@@ -43,26 +39,14 @@ const MASSIMO = 5;
  * ⚠️ Su Vercel ogni istanza ha la propria memoria: un contatore che si azzera a ogni
  * avvio a freddo non ferma nessuno, basta che i tentativi cadano su istanze diverse.
  * È la stessa ragione per cui il limite sulle rotte di autenticazione usa questa tabella.
+ *
+ * ⚠️ E in UNA istruzione sola (`src/lib/freno.ts`). Qui c'era un «leggi, confronta,
+ * scrivi» in tre passi: trenta candidature arrivate insieme leggevano lo stesso numero
+ * e partivano tutte e trenta, ognuna con la sua email alla casella del titolare. È
+ * l'unica rotta del prodotto che manda posta su richiesta di un anonimo.
  */
 async function frenato(indirizzo: string): Promise<boolean> {
-  const key = `${indirizzo}|/api/fondatori`;
-  const adesso = Date.now();
-  const [riga] = await db.select().from(rateLimit).where(eq(rateLimit.key, key)).limit(1);
-
-  if (!riga || adesso - riga.lastRequest > FINESTRA_MS) {
-    if (riga) {
-      await db.update(rateLimit).set({ count: 1, lastRequest: adesso }).where(eq(rateLimit.key, key));
-    } else {
-      await db.insert(rateLimit).values({ id: randomUUID(), key, count: 1, lastRequest: adesso });
-    }
-    return false;
-  }
-  if (riga.count >= MASSIMO) return true;
-  await db
-    .update(rateLimit)
-    .set({ count: riga.count + 1 })
-    .where(and(eq(rateLimit.key, key), eq(rateLimit.id, riga.id)));
-  return false;
+  return oltreIlLimite(`fondatori:${indirizzo}`, FINESTRA_MS, MASSIMO);
 }
 
 export async function POST(req: Request) {

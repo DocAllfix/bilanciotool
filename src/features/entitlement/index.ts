@@ -1,8 +1,8 @@
 import { cache } from "react";
 import { db } from "@/lib/db";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
-import { platformConfig, orgEntitlement, company, member } from "@/lib/db/schema";
-import { and, eq, count } from "drizzle-orm";
+import { platformConfig, orgEntitlement, company, member, invitation } from "@/lib/db/schema";
+import { and, eq, count, gt } from "drizzle-orm";
 import { limitiEffettivi, type Limiti } from "@/lib/prezzi";
 import { conteggioAttive } from "@/features/companies/lettori-condivisi";
 
@@ -160,11 +160,37 @@ export async function assertCompanyCreatable(userId: string, orgId: string): Pro
 }
 
 // Blocco server-side al 6° membro (invito E accettazione).
-export async function assertSeatAvailable(orgId: string): Promise<void> {
+//
+// ⚠️ All'INVITO si contano anche gli inviti ancora validi (`invitiPendenti`). Senza, uno
+// studio con un solo posto libero poteva mandare dieci inviti: il controllo
+// all'accettazione li avrebbe fermati uno alla volta, ma dieci accettazioni arrivate
+// insieme leggevano tutte lo stesso posto libero ed entravano tutte (audit di sicurezza,
+// ottobre 2026). Se gli inviti in attesa non superano i posti, quella corsa non ha con
+// che cosa correre. `tranne` esclude l'indirizzo che si sta invitando: rimandare un invito
+// già in attesa non ne aggiunge uno.
+export async function assertSeatAvailable(
+  orgId: string,
+  opzioni?: { invitiPendenti?: { tranne?: string } },
+): Promise<void> {
   // Senza userId: questa gira dentro l'aggancio di Better Auth, dove sessione non c'e'.
   const limits = await getLimitiEffettivi(orgId);
   const r = await db.select({ n: count() }).from(member).where(eq(member.organizationId, orgId));
   if (r[0].n >= limits.maxMembers) {
     throw new EntitlementError("limit_members", `Limite di ${limits.maxMembers} membri per studio raggiunto`);
+  }
+  if (!opzioni?.invitiPendenti) return;
+  const tranne = opzioni.invitiPendenti.tranne?.toLowerCase() ?? null;
+  const pendenti = await db
+    .select({ email: invitation.email })
+    .from(invitation)
+    .where(
+      and(eq(invitation.organizationId, orgId), eq(invitation.status, "pending"), gt(invitation.expiresAt, new Date())),
+    );
+  const inAttesa = pendenti.filter((p) => p.email.toLowerCase() !== tranne).length;
+  if (r[0].n + inAttesa >= limits.maxMembers) {
+    throw new EntitlementError(
+      "limit_members",
+      `Gli inviti in attesa occupano già tutti gli accessi liberi del piano (limite di ${limits.maxMembers} membri): annulla un invito o aggiungi accessi`,
+    );
   }
 }
