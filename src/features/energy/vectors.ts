@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
-import { energyBalance, energyCompanyFactor, energyVector, energyVectorInput } from "@/lib/db/schema";
+import { company, energyBalance, energyCompanyFactor, energyVector, energyVectorInput } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { mensileSchema, perNumeric, vettoreCampoSchema } from "./validation";
@@ -196,10 +196,27 @@ export async function upsertCompanyFactor(
   };
 
   await withTenant({ userId, orgId }, async (tx) => {
+    // ⚠️ L'azienda si verifica QUI, come fa `setDriverValue`. Il `companyId` arriva dal
+    // browser, e senza questa riga uno studio poteva scrivere un fattore sull'azienda di
+    // un altro: la riga restava sua (la policy guarda solo `organization_id`, la chiave
+    // esterna non passa da RLS), ma occupava il posto dell'indice unico
+    // `(company_id, key)`, e lo studio vero non poteva più salvare il proprio.
+    const [co] = await tx
+      .select({ id: company.id })
+      .from(company)
+      .where(and(eq(company.id, companyId), eq(company.organizationId, orgId)));
+    if (!co) throw new Error("Azienda inesistente o di un altro tenant");
+
     const [esistente] = await tx
       .select({ id: energyCompanyFactor.id })
       .from(energyCompanyFactor)
-      .where(and(eq(energyCompanyFactor.companyId, companyId), eq(energyCompanyFactor.key, input.key)));
+      .where(
+        and(
+          eq(energyCompanyFactor.companyId, companyId),
+          eq(energyCompanyFactor.organizationId, orgId),
+          eq(energyCompanyFactor.key, input.key),
+        ),
+      );
 
     if (esistente) {
       await tx.update(energyCompanyFactor).set(valori).where(eq(energyCompanyFactor.id, esistente.id));
@@ -232,9 +249,16 @@ export async function deleteCompanyFactor(
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
   await withTenant({ userId, orgId }, async (tx) => {
+    // Filtro sullo studio oltre a RLS: i due strati si difendono a vicenda.
     await tx
       .delete(energyCompanyFactor)
-      .where(and(eq(energyCompanyFactor.companyId, companyId), eq(energyCompanyFactor.key, key)));
+      .where(
+        and(
+          eq(energyCompanyFactor.companyId, companyId),
+          eq(energyCompanyFactor.organizationId, orgId),
+          eq(energyCompanyFactor.key, key),
+        ),
+      );
     await logAudit(tx, {
       organizationId: orgId,
       userId,

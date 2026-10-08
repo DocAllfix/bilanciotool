@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -56,18 +57,46 @@ export async function requireSession(): Promise<SessionInfo> {
 // sessioni già aperte dell'ex collaboratore (resterebbero valide per giorni).
 export async function requireActiveOrg(): Promise<SessionInfo & { orgId: string; role: OrgRole }> {
   const s = await requireSession();
-  const candidate = s.activeOrganizationId ?? (await firstMembershipOrgId(s.userId));
-  if (!candidate) throw new ForbiddenError("Nessuna organizzazione associata all'account");
-  const role = await membershipRole(s.userId, candidate);
-  if (!role) {
-    // Sessione con org stantia: si ripiega sull'appartenenza reale, se esiste.
-    const fallback = await firstMembershipOrgId(s.userId);
-    const fallbackRole = fallback ? await membershipRole(s.userId, fallback) : null;
-    if (!fallback || !fallbackRole) throw new ForbiddenError("Non sei membro di questa organizzazione");
-    return { ...s, orgId: fallback, role: fallbackRole };
-  }
-  return { ...s, orgId: candidate, role };
+  const esito = await orgAttivaVerificata(s);
+  if (esito === "nessuna") throw new ForbiddenError("Nessuna organizzazione associata all'account");
+  if (esito === "non-membro") throw new ForbiddenError("Non sei membro di questa organizzazione");
+  return { ...s, ...esito };
 }
+
+/**
+ * Lo studio su cui la sessione può davvero lavorare, con il ruolo riletto dal database.
+ *
+ * ⚠️ È la stessa risoluzione di `requireActiveOrg`, ma **non solleva**: la usa anche la
+ * shell dell'applicazione (`(app)/layout.tsx`), che non può spegnersi per una sessione
+ * stantia. La shell prima usava `activeOrganizationId` così com'era, senza questa
+ * verifica: chi era stato tolto da uno studio continuava a vedere in ogni pagina i nomi
+ * delle sue aziende clienti e lo stato dell'abbonamento, perché le policy RLS guardano
+ * l'organizzazione del contesto e non l'appartenenza (audit di sicurezza, ottobre 2026).
+ */
+export function orgAttivaVerificata(
+  s: Pick<SessionInfo, "userId" | "activeOrganizationId">,
+): Promise<{ orgId: string; role: OrgRole } | "nessuna" | "non-membro"> {
+  // Argomenti primitivi: `cache()` confronta per identità, e un oggetto nuovo a ogni
+  // chiamata la renderebbe inutile. Layout e pagina chiedono la stessa cosa nella stessa
+  // richiesta: la si chiede al database una volta sola.
+  return orgAttivaVerificataInCache(s.userId, s.activeOrganizationId ?? null);
+}
+
+const orgAttivaVerificataInCache = cache(async function orgAttivaVerificataInCache(
+  userId: string,
+  activeOrganizationId: string | null,
+): Promise<{ orgId: string; role: OrgRole } | "nessuna" | "non-membro"> {
+  const s = { userId, activeOrganizationId };
+  const candidate = s.activeOrganizationId ?? (await firstMembershipOrgId(s.userId));
+  if (!candidate) return "nessuna";
+  const role = await membershipRole(s.userId, candidate);
+  if (role) return { orgId: candidate, role };
+  // Sessione con org stantia: si ripiega sull'appartenenza reale, se esiste.
+  const fallback = await firstMembershipOrgId(s.userId);
+  const fallbackRole = fallback ? await membershipRole(s.userId, fallback) : null;
+  if (!fallback || !fallbackRole) return "non-membro";
+  return { orgId: fallback, role: fallbackRole };
+});
 
 async function membershipRole(userId: string, orgId: string): Promise<OrgRole | null> {
   const rows = await db

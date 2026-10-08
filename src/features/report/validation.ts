@@ -17,6 +17,25 @@ export const progettoSchema = z.object({
     .optional(),
 });
 
+/**
+ * Standard adottato e perimetro: gli UNICI due campi che le impostazioni del bilancio
+ * possono toccare.
+ *
+ * ⚠️ `.strict()` non è pignoleria. Il patch arriva dal browser e finiva dritto in
+ * `.set(patch)`: aggiungendo `companyId` e `anno` si spostava il proprio progetto
+ * sull'azienda di un ALTRO studio, e l'indice unico `(company_id, anno)` impediva poi a
+ * quello studio di creare il proprio bilancio di quell'anno. La chiave esterna non passa
+ * dalle policy RLS, quindi la riga restava nostra e il danno era altrui. Una chiave che
+ * non è nell'elenco ora fa fallire la richiesta, invece di diventare una colonna.
+ */
+export const impostazioniSchema = z
+  .object({
+    standard: progettoSchema.shape.standard.unwrap(),
+    perimetro: z.string().max(4000),
+  })
+  .partial()
+  .strict();
+
 export const profiloSchema = z
   .object({
     forma: z.string(),

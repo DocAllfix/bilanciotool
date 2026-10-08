@@ -72,6 +72,12 @@ export const auth = betterAuth({
     // studio, si semina l'azienda dimostrativa, e non gli arriverà mai niente — né la
     // reimpostazione della password, né la ricevuta di un pagamento.
     requireEmailVerification: true,
+    // Reimpostare la password chiude TUTTE le sessioni aperte. Senza, chi avesse rubato
+    // una sessione la teneva anche dopo il recupero fatto dal titolare — e la sessione si
+    // rinnova da sola fino a sette giorni. Il recupero è proprio il gesto con cui si
+    // caccia un intruso: deve cacciarlo. La pagina di reimpostazione manda già a
+    // `/login`, quindi a chi reimposta non toglie niente (audit di sicurezza, ottobre 2026).
+    revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url }) => {
       await sendResetPasswordEmail(user.email, url);
     },

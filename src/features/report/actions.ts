@@ -44,11 +44,13 @@ export async function updateProfiloAction(companyId: string, projectId: string, 
 export async function updateImpostazioniAction(
   companyId: string,
   projectId: string,
-  patch: { standard?: string; perimetro?: string },
+  // `unknown` di proposito: il tipo del browser non è una garanzia, lo è lo schema che
+  // `updateStandardEPerimetro` applica.
+  patch: unknown,
 ): Promise<ActionEsito> {
   try {
     const s = await requireConsultant();
-    await updateStandardEPerimetro(s.userId, s.orgId, projectId, patch);
+    await updateStandardEPerimetro(s.userId, s.orgId, projectId, patch as never);
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

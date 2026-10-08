@@ -162,7 +162,16 @@ export default async function VerificaPage({
             </p>
             <dl className="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-[auto_1fr]" data-slot="esito-verifica">
               <Voce k="Documento" v={DOCUMENTI[esito.tipo].nome} />
-              <Voce k="Emesso da" v={esito.emittente} />
+              {/* ⚠️ «Emesso da» faceva da garante a un nome che nessuno ha verificato: è il
+                  nome che lo studio ha scritto nel proprio account, e si cambia in un clic.
+                  Uno studio pagante poteva farsi confermare dal nostro dominio con il nome
+                  di un'altra organizzazione. La pagina dice ora che cosa sa davvero: quale
+                  account ha emesso il documento, e con quale nome si è presentato. Non la
+                  partita IVA: i dati fiscali stanno su Stripe, e qui non si conservano.
+                  L'etichetta è la stessa con e senza white-label: la riga del codice non
+                  distingue il nostro marchio dal nome di uno studio, e uno studio potrebbe
+                  perfino chiamarsi come noi. «Indicato nel documento» è vero in tutti i casi. */}
+              <Voce k="Emittente indicato nel documento" v={esito.emittente} />
               <Voce k="Per conto di" v={esito.azienda} />
               {esito.anno !== SENZA_ESERCIZIO && <Voce k="Esercizio" v={String(esito.anno)} />}
               <Voce k="Revisione" v={String(esito.versione)} />
@@ -192,8 +201,13 @@ export default async function VerificaPage({
             )}
             <p className="mt-5 border-t pt-4 text-[13px] leading-relaxed text-muted-foreground">
               Questa pagina conferma <strong>l&apos;emissione</strong>, non il merito: dice che quel documento
-              è stato prodotto da quel soggetto per quell&apos;azienda in quella data. Non attesta la
-              correttezza dei dati, che resta di chi lo ha redatto, e non è una certificazione.
+              è stato prodotto con EvalisDeck, da un account che si è presentato con quel nome, per
+              quell&apos;azienda e in quella data. Non attesta la correttezza dei dati, che resta di chi lo ha
+              redatto, e non è una certificazione.
+            </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
+              Il nome dello studio è quello che lo studio stesso ha indicato: EvalisDeck non ne verifica
+              l&apos;identità. Se ti serve sapere chi è davvero, chiedilo a chi ti ha consegnato il documento.
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
               Il contenuto non è consultabile da qui. Se ti serve il documento, chiedilo a chi te lo ha

@@ -140,15 +140,51 @@ export function quantiSchemiArticolo(html: string): number {
   return n;
 }
 
-/** Gli indirizzi delle immagini caricate dal CMS che una pagina usa. */
-export function immaginiDellaPagina(html: string, sito: string): string[] {
-  const pubblico = senzaBarra(sito);
+/**
+ * L'indirizzo, reso assoluto rispetto al sito, se sta dentro una delle origini permesse;
+ * altrimenti `null`.
+ *
+ * ⚠️ Questo giro va in rete DAL SERVER, e gli indirizzi li prende dall'HTML di un articolo,
+ * cioè da ciò che scrive chi ha accesso al CMS. Prima bastava che un indirizzo cominciasse
+ * con «http» per essere richiesto così com'era: un `<img>` verso `http://169.254.169.254/
+ * wp-content/uploads/x.png` faceva bussare la funzione a un host interno (audit di
+ * sicurezza, ottobre 2026). Si confrontano le ORIGINI analizzate da `URL`, non prefissi di
+ * stringa: `https://evalisdeck.it.altro.com` comincia come il sito e non lo è.
+ */
+export function nelleOrigini(indirizzo: string, base: string, origini: string[]): string | null {
+  let u: URL;
+  try {
+    u = new URL(indirizzo, `${senzaBarra(base)}/`);
+  } catch {
+    return null;
+  }
+  const ammesse = new Set(
+    origini.flatMap((o) => {
+      try {
+        return [new URL(o).origin];
+      } catch {
+        return [];
+      }
+    }),
+  );
+  return ammesse.has(u.origin) ? u.href : null;
+}
+
+/**
+ * Gli indirizzi delle immagini caricate dal CMS che una pagina usa.
+ *
+ * Solo quelle servite dal sito o dal CMS: un'immagine da un'origine diversa non si misura
+ * (non è nostra, e misurarla vorrebbe dire andare in rete verso dove dice l'articolo).
+ */
+export function immaginiDellaPagina(html: string, sito: string, cms?: string): string[] {
+  const origini = cms ? [sito, cms] : [sito];
   const src = [...html.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1]);
   return [
     ...new Set(
       src
         .filter((u) => u.includes("/wp-content/uploads/"))
-        .map((u) => (u.startsWith("http") ? u : `${pubblico}${u}`)),
+        .map((u) => nelleOrigini(u, sito, origini))
+        .filter((u): u is string => u !== null),
     ),
   ];
 }
@@ -382,9 +418,11 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
     const primo = await prendi(daProvare[0]);
     const collegate = [
       ...new Set(
-        [...(primo?.testo ?? "").matchAll(/href="([^"]*\/blog\/(?:categoria|tag|autore)\/[^"]+)"/g)].map((m) =>
-          m[1].startsWith("http") ? m[1] : `${sito}${m[1]}`,
-        ),
+        [...(primo?.testo ?? "").matchAll(/href="([^"]*\/blog\/(?:categoria|tag|autore)\/[^"]+)"/g)]
+          // Solo le pagine del sito: un collegamento verso un altro host non è una pagina
+          // nostra da provare, e seguirlo farebbe andare il server dove dice l'articolo.
+          .map((m) => nelleOrigini(m[1], sito, [sito]))
+          .filter((u): u is string => u !== null),
       ),
     ].slice(0, 6);
     const rotteColl: string[] = [];
@@ -471,7 +509,7 @@ export async function verificaBlog(opts: Opzioni): Promise<Esito[]> {
     problemi.push(...difettiDellaPagina(url, html, { sito, hostCms }));
 
     for (const a of autoriCitati(html, sito)) pagineAutore.add(a);
-    for (const i of immaginiDellaPagina(html, sito)) immagini.add(i);
+    for (const i of immaginiDellaPagina(html, sito, cms)) immagini.add(i);
   }
 
   aggiungi(

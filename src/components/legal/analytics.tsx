@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Script from "next/script";
 import { usePathname } from "next/navigation";
+import { percorsoEscluso } from "./analytics-percorsi";
 import {
   analiticaAttiva,
   iscriviConsenso,
@@ -34,11 +35,9 @@ export function Analytics() {
   const consenso = useSyncExternalStore(iscriviConsenso, leggiConsenso, raccoltaSpentaSulServer);
   const pathname = usePathname();
 
-  // Il documento pubblicato è la pagina che Chromium trasforma in PDF: nessuno script di
-  // misurazione deve girare dentro un documento consegnato a un cliente.
-  const dentroUnDocumento = pathname?.startsWith("/documento/") ?? false;
-
-  if (!ID || dentroUnDocumento || !analiticaAttiva(consenso)) return null;
+  // Il documento pubblicato e le pagine con un token nell'indirizzo: l'elenco e il perché
+  // stanno in `analytics-percorsi.ts`.
+  if (!ID || percorsoEscluso(pathname) || !analiticaAttiva(consenso)) return null;
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { nz, toFixedStr } from "@/lib/calc/shared/decimal";
+import { annoSchema } from "@/features/campi";
 
 // Parser puro dei JSON esportati dai prototipi (contratto in
 // docs/formato-export-prototipi.md). Solo parsing e normalizzazione:
@@ -14,10 +15,37 @@ const numOrNull = (v: unknown): string | null => {
 const num = (v: unknown): string => toFixedStr(nz((v ?? 0) as string | number));
 
 // ---------------------------------------------------------------- GHG
+
+// ⚠️ I tetti dell'import. L'import crea UN INVENTARIO PER OGNI ANNO DISTINTO e in ciascuno
+// copia il profilo intero, le sorgenti e la checklist: senza tetti un file da pochi
+// kilobyte con quaranta anni diversi scriveva 1.680 righe, e uno da 75 KB con venti anni
+// occupava 1,5 MB (audit di sicurezza, ottobre 2026). Il corpo di una server action è
+// limitato a 1 MB, ma quel limite ferma ciò che entra, non ciò che si scrive.
+//
+// Sono larghi apposta: un inventario vero ha un anno base e una manciata di esercizi, il
+// profilo una decina di campi brevi, le sorgenti venticinque. Servono a fermare l'abuso,
+// non a stringere un uso reale — e se un giorno ne stringessero uno, il messaggio lo dice.
+const MAX_ANNI = 30;
+const MAX_VOCI = 10_000;
+const MAX_CHIAVI = 200;
+const MAX_VALORE_PROFILO = 10_000;
+const TROPPI_ANNI = `Il file contiene più di ${MAX_ANNI} anni diversi: importali in più volte`;
+const TROPPE_CHIAVI = `Il file contiene più di ${MAX_CHIAVI} voci in una sezione: non sembra un export del prototipo`;
+const VALORE_LUNGO = `Un campo del profilo supera i ${MAX_VALORE_PROFILO} caratteri`;
+const CHIAVE_LUNGA = "Chiave del file troppo lunga: non sembra un export del prototipo";
+const chiave = z.string().max(60, CHIAVE_LUNGA);
+const MESSAGGI_TETTI = new Set([
+  TROPPI_ANNI,
+  TROPPE_CHIAVI,
+  VALORE_LUNGO,
+  CHIAVE_LUNGA,
+  "Il file contiene troppe voci per un solo import",
+]);
+
 const vocePrototipo = z
   .object({
     id: z.string().optional(),
-    anno: z.coerce.number().int(),
+    anno: annoSchema,
     cat: z.enum(["1", "2", "3", "4", "5", "6"]),
     src: z.string(),
     sede: z.string().optional().default(""),
@@ -55,19 +83,38 @@ const orgPrototipo = z
   .object({
     id: z.string().optional(),
     nome: z.string(),
-    anno: z.coerce.number().int(),
-    annoBase: z.coerce.number().int().optional(),
-    profilo: z.record(z.string(), z.unknown()).optional().default({}),
-    fe: z.array(fePrototipo).optional().default([]),
-    voci: z.array(vocePrototipo),
-    sorgenti: z.record(z.string(), z.object({ st: z.enum(["in", "out", "na"]).optional(), note: z.string().optional() }).loose()).optional().default({}),
-    anni: z.record(z.string(), z.record(z.string(), z.unknown())).optional().default({}),
+    anno: annoSchema,
+    annoBase: annoSchema.optional(),
+    profilo: z
+      .record(chiave, z.unknown())
+      .refine((p) => Object.keys(p).length <= MAX_CHIAVI, TROPPE_CHIAVI)
+      .refine((p) => Object.values(p).every((v) => String(v ?? "").length <= MAX_VALORE_PROFILO), VALORE_LUNGO)
+      .optional()
+      .default({}),
+    fe: z.array(fePrototipo).max(1_000).optional().default([]),
+    voci: z.array(vocePrototipo).max(MAX_VOCI, "Il file contiene troppe voci per un solo import"),
+    sorgenti: z
+      .record(chiave, z.object({ st: z.enum(["in", "out", "na"]).optional(), note: z.string().optional() }).loose())
+      .refine((p) => Object.keys(p).length <= MAX_CHIAVI, TROPPE_CHIAVI)
+      .optional()
+      .default({}),
+    anni: z
+      .record(chiave, z.record(z.string(), z.unknown()))
+      .refine((p) => Object.keys(p).length <= MAX_ANNI, TROPPI_ANNI)
+      .optional()
+      .default({}),
     obiettivi: z.array(z.object({ id: z.string().optional(), n: z.string().optional().default(""), ambito: z.string().optional().default("tot"), anno: z.union([z.string(), z.number()]).optional(), rid: z.union([z.string(), z.number()]).optional(), note: z.string().optional().default("") }).loose()).optional().default([]),
-    verifica: z.record(z.string(), z.object({ st: z.enum(["ok", "par", "no"]).optional(), note: z.string().optional() }).loose()).optional().default({}),
+    verifica: z
+      .record(chiave, z.object({ st: z.enum(["ok", "par", "no"]).optional(), note: z.string().optional() }).loose())
+      .refine((p) => Object.keys(p).length <= MAX_CHIAVI, TROPPE_CHIAVI)
+      .optional()
+      .default({}),
   })
-  .loose();
+  .loose()
+  // Un inventario per ogni anno distinto: il conto si fa QUI, prima di toccare il database.
+  .refine((o) => new Set([o.anno, ...o.voci.map((v) => v.anno)]).size <= MAX_ANNI, TROPPI_ANNI);
 
-const archivioGhg = z.object({ org: z.array(orgPrototipo) }).loose();
+const archivioGhg = z.object({ org: z.array(orgPrototipo).max(50) }).loose();
 
 export type GhgImport = ReturnType<typeof parseGhgExport>;
 
@@ -79,7 +126,14 @@ export function parseGhgExport(json: unknown) {
   } else {
     const single = orgPrototipo.safeParse(json);
     if (!single.success) {
-      throw new Error("File non riconosciuto: atteso l'export del prototipo GHG (archivio {org:[…]} o singola organizzazione)");
+      // Se il file ha la forma giusta ma supera un tetto, si dice quale: «non riconosciuto»
+      // manderebbe a cercare un difetto di formato che non c'è.
+      const tetto = [...single.error.issues, ...arch.error.issues]
+        .map((i) => i.message)
+        .find((m) => MESSAGGI_TETTI.has(m));
+      throw new Error(
+        tetto ?? "File non riconosciuto: atteso l'export del prototipo GHG (archivio {org:[…]} o singola organizzazione)",
+      );
     }
     orgs = [single.data];
   }

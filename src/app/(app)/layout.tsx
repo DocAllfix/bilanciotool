@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TITOLARE } from "@/lib/legale";
-import { getSessionOrNull } from "@/features/auth/guards";
-import { firstMembershipOrgId } from "@/features/auth/orgs";
+import { getSessionOrNull, orgAttivaVerificata } from "@/features/auth/guards";
 import { getAccountStatus } from "@/features/entitlement";
 import { listCompanyNames } from "@/features/companies/fascicolo";
 import { withTenant } from "@/lib/db/tenant";
@@ -17,7 +16,12 @@ import { BenvenutoDemo } from "@/components/onboarding/benvenuto-demo";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSessionOrNull();
   if (!session) redirect("/login");
-  const orgId = session.activeOrganizationId ?? (await firstMembershipOrgId(session.userId));
+  // ⚠️ Lo studio si VERIFICA, non si prende dalla sessione: un ex collaboratore ha ancora
+  // `activeOrganizationId` nella propria, e senza questa verifica la shell gli mostrava
+  // le aziende dello studio da cui era stato tolto. Senza appartenenza valida la shell si
+  // rende vuota; sono le pagine, con `requireActiveOrg`, a dire che cosa manca.
+  const verificata = await orgAttivaVerificata(session);
+  const orgId = typeof verificata === "string" ? null : verificata.orgId;
   // Stato e nomi in parallelo: la navigazione contestuale vive sopra la rotta
   // dell'azienda, quindi i nomi non possono arrivarle da un contesto sottostante.
   //

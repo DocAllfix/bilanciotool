@@ -8,7 +8,7 @@ import { chiaveUsataDaDocumenti } from "@/features/documents/immagini";
 import { dimensioniImmagine, modoPerProporzioni, type ModoCopertina } from "@/lib/copertina-modo";
 import { and, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
-import { progettoSchema, profiloSchema, sogliaSchema } from "./validation";
+import { impostazioniSchema, progettoSchema, profiloSchema, sogliaSchema } from "./validation";
 import { toFixedStr, nz } from "@/lib/calc/shared/decimal";
 import type { z } from "zod";
 
@@ -53,13 +53,21 @@ export async function updateStandardEPerimetro(
   userId: string,
   orgId: string,
   projectId: string,
-  patch: { standard?: string; perimetro?: string },
+  patch: z.input<typeof impostazioniSchema>,
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
+  const v = impostazioniSchema.parse(patch);
+  // Si scrivono i campi validati uno per uno, non l'oggetto ricevuto: se domani lo schema
+  // perdesse lo `.strict()`, una chiave in più resterebbe comunque fuori dalla query.
+  const campi = {
+    ...(v.standard !== undefined ? { standard: v.standard } : {}),
+    ...(v.perimetro !== undefined ? { perimetro: v.perimetro } : {}),
+  };
+  if (!Object.keys(campi).length) return;
   await withTenant({ userId, orgId }, async (tx) => {
     const updated = await tx
       .update(reportProject)
-      .set(patch)
+      .set(campi)
       .where(eq(reportProject.id, projectId))
       .returning({ id: reportProject.id });
     if (!updated.length) throw new Error("Progetto inesistente o di un altro tenant");

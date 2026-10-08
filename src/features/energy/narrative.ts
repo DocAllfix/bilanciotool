@@ -226,17 +226,39 @@ export async function removeMedia(userId: string, orgId: string, mediaId: string
   if (daPulire) await deleteObject(orgId, daPulire).catch(() => undefined);
 }
 
+/** I soli campi di un'immagine che il consulente può cambiare. */
+const mediaPatchSchema = z
+  .object({
+    didascalia: z.string().max(1000).nullable(),
+    credito: z.string().max(300).nullable(),
+    larghezza: z.enum(["piena", "meta"]),
+    posizione: z.number().int().min(0).max(10_000),
+  })
+  .partial()
+  .strict();
+
 export async function updateMedia(
   userId: string,
   orgId: string,
   mediaId: string,
-  patch: { didascalia?: string | null; credito?: string | null; larghezza?: "piena" | "meta"; posizione?: number },
+  patch: z.input<typeof mediaPatchSchema>,
 ): Promise<void> {
   await requireEntitlement(userId, orgId, "write_data");
+  const v = mediaPatchSchema.parse(patch);
+  // Campi scritti uno per uno, come fa `report/chapters.ts`: l'oggetto del browser finiva
+  // dritto in `.set()` e con `narrativeId` o `storageKey` in più spostava l'immagine sotto
+  // un altro capitolo o la faceva puntare a un altro file (audit di sicurezza, ottobre 2026).
+  const campi = {
+    ...(v.didascalia !== undefined ? { didascalia: v.didascalia } : {}),
+    ...(v.credito !== undefined ? { credito: v.credito } : {}),
+    ...(v.larghezza !== undefined ? { larghezza: v.larghezza } : {}),
+    ...(v.posizione !== undefined ? { posizione: v.posizione } : {}),
+  };
+  if (!Object.keys(campi).length) return;
   await withTenant({ userId, orgId }, async (tx) => {
     const agg = await tx
       .update(energyMedia)
-      .set(patch)
+      .set(campi)
       .where(eq(energyMedia.id, mediaId))
       .returning({ id: energyMedia.id });
     if (!agg.length) throw new Error("Elemento inesistente o di un altro tenant");
