@@ -89,6 +89,21 @@ try {
         const r = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         if (!r || r.status() !== 200) throw new Error(`risposta ${r?.status()}`);
         await page.locator('[data-slot="azienda-archiviata"]').waitFor({ timeout: 30_000 });
+        // ⚠️ I percorsi per esercizio rinviano all'ultimo anno (`/ghg` → `/ghg/2025`) con
+        // `redirect()` lato server, ma sotto l'azienda c'è un `loading.tsx`: la risposta
+        // arriva in streaming e il rinvio diventa una navigazione del CLIENT, che scatta
+        // DOPO che la fascia è comparsa. Senza aspettarla, il `goto` della pagina dopo
+        // veniva interrotto (`ERR_ABORTED`) e il collaudo accusava la pagina sbagliata —
+        // due volte, sempre sull'energetico che segue il GHG. Si aspetta che l'indirizzo
+        // smetta di cambiare: è il fatto, non un ritardo fisso.
+        let prima = page.url();
+        for (let i = 0; i < 20; i++) {
+          await page.waitForTimeout(250);
+          const ora = page.url();
+          if (ora === prima && i >= 3) break;
+          prima = ora;
+        }
+        await page.waitForLoadState("domcontentloaded");
       });
     }
   }
