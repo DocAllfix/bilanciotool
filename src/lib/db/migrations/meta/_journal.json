@@ -428,6 +428,13 @@
       "when": 1790705614056,
       "tag": "0060_copertina_modo",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1791461288459,
+      "tag": "0061_azienda_scrivibile",
+      "breakpoints": true
     }
   ]
 }

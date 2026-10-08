@@ -38,8 +38,34 @@ export type ActionEsito<T = undefined> =
  * libreria nuova: e' una proprieta' strutturale, e il verso e' quello giusto (si mostra
  * cio' che riconosciamo, non si nasconde cio' che ricordiamo).
  */
+/**
+ * I due rifiuti del trigger `azienda_scrivibile` (migrazione 0061), riconosciuti dal codice
+ * in HINT e non dal testo.
+ *
+ * ⚠️ Drizzle incapsula l'errore di Postgres: il campo sta in `cause`, uno o due livelli
+ * sotto. Guardare solo l'errore esterno lo farebbe finire nel ramo generico, e chi prova a
+ * lavorare su un'azienda archiviata leggerebbe «Riprova fra poco» — cioè di riprovare una
+ * cosa che non riuscirà mai.
+ */
+const RIFIUTI_AZIENDA: Record<string, string> = {
+  azienda_archiviata: "L'azienda è archiviata: ripristinala dal portafoglio per riprendere il lavoro.",
+  azienda_altro_studio: "Azienda inesistente o di un altro studio.",
+};
+
+function rifiutoAzienda(e: unknown): string | null {
+  let cur: unknown = e;
+  for (let i = 0; i < 4 && cur && typeof cur === "object"; i++) {
+    const hint = (cur as { hint?: unknown }).hint;
+    if (typeof hint === "string" && hint in RIFIUTI_AZIENDA) return hint;
+    cur = (cur as { cause?: unknown }).cause;
+  }
+  return null;
+}
+
 export function daErrore(e: unknown): ActionEsito<never> {
   if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
+  const rifiuto = rifiutoAzienda(e);
+  if (rifiuto) return { ok: false, errore: RIFIUTI_AZIENDA[rifiuto], codice: rifiuto };
   if (e instanceof z.ZodError) return { ok: false, errore: e.issues[0]?.message ?? "Dati non validi" };
   if (e instanceof AuthError) return { ok: false, errore: e.message, codice: "non_autenticato" };
   if (e instanceof ForbiddenError) return { ok: false, errore: e.message, codice: "non_consentito" };
