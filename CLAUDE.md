@@ -3492,8 +3492,9 @@ repository). 12 reperti confermati, tutti di gravità bassa, e 6 ipotesi da vali
 sei commit (`0a19dea` … `e03b7b7`), ognuno col suo test messo in rosso rimettendo il difetto.
 
 - **Fase 0**: `/.playwright-mcp/` fuori dal versionamento. Due registri portavano il bypass di
-  Vercel di un'anteprima dentro un URL. ⚠️ **Resta al committente**: confrontare quel valore col
-  segreto attivo e ruotarlo se coincide.
+  Vercel di un'anteprima dentro un URL. ✅ **Chiuso senza rotazione**: quel valore non è fra i
+  segreti di bypass attivi del progetto, verificato in sola lettura dall'API di Vercel, con la
+  controprova che il segreto attuale risulta attivo. Il valore non è stato stampato da nessuna parte.
 - **Fase 1**: il reset della password chiude le sessioni; le impostazioni del bilancio e le
   immagini del bilancio energetico accettano solo i campi previsti (`.strict()`); i fattori
   energetici verificano l'azienda; la shell verifica l'appartenenza (`orgAttivaVerificata`,
@@ -3543,9 +3544,20 @@ condivisione 9/9, agenda 16/16, compensi 12/12, demo-completa 9/9, ghg 24/24, bi
 energetico verde, archiviata 31/31 (al secondo tentativo: il primo diede `ERR_ABORTED` su una
 pagina sola, dichiarato).
 
-⚠️ **Non ancora in produzione.** Per il rilascio: anteprima col metodo; in produzione, in sola
-lettura, le righe con `organization_id` diverso da quello della loro azienda (attese 0) e gli
-utenti verificati senza appartenenza (possibili vittime della Fase 4, da portare al
-committente); poi la migrazione `0061`, poi la fusione. Restano aperti, con la ragione nel
+✅ **In produzione dall'8 ottobre 2026 (`45846c8`)**, col metodo: ramo
+`anteprima/audit-sicurezza`, primo build annullato, sette variabili legate al ramo, precedenza
+misurata (conti di collaudo solo nello sviluppo, zero in produzione). Giro sull'anteprima 56/61:
+`csp` rosso per il debito già aperto di Google Ads, `anticorruzione-percorso` caduto per
+contesa e 27/27 da solo, `archiviata` corretto (il rinvio all'ultimo esercizio arriva in
+streaming e interrompeva la pagina dopo) e 31/31. Prima di scrivere, in sola lettura: **0** righe
+collegate all'azienda di un altro studio, **0** utenti verificati senza studio (nessuna vittima
+della Fase 4), connessione dell'applicazione `app_rls`. Poi la guardia vista rifiutarsi, la
+migrazione `0061` (62/62, trigger su 31 tabelle) e la prova in una transazione annullata: la
+riga verso l'azienda di un altro studio è respinta, conteggi identici. Dopo la fusione:
+`tutto-pubblico` 37/37, `legale` 26/26, `sitemap` verde sul sito vero.
+**Regola nata qui:** **un `redirect()` lato server sotto un `loading.tsx` arriva in streaming e
+diventa una navigazione del client**, che scatta dopo che la pagina sembra pronta: un collaudo
+che naviga subito dopo viene interrotto (`ERR_ABORTED`) e accusa la pagina sbagliata. Si aspetta
+che l'indirizzo smetta di cambiare. Restano aperti, con la ragione nel
 piano: tempo della registrazione e Chromium per richiesta (da misurare su anteprima), FK
 composte sulle relazioni figlio→padre, comandi disabilitati nei 14 percorsi per le archiviate.
