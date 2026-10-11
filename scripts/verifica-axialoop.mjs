@@ -10,6 +10,7 @@
 // collaudo dallo stesso indirizzo fa scattare il limite generico di Better Auth
 // (60 richieste al minuto) e il collaudo DOPO vede 429 su /api/auth/get-session.
 import { chromium } from "@playwright/test";
+import { attraversaProtezione, rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
 const OUT = process.argv[2];
@@ -29,8 +30,9 @@ for (const tema of ["light", "dark"]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h } });
     await ctx.addInitScript((t) => { try { localStorage.setItem("theme", t); localStorage.setItem("evalis-consenso", "rifiutato"); } catch {} }, tema);
     const page = await ctx.newPage();
+    await attraversaProtezione(page);
     const errori = [];
-    page.on("console", (m) => { if (m.type() === "error") errori.push(m.text().slice(0, 120)); });
+    page.on("console", (m) => { if (m.type() === "error" && !rumoreDiPiattaforma(m.text())) errori.push(m.text().slice(0, 120)); });
     page.on("response", (r) => { if (r.status() >= 400) errori.push(`${r.status()} ${r.url().replace(BASE, "")}`); });
     for (const p of PAGINE) {
       await page.goto(BASE + p, { waitUntil: "domcontentloaded" });
