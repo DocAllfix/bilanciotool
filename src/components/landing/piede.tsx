@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoOrizzontale } from "@/components/brand/logo";
 import { BadgeEcoVadis } from "./ecovadis";
+import { PoweredByAxialoop } from "./axialoop";
 import { PreferenzeCookie } from "@/components/legal/preferenze-cookie";
 import { TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 import { blogVisibileAiMotori } from "@/features/blog/fonte";
@@ -117,6 +118,8 @@ export function PiedeMarketing() {
             {TITOLARE.partitaIva}
           </span>
           <span>Dati ospitati nell&apos;Unione Europea</span>
+          {/* Da telefono in una riga sua, da schermo largo allineato alla riga legale. */}
+          <PoweredByAxialoop className="w-full sm:w-auto" />
         </div>
       </div>
     </footer>

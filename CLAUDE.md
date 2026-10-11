@@ -3561,3 +3561,23 @@ che naviga subito dopo viene interrotto (`ERR_ABORTED`) e accusa la pagina sbagl
 che l'indirizzo smetta di cambiare. Restano aperti, con la ragione nel
 piano: tempo della registrazione e Chromium per richiesta (da misurare su anteprima), FK
 composte sulle relazioni figlio→padre, comandi disabilitati nei 14 percorsi per le archiviate.
+
+**«powered by Axialoop» sulle pagine pubbliche (2026-10-11)** — richiesto dall'utente per tutti
+i suoi prodotti, specifica arrivata dalla sessione di Axialoop. Componente unico
+`src/components/landing/axialoop.tsx`, montato nel piede (`PiedeMarketing`) e in fondo alle
+pagine legali, che un piede non ce l'hanno. Mai dentro l'app dopo l'accesso.
+- **Collegamento dofollow**: solo `rel="noopener"`. È il punto della specifica, e
+  `axialoop-pure` lo difende: rimettendo `nofollow` fallisce sull'asserzione giusta.
+- Logo SVG inline, senza sfondo; nel tema scuro le parti quasi nere prendono `currentColor`.
+  Nome accessibile che comincia col testo visibile (WCAG 2.5.3).
+- Misurato da `qa -- axialoop` su otto pagine, due temi e due larghezze: contrasto 5,6 in
+  chiaro e 6,1 in scuro, area cliccabile 24 px, riga propria da telefono.
+
+**Regole nate qui:**
+- **I colori calcolati arrivano in `oklch()`**: leggerne le cifre come RGB dà un contrasto
+  inventato (1,36 in entrambi i temi, cioè nessuno dei due). Si dipinge il colore su un pixel
+  e si legge il pixel.
+- **Il limite generico di Better Auth è 60 richieste al minuto per indirizzo, e
+  `/api/auth/get-session` ci passa a ogni pagina pubblica.** Due collaudi pesanti di fila
+  dallo stesso indirizzo fanno vedere 429 al secondo: non è un difetto del prodotto, è la
+  finestra ancora piena. Si rilancia a finestra scaduta, e lo si dichiara.

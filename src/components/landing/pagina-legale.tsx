@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SiteHeader } from "./site-header";
+import { PoweredByAxialoop } from "./axialoop";
 import { AGGIORNATO_AL, AGGIORNATO_AL_ESTESO, TITOLARE, SEDE_COMPLETA } from "@/lib/legale";
 
 // Impaginazione dei tre documenti legali. Un documento lungo si legge se ha
@@ -68,6 +69,9 @@ export function PaginaLegale({
             </Link>
           ))}
         </nav>
+        <p className="mt-6">
+          <PoweredByAxialoop />
+        </p>
       </main>
     </div>
   );
