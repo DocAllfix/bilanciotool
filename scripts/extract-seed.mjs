@@ -40,7 +40,15 @@ function extractConst(source, name) {
   }
   if (depth !== 0) throw new Error(`Literal di ${name} non chiuso`);
   const literal = source.slice(inizio, i + 1);
-  return vm.runInNewContext(`(${literal})`, {}, { timeout: 5000 });
+  const valore = vm.runInNewContext(`(${literal})`, {}, { timeout: 5000 });
+  // ⚠️ Un'espressione eseguita subito — `const X = (()=>{…})()` — si ferma alla prima
+  // parentesi bilanciata e torna come FUNZIONE: `JSON.stringify` la trasforma in
+  // `undefined`, e sul disco finisce la stringa "undefined" senza un errore. Successo col
+  // prototipo GDPR; per quei prototipi c'e' `carica-prototipo-gdpr.mjs`, che li esegue interi.
+  if (typeof valore === "function" || valore === undefined) {
+    throw new Error(`Costante ${name}: non e' un letterale (${typeof valore}). Va eseguito il prototipo intero.`);
+  }
+  return valore;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

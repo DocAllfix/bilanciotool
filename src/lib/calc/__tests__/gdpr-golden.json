@@ -1,0 +1,1645 @@
+{
+  "generato": "node scripts/golden-gdpr.mjs (TZ=Europe/Rome)",
+  "adesso": "2026-10-12T10:00:00.000Z",
+  "anno": 2026,
+  "dataset": {
+    "id": "OKYO55",
+    "nome": "Organizzazione di esempio S.r.l.",
+    "anno": 2026,
+    "created": "2026-10-12T10:00:00.000Z",
+    "profilo": {
+      "forma": "Società a responsabilità limitata",
+      "piva": "",
+      "sede": "Aversa (CE)",
+      "settore": "Commercio online di articoli per la casa",
+      "ateco": "47.91.10",
+      "ndip": "34",
+      "siti": "Sede con uffici e magazzino",
+      "ruolo": "Titolare del trattamento",
+      "legale": "Amministratore unico",
+      "ref": "Responsabile amministrativo",
+      "contatto": "privacy@esempio.example",
+      "dpo_a": "No",
+      "dpo_b": "No",
+      "dpo_c": "No",
+      "dpo_nome": "",
+      "dpo_cont": "",
+      "dpo_com": "",
+      "ads": "Sì",
+      "logo": ""
+    },
+    "trattamenti": [
+      {
+        "nome": "Gestione del rapporto di lavoro",
+        "ruolo": "Titolare",
+        "resp": "Amministrazione",
+        "fin": "Amministrazione del personale: assunzione, presenze, paghe, adempimenti contributivi, fiscali e assicurativi",
+        "base": "Contratto o misure precontrattuali (6.1.b)",
+        "lia": "",
+        "int": "Dipendenti, collaboratori, familiari a carico",
+        "dati": "Anagrafici, contrattuali, retributivi, bancari, presenze; dati sanitari relativi ad assenze e idoneità; adesione sindacale",
+        "part": "Sì",
+        "b9": "b) Lavoro e sicurezza sociale",
+        "giud": "No",
+        "dest": "Consulente del lavoro, enti previdenziali e fiscali, banche, fondi",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "10 anni dalla cessazione del rapporto",
+        "sis": "Gestionale paghe dello studio esterno; fascicoli cartacei",
+        "mis": "Utenze individuali, profili di autorizzazione per ruolo, copie di sicurezza giornaliere, archivi cartacei in armadi chiusi",
+        "crit": {
+          "vuln": true
+        },
+        "p": 2,
+        "g": 3,
+        "misr": "Accesso ai fascicoli limitato all'amministrazione; scambio dati con lo studio paghe su portale protetto",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Selezione del personale",
+        "ruolo": "Titolare",
+        "resp": "Amministrazione",
+        "fin": "Raccolta e valutazione delle candidature",
+        "base": "Contratto o misure precontrattuali (6.1.b)",
+        "lia": "",
+        "int": "Candidati",
+        "dati": "Curriculum, titoli, esperienze; eventuale appartenenza a categorie protette",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Società di selezione, se incaricate",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "12 mesi dalla ricezione, salvo assunzione",
+        "sis": "Casella di posta dedicata",
+        "mis": "Utenze individuali, profili di autorizzazione per ruolo, copie di sicurezza giornaliere, archivi cartacei in armadi chiusi",
+        "crit": {},
+        "p": 2,
+        "g": 2,
+        "misr": "Cancellazione automatica dei curricula dopo 12 mesi",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Salute e sicurezza sul lavoro",
+        "ruolo": "Titolare",
+        "resp": "Amministrazione",
+        "fin": "Sorveglianza sanitaria, formazione obbligatoria, gestione degli infortuni",
+        "base": "Obbligo legale (6.1.c)",
+        "lia": "",
+        "int": "Dipendenti e collaboratori",
+        "dati": "Giudizi di idoneità, formazione, infortuni",
+        "part": "Sì",
+        "b9": "b) Lavoro e sicurezza sociale",
+        "giud": "No",
+        "dest": "Medico competente, responsabile del servizio di prevenzione, INAIL",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "10 anni dalla cessazione del rapporto",
+        "sis": "Fascicoli cartacei; cartelle sanitarie presso il medico competente",
+        "mis": "Giudizi di idoneità in busta chiusa; nessuna diagnosi in azienda",
+        "crit": {
+          "vuln": true
+        },
+        "p": 2,
+        "g": 4,
+        "misr": "L'azienda riceve solo il giudizio di idoneità",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Clienti: contratti, ordini e fatturazione",
+        "ruolo": "Titolare",
+        "resp": "Commerciale",
+        "fin": "Gestione di offerte, contratti, ordini, consegne, incassi e obblighi contabili",
+        "base": "Contratto o misure precontrattuali (6.1.b)",
+        "lia": "",
+        "int": "Clienti e loro referenti",
+        "dati": "Anagrafici, di contatto, fiscali, di pagamento, storico degli ordini",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Commercialista, banche, vettori, Agenzia delle entrate",
+        "extra": "Sì",
+        "extra_det": "Stati Uniti, decisione di adeguatezza",
+        "cons": "10 anni dall'ultima registrazione contabile",
+        "sis": "Piattaforma di commercio elettronico, gestionale contabile",
+        "mis": "Utenze individuali, profili di autorizzazione per ruolo, copie di sicurezza giornaliere, archivi cartacei in armadi chiusi; pagamenti gestiti dal fornitore della piattaforma",
+        "crit": {},
+        "p": 4,
+        "g": 4,
+        "misr": "Nessun dato di pagamento conservato; autenticazione a più fattori per gli operatori; cifratura dei portatili in corso",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Fornitori: contratti e pagamenti",
+        "ruolo": "Titolare",
+        "resp": "Acquisti",
+        "fin": "Qualifica dei fornitori, gestione di ordini e pagamenti",
+        "base": "Contratto o misure precontrattuali (6.1.b)",
+        "lia": "",
+        "int": "Fornitori e loro referenti",
+        "dati": "Anagrafici, di contatto, fiscali, bancari",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Commercialista, banche",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "10 anni dall'ultima registrazione contabile",
+        "sis": "Gestionale contabile",
+        "mis": "Utenze individuali, profili di autorizzazione per ruolo, copie di sicurezza giornaliere, archivi cartacei in armadi chiusi",
+        "crit": {},
+        "p": 1,
+        "g": 2,
+        "misr": "Dati limitati ai referenti aziendali",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Marketing e newsletter",
+        "ruolo": "Titolare",
+        "resp": "Marketing",
+        "fin": "Invio di comunicazioni promozionali e newsletter",
+        "base": "Consenso (6.1.a)",
+        "lia": "",
+        "int": "Clienti e contatti iscritti",
+        "dati": "Nome, indirizzo di posta elettronica, preferenze, aperture e clic",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Fornitore della piattaforma di invio",
+        "extra": "Sì",
+        "extra_det": "Stati Uniti, garanzia da definire con il fornitore",
+        "cons": "Fino a revoca del consenso; contatti inattivi cancellati dopo 24 mesi",
+        "sis": "Piattaforma di invio",
+        "mis": "Accesso riservato al marketing; disiscrizione in ogni messaggio",
+        "crit": {},
+        "p": 3,
+        "g": 2,
+        "misr": "Doppia conferma dell'iscrizione; pulizia annuale dei contatti inattivi",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Sito web e cookie",
+        "ruolo": "Titolare",
+        "resp": "Marketing",
+        "fin": "Funzionamento del sito, moduli di contatto, statistiche di visita",
+        "base": "Legittimo interesse (6.1.f)",
+        "lia": "No",
+        "int": "Visitatori del sito",
+        "dati": "Dati di navigazione, identificativi online, dati inseriti nei moduli",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Fornitore dell'hosting, fornitori di strumenti di analisi",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "Richieste dai moduli 12 mesi; cookie secondo la tabella dell'informativa",
+        "sis": "Sito aziendale, strumento di analisi delle visite",
+        "mis": "Connessione cifrata; aggiornamenti mensili del sito",
+        "crit": {},
+        "p": 3,
+        "g": 2,
+        "misr": "Statistiche con indirizzo IP mascherato",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Videosorveglianza",
+        "ruolo": "Titolare",
+        "resp": "Direzione",
+        "fin": "Sicurezza delle persone e tutela del patrimonio aziendale",
+        "base": "Legittimo interesse (6.1.f)",
+        "lia": "Sì",
+        "int": "Dipendenti, visitatori, fornitori",
+        "dati": "Immagini",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Istituto di vigilanza, autorità giudiziaria su richiesta",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "Da 24 a 72 ore, salvo chiusure e richieste dell'autorità",
+        "sis": "Sei telecamere su ingressi e magazzino; registratore in locale chiuso",
+        "mis": "Accesso alle immagini riservato alla direzione e all'istituto di vigilanza; cancellazione automatica dopo 48 ore",
+        "crit": {
+          "monit": true,
+          "vuln": true
+        },
+        "p": 3,
+        "g": 4,
+        "misr": "Telecamere non orientate sulle postazioni di lavoro; accordo sindacale in vigore",
+        "dpia_stato": "In corso",
+        "dpia_data": "2026-05-06",
+        "dpia_nec": "Il magazzino ha subito due furti nell'ultimo triennio. Le riprese sono limitate a ingressi e aree di carico; non sono stati ritenuti sufficienti i soli allarmi perimetrali.",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      },
+      {
+        "nome": "Posta elettronica e strumenti informatici",
+        "ruolo": "Titolare",
+        "resp": "Amministrazione",
+        "fin": "Gestione di utenze, posta, dispositivi e sicurezza dei sistemi",
+        "base": "Legittimo interesse (6.1.f)",
+        "lia": "Sì",
+        "int": "Dipendenti e collaboratori",
+        "dati": "Utenze, registrazioni degli accessi, metadati della posta",
+        "part": "No",
+        "b9": "",
+        "giud": "No",
+        "dest": "Fornitori di assistenza informatica e di servizi cloud",
+        "extra": "No",
+        "extra_det": "",
+        "cons": "Registrazioni degli accessi da 6 a 12 mesi; metadati della posta secondo le indicazioni del Garante",
+        "sis": "Posta e archivi su servizio cloud; portatili e telefoni aziendali",
+        "mis": "Regolamento informatico consegnato a tutti; registrazioni degli accessi conservate 6 mesi",
+        "crit": {
+          "vuln": true
+        },
+        "p": 3,
+        "g": 4,
+        "misr": "Nessun accesso ai contenuti della posta senza procedura autorizzativa",
+        "dpia_stato": "Da avviare",
+        "dpia_data": "",
+        "dpia_nec": "",
+        "dpia_dpo": "",
+        "dpia_esito": ""
+      }
+    ],
+    "gap": {
+      "P-01": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-02": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-03": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-04": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-05": {
+        "st": "p",
+        "ev": "Termini indicati nel registro; cancellazioni periodiche non ancora eseguite sugli ordini più vecchi",
+        "az": "Cancellare gli ordini oltre i 10 anni e programmare la cancellazione annuale",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-06-30"
+      },
+      "P-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-07": {
+        "st": "c",
+        "ev": "Registro dei trattamenti, colonna base giuridica"
+      },
+      "P-08": {
+        "st": "p",
+        "ev": "Bilanciamento scritto per videosorveglianza e strumenti informatici; manca per il sito",
+        "az": "Documentare il bilanciamento per le statistiche del sito",
+        "resp": "Marketing",
+        "scad": "2026-04-30"
+      },
+      "P-09": {
+        "st": "c",
+        "ev": "Consenso con doppia conferma; data e origine registrate dalla piattaforma"
+      },
+      "P-10": {
+        "st": "na",
+        "ev": "Il sito non si rivolge a minori"
+      },
+      "P-11": {
+        "st": "c",
+        "ev": ""
+      },
+      "P-12": {
+        "st": "na",
+        "ev": "Non sono trattati dati giudiziari"
+      },
+      "T-01": {
+        "st": "c",
+        "ev": ""
+      },
+      "T-02": {
+        "st": "c",
+        "ev": "Informative per clienti, dipendenti e candidati adottate"
+      },
+      "T-03": {
+        "st": "p",
+        "ev": "Contatti ricevuti da partner: informativa non ancora inviata al primo contatto",
+        "az": "Informativa automatica al primo messaggio verso i contatti ricevuti da terzi",
+        "resp": "Marketing",
+        "scad": "2026-05-31"
+      },
+      "T-04": {
+        "st": "na",
+        "ev": "Nessuna decisione automatizzata né profilazione"
+      },
+      "T-05": {
+        "st": "c",
+        "ev": ""
+      },
+      "T-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "T-07": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-01": {
+        "st": "p",
+        "ev": "Prassi consolidata presso il referente; procedura non ancora scritta",
+        "az": "Scrivere la procedura e istruire l'assistenza clienti",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-04-30"
+      },
+      "D-02": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-03": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-04": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-05": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-07": {
+        "st": "p",
+        "ev": "Cancellazione eseguita sui sistemi principali; regola per le copie di sicurezza da definire",
+        "az": "Definire la regola di cancellazione sulle copie di sicurezza",
+        "resp": "Assistenza informatica",
+        "scad": "2026-06-30"
+      },
+      "D-08": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-09": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-10": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-11": {
+        "st": "c",
+        "ev": ""
+      },
+      "D-12": {
+        "st": "na",
+        "ev": "Nessuna decisione automatizzata"
+      },
+      "A-01": {
+        "st": "c",
+        "ev": ""
+      },
+      "A-02": {
+        "st": "c",
+        "ev": "Politica approvata dall'amministratore unico"
+      },
+      "A-03": {
+        "st": "p",
+        "ev": "Valutazione preventiva svolta per la nuova piattaforma; non ancora prevista come regola",
+        "az": "Inserire la valutazione preventiva nella procedura acquisti",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-09-30"
+      },
+      "A-04": {
+        "st": "c",
+        "ev": ""
+      },
+      "A-05": {
+        "st": "c",
+        "ev": "Lettere di autorizzazione firmate da tutti"
+      },
+      "A-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "A-07": {
+        "st": "c",
+        "ev": ""
+      },
+      "R-01": {
+        "st": "c",
+        "ev": "Elenco dei fornitori al passo 4"
+      },
+      "R-02": {
+        "st": "c",
+        "ev": ""
+      },
+      "R-03": {
+        "st": "p",
+        "ev": "Sette contratti su otto; manca l'assistenza informatica",
+        "az": "Sottoscrivere il contratto con l'assistenza informatica",
+        "resp": "Amministratore unico",
+        "scad": "2026-03-31"
+      },
+      "R-04": {
+        "st": "c",
+        "ev": ""
+      },
+      "R-05": {
+        "st": "p",
+        "ev": "Verifica svolta sullo studio paghe; da estendere ai fornitori cloud",
+        "az": "Questionario annuale ai fornitori di servizi cloud",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-10-31"
+      },
+      "R-06": {
+        "st": "na",
+        "ev": "Nessun rapporto di contitolarità"
+      },
+      "R-07": {
+        "st": "na",
+        "ev": "L'organizzazione non tratta dati per conto di terzi"
+      },
+      "G-01": {
+        "st": "c",
+        "ev": "Registro generato da questo strumento"
+      },
+      "G-02": {
+        "st": "c",
+        "ev": ""
+      },
+      "G-03": {
+        "st": "c",
+        "ev": ""
+      },
+      "S-01": {
+        "st": "c",
+        "ev": ""
+      },
+      "S-02": {
+        "st": "c",
+        "ev": "Utenze nominative; password di almeno 12 caratteri"
+      },
+      "S-03": {
+        "st": "p",
+        "ev": "Secondo fattore attivo sulla posta; da estendere a gestionale e accessi remoti",
+        "az": "Estendere il secondo fattore a gestionale e accessi remoti",
+        "resp": "Assistenza informatica",
+        "scad": "2026-06-30"
+      },
+      "S-04": {
+        "st": "c",
+        "ev": "Profili per funzione; utenze disattivate alla cessazione"
+      },
+      "S-05": {
+        "st": "p",
+        "ev": "Nove portatili cifrati su quattordici",
+        "az": "Cifrare i cinque portatili rimanenti",
+        "resp": "Assistenza informatica",
+        "scad": "2026-09-30"
+      },
+      "S-06": {
+        "st": "c",
+        "ev": "Aggiornamenti automatici su postazioni e server"
+      },
+      "S-07": {
+        "st": "c",
+        "ev": "Protezione delle postazioni e filtro della posta attivi"
+      },
+      "S-08": {
+        "st": "c",
+        "ev": "Copia giornaliera su cloud e settimanale non in linea; ripristino provato a maggio"
+      },
+      "S-09": {
+        "st": "c",
+        "ev": ""
+      },
+      "S-10": {
+        "st": "n",
+        "ev": "Le registrazioni degli accessi al gestionale non sono raccolte",
+        "az": "Attivare e conservare le registrazioni degli accessi al gestionale",
+        "resp": "Assistenza informatica",
+        "scad": "2026-05-31"
+      },
+      "S-11": {
+        "st": "p",
+        "ev": "Solo prova di ripristino; nessuna verifica tecnica esterna",
+        "az": "Analisi delle vulnerabilità annuale",
+        "resp": "Assistenza informatica",
+        "scad": "2026-11-30"
+      },
+      "S-12": {
+        "st": "c",
+        "ev": "Uffici con accesso controllato; archivio chiuso a chiave"
+      },
+      "S-13": {
+        "st": "c",
+        "ev": ""
+      },
+      "S-14": {
+        "st": "c",
+        "ev": "Regolamento informatico consegnato e firmato"
+      },
+      "S-15": {
+        "st": "c",
+        "ev": ""
+      },
+      "V-01": {
+        "st": "c",
+        "ev": "Procedura adottata; segnalazione al referente entro la giornata"
+      },
+      "V-02": {
+        "st": "c",
+        "ev": ""
+      },
+      "V-03": {
+        "st": "c",
+        "ev": ""
+      },
+      "V-04": {
+        "st": "c",
+        "ev": "Registro delle violazioni al passo 7"
+      },
+      "V-05": {
+        "st": "c",
+        "ev": ""
+      },
+      "V-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "V-07": {
+        "st": "p",
+        "ev": "Nessuna esercitazione svolta",
+        "az": "Esercitazione su una violazione simulata",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-07-31"
+      },
+      "I-01": {
+        "st": "c",
+        "ev": "Vaglio svolto per tutti i trattamenti al passo 4"
+      },
+      "I-02": {
+        "st": "p",
+        "ev": "Valutazione sulla videosorveglianza in corso",
+        "az": "Concludere la valutazione sulla videosorveglianza",
+        "resp": "Responsabile amministrativo",
+        "scad": "2026-06-30"
+      },
+      "I-03": {
+        "st": "c",
+        "ev": ""
+      },
+      "I-04": {
+        "st": "na",
+        "ev": "Responsabile della protezione dei dati non designato"
+      },
+      "I-05": {
+        "st": "c",
+        "ev": ""
+      },
+      "I-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "I-07": {
+        "st": "na",
+        "ev": "Nessun rischio residuo elevato"
+      },
+      "O-01": {
+        "st": "c",
+        "ev": "Valutazione scritta: nessuna delle tre condizioni ricorre"
+      },
+      "O-02": {
+        "st": "na",
+        "ev": "Designazione non obbligatoria e non effettuata"
+      },
+      "O-03": {
+        "st": "na",
+        "ev": ""
+      },
+      "O-04": {
+        "st": "na",
+        "ev": ""
+      },
+      "O-05": {
+        "st": "na",
+        "ev": ""
+      },
+      "O-06": {
+        "st": "na",
+        "ev": ""
+      },
+      "N-01": {
+        "st": "c",
+        "ev": "Lettere di autorizzazione per ruolo"
+      },
+      "N-02": {
+        "st": "c",
+        "ev": "Nomina dell'assistenza informatica esterna"
+      },
+      "N-03": {
+        "st": "p",
+        "ev": "Registrazioni conservate; verifica annuale non ancora svolta",
+        "az": "Verifica annuale dell'amministratore di sistema",
+        "resp": "Amministratore unico",
+        "scad": "2026-06-30"
+      },
+      "N-04": {
+        "st": "c",
+        "ev": "Accordo sindacale sottoscritto prima dell'installazione"
+      },
+      "N-05": {
+        "st": "c",
+        "ev": "Cartelli agli ingressi; conservazione 48 ore"
+      },
+      "N-06": {
+        "st": "c",
+        "ev": ""
+      },
+      "N-07": {
+        "st": "p",
+        "ev": "Banner presente; lo strumento di analisi parte prima del consenso",
+        "az": "Bloccare lo strumento di analisi fino al consenso",
+        "resp": "Marketing",
+        "scad": "2026-04-30"
+      },
+      "N-08": {
+        "st": "c",
+        "ev": "Invii solo a iscritti con consenso; nessun telemarketing"
+      },
+      "N-09": {
+        "st": "na",
+        "ev": "Organizzazione sotto la soglia dimensionale e senza modello 231"
+      },
+      "N-10": {
+        "st": "c",
+        "ev": ""
+      }
+    },
+    "fornitori": [
+      {
+        "nome": "Studio paghe Esempio",
+        "serv": "Elaborazione delle paghe",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Italia",
+        "dpa": "Sì",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "2026-03-12",
+        "esito": "Adeguato"
+      },
+      {
+        "nome": "Piattaforma Esempio Inc.",
+        "serv": "Negozio online e pagamenti",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Stati Uniti",
+        "dpa": "Sì",
+        "dpa_data": "",
+        "extra": "Decisione di adeguatezza",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Newsletter Esempio LLC",
+        "serv": "Invio delle comunicazioni promozionali",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Stati Uniti",
+        "dpa": "Sì",
+        "dpa_data": "",
+        "extra": "Da definire",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Hosting Esempio S.r.l.",
+        "serv": "Hosting del sito e della posta",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Italia",
+        "dpa": "Sì",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Assistenza informatica Esempio",
+        "serv": "Amministrazione di sistema",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Italia",
+        "dpa": "No",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Istituto di vigilanza Esempio",
+        "serv": "Gestione della videosorveglianza",
+        "ruolo": "Responsabile (art. 28)",
+        "paese": "Italia",
+        "dpa": "Sì",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Corriere Esempio S.p.A.",
+        "serv": "Consegne ai clienti",
+        "ruolo": "Titolare autonomo",
+        "paese": "Italia",
+        "dpa": "Non dovuto",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Medico competente",
+        "serv": "Sorveglianza sanitaria",
+        "ruolo": "Titolare autonomo",
+        "paese": "Italia",
+        "dpa": "Non dovuto",
+        "dpa_data": "",
+        "extra": "Nessun trasferimento",
+        "ver": "",
+        "esito": ""
+      }
+    ],
+    "politica": {
+      "testo": "Organizzazione di esempio S.r.l. tratta dati personali di lavoratori, clienti, fornitori e altri interlocutori. Con questa politica la direzione stabilisce le regole che tutti coloro che operano per l'organizzazione sono tenuti a rispettare, in applicazione del Regolamento (UE) 2016/679 e del D.Lgs. 196/2003.\n\nPrincipi. Trattiamo i dati in modo lecito, corretto e trasparente, per finalità determinate, limitandoci a quelli necessari. Li manteniamo esatti, li conserviamo per il tempo stabilito nel registro dei trattamenti e li proteggiamo da accessi non autorizzati, perdita e distruzione.\n\nRuoli. Il titolare del trattamento è l'organizzazione, che decide attraverso la direzione. Il referente per la protezione dei dati coordina gli adempimenti e riferisce alla direzione. Ogni persona autorizzata tratta i dati solo secondo le istruzioni ricevute per il proprio ruolo.\n\nDiritti degli interessati. Chiunque riceva una richiesta di accesso, rettifica, cancellazione, limitazione, portabilità od opposizione la trasmette subito al referente. Rispondiamo entro un mese.\n\nSicurezza e violazioni. Adottiamo misure tecniche e organizzative proporzionate ai rischi e ne verifichiamo l'efficacia. Ogni incidente che coinvolge dati personali va segnalato immediatamente al referente: valutiamo il rischio e, se necessario, notifichiamo al Garante entro 72 ore.\n\nFornitori e trasferimenti. Affidiamo dati solo a fornitori che offrono garanzie adeguate e con un contratto conforme all'art. 28. Trasferiamo dati fuori dallo Spazio economico europeo solo in presenza delle garanzie previste.\n\nNuovi trattamenti. Prima di avviare un nuovo trattamento o adottare un nuovo strumento ne valutiamo l'impatto sulla protezione dei dati e, se il rischio è elevato, svolgiamo una valutazione d'impatto.\n\nFormazione e riesame. Formiamo chi tratta dati all'ingresso e periodicamente. La direzione riesamina ogni anno il sistema, il registro dei trattamenti e questa politica.",
+      "chk": {
+        "pri": true,
+        "ruo": true,
+        "dir": true,
+        "sic": true,
+        "for": true,
+        "frm": true,
+        "app": true,
+        "rie": true
+      },
+      "data": "2026-01-15",
+      "firma": "L'amministratore unico"
+    },
+    "docs": [
+      {
+        "tipo": "Informativa (art. 13)",
+        "tit": "Dipendenti e collaboratori",
+        "ver": "2.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Informativa (art. 13)",
+        "tit": "Candidati",
+        "ver": "2.0",
+        "data": "2026-01-20",
+        "rev": "2025-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Informativa (art. 13)",
+        "tit": "Clienti e fornitori",
+        "ver": "2.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Informativa (art. 13)",
+        "tit": "Sito web e cookie",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Da aggiornare"
+      },
+      {
+        "tipo": "Informativa (art. 13)",
+        "tit": "Videosorveglianza: cartello e informativa estesa",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Modulo di consenso",
+        "tit": "Newsletter e comunicazioni promozionali",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Autorizzazione e istruzioni (art. 29)",
+        "tit": "Lettere di autorizzazione per ruolo",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Nomina amministratore di sistema",
+        "tit": "Amministratori di sistema interni ed esterni",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Contratto con responsabile (art. 28)",
+        "tit": "Modello di contratto con i responsabili",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Procedura",
+        "tit": "Gestione delle richieste degli interessati",
+        "ver": "1.0",
+        "data": "",
+        "rev": "2026-12-31",
+        "stato": "In bozza"
+      },
+      {
+        "tipo": "Procedura",
+        "tit": "Gestione delle violazioni dei dati",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      },
+      {
+        "tipo": "Procedura",
+        "tit": "Valutazione d'impatto e nuovi trattamenti",
+        "ver": "1.0",
+        "data": "",
+        "rev": "2026-12-31",
+        "stato": "In bozza"
+      },
+      {
+        "tipo": "Procedura",
+        "tit": "Conservazione e cancellazione dei dati",
+        "ver": "1.0",
+        "data": "2026-01-20",
+        "rev": "2026-12-31",
+        "stato": "Adottato"
+      }
+    ],
+    "piano": [
+      {
+        "mese": "1",
+        "rif": "Art. 30",
+        "att": "Aggiornamento del registro dei trattamenti",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "1",
+        "rif": "Art. 24",
+        "att": "Approvazione del piano annuale delle attività",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "2",
+        "rif": "Artt. 13–14",
+        "att": "Revisione di informative, moduli e pagine del sito",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "3",
+        "rif": "Art. 29",
+        "att": "Formazione delle persone autorizzate",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "3",
+        "rif": "Art. 28",
+        "att": "Verifica dei contratti con i responsabili del trattamento",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "4",
+        "rif": "Art. 32",
+        "att": "Revisione dei profili di autorizzazione e delle utenze",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "5",
+        "rif": "Art. 32.1.d",
+        "att": "Prova di ripristino delle copie di sicurezza",
+        "resp": "Responsabile amministrativo",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "6",
+        "rif": "Provv. Garante",
+        "att": "Verifica dell'operato degli amministratori di sistema",
+        "resp": "Responsabile amministrativo",
+        "stato": "In corso"
+      },
+      {
+        "mese": "6",
+        "rif": "Art. 5.1.e",
+        "att": "Verifica dei termini di conservazione e cancellazioni",
+        "resp": "Responsabile amministrativo",
+        "stato": "In corso"
+      },
+      {
+        "mese": "7",
+        "rif": "Art. 33",
+        "att": "Esercitazione sulla gestione di una violazione",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "9",
+        "rif": "Art. 24",
+        "att": "Audit interno sul sistema",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "10",
+        "rif": "Art. 28.3.h",
+        "att": "Verifica sui responsabili più critici",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "10",
+        "rif": "Art. 35.11",
+        "att": "Riesame di rischi e valutazioni d'impatto",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "11",
+        "rif": "Cod. 130",
+        "att": "Verifica di cookie, consensi e liste di contatto",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "12",
+        "rif": "Artt. 24 · 39",
+        "att": "Riesame annuale della direzione",
+        "resp": "Responsabile amministrativo",
+        "stato": "Da fare"
+      }
+    ],
+    "dati": {
+      "2025": {
+        "dip": 31,
+        "aut": 27,
+        "aut_form": 9,
+        "fo_ore": 18,
+        "nuovi": 4,
+        "nuovi_form": 1,
+        "acc": 35,
+        "acc_mfa": 6,
+        "disp": 12,
+        "disp_cif": 3,
+        "bk_test": 0,
+        "acc_rev": 0,
+        "vuln": 0,
+        "inc": 1,
+        "cont": 15200,
+        "cons_doc": 12900,
+        "opp": 540,
+        "opp_gg": 5,
+        "recl": 0,
+        "garante": 0,
+        "sanz": 0,
+        "liti": 0
+      },
+      "2026": {
+        "dip": 34,
+        "aut": 30,
+        "aut_form": 26,
+        "fo_ore": 52,
+        "nuovi": 5,
+        "nuovi_form": 3,
+        "acc": 38,
+        "acc_mfa": 22,
+        "disp": 14,
+        "disp_cif": 9,
+        "bk_test": 1,
+        "acc_rev": 1,
+        "vuln": 0,
+        "inc": 2,
+        "cont": 18400,
+        "cons_doc": 17150,
+        "opp": 610,
+        "opp_gg": 2,
+        "recl": 1,
+        "garante": 0,
+        "sanz": 0,
+        "liti": 0
+      }
+    },
+    "registri": {
+      "dir": [
+        {
+          "data": "2025-05-09",
+          "diritto": "Accesso (art. 15)",
+          "rif": "R-01",
+          "canale": "Posta elettronica",
+          "tratt": "Clienti",
+          "proroga": "No",
+          "evasa": "2025-05-30",
+          "esito": "Accolta",
+          "note": "Inviata copia dei dati e degli ordini"
+        },
+        {
+          "data": "2025-10-02",
+          "diritto": "Cancellazione (art. 17)",
+          "rif": "R-02",
+          "canale": "Modulo del sito",
+          "tratt": "Marketing",
+          "proroga": "No",
+          "evasa": "2025-11-20",
+          "esito": "Accolta",
+          "note": "Richiesta rimasta nella casella generica per sei settimane"
+        },
+        {
+          "data": "2026-03-04",
+          "diritto": "Accesso (art. 15)",
+          "rif": "R-03",
+          "canale": "PEC",
+          "tratt": "Rapporto di lavoro",
+          "proroga": "No",
+          "evasa": "2026-03-20",
+          "esito": "Accolta",
+          "note": "Ex dipendente: consegnata copia del fascicolo"
+        },
+        {
+          "data": "2026-06-10",
+          "diritto": "Cancellazione (art. 17)",
+          "rif": "R-04",
+          "canale": "Posta elettronica",
+          "tratt": "Clienti e marketing",
+          "proroga": "No",
+          "evasa": "2026-07-18",
+          "esito": "Accolta in parte",
+          "note": "Cancellati i dati di marketing; conservati i documenti fiscali per obbligo di legge"
+        },
+        {
+          "data": "2026-10-02",
+          "diritto": "Opposizione (art. 21)",
+          "rif": "R-05",
+          "canale": "Posta elettronica",
+          "tratt": "Marketing",
+          "proroga": "No",
+          "evasa": "",
+          "esito": "In lavorazione",
+          "note": ""
+        }
+      ],
+      "breach": [
+        {
+          "data": "2026-04-14T10:30",
+          "natura": "Riservatezza",
+          "nint": 1,
+          "rischio": "Improbabile",
+          "desc": "Fattura inviata per posta elettronica a un cliente diverso dal destinatario",
+          "cat": "Dati anagrafici e fiscali di un cliente",
+          "notif": "",
+          "comint": "",
+          "chiusura": "2026-04-15",
+          "mis": "Destinatario contattato, messaggio cancellato con conferma scritta. Rischio improbabile: un solo interessato, dati non sensibili, destinatario identificato. Introdotto il doppio controllo sugli invii."
+        },
+        {
+          "data": "2026-07-02T08:15",
+          "natura": "Riservatezza",
+          "nint": 420,
+          "rischio": "Rischio",
+          "desc": "Furto di un portatile non cifrato contenente l'archivio degli ordini di un trimestre",
+          "cat": "Anagrafiche, indirizzi e ordini dei clienti",
+          "notif": "2026-07-04T16:00",
+          "comint": "",
+          "chiusura": "2026-07-30",
+          "mis": "Credenziali revocate, denuncia presentata. Rischio non elevato: nessun dato di pagamento. Cifratura estesa a tutti i portatili entro settembre."
+        }
+      ],
+      "form": [
+        {
+          "data": "2026-03-18",
+          "tema": "Regole di base, richieste degli interessati, segnalazione degli incidenti",
+          "dest": "Tutte le persone autorizzate",
+          "doc": "Consulente esterno",
+          "part": 26,
+          "ore": 2,
+          "eff": "Questionario finale"
+        }
+      ],
+      "audit": [
+        {
+          "data": "2026-03-12",
+          "tipo": "Verifica su un responsabile",
+          "amb": "Studio paghe",
+          "aud": "Responsabile amministrativo",
+          "stato": "Svolto",
+          "ril": 0,
+          "sint": "Questionario e colloquio: misure adeguate"
+        },
+        {
+          "data": "2026-05-22",
+          "tipo": "Prova di ripristino",
+          "amb": "Copie di sicurezza del gestionale",
+          "aud": "Assistenza informatica",
+          "stato": "Svolto",
+          "ril": 1,
+          "sint": "Ripristino riuscito in 5 ore; tempo superiore all'obiettivo di 4"
+        }
+      ],
+      "ads": [],
+      "ries": []
+    },
+    "param": {
+      "alto": 15,
+      "medio": 8,
+      "dpia_n": 2
+    }
+  },
+  "risultati": {
+    "conf": {
+      "tot": 99,
+      "val": 93,
+      "c": 63,
+      "p": 15,
+      "n": 1,
+      "na": 14,
+      "da": 6,
+      "pct": 89
+    },
+    "confPerGruppo": {
+      "P": {
+        "tot": 12,
+        "val": 12,
+        "c": 8,
+        "p": 2,
+        "n": 0,
+        "na": 2,
+        "da": 0,
+        "pct": 90
+      },
+      "T": {
+        "tot": 7,
+        "val": 7,
+        "c": 5,
+        "p": 1,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 92
+      },
+      "D": {
+        "tot": 12,
+        "val": 12,
+        "c": 9,
+        "p": 2,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 91
+      },
+      "A": {
+        "tot": 7,
+        "val": 7,
+        "c": 6,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 93
+      },
+      "R": {
+        "tot": 7,
+        "val": 7,
+        "c": 3,
+        "p": 2,
+        "n": 0,
+        "na": 2,
+        "da": 0,
+        "pct": 80
+      },
+      "G": {
+        "tot": 3,
+        "val": 3,
+        "c": 3,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "S": {
+        "tot": 15,
+        "val": 15,
+        "c": 11,
+        "p": 3,
+        "n": 1,
+        "na": 0,
+        "da": 0,
+        "pct": 83
+      },
+      "V": {
+        "tot": 7,
+        "val": 7,
+        "c": 6,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 93
+      },
+      "I": {
+        "tot": 7,
+        "val": 7,
+        "c": 4,
+        "p": 1,
+        "n": 0,
+        "na": 2,
+        "da": 0,
+        "pct": 90
+      },
+      "O": {
+        "tot": 6,
+        "val": 6,
+        "c": 1,
+        "p": 0,
+        "n": 0,
+        "na": 5,
+        "da": 0,
+        "pct": 100
+      },
+      "X": {
+        "tot": 6,
+        "val": 0,
+        "c": 0,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 6,
+        "pct": 0
+      },
+      "N": {
+        "tot": 10,
+        "val": 10,
+        "c": 7,
+        "p": 2,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 89
+      }
+    },
+    "tratStat": {
+      "n": 9,
+      "part": 2,
+      "extra": 2,
+      "comp": 1,
+      "noBase": [],
+      "noB9": [],
+      "noCons": [],
+      "noLia": [
+        "Sito web e cookie"
+      ],
+      "dpia": [
+        "Videosorveglianza"
+      ],
+      "dpiaOk": [],
+      "dpiaNo": [
+        "Videosorveglianza"
+      ],
+      "cons36": []
+    },
+    "completezza": {
+      "Gestione del rapporto di lavoro": 1,
+      "Selezione del personale": 1,
+      "Salute e sicurezza sul lavoro": 1,
+      "Clienti: contratti, ordini e fatturazione": 1,
+      "Fornitori: contratti e pagamenti": 1,
+      "Marketing e newsletter": 1,
+      "Sito web e cookie": 1,
+      "Videosorveglianza": 1,
+      "Posta elettronica e strumenti informatici": 1
+    },
+    "vaglio": {
+      "Gestione del rapporto di lavoro": {
+        "criteri": 1,
+        "necessaria": false
+      },
+      "Selezione del personale": {
+        "criteri": 0,
+        "necessaria": false
+      },
+      "Salute e sicurezza sul lavoro": {
+        "criteri": 1,
+        "necessaria": false
+      },
+      "Clienti: contratti, ordini e fatturazione": {
+        "criteri": 0,
+        "necessaria": false
+      },
+      "Fornitori: contratti e pagamenti": {
+        "criteri": 0,
+        "necessaria": false
+      },
+      "Marketing e newsletter": {
+        "criteri": 0,
+        "necessaria": false
+      },
+      "Sito web e cookie": {
+        "criteri": 0,
+        "necessaria": false
+      },
+      "Videosorveglianza": {
+        "criteri": 2,
+        "necessaria": true
+      },
+      "Posta elettronica e strumenti informatici": {
+        "criteri": 1,
+        "necessaria": false
+      }
+    },
+    "livelli": {
+      "Gestione del rapporto di lavoro": 6,
+      "Selezione del personale": 4,
+      "Salute e sicurezza sul lavoro": 8,
+      "Clienti: contratti, ordini e fatturazione": 16,
+      "Fornitori: contratti e pagamenti": 2,
+      "Marketing e newsletter": 6,
+      "Sito web e cookie": 6,
+      "Videosorveglianza": 12,
+      "Posta elettronica e strumenti informatici": 12
+    },
+    "rischiStat": {
+      "tot": 9,
+      "val": 9,
+      "alti": 1,
+      "medi": 3,
+      "bassi": 5,
+      "scoperti": []
+    },
+    "fornStat": {
+      "n": 8,
+      "resp": 6,
+      "val": 8,
+      "noDpa": [
+        "Assistenza informatica Esempio"
+      ],
+      "extra": 2,
+      "noGar": [
+        "Newsletter Esempio LLC"
+      ],
+      "deroga": 0,
+      "critici": 0,
+      "verif": 1,
+      "pDpa": 83.3,
+      "pVer": 16.7
+    },
+    "dpo": {
+      "val": true,
+      "obbl": false,
+      "nom": false,
+      "com": false
+    },
+    "richieste": [
+      {
+        "rif": "R-01",
+        "scadenza": "2025-06-09",
+        "stato": "ok"
+      },
+      {
+        "rif": "R-02",
+        "scadenza": "2025-11-02",
+        "stato": "late"
+      },
+      {
+        "rif": "R-03",
+        "scadenza": "2026-04-04",
+        "stato": "ok"
+      },
+      {
+        "rif": "R-04",
+        "scadenza": "2026-07-10",
+        "stato": "late"
+      },
+      {
+        "rif": "R-05",
+        "scadenza": "2026-11-02",
+        "stato": "open"
+      }
+    ],
+    "violazioni": [
+      {
+        "data": "2026-04-14T10:30",
+        "dovuta": false,
+        "stato": ""
+      },
+      {
+        "data": "2026-07-02T08:15",
+        "dovuta": true,
+        "stato": "ok"
+      }
+    ],
+    "regStat": {
+      "dir": 3,
+      "dirEv": 2,
+      "dirOk": 1,
+      "dirLate": 1,
+      "dirOver": 0,
+      "dirOpen": 1,
+      "dirTm": 27,
+      "br": 2,
+      "brRis": 1,
+      "brNot": 1,
+      "brOk": 1,
+      "brLate": 0,
+      "brOver": 0,
+      "brOpen": 0,
+      "brElev": 0,
+      "brAperte": 0,
+      "brInt": 421,
+      "form": 1,
+      "formOre": 52,
+      "audit": 2,
+      "auditPian": 2,
+      "rilievi": 1,
+      "verResp": 1,
+      "ripr": 1,
+      "ads": 0,
+      "ries": 0
+    },
+    "regStatPrec": {
+      "dir": 2,
+      "dirEv": 2,
+      "dirOk": 1,
+      "dirLate": 1,
+      "dirOver": 0,
+      "dirOpen": 1,
+      "dirTm": 35,
+      "br": 0,
+      "brRis": 0,
+      "brNot": 0,
+      "brOk": 0,
+      "brLate": 0,
+      "brOver": 0,
+      "brOpen": 0,
+      "brElev": 0,
+      "brAperte": 0,
+      "brInt": 0,
+      "form": 0,
+      "formOre": 0,
+      "audit": 0,
+      "auditPian": 0,
+      "rilievi": 0,
+      "verResp": 0,
+      "ripr": 0,
+      "ads": 0,
+      "ries": 0
+    },
+    "derive": {
+      "pctForm": 86.7,
+      "oreForm": 1.7,
+      "pctNuovi": 60,
+      "pctMfa": 57.9,
+      "pctCif": 64.3,
+      "pctCons": 93.2,
+      "pctOpp": 3.3
+    },
+    "derivePrec": {
+      "pctForm": 33.3,
+      "oreForm": 0.7,
+      "pctNuovi": 25,
+      "pctMfa": 17.1,
+      "pctCif": 25,
+      "pctCons": 84.9,
+      "pctOpp": 3.6
+    },
+    "allarmi": [
+      {
+        "lv": "A",
+        "t": "Legittimo interesse senza bilanciamento documentato: 1",
+        "r": "Art. 6.1.f",
+        "go": "trat"
+      },
+      {
+        "lv": "C",
+        "t": "Valutazioni d'impatto necessarie e non concluse: 1",
+        "r": "Art. 35",
+        "go": "ris"
+      },
+      {
+        "lv": "C",
+        "t": "Responsabili senza contratto ai sensi dell'art. 28: 1",
+        "r": "Art. 28.3",
+        "go": "ris"
+      },
+      {
+        "lv": "C",
+        "t": "Trasferimenti fuori dallo Spazio economico europeo senza garanzia definita: 1",
+        "r": "Art. 44",
+        "go": "ris"
+      },
+      {
+        "lv": "A",
+        "t": "Richieste riscontrate oltre il termine nel 2026: 1",
+        "r": "Art. 12.3",
+        "go": "reg"
+      },
+      {
+        "lv": "C",
+        "t": "Requisiti valutati non conformi: 1",
+        "r": "Passo 3",
+        "go": "gap"
+      },
+      {
+        "lv": "A",
+        "t": "Documenti da aggiornare o con revisione scaduta: 2",
+        "r": "Art. 24.1",
+        "go": "pol"
+      },
+      {
+        "lv": "A",
+        "t": "Contatti promozionali senza consenso o base documentata: 1250",
+        "r": "Art. 7.1",
+        "go": "dati"
+      },
+      {
+        "lv": "A",
+        "t": "Portatili e dispositivi mobili non cifrati: 5",
+        "r": "Art. 32.1.a",
+        "go": "dati"
+      },
+      {
+        "lv": "A",
+        "t": "Verifica annuale degli amministratori di sistema non registrata nel 2026",
+        "r": "Provv. Garante",
+        "go": "reg"
+      },
+      {
+        "lv": "A",
+        "t": "Riesame annuale non ancora svolto nel 2026",
+        "r": "Art. 24.1",
+        "go": "reg"
+      }
+    ],
+    "stato": {
+      "s1": 1,
+      "s2": 1,
+      "s3": 0.9393939393939394,
+      "s4": 1,
+      "s5": 0.9045584045584046,
+      "s6": 1,
+      "s7": 0.5,
+      "s8": 0.9062789062789063,
+      "tot": 91
+    }
+  }
+}

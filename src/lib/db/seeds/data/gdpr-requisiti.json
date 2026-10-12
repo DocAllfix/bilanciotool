@@ -1,0 +1,695 @@
+[
+  {
+    "key": "P-01",
+    "ordine": 1,
+    "gruppo": "P",
+    "riferimento": "5.1.a",
+    "testo": "Dati trattati in modo lecito, corretto e trasparente nei confronti dell'interessato."
+  },
+  {
+    "key": "P-02",
+    "ordine": 2,
+    "gruppo": "P",
+    "riferimento": "5.1.b",
+    "testo": "Finalità determinate, esplicite e legittime per ogni trattamento; nessun uso successivo incompatibile."
+  },
+  {
+    "key": "P-03",
+    "ordine": 3,
+    "gruppo": "P",
+    "riferimento": "5.1.c",
+    "testo": "Raccolti solo i dati adeguati, pertinenti e necessari rispetto alle finalità."
+  },
+  {
+    "key": "P-04",
+    "ordine": 4,
+    "gruppo": "P",
+    "riferimento": "5.1.d",
+    "testo": "Dati esatti e aggiornati; quelli inesatti rettificati o cancellati tempestivamente."
+  },
+  {
+    "key": "P-05",
+    "ordine": 5,
+    "gruppo": "P",
+    "riferimento": "5.1.e",
+    "testo": "Termini di conservazione definiti per ogni trattamento e applicati: alla scadenza i dati sono cancellati o resi anonimi."
+  },
+  {
+    "key": "P-06",
+    "ordine": 6,
+    "gruppo": "P",
+    "riferimento": "5.2",
+    "testo": "L'organizzazione è in grado di comprovare il rispetto dei principi con documenti e registrazioni."
+  },
+  {
+    "key": "P-07",
+    "ordine": 7,
+    "gruppo": "P",
+    "riferimento": "6.1",
+    "testo": "Base giuridica individuata e documentata per ogni trattamento prima dell'avvio."
+  },
+  {
+    "key": "P-08",
+    "ordine": 8,
+    "gruppo": "P",
+    "riferimento": "6.1.f",
+    "testo": "Dove la base è il legittimo interesse, bilanciamento con i diritti dell'interessato svolto e documentato."
+  },
+  {
+    "key": "P-09",
+    "ordine": 9,
+    "gruppo": "P",
+    "riferimento": "7",
+    "testo": "Consenso libero, specifico, informato e dimostrabile; richiesta distinta da altre dichiarazioni; revoca semplice quanto il rilascio."
+  },
+  {
+    "key": "P-10",
+    "ordine": 10,
+    "gruppo": "P",
+    "riferimento": "8",
+    "testo": "Per i servizi online offerti a minori verificata l'età: in Italia il consenso è valido dai 14 anni, sotto serve chi esercita la responsabilità genitoriale."
+  },
+  {
+    "key": "P-11",
+    "ordine": 11,
+    "gruppo": "P",
+    "riferimento": "9",
+    "testo": "Categorie particolari di dati trattate solo in presenza di una delle condizioni dell'art. 9.2, individuata per ogni trattamento."
+  },
+  {
+    "key": "P-12",
+    "ordine": 12,
+    "gruppo": "P",
+    "riferimento": "10",
+    "testo": "Dati relativi a condanne penali e reati trattati solo se una norma lo autorizza e con le garanzie previste."
+  },
+  {
+    "key": "T-01",
+    "ordine": 13,
+    "gruppo": "T",
+    "riferimento": "12.1",
+    "testo": "Informazioni e comunicazioni agli interessati concise, trasparenti, comprensibili e facilmente accessibili."
+  },
+  {
+    "key": "T-02",
+    "ordine": 14,
+    "gruppo": "T",
+    "riferimento": "13",
+    "testo": "Informativa fornita al momento della raccolta con tutti gli elementi previsti: titolare, finalità, base giuridica, destinatari, trasferimenti, conservazione, diritti, reclamo."
+  },
+  {
+    "key": "T-03",
+    "ordine": 15,
+    "gruppo": "T",
+    "riferimento": "14",
+    "testo": "Per i dati non raccolti presso l'interessato, informativa fornita entro un mese o al primo contatto, con indicazione della fonte."
+  },
+  {
+    "key": "T-04",
+    "ordine": 16,
+    "gruppo": "T",
+    "riferimento": "13.2.f",
+    "testo": "Dove esistono decisioni automatizzate o profilazione, l'informativa ne spiega logica, importanza e conseguenze."
+  },
+  {
+    "key": "T-05",
+    "ordine": 17,
+    "gruppo": "T",
+    "riferimento": "13 · lavoro",
+    "testo": "Informativa a dipendenti e collaboratori completa, comprensiva di strumenti di lavoro, controlli e videosorveglianza."
+  },
+  {
+    "key": "T-06",
+    "ordine": 18,
+    "gruppo": "T",
+    "riferimento": "13 · sito",
+    "testo": "Informativa del sito web e dei moduli online aggiornata e coerente con i trattamenti effettivi."
+  },
+  {
+    "key": "T-07",
+    "ordine": 19,
+    "gruppo": "T",
+    "riferimento": "13.3",
+    "testo": "Prima di usare i dati per una finalità nuova, l'interessato riceve un'informativa aggiornata."
+  },
+  {
+    "key": "D-01",
+    "ordine": 20,
+    "gruppo": "D",
+    "riferimento": "12.2",
+    "testo": "Procedura per ricevere, instradare e riscontrare le richieste degli interessati, con responsabilità assegnate."
+  },
+  {
+    "key": "D-02",
+    "ordine": 21,
+    "gruppo": "D",
+    "riferimento": "12.3",
+    "testo": "Riscontro entro un mese dalla richiesta; proroga fino a due mesi comunicata e motivata entro il primo mese."
+  },
+  {
+    "key": "D-03",
+    "ordine": 22,
+    "gruppo": "D",
+    "riferimento": "12.5",
+    "testo": "Esercizio dei diritti gratuito, salvo richieste manifestamente infondate o eccessive."
+  },
+  {
+    "key": "D-04",
+    "ordine": 23,
+    "gruppo": "D",
+    "riferimento": "12.6",
+    "testo": "Identità del richiedente verificata in modo proporzionato, senza chiedere dati non necessari."
+  },
+  {
+    "key": "D-05",
+    "ordine": 24,
+    "gruppo": "D",
+    "riferimento": "15",
+    "testo": "Accesso: conferma del trattamento, informazioni previste e copia dei dati."
+  },
+  {
+    "key": "D-06",
+    "ordine": 25,
+    "gruppo": "D",
+    "riferimento": "16",
+    "testo": "Rettifica dei dati inesatti e integrazione di quelli incompleti."
+  },
+  {
+    "key": "D-07",
+    "ordine": 26,
+    "gruppo": "D",
+    "riferimento": "17",
+    "testo": "Cancellazione nei casi previsti, anche su copie di sicurezza e sistemi secondari secondo regole definite."
+  },
+  {
+    "key": "D-08",
+    "ordine": 27,
+    "gruppo": "D",
+    "riferimento": "18",
+    "testo": "Limitazione del trattamento: capacità tecnica di contrassegnare e bloccare i dati."
+  },
+  {
+    "key": "D-09",
+    "ordine": 28,
+    "gruppo": "D",
+    "riferimento": "19",
+    "testo": "Rettifiche, cancellazioni e limitazioni comunicate ai destinatari a cui i dati sono stati trasmessi."
+  },
+  {
+    "key": "D-10",
+    "ordine": 29,
+    "gruppo": "D",
+    "riferimento": "20",
+    "testo": "Portabilità: dati forniti in formato strutturato, di uso comune e leggibile da dispositivo automatico."
+  },
+  {
+    "key": "D-11",
+    "ordine": 30,
+    "gruppo": "D",
+    "riferimento": "21",
+    "testo": "Opposizione sempre accolta per il marketing diretto; valutata caso per caso negli altri trattamenti."
+  },
+  {
+    "key": "D-12",
+    "ordine": 31,
+    "gruppo": "D",
+    "riferimento": "22",
+    "testo": "Nessuna decisione basata unicamente su trattamento automatizzato con effetti significativi, salvo le eccezioni previste e con intervento umano."
+  },
+  {
+    "key": "A-01",
+    "ordine": 32,
+    "gruppo": "A",
+    "riferimento": "24.1",
+    "testo": "Misure tecniche e organizzative adeguate adottate, riesaminate e aggiornate in base ai rischi."
+  },
+  {
+    "key": "A-02",
+    "ordine": 33,
+    "gruppo": "A",
+    "riferimento": "24.2",
+    "testo": "Politica di protezione dei dati adottata dalla direzione e comunicata a chi tratta dati."
+  },
+  {
+    "key": "A-03",
+    "ordine": 34,
+    "gruppo": "A",
+    "riferimento": "25.1",
+    "testo": "Protezione dei dati considerata fin dalla progettazione di nuovi trattamenti, sistemi e servizi."
+  },
+  {
+    "key": "A-04",
+    "ordine": 35,
+    "gruppo": "A",
+    "riferimento": "25.2",
+    "testo": "Impostazioni predefinite che limitano al minimo necessario dati raccolti, accessi e conservazione."
+  },
+  {
+    "key": "A-05",
+    "ordine": 36,
+    "gruppo": "A",
+    "riferimento": "29",
+    "testo": "Chi accede ai dati agisce solo su istruzione del titolare: autorizzazioni e istruzioni scritte per ruolo."
+  },
+  {
+    "key": "A-06",
+    "ordine": 37,
+    "gruppo": "A",
+    "riferimento": "29 · 39",
+    "testo": "Formazione periodica degli autorizzati, registrata e differenziata per funzione."
+  },
+  {
+    "key": "A-07",
+    "ordine": 38,
+    "gruppo": "A",
+    "riferimento": "24 · ruoli",
+    "testo": "Ruoli e responsabilità definiti: referente interno, funzioni coinvolte, flussi informativi verso la direzione."
+  },
+  {
+    "key": "R-01",
+    "ordine": 39,
+    "gruppo": "R",
+    "riferimento": "28 · mappa",
+    "testo": "Fornitori che trattano dati per conto dell'organizzazione censiti e qualificati: responsabile, contitolare o titolare autonomo."
+  },
+  {
+    "key": "R-02",
+    "ordine": 40,
+    "gruppo": "R",
+    "riferimento": "28.1",
+    "testo": "Responsabili scelti dopo aver verificato garanzie sufficienti su competenza e sicurezza."
+  },
+  {
+    "key": "R-03",
+    "ordine": 41,
+    "gruppo": "R",
+    "riferimento": "28.3",
+    "testo": "Contratto o atto scritto con ogni responsabile, con i contenuti dell'art. 28.3: istruzioni, riservatezza, sicurezza, sub-responsabili, assistenza, restituzione, audit."
+  },
+  {
+    "key": "R-04",
+    "ordine": 42,
+    "gruppo": "R",
+    "riferimento": "28.2",
+    "testo": "Ricorso a sub-responsabili solo con autorizzazione scritta, specifica o generale, e con gli stessi obblighi."
+  },
+  {
+    "key": "R-05",
+    "ordine": 43,
+    "gruppo": "R",
+    "riferimento": "28.3.h",
+    "testo": "Verifiche periodiche sui responsabili critici: questionari, certificazioni, audit."
+  },
+  {
+    "key": "R-06",
+    "ordine": 44,
+    "gruppo": "R",
+    "riferimento": "26",
+    "testo": "Con i contitolari, accordo che ripartisce responsabilità e obblighi; contenuto essenziale a disposizione degli interessati."
+  },
+  {
+    "key": "R-07",
+    "ordine": 45,
+    "gruppo": "R",
+    "riferimento": "28.10 · 30.2",
+    "testo": "Quando l'organizzazione agisce come responsabile: istruzioni documentate del titolare rispettate e registro dell'art. 30.2 tenuto."
+  },
+  {
+    "key": "G-01",
+    "ordine": 46,
+    "gruppo": "G",
+    "riferimento": "30.1",
+    "testo": "Registro delle attività di trattamento con tutti i contenuti dell'art. 30.1 per ogni trattamento."
+  },
+  {
+    "key": "G-02",
+    "ordine": 47,
+    "gruppo": "G",
+    "riferimento": "30.3",
+    "testo": "Registro in forma scritta, anche elettronica, pronto per essere messo a disposizione del Garante."
+  },
+  {
+    "key": "G-03",
+    "ordine": 48,
+    "gruppo": "G",
+    "riferimento": "30 · agg.",
+    "testo": "Registro aggiornato a ogni nuovo trattamento o modifica e riesaminato almeno una volta l'anno."
+  },
+  {
+    "key": "S-01",
+    "ordine": 49,
+    "gruppo": "S",
+    "riferimento": "32.1",
+    "testo": "Rischi per la sicurezza valutati: distruzione, perdita, modifica, divulgazione o accesso non autorizzati."
+  },
+  {
+    "key": "S-02",
+    "ordine": 50,
+    "gruppo": "S",
+    "riferimento": "32 · accessi",
+    "testo": "Credenziali individuali per ogni utente; nessuna utenza condivisa; password robuste."
+  },
+  {
+    "key": "S-03",
+    "ordine": 51,
+    "gruppo": "S",
+    "riferimento": "32 · MFA",
+    "testo": "Autenticazione a più fattori per accessi remoti, posta elettronica, servizi cloud e utenze amministrative."
+  },
+  {
+    "key": "S-04",
+    "ordine": 52,
+    "gruppo": "S",
+    "riferimento": "32 · profili",
+    "testo": "Profili di autorizzazione limitati al necessario, rivisti periodicamente e revocati alla cessazione."
+  },
+  {
+    "key": "S-05",
+    "ordine": 53,
+    "gruppo": "S",
+    "riferimento": "32.1.a",
+    "testo": "Cifratura di portatili, dispositivi mobili, supporti rimovibili e trasmissioni; pseudonimizzazione dove appropriata."
+  },
+  {
+    "key": "S-06",
+    "ordine": 54,
+    "gruppo": "S",
+    "riferimento": "32.1.b",
+    "testo": "Aggiornamenti di sicurezza applicati con regolarità a sistemi, applicazioni e apparati."
+  },
+  {
+    "key": "S-07",
+    "ordine": 55,
+    "gruppo": "S",
+    "riferimento": "32 · malware",
+    "testo": "Protezione da malware, filtro della posta e protezione perimetrale attivi e aggiornati."
+  },
+  {
+    "key": "S-08",
+    "ordine": 56,
+    "gruppo": "S",
+    "riferimento": "32.1.c",
+    "testo": "Copie di sicurezza regolari, protette e separate dalla rete; ripristino provato."
+  },
+  {
+    "key": "S-09",
+    "ordine": 57,
+    "gruppo": "S",
+    "riferimento": "32 · continuità",
+    "testo": "Piano per ripristinare tempestivamente disponibilità e accesso ai dati dopo un incidente."
+  },
+  {
+    "key": "S-10",
+    "ordine": 58,
+    "gruppo": "S",
+    "riferimento": "32 · log",
+    "testo": "Accessi ed eventi rilevanti registrati e controllati; registrazioni protette da alterazioni."
+  },
+  {
+    "key": "S-11",
+    "ordine": 59,
+    "gruppo": "S",
+    "riferimento": "32.1.d",
+    "testo": "Efficacia delle misure provata, verificata e valutata con regolarità."
+  },
+  {
+    "key": "S-12",
+    "ordine": 60,
+    "gruppo": "S",
+    "riferimento": "32 · fisica",
+    "testo": "Locali, archivi cartacei e sale apparati protetti; accesso dei visitatori controllato."
+  },
+  {
+    "key": "S-13",
+    "ordine": 61,
+    "gruppo": "S",
+    "riferimento": "32 · dismissione",
+    "testo": "Supporti e apparecchiature dismessi o riutilizzati solo dopo la cancellazione sicura dei dati."
+  },
+  {
+    "key": "S-14",
+    "ordine": 62,
+    "gruppo": "S",
+    "riferimento": "32 · strumenti",
+    "testo": "Regole scritte per l'uso di posta, internet, dispositivi aziendali e personali, lavoro da remoto."
+  },
+  {
+    "key": "S-15",
+    "ordine": 63,
+    "gruppo": "S",
+    "riferimento": "32 · sviluppo",
+    "testo": "Ambienti di prova senza dati reali o con dati mascherati; modifiche ai sistemi autorizzate e tracciate."
+  },
+  {
+    "key": "V-01",
+    "ordine": 64,
+    "gruppo": "V",
+    "riferimento": "33 · procedura",
+    "testo": "Procedura per rilevare, valutare e gestire le violazioni, con ruoli e tempi definiti, conosciuta dal personale."
+  },
+  {
+    "key": "V-02",
+    "ordine": 65,
+    "gruppo": "V",
+    "riferimento": "33.1",
+    "testo": "Violazioni che comportano un rischio notificate al Garante entro 72 ore dalla conoscenza; eventuali ritardi motivati."
+  },
+  {
+    "key": "V-03",
+    "ordine": 66,
+    "gruppo": "V",
+    "riferimento": "33.3",
+    "testo": "Notifica completa: natura, categorie e numero di interessati, conseguenze probabili, misure adottate, punto di contatto."
+  },
+  {
+    "key": "V-04",
+    "ordine": 67,
+    "gruppo": "V",
+    "riferimento": "33.5",
+    "testo": "Tutte le violazioni documentate in un registro, comprese quelle non notificate, con la valutazione che motiva la scelta."
+  },
+  {
+    "key": "V-05",
+    "ordine": 68,
+    "gruppo": "V",
+    "riferimento": "34",
+    "testo": "Violazioni a rischio elevato comunicate agli interessati senza ingiustificato ritardo, in linguaggio chiaro."
+  },
+  {
+    "key": "V-06",
+    "ordine": 69,
+    "gruppo": "V",
+    "riferimento": "33.2",
+    "testo": "Contratti con i responsabili che li obbligano a informare il titolare senza ritardo di ogni violazione."
+  },
+  {
+    "key": "V-07",
+    "ordine": 70,
+    "gruppo": "V",
+    "riferimento": "33 · prova",
+    "testo": "Capacità di risposta provata con simulazioni o esercitazioni periodiche."
+  },
+  {
+    "key": "I-01",
+    "ordine": 71,
+    "gruppo": "I",
+    "riferimento": "35.1",
+    "testo": "Per ogni trattamento, valutata prima dell'avvio la necessità di una valutazione d'impatto."
+  },
+  {
+    "key": "I-02",
+    "ordine": 72,
+    "gruppo": "I",
+    "riferimento": "35.3",
+    "testo": "Valutazione d'impatto svolta per i trattamenti a rischio elevato: profilazione sistematica, dati particolari su larga scala, sorveglianza sistematica, elenco del Garante."
+  },
+  {
+    "key": "I-03",
+    "ordine": 73,
+    "gruppo": "I",
+    "riferimento": "35.7",
+    "testo": "Valutazione con i contenuti minimi: descrizione, necessità e proporzionalità, rischi per gli interessati, misure previste."
+  },
+  {
+    "key": "I-04",
+    "ordine": 74,
+    "gruppo": "I",
+    "riferimento": "35.2",
+    "testo": "Parere del responsabile della protezione dei dati, se designato, richiesto e documentato."
+  },
+  {
+    "key": "I-05",
+    "ordine": 75,
+    "gruppo": "I",
+    "riferimento": "35.9",
+    "testo": "Opinioni degli interessati o dei loro rappresentanti raccolte dove opportuno."
+  },
+  {
+    "key": "I-06",
+    "ordine": 76,
+    "gruppo": "I",
+    "riferimento": "35.11",
+    "testo": "Valutazione riesaminata quando cambiano i rischi o il trattamento."
+  },
+  {
+    "key": "I-07",
+    "ordine": 77,
+    "gruppo": "I",
+    "riferimento": "36",
+    "testo": "Consultazione preventiva del Garante se il rischio residuo resta elevato."
+  },
+  {
+    "key": "O-01",
+    "ordine": 78,
+    "gruppo": "O",
+    "riferimento": "37.1",
+    "testo": "Obbligo di designare il responsabile della protezione dei dati valutato e documentato, anche quando l'esito è negativo."
+  },
+  {
+    "key": "O-02",
+    "ordine": 79,
+    "gruppo": "O",
+    "riferimento": "37.5",
+    "testo": "Responsabile della protezione dei dati scelto per qualità professionali e conoscenza specialistica."
+  },
+  {
+    "key": "O-03",
+    "ordine": 80,
+    "gruppo": "O",
+    "riferimento": "37.7",
+    "testo": "Dati di contatto pubblicati e comunicati al Garante."
+  },
+  {
+    "key": "O-04",
+    "ordine": 81,
+    "gruppo": "O",
+    "riferimento": "38.1",
+    "testo": "Coinvolto tempestivamente in tutte le questioni di protezione dei dati."
+  },
+  {
+    "key": "O-05",
+    "ordine": 82,
+    "gruppo": "O",
+    "riferimento": "38.3 · 38.6",
+    "testo": "Dotato di risorse, indipendente, senza istruzioni e senza conflitti di interesse; riferisce al vertice."
+  },
+  {
+    "key": "O-06",
+    "ordine": 83,
+    "gruppo": "O",
+    "riferimento": "39",
+    "testo": "Compiti svolti e tracciati: informazione, sorveglianza, pareri sulle valutazioni d'impatto, contatto con il Garante."
+  },
+  {
+    "key": "X-01",
+    "ordine": 84,
+    "gruppo": "X",
+    "riferimento": "44 · mappa",
+    "testo": "Trasferimenti verso paesi terzi censiti, compresi servizi cloud, assistenza remota e sub-responsabili."
+  },
+  {
+    "key": "X-02",
+    "ordine": 85,
+    "gruppo": "X",
+    "riferimento": "45",
+    "testo": "Trasferimenti verso paesi con decisione di adeguatezza verificata e ancora in vigore."
+  },
+  {
+    "key": "X-03",
+    "ordine": 86,
+    "gruppo": "X",
+    "riferimento": "46",
+    "testo": "In assenza di adeguatezza, garanzie adeguate in essere: clausole contrattuali tipo o norme vincolanti d'impresa."
+  },
+  {
+    "key": "X-04",
+    "ordine": 87,
+    "gruppo": "X",
+    "riferimento": "46 · TIA",
+    "testo": "Ordinamento del paese di destinazione valutato; misure supplementari adottate dove serve."
+  },
+  {
+    "key": "X-05",
+    "ordine": 88,
+    "gruppo": "X",
+    "riferimento": "49",
+    "testo": "Deroghe usate solo per trasferimenti occasionali e nei casi tassativi previsti."
+  },
+  {
+    "key": "X-06",
+    "ordine": 89,
+    "gruppo": "X",
+    "riferimento": "13.1.f",
+    "testo": "Informative e registro indicano i trasferimenti e le garanzie applicate."
+  },
+  {
+    "key": "N-01",
+    "ordine": 90,
+    "gruppo": "N",
+    "riferimento": "Cod. 2-quaterdecies",
+    "testo": "Persone autorizzate designate per iscritto, con compiti e istruzioni specifiche."
+  },
+  {
+    "key": "N-02",
+    "ordine": 91,
+    "gruppo": "N",
+    "riferimento": "AdS · nomina",
+    "testo": "Amministratori di sistema designati individualmente, con ambiti di operatività definiti ed elenco aggiornato."
+  },
+  {
+    "key": "N-03",
+    "ordine": 92,
+    "gruppo": "N",
+    "riferimento": "AdS · log",
+    "testo": "Accessi degli amministratori di sistema registrati e conservati per almeno sei mesi; operato verificato ogni anno."
+  },
+  {
+    "key": "N-04",
+    "ordine": 93,
+    "gruppo": "N",
+    "riferimento": "L. 300/70 art. 4",
+    "testo": "Videosorveglianza e strumenti da cui può derivare un controllo a distanza installati previo accordo sindacale o autorizzazione dell'Ispettorato."
+  },
+  {
+    "key": "N-05",
+    "ordine": 94,
+    "gruppo": "N",
+    "riferimento": "Videosorv.",
+    "testo": "Cartelli informativi prima del raggio d'azione, conservazione delle immagini breve e giustificata, accesso riservato."
+  },
+  {
+    "key": "N-06",
+    "ordine": 95,
+    "gruppo": "N",
+    "riferimento": "Posta e internet",
+    "testo": "Regole su posta elettronica e navigazione rese note ai lavoratori; conservazione dei metadati limitata secondo le indicazioni del Garante."
+  },
+  {
+    "key": "N-07",
+    "ordine": 96,
+    "gruppo": "N",
+    "riferimento": "Cookie",
+    "testo": "Cookie e strumenti di tracciamento non tecnici attivati solo dopo il consenso; banner conforme alle linee guida del Garante."
+  },
+  {
+    "key": "N-08",
+    "ordine": 97,
+    "gruppo": "N",
+    "riferimento": "Cod. 130",
+    "testo": "Comunicazioni promozionali inviate con consenso o nei limiti dell'eccezione per i propri clienti; telemarketing verificato sul Registro delle opposizioni."
+  },
+  {
+    "key": "N-09",
+    "ordine": 98,
+    "gruppo": "N",
+    "riferimento": "D.Lgs. 24/2023",
+    "testo": "Canale di segnalazione degli illeciti con riservatezza garantita, informativa dedicata e valutazione d'impatto."
+  },
+  {
+    "key": "N-10",
+    "ordine": 99,
+    "gruppo": "N",
+    "riferimento": "Cod. 111-bis",
+    "testo": "Curricula e dati dei candidati gestiti con informativa al primo contatto utile e conservazione limitata."
+  }
+]

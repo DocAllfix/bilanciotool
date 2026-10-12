@@ -1,0 +1,78 @@
+{
+  "stati": [
+    {
+      "key": "c",
+      "etichetta": "Conforme"
+    },
+    {
+      "key": "p",
+      "etichetta": "Parziale"
+    },
+    {
+      "key": "n",
+      "etichetta": "Non conforme"
+    },
+    {
+      "key": "na",
+      "etichetta": "Non pertinente"
+    }
+  ],
+  "basi": [
+    "Consenso (6.1.a)",
+    "Contratto o misure precontrattuali (6.1.b)",
+    "Obbligo legale (6.1.c)",
+    "Interessi vitali (6.1.d)",
+    "Interesse pubblico (6.1.e)",
+    "Legittimo interesse (6.1.f)"
+  ],
+  "condizioni9": [
+    "a) Consenso esplicito",
+    "b) Lavoro e sicurezza sociale",
+    "c) Interessi vitali",
+    "d) Enti senza scopo di lucro",
+    "e) Dati resi pubblici dall'interessato",
+    "f) Difesa in giudizio",
+    "g) Interesse pubblico rilevante",
+    "h) Medicina preventiva e del lavoro, assistenza sanitaria",
+    "i) Sanità pubblica",
+    "j) Archiviazione, ricerca, statistica"
+  ],
+  "qualifiche": [
+    "Responsabile (art. 28)",
+    "Sub-responsabile",
+    "Contitolare (art. 26)",
+    "Titolare autonomo"
+  ],
+  "garanzie": [
+    "Nessun trasferimento",
+    "Decisione di adeguatezza",
+    "Clausole contrattuali tipo",
+    "Norme vincolanti d'impresa",
+    "Deroga art. 49",
+    "Da definire"
+  ],
+  "tipiDocumento": [
+    "Informativa (art. 13)",
+    "Informativa (art. 14)",
+    "Modulo di consenso",
+    "Autorizzazione e istruzioni (art. 29)",
+    "Nomina amministratore di sistema",
+    "Designazione del responsabile della protezione dei dati",
+    "Contratto con responsabile (art. 28)",
+    "Accordo di contitolarità (art. 26)",
+    "Procedura",
+    "Regolamento interno",
+    "Valutazione o parere"
+  ],
+  "statiDocumento": [
+    "Da redigere",
+    "In bozza",
+    "Adottato",
+    "Da aggiornare"
+  ],
+  "parametri": {
+    "alto": 15,
+    "medio": 8,
+    "dpia_n": 2
+  }
+}

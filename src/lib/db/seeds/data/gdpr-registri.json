@@ -1,0 +1,367 @@
+[
+  {
+    "key": "dir",
+    "ordine": 1,
+    "nome": "Richieste degli interessati",
+    "riferimento": "Artt. 12 · 15–22",
+    "aiuto": "Ogni richiesta, qualunque sia il canale di arrivo. Il termine di un mese si calcola da solo; con la proroga motivata diventa di tre mesi.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Ricevuta il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "diritto",
+        "etichetta": "Diritto esercitato",
+        "genere": "s",
+        "opzioni": [
+          "Accesso (art. 15)",
+          "Rettifica (art. 16)",
+          "Cancellazione (art. 17)",
+          "Limitazione (art. 18)",
+          "Portabilità (art. 20)",
+          "Opposizione (art. 21)",
+          "Decisioni automatizzate (art. 22)",
+          "Revoca del consenso"
+        ]
+      },
+      {
+        "chiave": "rif",
+        "etichetta": "Riferimento interno",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "canale",
+        "etichetta": "Canale",
+        "genere": "s",
+        "opzioni": [
+          "",
+          "Posta elettronica",
+          "PEC",
+          "Modulo del sito",
+          "Raccomandata",
+          "Di persona",
+          "Tramite il Garante"
+        ]
+      },
+      {
+        "chiave": "tratt",
+        "etichetta": "Trattamento interessato",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "proroga",
+        "etichetta": "Proroga comunicata",
+        "genere": "s",
+        "opzioni": [
+          "No",
+          "Sì"
+        ]
+      },
+      {
+        "chiave": "evasa",
+        "etichetta": "Riscontro inviato il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "esito",
+        "etichetta": "Esito",
+        "genere": "s",
+        "opzioni": [
+          "In lavorazione",
+          "Accolta",
+          "Accolta in parte",
+          "Respinta con motivazione"
+        ]
+      },
+      {
+        "chiave": "note",
+        "etichetta": "Attività svolte",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "breach",
+    "ordine": 2,
+    "nome": "Violazioni dei dati",
+    "riferimento": "Artt. 33 · 34",
+    "aiuto": "Tutte le violazioni, anche quelle non notificate, con la valutazione del rischio. Le 72 ore decorrono dal momento in cui l'organizzazione ne viene a conoscenza.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Conosciuta il",
+        "genere": "dt",
+        "opzioni": null
+      },
+      {
+        "chiave": "natura",
+        "etichetta": "Natura",
+        "genere": "s",
+        "opzioni": [
+          "Riservatezza",
+          "Integrità",
+          "Disponibilità",
+          "Più profili"
+        ]
+      },
+      {
+        "chiave": "nint",
+        "etichetta": "Interessati coinvolti (stima)",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "rischio",
+        "etichetta": "Rischio per gli interessati",
+        "genere": "s",
+        "opzioni": [
+          "Improbabile",
+          "Rischio",
+          "Rischio elevato"
+        ]
+      },
+      {
+        "chiave": "desc",
+        "etichetta": "Descrizione e cause",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "cat",
+        "etichetta": "Categorie di dati e di interessati",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "notif",
+        "etichetta": "Notificata al Garante il",
+        "genere": "dt",
+        "opzioni": null
+      },
+      {
+        "chiave": "comint",
+        "etichetta": "Comunicata agli interessati il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "chiusura",
+        "etichetta": "Chiusa il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "mis",
+        "etichetta": "Valutazione del rischio, conseguenze e provvedimenti",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "form",
+    "ordine": 3,
+    "nome": "Formazione",
+    "riferimento": "Artt. 29 · 32.4 · 39",
+    "aiuto": "Interventi formativi sulla protezione dei dati. Indica le ore del corso e i partecipanti.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "tema",
+        "etichetta": "Tema",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "dest",
+        "etichetta": "Destinatari",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "doc",
+        "etichetta": "Docente",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "part",
+        "etichetta": "Partecipanti",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "ore",
+        "etichetta": "Ore del corso",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "eff",
+        "etichetta": "Verifica di apprendimento",
+        "genere": "t",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "audit",
+    "ordine": 4,
+    "nome": "Audit e verifiche",
+    "riferimento": "Artt. 24 · 28.3.h · 32.1.d",
+    "aiuto": "Audit interni, verifiche sui responsabili, prove tecniche e di ripristino.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "tipo",
+        "etichetta": "Tipo",
+        "genere": "s",
+        "opzioni": [
+          "Audit interno",
+          "Verifica su un responsabile",
+          "Verifica tecnica di sicurezza",
+          "Prova di ripristino",
+          "Verifica del responsabile della protezione dei dati"
+        ]
+      },
+      {
+        "chiave": "amb",
+        "etichetta": "Ambito",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "aud",
+        "etichetta": "Svolta da",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "stato",
+        "etichetta": "Stato",
+        "genere": "s",
+        "opzioni": [
+          "Pianificato",
+          "Svolto",
+          "Chiuso"
+        ]
+      },
+      {
+        "chiave": "ril",
+        "etichetta": "Rilievi",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "sint",
+        "etichetta": "Sintesi dei risultati",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "ads",
+    "ordine": 5,
+    "nome": "Amministratori di sistema",
+    "riferimento": "Provv. Garante 27.11.2008",
+    "aiuto": "Verifica almeno annuale dell'operato di ciascun amministratore di sistema, interno o esterno.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Verifica del",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "amm",
+        "etichetta": "Amministratore verificato",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "amb",
+        "etichetta": "Sistemi e ambiti",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "log",
+        "etichetta": "Registrazioni degli accessi conservate 6 mesi",
+        "genere": "s",
+        "opzioni": [
+          "Sì",
+          "No"
+        ]
+      },
+      {
+        "chiave": "esito",
+        "etichetta": "Esito della verifica",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "ries",
+    "ordine": 6,
+    "nome": "Riesame annuale",
+    "riferimento": "Artt. 24.1 · 39",
+    "aiuto": "Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nella relazione al passo 9: qui registri valutazioni e decisioni.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "part",
+        "etichetta": "Partecipanti",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "dpo",
+        "etichetta": "Relazione o parere del referente o del responsabile della protezione dei dati",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "ido",
+        "etichetta": "Adeguatezza del sistema",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "mig",
+        "etichetta": "Opportunità di miglioramento",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "az",
+        "etichetta": "Azioni decise",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  }
+]
