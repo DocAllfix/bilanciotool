@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, Megaphone, Network, Radar, Scale, ShieldAlert, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, LockKeyhole, Megaphone, Network, Radar, Scale, ShieldAlert, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "sgiqas", "sa8000", "soa"] as const;
+export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "gdpr", "sgiqas", "sa8000", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -308,6 +308,20 @@ export const MODULI_AZIENDA = [
     // 23 approva le misure e ne risponde di persona — quindi e' il documento principale.
     // Il Catalogo dei controlli e' cio' che un ispettore sfoglia.
     documenti: ["relazione_nis2", "controlli_nis2"],
+    perEsercizio: false,
+  },
+  {
+    href: "gdpr",
+    nome: "Protezione dei dati (GDPR)",
+    norma: "Reg. (UE) 2016/679 · D.Lgs. 196/2003",
+    icona: LockKeyhole,
+    // COMPLIANCE, decisione del committente del 12 ottobre 2026: è un obbligo di legge con
+    // un'autorità di controllo (il Garante) e sanzioni, non una certificazione volontaria.
+    area: "compliance",
+    colore: AREE.compliance.colore,
+    // Il registro dell'art. 30 è il primo documento che il Garante chiede, e la base di
+    // ogni altra valutazione: è il documento principale.
+    documenti: ["registro_trattamenti", "modello_privacy", "conformita_gdpr", "dpia", "politica_privacy", "relazione_privacy"],
     perEsercizio: false,
   },
   // ─── Sistemi di gestione ───────────────────────────────────────────────────

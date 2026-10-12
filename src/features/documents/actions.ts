@@ -17,7 +17,9 @@ import {
   publishSgesgSnapshot,
   publishAnalisiAmbientaleSnapshot,
   publishValutazioneSslSnapshot,
+  publishGdprSnapshot,
 } from "./snapshot";
+import { oggiIso } from "@/lib/calc/comune/tempo-italia";
 
 export async function publishDocumentAction(
   companyId: string,
@@ -79,6 +81,19 @@ export async function publishDocumentAction(
         case "controlli_nis2": {
           const t = tipo;
           return (u: string, o: string, c: string) => publishSistemaNis2Snapshot(u, o, c, t);
+        }
+        // ⚠️ I sei della protezione dei dati passano da UNA funzione sola. La chiave dello
+        // snapshot è sempre SENZA_ESERCIZIO; l'anno ricevuto, se è un esercizio, dice per
+        // quale anno leggere indicatori e registri. Con 0 si usa l'anno italiano corrente.
+        case "registro_trattamenti":
+        case "modello_privacy":
+        case "politica_privacy":
+        case "dpia":
+        case "conformita_gdpr":
+        case "relazione_privacy": {
+          const t = tipo;
+          return (u: string, o: string, c: string, a: number) =>
+            publishGdprSnapshot(u, o, c, t, a > 0 ? a : Number(oggiIso().slice(0, 4)));
         }
         default: {
           const mai: never = tipo;

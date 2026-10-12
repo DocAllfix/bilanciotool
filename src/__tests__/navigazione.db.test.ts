@@ -111,9 +111,11 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // gruppo significa «certificabile da un ente terzo», e NIS2 non lo certifica
     // nessuno: e' un obbligo di legge con un'Autorita' di vigilanza. E stanno vicini
     // fra loro perche' il secondo contiene per intero il primo.
+    // Dal 12 ottobre 2026 sono QUINDICI: «gdpr» entra in Compliance dopo i due NIS2.
+    // E' un obbligo di legge con un'Autorita' di controllo, non una certificazione.
     expect(f.voci.map((v) => v.modulo)).toEqual([
       "ghg", "energetico", "bilancio", "sgesg", "fornitore",
-      "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2",
+      "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "gdpr",
       "sgiqas", "sa8000", "soa",
     ]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo

@@ -72,6 +72,14 @@ import registriNis2 from "@/lib/db/seeds/data/nis2-registri.json";
 import motivazioniSoa from "@/lib/db/seeds/data/soa-motivations.json";
 import fasiSgesg from "@/lib/db/seeds/data/sgesg-fasi.json";
 import schedeSgesg from "@/lib/db/seeds/data/sgesg-schede.json";
+import requisitiGdpr from "@/lib/db/seeds/data/gdpr-requisiti.json";
+import gruppiGdpr from "@/lib/db/seeds/data/gdpr-gruppi.json";
+import trattamentiTipoGdpr from "@/lib/db/seeds/data/gdpr-trattamenti-tipo.json";
+import criteriGdpr from "@/lib/db/seeds/data/gdpr-criteri.json";
+import indicatoriGdpr from "@/lib/db/seeds/data/gdpr-indicatori.json";
+import registriGdpr from "@/lib/db/seeds/data/gdpr-registri.json";
+import documentiTipoGdpr from "@/lib/db/seeds/data/gdpr-documenti-tipo.json";
+import attivitaTipoGdpr from "@/lib/db/seeds/data/gdpr-piano-tipo.json";
 
 
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
@@ -222,6 +230,16 @@ export const NUMERI = {
   /** Sistema di gestione ESG. */
   fasiSgesg: fasiSgesg.length,
   schedeSgesg: schedeSgesg.length,
+
+  /** Protezione dei dati (GDPR). */
+  requisitiGdpr: requisitiGdpr.length,
+  gruppiGdpr: gruppiGdpr.length,
+  trattamentiTipoGdpr: trattamentiTipoGdpr.length,
+  criteriGdpr: criteriGdpr.length,
+  indicatoriGdpr: indicatoriGdpr.indicatori.length,
+  registriGdpr: registriGdpr.length,
+  documentiTipoGdpr: documentiTipoGdpr.length,
+  attivitaTipoGdpr: attivitaTipoGdpr.length,
 
 
   /**

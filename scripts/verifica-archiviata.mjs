@@ -32,7 +32,7 @@ if (/^https?:\/\/(www\.)?evalisdeck\.it(\/|$)/.test(BASE)) {
 }
 
 const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni",
-  "filiera", "nis2", "sgnis2", "sgiqas", "sa8000", "soa"];
+  "filiera", "nis2", "sgnis2", "gdpr", "sgiqas", "sa8000", "soa"];
 
 let ok = 0, ko = 0;
 const check = async (nome, fn) => {

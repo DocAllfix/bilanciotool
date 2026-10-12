@@ -16,12 +16,19 @@ import { versioneConImmaginiSuperateAction } from "@/features/companies/immagini
 // Ogni pubblicazione è una NUOVA versione; le precedenti restano consultabili.
 
 export function PannelloPubblicazione({
-  companyId, tipo, anno, readyPct,
+  companyId, tipo, anno, readyPct, esercizio,
 }: {
   companyId: string;
   tipo: TipoDocumento;
+  /** La chiave dello snapshot: l'esercizio, o `SENZA_ESERCIZIO` per le serie di revisioni. */
   anno: number;
   readyPct: number;
+  /**
+   * L'esercizio di cui il documento parla, quando NON è la sua chiave: la relazione annuale
+   * della protezione dei dati è una serie di revisioni (`anno = 0`) che riferisce un anno.
+   * Senza, si pubblica con `anno`, come sempre.
+   */
+  esercizio?: number;
 }) {
   const [versioni, setVersioni] = useState<SnapshotRiga[] | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
@@ -57,7 +64,7 @@ export function PannelloPubblicazione({
   async function pubblica() {
     setErrore(null);
     setInCorso(true);
-    const esito = await publishDocumentAction(companyId, tipo, anno);
+    const esito = await publishDocumentAction(companyId, tipo, esercizio ?? anno);
     setInCorso(false);
     if (!esito.ok) return setErrore(esito.errore);
     await carica();
@@ -109,7 +116,7 @@ export function PannelloPubblicazione({
           {versioni === null ? (
             <p className="text-sm text-muted-foreground">Caricamento…</p>
           ) : versioni.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nessuna versione ancora pubblicata per il {anno}.</p>
+            <p className="text-sm text-muted-foreground">{anno > 0 ? `Nessuna versione ancora pubblicata per il ${anno}.` : "Nessuna versione ancora pubblicata."}</p>
           ) : (
             <ul className="divide-y">
               {versioni.map((v) => (

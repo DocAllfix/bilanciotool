@@ -9,7 +9,11 @@ export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "so
   "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale",
   // I tre di NIS2 (D.Lgs. 138/2024). Nessuno e' annuale: la conformita' e' una
   // fotografia con revisioni, come la SoA.
-  "conformita_nis2", "relazione_nis2", "controlli_nis2"] as const;
+  "conformita_nis2", "relazione_nis2", "controlli_nis2",
+  // I sei della protezione dei dati (Reg. UE 2016/679). Nessuno è annuale, nemmeno la
+  // relazione: l'esercizio sta nello snapshot e nel titolo, la chiave resta una serie
+  // unica di revisioni come per gli altri moduli di conformità.
+  "registro_trattamenti", "modello_privacy", "politica_privacy", "dpia", "conformita_gdpr", "relazione_privacy"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -226,6 +230,51 @@ export const DOCUMENTI = {
     file: "riesame-direzione-qas",
     // Annuale nella pratica, ma e' la revisione N di una serie unica: l'anno nel titolo
     // lo mette chi lo redige, e l'unicita' resta (azienda, tipo, versione).
+    mostraAnno: false,
+    haMedia: false,
+  },
+  // ─── la protezione dei dati ────────────────────────────────────────────────
+  // Tutti `mostraAnno: false`: fotografie che si revisionano. La relazione annuale porta
+  // l'esercizio nel corpo e nel titolo, non nella chiave (vedi il piano, «Documenti»).
+  registro_trattamenti: {
+    nome: "Registro delle attività di trattamento (art. 30)",
+    breve: "Registro trattamenti",
+    file: "registro-trattamenti",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  modello_privacy: {
+    nome: "Modello organizzativo per la protezione dei dati",
+    breve: "Modello privacy",
+    file: "modello-organizzativo-privacy",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  politica_privacy: {
+    nome: "Politica di protezione dei dati",
+    breve: "Politica privacy",
+    file: "politica-protezione-dati",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  dpia: {
+    nome: "Valutazioni d'impatto sulla protezione dei dati",
+    breve: "Valutazioni d'impatto",
+    file: "valutazioni-impatto-dpia",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  conformita_gdpr: {
+    nome: "Rapporto di conformità e piano di adeguamento GDPR",
+    breve: "Conformità GDPR",
+    file: "rapporto-conformita-gdpr",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  relazione_privacy: {
+    nome: "Relazione annuale sulla protezione dei dati",
+    breve: "Relazione privacy",
+    file: "relazione-annuale-privacy",
     mostraAnno: false,
     haMedia: false,
   },

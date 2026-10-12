@@ -18,7 +18,7 @@ import { creaStudio, pulisciStudio } from "./comune";
 import { creaContatto } from "@/features/companies/contatti";
 import { creaProgramma, setStatoFase } from "@/features/sgesg/programma";
 import { setCampoScheda } from "@/features/sgesg/schede";
-import { publishSgesgSnapshot } from "@/features/documents/snapshot";
+import { publishGdprSnapshot, publishSgesgSnapshot, TIPI_GDPR } from "@/features/documents/snapshot";
 import { creaVoce } from "@/features/agenda";
 import { creaCompenso } from "@/features/compensi";
 import { avviaSistema, creaRiga, latestGdprSetId } from "@/features/gdpr/sistema";
@@ -213,6 +213,28 @@ describe("i quattro documenti nuovi stanno dietro alla capacita' di pubblicare",
     // La controprova: senza, i controlli qui sopra passerebbero anche se la funzione
     // fosse rotta per tutti.
     const id = await publishSgesgSnapshot(A.userId, A.orgId, A.companyId, 2025, "offerta_esg");
+    expect(id).toBeTruthy();
+  });
+});
+
+describe("i sei documenti della protezione dei dati stanno dietro alla capacita' di pubblicare", () => {
+  // La radice c'e' gia': se la pubblicazione fallisse per «nessun percorso», il
+  // controllo passerebbe per il motivo sbagliato.
+  for (const tipo of TIPI_GDPR) {
+    it(`in prova non si pubblica ${tipo}`, async () => {
+      await radiceGdpr(P.orgId, P.companyId);
+      const prima = (await db.select().from(documentSnapshot).where(eq(documentSnapshot.organizationId, P.orgId)))
+        .length;
+      await expect(publishGdprSnapshot(P.userId, P.orgId, P.companyId, tipo, 2026)).rejects.toThrow();
+      const dopo = (await db.select().from(documentSnapshot).where(eq(documentSnapshot.organizationId, P.orgId)))
+        .length;
+      expect(dopo).toBe(prima);
+    });
+  }
+
+  it("chi ha pagato invece pubblica", async () => {
+    await radiceGdpr(A.orgId, A.companyId);
+    const id = await publishGdprSnapshot(A.userId, A.orgId, A.companyId, "registro_trattamenti", 2026);
     expect(id).toBeTruthy();
   });
 });

@@ -3581,3 +3581,55 @@ pagine legali, che un piede non ce l'hanno. Mai dentro l'app dopo l'accesso.
   `/api/auth/get-session` ci passa a ogni pagina pubblica.** Due collaudi pesanti di fila
   dallo stesso indirizzo fanno vedere 429 al secondo: non è un difetto del prodotto, è la
   finestra ancora piena. Si rilancia a finestra scaduta, e lo si dichiara.
+
+**Percorso GDPR, fasi 0–4 (2026-10-12) — il quindicesimo percorso, in Compliance**
+
+Dal prototipo `aggiuntenuovimoduli/percorso-gdpr-v1.html` (impronta verificata contro
+l'originale). Piano in `~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`;
+decisioni del committente: gruppo **Compliance**, un requisito **parziale pesa metà**
+(quello non valutato pesa zero), formazione **per ultima**, dopo il rilascio.
+
+- **Fase 0**: il prototipo si **esegue intero** in `vm` (`scripts/carica-prototipo-gdpr.mjs`):
+  `extractConst` qui non funziona, perché le costanti si citano a vicenda, e ora **solleva**
+  se estrae una funzione o `undefined` invece di scrivere `"undefined"` nel file. Golden
+  riproducibile con `Date` e `Math.random` bloccati (`scripts/golden-gdpr.mjs`, `TZ=Europe/Rome`).
+- **Fase 1**: motore in `src/lib/calc/gdpr/`, nove difetti del prototipo corretti e scritti in
+  `docs/politica-arrotondamento.md`. Il più grave: «non pertinente» va **mappato** su
+  `NON_APPLICABILE` prima di `mediaPesata`, altrimenti entra nel conto a zero e abbassa
+  l'indice in silenzio. Le 72 ore si contano su istanti, non nel fuso del processo.
+- **Fase 2**: migrazioni `0062` (tabelle) e `0063` (RLS, 37 CHECK, trigger), seme `gdpr-v1`.
+  **Le tabelle figlie non portano `company_id`** (precedente QAS): il trigger
+  `azienda_scrivibile` sta solo su `gdpr_system`, e l'azienda archiviata per le righe figlie
+  si ferma in `pretendiSistema(…, { nuovaRiga: true })`, con lo stesso messaggio del database.
+  Guardia nuova `azienda-scrivibile-copertura.db`: il trigger su OGNI tabella con FK verso
+  `company`, messa in rosso togliendolo.
+- **Fase 3**: `src/features/gdpr/`, un campo per volta attraverso tre registri di campi
+  validati (`CAMPI_SISTEMA`, `CAMPI_REQUISITO`, `CAMPI_RIGHE`); le `azione:` dell'audit scritte
+  **letterali** anche dentro gli oggetti del registro delle righe, perché lo scanner delle
+  etichette legge solo quelle.
+- **Fase 4**: modulo nel registro (dopo `sgnis2`), sei documenti tutti nella serie
+  **senza esercizio** (migrazione `0064`), una funzione `publishGdprSnapshot` e un template
+  `documento-gdpr.tsx` per tutti e sei. L'esercizio della relazione annuale sta **nello
+  snapshot**: il pannello di pubblicazione ha ora una prop `esercizio` distinta da `anno`,
+  perché `anno` è anche il filtro delle versioni — passandogli l'esercizio, la serie
+  `anno = 0` sarebbe sembrata vuota. E «per il 0» non compare più.
+
+⚠️ **Dei registri delle richieste e delle violazioni nello snapshot entrano SOLO conteggi.**
+Il portale cliente serve tutti i documenti pubblicati dell'azienda: una descrizione di
+violazione finirebbe lì. `gdpr-documenti.db` lo prova cercando testi-sentinella nello
+snapshot, ed è stato messo in rosso aggiungendo il registro allo snapshot.
+
+**Regole nate qui:**
+- **Un numero scritto in un collaudo per riconoscere «la barra dell'azienda» smette di
+  distinguere al percorso successivo.** `visual-check-shell` contava `< 15`, cioè quattordici
+  percorsi più il fascicolo; ora legge `MODULI` da `moduli.ts`.
+- **Un filtro e un parametro d'azione che condividono una prop divergono al primo modulo che
+  li vuole diversi.** `anno` del pannello era chiave della serie e anno del contenuto insieme.
+- **Una sostituzione testuale su un file CRLF non trova niente**, e uno script che lo pretende
+  si ferma: è il comportamento giusto. Si normalizza, si sostituisce, si ripristina il
+  terminatore.
+
+Gate fase 4: typecheck · `gdpr-documenti.db` 6/6 (render dei sei snapshot compreso) ·
+`paywall-superfici-nuove.db` 27/27, messo in rosso togliendo `requireEntitlement` (sei rossi)
+· guardie `etichette-audit`, `documento-ritorno`, `portale-riservati`, `documenti-spazi`,
+`copertina`, `vetrina-percorsi`, `navigazione.db` verdi · `0064` applicata allo sviluppo.

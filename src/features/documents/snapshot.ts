@@ -32,6 +32,9 @@ import { getSegnalazioni } from "@/features/segnalazioni/queries";
 import { getSgiQas } from "@/features/sgiqas/queries";
 import { getFiliera } from "@/features/filiera/queries";
 import { getSa8000 } from "@/features/sa8000/queries";
+import { leggiPercorsoGdpr, type PercorsoGdprAvviato } from "@/features/gdpr/queries";
+import { datiDocumentoGdpr } from "@/features/gdpr/documento";
+import { oggiIso } from "@/lib/calc/comune/tempo-italia";
 import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
 import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
 import { SENZA_ESERCIZIO, DOCUMENTI } from "./tipi";
@@ -1313,4 +1316,43 @@ export async function publishSistemaNis2Snapshot(
   };
 
   return salvaSnapshot(userId, orgId, companyId, tipo, SENZA_ESERCIZIO, dati, s.sistema.contentSetId);
+}
+
+// ------------------------------------------------------------------ Protezione dei dati
+
+/** I sei tipi del percorso GDPR. */
+export const TIPI_GDPR = [
+  "registro_trattamenti",
+  "modello_privacy",
+  "politica_privacy",
+  "dpia",
+  "conformita_gdpr",
+  "relazione_privacy",
+] as const satisfies readonly TipoDocumento[];
+export type TipoGdpr = (typeof TIPI_GDPR)[number];
+
+/**
+ * I sei documenti della protezione dei dati, da una funzione sola.
+ *
+ * ⚠️ `esercizio` va NEI DATI, non nella chiave: la chiave resta `SENZA_ESERCIZIO` e le
+ * revisioni di ciascun tipo formano una serie unica, come per gli altri moduli di
+ * conformità. Indicatori e registri si leggono per quell'esercizio e il precedente.
+ *
+ * ⚠️ «Oggi» e «adesso» li decide il server, in ora italiana: i termini delle richieste e
+ * delle 72 ore congelati nel documento devono essere quelli del giorno della firma.
+ */
+export async function publishGdprSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: TipoGdpr,
+  esercizio: number,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  if (!Number.isInteger(esercizio) || esercizio < 1990 || esercizio > 2100) throw new Error("Esercizio non valido");
+  const p = await leggiPercorsoGdpr(userId, orgId, companyId);
+  if (!p?.sistema || !p.righe) throw new Error("Nessun percorso protezione dei dati da pubblicare per questa azienda");
+  const adesso = new Date();
+  const dati = datiDocumentoGdpr(p as PercorsoGdprAvviato, esercizio, { oggi: oggiIso(adesso), adesso });
+  return salvaSnapshot(userId, orgId, companyId, tipo, SENZA_ESERCIZIO, dati, p.sistema.contentSetId);
 }

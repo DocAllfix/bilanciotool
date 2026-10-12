@@ -18,7 +18,7 @@ import {
   soaDeclaration,
   soaControlDecision, briberySystem, briberyRequirementState, mogModel, mogProcess, mogScenario,
   wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState, chainProgram, chainPartner,
-  sgesgProgramma, sgesgFase } from "@/lib/db/schema";
+  sgesgProgramma, sgesgFase, gdprSystem, gdprRequisitoStato } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, count, desc, eq, isNotNull } from "drizzle-orm";
 
@@ -81,7 +81,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, autovalutazioneNis2, sistemaNis2, programmaFiliera, documenti] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, autovalutazioneNis2, sistemaNis2, programmaFiliera, documenti, sistemaGdpr] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -153,6 +153,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .from(documentSnapshot)
         .where(and(eq(documentSnapshot.companyId, companyId), eq(documentSnapshot.organizationId, orgId)))
         .orderBy(desc(documentSnapshot.publishedAt)),
+      // ⚠️ IN CODA, e non accanto alle altre radici: le due liste sono destrutturate per
+      // POSIZIONE, e inserire in mezzo sposterebbe ogni elemento che segue.
+      tx
+        .select({ id: gdprSystem.id })
+        .from(gdprSystem)
+        .where(and(eq(gdprSystem.companyId, companyId), eq(gdprSystem.organizationId, orgId))),
     ]);
 
     const invId = inventari[0]?.id ?? null;
@@ -169,11 +175,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const nis2Id = autovalutazioneNis2[0]?.id ?? null;
     const sgnis2Id = sistemaNis2[0]?.id ?? null;
     const filId = programmaFiliera[0]?.id ?? null;
+    const gdprId = sistemaGdpr[0]?.id ?? null;
     const annoBilancio = progetti[0]?.anno ?? null;
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner, nReqNis2, nCtrlNis2] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner, nReqNis2, nCtrlNis2, nReqGdpr] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -273,6 +280,14 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
             .from(nis2ControlState)
             .where(and(eq(nis2ControlState.companyId, companyId), isNotNull(nis2ControlState.stato)))
         : zero,
+      // ⚠️ Con `isNotNull(stato)`: con «un campo per volta» esiste una riga anche per un
+      // requisito di cui si è scritta solo l'evidenza, e non è un requisito valutato.
+      gdprId
+        ? tx
+            .select({ n: count() })
+            .from(gdprRequisitoStato)
+            .where(and(eq(gdprRequisitoStato.systemId, gdprId), isNotNull(gdprRequisitoStato.stato)))
+        : zero,
     ]);
 
     // Per ogni tipo di documento, la versione più alta (l'elenco è già ordinato
@@ -319,6 +334,13 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         anno: null,
         riempimento: nis2Id
           ? { valore: nReqNis2[0].n, etichetta: nReqNis2[0].n === 1 ? "requisito valutato" : "requisiti valutati" }
+          : null,
+      },
+      gdpr: {
+        avviato: !!gdprId,
+        anno: null,
+        riempimento: gdprId
+          ? { valore: nReqGdpr[0].n, etichetta: nReqGdpr[0].n === 1 ? "requisito valutato" : "requisiti valutati" }
           : null,
       },
       sgnis2: {
