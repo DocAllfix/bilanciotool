@@ -46,6 +46,8 @@ const WB_SET = "wb-v1";
 const wid = (key) => `${WB_SET}:${key}`;
 const SGESG_SET = "sgesg-v1";
 const NIS2_SET = "nis2-v1";
+const GDPR_SET = "gdpr-v1";
+const pid = (tipo, key) => `${GDPR_SET}:${tipo}:${key}`;
 const gid = (key) => `${SGESG_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
@@ -59,7 +61,11 @@ try {
            (${SOA_SET}, 'soa', 1, 'Estratto dal prototipo soa-iso27001.html'),
            (${AC_SET}, 'iso37001', 1, 'Estratto dal prototipo sgpc-iso37001-v1.html'),
            (${MOG_SET}, 'mog231', 1, 'Estratto dal prototipo mog-231-v1.html'),
-           (${SGESG_SET}, 'sgesg', 1, 'Le otto fasi del metodo, da DocAllfix/esg-nexus-v2')
+           (${SGESG_SET}, 'sgesg', 1, 'Le otto fasi del metodo, da DocAllfix/esg-nexus-v2'),
+      -- ⚠️ GDPR non ha corpus, quindi \`seed-corpus.mjs\` non creerebbe il suo content set:
+      -- si inserisce qui come quelli dei moduli senza corpus, altrimenti i cataloghi sotto
+      -- falliscono sulla chiave esterna.
+      (${GDPR_SET}, 'gdpr', 1, 'Estratto dal prototipo percorso-gdpr-v1.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -643,6 +649,95 @@ try {
         ha_logica = excluded.ha_logica, ordine = excluded.ordine`;
   }
 
+  // --- Protezione dei dati (GDPR) ----------------------------------------------
+  //
+  // I cataloghi li produce `scripts/extract-gdpr.mjs` ESEGUENDO il prototipo: le costanti
+  // si citano a vicenda (`CAT` usa `BASI[2]`, `REQ` si numera mentre si costruisce) e
+  // `extractConst` le avrebbe sbagliate in silenzio. Le chiavi dei requisiti sono quelle
+  // del prototipo, congelate qui nel set `gdpr-v1`.
+  for (const g of load("gdpr-gruppi.json")) {
+    await sql`
+      insert into gdpr_gruppo (id, set_id, key, ordine, nome, riferimento, definizione, verifiche, evidenze, attenzione)
+      values (${pid("gruppo", g.key)}, ${GDPR_SET}, ${g.key}, ${g.ordine}, ${g.nome}, ${g.riferimento},
+              ${g.guida.definizione}, ${sql.array(g.guida.verifiche)}, ${g.guida.evidenze}, ${g.guida.attenzione})
+      on conflict (id) do update set ordine = excluded.ordine, nome = excluded.nome, riferimento = excluded.riferimento,
+        definizione = excluded.definizione, verifiche = excluded.verifiche, evidenze = excluded.evidenze,
+        attenzione = excluded.attenzione`;
+  }
+  for (const r of load("gdpr-requisiti.json")) {
+    await sql`
+      insert into gdpr_requisito (id, set_id, key, ordine, gruppo_key, riferimento, testo)
+      values (${pid("requisito", r.key)}, ${GDPR_SET}, ${r.key}, ${r.ordine}, ${r.gruppo}, ${r.riferimento}, ${r.testo})
+      on conflict (id) do update set ordine = excluded.ordine, gruppo_key = excluded.gruppo_key,
+        riferimento = excluded.riferimento, testo = excluded.testo`;
+  }
+  for (const c of load("gdpr-criteri.json")) {
+    await sql`
+      insert into gdpr_criterio (id, set_id, key, ordine, testo)
+      values (${pid("criterio", c.key)}, ${GDPR_SET}, ${c.key}, ${c.ordine}, ${c.testo})
+      on conflict (id) do update set ordine = excluded.ordine, testo = excluded.testo`;
+  }
+  for (const t of load("gdpr-trattamenti-tipo.json")) {
+    await sql`
+      insert into gdpr_trattamento_tipo (id, set_id, key, ordine, nome, finalita, base, interessati, dati,
+                                         particolari, condizione9, destinatari, conservazione, criteri)
+      values (${pid("trattamento", t.key)}, ${GDPR_SET}, ${t.key}, ${t.ordine}, ${t.nome}, ${t.finalita}, ${t.base},
+              ${t.interessati}, ${t.dati}, ${t.particolari}, ${t.condizione9}, ${t.destinatari}, ${t.conservazione},
+              ${sql.array(t.criteri)})
+      on conflict (id) do update set ordine = excluded.ordine, nome = excluded.nome, finalita = excluded.finalita,
+        base = excluded.base, interessati = excluded.interessati, dati = excluded.dati, particolari = excluded.particolari,
+        condizione9 = excluded.condizione9, destinatari = excluded.destinatari, conservazione = excluded.conservazione,
+        criteri = excluded.criteri`;
+  }
+  const scale = load("gdpr-scale.json");
+  for (const asse of ["probabilita", "gravita"]) {
+    for (const s of scale[asse]) {
+      await sql`
+        insert into gdpr_scala (id, set_id, key, ordine, asse, valore, nome, descrizione)
+        values (${pid("scala", `${asse}-${s.valore}`)}, ${GDPR_SET}, ${`${asse}-${s.valore}`}, ${s.valore}, ${asse},
+                ${s.valore}, ${s.nome}, ${s.descrizione})
+        on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione`;
+    }
+  }
+  const ind = load("gdpr-indicatori.json");
+  for (const s of ind.sezioni) {
+    await sql`
+      insert into gdpr_sezione (id, set_id, key, ordine, nome, riferimento)
+      values (${pid("sezione", s.key)}, ${GDPR_SET}, ${s.key}, ${s.ordine}, ${s.nome}, ${s.riferimento})
+      on conflict (id) do update set ordine = excluded.ordine, nome = excluded.nome, riferimento = excluded.riferimento`;
+  }
+  for (const k of ind.indicatori) {
+    await sql`
+      insert into gdpr_indicatore (id, set_id, key, ordine, sezione_key, nome, unita, aiuto)
+      values (${pid("indicatore", k.key)}, ${GDPR_SET}, ${k.key}, ${k.ordine}, ${k.sezione}, ${k.nome}, ${k.unita}, ${k.aiuto || null})
+      on conflict (id) do update set ordine = excluded.ordine, sezione_key = excluded.sezione_key, nome = excluded.nome,
+        unita = excluded.unita, aiuto = excluded.aiuto`;
+  }
+  for (const d of load("gdpr-documenti-tipo.json")) {
+    await sql`
+      insert into gdpr_documento_tipo (id, set_id, key, ordine, tipo, oggetto)
+      values (${pid("documento", d.key)}, ${GDPR_SET}, ${d.key}, ${d.ordine}, ${d.tipo}, ${d.oggetto})
+      on conflict (id) do update set ordine = excluded.ordine, tipo = excluded.tipo, oggetto = excluded.oggetto`;
+  }
+  for (const a of load("gdpr-piano-tipo.json")) {
+    await sql`
+      insert into gdpr_attivita_tipo (id, set_id, key, ordine, mese, riferimento, attivita)
+      values (${pid("attivita", a.key)}, ${GDPR_SET}, ${a.key}, ${a.ordine}, ${a.mese}, ${a.riferimento}, ${a.attivita})
+      on conflict (id) do update set ordine = excluded.ordine, mese = excluded.mese, riferimento = excluded.riferimento,
+        attivita = excluded.attivita`;
+  }
+  const politica = load("gdpr-politica.json");
+  for (const c of politica.contenuti) {
+    await sql`
+      insert into gdpr_contenuto_politica (id, set_id, key, ordine, testo)
+      values (${pid("contenuto", c.key)}, ${GDPR_SET}, ${c.key}, ${c.ordine}, ${c.testo})
+      on conflict (id) do update set ordine = excluded.ordine, testo = excluded.testo`;
+  }
+  await sql`
+    insert into gdpr_testo (id, set_id, key, ordine, testo)
+    values (${pid("testo", "politica")}, ${GDPR_SET}, 'politica', 1, ${politica.modello})
+    on conflict (id) do update set testo = excluded.testo`;
+
   console.log("Seed completato:");
   for (const t of [
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",
@@ -657,6 +752,8 @@ try {
     "qas_norm", "qas_chapter", "qas_requirement", "qas_indicator_default",
     "sa_section", "sa_group", "sa_criterion",
     "chain_dimension", "chain_area", "chain_flag_def", "chain_phase",
+    "gdpr_gruppo", "gdpr_requisito", "gdpr_criterio", "gdpr_trattamento_tipo", "gdpr_scala", "gdpr_sezione",
+    "gdpr_indicatore", "gdpr_documento_tipo", "gdpr_attivita_tipo", "gdpr_contenuto_politica", "gdpr_testo",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

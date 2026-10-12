@@ -15,7 +15,10 @@ import {
   sgesgSchedaDef,
   nis2Chapter, nis2Level, nis2Requirement, nis2Control, nis2Phase,
   nis2IndicatorDef, nis2Sector, nis2Criterion,
+  gdprGruppo, gdprRequisito, gdprCriterio, gdprTrattamentoTipo, gdprScala, gdprSezione,
+  gdprIndicatore, gdprDocumentoTipo, gdprAttivitaTipo, gdprContenutoPolitica, gdprTesto,
 } from "@/lib/db/schema";
+import { DERIVATI } from "@/lib/calc/gdpr/indicatori";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
 import { VALORE_STATO } from "@/lib/calc/soa/scoring";
@@ -40,7 +43,8 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // Dal 7 settembre 2026 sono TREDICI: si aggiunge `nis2-v1`, e uno solo per DUE
     // percorsi — il sistema di gestione contiene per intero l'autovalutazione, e due set
     // duplicherebbero 518 blocchi identici destinati a divergere.
-    expect(await conta(contentSet)).toBe(13);
+    // Dal 12 ottobre 2026 sono QUATTORDICI: si aggiunge `gdpr-v1`, protezione dei dati.
+    expect(await conta(contentSet)).toBe(14);
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
     expect(await conta(sgesgPhaseDef)).toBe(8);
@@ -339,6 +343,54 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // Un settore in entrambi gli allegati darebbe una classificazione diversa a
     // seconda dell'ordine in cui si guardano, che e' il modo peggiore di sbagliare.
     expect(new Set(settori.map((s) => s.key)).size).toBe(23);
+  });
+
+  // ─────────────────────────────────────────────────────────────────── GDPR
+  //
+  // I conteggi sono quelli che il prototipo produce ESEGUITO (`scripts/extract-gdpr.mjs`):
+  // 99 requisiti in 12 gruppi, distribuiti 12/7/12/7/7/3/15/7/7/6/6/10.
+
+  it("GDPR: i conteggi del catalogo", async () => {
+    expect(await conta(gdprGruppo)).toBe(12);
+    expect(await conta(gdprRequisito)).toBe(99);
+    expect(await conta(gdprCriterio)).toBe(9);
+    expect(await conta(gdprTrattamentoTipo)).toBe(11);
+    expect(await conta(gdprScala)).toBe(10);
+    expect(await conta(gdprSezione)).toBe(4);
+    expect(await conta(gdprIndicatore)).toBe(22);
+    expect(await conta(gdprDocumentoTipo)).toBe(15);
+    expect(await conta(gdprAttivitaTipo)).toBe(15);
+    expect(await conta(gdprContenutoPolitica)).toBe(9);
+    expect(await conta(gdprTesto)).toBe(1);
+  });
+
+  it("GDPR: ogni requisito ha un gruppo, ogni gruppo una guida, nella distribuzione del prototipo", async () => {
+    const gruppi = await db.select().from(gdprGruppo).orderBy(gdprGruppo.ordine);
+    const requisiti = await db.select().from(gdprRequisito);
+    const per = Object.fromEntries(gruppi.map((g) => [g.key, requisiti.filter((r) => r.gruppoKey === g.key).length]));
+    expect(per).toEqual({ P: 12, T: 7, D: 12, A: 7, R: 7, G: 3, S: 15, V: 7, I: 7, O: 6, X: 6, N: 10 });
+    for (const g of gruppi) {
+      expect(g.definizione.length, g.key).toBeGreaterThan(40);
+      expect(g.verifiche.length, g.key).toBe(3);
+      expect(g.attenzione.length, g.key).toBeGreaterThan(40);
+    }
+    expect(new Set(requisiti.map((r) => r.key)).size).toBe(99);
+  });
+
+  it("GDPR: i criteri dei trattamenti tipo esistono, gli indicatori dei derivati pure", async () => {
+    const criteri = new Set((await db.select().from(gdprCriterio)).map((c) => c.key));
+    for (const t of await db.select().from(gdprTrattamentoTipo)) {
+      for (const k of t.criteri) expect(criteri.has(k), `${t.key}: ${k}`).toBe(true);
+    }
+    // Ogni parte e totale che il motore usa per un derivato è un indicatore seminato: una
+    // chiave sbagliata darebbe un derivato sempre `null`, senza errori.
+    const ind = new Set((await db.select().from(gdprIndicatore)).map((k) => k.key));
+    for (const d of DERIVATI) {
+      expect(ind.has(d.parte), d.parte).toBe(true);
+      expect(ind.has(d.totale), d.totale).toBe(true);
+    }
+    const [modello] = await db.select().from(gdprTesto);
+    expect(modello.testo.startsWith("{nome} ")).toBe(true);
   });
 
   it("ogni sorgente appartiene a una categoria esistente", async () => {
