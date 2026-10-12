@@ -150,7 +150,7 @@ function Conformita({ dati, dettaglio }: { dati: DatiDocumentoGdpr; dettaglio: b
     <>
       <p>
         Indice di conformità: <b>{pct(k.indice)}</b> su {k.totale} requisiti — {k.conformi} conformi, {k.parziali} parziali,{" "}
-        {k.nonConformi} non conformi, {k.nonPertinenti} non pertinenti, {k.daValutare} da valutare.
+        {k.nonConformi} non conformi, {k.nonPertinenti} non pertinenti, {k.daValutare}{" "}da valutare.
       </p>
       <p className="doc-meta">
         Un requisito conforme vale 100, uno parziale 50, uno non conforme 0. Un requisito non
@@ -244,7 +244,7 @@ function Rischi({ dati }: { dati: DatiDocumentoGdpr }) {
     <>
       <p>
         {r.valutati} trattamenti valutati su {r.trattamenti}: {r.alti} a rischio alto, {r.medi} medio, {r.bassi} basso.
-        Soglie: alto da {dati.parametri.alto}, medio da {dati.parametri.medio} (probabilità × gravità).
+        Soglie: alto da {dati.parametri.alto}, medio da {dati.parametri.medio}{" "}(probabilità × gravità).
       </p>
       <figure className="doc-fig">
         <MatriceRischi
@@ -290,7 +290,7 @@ function Fornitori({ dati }: { dati: DatiDocumentoGdpr }) {
     <>
       <p>
         {f.fornitori} soggetti esterni; {f.conContratto} tenuti al contratto ex art. 28, coperti al {pct(f.quotaContratti)};
-        verificati {pct(f.quotaVerificati)}; {f.conTrasferimento} con trasferimento verso paesi terzi.
+        verificati {pct(f.quotaVerificati)}; {f.conTrasferimento}{" "}con trasferimento verso paesi terzi.
       </p>
       {dati.fornitori.length > 0 && (
         <table>
@@ -376,7 +376,7 @@ function Registri({ dati, precedente }: { dati: DatiDocumentoGdpr; precedente: b
         </tbody>
       </table>
       <p className="doc-meta">
-        Alla data di emissione: {a.aperte} richieste in attesa di riscontro, di cui {a.scadute} oltre il termine;{" "}
+        Alla data di emissione, richieste senza riscontro: {a.aperte} ancora nei termini e {a.scadute} oltre il termine;{" "}
         {a.violazioniAperte} violazioni non chiuse, {a.notificheScadute} con notifica oltre il termine delle 72 ore.
         I registri riportano soltanto conteggi: descrizioni e note restano presso il titolare.
       </p>
@@ -590,7 +590,7 @@ export function DocumentoGdpr({ dati, immagini, tipo }: { dati: DatiDocumentoGdp
             <p>
               {dati.registro.trattamenti} trattamenti registrati; completezza media{" "}
               {Math.round(dati.registro.completezza * 100)}%; {dati.registro.conParticolari} con dati particolari,{" "}
-              {dati.registro.conTrasferimento} con trasferimenti verso paesi terzi.
+              {dati.registro.conTrasferimento}{" "}con trasferimenti verso paesi terzi.
             </p>
             {dati.trattamenti.length ? (
               dati.trattamenti.map((t, i) => <SchedaTrattamento key={i} t={t} i={i} />)

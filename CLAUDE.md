@@ -3633,3 +3633,39 @@ Gate fase 4: typecheck · `gdpr-documenti.db` 6/6 (render dei sei snapshot compr
 `paywall-superfici-nuove.db` 27/27, messo in rosso togliendo `requireEntitlement` (sei rossi)
 · guardie `etichette-audit`, `documento-ritorno`, `portale-riservati`, `documenti-spazi`,
 `copertina`, `vetrina-percorsi`, `navigazione.db` verdi · `0064` applicata allo sviluppo.
+
+**Percorso GDPR, fase 5 (2026-10-13) — interfaccia, giro guidato, dimostrativa**
+
+Pagina `/aziende/[id]/gdpr` a dieci viste (le chiavi sono quelle dei segnali del motore:
+un segnale porta dritto dove si rimedia), selettore d'esercizio nell'indirizzo. Tutti i
+numeri — scadenze, 72 ore, indice, segnali — li calcola il SERVER (`features/gdpr/vista.ts`)
+e gli istanti arrivano al campo già in ora italiana. Aprire la pagina non scrive: la radice
+nasce solo da «Avvia il percorso». Dimostrativa in `features/demo/seed-demo-gdpr.ts`
+(obbligo DPO che non ricorre a 48 dipendenti, una richiesta scaduta, una violazione
+notificata in tempo, una valutazione d'impatto in corso; date relative a oggi).
+
+**Tre difetti trovati GUARDANDO, nessuno visibile ai collaudi funzionali:**
+1. ⚠️ «**0** in attesa di riscontro, di cui **1** oltre il termine»: `aperte` e `scadute`
+   sono insiemi disgiunti. La stessa frase stava nel template, cioè sarebbe finita in un
+   PDF consegnato. Ora il collaudo legge il riepilogo e lo pretende coerente.
+2. «45da valutare»: lo spazio DOPO un'espressione, quando il testo che segue è l'ultimo
+   pezzo prima di un a-capo. La prima correzione l'ha messo prima dell'espressione e la
+   pagina è rimasta rotta. Guardia `gdpr-spazi-pure` sui file del percorso.
+3. «I valori predefiniti sono quelli delle Linee guida WP248»: falso per le soglie del
+   rischio, vero solo per i due criteri.
+
+**Regole nate qui:**
+- **Una foto rimpicciolita nasconde gli spazi.** «45da» si è visto ritagliando il punto a
+  piena risoluzione; ora `foto-gdpr.mjs` cerca nel testo RESO cifre incollate alle parole.
+- **Lo strumento che misura va provato rotto prima di credergli**: la prima versione della
+  scansione aveva perso il backslash di `\d` (di nuovo l'heredoc) e segnalava ogni «d».
+  Provata contro il build col difetto: trova «5da»; contro quello corretto: niente.
+- **Un contatore in un `<span>` con il margine è separato a schermo e incollato per chi
+  legge col lettore di schermo** («Quadro75%»): lo spazio vero va scritto.
+
+Gate fase 5: typecheck · build · `qa -- gdpr-percorso` **26/26** (sei PDF da 3 a 12 pagine),
+con due difetti rimessi di proposito — scrittura all'apertura e ora italiana letta in UTC —
+rossi esattamente sui loro controlli · regressioni `archiviata` 33/33, `shell`, `guida` 7/7,
+`demo-completa` 9/9, `portafoglio-aggiorna` 5/5, `tutto-demo` 68/68, `tutto-attivo` 31/31,
+`benvenuto` 12/12, `codice-documento` 22/22 · 30 foto guardate in chiaro, scuro e da
+telefono, zero errori di console, zero sfondamento, zero spazi mangiati.
