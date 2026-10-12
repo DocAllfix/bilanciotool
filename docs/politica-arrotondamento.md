@@ -290,3 +290,59 @@ una domanda a cui nessuno ha risposto e' il difetto peggiore che questo motore p
 - **«programmata» non esce mai dal calcolo delle priorita'**: e' un'opzione del piano di
   adeguamento, e chi decide di rimandare se ne assume la responsabilita'. Il tipo di
   ritorno lo esclude, quindi la garanzia la da' il compilatore e non un test.
+
+## Protezione dei dati — Reg. (UE) 2016/679 (percorso `gdpr`)
+
+Golden estratto **eseguendo** il prototipo `aggiuntenuovimoduli/percorso-gdpr-v1.html` sul suo
+esempio (`scripts/golden-gdpr.mjs`, con `Date` e `Math.random` congelati e `TZ=Europe/Rome`).
+Il test `gdpr-golden-pure` confronta ogni risultato; dove il motore diverge lo dichiara per nome.
+
+**1. L'indice di conformita' non media i soli valutati.** Il prototipo calcola
+`(conformi + parziali × 0,5) ÷ (conformi + parziali + non conformi)`: tre requisiti conformi
+su novantanove danno 100%. Qui un requisito pertinente e non valutato pesa zero
+(`comune/valutazione.ts`), il parziale pesa meta' (decisione del committente, 12 ottobre 2026)
+e il «non pertinente» esce dal denominatore. Sull'esempio del prototipo:
+
+    prototipo  (63 + 15 × 0,5) ÷ 79           = 89
+    motore     (63 × 100 + 15 × 50) ÷ 85      = 83
+
+I sei punti sono i sei requisiti dei trasferimenti che l'esempio lascia da valutare. Senza
+nessuna valutazione l'indice e' `null`, non 0: un sistema di cui non si sa niente non e'
+inadempiente. ⚠️ Lo stato «na» del prototipo va tradotto in `NON_APPLICABILE` prima di
+`mediaPesata`, che esclude solo quell'etichetta: passato cosi' com'e' conterebbe come
+pertinente a peso zero. C'e' un test, messo in rosso togliendo la traduzione.
+
+**2. Le 72 ore della notifica sono ore vere, contate da un istante.** Il prototipo le contava
+fra due `datetime-local` letti nel fuso del processo: giusto nel browser di un consulente
+italiano, due ore sbagliato su un server in UTC, e a cavallo del cambio d'ora 72 ore
+d'orologio non sono 72 ore. Qui la conoscenza e' un `timestamptz` e il limite e'
+`piuOre(conoscenza, 72)`. Esempio: conoscenza venerdi' 27 marzo 2026 alle 10:00 di Roma,
+limite lunedi' 30 alle **11:00** di Roma (il prototipo diceva 10:00). L'esercizio di una
+violazione e' l'anno del giorno ITALIANO della conoscenza.
+
+Il mese delle richieste (art. 12.3) invece **non diverge**: il prototipo agganciava gia' il fine
+mese, come `piuMesi` (31 gennaio + 1 mese = 28 febbraio; con la proroga, 30 aprile).
+
+**3. Un numero che non si conosce non e' zero.** Il prototipo leggeva un indicatore vuoto
+come 0, quindi «autorizzati 30, formati vuoto» dava 0% di formati. Qui il derivato e' `null`
+se manca la parte o il totale, o se il totale e' zero.
+
+**4. «Di cui» oltre il totale e' un'incoerenza, non il 116,7%.** Per le cinque coppie
+parte-di-totale (formati, nuovi formati, utenze con piu' fattori, dispositivi cifrati,
+contatti con base documentata) il derivato diventa `null` e la coppia finisce fra le
+incoerenze; la validazione la rifiuta. Ore per autorizzato e tasso d'opposizione non sono
+parti del totale e possono superarlo.
+
+**5. «Non dovuto» vale solo per il titolare autonomo.** Un responsabile con il contratto
+segnato «Non dovuto» spariva dalle lacune senza contare come coperto. Qui la combinazione e'
+incoerente: la validazione la rifiuta e il motore la conta come contratto mancante.
+
+**6. Un rischio a meta' non e' valutato.** Il livello esiste solo con probabilita' e gravita'
+entrambe intere da 1 a 5; altrimenti e' `null`, cioe' «da valutare». Nel prototipo un
+punteggio fuori scala produceva un livello che la matrice non sa disegnare.
+
+**7. Le chiavi dei requisiti sono scritte nel seme.** Il prototipo le numerava per posizione
+(`P-01` e' il primo del gruppo P): qui sono congelate nel content set `gdpr-v1`.
+
+**8. Il riferimento «Passo 3» diventa «Conformita'».** Unica differenza nei testi dei segnali,
+che per il resto coincidono uno per uno, nello stesso ordine.
