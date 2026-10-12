@@ -13,7 +13,9 @@ import { chromium } from "@playwright/test";
 import { attraversaProtezione, rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
-const OUT = process.argv[2];
+// ⚠️ Solo un argomento che NON comincia col trattino: `qa.mjs` inoltra `--prod`, e la prima
+// versione lo prendeva per la cartella delle foto e creava `--prod/` nella radice del repo.
+const OUT = process.argv.slice(2).find((x) => !x.startsWith("-"));
 const PAGINE = ["/", "/prezzi", "/blog", "/privacy", "/termini", "/cookie", "/verifica", "/percorsi/bilancio-energetico"];
 
 function lum([r, g, b]) {
