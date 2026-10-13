@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { CampoData, CampoTesto } from "@/components/comune/campo";
-import { Intro, pct, type ComandiGdpr, type DatiGdpr, type Esito } from "./comune";
+import { Intro, pct, pl, type ComandiGdpr, type DatiGdpr, type Esito } from "./comune";
 
 // Vista 3 — Conformità: novantanove requisiti in dodici gruppi, ciascuno con la sua guida.
 //
@@ -35,7 +35,8 @@ export function VistaConformita({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdp
   return (
     <div className="space-y-6">
       <Intro titolo="Conformità ai requisiti">
-        Indice {pct(k.indice)} · {k.conformi} conformi, {k.parziali} parziali, {k.nonConformi} non conformi, {k.nonPertinenti} non pertinenti,{" "}
+        Indice {pct(k.indice)} · {pl(k.conformi, "conforme", "conformi")}, {pl(k.parziali, "parziale", "parziali")},{" "}
+        {pl(k.nonConformi, "non conforme", "non conformi")}, {pl(k.nonPertinenti, "non pertinente", "non pertinenti")},{" "}
         {k.daValutare}{" "}da valutare. Un parziale o un non conforme chiede l&apos;azione, chi la porta e per quando.
       </Intro>
 

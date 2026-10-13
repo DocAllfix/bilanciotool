@@ -123,6 +123,12 @@ export async function seedDemoGdpr(tx: Tx, orgId: string, companyId: string): Pr
           destinatari: t.destinatari,
           conservazione: t.conservazione,
           criteri: t.criteri,
+          // Il gestionale in cloud sta negli Stati Uniti (vedi i fornitori sotto): il
+          // trattamento che ci gira sopra deve dichiarare il trasferimento, altrimenti il
+          // registro e l'elenco dei responsabili si contraddicono nello stesso documento.
+          trasferimento: t.key === "clienti-contratti-ordini-e-fatturazione",
+          trasferimentoDettaglio:
+            t.key === "clienti-contratti-ordini-e-fatturazione" ? "Stati Uniti · decisione di adeguatezza (gestionale in cloud)" : null,
           misure: i < 3 ? "Accessi per profilo, copie di sicurezza, formazione degli autorizzati." : null,
           probabilita: r?.[0] ?? null,
           gravita: r?.[1] ?? null,

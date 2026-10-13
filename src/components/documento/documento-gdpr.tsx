@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { fmtDataBreve, fmtDataEstesa, fmtNum } from "@/lib/format";
+import { giornoItaliano } from "@/lib/calc/comune/tempo-italia";
 import type { DatiDocumentoGdpr } from "@/features/gdpr/documento";
 import { BarreConformita, MatriceRischi, PianoMesi } from "./charts-gdpr";
 import { Copertina, NotaCopertina, type ImmaginiCopertina } from "./copertina";
@@ -58,7 +59,11 @@ type T = DatiDocumentoGdpr["trattamenti"][number];
 const v = (x: string | null | undefined) => (x && x.trim() ? x : "—");
 const d = (x: string | null | undefined) => (x ? fmtDataBreve(x) : "—");
 const n = (x: number | null | undefined, dec = 0) => (x === null || x === undefined ? "—" : fmtNum(x, dec));
-const pct = (x: number | null) => (x === null ? "—" : `${x}%`);
+/** Un decimale solo dove c'è: «48» persone, «2,5» ore. */
+const decimali = (x: number | null | undefined) => (x === null || x === undefined || Number.isInteger(x) ? 0 : 1);
+const pct = (x: number | null) => (x === null ? "—" : `${String(x).replace(".", ",")}%`);
+/** «1 trattamento», «2 trattamenti»: il plurale italiano non si fa attaccando lettere in coda. */
+const pl = (x: number, uno: string, molti: string) => `${x} ${x === 1 ? uno : molti}`;
 
 function Perimetro({ righe }: { righe: string[] }) {
   return (
@@ -149,8 +154,9 @@ function Conformita({ dati, dettaglio }: { dati: DatiDocumentoGdpr; dettaglio: b
   return (
     <>
       <p>
-        Indice di conformità: <b>{pct(k.indice)}</b> su {k.totale} requisiti — {k.conformi} conformi, {k.parziali} parziali,{" "}
-        {k.nonConformi} non conformi, {k.nonPertinenti} non pertinenti, {k.daValutare}{" "}da valutare.
+        Indice di conformità: <b>{pct(k.indice)}</b> su {k.totale} requisiti — {pl(k.conformi, "conforme", "conformi")},{" "}
+        {pl(k.parziali, "parziale", "parziali")}, {pl(k.nonConformi, "non conforme", "non conformi")},{" "}
+        {pl(k.nonPertinenti, "non pertinente", "non pertinenti")}, {k.daValutare}{" "}da valutare.
       </p>
       <p className="doc-meta">
         Un requisito conforme vale 100, uno parziale 50, uno non conforme 0. Un requisito non
@@ -243,7 +249,8 @@ function Rischi({ dati }: { dati: DatiDocumentoGdpr }) {
   return (
     <>
       <p>
-        {r.valutati} trattamenti valutati su {r.trattamenti}: {r.alti} a rischio alto, {r.medi} medio, {r.bassi} basso.
+        {pl(r.valutati, "trattamento valutato", "trattamenti valutati")} su {r.trattamenti}: {r.alti} a rischio alto,{" "}
+        {r.medi} medio, {r.bassi}{" "}basso.
         Soglie: alto da {dati.parametri.alto}, medio da {dati.parametri.medio}{" "}(probabilità × gravità).
       </p>
       <figure className="doc-fig">
@@ -289,7 +296,8 @@ function Fornitori({ dati }: { dati: DatiDocumentoGdpr }) {
   return (
     <>
       <p>
-        {f.fornitori} soggetti esterni; {f.conContratto} tenuti al contratto ex art. 28, coperti al {pct(f.quotaContratti)};
+        {pl(f.fornitori, "soggetto esterno", "soggetti esterni")};{" "}
+        {pl(f.conContratto, "tenuto al contratto", "tenuti al contratto")} ex art. 28, coperti al {pct(f.quotaContratti)};
         verificati {pct(f.quotaVerificati)}; {f.conTrasferimento}{" "}con trasferimento verso paesi terzi.
       </p>
       {dati.fornitori.length > 0 && (
@@ -377,7 +385,8 @@ function Registri({ dati, precedente }: { dati: DatiDocumentoGdpr; precedente: b
       </table>
       <p className="doc-meta">
         Alla data di emissione, richieste senza riscontro: {a.aperte} ancora nei termini e {a.scadute} oltre il termine;{" "}
-        {a.violazioniAperte} violazioni non chiuse, {a.notificheScadute} con notifica oltre il termine delle 72 ore.
+        {pl(a.violazioniAperte, "violazione non chiusa", "violazioni non chiuse")}, {a.notificheScadute} con notifica oltre il
+        termine delle 72 ore.
         I registri riportano soltanto conteggi: descrizioni e note restano presso il titolare.
       </p>
     </>
@@ -414,8 +423,8 @@ function Indicatori({ dati }: { dati: DatiDocumentoGdpr }) {
                   <tr key={k.key}>
                     <td>{k.nome}</td>
                     <td>{k.unita}</td>
-                    <td className="doc-num">{n(k.valore, 1)}</td>
-                    <td className="doc-num">{n(k.precedente, 1)}</td>
+                    <td className="doc-num">{n(k.valore, decimali(k.valore))}</td>
+                    <td className="doc-num">{n(k.precedente, decimali(k.precedente))}</td>
                   </tr>
                 ))}
             </tbody>
@@ -563,7 +572,9 @@ function Firme({ ruoli }: { ruoli: string[] }) {
 }
 
 export function DocumentoGdpr({ dati, immagini, tipo }: { dati: DatiDocumentoGdpr; immagini: ImmaginiCopertina; tipo: TipoDocumentoGdpr }) {
-  const emesso = fmtDataEstesa(dati.generatoIl);
+  // Il giorno ITALIANO dell'emissione: su Vercel il processo è in UTC, e fra mezzanotte e le
+  // due la copertina avrebbe detto il giorno prima.
+  const emesso = fmtDataEstesa(giornoItaliano(new Date(dati.generatoIl)));
   const sede = [dati.profilo.sede, dati.profilo.settore].filter(Boolean).join(" · ");
 
   return (
@@ -588,7 +599,7 @@ export function DocumentoGdpr({ dati, immagini, tipo }: { dati: DatiDocumentoGdp
             <Titolare dati={dati} />
             <h2>2. Attività di trattamento</h2>
             <p>
-              {dati.registro.trattamenti} trattamenti registrati; completezza media{" "}
+              {pl(dati.registro.trattamenti, "trattamento registrato", "trattamenti registrati")}; completezza media{" "}
               {Math.round(dati.registro.completezza * 100)}%; {dati.registro.conParticolari} con dati particolari,{" "}
               {dati.registro.conTrasferimento}{" "}con trasferimenti verso paesi terzi.
             </p>
@@ -618,7 +629,7 @@ export function DocumentoGdpr({ dati, immagini, tipo }: { dati: DatiDocumentoGdp
             </p>
             <h2>2. Politica</h2>
             <p>
-              Approvata il {d(dati.politica.approvataIl)}
+              {dati.politica.approvataIl ? `Approvata il ${d(dati.politica.approvataIl)}` : "Non ancora approvata"}
               {dati.politica.firma ? ` da ${dati.politica.firma}` : ""}; contenuti attesi presenti: {dati.politica.contenuti.length} su{" "}
               {dati.contenutiPolitica.length}.
             </p>
@@ -664,7 +675,7 @@ export function DocumentoGdpr({ dati, immagini, tipo }: { dati: DatiDocumentoGdp
           <>
             <Politica dati={dati} />
             <p className="doc-meta">
-              Approvata il {d(dati.politica.approvataIl)}
+              {dati.politica.approvataIl ? `Approvata il ${d(dati.politica.approvataIl)}` : "Non ancora approvata"}
               {dati.politica.firma ? ` · ${dati.politica.firma}` : ""}
             </p>
             <Firme ruoli={["Il titolare del trattamento"]} />

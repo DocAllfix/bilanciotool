@@ -373,17 +373,43 @@ try {
       const buf = await risposta.body();
       const { byte, pagine } = pretendiPdfVero(buf);
       misure.push({ tipo: r.tipo, byte, pagine });
-      if (process.env.SALVA_PDF) {
-        mkdirSync(process.env.SALVA_PDF, { recursive: true });
-        const dove = join(process.env.SALVA_PDF, `${NOMI_CONSEGNA[r.tipo] ?? r.tipo}.pdf`);
-        writeFileSync(dove, buf);
-        console.log(`       salvato: ${dove}`);
-      }
     }
     const pesi = new Set(misure.map((m) => m.byte));
     if (pesi.size !== misure.length) throw new Error(`due documenti diversi pesano uguale: ${misure.map((m) => `${m.tipo} ${m.byte}`).join(" | ")}`);
     for (const m of misure) console.log(`       ${m.tipo}: ${Math.round(m.byte / 1024)} KB · ${m.pagine} pagine`);
   });
+
+  // ─── consegna: i sei PDF della DIMOSTRATIVA ────────────────────────────────
+  //
+  // ⚠️ Si consegnano quelli dell'azienda dimostrativa, compilata a metà del guado, e non
+  // quelli dell'azienda di collaudo, che ha due trattamenti e mezza anagrafica: un
+  // documento quasi vuoto non fa vedere al committente che cosa il cliente riceverà. Si
+  // consegnano dallo STESSO passaggio che li conta, come per NIS2.
+  if (process.env.SALVA_PDF) {
+    await agisci("consegna: la dimostrativa pubblica i sei documenti, PDF veri e salvati", async () => {
+      const [demo] = await sql`select id from company where organization_id = ${orgId} and is_demo`;
+      if (!demo) throw new Error("nessuna azienda dimostrativa nello studio");
+      await page.goto(`${BASE}/aziende/${demo.id}/gdpr?vista=documenti&anno=${anno}`, { waitUntil: "domcontentloaded" });
+      await page.locator('nav[aria-label="Viste del modulo"]').waitFor({ timeout: 30_000 });
+      await spegniTour(page);
+      for (const tipo of TIPI) {
+        const prima = (await sql`select count(*)::int n from document_snapshot where company_id = ${demo.id} and tipo = ${tipo}`)[0].n;
+        await page.locator(`[data-doc-gdpr="${tipo}"] button`, { hasText: "Pubblica" }).click();
+        await attendi(async () => (await sql`select count(*)::int n from document_snapshot where company_id = ${demo.id} and tipo = ${tipo}`)[0].n === prima + 1, { cosa: tipo });
+      }
+      mkdirSync(process.env.SALVA_PDF, { recursive: true });
+      const righe = await sql`select distinct on (tipo) id, tipo from document_snapshot where company_id = ${demo.id} order by tipo, versione desc`;
+      for (const r of righe) {
+        const risposta = await page.request.get(`${BASE}/api/documenti/${r.id}/pdf`);
+        if (!risposta.ok()) throw new Error(`${r.tipo}: HTTP ${risposta.status()}`);
+        const buf = await risposta.body();
+        const { byte, pagine } = pretendiPdfVero(buf);
+        const dove = join(process.env.SALVA_PDF, `${NOMI_CONSEGNA[r.tipo] ?? r.tipo}.pdf`);
+        writeFileSync(dove, buf);
+        console.log(`       ${r.tipo}: ${Math.round(byte / 1024)} KB · ${pagine} pagine → ${dove}`);
+      }
+    });
+  }
 
   // ─── il banco si smonta, e si verifica che lo sia ──────────────────────────
   await sql`delete from document_codice where snapshot_id in (select id from document_snapshot where organization_id = ${orgId})`;

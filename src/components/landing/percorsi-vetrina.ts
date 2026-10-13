@@ -277,7 +277,7 @@ export const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = 
       "Politica, nomine e piano annuale",
       `${NUMERI.indicatoriGdpr} indicatori su due esercizi`,
       `${NUMERI.registriGdpr} registri con i termini di legge`,
-      "Registro art. 30 e relazione annuale",
+      "Registro art. 30, valutazioni d'impatto, relazione annuale",
     ],
     punto:
       "Il mese per rispondere a un interessato e le 72 ore per notificare una violazione si calcolano da soli, in ora italiana. E un requisito mai valutato pesa zero: saltare i requisiti difficili non fa salire l'indice.",

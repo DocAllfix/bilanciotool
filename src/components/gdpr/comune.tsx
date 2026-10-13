@@ -161,4 +161,7 @@ export function Intro({ titolo, children }: { titolo: string; children: React.Re
   );
 }
 
-export const pct = (v: number | null) => (v === null ? "—" : `${v}%`);
+export const pct = (v: number | null) => (v === null ? "—" : `${String(v).replace(".", ",")}%`);
+
+/** «1 attenzione», «2 attenzioni»: il plurale italiano non si fa attaccando lettere in coda. */
+export const pl = (n: number, uno: string, molti: string) => `${n} ${n === 1 ? uno : molti}`;

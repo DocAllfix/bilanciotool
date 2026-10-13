@@ -17,6 +17,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import {
+  attendi,
   attraversaProtezione,
   contatore,
   pretendiPdfVero,
@@ -190,9 +191,17 @@ await agisci("l'assetto si salva un campo per volta", async () => {
 await agisci("la data della comunicazione ACN", async () => {
   await page.fill("#nis2-comunicazioneIl", "2026-01-15");
   await page.locator("#nis2-organo").click();
-  await page.waitForTimeout(1800);
-  const [p] = await sql`select comunicazione_il from nis2_profile where company_id = ${companyId}`;
-  if (p.comunicazione_il !== "2026-01-15") throw new Error("data non salvata");
+  // Si aspetta la RIGA, non un tempo indovinato; e se non arriva si dice che cosa c'è.
+  let visto = null;
+  try {
+    await attendi(async () => {
+      const [p] = await sql`select comunicazione_il from nis2_profile where company_id = ${companyId}`;
+      visto = p?.comunicazione_il ?? null;
+      return visto === "2026-01-15";
+    }, { entro: 20_000, cosa: "la data nel profilo" });
+  } catch {
+    throw new Error(`data non salvata: nel database c'è ${JSON.stringify(visto)}`);
+  }
 });
 
 // ─── verifica ────────────────────────────────────────────────────────────────

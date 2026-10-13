@@ -86,6 +86,19 @@ export default function PrivacyPage() {
             li utilizza per finalità proprie.
           </li>
           <li>
+            {/* ⚠️ Il percorso Protezione dei dati tiene i registri dell'AZIENDA CLIENTE:
+                le richieste dei suoi interessati e le sue violazioni. Sono persone che il
+                prodotto non vede mai, e l'interfaccia chiede di non scriverne il nome. Va
+                detto prima che il modulo riceva un dato vero, come per i contatti. */}
+            <strong>Registri della protezione dei dati delle aziende clienti</strong>: le richieste di esercizio
+            dei diritti ricevute dall&apos;azienda e le violazioni dei dati che ha subito, con date, esiti e note.
+            Il servizio chiede di indicare gli interessati con un <strong>riferimento interno</strong>{" "}e non con il
+            nome. Anche per questi dati vale la sezione 2: il titolare è l&apos;azienda cliente (o lo studio che
+            opera per essa), {TITOLARE.ragioneSociale} è responsabile del trattamento ai sensi dell&apos;articolo 28
+            del GDPR. Nei documenti pubblicati di questi registri compaiono <strong>soltanto conteggi</strong>,
+            mai descrizioni o note.
+          </li>
+          <li>
             {/* ⚠️ Chi si candida al Programma Fondatori NON e' un utente: non ha un account,
                 non ha accettato i Termini, e ci lascia nome ed email prima di qualunque
                 rapporto. Qui il titolare siamo NOI, e la base giuridica e' la sua stessa

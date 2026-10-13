@@ -9,7 +9,7 @@ import { CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
 import { BASI, CONDIZIONI_9 } from "@/lib/calc/gdpr/tipi";
 import { RUOLI_TRATTAMENTO } from "@/features/gdpr/validation";
-import { CampoCasella, Intro, type ComandiGdpr, type DatiGdpr } from "./comune";
+import { CampoCasella, Intro, pl, type ComandiGdpr, type DatiGdpr } from "./comune";
 
 // Vista 2 — Registro dei trattamenti (art. 30). Un trattamento per finalità.
 //
@@ -44,7 +44,7 @@ export function VistaTrattamenti({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGd
     <div className="space-y-6">
       <Intro titolo="Registro dei trattamenti">
         Un trattamento per finalità, con i sette elementi dell&apos;art. 30: finalità, base giuridica, interessati, categorie di
-        dati, destinatari, conservazione e misure di sicurezza. {dati.registro.trattamenti} registrati, completezza media{" "}
+        dati, destinatari, conservazione e misure di sicurezza. {pl(dati.registro.trattamenti, "registrato", "registrati")}, completezza media{" "}
         {Math.round(dati.registro.completezza * 100)}%.
       </Intro>
 

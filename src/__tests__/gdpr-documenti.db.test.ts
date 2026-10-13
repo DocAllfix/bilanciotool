@@ -56,6 +56,13 @@ describe.skipIf(!url)("pubblicazione dei sei documenti", () => {
     const t = await creaRiga(S.userId, S.orgId, sys, "trattamento", OGGI);
     await setCampoRiga(S.userId, S.orgId, "trattamento", t, "finalita", "Gestione del personale");
 
+    // Tre responsabili, uno solo col contratto: la quota è 33,3%, cioè un decimale vero da
+    // stampare all'italiana. Senza, il controllo sulla virgola non avrebbe niente da vedere.
+    for (let i = 0; i < 3; i++) {
+      const fo = await creaRiga(S.userId, S.orgId, sys, "fornitore", OGGI);
+      if (i === 0) await setCampoRiga(S.userId, S.orgId, "fornitore", fo, "contratto", "Sì");
+    }
+
     const r = await creaRiga(S.userId, S.orgId, sys, "richiesta", OGGI);
     await setCampoRiga(S.userId, S.orgId, "richiesta", r, "note", SEGRETO_RICHIESTA);
     await setCampoRiga(S.userId, S.orgId, "richiesta", r, "riferimento", SEGRETO_RIFERIMENTO);
@@ -104,6 +111,8 @@ describe.skipIf(!url)("pubblicazione dei sei documenti", () => {
       expect(html, `${s.tipo} stampa «undefined»`).not.toMatch(/undefined/);
       expect(html, `${s.tipo} stampa «NaN»`).not.toMatch(/NaN/);
       expect(html, `${s.tipo} stampa «null»`).not.toMatch(/>null</);
+      // Un documento italiano scrive la virgola decimale: «66.7%» era uscito nel modello consegnato.
+      expect(html, `${s.tipo} stampa una percentuale col punto`).not.toMatch(/\d\.\d+%/);
     }
   });
 

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { pct, type DatiGdpr } from "./comune";
+import { pct, pl, type DatiGdpr } from "./comune";
 
 // Il quadro: quanto manca, che cosa è urgente, dove si rimedia.
 //
@@ -57,7 +57,7 @@ export function VistaQuadro({ dati, vai }: { dati: DatiGdpr; vai: (v: string) =>
             <span className="font-display text-3xl font-semibold tabular-nums text-foreground" data-indice>
               {pct(k.indice)}
             </span>{" "}
-            {k.valutati} valutati su {k.totale}
+            {pl(k.valutati, "valutato", "valutati")} su {k.totale}
           </p>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -84,7 +84,7 @@ export function VistaQuadro({ dati, vai }: { dati: DatiGdpr; vai: (v: string) =>
         <CardHeader>
           <h2 className="text-[15px] font-semibold tracking-tight">Segnali per l&apos;esercizio {dati.anno}</h2>
           <p className="text-sm text-muted-foreground">
-            {critiche.length} criticità · {attenzioni.length}{" "}attenzioni. Ogni segnale porta alla vista in cui si rimedia.
+            {critiche.length} criticità · {pl(attenzioni.length, "attenzione", "attenzioni")}. Ogni segnale porta alla vista in cui si rimedia.
           </p>
         </CardHeader>
         <CardContent>

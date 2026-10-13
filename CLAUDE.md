@@ -3669,3 +3669,46 @@ rossi esattamente sui loro controlli · regressioni `archiviata` 33/33, `shell`,
 `demo-completa` 9/9, `portafoglio-aggiorna` 5/5, `tutto-demo` 68/68, `tutto-attivo` 31/31,
 `benvenuto` 12/12, `codice-documento` 22/22 · 30 foto guardate in chiaro, scuro e da
 telefono, zero errori di console, zero sfondamento, zero spazi mangiati.
+
+**Percorso GDPR, fasi 7 e 8 (2026-10-13, notte) — vetrina, legale, e sette difetti trovati guardando i PDF**
+
+- **Vetrina**: la scheda nasce in Fase 4 dal registro; qui l'ultimo passo nomina anche le
+  valutazioni d'impatto. `vetrina-percorsi-pure`, `landing`, `tutto-pubblico` 37/37,
+  `sitemap` 9/9, `axialoop` verdi.
+- **Privacy**: voce nuova «Registri della protezione dei dati delle aziende clienti» (richieste
+  degli interessati e violazioni, riferimento interno e non nome, Evalis responsabile ex art.
+  28, nei documenti solo conteggi), scritta prima che il modulo riceva un dato vero.
+  `AGGIORNATO_AL` = `2026-10-13`: **va portato alla data del rilascio**. `legale` 26/26.
+- **`PRE-LAUNCH.md`** voce 13 e **`docs/rilascio-gdpr-previsione.md`**: lo stato della
+  produzione chiesto in sola lettura (mancano esattamente `0062`÷`0064`, nessuna riga fuori dai
+  vincoli riscritti) e la previsione dei conteggi scritta PRIMA del seme.
+
+**Difetti trovati aprendo i PDF consegnati**, nessuno visibile ai collaudi funzionali:
+1. ⚠️ **`.doc-avviso` non aveva NESSUNA regola CSS**: il riquadro «riquadrato e in apertura»
+   usciva come testo semplice — anche nei tre documenti NIS2 **già in produzione** (quelli già
+   archiviati restano com'erano: lo snapshot e il PDF non cambiano).
+2. ⚠️ **Il colophon di TUTTI i documenti dichiarava il giorno UTC**: pubblicato in Italia fra
+   mezzanotte e le due diceva il giorno prima, mentre la copertina dello stesso PDF diceva
+   quello giusto. Ora `giornoItaliano`, e `colophon-data-pure` lo prova anche sotto `TZ=UTC`.
+3. Plurali sbagliati («1 trattamenti valutati», «1 soggetti esterni»), nel documento e a schermo.
+4. «Approvata il —» per una politica non approvata.
+5. «66.7%»: il punto decimale in un documento italiano. Guardia nel render degli snapshot.
+6. «48,0» persone: un decimale forzato anche sui conteggi.
+7. La dimostrativa dichiarava un fornitore negli Stati Uniti e nessun trattamento con
+   trasferimenti: due sezioni dello stesso documento che si contraddicono.
+
+**I PDF si consegnano dalla DIMOSTRATIVA**, non dall'azienda di collaudo (due trattamenti e
+mezza anagrafica): `SALVA_PDF=<cartella> npm run qa -- gdpr-percorso` pubblica i sei anche
+sulla dimostrativa, ne conta le pagine e salva quelli.
+
+**Regole nate qui:**
+- **Una classe CSS usata e mai definita non produce nessun errore**: il compilatore non la
+  vede, i collaudi nemmeno. Si vede solo nel PDF.
+- **Un controllo sulla data va lanciato anche fuori orario.** Il guasto del colophon esiste
+  solo fra mezzanotte e le due; di giorno ogni test passa.
+- **Un guardiano che guarda le date può dire rosso per l'ora del giorno, non per il codice**:
+  `sitemap` ha dato «nel futuro» all'1:28 e «modificata adesso» alle 02:07 italiane sulla
+  stessa data `2026-10-13`. Era giusto in entrambi i casi; verde dalle 02:10.
+
+⚠️ **Il rilascio (Fase 9) NON è fatto**: scritture in produzione e spinta sono del committente.
+La Fase 6 (formazione) è per decisione sua dopo il rilascio.

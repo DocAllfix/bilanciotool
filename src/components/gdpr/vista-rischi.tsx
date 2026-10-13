@@ -10,7 +10,7 @@ import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
 import { GARANZIE, QUALIFICHE } from "@/lib/calc/gdpr/tipi";
 import { CONTRATTI, ESITI_DPIA, ESITI_FORNITORE, STATI_DPIA } from "@/features/gdpr/validation";
-import { CampoCasella, Intro, type ComandiGdpr, type DatiGdpr, type Esito } from "./comune";
+import { CampoCasella, Intro, pct, pl, type ComandiGdpr, type DatiGdpr, type Esito } from "./comune";
 
 // Vista 4 — Rischi e responsabili.
 //
@@ -42,8 +42,8 @@ export function VistaRischi({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr })
     <div className="space-y-6">
       <Intro titolo="Rischi per gli interessati">
         Per ogni trattamento: i criteri che rendono necessaria la valutazione d&apos;impatto (da {dati.parametri.sogliaDpia} in su),
-        probabilità e gravità da 1 a 5, le misure. {r.valutati} valutati su {r.trattamenti}: {r.alti} alti, {r.medi} medi,{" "}
-        {r.bassi}{" "}bassi.
+        probabilità e gravità da 1 a 5, le misure. {pl(r.valutati, "valutato", "valutati")} su {r.trattamenti}: {pl(r.alti, "alto", "alti")}, {pl(r.medi, "medio", "medi")},{" "}
+        {pl(r.bassi, "basso", "bassi")}.
       </Intro>
 
       {dati.trattamenti.length === 0 ? (
@@ -59,7 +59,7 @@ export function VistaRischi({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr })
       <div className="pt-4">
         <Intro titolo="Responsabili e altri soggetti esterni">
           Chi tratta dati per conto dell&apos;organizzazione, il contratto ex art. 28 e i trasferimenti verso paesi terzi.{" "}
-          {f.fornitori} registrati, contratti coperti {f.quotaContratti === null ? "—" : `${f.quotaContratti}%`}.
+          {pl(f.fornitori, "registrato", "registrati")}, contratti coperti {pct(f.quotaContratti)}.
         </Intro>
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <Button onClick={nuovoFornitore} data-tour="gdpr-nuovo-fornitore">
