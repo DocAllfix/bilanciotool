@@ -1,0 +1,206 @@
+{
+  "sezioni": [
+    {
+      "key": "org",
+      "ordine": 1,
+      "nome": "Persone e formazione",
+      "riferimento": "Artt. 29 · 39"
+    },
+    {
+      "key": "sic",
+      "ordine": 2,
+      "nome": "Sicurezza",
+      "riferimento": "Art. 32"
+    },
+    {
+      "key": "mkt",
+      "ordine": 3,
+      "nome": "Marketing e consensi",
+      "riferimento": "Artt. 7 · 21"
+    },
+    {
+      "key": "aut",
+      "ordine": 4,
+      "nome": "Reclami e autorità",
+      "riferimento": "Artt. 77 · 58 · 83"
+    }
+  ],
+  "indicatori": [
+    {
+      "key": "dip",
+      "ordine": 1,
+      "sezione": "org",
+      "nome": "Dipendenti e collaboratori",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "aut",
+      "ordine": 2,
+      "sezione": "org",
+      "nome": "Persone autorizzate al trattamento",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "aut_form",
+      "ordine": 3,
+      "sezione": "org",
+      "nome": "di cui formate nell'esercizio",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "fo_ore",
+      "ordine": 4,
+      "sezione": "org",
+      "nome": "Ore di formazione sulla protezione dei dati",
+      "unita": "ore",
+      "aiuto": ""
+    },
+    {
+      "key": "nuovi",
+      "ordine": 5,
+      "sezione": "org",
+      "nome": "Persone entrate nell'esercizio",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "nuovi_form",
+      "ordine": 6,
+      "sezione": "org",
+      "nome": "di cui formate all'ingresso",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "acc",
+      "ordine": 7,
+      "sezione": "sic",
+      "nome": "Utenze attive",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "acc_mfa",
+      "ordine": 8,
+      "sezione": "sic",
+      "nome": "di cui con autenticazione a più fattori",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "disp",
+      "ordine": 9,
+      "sezione": "sic",
+      "nome": "Portatili e dispositivi mobili",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "disp_cif",
+      "ordine": 10,
+      "sezione": "sic",
+      "nome": "di cui cifrati",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "bk_test",
+      "ordine": 11,
+      "sezione": "sic",
+      "nome": "Prove di ripristino delle copie di sicurezza",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "acc_rev",
+      "ordine": 12,
+      "sezione": "sic",
+      "nome": "Revisioni dei profili di autorizzazione",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "vuln",
+      "ordine": 13,
+      "sezione": "sic",
+      "nome": "Verifiche tecniche di sicurezza",
+      "unita": "n.",
+      "aiuto": "Analisi delle vulnerabilità, prove di intrusione"
+    },
+    {
+      "key": "inc",
+      "ordine": 14,
+      "sezione": "sic",
+      "nome": "Incidenti di sicurezza informatica",
+      "unita": "n.",
+      "aiuto": "Tutti, anche quelli senza dati personali coinvolti"
+    },
+    {
+      "key": "cont",
+      "ordine": 15,
+      "sezione": "mkt",
+      "nome": "Contatti nelle liste per comunicazioni promozionali",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "cons_doc",
+      "ordine": 16,
+      "sezione": "mkt",
+      "nome": "di cui con consenso o altra base documentata",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "opp",
+      "ordine": 17,
+      "sezione": "mkt",
+      "nome": "Opposizioni e disiscrizioni ricevute",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "opp_gg",
+      "ordine": 18,
+      "sezione": "mkt",
+      "nome": "Tempo medio per dare seguito all'opposizione",
+      "unita": "gg",
+      "aiuto": ""
+    },
+    {
+      "key": "recl",
+      "ordine": 19,
+      "sezione": "aut",
+      "nome": "Reclami ricevuti direttamente dagli interessati",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "garante",
+      "ordine": 20,
+      "sezione": "aut",
+      "nome": "Richieste di informazioni o ispezioni del Garante",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "sanz",
+      "ordine": 21,
+      "sezione": "aut",
+      "nome": "Sanzioni o provvedimenti correttivi",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "liti",
+      "ordine": 22,
+      "sezione": "aut",
+      "nome": "Contenziosi in materia di dati personali",
+      "unita": "n.",
+      "aiuto": ""
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+[
+  {
+    "key": "P",
+    "ordine": 1,
+    "nome": "Principi e basi giuridiche",
+    "riferimento": "Artt. 5–11",
+    "guida": {
+      "definizione": "Le regole di fondo di ogni trattamento: perché si trattano i dati, su quale base, quali e per quanto tempo. Tutto il resto del sistema serve a dimostrarne il rispetto.",
+      "verifiche": [
+        "Una base giuridica precisa per ogni trattamento, non una formula generica valida per tutto",
+        "Termini di conservazione scritti e cancellazioni davvero eseguite",
+        "Consensi raccolti in modo distinto e dimostrabili uno per uno"
+      ],
+      "evidenze": "Registro dei trattamenti, politica di conservazione, moduli e registrazioni dei consensi, bilanciamenti del legittimo interesse.",
+      "attenzione": "Il consenso non è la base da usare per tutto: nel rapporto di lavoro quasi mai è libero, e chiederlo dove non serve crea obblighi di revoca che poi non si sanno gestire."
+    }
+  },
+  {
+    "key": "T",
+    "ordine": 2,
+    "nome": "Trasparenza e informative",
+    "riferimento": "Artt. 12–14",
+    "guida": {
+      "definizione": "L'interessato deve sapere chi tratta i suoi dati, perché e con quali diritti, al momento giusto e in parole comprensibili.",
+      "verifiche": [
+        "Informative distinte per dipendenti, candidati, clienti, visitatori del sito",
+        "Coerenza tra ciò che l'informativa dichiara e ciò che il registro descrive",
+        "Prova della consegna o della messa a disposizione"
+      ],
+      "evidenze": "Informative in vigore con data e versione, moduli di raccolta, pagine del sito, firme o registrazioni di presa visione.",
+      "attenzione": "Informative copiate da un modello sono l'errore più frequente: citano trattamenti che non esistono e tacciono quelli reali, a partire da videosorveglianza e strumenti informatici."
+    }
+  },
+  {
+    "key": "D",
+    "ordine": 3,
+    "nome": "Diritti degli interessati",
+    "riferimento": "Artt. 12, 15–22",
+    "guida": {
+      "definizione": "Chi chiede accesso, rettifica, cancellazione o si oppone deve ricevere risposta entro un mese. Serve un percorso interno che funzioni anche quando la richiesta arriva alla persona sbagliata.",
+      "verifiche": [
+        "Chi riceve le richieste e chi decide",
+        "Tempi effettivi di riscontro nel registro",
+        "Capacità tecnica di estrarre, correggere e cancellare i dati nei sistemi"
+      ],
+      "evidenze": "Procedura per i diritti, registro delle richieste, riscontri inviati, istruzioni al personale di sportello e assistenza clienti.",
+      "attenzione": "Il termine decorre dal ricevimento, qualunque sia il canale: una richiesta arrivata al commerciale e dimenticata nella posta resta una violazione dell'art. 12."
+    }
+  },
+  {
+    "key": "A",
+    "ordine": 4,
+    "nome": "Responsabilizzazione e progettazione",
+    "riferimento": "Artt. 24–25, 29",
+    "guida": {
+      "definizione": "Il titolare non deve solo rispettare le regole: deve poterlo dimostrare, e deve pensare alla protezione dei dati prima di avviare un trattamento, non dopo.",
+      "verifiche": [
+        "Politica approvata dalla direzione e conosciuta da chi tratta dati",
+        "Nuovi progetti e nuovi software valutati prima dell'acquisto",
+        "Formazione effettiva e registrata, non solo all'assunzione"
+      ],
+      "evidenze": "Politica di protezione dei dati, organigramma privacy, lettere di autorizzazione, registro della formazione, verbali di valutazione dei nuovi progetti.",
+      "attenzione": "La documentazione ferma all'anno di adeguamento è il segnale tipico di un sistema non mantenuto: il Garante guarda le date."
+    }
+  },
+  {
+    "key": "R",
+    "ordine": 5,
+    "nome": "Responsabili e contitolari",
+    "riferimento": "Artt. 26–28",
+    "guida": {
+      "definizione": "Chi tratta dati per conto dell'organizzazione è un responsabile del trattamento e va vincolato con un contratto dai contenuti precisi.",
+      "verifiche": [
+        "Elenco completo dei fornitori con accesso a dati personali, assistenza informatica compresa",
+        "Contratto ai sensi dell'art. 28 firmato con ciascuno",
+        "Controlli svolti sui fornitori più critici"
+      ],
+      "evidenze": "Elenco dei responsabili, contratti e atti di nomina, elenco dei sub-responsabili, questionari e certificazioni dei fornitori.",
+      "attenzione": "La qualifica dipende dai fatti, non dal contratto: il consulente del lavoro e il fornitore del gestionale sono di norma responsabili; il medico competente e la banca sono titolari autonomi."
+    }
+  },
+  {
+    "key": "G",
+    "ordine": 6,
+    "nome": "Registro dei trattamenti",
+    "riferimento": "Art. 30",
+    "guida": {
+      "definizione": "Il registro è la mappa di tutti i trattamenti. È il primo documento che il Garante chiede e la base di ogni altra valutazione.",
+      "verifiche": [
+        "Tutti i trattamenti presenti, compresi videosorveglianza, sito web e strumenti informatici",
+        "Per ciascuno finalità, categorie, destinatari, trasferimenti, conservazione, misure",
+        "Data dell'ultimo aggiornamento"
+      ],
+      "evidenze": "Registro delle attività di trattamento generato al passo 9, con data e versione.",
+      "attenzione": "L'esenzione sotto i 250 dipendenti in pratica non si applica: basta trattare dati dei dipendenti in modo non occasionale per essere tenuti al registro."
+    }
+  },
+  {
+    "key": "S",
+    "ordine": 7,
+    "nome": "Sicurezza del trattamento",
+    "riferimento": "Art. 32",
+    "guida": {
+      "definizione": "Misure tecniche e organizzative proporzionate al rischio. L'art. 32 non impone un elenco fisso: chiede di valutare e di poter giustificare le scelte.",
+      "verifiche": [
+        "Autenticazione a più fattori su posta e accessi remoti",
+        "Copie di sicurezza separate dalla rete e ripristino provato",
+        "Portatili cifrati, utenze cessate disattivate, aggiornamenti applicati"
+      ],
+      "evidenze": "Valutazione dei rischi, inventario di sistemi e dispositivi, configurazioni, verbali delle prove di ripristino, rapporti delle verifiche tecniche, regolamento informatico.",
+      "attenzione": "Nei provvedimenti sanzionatori ricorrono sempre le stesse carenze: password deboli o condivise, mancanza del secondo fattore, sistemi non aggiornati, copie di sicurezza mai provate."
+    }
+  },
+  {
+    "key": "V",
+    "ordine": 8,
+    "nome": "Violazioni dei dati personali",
+    "riferimento": "Artt. 33–34",
+    "guida": {
+      "definizione": "Quando i dati vengono persi, alterati o divulgati, il titolare ha 72 ore per valutare il rischio e, se c'è, notificare al Garante.",
+      "verifiche": [
+        "Tutti sanno a chi segnalare un incidente, anche fuori orario",
+        "Registro delle violazioni con la valutazione del rischio di ciascuna",
+        "Rispetto delle 72 ore tra conoscenza e notifica"
+      ],
+      "evidenze": "Procedura per le violazioni, registro delle violazioni, notifiche inviate, comunicazioni agli interessati, verbali delle esercitazioni.",
+      "attenzione": "Vanno registrate anche le violazioni non notificate, con il motivo: l'email al destinatario sbagliato e il portatile smarrito sono violazioni a tutti gli effetti."
+    }
+  },
+  {
+    "key": "I",
+    "ordine": 9,
+    "nome": "Valutazione d'impatto",
+    "riferimento": "Artt. 35–36",
+    "guida": {
+      "definizione": "Per i trattamenti che possono presentare un rischio elevato serve una valutazione d'impatto prima di iniziare. Il vaglio preliminare va fatto per tutti.",
+      "verifiche": [
+        "Vaglio documentato per ogni trattamento del registro",
+        "Valutazione svolta per videosorveglianza dei lavoratori, geolocalizzazione, profilazione, dati sanitari su larga scala",
+        "Riesame quando il trattamento cambia"
+      ],
+      "evidenze": "Schede di vaglio, valutazioni d'impatto, pareri del responsabile della protezione dei dati, elenco del Garante delle tipologie soggette.",
+      "attenzione": "Due criteri di rischio su nove bastano di norma a rendere necessaria la valutazione. Il monitoraggio dei lavoratori li soddisfa quasi sempre."
+    }
+  },
+  {
+    "key": "O",
+    "ordine": 10,
+    "nome": "Responsabile della protezione dei dati",
+    "riferimento": "Artt. 37–39",
+    "guida": {
+      "definizione": "Il responsabile della protezione dei dati è obbligatorio per enti pubblici e per chi, come attività principale, monitora persone o tratta dati particolari su larga scala.",
+      "verifiche": [
+        "Valutazione scritta dell'obbligo, anche se negativa",
+        "Assenza di conflitti di interesse: non può essere chi decide finalità e mezzi",
+        "Coinvolgimento effettivo, visibile nei verbali"
+      ],
+      "evidenze": "Valutazione dell'obbligo, atto di designazione, comunicazione al Garante, relazioni periodiche, pareri resi.",
+      "attenzione": "Se la designazione è volontaria valgono comunque tutti gli obblighi degli artt. 37–39. Chi non vuole assumerli nomina un referente interno con un altro nome."
+    }
+  },
+  {
+    "key": "X",
+    "ordine": 11,
+    "nome": "Trasferimenti verso paesi terzi",
+    "riferimento": "Artt. 44–49",
+    "guida": {
+      "definizione": "I dati possono lasciare lo Spazio economico europeo solo verso paesi ritenuti adeguati o con garanzie contrattuali. Molti trasferimenti passano dai servizi cloud senza che l'organizzazione se ne accorga.",
+      "verifiche": [
+        "Sede dei fornitori e luogo dei loro centri dati e dell'assistenza",
+        "Garanzia applicata a ogni trasferimento",
+        "Verifica periodica che le decisioni di adeguatezza siano ancora in vigore"
+      ],
+      "evidenze": "Elenco dei trasferimenti, contratti con clausole tipo, elenchi dei sub-responsabili dei fornitori, valutazioni dei paesi di destinazione.",
+      "attenzione": "Le decisioni di adeguatezza cambiano nel tempo: prima di ogni riesame controlla sul sito della Commissione europea quali sono in vigore e a quali condizioni."
+    }
+  },
+  {
+    "key": "N",
+    "ordine": 12,
+    "nome": "Normativa italiana e Garante",
+    "riferimento": "D.Lgs. 196/2003 · provvedimenti",
+    "guida": {
+      "definizione": "Le regole nazionali che si aggiungono al Regolamento: Codice privacy, Statuto dei lavoratori, provvedimenti e linee guida del Garante.",
+      "verifiche": [
+        "Accordo sindacale o autorizzazione dell'Ispettorato per telecamere e strumenti di controllo",
+        "Nomine e verifica annuale degli amministratori di sistema",
+        "Banner dei cookie e consensi per le comunicazioni promozionali"
+      ],
+      "evidenze": "Lettere di autorizzazione, nomine degli amministratori di sistema e verbale di verifica, accordo o autorizzazione per la videosorveglianza, configurazione del banner, liste di contatto con origine del consenso.",
+      "attenzione": "Le telecamere installate senza accordo o autorizzazione violano lo Statuto dei lavoratori prima ancora del Regolamento, e l'informativa non sana la mancanza."
+    }
+  }
+]

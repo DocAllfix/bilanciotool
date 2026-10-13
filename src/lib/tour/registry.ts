@@ -418,6 +418,42 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "gdpr",
+    pathPattern: /^\/aziende\/[^/]+\/gdpr/,
+    steps: [
+      {
+        element: '[data-tour="gdpr-vista-trat"]',
+        title: "Si comincia dal registro",
+        description:
+          "Un trattamento per finalità, con i sette elementi dell'art. 30. Gli undici trattamenti tipici arrivano precompilati: si aggiungono con un clic e si adattano, invece di scriverli da zero.",
+      },
+      {
+        element: '[data-tour="gdpr-vista-gap"]',
+        title: "Novantanove requisiti, ciascuno con la sua guida",
+        description:
+          "Conforme, parziale, non conforme o non pertinente. Un parziale o un non conforme chiede l'azione, chi la porta e per quando: è il piano di adeguamento, e finisce nel rapporto di conformità.",
+      },
+      {
+        element: '[data-tour="gdpr-conformita"]',
+        title: "Un requisito non valutato pesa zero",
+        description:
+          "Non viene ignorato: tre requisiti conformi su novantanove non fanno cento. I soli «non pertinenti» escono dal conto, perché quella è una valutazione e non un'omissione.",
+      },
+      {
+        element: '[data-tour="gdpr-vista-reg"]',
+        title: "Le scadenze si calcolano da sole",
+        description:
+          "Un mese per rispondere a una richiesta, tre con la proroga; 72 ore dalla conoscenza di una violazione per notificarla. Le conta il prodotto, in ora italiana, e il quadro ti avvisa prima che scadano.",
+      },
+      {
+        element: '[data-tour="gdpr-segnali"]',
+        title: "Ogni segnale porta dove si rimedia",
+        description:
+          "Criticità e attenzioni dell'esercizio scelto in alto, con il collegamento alla vista in cui si chiudono. Dei registri delle richieste e delle violazioni, i documenti pubblicati riportano soltanto conteggi.",
+      },
+    ],
+  },
+  {
     pageId: "soa",
     pathPattern: /^\/aziende\/[^/]+\/soa/,
     steps: [

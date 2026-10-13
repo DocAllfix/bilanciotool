@@ -435,6 +435,27 @@
       "when": 1791461288459,
       "tag": "0061_azienda_scrivibile",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1791461289459,
+      "tag": "0062_gdpr",
+      "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1791461290459,
+      "tag": "0063_gdpr_rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1791461291459,
+      "tag": "0064_documenti_gdpr",
+      "breakpoints": true
     }
   ]
 }

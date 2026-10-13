@@ -73,6 +73,13 @@
 .doc-num { text-align: right; white-space: nowrap; }
 .doc-meta { color: var(--doc-muted); font-size: 8.7pt; }
 .doc-manca { color: #a33d32; font-style: italic; }
+/* Il riquadro che dice che cosa il documento NON contiene, in apertura.
+   ⚠️ La classe era usata dai documenti NIS2 e GDPR e non aveva NESSUNA regola: il
+   riquadro dichiarato «riquadrato e in apertura» usciva come testo semplice. Stessa
+   misura del `RIQUADRO` in linea degli altri moduli (DOC.ink, DOC.accentBg). */
+.doc-avviso { border: 1.5px solid #182430; background: #e9f1ef; padding: 14px 18px; margin: 0 0 22px; break-inside: avoid; }
+.doc-avviso p { margin: 0 0 6px; }
+.doc-avviso ul { margin: 0; padding-left: 18px; }
 /* Sigle e codici: il monospazio li rende trascrivibili senza ambiguità fra
    zero e lettera O, che su un codice di verifica letto al telefono conta. */
 .doc-mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; letter-spacing: 0.02em; }

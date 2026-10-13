@@ -23,6 +23,7 @@ import { DocumentoManualeSa8000 } from "@/components/documento/documento-manuale
 import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qas";
 import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
+import { DocumentoGdpr } from "@/components/documento/documento-gdpr";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 import { ritornoDelDocumento } from "@/features/companies/moduli";
 import { indirizzoCanonico } from "@/lib/indirizzo";
@@ -155,6 +156,14 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
       case "relazione_nis2":
       case "controlli_nis2":
         return <DocumentoSistemaNis2 immagini={immagini} dati={snap.dati as never} tipo={snap.tipo} />;
+      // ⚠️ I sei della protezione dei dati da UN template solo, guidato dal tipo.
+      case "registro_trattamenti":
+      case "modello_privacy":
+      case "politica_privacy":
+      case "dpia":
+      case "conformita_gdpr":
+      case "relazione_privacy":
+        return <DocumentoGdpr immagini={immagini} dati={snap.dati as never} tipo={snap.tipo} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

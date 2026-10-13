@@ -1,0 +1,47 @@
+[
+  {
+    "key": "score",
+    "ordine": 1,
+    "testo": "Valutazione, punteggio o profilazione delle persone"
+  },
+  {
+    "key": "auto",
+    "ordine": 2,
+    "testo": "Decisioni automatizzate con effetti giuridici o analoghi"
+  },
+  {
+    "key": "monit",
+    "ordine": 3,
+    "testo": "Monitoraggio sistematico degli interessati"
+  },
+  {
+    "key": "sens",
+    "ordine": 4,
+    "testo": "Dati sensibili o di natura estremamente personale"
+  },
+  {
+    "key": "scala",
+    "ordine": 5,
+    "testo": "Trattamento su larga scala"
+  },
+  {
+    "key": "comb",
+    "ordine": 6,
+    "testo": "Combinazione o raffronto di insiemi di dati"
+  },
+  {
+    "key": "vuln",
+    "ordine": 7,
+    "testo": "Interessati vulnerabili: dipendenti, minori, pazienti"
+  },
+  {
+    "key": "innov",
+    "ordine": 8,
+    "testo": "Uso innovativo o nuove tecnologie"
+  },
+  {
+    "key": "blocco",
+    "ordine": 9,
+    "testo": "Il trattamento può impedire di esercitare un diritto o di accedere a un servizio"
+  }
+]

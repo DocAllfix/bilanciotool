@@ -1,8 +1,21 @@
 import { DOC } from "./charts";
-import { fmtData } from "@/lib/format";
+import { giornoItaliano } from "@/lib/calc/comune/tempo-italia";
 import { DOCUMENTI, SENZA_ESERCIZIO, type TipoDocumento } from "@/features/documents/tipi";
 
 // Il colophon di emissione, in fondo a OGNI documento.
+
+/**
+ * Il giorno di emissione in ORA ITALIANA, «13/10/2026».
+ *
+ * ⚠️ Era `pubblicatoIl.slice(0, 10)`, cioè il giorno UTC: un documento pubblicato in Italia fra
+ * mezzanotte e le due dichiarava il giorno prima, mentre la copertina dello stesso documento
+ * diceva quello giusto. Trovato guardando un PDF emesso all'1:50. Niente `toLocaleDateString`:
+ * dipende dal fuso del processo, e su Vercel il processo è in UTC.
+ */
+function dataItaliana(iso: string): string {
+  const [a, m, g] = giornoItaliano(new Date(iso)).split("-");
+  return `${g}/${m}/${a}`;
+}
 //
 // ⚠️ Vive nella pagina del documento e non nei dodici template, ed è deliberato: è la
 // stessa strozzatura in cui vive il marchio congelato. Metterlo in ciascun template
@@ -72,7 +85,7 @@ export function Colophon({
                 {edizione ? ` · contenuti ${edizione}` : ""}
               </p>
               <p className="doc-meta" style={{ margin: "2px 0 0" }}>
-                Emesso da <strong>{emittente}</strong> il {fmtData(pubblicatoIl.slice(0, 10))}.
+                Emesso da <strong>{emittente}</strong> il {dataItaliana(pubblicatoIl)}.
               </p>
               <p className="doc-meta" style={{ margin: "2px 0 0" }}>
                 I valori sono congelati alla data di emissione: modifiche successive ai dati non alterano

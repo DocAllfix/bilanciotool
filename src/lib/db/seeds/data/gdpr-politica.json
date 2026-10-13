@@ -1,0 +1,50 @@
+{
+  "contenuti": [
+    {
+      "key": "pri",
+      "ordine": 1,
+      "testo": "Richiama i principi dell'art. 5"
+    },
+    {
+      "key": "ruo",
+      "ordine": 2,
+      "testo": "Definisce ruoli e responsabilità interne"
+    },
+    {
+      "key": "dir",
+      "ordine": 3,
+      "testo": "Tratta i diritti degli interessati"
+    },
+    {
+      "key": "sic",
+      "ordine": 4,
+      "testo": "Tratta sicurezza e gestione delle violazioni"
+    },
+    {
+      "key": "for",
+      "ordine": 5,
+      "testo": "Tratta fornitori e trasferimenti all'estero"
+    },
+    {
+      "key": "frm",
+      "ordine": 6,
+      "testo": "Prevede la formazione di chi tratta dati"
+    },
+    {
+      "key": "app",
+      "ordine": 7,
+      "testo": "È approvata dal vertice"
+    },
+    {
+      "key": "com",
+      "ordine": 8,
+      "testo": "È comunicata a tutte le persone autorizzate"
+    },
+    {
+      "key": "rie",
+      "ordine": 9,
+      "testo": "Prevede un riesame periodico"
+    }
+  ],
+  "modello": "{nome} tratta dati personali di lavoratori, clienti, fornitori e altri interlocutori. Con questa politica la direzione stabilisce le regole che tutti coloro che operano per l'organizzazione sono tenuti a rispettare, in applicazione del Regolamento (UE) 2016/679 e del D.Lgs. 196/2003.\n\nPrincipi. Trattiamo i dati in modo lecito, corretto e trasparente, per finalità determinate, limitandoci a quelli necessari. Li manteniamo esatti, li conserviamo per il tempo stabilito nel registro dei trattamenti e li proteggiamo da accessi non autorizzati, perdita e distruzione.\n\nRuoli. Il titolare del trattamento è l'organizzazione, che decide attraverso la direzione. Il referente per la protezione dei dati coordina gli adempimenti e riferisce alla direzione. Ogni persona autorizzata tratta i dati solo secondo le istruzioni ricevute per il proprio ruolo.\n\nDiritti degli interessati. Chiunque riceva una richiesta di accesso, rettifica, cancellazione, limitazione, portabilità od opposizione la trasmette subito al referente. Rispondiamo entro un mese.\n\nSicurezza e violazioni. Adottiamo misure tecniche e organizzative proporzionate ai rischi e ne verifichiamo l'efficacia. Ogni incidente che coinvolge dati personali va segnalato immediatamente al referente: valutiamo il rischio e, se necessario, notifichiamo al Garante entro 72 ore.\n\nFornitori e trasferimenti. Affidiamo dati solo a fornitori che offrono garanzie adeguate e con un contratto conforme all'art. 28. Trasferiamo dati fuori dallo Spazio economico europeo solo in presenza delle garanzie previste.\n\nNuovi trattamenti. Prima di avviare un nuovo trattamento o adottare un nuovo strumento ne valutiamo l'impatto sulla protezione dei dati e, se il rischio è elevato, svolgiamo una valutazione d'impatto.\n\nFormazione e riesame. Formiamo chi tratta dati all'ingresso e periodicamente. La direzione riesamina ogni anno il sistema, il registro dei trattamenti e questa politica."
+}

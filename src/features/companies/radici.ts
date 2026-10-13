@@ -42,6 +42,7 @@ const RADICI: Record<ModuloAzienda, { tabella: string; anno: string | null }> = 
   // accendere anche l'autovalutazione nel portafoglio. Vedi `schema/nis2.ts`.
   nis2: { tabella: "nis2_assessment", anno: null },
   sgnis2: { tabella: "nis2_system", anno: null },
+  gdpr: { tabella: "gdpr_system", anno: null },
 };
 
 export type Radice = { modulo: ModuloAzienda; companyId: string; anno: number | null };

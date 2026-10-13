@@ -1,0 +1,107 @@
+[
+  {
+    "key": "att-01",
+    "ordine": 1,
+    "mese": 1,
+    "riferimento": "Art. 30",
+    "attivita": "Aggiornamento del registro dei trattamenti"
+  },
+  {
+    "key": "att-02",
+    "ordine": 2,
+    "mese": 1,
+    "riferimento": "Art. 24",
+    "attivita": "Approvazione del piano annuale delle attività"
+  },
+  {
+    "key": "att-03",
+    "ordine": 3,
+    "mese": 2,
+    "riferimento": "Artt. 13–14",
+    "attivita": "Revisione di informative, moduli e pagine del sito"
+  },
+  {
+    "key": "att-04",
+    "ordine": 4,
+    "mese": 3,
+    "riferimento": "Art. 29",
+    "attivita": "Formazione delle persone autorizzate"
+  },
+  {
+    "key": "att-05",
+    "ordine": 5,
+    "mese": 3,
+    "riferimento": "Art. 28",
+    "attivita": "Verifica dei contratti con i responsabili del trattamento"
+  },
+  {
+    "key": "att-06",
+    "ordine": 6,
+    "mese": 4,
+    "riferimento": "Art. 32",
+    "attivita": "Revisione dei profili di autorizzazione e delle utenze"
+  },
+  {
+    "key": "att-07",
+    "ordine": 7,
+    "mese": 5,
+    "riferimento": "Art. 32.1.d",
+    "attivita": "Prova di ripristino delle copie di sicurezza"
+  },
+  {
+    "key": "att-08",
+    "ordine": 8,
+    "mese": 6,
+    "riferimento": "Provv. Garante",
+    "attivita": "Verifica dell'operato degli amministratori di sistema"
+  },
+  {
+    "key": "att-09",
+    "ordine": 9,
+    "mese": 6,
+    "riferimento": "Art. 5.1.e",
+    "attivita": "Verifica dei termini di conservazione e cancellazioni"
+  },
+  {
+    "key": "att-10",
+    "ordine": 10,
+    "mese": 7,
+    "riferimento": "Art. 33",
+    "attivita": "Esercitazione sulla gestione di una violazione"
+  },
+  {
+    "key": "att-11",
+    "ordine": 11,
+    "mese": 9,
+    "riferimento": "Art. 24",
+    "attivita": "Audit interno sul sistema"
+  },
+  {
+    "key": "att-12",
+    "ordine": 12,
+    "mese": 10,
+    "riferimento": "Art. 28.3.h",
+    "attivita": "Verifica sui responsabili più critici"
+  },
+  {
+    "key": "att-13",
+    "ordine": 13,
+    "mese": 10,
+    "riferimento": "Art. 35.11",
+    "attivita": "Riesame di rischi e valutazioni d'impatto"
+  },
+  {
+    "key": "att-14",
+    "ordine": 14,
+    "mese": 11,
+    "riferimento": "Cod. 130",
+    "attivita": "Verifica di cookie, consensi e liste di contatto"
+  },
+  {
+    "key": "att-15",
+    "ordine": 15,
+    "mese": 12,
+    "riferimento": "Artt. 24 · 39",
+    "attivita": "Riesame annuale della direzione"
+  }
+]

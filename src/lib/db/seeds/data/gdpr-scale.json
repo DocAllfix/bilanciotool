@@ -1,0 +1,56 @@
+{
+  "probabilita": [
+    {
+      "valore": 1,
+      "nome": "Remota",
+      "descrizione": "Non plausibile nelle condizioni attuali"
+    },
+    {
+      "valore": 2,
+      "nome": "Improbabile",
+      "descrizione": "Possibile solo in circostanze particolari"
+    },
+    {
+      "valore": 3,
+      "nome": "Possibile",
+      "descrizione": "È accaduto in organizzazioni simili"
+    },
+    {
+      "valore": 4,
+      "nome": "Probabile",
+      "descrizione": "È già accaduto qui o presso un fornitore"
+    },
+    {
+      "valore": 5,
+      "nome": "Frequente",
+      "descrizione": "Accade o è atteso in modo ricorrente"
+    }
+  ],
+  "gravita": [
+    {
+      "valore": 1,
+      "nome": "Trascurabile",
+      "descrizione": "Disagio superabile senza difficoltà"
+    },
+    {
+      "valore": 2,
+      "nome": "Limitata",
+      "descrizione": "Inconvenienti significativi ma superabili"
+    },
+    {
+      "valore": 3,
+      "nome": "Rilevante",
+      "descrizione": "Danno economico o perdita di opportunità, superabile con difficoltà"
+    },
+    {
+      "valore": 4,
+      "nome": "Grave",
+      "descrizione": "Conseguenze serie e durature per la persona"
+    },
+    {
+      "valore": 5,
+      "nome": "Molto grave",
+      "descrizione": "Conseguenze irreversibili: discriminazione, danno alla salute, perdita del lavoro"
+    }
+  ]
+}

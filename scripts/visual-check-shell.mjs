@@ -4,10 +4,19 @@
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import { spegniTour } from "./comune-collaudo.mjs";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
+
+// Quanti percorsi ha il registro: letto da `moduli.ts`, non scritto qui. Era `15`, cioe'
+// la barra con quattordici percorsi piu' il fascicolo: al quindicesimo percorso quel numero
+// avrebbe smesso di distinguere la barra dell'azienda da quella generale.
+const QUANTI_MODULI = (() => {
+  const m = readFileSync("src/features/companies/moduli.ts", "utf8").match(/export const MODULI = \[([^\]]*)\]/);
+  if (!m) throw new Error("MODULI non trovato in moduli.ts: il formato e' cambiato");
+  return m[1].split(",").filter((x) => x.trim()).length;
+})();
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
 
@@ -139,7 +148,7 @@ const barra = await page.evaluate(() => {
 if (!barra) errors.push("[barra] nessuna <aside> nella shell di un'azienda");
 else if (barra.senzaNav) errors.push("[barra] nessun <nav> dentro l'aside: la struttura e' cambiata");
 else {
-  if (barra.voci < 15) errors.push(`[barra] solo ${barra.voci} voci: non e' la barra contestuale dell'azienda`);
+  if (barra.voci < QUANTI_MODULI) errors.push(`[barra] solo ${barra.voci} voci per ${QUANTI_MODULI} percorsi: non e' la barra contestuale dell'azienda`);
   if (!barra.eccede) errors.push(`[barra] a 680px di altezza le ${barra.voci} voci ci stanno tutte: questo controllo non sta piu' misurando niente`);
   if (!barra.scorrevole) errors.push("[barra] il contenitore delle voci non scorre: le ultime restano tagliate");
   if (!barra.piedeDentro) errors.push("[barra] il piede della barra e' fuori dallo schermo: account e tema irraggiungibili");

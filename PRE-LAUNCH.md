@@ -587,6 +587,23 @@ Non bloccano il lancio, ma vanno saputi.
     domanda malformata (indice della risposta fuori dalle opzioni, opzioni ripetute,
     spiegazione mancante, soglia irraggiungibile).
 
+13. **Percorso Protezione dei dati (GDPR), il quindicesimo.** Voci da tenere vere al
+    rilascio, ciascuna col modo di verificarla:
+    - **Ordine: migrazioni `0062`÷`0064`, poi il seme `gdpr-v1`, poi la fusione.** Senza
+      seme il percorso si apre su zero requisiti; senza la `0064` nessun documento GDPR si
+      pubblica. **Come si verifica**: `scripts/stato-produzione.mjs` prima (migrazioni
+      mancanti, righe fuori dai CHECK riscritti), conteggi del catalogo letti come `app_rls`
+      dopo il seme e confrontati con la previsione scritta prima.
+    - **Dei registri delle richieste e delle violazioni i documenti portano solo
+      conteggi.** **Come si verifica**: `gdpr-documenti.db` cerca testi-sentinella in ogni
+      snapshot pubblicato.
+    - **Aprire la pagina non scrive** (aziende archiviate). **Come si verifica**:
+      `npm run qa -- gdpr-percorso` (primo controllo) e `qa -- archiviata`.
+    - **Le dimostrative degli studi già iscritti non hanno il percorso compilato**: la
+      dimostrativa si semina all'iscrizione. Decisione del committente se ripopolarle.
+    - **Il corso di formazione GDPR non c'è ancora**: decisione del committente, si fa dopo
+      il rilascio. Il percorso esce con le sole sezioni comuni.
+
 ---
 
 ## Miglioramenti rimandati, con il vantaggio di ciascuno

@@ -43,6 +43,7 @@ export const RISULTATO: Record<ModuloAzienda, string> = {
   nis2: "Determinare se un'azienda rientra nel decreto e a quale titolo, e misurare quanto le manca — con un numero che regge davanti all'Autorità.",
   sgnis2:
     "Portare un ente dalla comunicazione dell'ACN a un sistema che si tiene in piedi: sessantotto controlli, cinque fasi, e le scadenze che non si possono mancare.",
+  gdpr: "Costruire il registro dei trattamenti, valutare i requisiti e i rischi per gli interessati, e tenere i termini delle richieste e delle violazioni senza calcolarli a mano.",
   soa: "Dichiarare l'applicabilità di ogni controllo con una motivazione che si difende, e sapere quali sono i cardine.",
 };
 

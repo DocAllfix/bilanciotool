@@ -1,0 +1,171 @@
+[
+  {
+    "key": "gestione-del-rapporto-di-lavoro",
+    "ordine": 1,
+    "nome": "Gestione del rapporto di lavoro",
+    "finalita": "Amministrazione del personale: assunzione, presenze, paghe, adempimenti contributivi, fiscali e assicurativi",
+    "base": "Contratto o misure precontrattuali (6.1.b)",
+    "interessati": "Dipendenti, collaboratori, familiari a carico",
+    "dati": "Anagrafici, contrattuali, retributivi, bancari, presenze; dati sanitari relativi ad assenze e idoneità; adesione sindacale",
+    "particolari": true,
+    "condizione9": "b) Lavoro e sicurezza sociale",
+    "destinatari": "Consulente del lavoro, enti previdenziali e fiscali, banche, fondi",
+    "conservazione": "10 anni dalla cessazione del rapporto",
+    "criteri": [
+      "vuln"
+    ]
+  },
+  {
+    "key": "selezione-del-personale",
+    "ordine": 2,
+    "nome": "Selezione del personale",
+    "finalita": "Raccolta e valutazione delle candidature",
+    "base": "Contratto o misure precontrattuali (6.1.b)",
+    "interessati": "Candidati",
+    "dati": "Curriculum, titoli, esperienze; eventuale appartenenza a categorie protette",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Società di selezione, se incaricate",
+    "conservazione": "12 mesi dalla ricezione, salvo assunzione",
+    "criteri": []
+  },
+  {
+    "key": "salute-e-sicurezza-sul-lavoro",
+    "ordine": 3,
+    "nome": "Salute e sicurezza sul lavoro",
+    "finalita": "Sorveglianza sanitaria, formazione obbligatoria, gestione degli infortuni",
+    "base": "Obbligo legale (6.1.c)",
+    "interessati": "Dipendenti e collaboratori",
+    "dati": "Giudizi di idoneità, formazione, infortuni",
+    "particolari": true,
+    "condizione9": "b) Lavoro e sicurezza sociale",
+    "destinatari": "Medico competente, responsabile del servizio di prevenzione, INAIL",
+    "conservazione": "10 anni dalla cessazione del rapporto",
+    "criteri": [
+      "vuln"
+    ]
+  },
+  {
+    "key": "clienti-contratti-ordini-e-fatturazione",
+    "ordine": 4,
+    "nome": "Clienti: contratti, ordini e fatturazione",
+    "finalita": "Gestione di offerte, contratti, ordini, consegne, incassi e obblighi contabili",
+    "base": "Contratto o misure precontrattuali (6.1.b)",
+    "interessati": "Clienti e loro referenti",
+    "dati": "Anagrafici, di contatto, fiscali, di pagamento, storico degli ordini",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Commercialista, banche, vettori, Agenzia delle entrate",
+    "conservazione": "10 anni dall'ultima registrazione contabile",
+    "criteri": []
+  },
+  {
+    "key": "fornitori-contratti-e-pagamenti",
+    "ordine": 5,
+    "nome": "Fornitori: contratti e pagamenti",
+    "finalita": "Qualifica dei fornitori, gestione di ordini e pagamenti",
+    "base": "Contratto o misure precontrattuali (6.1.b)",
+    "interessati": "Fornitori e loro referenti",
+    "dati": "Anagrafici, di contatto, fiscali, bancari",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Commercialista, banche",
+    "conservazione": "10 anni dall'ultima registrazione contabile",
+    "criteri": []
+  },
+  {
+    "key": "marketing-e-newsletter",
+    "ordine": 6,
+    "nome": "Marketing e newsletter",
+    "finalita": "Invio di comunicazioni promozionali e newsletter",
+    "base": "Consenso (6.1.a)",
+    "interessati": "Clienti e contatti iscritti",
+    "dati": "Nome, indirizzo di posta elettronica, preferenze, aperture e clic",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Fornitore della piattaforma di invio",
+    "conservazione": "Fino a revoca del consenso; contatti inattivi cancellati dopo 24 mesi",
+    "criteri": []
+  },
+  {
+    "key": "sito-web-e-cookie",
+    "ordine": 7,
+    "nome": "Sito web e cookie",
+    "finalita": "Funzionamento del sito, moduli di contatto, statistiche di visita",
+    "base": "Legittimo interesse (6.1.f)",
+    "interessati": "Visitatori del sito",
+    "dati": "Dati di navigazione, identificativi online, dati inseriti nei moduli",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Fornitore dell'hosting, fornitori di strumenti di analisi",
+    "conservazione": "Richieste dai moduli 12 mesi; cookie secondo la tabella dell'informativa",
+    "criteri": []
+  },
+  {
+    "key": "videosorveglianza",
+    "ordine": 8,
+    "nome": "Videosorveglianza",
+    "finalita": "Sicurezza delle persone e tutela del patrimonio aziendale",
+    "base": "Legittimo interesse (6.1.f)",
+    "interessati": "Dipendenti, visitatori, fornitori",
+    "dati": "Immagini",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Istituto di vigilanza, autorità giudiziaria su richiesta",
+    "conservazione": "Da 24 a 72 ore, salvo chiusure e richieste dell'autorità",
+    "criteri": [
+      "monit",
+      "vuln"
+    ]
+  },
+  {
+    "key": "posta-elettronica-e-strumenti-informatici",
+    "ordine": 9,
+    "nome": "Posta elettronica e strumenti informatici",
+    "finalita": "Gestione di utenze, posta, dispositivi e sicurezza dei sistemi",
+    "base": "Legittimo interesse (6.1.f)",
+    "interessati": "Dipendenti e collaboratori",
+    "dati": "Utenze, registrazioni degli accessi, metadati della posta",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Fornitori di assistenza informatica e di servizi cloud",
+    "conservazione": "Registrazioni degli accessi da 6 a 12 mesi; metadati della posta secondo le indicazioni del Garante",
+    "criteri": [
+      "vuln"
+    ]
+  },
+  {
+    "key": "segnalazioni-di-illeciti",
+    "ordine": 10,
+    "nome": "Segnalazioni di illeciti",
+    "finalita": "Ricezione e gestione delle segnalazioni ai sensi del D.Lgs. 24/2023",
+    "base": "Obbligo legale (6.1.c)",
+    "interessati": "Segnalanti, persone segnalate, terzi citati",
+    "dati": "Identificativi, contenuto della segnalazione; possibili dati particolari e giudiziari",
+    "particolari": true,
+    "condizione9": "g) Interesse pubblico rilevante",
+    "destinatari": "Gestore del canale, organismo di vigilanza, autorità competenti",
+    "conservazione": "5 anni dalla comunicazione dell'esito",
+    "criteri": [
+      "sens",
+      "vuln"
+    ]
+  },
+  {
+    "key": "geolocalizzazione-dei-veicoli-aziendali",
+    "ordine": 11,
+    "nome": "Geolocalizzazione dei veicoli aziendali",
+    "finalita": "Sicurezza dei mezzi, organizzazione dei servizi, tutela del patrimonio",
+    "base": "Legittimo interesse (6.1.f)",
+    "interessati": "Dipendenti alla guida",
+    "dati": "Posizione, percorsi, tempi di guida",
+    "particolari": false,
+    "condizione9": "",
+    "destinatari": "Fornitore del servizio di localizzazione",
+    "conservazione": "Secondo necessità documentata, di norma non oltre 90 giorni",
+    "criteri": [
+      "monit",
+      "vuln"
+    ]
+  }
+]

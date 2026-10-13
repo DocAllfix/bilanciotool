@@ -5158,5 +5158,353 @@
   ],
   "marche_parole": 718,
   "chiave_archivio": "_piattaforma/formazione/sgnis2/relazione-e-organo.mp3"
+ },
+ "gdpr/ruoli-e-dpo": {
+  "sha": "f890f4bdec14b940528915e832c3688381f21736b2b91924ba4bec98c0500a4b",
+  "sha_script": "fa078cacc84131404c8797f10e4608a4d0551cb9c95e9b85c176c4b7b479e3d3",
+  "durata_s": 256.4,
+  "byte": 2052141,
+  "parole": 614,
+  "mp3": "_mp3/gdpr/ruoli-e-dpo.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 27.64
+   },
+   {
+    "p": 2,
+    "s": 56.46
+   },
+   {
+    "p": 3,
+    "s": 76.26
+   },
+   {
+    "p": 4,
+    "s": 100.51
+   },
+   {
+    "p": 5,
+    "s": 118.38
+   },
+   {
+    "p": 6,
+    "s": 140.62
+   },
+   {
+    "p": 7,
+    "s": 170.61
+   },
+   {
+    "p": 8,
+    "s": 196.75
+   },
+   {
+    "p": 9,
+    "s": 216.7
+   },
+   {
+    "p": 10,
+    "s": 237.76
+   }
+  ],
+  "marche_parole": 610,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/ruoli-e-dpo.mp3"
+ },
+ "gdpr/registro-trattamenti": {
+  "sha": "995603497f202a9cacd7651c99ff36ee12d884794545a87dcfdc8641bc7e57bf",
+  "sha_script": "f5ed6fda619fe65912e18f76674d05436b9d198eda9d87944a0b1578931713fa",
+  "durata_s": 277.0,
+  "byte": 2216493,
+  "parole": 668,
+  "mp3": "_mp3/gdpr/registro-trattamenti.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 23.99
+   },
+   {
+    "p": 2,
+    "s": 50.0
+   },
+   {
+    "p": 3,
+    "s": 72.16
+   },
+   {
+    "p": 4,
+    "s": 94.45
+   },
+   {
+    "p": 5,
+    "s": 118.37
+   },
+   {
+    "p": 6,
+    "s": 139.9
+   },
+   {
+    "p": 7,
+    "s": 165.64
+   },
+   {
+    "p": 8,
+    "s": 191.92
+   },
+   {
+    "p": 9,
+    "s": 216.9
+   },
+   {
+    "p": 10,
+    "s": 239.49
+   },
+   {
+    "p": 11,
+    "s": 257.11
+   }
+  ],
+  "marche_parole": 668,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/registro-trattamenti.mp3"
+ },
+ "gdpr/conformita-requisiti": {
+  "sha": "4679b20b38b455b09d90301b7efc6e94a46733112d670ece454250361f89536f",
+  "sha_script": "c1c60e16a1f49b7f57948a51a6c843fcd349868574c359a2269c5215700b8186",
+  "durata_s": 232.7,
+  "byte": 1862253,
+  "parole": 526,
+  "mp3": "_mp3/gdpr/conformita-requisiti.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 21.2
+   },
+   {
+    "p": 2,
+    "s": 41.38
+   },
+   {
+    "p": 3,
+    "s": 59.8
+   },
+   {
+    "p": 4,
+    "s": 78.1
+   },
+   {
+    "p": 5,
+    "s": 97.3
+   },
+   {
+    "p": 6,
+    "s": 123.55
+   },
+   {
+    "p": 7,
+    "s": 148.05
+   },
+   {
+    "p": 8,
+    "s": 166.05
+   },
+   {
+    "p": 9,
+    "s": 183.04
+   },
+   {
+    "p": 10,
+    "s": 210.21
+   }
+  ],
+  "marche_parole": 526,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/conformita-requisiti.mp3"
+ },
+ "gdpr/rischi-e-responsabili": {
+  "sha": "e1f1a9e79cc8a26a864152ec193c7e14a0085c0c38712b3b93a5c76573c29b29",
+  "sha_script": "6457989bab43f7cdc2e1c4ad5654e6710b0162a775898c1d59558d3c6654c55a",
+  "durata_s": 277.0,
+  "byte": 2216493,
+  "parole": 632,
+  "mp3": "_mp3/gdpr/rischi-e-responsabili.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 18.8
+   },
+   {
+    "p": 2,
+    "s": 39.21
+   },
+   {
+    "p": 3,
+    "s": 59.09
+   },
+   {
+    "p": 4,
+    "s": 80.8
+   },
+   {
+    "p": 5,
+    "s": 106.19
+   },
+   {
+    "p": 6,
+    "s": 129.65
+   },
+   {
+    "p": 7,
+    "s": 150.75
+   },
+   {
+    "p": 8,
+    "s": 174.75
+   },
+   {
+    "p": 9,
+    "s": 194.38
+   },
+   {
+    "p": 10,
+    "s": 215.15
+   },
+   {
+    "p": 11,
+    "s": 233.11
+   },
+   {
+    "p": 12,
+    "s": 256.8
+   }
+  ],
+  "marche_parole": 632,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/rischi-e-responsabili.mp3"
+ },
+ "gdpr/registri-e-termini": {
+  "sha": "20ea9526ba2475992f5f217b43f29cacf8ac2542699a9e4414f57d656b2120b8",
+  "sha_script": "7323447a3b62ce94a2f91ae65e16e5c193bba6b9e408ef228308623cf10eaed0",
+  "durata_s": 260.8,
+  "byte": 2087085,
+  "parole": 619,
+  "mp3": "_mp3/gdpr/registri-e-termini.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 17.5
+   },
+   {
+    "p": 2,
+    "s": 36.66
+   },
+   {
+    "p": 3,
+    "s": 58.41
+   },
+   {
+    "p": 4,
+    "s": 77.71
+   },
+   {
+    "p": 5,
+    "s": 105.25
+   },
+   {
+    "p": 6,
+    "s": 126.08
+   },
+   {
+    "p": 7,
+    "s": 148.19
+   },
+   {
+    "p": 8,
+    "s": 168.89
+   },
+   {
+    "p": 9,
+    "s": 196.21
+   },
+   {
+    "p": 10,
+    "s": 219.64
+   },
+   {
+    "p": 11,
+    "s": 242.12
+   }
+  ],
+  "marche_parole": 619,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/registri-e-termini.mp3"
+ },
+ "gdpr/documenti-e-dimostrabile": {
+  "sha": "6ba150a5e35920b4a160daac16bda3ecafcc1f2ae38eb75e5503b8fdc62302c1",
+  "sha_script": "33ff8c78bc20eea9ee0cacdcbc20ae4fd59f571289e5fd7f0e4d4130ed24441b",
+  "durata_s": 222.7,
+  "byte": 1782573,
+  "parole": 520,
+  "mp3": "_mp3/gdpr/documenti-e-dimostrabile.mp3",
+  "marche": [
+   {
+    "p": 0,
+    "s": 0.05
+   },
+   {
+    "p": 1,
+    "s": 16.81
+   },
+   {
+    "p": 2,
+    "s": 41.06
+   },
+   {
+    "p": 3,
+    "s": 69.08
+   },
+   {
+    "p": 4,
+    "s": 92.96
+   },
+   {
+    "p": 5,
+    "s": 115.96
+   },
+   {
+    "p": 6,
+    "s": 131.41
+   },
+   {
+    "p": 7,
+    "s": 161.15
+   },
+   {
+    "p": 8,
+    "s": 181.84
+   },
+   {
+    "p": 9,
+    "s": 205.32
+   }
+  ],
+  "marche_parole": 520,
+  "chiave_archivio": "_piattaforma/formazione/gdpr/documenti-e-dimostrabile.mp3"
  }
 }

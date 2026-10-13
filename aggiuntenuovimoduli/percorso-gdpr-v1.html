@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percorso GDPR</title>
+<style>
+/* Impianto: colonna di navigazione a sinistra, barra di contesto in alto, percorso a passi; i documenti si assemblano dai dati */
+:root{
+  --acc:#7A3E6C;--acc-dk:#552848;--acc-lt:#F6EDF4;--acc-mid:#A9739F;
+  --ink:#171A26;--ink-2:#4B5063;--ink-3:#7F8496;
+  --bg:#FAFAF8;--card:#fff;--line:#E4E2DC;--line-2:#F0EEE9;
+  --red:#B3261E;--red-lt:#FBEAE8;--amber:#B06E00;--amber-lt:#FDF2DF;
+  --green:#2E7D32;--green-lt:#E8F3E9;--teal:#2E7D6B;--teal-lt:#E6F1ED;
+  --blue:#1F5F8B;--blue-lt:#E7F0F6;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.app{display:flex;min-height:100vh}
+.side{width:250px;flex:0 0 250px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:16px 18px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 12px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink-2)}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--acc);color:#fff;font-weight:600}
+.nav .st{width:19px;height:19px;flex:0 0 19px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--mono);color:var(--ink-3)}
+.nav.on .st{border-color:rgba(255,255,255,.5);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .st.mid{background:var(--amber);border-color:var(--amber);color:#fff}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.wrap{padding:26px 26px 70px;max-width:1200px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px;text-wrap:balance}
+h2{font-size:15px;margin:0 0 12px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px;max-width:76ch}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.grid>*{min-width:0}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--acc-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+.btn.icon{padding:4px 8px;font-size:12px}
+button:focus-visible,.nav:focus-visible{outline:2px solid var(--acc-mid);outline-offset:2px}
+input[type=text],input[type=number],input[type=date],input[type=datetime-local],input[type=search],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+textarea{min-height:110px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc-mid);outline-offset:-1px}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}.t-acc{background:var(--acc-lt);color:var(--acc-dk)}
+.t-tea{background:var(--teal-lt);color:var(--teal)}.t-blu{background:var(--blue-lt);color:var(--blue)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}
+.empty{padding:30px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .n{font-size:26px;font-weight:650;letter-spacing:-.8px;line-height:1.1;font-family:var(--mono)}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--acc)}
+.hr{height:1px;background:var(--line-2);margin:16px 0}
+.hint{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.45}
+.derived{background:var(--acc-lt);border-radius:8px;padding:12px 14px}
+.derived table td{border-bottom:1px solid rgba(85,40,72,.12)}
+.derived table tr:last-child td{border-bottom:0}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line-2);cursor:pointer}
+.step:last-child{border-bottom:0}
+.step:hover .stepname{color:var(--acc-dk)}
+.stepno{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--line-2);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600}
+.stepno.ok{background:var(--green);color:#fff}.stepno.mid{background:var(--amber);color:#fff}
+.stepname{font-weight:600}.stepdesc{font-size:12.5px;color:var(--ink-3)}
+.stepbar{width:110px;flex:0 0 110px}
+
+/* ---- schede a linguetta ---- */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 13px;cursor:pointer;color:var(--ink-2);font-size:12.5px}
+.tab:hover{border-color:var(--acc-mid)}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.tab .c{font-family:var(--mono);font-size:10.5px;opacity:.75;margin-left:5px}
+
+/* ---- analisi di conformità ---- */
+.grp{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.grp .gh{display:flex;gap:14px;align-items:center;padding:13px 16px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.grp .gh:hover{background:var(--bg)}
+.grp .gh .nm{flex:1;min-width:0;font-weight:600}
+.grp .gh .bar{width:120px;flex:0 0 120px}
+.grp .gh .pc{width:44px;flex:0 0 44px;text-align:right;font-family:var(--mono);font-weight:600}
+.grp .gb{border-top:1px solid var(--line-2);padding:14px 16px 6px}
+.guide{background:var(--acc-lt);border-radius:9px;padding:16px 18px;margin:0 0 12px}
+.guide .def{font-size:13px;color:var(--ink-2);margin:0 0 12px;line-height:1.55;max-width:80ch}
+.guide h5{margin:0 0 7px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc-dk)}
+.guide ul{margin:0 0 10px;padding-left:17px;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.guide .flag{background:#fff;border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.guide .ev{font-size:11.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+select.st-c{background:var(--green-lt);color:var(--green);border-color:transparent;font-weight:600}
+select.st-p{background:var(--amber-lt);color:var(--amber);border-color:transparent;font-weight:600}
+select.st-n{background:var(--red-lt);color:var(--red);border-color:transparent;font-weight:600}
+select.st-na{background:var(--line-2);color:var(--ink-3);border-color:transparent}
+tr.subr td{border-bottom:1px solid var(--line-2);padding-top:0}
+tr.hasub td{border-bottom:0}
+.adeg{display:grid;grid-template-columns:2fr 1fr 150px;gap:8px}
+
+/* ---- allarmi, registri, elenchi ---- */
+.alr{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.alr:last-child{border-bottom:0}
+.alr .tag{flex:0 0 auto;margin-top:1px}
+.alr .tx{flex:1;min-width:0}
+.rec{border:1px solid var(--line);border-radius:9px;padding:14px 14px 2px;margin-bottom:10px;background:#fff}
+.rec .rx{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 10px}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:6px 0;cursor:pointer;font-size:13px}
+.chk input{margin-top:3px;accent-color:var(--acc)}
+.rowl{display:grid;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.rowl:last-child{border-bottom:0}
+
+/* ---- portafoglio ---- */
+.pf{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pfc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
+.pfc:hover{border-color:var(--acc-mid);box-shadow:0 2px 14px rgba(23,26,38,.07)}
+.pfc .hd{padding:16px 16px 12px;display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.pfc .logo{width:44px;height:44px;flex:0 0 44px;border-radius:9px;background:var(--acc-lt);color:var(--acc-dk);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;overflow:hidden}
+.pfc .logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.pfc .nm{font-weight:650;letter-spacing:-.2px;line-height:1.25}
+.pfc .mt{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.pfc .bd{padding:0 16px 12px}
+.pfc .stats{display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line-2)}
+.pfc .stats div{flex:1}
+.pfc .stats b{display:block;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.3px}
+.pfc .stats span{font-size:10.5px;color:var(--ink-3)}
+.pfc .ft{margin-top:auto;padding:10px 16px;background:var(--bg);border-top:1px solid var(--line-2);display:flex;gap:6px}
+.pfnew{border:1.5px dashed var(--line);background:transparent;border-radius:10px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--ink-3)}
+.pfnew:hover{border-color:var(--acc);color:var(--acc-dk);background:var(--acc-lt)}
+.pfnew b{font-size:22px;font-weight:400}
+
+/* ---- documento ---- */
+.doc{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.doc .cover{background:var(--acc-dk);color:#fff;padding:52px 46px;position:relative}
+.doc .cover .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.doc .cover h2{font-size:34px;margin:12px 0 6px;letter-spacing:-.8px;color:#fff;text-wrap:balance}
+.doc .cover p{margin:0;opacity:.85;font-size:14px}
+.doc .cover .lg{position:absolute;top:22px;right:26px;background:#fff;border-radius:8px;padding:8px;max-width:118px}
+.doc .cover .lg img{width:100%;display:block}
+.doc .inner{padding:34px 46px 46px}
+.doc h3{font-size:19px;margin:34px 0 4px;letter-spacing:-.3px;padding-top:18px;border-top:2px solid var(--acc);clear:both}
+.doc h3:first-of-type{margin-top:0;border-top:0;padding-top:0}
+.doc h4{font-size:14px;margin:20px 0 8px;color:var(--acc-dk)}
+.doc p{margin:0 0 11px;line-height:1.65;max-width:86ch}
+.doc table{margin:10px 0 6px}
+.doc th{background:var(--line-2)}
+.doc td{vertical-align:top}
+.doc .note{font-size:11.5px;color:var(--ink-3);font-style:italic}
+.doc .miss{color:var(--red);font-style:italic}
+.doc figure{margin:16px 0;break-inside:avoid}
+.doc figure svg{width:100%;height:auto;max-width:640px}
+.doc figure figcaption{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.doc .firma{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+.doc .firma div{flex:1;min-width:200px;border-top:1px solid var(--ink-3);padding-top:6px;font-size:12px;color:var(--ink-2)}
+
+/* ---- finestra di conferma ---- */
+.modal{position:fixed;inset:0;background:rgba(23,26,38,.45);display:flex;align-items:center;justify-content:center;z-index:90;padding:16px}
+.mbox{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:420px;box-shadow:0 12px 40px rgba(23,26,38,.25)}
+.mbox h2{margin:0 0 6px}.mbox p{margin:0 0 14px;color:var(--ink-2);font-size:13px}
+.mbtn{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+@media (max-width:980px){
+  .g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
+  .side{position:fixed;left:-254px;z-index:60;transition:left .2s}.side.open{left:0;box-shadow:0 0 40px rgba(23,26,38,.25)}
+  .top{padding:10px 16px}.wrap{padding:20px 16px 60px}
+  .doc .inner,.doc .cover{padding:24px}
+  .adeg,.gx{grid-template-columns:1fr!important}
+  .rowl{grid-template-columns:1fr!important}
+  .grp .gh .bar{display:none}
+}
+@media (max-width:560px){.g4{grid-template-columns:1fr}.stepbar{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .side,.top,.noprint,#toast,.modal{display:none!important}
+  .wrap{padding:0;max-width:100%}
+  .doc{border:0}
+  .doc h3,.doc h4{page-break-after:avoid}
+  tr,figure{page-break-inside:avoid}
+  body{background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand" id="brandHome"><b>Protezione dei Dati</b><span>Percorso guidato · GDPR e Codice privacy</span></div>
+  <div class="navgrp">Studio</div>
+  <button class="nav" data-v="pf"><span class="st">▦</span> Portafoglio</button>
+  <div class="navgrp" id="grpPercorso">Percorso</div>
+  <button class="nav" data-v="home"><span class="st">◇</span> Avanzamento</button>
+  <button class="nav" data-v="org"><span class="st" id="s1">1</span> Organizzazione</button>
+  <button class="nav" data-v="trat"><span class="st" id="s2">2</span> Trattamenti</button>
+  <button class="nav" data-v="gap"><span class="st" id="s3">3</span> Conformità</button>
+  <button class="nav" data-v="ris"><span class="st" id="s4">4</span> Rischi e responsabili</button>
+  <button class="nav" data-v="pol"><span class="st" id="s5">5</span> Politica e piano</button>
+  <button class="nav" data-v="dati"><span class="st" id="s6">6</span> Dati e indicatori</button>
+  <button class="nav" data-v="reg"><span class="st" id="s7">7</span> Registri</button>
+  <button class="nav" data-v="ver"><span class="st" id="s8">8</span> Verifica</button>
+  <button class="nav" data-v="doc"><span class="st" id="s9">9</span> Documenti</button>
+  <div class="navgrp" id="grpImp">Impostazioni</div>
+  <button class="nav" data-v="conf"><span class="st">⚙</span> Parametri e archivio</button>
+  <div class="navgrp">Aiuto</div>
+  <button class="nav" data-v="guida"><span class="st">?</span> Guida all'uso</button>
+  <div class="sidefoot">I dati restano su questo dispositivo. Esportali dal portafoglio per conservarli.</div>
+</aside>
+<div class="main">
+  <div class="top">
+    <button class="btn ghost sm" id="menuBtn" hidden>Menu</button>
+    <select id="coSel" style="width:auto;min-width:210px;max-width:100%;font-weight:600" aria-label="Organizzazione"></select>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)">Esercizio
+      <select id="annoSel" style="width:auto;font-weight:600"></select></label>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn ghost sm" id="addCo">Nuova organizzazione</button>
+      <button class="btn sm" id="printBtn">Stampa documento</button>
+    </div>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+</div>
+<div class="modal" id="modal" hidden>
+  <div class="mbox" role="dialog" aria-modal="true">
+    <h2 id="mT"></h2><p id="mP"></p>
+    <input type="text" id="mI">
+    <div class="mbtn"><button class="btn ghost" id="mNo">Annulla</button><button class="btn" id="mOk">Conferma</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ==========================================================
+   STRUTTURA DEGLI ADEMPIMENTI
+   Regolamento (UE) 2016/679, D.Lgs. 196/2003 e provvedimenti del Garante
+   in sintesi operativa: non sostituiscono il testo normativo.
+   ========================================================== */
+const GRP=[
+ {id:"P",n:"Principi e basi giuridiche",r:"Artt. 5–11"},
+ {id:"T",n:"Trasparenza e informative",r:"Artt. 12–14"},
+ {id:"D",n:"Diritti degli interessati",r:"Artt. 12, 15–22"},
+ {id:"A",n:"Responsabilizzazione e progettazione",r:"Artt. 24–25, 29"},
+ {id:"R",n:"Responsabili e contitolari",r:"Artt. 26–28"},
+ {id:"G",n:"Registro dei trattamenti",r:"Art. 30"},
+ {id:"S",n:"Sicurezza del trattamento",r:"Art. 32"},
+ {id:"V",n:"Violazioni dei dati personali",r:"Artt. 33–34"},
+ {id:"I",n:"Valutazione d'impatto",r:"Artt. 35–36"},
+ {id:"O",n:"Responsabile della protezione dei dati",r:"Artt. 37–39"},
+ {id:"X",n:"Trasferimenti verso paesi terzi",r:"Artt. 44–49"},
+ {id:"N",n:"Normativa italiana e Garante",r:"D.Lgs. 196/2003 · provvedimenti"}
+];
+const GN=id=>(GRP.find(g=>g.id===id)||{n:id}).n;
+
+const REQ=(()=>{const cnt={};return [
+ ["P","5.1.a","Dati trattati in modo lecito, corretto e trasparente nei confronti dell'interessato."],
+ ["P","5.1.b","Finalità determinate, esplicite e legittime per ogni trattamento; nessun uso successivo incompatibile."],
+ ["P","5.1.c","Raccolti solo i dati adeguati, pertinenti e necessari rispetto alle finalità."],
+ ["P","5.1.d","Dati esatti e aggiornati; quelli inesatti rettificati o cancellati tempestivamente."],
+ ["P","5.1.e","Termini di conservazione definiti per ogni trattamento e applicati: alla scadenza i dati sono cancellati o resi anonimi."],
+ ["P","5.2","L'organizzazione è in grado di comprovare il rispetto dei principi con documenti e registrazioni."],
+ ["P","6.1","Base giuridica individuata e documentata per ogni trattamento prima dell'avvio."],
+ ["P","6.1.f","Dove la base è il legittimo interesse, bilanciamento con i diritti dell'interessato svolto e documentato."],
+ ["P","7","Consenso libero, specifico, informato e dimostrabile; richiesta distinta da altre dichiarazioni; revoca semplice quanto il rilascio."],
+ ["P","8","Per i servizi online offerti a minori verificata l'età: in Italia il consenso è valido dai 14 anni, sotto serve chi esercita la responsabilità genitoriale."],
+ ["P","9","Categorie particolari di dati trattate solo in presenza di una delle condizioni dell'art. 9.2, individuata per ogni trattamento."],
+ ["P","10","Dati relativi a condanne penali e reati trattati solo se una norma lo autorizza e con le garanzie previste."],
+
+ ["T","12.1","Informazioni e comunicazioni agli interessati concise, trasparenti, comprensibili e facilmente accessibili."],
+ ["T","13","Informativa fornita al momento della raccolta con tutti gli elementi previsti: titolare, finalità, base giuridica, destinatari, trasferimenti, conservazione, diritti, reclamo."],
+ ["T","14","Per i dati non raccolti presso l'interessato, informativa fornita entro un mese o al primo contatto, con indicazione della fonte."],
+ ["T","13.2.f","Dove esistono decisioni automatizzate o profilazione, l'informativa ne spiega logica, importanza e conseguenze."],
+ ["T","13 · lavoro","Informativa a dipendenti e collaboratori completa, comprensiva di strumenti di lavoro, controlli e videosorveglianza."],
+ ["T","13 · sito","Informativa del sito web e dei moduli online aggiornata e coerente con i trattamenti effettivi."],
+ ["T","13.3","Prima di usare i dati per una finalità nuova, l'interessato riceve un'informativa aggiornata."],
+
+ ["D","12.2","Procedura per ricevere, instradare e riscontrare le richieste degli interessati, con responsabilità assegnate."],
+ ["D","12.3","Riscontro entro un mese dalla richiesta; proroga fino a due mesi comunicata e motivata entro il primo mese."],
+ ["D","12.5","Esercizio dei diritti gratuito, salvo richieste manifestamente infondate o eccessive."],
+ ["D","12.6","Identità del richiedente verificata in modo proporzionato, senza chiedere dati non necessari."],
+ ["D","15","Accesso: conferma del trattamento, informazioni previste e copia dei dati."],
+ ["D","16","Rettifica dei dati inesatti e integrazione di quelli incompleti."],
+ ["D","17","Cancellazione nei casi previsti, anche su copie di sicurezza e sistemi secondari secondo regole definite."],
+ ["D","18","Limitazione del trattamento: capacità tecnica di contrassegnare e bloccare i dati."],
+ ["D","19","Rettifiche, cancellazioni e limitazioni comunicate ai destinatari a cui i dati sono stati trasmessi."],
+ ["D","20","Portabilità: dati forniti in formato strutturato, di uso comune e leggibile da dispositivo automatico."],
+ ["D","21","Opposizione sempre accolta per il marketing diretto; valutata caso per caso negli altri trattamenti."],
+ ["D","22","Nessuna decisione basata unicamente su trattamento automatizzato con effetti significativi, salvo le eccezioni previste e con intervento umano."],
+
+ ["A","24.1","Misure tecniche e organizzative adeguate adottate, riesaminate e aggiornate in base ai rischi."],
+ ["A","24.2","Politica di protezione dei dati adottata dalla direzione e comunicata a chi tratta dati."],
+ ["A","25.1","Protezione dei dati considerata fin dalla progettazione di nuovi trattamenti, sistemi e servizi."],
+ ["A","25.2","Impostazioni predefinite che limitano al minimo necessario dati raccolti, accessi e conservazione."],
+ ["A","29","Chi accede ai dati agisce solo su istruzione del titolare: autorizzazioni e istruzioni scritte per ruolo."],
+ ["A","29 · 39","Formazione periodica degli autorizzati, registrata e differenziata per funzione."],
+ ["A","24 · ruoli","Ruoli e responsabilità definiti: referente interno, funzioni coinvolte, flussi informativi verso la direzione."],
+
+ ["R","28 · mappa","Fornitori che trattano dati per conto dell'organizzazione censiti e qualificati: responsabile, contitolare o titolare autonomo."],
+ ["R","28.1","Responsabili scelti dopo aver verificato garanzie sufficienti su competenza e sicurezza."],
+ ["R","28.3","Contratto o atto scritto con ogni responsabile, con i contenuti dell'art. 28.3: istruzioni, riservatezza, sicurezza, sub-responsabili, assistenza, restituzione, audit."],
+ ["R","28.2","Ricorso a sub-responsabili solo con autorizzazione scritta, specifica o generale, e con gli stessi obblighi."],
+ ["R","28.3.h","Verifiche periodiche sui responsabili critici: questionari, certificazioni, audit."],
+ ["R","26","Con i contitolari, accordo che ripartisce responsabilità e obblighi; contenuto essenziale a disposizione degli interessati."],
+ ["R","28.10 · 30.2","Quando l'organizzazione agisce come responsabile: istruzioni documentate del titolare rispettate e registro dell'art. 30.2 tenuto."],
+
+ ["G","30.1","Registro delle attività di trattamento con tutti i contenuti dell'art. 30.1 per ogni trattamento."],
+ ["G","30.3","Registro in forma scritta, anche elettronica, pronto per essere messo a disposizione del Garante."],
+ ["G","30 · agg.","Registro aggiornato a ogni nuovo trattamento o modifica e riesaminato almeno una volta l'anno."],
+
+ ["S","32.1","Rischi per la sicurezza valutati: distruzione, perdita, modifica, divulgazione o accesso non autorizzati."],
+ ["S","32 · accessi","Credenziali individuali per ogni utente; nessuna utenza condivisa; password robuste."],
+ ["S","32 · MFA","Autenticazione a più fattori per accessi remoti, posta elettronica, servizi cloud e utenze amministrative."],
+ ["S","32 · profili","Profili di autorizzazione limitati al necessario, rivisti periodicamente e revocati alla cessazione."],
+ ["S","32.1.a","Cifratura di portatili, dispositivi mobili, supporti rimovibili e trasmissioni; pseudonimizzazione dove appropriata."],
+ ["S","32.1.b","Aggiornamenti di sicurezza applicati con regolarità a sistemi, applicazioni e apparati."],
+ ["S","32 · malware","Protezione da malware, filtro della posta e protezione perimetrale attivi e aggiornati."],
+ ["S","32.1.c","Copie di sicurezza regolari, protette e separate dalla rete; ripristino provato."],
+ ["S","32 · continuità","Piano per ripristinare tempestivamente disponibilità e accesso ai dati dopo un incidente."],
+ ["S","32 · log","Accessi ed eventi rilevanti registrati e controllati; registrazioni protette da alterazioni."],
+ ["S","32.1.d","Efficacia delle misure provata, verificata e valutata con regolarità."],
+ ["S","32 · fisica","Locali, archivi cartacei e sale apparati protetti; accesso dei visitatori controllato."],
+ ["S","32 · dismissione","Supporti e apparecchiature dismessi o riutilizzati solo dopo la cancellazione sicura dei dati."],
+ ["S","32 · strumenti","Regole scritte per l'uso di posta, internet, dispositivi aziendali e personali, lavoro da remoto."],
+ ["S","32 · sviluppo","Ambienti di prova senza dati reali o con dati mascherati; modifiche ai sistemi autorizzate e tracciate."],
+
+ ["V","33 · procedura","Procedura per rilevare, valutare e gestire le violazioni, con ruoli e tempi definiti, conosciuta dal personale."],
+ ["V","33.1","Violazioni che comportano un rischio notificate al Garante entro 72 ore dalla conoscenza; eventuali ritardi motivati."],
+ ["V","33.3","Notifica completa: natura, categorie e numero di interessati, conseguenze probabili, misure adottate, punto di contatto."],
+ ["V","33.5","Tutte le violazioni documentate in un registro, comprese quelle non notificate, con la valutazione che motiva la scelta."],
+ ["V","34","Violazioni a rischio elevato comunicate agli interessati senza ingiustificato ritardo, in linguaggio chiaro."],
+ ["V","33.2","Contratti con i responsabili che li obbligano a informare il titolare senza ritardo di ogni violazione."],
+ ["V","33 · prova","Capacità di risposta provata con simulazioni o esercitazioni periodiche."],
+
+ ["I","35.1","Per ogni trattamento, valutata prima dell'avvio la necessità di una valutazione d'impatto."],
+ ["I","35.3","Valutazione d'impatto svolta per i trattamenti a rischio elevato: profilazione sistematica, dati particolari su larga scala, sorveglianza sistematica, elenco del Garante."],
+ ["I","35.7","Valutazione con i contenuti minimi: descrizione, necessità e proporzionalità, rischi per gli interessati, misure previste."],
+ ["I","35.2","Parere del responsabile della protezione dei dati, se designato, richiesto e documentato."],
+ ["I","35.9","Opinioni degli interessati o dei loro rappresentanti raccolte dove opportuno."],
+ ["I","35.11","Valutazione riesaminata quando cambiano i rischi o il trattamento."],
+ ["I","36","Consultazione preventiva del Garante se il rischio residuo resta elevato."],
+
+ ["O","37.1","Obbligo di designare il responsabile della protezione dei dati valutato e documentato, anche quando l'esito è negativo."],
+ ["O","37.5","Responsabile della protezione dei dati scelto per qualità professionali e conoscenza specialistica."],
+ ["O","37.7","Dati di contatto pubblicati e comunicati al Garante."],
+ ["O","38.1","Coinvolto tempestivamente in tutte le questioni di protezione dei dati."],
+ ["O","38.3 · 38.6","Dotato di risorse, indipendente, senza istruzioni e senza conflitti di interesse; riferisce al vertice."],
+ ["O","39","Compiti svolti e tracciati: informazione, sorveglianza, pareri sulle valutazioni d'impatto, contatto con il Garante."],
+
+ ["X","44 · mappa","Trasferimenti verso paesi terzi censiti, compresi servizi cloud, assistenza remota e sub-responsabili."],
+ ["X","45","Trasferimenti verso paesi con decisione di adeguatezza verificata e ancora in vigore."],
+ ["X","46","In assenza di adeguatezza, garanzie adeguate in essere: clausole contrattuali tipo o norme vincolanti d'impresa."],
+ ["X","46 · TIA","Ordinamento del paese di destinazione valutato; misure supplementari adottate dove serve."],
+ ["X","49","Deroghe usate solo per trasferimenti occasionali e nei casi tassativi previsti."],
+ ["X","13.1.f","Informative e registro indicano i trasferimenti e le garanzie applicate."],
+
+ ["N","Cod. 2-quaterdecies","Persone autorizzate designate per iscritto, con compiti e istruzioni specifiche."],
+ ["N","AdS · nomina","Amministratori di sistema designati individualmente, con ambiti di operatività definiti ed elenco aggiornato."],
+ ["N","AdS · log","Accessi degli amministratori di sistema registrati e conservati per almeno sei mesi; operato verificato ogni anno."],
+ ["N","L. 300/70 art. 4","Videosorveglianza e strumenti da cui può derivare un controllo a distanza installati previo accordo sindacale o autorizzazione dell'Ispettorato."],
+ ["N","Videosorv.","Cartelli informativi prima del raggio d'azione, conservazione delle immagini breve e giustificata, accesso riservato."],
+ ["N","Posta e internet","Regole su posta elettronica e navigazione rese note ai lavoratori; conservazione dei metadati limitata secondo le indicazioni del Garante."],
+ ["N","Cookie","Cookie e strumenti di tracciamento non tecnici attivati solo dopo il consenso; banner conforme alle linee guida del Garante."],
+ ["N","Cod. 130","Comunicazioni promozionali inviate con consenso o nei limiti dell'eccezione per i propri clienti; telemarketing verificato sul Registro delle opposizioni."],
+ ["N","D.Lgs. 24/2023","Canale di segnalazione degli illeciti con riservatezza garantita, informativa dedicata e valutazione d'impatto."],
+ ["N","Cod. 111-bis","Curricula e dati dei candidati gestiti con informativa al primo contatto utile e conservazione limitata."]
+].map(r=>{cnt[r[0]]=(cnt[r[0]]||0)+1;return {g:r[0],id:r[0]+"-"+String(cnt[r[0]]).padStart(2,"0"),ref:r[1],t:r[2]};});})();
+
+const STATI=[["","Da valutare"],["c","Conforme"],["p","Parziale"],["n","Non conforme"],["na","Non pertinente"]];
+
+/* ---- guida per gruppo di requisiti ---- */
+const GUIDE={
+ P:{def:"Le regole di fondo di ogni trattamento: perché si trattano i dati, su quale base, quali e per quanto tempo. Tutto il resto del sistema serve a dimostrarne il rispetto.",
+  look:["Una base giuridica precisa per ogni trattamento, non una formula generica valida per tutto","Termini di conservazione scritti e cancellazioni davvero eseguite","Consensi raccolti in modo distinto e dimostrabili uno per uno"],
+  ev:"Registro dei trattamenti, politica di conservazione, moduli e registrazioni dei consensi, bilanciamenti del legittimo interesse.",
+  flag:"Il consenso non è la base da usare per tutto: nel rapporto di lavoro quasi mai è libero, e chiederlo dove non serve crea obblighi di revoca che poi non si sanno gestire."},
+ T:{def:"L'interessato deve sapere chi tratta i suoi dati, perché e con quali diritti, al momento giusto e in parole comprensibili.",
+  look:["Informative distinte per dipendenti, candidati, clienti, visitatori del sito","Coerenza tra ciò che l'informativa dichiara e ciò che il registro descrive","Prova della consegna o della messa a disposizione"],
+  ev:"Informative in vigore con data e versione, moduli di raccolta, pagine del sito, firme o registrazioni di presa visione.",
+  flag:"Informative copiate da un modello sono l'errore più frequente: citano trattamenti che non esistono e tacciono quelli reali, a partire da videosorveglianza e strumenti informatici."},
+ D:{def:"Chi chiede accesso, rettifica, cancellazione o si oppone deve ricevere risposta entro un mese. Serve un percorso interno che funzioni anche quando la richiesta arriva alla persona sbagliata.",
+  look:["Chi riceve le richieste e chi decide","Tempi effettivi di riscontro nel registro","Capacità tecnica di estrarre, correggere e cancellare i dati nei sistemi"],
+  ev:"Procedura per i diritti, registro delle richieste, riscontri inviati, istruzioni al personale di sportello e assistenza clienti.",
+  flag:"Il termine decorre dal ricevimento, qualunque sia il canale: una richiesta arrivata al commerciale e dimenticata nella posta resta una violazione dell'art. 12."},
+ A:{def:"Il titolare non deve solo rispettare le regole: deve poterlo dimostrare, e deve pensare alla protezione dei dati prima di avviare un trattamento, non dopo.",
+  look:["Politica approvata dalla direzione e conosciuta da chi tratta dati","Nuovi progetti e nuovi software valutati prima dell'acquisto","Formazione effettiva e registrata, non solo all'assunzione"],
+  ev:"Politica di protezione dei dati, organigramma privacy, lettere di autorizzazione, registro della formazione, verbali di valutazione dei nuovi progetti.",
+  flag:"La documentazione ferma all'anno di adeguamento è il segnale tipico di un sistema non mantenuto: il Garante guarda le date."},
+ R:{def:"Chi tratta dati per conto dell'organizzazione è un responsabile del trattamento e va vincolato con un contratto dai contenuti precisi.",
+  look:["Elenco completo dei fornitori con accesso a dati personali, assistenza informatica compresa","Contratto ai sensi dell'art. 28 firmato con ciascuno","Controlli svolti sui fornitori più critici"],
+  ev:"Elenco dei responsabili, contratti e atti di nomina, elenco dei sub-responsabili, questionari e certificazioni dei fornitori.",
+  flag:"La qualifica dipende dai fatti, non dal contratto: il consulente del lavoro e il fornitore del gestionale sono di norma responsabili; il medico competente e la banca sono titolari autonomi."},
+ G:{def:"Il registro è la mappa di tutti i trattamenti. È il primo documento che il Garante chiede e la base di ogni altra valutazione.",
+  look:["Tutti i trattamenti presenti, compresi videosorveglianza, sito web e strumenti informatici","Per ciascuno finalità, categorie, destinatari, trasferimenti, conservazione, misure","Data dell'ultimo aggiornamento"],
+  ev:"Registro delle attività di trattamento generato al passo 9, con data e versione.",
+  flag:"L'esenzione sotto i 250 dipendenti in pratica non si applica: basta trattare dati dei dipendenti in modo non occasionale per essere tenuti al registro."},
+ S:{def:"Misure tecniche e organizzative proporzionate al rischio. L'art. 32 non impone un elenco fisso: chiede di valutare e di poter giustificare le scelte.",
+  look:["Autenticazione a più fattori su posta e accessi remoti","Copie di sicurezza separate dalla rete e ripristino provato","Portatili cifrati, utenze cessate disattivate, aggiornamenti applicati"],
+  ev:"Valutazione dei rischi, inventario di sistemi e dispositivi, configurazioni, verbali delle prove di ripristino, rapporti delle verifiche tecniche, regolamento informatico.",
+  flag:"Nei provvedimenti sanzionatori ricorrono sempre le stesse carenze: password deboli o condivise, mancanza del secondo fattore, sistemi non aggiornati, copie di sicurezza mai provate."},
+ V:{def:"Quando i dati vengono persi, alterati o divulgati, il titolare ha 72 ore per valutare il rischio e, se c'è, notificare al Garante.",
+  look:["Tutti sanno a chi segnalare un incidente, anche fuori orario","Registro delle violazioni con la valutazione del rischio di ciascuna","Rispetto delle 72 ore tra conoscenza e notifica"],
+  ev:"Procedura per le violazioni, registro delle violazioni, notifiche inviate, comunicazioni agli interessati, verbali delle esercitazioni.",
+  flag:"Vanno registrate anche le violazioni non notificate, con il motivo: l'email al destinatario sbagliato e il portatile smarrito sono violazioni a tutti gli effetti."},
+ I:{def:"Per i trattamenti che possono presentare un rischio elevato serve una valutazione d'impatto prima di iniziare. Il vaglio preliminare va fatto per tutti.",
+  look:["Vaglio documentato per ogni trattamento del registro","Valutazione svolta per videosorveglianza dei lavoratori, geolocalizzazione, profilazione, dati sanitari su larga scala","Riesame quando il trattamento cambia"],
+  ev:"Schede di vaglio, valutazioni d'impatto, pareri del responsabile della protezione dei dati, elenco del Garante delle tipologie soggette.",
+  flag:"Due criteri di rischio su nove bastano di norma a rendere necessaria la valutazione. Il monitoraggio dei lavoratori li soddisfa quasi sempre."},
+ O:{def:"Il responsabile della protezione dei dati è obbligatorio per enti pubblici e per chi, come attività principale, monitora persone o tratta dati particolari su larga scala.",
+  look:["Valutazione scritta dell'obbligo, anche se negativa","Assenza di conflitti di interesse: non può essere chi decide finalità e mezzi","Coinvolgimento effettivo, visibile nei verbali"],
+  ev:"Valutazione dell'obbligo, atto di designazione, comunicazione al Garante, relazioni periodiche, pareri resi.",
+  flag:"Se la designazione è volontaria valgono comunque tutti gli obblighi degli artt. 37–39. Chi non vuole assumerli nomina un referente interno con un altro nome."},
+ X:{def:"I dati possono lasciare lo Spazio economico europeo solo verso paesi ritenuti adeguati o con garanzie contrattuali. Molti trasferimenti passano dai servizi cloud senza che l'organizzazione se ne accorga.",
+  look:["Sede dei fornitori e luogo dei loro centri dati e dell'assistenza","Garanzia applicata a ogni trasferimento","Verifica periodica che le decisioni di adeguatezza siano ancora in vigore"],
+  ev:"Elenco dei trasferimenti, contratti con clausole tipo, elenchi dei sub-responsabili dei fornitori, valutazioni dei paesi di destinazione.",
+  flag:"Le decisioni di adeguatezza cambiano nel tempo: prima di ogni riesame controlla sul sito della Commissione europea quali sono in vigore e a quali condizioni."},
+ N:{def:"Le regole nazionali che si aggiungono al Regolamento: Codice privacy, Statuto dei lavoratori, provvedimenti e linee guida del Garante.",
+  look:["Accordo sindacale o autorizzazione dell'Ispettorato per telecamere e strumenti di controllo","Nomine e verifica annuale degli amministratori di sistema","Banner dei cookie e consensi per le comunicazioni promozionali"],
+  ev:"Lettere di autorizzazione, nomine degli amministratori di sistema e verbale di verifica, accordo o autorizzazione per la videosorveglianza, configurazione del banner, liste di contatto con origine del consenso.",
+  flag:"Le telecamere installate senza accordo o autorizzazione violano lo Statuto dei lavoratori prima ancora del Regolamento, e l'informativa non sana la mancanza."}
+};
+
+/* ---- registro: opzioni e catalogo dei trattamenti ricorrenti ---- */
+const BASI=["","Consenso (6.1.a)","Contratto o misure precontrattuali (6.1.b)","Obbligo legale (6.1.c)","Interessi vitali (6.1.d)","Interesse pubblico (6.1.e)","Legittimo interesse (6.1.f)"];
+const B9=["","a) Consenso esplicito","b) Lavoro e sicurezza sociale","c) Interessi vitali","d) Enti senza scopo di lucro","e) Dati resi pubblici dall'interessato","f) Difesa in giudizio","g) Interesse pubblico rilevante","h) Medicina preventiva e del lavoro, assistenza sanitaria","i) Sanità pubblica","j) Archiviazione, ricerca, statistica"];
+const CRIT=[["score","Valutazione, punteggio o profilazione delle persone"],["auto","Decisioni automatizzate con effetti giuridici o analoghi"],["monit","Monitoraggio sistematico degli interessati"],
+ ["sens","Dati sensibili o di natura estremamente personale"],["scala","Trattamento su larga scala"],["comb","Combinazione o raffronto di insiemi di dati"],
+ ["vuln","Interessati vulnerabili: dipendenti, minori, pazienti"],["innov","Uso innovativo o nuove tecnologie"],["blocco","Il trattamento può impedire di esercitare un diritto o di accedere a un servizio"]];
+const CAT=[
+ {nome:"Gestione del rapporto di lavoro",fin:"Amministrazione del personale: assunzione, presenze, paghe, adempimenti contributivi, fiscali e assicurativi",base:BASI[2],int:"Dipendenti, collaboratori, familiari a carico",
+  dati:"Anagrafici, contrattuali, retributivi, bancari, presenze; dati sanitari relativi ad assenze e idoneità; adesione sindacale",part:"Sì",b9:B9[2],dest:"Consulente del lavoro, enti previdenziali e fiscali, banche, fondi",cons:"10 anni dalla cessazione del rapporto",crit:["vuln"]},
+ {nome:"Selezione del personale",fin:"Raccolta e valutazione delle candidature",base:BASI[2],int:"Candidati",dati:"Curriculum, titoli, esperienze; eventuale appartenenza a categorie protette",part:"No",dest:"Società di selezione, se incaricate",cons:"12 mesi dalla ricezione, salvo assunzione",crit:[]},
+ {nome:"Salute e sicurezza sul lavoro",fin:"Sorveglianza sanitaria, formazione obbligatoria, gestione degli infortuni",base:BASI[3],int:"Dipendenti e collaboratori",dati:"Giudizi di idoneità, formazione, infortuni",part:"Sì",b9:B9[2],
+  dest:"Medico competente, responsabile del servizio di prevenzione, INAIL",cons:"10 anni dalla cessazione del rapporto",crit:["vuln"]},
+ {nome:"Clienti: contratti, ordini e fatturazione",fin:"Gestione di offerte, contratti, ordini, consegne, incassi e obblighi contabili",base:BASI[2],int:"Clienti e loro referenti",dati:"Anagrafici, di contatto, fiscali, di pagamento, storico degli ordini",part:"No",
+  dest:"Commercialista, banche, vettori, Agenzia delle entrate",cons:"10 anni dall'ultima registrazione contabile",crit:[]},
+ {nome:"Fornitori: contratti e pagamenti",fin:"Qualifica dei fornitori, gestione di ordini e pagamenti",base:BASI[2],int:"Fornitori e loro referenti",dati:"Anagrafici, di contatto, fiscali, bancari",part:"No",dest:"Commercialista, banche",cons:"10 anni dall'ultima registrazione contabile",crit:[]},
+ {nome:"Marketing e newsletter",fin:"Invio di comunicazioni promozionali e newsletter",base:BASI[1],int:"Clienti e contatti iscritti",dati:"Nome, indirizzo di posta elettronica, preferenze, aperture e clic",part:"No",dest:"Fornitore della piattaforma di invio",cons:"Fino a revoca del consenso; contatti inattivi cancellati dopo 24 mesi",crit:[]},
+ {nome:"Sito web e cookie",fin:"Funzionamento del sito, moduli di contatto, statistiche di visita",base:BASI[6],int:"Visitatori del sito",dati:"Dati di navigazione, identificativi online, dati inseriti nei moduli",part:"No",dest:"Fornitore dell'hosting, fornitori di strumenti di analisi",cons:"Richieste dai moduli 12 mesi; cookie secondo la tabella dell'informativa",crit:[]},
+ {nome:"Videosorveglianza",fin:"Sicurezza delle persone e tutela del patrimonio aziendale",base:BASI[6],int:"Dipendenti, visitatori, fornitori",dati:"Immagini",part:"No",dest:"Istituto di vigilanza, autorità giudiziaria su richiesta",cons:"Da 24 a 72 ore, salvo chiusure e richieste dell'autorità",crit:["monit","vuln"]},
+ {nome:"Posta elettronica e strumenti informatici",fin:"Gestione di utenze, posta, dispositivi e sicurezza dei sistemi",base:BASI[6],int:"Dipendenti e collaboratori",dati:"Utenze, registrazioni degli accessi, metadati della posta",part:"No",dest:"Fornitori di assistenza informatica e di servizi cloud",
+  cons:"Registrazioni degli accessi da 6 a 12 mesi; metadati della posta secondo le indicazioni del Garante",crit:["vuln"]},
+ {nome:"Segnalazioni di illeciti",fin:"Ricezione e gestione delle segnalazioni ai sensi del D.Lgs. 24/2023",base:BASI[3],int:"Segnalanti, persone segnalate, terzi citati",dati:"Identificativi, contenuto della segnalazione; possibili dati particolari e giudiziari",part:"Sì",b9:B9[7],
+  dest:"Gestore del canale, organismo di vigilanza, autorità competenti",cons:"5 anni dalla comunicazione dell'esito",crit:["sens","vuln"]},
+ {nome:"Geolocalizzazione dei veicoli aziendali",fin:"Sicurezza dei mezzi, organizzazione dei servizi, tutela del patrimonio",base:BASI[6],int:"Dipendenti alla guida",dati:"Posizione, percorsi, tempi di guida",part:"No",dest:"Fornitore del servizio di localizzazione",cons:"Secondo necessità documentata, di norma non oltre 90 giorni",crit:["monit","vuln"]}
+];
+const SCALA={
+ p:[[1,"Remota","Non plausibile nelle condizioni attuali"],[2,"Improbabile","Possibile solo in circostanze particolari"],[3,"Possibile","È accaduto in organizzazioni simili"],[4,"Probabile","È già accaduto qui o presso un fornitore"],[5,"Frequente","Accade o è atteso in modo ricorrente"]],
+ g:[[1,"Trascurabile","Disagio superabile senza difficoltà"],[2,"Limitata","Inconvenienti significativi ma superabili"],[3,"Rilevante","Danno economico o perdita di opportunità, superabile con difficoltà"],[4,"Grave","Conseguenze serie e durature per la persona"],[5,"Molto grave","Conseguenze irreversibili: discriminazione, danno alla salute, perdita del lavoro"]]
+};
+const RUOLI_F=["Responsabile (art. 28)","Sub-responsabile","Contitolare (art. 26)","Titolare autonomo"];
+const GARANZIE=["","Nessun trasferimento","Decisione di adeguatezza","Clausole contrattuali tipo","Norme vincolanti d'impresa","Deroga art. 49","Da definire"];
+
+/* ---- politica, documenti, piano ---- */
+const POLCHK=[["pri","Richiama i principi dell'art. 5"],["ruo","Definisce ruoli e responsabilità interne"],["dir","Tratta i diritti degli interessati"],["sic","Tratta sicurezza e gestione delle violazioni"],
+ ["for","Tratta fornitori e trasferimenti all'estero"],["frm","Prevede la formazione di chi tratta dati"],["app","È approvata dal vertice"],["com","È comunicata a tutte le persone autorizzate"],["rie","Prevede un riesame periodico"]];
+function polModello(a){return [
+ a.nome+" tratta dati personali di lavoratori, clienti, fornitori e altri interlocutori. Con questa politica la direzione stabilisce le regole che tutti coloro che operano per l'organizzazione sono tenuti a rispettare, in applicazione del Regolamento (UE) 2016/679 e del D.Lgs. 196/2003.",
+ "Principi. Trattiamo i dati in modo lecito, corretto e trasparente, per finalità determinate, limitandoci a quelli necessari. Li manteniamo esatti, li conserviamo per il tempo stabilito nel registro dei trattamenti e li proteggiamo da accessi non autorizzati, perdita e distruzione.",
+ "Ruoli. Il titolare del trattamento è l'organizzazione, che decide attraverso la direzione. Il referente per la protezione dei dati coordina gli adempimenti e riferisce alla direzione. Ogni persona autorizzata tratta i dati solo secondo le istruzioni ricevute per il proprio ruolo.",
+ "Diritti degli interessati. Chiunque riceva una richiesta di accesso, rettifica, cancellazione, limitazione, portabilità od opposizione la trasmette subito al referente. Rispondiamo entro un mese.",
+ "Sicurezza e violazioni. Adottiamo misure tecniche e organizzative proporzionate ai rischi e ne verifichiamo l'efficacia. Ogni incidente che coinvolge dati personali va segnalato immediatamente al referente: valutiamo il rischio e, se necessario, notifichiamo al Garante entro 72 ore.",
+ "Fornitori e trasferimenti. Affidiamo dati solo a fornitori che offrono garanzie adeguate e con un contratto conforme all'art. 28. Trasferiamo dati fuori dallo Spazio economico europeo solo in presenza delle garanzie previste.",
+ "Nuovi trattamenti. Prima di avviare un nuovo trattamento o adottare un nuovo strumento ne valutiamo l'impatto sulla protezione dei dati e, se il rischio è elevato, svolgiamo una valutazione d'impatto.",
+ "Formazione e riesame. Formiamo chi tratta dati all'ingresso e periodicamente. La direzione riesamina ogni anno il sistema, il registro dei trattamenti e questa politica."].join("\n\n");}
+const DOC_K=["Informativa (art. 13)","Informativa (art. 14)","Modulo di consenso","Autorizzazione e istruzioni (art. 29)","Nomina amministratore di sistema","Designazione del responsabile della protezione dei dati","Contratto con responsabile (art. 28)","Accordo di contitolarità (art. 26)","Procedura","Regolamento interno","Valutazione o parere"];
+const DOC_ST=["Da redigere","In bozza","Adottato","Da aggiornare"];
+const DOC_TIPO=[
+ [DOC_K[0],"Dipendenti e collaboratori"],[DOC_K[0],"Candidati"],[DOC_K[0],"Clienti e fornitori"],[DOC_K[0],"Sito web e cookie"],[DOC_K[0],"Videosorveglianza: cartello e informativa estesa"],
+ [DOC_K[2],"Newsletter e comunicazioni promozionali"],[DOC_K[3],"Lettere di autorizzazione per ruolo"],[DOC_K[4],"Amministratori di sistema interni ed esterni"],[DOC_K[6],"Modello di contratto con i responsabili"],
+ [DOC_K[8],"Gestione delle richieste degli interessati"],[DOC_K[8],"Gestione delle violazioni dei dati"],[DOC_K[8],"Valutazione d'impatto e nuovi trattamenti"],[DOC_K[8],"Conservazione e cancellazione dei dati"],
+ [DOC_K[9],"Uso di posta elettronica, internet e dispositivi"],[DOC_K[10],"Valutazione dell'obbligo di designare il responsabile della protezione dei dati"]];
+const MESI=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+const PIANO_TIPO=[
+ [1,"Art. 30","Aggiornamento del registro dei trattamenti"],
+ [1,"Art. 24","Approvazione del piano annuale delle attività"],
+ [2,"Artt. 13–14","Revisione di informative, moduli e pagine del sito"],
+ [3,"Art. 29","Formazione delle persone autorizzate"],
+ [3,"Art. 28","Verifica dei contratti con i responsabili del trattamento"],
+ [4,"Art. 32","Revisione dei profili di autorizzazione e delle utenze"],
+ [5,"Art. 32.1.d","Prova di ripristino delle copie di sicurezza"],
+ [6,"Provv. Garante","Verifica dell'operato degli amministratori di sistema"],
+ [6,"Art. 5.1.e","Verifica dei termini di conservazione e cancellazioni"],
+ [7,"Art. 33","Esercitazione sulla gestione di una violazione"],
+ [9,"Art. 24","Audit interno sul sistema"],
+ [10,"Art. 28.3.h","Verifica sui responsabili più critici"],
+ [10,"Art. 35.11","Riesame di rischi e valutazioni d'impatto"],
+ [11,"Cod. 130","Verifica di cookie, consensi e liste di contatto"],
+ [12,"Artt. 24 · 39","Riesame annuale della direzione"]
+];
+
+/* ---- indicatori ---- */
+const SEZ=[
+ {id:"org",n:"Persone e formazione",r:"Artt. 29 · 39"},
+ {id:"sic",n:"Sicurezza",r:"Art. 32"},
+ {id:"mkt",n:"Marketing e consensi",r:"Artt. 7 · 21"},
+ {id:"aut",n:"Reclami e autorità",r:"Artt. 77 · 58 · 83"}
+];
+const KPI=[
+ {k:"dip",s:"org",n:"Dipendenti e collaboratori",u:"n."},
+ {k:"aut",s:"org",n:"Persone autorizzate al trattamento",u:"n."},
+ {k:"aut_form",s:"org",n:"di cui formate nell'esercizio",u:"n."},
+ {k:"fo_ore",s:"org",n:"Ore di formazione sulla protezione dei dati",u:"ore"},
+ {k:"nuovi",s:"org",n:"Persone entrate nell'esercizio",u:"n."},
+ {k:"nuovi_form",s:"org",n:"di cui formate all'ingresso",u:"n."},
+ {k:"acc",s:"sic",n:"Utenze attive",u:"n."},
+ {k:"acc_mfa",s:"sic",n:"di cui con autenticazione a più fattori",u:"n."},
+ {k:"disp",s:"sic",n:"Portatili e dispositivi mobili",u:"n."},
+ {k:"disp_cif",s:"sic",n:"di cui cifrati",u:"n."},
+ {k:"bk_test",s:"sic",n:"Prove di ripristino delle copie di sicurezza",u:"n."},
+ {k:"acc_rev",s:"sic",n:"Revisioni dei profili di autorizzazione",u:"n."},
+ {k:"vuln",s:"sic",n:"Verifiche tecniche di sicurezza",u:"n.",h:"Analisi delle vulnerabilità, prove di intrusione"},
+ {k:"inc",s:"sic",n:"Incidenti di sicurezza informatica",u:"n.",h:"Tutti, anche quelli senza dati personali coinvolti"},
+ {k:"cont",s:"mkt",n:"Contatti nelle liste per comunicazioni promozionali",u:"n."},
+ {k:"cons_doc",s:"mkt",n:"di cui con consenso o altra base documentata",u:"n."},
+ {k:"opp",s:"mkt",n:"Opposizioni e disiscrizioni ricevute",u:"n."},
+ {k:"opp_gg",s:"mkt",n:"Tempo medio per dare seguito all'opposizione",u:"gg"},
+ {k:"recl",s:"aut",n:"Reclami ricevuti direttamente dagli interessati",u:"n."},
+ {k:"garante",s:"aut",n:"Richieste di informazioni o ispezioni del Garante",u:"n."},
+ {k:"sanz",s:"aut",n:"Sanzioni o provvedimenti correttivi",u:"n."},
+ {k:"liti",s:"aut",n:"Contenziosi in materia di dati personali",u:"n."}
+];
+const PARAM_DEF={alto:15,medio:8,dpia_n:2};
+
+/* ---- registri ---- */
+const REG={
+ dir:{n:"Richieste degli interessati",r:"Artt. 12 · 15–22",h:"Ogni richiesta, qualunque sia il canale di arrivo. Il termine di un mese si calcola da solo; con la proroga motivata diventa di tre mesi.",
+  cols:[["data","Ricevuta il","d"],["diritto","Diritto esercitato","s",["Accesso (art. 15)","Rettifica (art. 16)","Cancellazione (art. 17)","Limitazione (art. 18)","Portabilità (art. 20)","Opposizione (art. 21)","Decisioni automatizzate (art. 22)","Revoca del consenso"]],
+   ["rif","Riferimento interno","t"],["canale","Canale","s",["","Posta elettronica","PEC","Modulo del sito","Raccomandata","Di persona","Tramite il Garante"]],
+   ["tratt","Trattamento interessato","t"],["proroga","Proroga comunicata","s",["No","Sì"]],["evasa","Riscontro inviato il","d"],
+   ["esito","Esito","s",["In lavorazione","Accolta","Accolta in parte","Respinta con motivazione"]],["note","Attività svolte","a"]]},
+ breach:{n:"Violazioni dei dati",r:"Artt. 33 · 34",h:"Tutte le violazioni, anche quelle non notificate, con la valutazione del rischio. Le 72 ore decorrono dal momento in cui l'organizzazione ne viene a conoscenza.",
+  cols:[["data","Conosciuta il","dt"],["natura","Natura","s",["Riservatezza","Integrità","Disponibilità","Più profili"]],["nint","Interessati coinvolti (stima)","n"],
+   ["rischio","Rischio per gli interessati","s",["Improbabile","Rischio","Rischio elevato"]],["desc","Descrizione e cause","a"],["cat","Categorie di dati e di interessati","t"],
+   ["notif","Notificata al Garante il","dt"],["comint","Comunicata agli interessati il","d"],["chiusura","Chiusa il","d"],["mis","Valutazione del rischio, conseguenze e provvedimenti","a"]]},
+ form:{n:"Formazione",r:"Artt. 29 · 32.4 · 39",h:"Interventi formativi sulla protezione dei dati. Indica le ore del corso e i partecipanti.",
+  cols:[["data","Data","d"],["tema","Tema","t"],["dest","Destinatari","t"],["doc","Docente","t"],["part","Partecipanti","n"],["ore","Ore del corso","n"],["eff","Verifica di apprendimento","t"]]},
+ audit:{n:"Audit e verifiche",r:"Artt. 24 · 28.3.h · 32.1.d",h:"Audit interni, verifiche sui responsabili, prove tecniche e di ripristino.",
+  cols:[["data","Data","d"],["tipo","Tipo","s",["Audit interno","Verifica su un responsabile","Verifica tecnica di sicurezza","Prova di ripristino","Verifica del responsabile della protezione dei dati"]],["amb","Ambito","t"],["aud","Svolta da","t"],
+   ["stato","Stato","s",["Pianificato","Svolto","Chiuso"]],["ril","Rilievi","n"],["sint","Sintesi dei risultati","a"]]},
+ ads:{n:"Amministratori di sistema",r:"Provv. Garante 27.11.2008",h:"Verifica almeno annuale dell'operato di ciascun amministratore di sistema, interno o esterno.",
+  cols:[["data","Verifica del","d"],["amm","Amministratore verificato","t"],["amb","Sistemi e ambiti","t"],["log","Registrazioni degli accessi conservate 6 mesi","s",["Sì","No"]],["esito","Esito della verifica","a"]]},
+ ries:{n:"Riesame annuale",r:"Artt. 24.1 · 39",h:"Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nella relazione al passo 9: qui registri valutazioni e decisioni.",
+  cols:[["data","Data","d"],["part","Partecipanti","t"],["dpo","Relazione o parere del referente o del responsabile della protezione dei dati","a"],["ido","Adeguatezza del sistema","a"],["mig","Opportunità di miglioramento","a"],["az","Azioni decise","a"]]}
+};
+/* ==========================================================
+   ARCHIVIO
+   ========================================================== */
+const KEY="percorso-gdpr-v1";
+const Store={
+  load(){try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}},
+  save(d){try{localStorage.setItem(KEY,JSON.stringify(d));return true;}catch(e){toast("Archivio pieno o non disponibile: esporta i dati dal portafoglio");return false;}}
+};
+let DB={aziende:[],current:null}, view="pf", anno=null;
+let tab={ris:"rischi",pol:"pol",reg:"dir"}, openGrp={P:true}, gapF="all", docTipo="reg", pfq="", openT=null, openR=null;
+const uid=()=>"O"+Math.random().toString(36).slice(2,7).toUpperCase();
+const oggi=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const T_DEF=()=>({nome:"",ruolo:"Titolare",resp:"",fin:"",base:"",lia:"",int:"",dati:"",part:"No",b9:"",giud:"No",dest:"",extra:"No",extra_det:"",cons:"",sis:"",mis:"",
+  crit:{},p:"",g:"",misr:"",dpia_stato:"Da avviare",dpia_data:"",dpia_nec:"",dpia_dpo:"",dpia_esito:""});
+function norm(a){
+  a.profilo=Object.assign({forma:"",piva:"",sede:"",settore:"",ateco:"",ndip:"",siti:"",ruolo:"Titolare del trattamento",legale:"",ref:"",contatto:"",
+    dpo_a:"",dpo_b:"",dpo_c:"",dpo_nome:"",dpo_cont:"",dpo_com:"",ads:"",logo:""},a.profilo||{});
+  a.trattamenti=(a.trattamenti||[]).map(t=>{const x=Object.assign(T_DEF(),t);x.crit=x.crit||{};return x;});
+  a.gap=a.gap||{};a.fornitori=a.fornitori||[];
+  a.politica=Object.assign({testo:"",chk:{},data:"",firma:""},a.politica||{});a.politica.chk=a.politica.chk||{};
+  a.docs=a.docs||[];a.piano=a.piano||[];a.dati=a.dati||{};
+  a.registri=a.registri||{};Object.keys(REG).forEach(k=>a.registri[k]=a.registri[k]||[]);
+  a.param=Object.assign({...PARAM_DEF},a.param||{});
+  return a;
+}
+function nuova(nome){return norm({id:uid(),nome:nome||"Nuova organizzazione",anno:new Date().getFullYear(),created:new Date().toISOString()});}
+const az=()=>DB.aziende.find(a=>a.id===DB.current);
+const dati=(a,y)=>{a.dati[y]=a.dati[y]||{};return a.dati[y];};
+const num=(a,y,k)=>{const v=dati(a,y)[k];const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:0;};
+const has=(a,y,k)=>{const v=dati(a,y)[k];return v!==undefined&&v!=="";};
+const arr=(a,path)=>path.split(".").reduce((o,k)=>o[k],a);
+const inY=(r,y)=>String(r.data||"").slice(0,4)===String(y);
+const TPL={
+  "trattamenti":()=>T_DEF(),
+  "fornitori":()=>({nome:"",serv:"",ruolo:RUOLI_F[0],paese:"Italia",dpa:"",dpa_data:"",extra:"Nessun trasferimento",ver:"",esito:""}),
+  "docs":()=>({tipo:DOC_K[0],tit:"",ver:"1.0",data:"",rev:"",stato:"Da redigere"}),
+  "piano":()=>({att:"",rif:"",mese:String(new Date().getMonth()+1),resp:"",stato:"Da fare"})
+};
+
+/* ==========================================================
+   CALCOLI
+   ========================================================== */
+function conf(a,g){
+  const L=REQ.filter(r=>!g||r.g===g);let c=0,p=0,n=0,na=0;
+  L.forEach(r=>{const s=(a.gap[r.id]||{}).st;if(s==="c")c++;else if(s==="p")p++;else if(s==="n")n++;else if(s==="na")na++;});
+  const val=c+p+n+na,app=c+p+n;
+  return {tot:L.length,val,c,p,n,na,da:L.length-val,pct:app?Math.round((c+p*.5)/app*100):0};
+}
+/* registro */
+const T_REQ=["fin","base","int","dati","dest","cons","mis"];
+const tComp=t=>T_REQ.filter(k=>String(t[k]||"").trim()).length/T_REQ.length;
+const isLI=t=>String(t.base||"").includes("6.1.f");
+const nCrit=t=>CRIT.filter(c=>t.crit&&t.crit[c[0]]).length;
+const dpiaNec=(a,t)=>nCrit(t)>=a.param.dpia_n;
+function tratStat(a){const T=a.trattamenti;
+  return {n:T.length,part:T.filter(t=>t.part==="Sì").length,extra:T.filter(t=>t.extra==="Sì").length,
+    noBase:T.filter(t=>!t.base),noB9:T.filter(t=>t.part==="Sì"&&!t.b9),noCons:T.filter(t=>!String(t.cons||"").trim()),noLia:T.filter(t=>isLI(t)&&t.lia!=="Sì"),
+    dpia:T.filter(t=>dpiaNec(a,t)),dpiaOk:T.filter(t=>dpiaNec(a,t)&&t.dpia_stato==="Conclusa"),dpiaNo:T.filter(t=>dpiaNec(a,t)&&t.dpia_stato!=="Conclusa"),
+    cons36:T.filter(t=>dpiaNec(a,t)&&String(t.dpia_esito||"").startsWith("Consultazione")),comp:T.length?T.reduce((s,t)=>s+tComp(t),0)/T.length:0};}
+/* rischi per trattamento */
+const liv=r=>(+r.p||0)*(+r.g||0);
+function livTag(a,r){const v=liv(r);if(!v)return '<span class="code">da valutare</span>';
+  return v>=a.param.alto?`<span class="tag t-red">alto · ${v}</span>`:v>=a.param.medio?`<span class="tag t-amb">medio · ${v}</span>`:`<span class="tag t-grn">basso · ${v}</span>`;}
+function rischiStat(a){const T=a.trattamenti,v=T.filter(liv);
+  return {tot:T.length,val:v.length,alti:v.filter(r=>liv(r)>=a.param.alto).length,medi:v.filter(r=>liv(r)>=a.param.medio&&liv(r)<a.param.alto).length,
+    bassi:v.filter(r=>liv(r)<a.param.medio).length,scoperti:v.filter(r=>liv(r)>=a.param.alto&&!String(r.misr||"").trim())};}
+/* responsabili e trasferimenti */
+const needDpa=f=>f.ruolo!=="Titolare autonomo";
+const isExtra=f=>f.extra&&f.extra!=="Nessun trasferimento";
+function fornStat(a){const F=a.fornitori,n=F.length,R=F.filter(needDpa),pc=(x,t)=>t?Math.round(x/t*1000)/10:0;
+  return {n,resp:R.length,val:F.filter(f=>f.dpa&&f.extra).length,noDpa:R.filter(f=>f.dpa!=="Sì"),extra:F.filter(isExtra).length,noGar:F.filter(f=>f.extra==="Da definire"),
+    deroga:F.filter(f=>f.extra==="Deroga art. 49").length,critici:F.filter(f=>f.esito==="Critico").length,verif:F.filter(f=>f.ver).length,
+    pDpa:pc(R.filter(f=>f.dpa==="Sì").length,R.length),pVer:pc(R.filter(f=>f.ver).length,R.length)};}
+/* responsabile della protezione dei dati */
+function dpo(a){const p=a.profilo,r=[p.dpo_a,p.dpo_b,p.dpo_c];
+  return {val:r.every(x=>x==="Sì"||x==="No"),obbl:r.includes("Sì"),nom:!!String(p.dpo_nome||"").trim(),com:!!p.dpo_com};}
+/* termini di legge */
+function addM(d,m){const x=new Date(String(d).slice(0,10)+"T00:00:00"),day=x.getDate();x.setMonth(x.getMonth()+m);if(x.getDate()<day)x.setDate(0);
+  return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");}
+const dirScad=r=>r.data?addM(r.data,r.proroga==="Sì"?3:1):"";
+const dirSt=r=>!r.data?"":r.evasa?(r.evasa<=dirScad(r)?"ok":"late"):(oggi()>dirScad(r)?"over":"open");
+const ore=(d1,d2)=>(new Date(d2)-new Date(d1))/36e5;
+const brNotif=r=>r.rischio&&r.rischio!=="Improbabile";
+function brSt(r){if(!r.data||!brNotif(r))return "";
+  if(r.notif)return ore(r.data,r.notif)<=72?"ok":"late";
+  return ore(r.data,new Date())>72?"over":"open";}
+function brLimite(r){const x=new Date(new Date(r.data).getTime()+72*36e5);return x.toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});}
+function regStat(a,y){
+  const R=a.registri,Y=k=>R[k].filter(r=>inY(r,y));
+  const D=Y("dir"),ev=D.filter(r=>r.evasa),gg=(d1,d2)=>Math.round((new Date(d2)-new Date(d1))/864e5);
+  const B=Y("breach"),A=Y("audit").filter(r=>r.stato!=="Pianificato");
+  return {dir:D.length,dirEv:ev.length,dirOk:D.filter(r=>dirSt(r)==="ok").length,dirLate:D.filter(r=>dirSt(r)==="late").length,
+    dirOver:R.dir.filter(r=>dirSt(r)==="over").length,dirOpen:R.dir.filter(r=>dirSt(r)==="open").length,
+    dirTm:ev.length?Math.round(ev.reduce((s,r)=>s+Math.max(0,gg(r.data,r.evasa)),0)/ev.length):0,
+    br:B.length,brRis:B.filter(brNotif).length,brNot:B.filter(r=>r.notif).length,brOk:B.filter(r=>brSt(r)==="ok").length,brLate:B.filter(r=>brSt(r)==="late").length,
+    brOver:R.breach.filter(r=>brSt(r)==="over").length,brOpen:R.breach.filter(r=>brSt(r)==="open").length,
+    brElev:R.breach.filter(r=>r.rischio==="Rischio elevato"&&!r.comint).length,brAperte:R.breach.filter(r=>r.data&&!r.chiusura).length,
+    brInt:B.reduce((s,r)=>s+(parseFloat(r.nint)||0),0),
+    form:Y("form").length,formOre:Y("form").reduce((s,r)=>s+(parseFloat(r.ore)||0)*(parseFloat(r.part)||0),0),
+    audit:A.length,auditPian:Y("audit").length,rilievi:A.reduce((s,r)=>s+(parseFloat(r.ril)||0),0),
+    verResp:A.filter(r=>r.tipo==="Verifica su un responsabile").length,ripr:A.filter(r=>r.tipo==="Prova di ripristino").length,
+    ads:Y("ads").length,ries:Y("ries").length};
+}
+function derive(a,y){
+  const n=k=>num(a,y,k),r=(x,d=1)=>{const m=Math.pow(10,d);return Math.round(x*m)/m;},pc=(x,t)=>t?r(x/t*100):0;
+  return {pctForm:pc(n("aut_form"),n("aut")),oreForm:n("aut")?r(n("fo_ore")/n("aut")):0,pctNuovi:pc(n("nuovi_form"),n("nuovi")),
+    pctMfa:pc(n("acc_mfa"),n("acc")),pctCif:pc(n("disp_cif"),n("disp")),pctCons:pc(n("cons_doc"),n("cont")),pctOpp:pc(n("opp"),n("cont"))};
+}
+/* Segnali ricavati dai dati: C = criticità, A = attenzione */
+function allarmi(a,y){
+  const n=k=>num(a,y,k),h=k=>has(a,y,k),L=[],add=(lv,t,r,go)=>L.push({lv,t,r,go});
+  const ts=tratStat(a),rs=rischiStat(a),fs=fornStat(a),g=regStat(a,y),d=dpo(a),c=conf(a);
+  if(!ts.n)add("C","Registro dei trattamenti vuoto","Art. 30","trat");
+  if(ts.noBase.length)add("C","Trattamenti senza base giuridica: "+ts.noBase.length,"Art. 6","trat");
+  if(ts.noB9.length)add("C","Categorie particolari di dati senza condizione dell'art. 9.2: "+ts.noB9.length,"Art. 9","trat");
+  if(ts.noCons.length)add("A","Trattamenti senza termine di conservazione: "+ts.noCons.length,"Art. 5.1.e","trat");
+  if(ts.noLia.length)add("A","Legittimo interesse senza bilanciamento documentato: "+ts.noLia.length,"Art. 6.1.f","trat");
+  if(ts.dpiaNo.length)add("C","Valutazioni d'impatto necessarie e non concluse: "+ts.dpiaNo.length,"Art. 35","ris");
+  if(ts.cons36.length)add("A","Rischio residuo elevato: consultazione preventiva del Garante per "+ts.cons36.length+" trattament"+(ts.cons36.length===1?"o":"i"),"Art. 36","ris");
+  if(rs.scoperti.length)add("A","Rischi alti senza misure di mitigazione: "+rs.scoperti.length,"Art. 32","ris");
+  if(fs.noDpa.length)add("C","Responsabili senza contratto ai sensi dell'art. 28: "+fs.noDpa.length,"Art. 28.3","ris");
+  if(fs.noGar.length)add("C","Trasferimenti fuori dallo Spazio economico europeo senza garanzia definita: "+fs.noGar.length,"Art. 44","ris");
+  if(fs.deroga)add("A","Trasferimenti fondati su una deroga: verifica che siano occasionali ("+fs.deroga+")","Art. 49","ris");
+  if(fs.critici)add("C","Responsabili con esito critico alla verifica: "+fs.critici,"Art. 28.1","ris");
+  if(!d.val)add("A","Obbligo di designare il responsabile della protezione dei dati non ancora valutato","Art. 37","org");
+  else if(d.obbl&&!d.nom)add("C","Responsabile della protezione dei dati obbligatorio e non designato","Art. 37.1","org");
+  else if(d.nom&&!d.com)add("A","Dati di contatto del responsabile della protezione dei dati non comunicati al Garante","Art. 37.7","org");
+  if(g.dirOver)add("C","Richieste degli interessati scadute senza riscontro: "+g.dirOver,"Art. 12.3","reg");
+  if(g.dirLate)add("A","Richieste riscontrate oltre il termine nel "+y+": "+g.dirLate,"Art. 12.3","reg");
+  if(g.brOver)add("C","Violazioni a rischio non notificate entro 72 ore: "+g.brOver,"Art. 33.1","reg");
+  if(g.brOpen)add("A","Violazioni da notificare al Garante con termine in corso: "+g.brOpen,"Art. 33.1","reg");
+  if(g.brLate)add("A","Violazioni notificate oltre le 72 ore nel "+y+": il ritardo va motivato ("+g.brLate+")","Art. 33.1","reg");
+  if(g.brElev)add("C","Violazioni a rischio elevato non comunicate agli interessati: "+g.brElev,"Art. 34","reg");
+  if(c.n)add("C","Requisiti valutati non conformi: "+c.n,"Passo 3","gap");
+  const t0=oggi(),dv=a.docs.filter(x=>x.stato==="Da aggiornare"||(x.rev&&x.rev<t0&&x.stato==="Adottato")).length;
+  if(dv)add("A","Documenti da aggiornare o con revisione scaduta: "+dv,"Art. 24.1","pol");
+  if(n("sanz")>0)add("C","Sanzioni o provvedimenti correttivi ricevuti: "+n("sanz"),"Art. 83","dati");
+  if(h("cont")&&h("cons_doc")&&n("cons_doc")<n("cont"))add("A","Contatti promozionali senza consenso o base documentata: "+(n("cont")-n("cons_doc")),"Art. 7.1","dati");
+  if(h("disp")&&h("disp_cif")&&n("disp_cif")<n("disp"))add("A","Portatili e dispositivi mobili non cifrati: "+(n("disp")-n("disp_cif")),"Art. 32.1.a","dati");
+  if(h("bk_test")&&n("bk_test")===0&&!g.ripr)add("A","Nessuna prova di ripristino delle copie di sicurezza nel "+y,"Art. 32.1.d","dati");
+  if(!g.form)add("A","Nessuna formazione registrata nel "+y,"Art. 29","reg");
+  if(!g.audit)add("A","Nessun audit o verifica svolti nel "+y,"Art. 24.1","reg");
+  if(a.profilo.ads==="Sì"&&!g.ads)add("A","Verifica annuale degli amministratori di sistema non registrata nel "+y,"Provv. Garante","reg");
+  if(!g.ries)add("A","Riesame annuale non ancora svolto nel "+y,"Art. 24.1","reg");
+  return L;
+}
+const REG_REQ=a=>["form","audit","ries"].concat(a.profilo.ads==="Sì"?["ads"]:[]);
+function stato(a,y){
+  const p=a.profilo,d=dpo(a),pf=["forma","sede","settore","ateco","ndip","legale","ref","contatto","ads"];
+  const s1=(pf.filter(k=>String(p[k]||"").trim()).length+(d.val?(d.obbl&&!d.nom?1:2):0))/(pf.length+2);
+  const ts=tratStat(a),s2=ts.n?ts.comp*Math.min(1,ts.n/3):0;
+  const c=conf(a),s3=c.val/c.tot;
+  const rs=rischiStat(a),fs=fornStat(a),s4=((rs.tot?rs.val/rs.tot:0)+(fs.n?fs.val/fs.n:0))/2;
+  const pol=a.politica,sp=(pol.testo.trim().length>200?.5:0)+POLCHK.filter(k=>pol.chk[k[0]]).length/POLCHK.length*.5;
+  const D=a.docs.filter(x=>x.tit),s5=(sp+(D.length?Math.min(1,D.length/6)*D.filter(x=>x.stato==="Adottato").length/D.length:0)+Math.min(1,a.piano.filter(o=>o.att).length/8))/3;
+  const s6=KPI.filter(k=>has(a,y,k.k)).length/KPI.length;
+  const rq=REG_REQ(a),s7=rq.filter(k=>k==="audit"?regStat(a,y).audit>0:a.registri[k].some(r=>inY(r,y))).length/rq.length;
+  const s8=(s1+s2+s3+s4+s5+s6+s7)/7;
+  return {s1,s2,s3,s4,s5,s6,s7,s8,tot:Math.round(s8*100)};
+}
+/* ==========================================================
+   DIAGRAMMI — generati dai dati inseriti
+   ========================================================== */
+const CFONT='font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"';
+function chConf(a){
+  const rowH=24,L=250,W=620,H=14+GRP.length*rowH+22,bw=W-L-64;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Conformità per gruppo di requisiti">`;
+  [0,50,100].forEach(v=>{const x=L+bw*v/100;s+=`<line x1="${x}" y1="8" x2="${x}" y2="${H-20}" stroke="#E4E2DC"/><text x="${x}" y="${H-6}" font-size="9.5" fill="#7F8496" text-anchor="middle">${v}%</text>`;});
+  GRP.forEach((g,i)=>{const c=conf(a,g.id),y=14+i*rowH,app=c.c+c.p+c.n,col=!app?"#C9C7C0":c.pct>=90?"#2E7D32":c.pct>=60?"#B06E00":"#B3261E";
+    s+=`<text x="${L-10}" y="${y+11}" font-size="11" fill="#171A26" text-anchor="end">${g.n}</text>
+        <rect x="${L}" y="${y}" width="${bw}" height="15" fill="#F0EEE9" rx="3"/>
+        ${app?`<rect x="${L}" y="${y}" width="${Math.max(2,bw*c.pct/100)}" height="15" fill="${col}" rx="3"/>`:""}
+        <text x="${L+bw+8}" y="${y+11.5}" font-size="10.5" fill="#4B5063">${app?c.pct+"%":"—"}</text>`;});
+  return s+"</svg>";
+}
+function chRisk(a){
+  const W=620,H=330,L=96,T=16,cw=78,ch=50,P=a.param;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Matrice dei rischi">`;
+  for(let p=5;p>=1;p--)for(let g=1;g<=5;g++){
+    const v=p*g,x=L+(g-1)*cw,y=T+(5-p)*ch,n=a.trattamenti.filter(r=>+r.p===p&&+r.g===g).length;
+    const f=v>=P.alto?"#FBEAE8":v>=P.medio?"#FDF2DF":"#E8F3E9",c=v>=P.alto?"#B3261E":v>=P.medio?"#B06E00":"#2E7D32";
+    s+=`<rect x="${x+1.5}" y="${y+1.5}" width="${cw-3}" height="${ch-3}" fill="${f}" rx="5"/>
+        <text x="${x+cw-9}" y="${y+15}" font-size="9" fill="${c}" text-anchor="end" opacity=".7">${v}</text>`;
+    if(n)s+=`<circle cx="${x+cw/2}" cy="${y+ch/2+2}" r="14" fill="${c}"/><text x="${x+cw/2}" y="${y+ch/2+6.5}" font-size="12.5" fill="#fff" text-anchor="middle" font-weight="700">${n}</text>`;
+  }
+  [1,2,3,4,5].forEach(v=>{s+=`<text x="${L+(v-1)*cw+cw/2}" y="${T+5*ch+16}" font-size="10" fill="#7F8496" text-anchor="middle">${v} · ${SCALA.g[v-1][1]}</text>
+    <text x="${L-8}" y="${T+(5-v)*ch+ch/2+4}" font-size="10" fill="#7F8496" text-anchor="end">${v} · ${SCALA.p[v-1][1]}</text>`;});
+  s+=`<text x="${L+cw*2.5}" y="${H-8}" font-size="10.5" fill="#4B5063" text-anchor="middle">gravità →</text>
+      <text x="12" y="${T+ch*2.5}" font-size="10.5" fill="#4B5063" text-anchor="middle" transform="rotate(-90 12 ${T+ch*2.5})">probabilità →</text>`;
+  [["#2E7D32","basso"],["#B06E00","medio"],["#B3261E","alto"]].forEach((x,i)=>{s+=`<rect x="${L+5*cw+18}" y="${T+6+i*22}" width="11" height="11" fill="${x[0]}" rx="2"/><text x="${L+5*cw+35}" y="${T+16+i*22}" font-size="10.5" fill="#4B5063">${x[1]}</text>`;});
+  return s+"</svg>";
+}
+function svgGroupBars(groups,cats,colors,unit,dec,limit){
+  const W=620,H=270,L=54,R=14,T=26,B=54,pw=W-L-R,ph=H-T-B;
+  let max=limit||0;groups.forEach(g=>g.v.forEach(v=>{if(v>max)max=v;}));
+  if(max<=0)max=1;max*=1.08;
+  const gw=pw/groups.length,bw=Math.min(52,gw/(cats.length+.8)),y=v=>T+ph-(v/max)*ph;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img">`;
+  for(let i=0;i<=4;i++){const gy=T+ph-ph*i/4,val=max*i/4;
+    s+=`<line x1="${L}" y1="${gy}" x2="${W-R}" y2="${gy}" stroke="#E4E2DC"/><text x="${L-8}" y="${gy+3.5}" font-size="9.5" fill="#7F8496" text-anchor="end">${fmt(val,dec||0)}</text>`;}
+  groups.forEach((g,gi)=>{const x0=L+gi*gw+(gw-bw*cats.length)/2;
+    g.v.forEach((v,ci)=>{const bx=x0+ci*bw,by=y(v),bh=T+ph-by;
+      s+=`<rect x="${bx+3}" y="${by}" width="${bw-6}" height="${Math.max(0,bh)}" fill="${colors[ci]}" rx="3"/>`;
+      if(v>0)s+=`<text x="${bx+bw/2}" y="${by-5}" font-size="9.5" fill="#4B5063" text-anchor="middle">${fmt(v,dec||0)}</text>`;});
+    s+=`<text x="${L+gi*gw+gw/2}" y="${T+ph+17}" font-size="11" fill="#171A26" text-anchor="middle" font-weight="600">${g.n}</text>`;});
+  if(limit)s+=`<line x1="${L}" y1="${y(limit)}" x2="${W-R}" y2="${y(limit)}" stroke="#B3261E" stroke-dasharray="5 4"/><text x="${W-R}" y="${y(limit)-5}" font-size="9.5" fill="#B3261E" text-anchor="end">limite ${fmt(limit)}</text>`;
+  cats.forEach((c,i)=>{const lx=L+i*190;s+=`<rect x="${lx}" y="${H-20}" width="10" height="10" fill="${colors[i]}" rx="2"/><text x="${lx+15}" y="${H-11}" font-size="10.5" fill="#4B5063">${c}</text>`;});
+  if(unit)s+=`<text x="${W-R}" y="${H-11}" font-size="10" fill="#7F8496" text-anchor="end">${unit}</text>`;
+  return s+"</svg>";
+}
+function chPiano(a){
+  const W=620,H=200,L=30,T=18,B=40,pw=W-L-10,ph=H-T-B,cw=pw/12;
+  const cnt=m=>a.piano.filter(x=>+x.mese===m&&x.att),max=Math.max(1,...MESI.map((_,i)=>cnt(i+1).length));
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Piano di lavoro annuale per mese">`;
+  s+=`<line x1="${L}" y1="${T+ph}" x2="${W-10}" y2="${T+ph}" stroke="#E4E2DC"/>`;
+  MESI.forEach((m,i)=>{const all=cnt(i+1),done=all.filter(x=>x.stato==="Fatto").length,x=L+i*cw,u=ph/max;
+    for(let k=0;k<all.length;k++)s+=`<rect x="${x+7}" y="${T+ph-(k+1)*u+2}" width="${cw-14}" height="${u-4}" fill="${k<done?"#2E7D32":"#D9BFD4"}" rx="3"/>`;
+    s+=`<text x="${x+cw/2}" y="${T+ph+15}" font-size="10" fill="#4B5063" text-anchor="middle">${m}</text>`;});
+  s+=`<rect x="${L}" y="${H-14}" width="10" height="10" fill="#2E7D32" rx="2"/><text x="${L+15}" y="${H-5}" font-size="10.5" fill="#4B5063">attività concluse</text>
+      <rect x="${L+130}" y="${H-14}" width="10" height="10" fill="#D9BFD4" rx="2"/><text x="${L+145}" y="${H-5}" font-size="10.5" fill="#4B5063">pianificate o in corso</text>`;
+  return s+"</svg>";
+}
+/* ==========================================================
+   RENDER
+   ========================================================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const fmt=(v,d=0)=>v===0||v?Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const fdata=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"—";
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400);}
+const iniz=n=>n.replace(/[^A-Za-zÀ-ÿ ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("");
+/* campi generici legati a un elenco: data-l percorso, data-i indice, data-k chiave */
+const F={
+  at:(p,i,k,rr)=>`data-l="${p}" data-i="${i}" data-k="${k}"${rr?" data-rr":""}`,
+  t:(p,i,k,v,ph,rr)=>`<input type="text" ${F.at(p,i,k,rr)} value="${esc(v||"")}" placeholder="${esc(ph||"")}">`,
+  n:(p,i,k,v,rr)=>`<input type="number" step="any" ${F.at(p,i,k,rr)} value="${esc(v||"")}">`,
+  d:(p,i,k,v,rr)=>`<input type="date" ${F.at(p,i,k,rr)} value="${esc(v||"")}">`,
+  a:(p,i,k,v,ph)=>`<textarea ${F.at(p,i,k)} style="min-height:62px" placeholder="${esc(ph||"")}">${esc(v||"")}</textarea>`,
+  s:(p,i,k,v,opts,rr)=>`<select ${F.at(p,i,k,rr)}>${opts.map(o=>{const x=Array.isArray(o)?o:[o,o===""?"—":o];
+    return `<option value="${esc(x[0])}" ${String(v==null?"":v)===String(x[0])?"selected":""}>${esc(x[1])}</option>`;}).join("")}</select>`,
+  x:(p,i)=>`<button class="btn ghost icon" data-ldel="${p}" data-i="${i}" title="Elimina" aria-label="Elimina">✕</button>`
+};
+const tabs=(grp,items)=>`<div class="tabs">${items.map(t=>`<button class="tab ${tab[grp]===t[0]?"on":""}" data-tab="${grp}" data-tv="${t[0]}">${t[1]}${t[2]!==undefined?`<span class="c">${t[2]}</span>`:""}</button>`).join("")}</div>`;
+const dtab=rows=>`<div class="derived"><table><tbody>${rows.map(r=>`<tr><td style="border:0;padding:5px 0;font-size:12.5px">${r[0]}</td><td class="num" style="border:0;padding:5px 0"><b>${r[1]}</b> <span class="code">${r[2]||""}</span></td></tr>`).join("")}</tbody></table></div>`;
+const alrList=(L,go)=>L.length?L.map(x=>`<div class="alr"><span class="tag ${x.lv==="C"?"t-red":"t-amb"}">${x.lv==="C"?"criticità":"attenzione"}</span>
+  <div class="tx">${esc(x.t)} <span class="code">${esc(x.r)}</span></div>${go?`<button class="btn ghost sm" data-go="${x.go}">Vai</button>`:""}</div>`).join(""):'<div class="empty" style="padding:14px">Nessun segnale dai dati inseriti.</div>';
+
+function render(){
+  const a=az();
+  document.querySelectorAll('.nav:not([data-v="pf"]):not([data-v="guida"])').forEach(n=>n.hidden=!a);
+  $("#grpPercorso").hidden=!a;$("#grpImp").hidden=!a;
+  $("#coSel").hidden=!a;$("#annoSel").parentElement.hidden=!a;$("#printBtn").hidden=!a;
+  if(!a&&view!=="guida")view="pf";
+  if(a&&!anno)anno=a.anno;
+  if(a){const st=stato(a,anno);
+    [1,2,3,4,5,6,7,8,9].forEach(i=>{const v=st["s"+Math.min(i,8)],e=$("#s"+i);e.className="st"+(v>=.99?" ok":v>0?" mid":"");e.textContent=v>=.99?"✓":i;});}
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("on",n.dataset.v===view));
+  const V={home:vHome,org:vOrg,trat:vTrat,gap:vGap,ris:vRis,pol:vPol,dati:vDati,reg:vReg,ver:vVer,doc:vDoc,conf:vConf};
+  $("#view").innerHTML=view==="pf"?vPf():view==="guida"?vGuida():V[view](a,stato(a,anno));
+  bind(a);
+}
+/* ridisegna conservando campo attivo e posizione */
+function rr(){setTimeout(()=>{
+  const e=document.activeElement,sig=e&&e.dataset&&Object.keys(e.dataset).length?JSON.stringify(e.dataset):null,sy=window.scrollY;
+  render();
+  if(sig){const m=[...document.querySelectorAll("#view input,#view select,#view textarea")].find(x=>JSON.stringify(x.dataset)===sig);if(m)m.focus({preventScroll:true});}
+  window.scrollTo(0,sy);},0);}
+/* ---------- portafoglio ---------- */
+function vPf(){
+  const size=(JSON.stringify(DB).length/1048576);
+  const list=DB.aziende.filter(a=>!pfq||(a.nome+" "+(a.profilo.settore||"")+" "+(a.profilo.sede||"")).toLowerCase().includes(pfq.toLowerCase()));
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px">
+    <div><h1>Portafoglio</h1><p class="sub" style="margin:0">${DB.aziende.length} organizzazion${DB.aziende.length===1?"e":"i"} in archivio. Apri una scheda per riprendere il percorso da dove era rimasto.</p></div>
+    <input type="search" id="pfq" placeholder="Cerca per nome, settore, sede…" value="${esc(pfq)}" style="width:260px;max-width:100%">
+  </div>
+  <div class="pf" style="margin-top:20px">
+    ${list.map(a=>{const y=a.anno,st=stato(a,y),c=conf(a),al=allarmi(a,y);
+      return `<div class="pfc">
+        <div class="hd" data-open="${a.id}">
+          <div class="logo">${a.profilo.logo?`<img src="${a.profilo.logo}" alt="">`:esc(iniz(a.nome)||"—")}</div>
+          <div style="min-width:0">
+            <div class="nm">${esc(a.nome)}</div>
+            <div class="mt">${esc(a.profilo.settore||"settore da indicare")}${a.profilo.sede?" · "+esc(a.profilo.sede):""}</div>
+            <div class="mt code">esercizio ${y}</div>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="track"><i style="width:${st.tot}%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px" class="code"><span>avanzamento</span><span>${st.tot}%</span></div>
+          <div class="stats">
+            <div><b>${c.val?c.pct+"%":"—"}</b><span>conformità</span></div>
+            <div><b>${a.trattamenti.length}</b><span>trattamenti</span></div>
+            <div><b>${al.filter(x=>x.lv==="C").length}</b><span>criticità</span></div>
+          </div>
+        </div>
+        <div class="ft">
+          <button class="btn sm" data-open="${a.id}">Apri</button>
+          <button class="btn ghost sm" data-dup="${a.id}">Duplica</button>
+          <button class="btn ghost sm" data-del="${a.id}" style="margin-left:auto">Elimina</button>
+        </div>
+      </div>`;}).join("")}
+    <button class="pfnew" id="pfNew"><b>+</b>Nuova organizzazione</button>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <p class="eyebrow" style="margin-bottom:4px">Archivio</p>
+        <div style="font-size:12.5px;color:var(--ink-2)">Peso attuale <b class="code">${size.toFixed(2)} MB</b>${size>3.2?' — <span style="color:var(--red)">vicino al limite del browser: esporta e alleggerisci</span>':""}. L'esportazione è l'unico vero backup: falla alla fine di ogni sessione di lavoro.</div>
+      </div>
+      <button class="btn ghost sm" id="expBtn">Esporta archivio</button>
+      <button class="btn ghost sm" id="impBtn">Importa archivio</button>
+      <input type="file" id="impFile" accept="application/json,.json" hidden>
+    </div>
+  </div>`;
+}
+/* ---------- 3 conformità ---------- */
+function vGap(a){
+  const c=conf(a);
+  const show=r=>{const s=(a.gap[r.id]||{}).st;return gapF==="all"||(gapF==="todo"&&!s)||(gapF==="nc"&&(s==="p"||s==="n"));};
+  const row=r=>{const g=a.gap[r.id]||{},bad=g.st==="p"||g.st==="n";
+    return `<tr class="${bad?"hasub":""}"><td class="code" style="width:112px;vertical-align:top;padding-top:13px">${r.ref}</td>
+      <td style="vertical-align:top;padding-top:11px;min-width:220px">${esc(r.t)}</td>
+      <td style="width:150px;vertical-align:top"><select class="st-${g.st||"x"}" data-gap="${r.id}" data-k="st" data-rr aria-label="Stato ${r.ref}">${STATI.map(s=>`<option value="${s[0]}" ${(g.st||"")===s[0]?"selected":""}>${s[1]}</option>`).join("")}</select></td>
+      <td style="width:30%;min-width:180px;vertical-align:top"><input type="text" data-gap="${r.id}" data-k="ev" value="${esc(g.ev||"")}" placeholder="${g.st==="na"?"Motivazione":"Evidenza: documento, registrazione, prassi"}"></td></tr>
+      ${bad?`<tr class="subr"><td></td><td colspan="3"><div class="adeg">
+        <input type="text" data-gap="${r.id}" data-k="az" value="${esc(g.az||"")}" placeholder="Azione di adeguamento">
+        <input type="text" data-gap="${r.id}" data-k="resp" value="${esc(g.resp||"")}" placeholder="Responsabile">
+        <input type="date" data-gap="${r.id}" data-k="scad" value="${esc(g.scad||"")}" aria-label="Scadenza"></div></td></tr>`:""}`;};
+  return `<h1>3 · Conformità</h1>
+  <p class="sub">Gli adempimenti del Regolamento e della normativa italiana in sintesi operativa: ${REQ.length} requisiti in ${GRP.length} gruppi. Per ciascuno indica lo stato reale e l'evidenza che lo dimostra. Le voci parziali o non conformi aprono la riga dell'azione di adeguamento e confluiscono nel piano.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Indice di conformità</div><div class="n">${c.val?c.pct+"%":"—"}</div><div class="h">sui requisiti pertinenti valutati</div></div>
+    <div class="card kpi"><div class="l">Conformi</div><div class="n" style="color:var(--green)">${c.c}</div><div class="h">${c.na} non pertinenti</div></div>
+    <div class="card kpi"><div class="l">Da adeguare</div><div class="n" style="color:var(--amber)">${c.p+c.n}</div><div class="h">${c.p} parziali · ${c.n} non conformi</div></div>
+    <div class="card kpi"><div class="l">Da valutare</div><div class="n">${c.da}</div><div class="h">su ${c.tot} requisiti</div></div>
+  </div>
+  <div class="tabs">${[["all","Tutti i requisiti"],["todo","Da valutare",c.da],["nc","Da adeguare",c.p+c.n]].map(t=>`<button class="tab ${gapF===t[0]?"on":""}" data-gapf="${t[0]}">${t[1]}${t[2]!==undefined?`<span class="c">${t[2]}</span>`:""}</button>`).join("")}</div>
+  ${GRP.map(g=>{const cg=conf(a,g.id),L=REQ.filter(r=>r.g===g.id&&show(r)),op=!!openGrp[g.id],G=GUIDE[g.id];
+    if(!L.length&&gapF!=="all")return "";
+    return `<div class="grp">
+      <button class="gh" data-grp="${g.id}" aria-expanded="${op}">
+        <span class="code" style="width:14px">${op?"▾":"▸"}</span>
+        <span class="nm">${esc(g.n)}<span class="code" style="display:block;font-weight:400">${esc(g.r)} · ${cg.tot} requisiti${cg.da?" · "+cg.da+" da valutare":""}</span></span>
+        ${cg.n?`<span class="tag t-red">${cg.n} NC</span>`:""}${cg.p?`<span class="tag t-amb">${cg.p} parziali</span>`:""}
+        <span class="bar"><span class="track" style="display:block"><i style="width:${cg.val?cg.pct:0}%;background:${cg.pct>=90?"var(--green)":cg.pct>=60?"var(--amber)":"var(--red)"}"></i></span></span>
+        <span class="pc">${(cg.c+cg.p+cg.n)?cg.pct+"%":"—"}</span>
+      </button>
+      ${op?`<div class="gb">
+        <div class="guide"><p class="def">${esc(G.def)}</p>
+          <h5>Che cosa viene verificato</h5><ul>${G.look.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+          <div class="flag">${esc(G.flag)}</div>
+          <div class="ev"><b>Dove trovare le evidenze:</b> ${esc(G.ev)}</div></div>
+        <div class="tw"><table><thead><tr><th>Rif.</th><th>Requisito</th><th>Stato</th><th>Evidenza</th></tr></thead><tbody>${L.map(row).join("")||'<tr><td colspan="4" class="empty">Nessun requisito con questo filtro.</td></tr>'}</tbody></table></div>
+      </div>`:""}
+    </div>`;}).join("")}`;
+}
+/* ---------- 7 registri ---------- */
+function vReg(a){
+  const k=tab.reg,R=REG[k],path="registri."+k,L=a.registri[k];
+  const field=(c,r,i)=>c[2]==="dt"?F.dt(path,i,c[0],r[c[0]],1):c[2]==="d"?F.d(path,i,c[0],r[c[0]],1):c[2]==="n"?F.n(path,i,c[0],r[c[0]],1):c[2]==="a"?F.a(path,i,c[0],r[c[0]]):c[2]==="s"?F.s(path,i,c[0],r[c[0]],c[3],1):F.t(path,i,c[0],r[c[0]]);
+  return `<h1>7 · Registri</h1>
+  <p class="sub">Le registrazioni che dimostrano il funzionamento del sistema. Il numero accanto a ogni registro conta le voci dell'esercizio ${anno}. Per richieste e violazioni i termini di legge si calcolano da soli.</p>
+  ${tabs("reg",Object.keys(REG).map(x=>[x,REG[x].n,a.registri[x].filter(r=>inY(r,anno)).length]))}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div><h2 style="margin:0">${R.n}</h2><span class="code">${R.r} · ${L.length} voci in archivio</span></div>
+      <button class="btn sm" data-ladd="${path}">Aggiungi voce</button></div>
+    <div class="hint" style="margin:8px 0 14px">${R.h}</div>
+    ${L.length?L.map((r,i)=>`<div class="rec"><div class="grid g4">${R.cols.map(c=>`<label class="f"${c[2]==="a"?' style="grid-column:1/-1"':""}><span>${c[1]}</span>${field(c,r,i)}</label>`).join("")}</div>
+      <div class="rx"><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${REGB[k]?REGB[k](r):""}<span class="code">${inY(r,anno)?"esercizio "+anno:r.data?"altro esercizio":"senza data"}</span></span>${F.x(path,i)}</div></div>`).reverse().join(""):'<div class="empty">Nessuna voce in questo registro.</div>'}
+  </div>`;
+}
+/* ---------- estensioni: campo data e ora, esiti dei termini di legge, diagrammi ---------- */
+F.dt=(p,i,k,v,rr)=>`<input type="datetime-local" ${F.at(p,i,k,rr)} value="${esc(v||"")}">`;
+F.c=(i,k,on,l)=>`<label class="chk"><input type="checkbox" data-crit="${i}" data-c="${k}" ${on?"checked":""}><span>${l}</span></label>`;
+const fdt=d=>d?new Date(d).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
+const REGB={
+  dir:r=>{const s=dirSt(r);if(!s)return "";const sc=fdata(dirScad(r));
+    return s==="ok"?'<span class="tag t-grn">riscontro nei termini</span>':s==="late"?`<span class="tag t-amb">riscontro oltre il termine del ${sc}</span>`:s==="over"?`<span class="tag t-red">scaduta il ${sc}</span>`:`<span class="tag t-acc">scade il ${sc}</span>`;},
+  breach:r=>{if(!r.data)return "";if(!brNotif(r))return '<span class="tag t-gry">notifica non dovuta</span>';const s=brSt(r);
+    return s==="ok"?`<span class="tag t-grn">notificata in ${Math.round(ore(r.data,r.notif))} ore</span>`:s==="late"?`<span class="tag t-amb">notificata dopo ${Math.round(ore(r.data,r.notif))} ore</span>`:
+      s==="over"?`<span class="tag t-red">termine superato il ${brLimite(r)}</span>`:`<span class="tag t-acc">notifica entro il ${brLimite(r)}</span>`;}
+};
+function chDir(a,y){const g=regStat(a,y),p=regStat(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.dir,p.dirOk,p.br]},{n:String(y),v:[g.dir,g.dirOk,g.br]}],["Richieste ricevute","Riscontrate nei termini","Violazioni registrate"],["#552848","#A9739F","#B06E00"],"numero",0);}
+function chSic(a,y){const d=derive(a,y),p=derive(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.pctForm,p.pctMfa,p.pctCif]},{n:String(y),v:[d.pctForm,d.pctMfa,d.pctCif]}],["Autorizzati formati","Utenze con più fattori","Dispositivi cifrati"],["#552848","#A9739F","#D9BFD4"],"%",1,100);}
+
+/* ---------- avanzamento ---------- */
+const STEPS=[["org","Organizzazione","Titolare, ruoli interni, obbligo di designare il responsabile della protezione dei dati"],
+ ["trat","Registro dei trattamenti","Finalità, basi giuridiche, categorie di dati, destinatari, conservazione"],
+ ["gap","Conformità","Gli adempimenti del Regolamento e della normativa italiana valutati uno per uno"],
+ ["ris","Rischi e responsabili","Rischi per gli interessati, valutazioni d'impatto, fornitori e trasferimenti"],
+ ["pol","Politica e piano","Politica di protezione dei dati, informative e nomine, piano annuale"],
+ ["dati","Dati e indicatori","Formazione, sicurezza, consensi, reclami"],
+ ["reg","Registri","Richieste degli interessati, violazioni, formazione, verifiche, riesame"],
+ ["ver","Verifica","Cosa manca per poter dimostrare la conformità"],
+ ["doc","Documenti","Registro dei trattamenti, modello organizzativo, valutazioni d'impatto, relazione annuale"]];
+function vHome(a,st){
+  const c=conf(a),ts=tratStat(a),al=allarmi(a,anno);
+  return `<h1>${esc(a.nome)} — esercizio ${anno}</h1>
+  <p class="sub">Il sistema di gestione della protezione dei dati si costruisce lungo il percorso. Ogni passo alimenta i documenti finali e il quadro dei segnali qui sotto.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Avanzamento</div><div class="n">${st.tot}%</div><div class="track" style="margin-top:8px"><i style="width:${st.tot}%"></i></div></div>
+    <div class="card kpi"><div class="l">Conformità</div><div class="n">${c.val?c.pct+"%":"—"}</div><div class="h">${c.val} requisiti valutati su ${c.tot}</div></div>
+    <div class="card kpi"><div class="l">Trattamenti</div><div class="n">${ts.n}</div><div class="h">${ts.part} con dati particolari · ${ts.dpia.length} con valutazione d'impatto</div></div>
+    <div class="card kpi"><div class="l">Segnali</div><div class="n">${al.length}</div><div class="h">${al.filter(x=>x.lv==="C").length} criticità · ${al.filter(x=>x.lv==="A").length} da presidiare</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">I nove passi</p>
+      ${STEPS.map((s,i)=>{const v=st["s"+Math.min(i+1,8)];return `<div class="step" data-go="${s[0]}">
+        <div class="stepno ${v>=.99?"ok":v>0?"mid":""}">${v>=.99?"✓":i+1}</div>
+        <div style="flex:1;min-width:0"><div class="stepname">${s[1]}</div><div class="stepdesc">${s[2]}</div></div>
+        <div class="stepbar"><div class="track"><i style="width:${Math.round(v*100)}%"></i></div>
+        <div class="code" style="text-align:right;margin-top:4px">${Math.round(v*100)}%</div></div></div>`;}).join("")}
+    </div>
+    <div>
+      <div class="card"><p class="eyebrow">Segnali dai dati</p>${alrList(al,true)}</div>
+      <div class="card"><p class="eyebrow">Conformità per gruppo di requisiti</p>${chConf(a)}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 1 organizzazione ---------- */
+function vOrg(a){
+  const p=a.profilo,d=dpo(a);
+  const f=(k,l,h)=>`<label class="f"><span>${l}</span><input type="text" data-p="${k}" value="${esc(p[k])}">${h?`<div class="hint">${h}</div>`:""}</label>`;
+  const sn=(k,l,h)=>`<label class="f"><span>${l}</span><select data-p="${k}">${["","Sì","No"].map(o=>`<option value="${o}" ${p[k]===o?"selected":""}>${o||"—"}</option>`).join("")}</select>${h?`<div class="hint">${h}</div>`:""}</label>`;
+  return `<h1>1 · Organizzazione</h1>
+  <p class="sub">Chi è il titolare del trattamento, chi segue la materia all'interno e se serve un responsabile della protezione dei dati. Questi dati aprono il registro e gli altri documenti.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Titolare del trattamento</p>
+      <label class="f"><span>Denominazione</span><input type="text" data-nome value="${esc(a.nome)}"></label>
+      ${f("forma","Forma giuridica")}${f("piva","Partita IVA")}${f("sede","Sede legale")}
+      ${f("settore","Settore di attività")}${f("ateco","Codice ATECO")}${f("ndip","Dipendenti e collaboratori")}
+      ${f("siti","Sedi e siti","Comprese sedi secondarie, punti vendita, magazzini")}
+      <label class="f"><span>Ruolo prevalente</span><select data-p="ruolo">${["Titolare del trattamento","Titolare e responsabile per conto di clienti","Contitolare con altri soggetti"].map(o=>`<option ${p.ruolo===o?"selected":""}>${o}</option>`).join("")}</select>
+        <div class="hint">Se l'organizzazione tratta dati anche per conto dei clienti, per quei trattamenti è responsabile e deve tenere il registro dell'art. 30.2.</div></label>
+      <div class="hr"></div>
+      <p class="eyebrow">Logo per i documenti</p>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff;min-height:70px;min-width:140px;display:flex;align-items:center;justify-content:center">
+          ${p.logo?`<img src="${p.logo}" alt="Logo" style="max-width:140px;max-height:56px">`:'<span class="code">nessun logo</span>'}</div>
+        <button class="btn ghost sm" id="upLogo">Carica logo</button>${p.logo?'<button class="btn ghost sm" id="rmLogo">Rimuovi</button>':""}
+      </div>
+    </div>
+    <div>
+      <div class="card"><p class="eyebrow">Ruoli interni</p>
+        ${f("legale","Legale rappresentante","Firma politica, nomine e contratti con i responsabili")}
+        ${f("ref","Referente interno per la protezione dei dati","Coordina gli adempimenti e riceve richieste e segnalazioni di incidenti")}
+        ${f("contatto","Recapito per gli interessati","L'indirizzo indicato nelle informative per l'esercizio dei diritti")}
+        ${sn("ads","Sono presenti amministratori di sistema, interni o esterni","Se sì, servono nomina individuale, registrazione degli accessi e verifica annuale")}
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><p class="eyebrow" style="margin:0">Responsabile della protezione dei dati · art. 37</p>
+          <span class="tag ${!d.val?"t-gry":d.obbl?(d.nom?"t-grn":"t-red"):"t-acc"}">${!d.val?"da valutare":d.obbl?(d.nom?"obbligatorio · designato":"obbligatorio · manca"):"non obbligatorio"}</span></div>
+        ${sn("dpo_a","L'organizzazione è un'autorità pubblica o un organismo pubblico")}
+        ${sn("dpo_b","L'attività principale richiede il monitoraggio regolare e sistematico di persone su larga scala")}
+        ${sn("dpo_c","L'attività principale consiste nel trattare su larga scala categorie particolari di dati o dati giudiziari")}
+        <div class="hint" style="margin:-4px 0 12px">Basta una risposta affermativa perché la designazione sia obbligatoria. «Attività principale» è quella che realizza lo scopo dell'organizzazione, non le attività di supporto come paghe e contabilità.</div>
+        <div class="hr"></div>
+        ${f("dpo_nome","Designato","Nome o società; lascia vuoto se non designato")}${f("dpo_cont","Dati di contatto pubblicati")}
+        <label class="f"><span>Comunicato al Garante il</span><input type="date" data-p="dpo_com" value="${esc(p.dpo_com)}"></label>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 2 registro dei trattamenti ---------- */
+function vTrat(a){
+  const T=a.trattamenti,ts=tratStat(a),P="trattamenti",mancanti=CAT.filter(c=>!T.some(t=>t.nome===c.nome));
+  const flag=t=>`${t.base?`<span class="tag t-acc">${esc(t.base.replace(/ \(.*/,""))}</span>`:'<span class="tag t-red">senza base giuridica</span>'}
+    ${t.part==="Sì"?`<span class="tag ${t.b9?"t-amb":"t-red"}">dati particolari</span>`:""}${t.extra==="Sì"?'<span class="tag t-blu">fuori SEE</span>':""}${dpiaNec(a,t)?`<span class="tag ${t.dpia_stato==="Conclusa"?"t-grn":"t-red"}">valutazione d'impatto</span>`:""}`;
+  const form=(t,i)=>`<div class="gb">
+    <div class="grid g4">
+      <label class="f" style="grid-column:span 2"><span>Denominazione del trattamento</span>${F.t(P,i,"nome",t.nome,"",1)}</label>
+      <label class="f"><span>Ruolo dell'organizzazione</span>${F.s(P,i,"ruolo",t.ruolo,["Titolare","Contitolare","Responsabile"])}</label>
+      <label class="f"><span>Funzione interna di riferimento</span>${F.t(P,i,"resp",t.resp)}</label>
+      <label class="f" style="grid-column:1/-1"><span>Finalità</span>${F.a(P,i,"fin",t.fin,"Perché si trattano i dati")}</label>
+      <label class="f" style="grid-column:span 2"><span>Base giuridica · art. 6</span>${F.s(P,i,"base",t.base,BASI,1)}</label>
+      ${isLI(t)?`<label class="f" style="grid-column:span 2"><span>Bilanciamento degli interessi documentato</span>${F.s(P,i,"lia",t.lia,["","Sì","No"],1)}</label>`:'<div style="grid-column:span 2"></div>'}
+      <label class="f" style="grid-column:span 2"><span>Categorie di interessati</span>${F.t(P,i,"int",t.int,"es. dipendenti, clienti, visitatori",1)}</label>
+      <label class="f" style="grid-column:span 2"><span>Categorie di destinatari</span>${F.t(P,i,"dest",t.dest,"A chi vengono comunicati i dati",1)}</label>
+      <label class="f" style="grid-column:1/-1"><span>Categorie di dati personali</span>${F.a(P,i,"dati",t.dati)}</label>
+      <label class="f"><span>Categorie particolari · art. 9</span>${F.s(P,i,"part",t.part,["No","Sì"],1)}</label>
+      ${t.part==="Sì"?`<label class="f" style="grid-column:span 2"><span>Condizione dell'art. 9.2</span>${F.s(P,i,"b9",t.b9,B9,1)}</label>`:'<div style="grid-column:span 2"></div>'}
+      <label class="f"><span>Dati giudiziari · art. 10</span>${F.s(P,i,"giud",t.giud,["No","Sì"])}</label>
+      <label class="f"><span>Trasferimento fuori dallo SEE</span>${F.s(P,i,"extra",t.extra,["No","Sì"],1)}</label>
+      ${t.extra==="Sì"?`<label class="f" style="grid-column:span 3"><span>Paese di destinazione e garanzia</span>${F.t(P,i,"extra_det",t.extra_det,"es. Stati Uniti, clausole contrattuali tipo")}</label>`:'<div style="grid-column:span 3"></div>'}
+      <label class="f" style="grid-column:span 2"><span>Termine di conservazione</span>${F.t(P,i,"cons",t.cons,"Durata o criterio per determinarla",1)}</label>
+      <label class="f" style="grid-column:span 2"><span>Sistemi e archivi</span>${F.t(P,i,"sis",t.sis,"Applicazioni, archivi cartacei, servizi cloud")}</label>
+      <label class="f" style="grid-column:1/-1"><span>Misure di sicurezza · art. 32</span>${F.a(P,i,"mis",t.mis,"Descrizione generale delle misure tecniche e organizzative")}</label>
+    </div>
+    <div class="rx"><span class="code">art. 30.1 · ${Math.round(tComp(t)*100)}% dei campi obbligatori</span><button class="btn ghost sm" data-ldel="${P}" data-i="${i}">Elimina trattamento</button></div></div>`;
+  return `<h1>2 · Registro dei trattamenti</h1>
+  <p class="sub">Art. 30. Un trattamento per ogni finalità: è la mappa su cui poggiano informative, valutazione dei rischi e contratti con i fornitori. Apri una riga per compilarla; i trattamenti ricorrenti si aggiungono dal catalogo già impostati e vanno adattati.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Trattamenti censiti</div><div class="n">${ts.n}</div><div class="h">${Math.round(ts.comp*100)}% dei campi compilati</div></div>
+    <div class="card kpi"><div class="l">Dati particolari</div><div class="n">${ts.part}</div><div class="h">${ts.noB9.length} senza condizione dell'art. 9.2</div></div>
+    <div class="card kpi"><div class="l">Senza base giuridica</div><div class="n" style="color:${ts.noBase.length?"var(--red)":"inherit"}">${ts.noBase.length}</div><div class="h">${ts.noCons.length} senza termine di conservazione</div></div>
+    <div class="card kpi"><div class="l">Fuori dallo SEE</div><div class="n">${ts.extra}</div><div class="h">trattamenti con trasferimento</div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Catalogo dei trattamenti ricorrenti</h2><button class="btn sm" data-ladd="trattamenti">Aggiungi trattamento vuoto</button></div>
+    ${mancanti.length?`<div class="tabs" style="margin:0">${mancanti.map(c=>`<button class="tab" data-cat="${esc(c.nome)}">+ ${esc(c.nome)}</button>`).join("")}</div>
+    <div class="hint">Finalità, base giuridica e termini proposti sono un punto di partenza: verifica ogni campo rispetto a ciò che l'organizzazione fa davvero.</div>`:'<div class="hint" style="margin:0">Tutti i trattamenti del catalogo sono già nel registro.</div>'}
+  </div>
+  ${T.length?T.map((t,i)=>{const op=openT===i;return `<div class="grp">
+    <button class="gh" data-topen="${i}" aria-expanded="${op}">
+      <span class="code" style="width:14px">${op?"▾":"▸"}</span>
+      <span class="nm">${esc(t.nome||"Trattamento senza nome")}<span class="code" style="display:block;font-weight:400">${esc(t.int||"interessati da indicare")}${t.cons?" · "+esc(t.cons):""}</span></span>
+      <span style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">${flag(t)}</span>
+      <span class="pc">${Math.round(tComp(t)*100)}%</span>
+    </button>${op?form(t,i):""}</div>`;}).join(""):'<div class="card"><div class="empty">Il registro è vuoto. Parti dal catalogo qui sopra.</div></div>'}`;
+}
+
+/* ---------- 4 rischi, valutazioni d'impatto, responsabili ---------- */
+function vRis(a){
+  const T=a.trattamenti,rs=rischiStat(a),ts=tratStat(a),fs=fornStat(a),P="trattamenti";
+  const scala=k=>`<table><tbody>${SCALA[k].map(s=>`<tr><td class="code" style="width:20px;padding:4px 0"><b>${s[0]}</b></td><td style="padding:4px 8px"><b style="font-weight:600;font-size:12.5px">${s[1]}</b> <span style="font-size:11.5px;color:var(--ink-3)">${s[2]}</span></td></tr>`).join("")}</tbody></table>`;
+  const sel15=[["","—"],[1,1],[2,2],[3,3],[4,4],[5,5]];
+  const card=(t,i)=>{const op=openR===i,nc=nCrit(t),nec=dpiaNec(a,t);
+    return `<div class="grp">
+    <button class="gh" data-ropen="${i}" aria-expanded="${op}">
+      <span class="code" style="width:14px">${op?"▾":"▸"}</span>
+      <span class="nm">${esc(t.nome||"Trattamento senza nome")}<span class="code" style="display:block;font-weight:400">${nc} criteri di rischio su ${CRIT.length}${nec?" · valutazione d'impatto: "+esc(t.dpia_stato.toLowerCase()):""}</span></span>
+      ${nec?`<span class="tag ${t.dpia_stato==="Conclusa"?"t-grn":"t-red"}">valutazione d'impatto ${t.dpia_stato==="Conclusa"?"conclusa":"necessaria"}</span>`:""}${livTag(a,t)}
+    </button>
+    ${op?`<div class="gb"><div class="grid gx" style="grid-template-columns:1fr 1fr">
+      <div><p class="eyebrow">Vaglio preliminare · art. 35</p>
+        ${CRIT.map(c=>F.c(i,c[0],t.crit[c[0]],c[1])).join("")}
+        <div class="hint">${nec?"Con "+nc+" criteri la valutazione d'impatto è di norma necessaria.":"Sotto i "+a.param.dpia_n+" criteri la valutazione d'impatto di norma non è necessaria: conserva comunque questo vaglio."}</div></div>
+      <div><p class="eyebrow">Rischio per i diritti e le libertà</p>
+        <div class="grid" style="grid-template-columns:1fr 1fr auto;align-items:end">
+          <label class="f"><span>Probabilità</span>${F.s(P,i,"p",t.p,sel15,1)}</label>
+          <label class="f"><span>Gravità</span>${F.s(P,i,"g",t.g,sel15,1)}</label>
+          <div style="margin-bottom:18px">${livTag(a,t)}</div></div>
+        <label class="f"><span>Misure di mitigazione</span>${F.a(P,i,"misr",t.misr,"Misure in atto e pianificate per ridurre il rischio")}</label>
+        ${nec?`<div class="hr"></div><p class="eyebrow">Valutazione d'impatto</p>
+        <div class="grid g2"><label class="f"><span>Stato</span>${F.s(P,i,"dpia_stato",t.dpia_stato,["Da avviare","In corso","Conclusa"],1)}</label>
+          <label class="f"><span>Data</span>${F.d(P,i,"dpia_data",t.dpia_data)}</label></div>
+        <label class="f"><span>Necessità e proporzionalità</span>${F.a(P,i,"dpia_nec",t.dpia_nec,"Perché il trattamento è necessario e non esistono modalità meno invasive")}</label>
+        <label class="f"><span>Parere del responsabile della protezione dei dati o del referente</span>${F.t(P,i,"dpia_dpo",t.dpia_dpo)}</label>
+        <label class="f"><span>Esito</span>${F.s(P,i,"dpia_esito",t.dpia_esito,["","Rischio residuo accettabile","Consultazione preventiva del Garante"],1)}</label>`:""}
+      </div></div></div>`:""}</div>`;};
+  const R=`<div class="grid g2">
+      <div class="card"><p class="eyebrow">Matrice dei rischi</p>${chRisk(a)}
+        <div class="hint">${rs.val} trattamenti valutati su ${rs.tot}: ${rs.alti} a rischio alto, ${rs.medi} medio, ${rs.bassi} basso. Valutazioni d'impatto necessarie ${ts.dpia.length}, concluse ${ts.dpiaOk.length}.</div></div>
+      <div class="card"><p class="eyebrow">Come attribuire i punteggi</p>
+        <h2 style="font-size:12.5px;margin:0 0 4px">Probabilità</h2>${scala("p")}
+        <h2 style="font-size:12.5px;margin:12px 0 4px">Gravità per l'interessato</h2>${scala("g")}
+        <div class="hint" style="margin-top:10px">Il rischio si valuta dal punto di vista della persona a cui i dati si riferiscono, non dell'organizzazione. Livello = probabilità × gravità; alto da ${a.param.alto}, medio da ${a.param.medio}.</div></div>
+    </div>
+    ${T.length?T.map(card).join(""):'<div class="card"><div class="empty">Nessun trattamento nel registro: compila prima il passo 2.</div></div>'}`;
+  const FO=`<div class="grid g4">
+      <div class="card kpi"><div class="l">Fornitori censiti</div><div class="n">${fs.n}</div><div class="h">${fs.resp} tra responsabili e contitolari</div></div>
+      <div class="card kpi"><div class="l">Contratto art. 28</div><div class="n">${fs.resp?fmt(fs.pDpa,1)+"%":"—"}</div><div class="h">${fs.noDpa.length} da formalizzare</div></div>
+      <div class="card kpi"><div class="l">Fuori dallo SEE</div><div class="n">${fs.extra}</div><div class="h">${fs.noGar.length} senza garanzia definita</div></div>
+      <div class="card kpi"><div class="l">Verificati</div><div class="n">${fs.resp?fmt(fs.pVer,1)+"%":"—"}</div><div class="h">${fs.critici} con esito critico</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px"><div><h2 style="margin:0">Responsabili, contitolari e trasferimenti</h2><span class="code">artt. 26 · 28 · 44–49</span></div><button class="btn sm" data-ladd="fornitori">Aggiungi fornitore</button></div>
+      <div class="hint" style="margin:0 0 10px">Censisci chiunque tratti dati per conto dell'organizzazione: consulente del lavoro, assistenza informatica, gestionali e servizi cloud, piattaforme di invio, vigilanza. Per ciascuno indica la qualifica, il contratto e, se i dati escono dallo Spazio economico europeo, la garanzia applicata.</div>
+      ${fs.n?`<div class="tw"><table style="min-width:1080px"><thead><tr><th>Fornitore</th><th>Servizio</th><th>Qualifica</th><th>Paese</th><th>Contratto</th><th>Trasferimento</th><th>Ultima verifica</th><th>Esito</th><th></th></tr></thead><tbody>
+      ${a.fornitori.map((f,i)=>`<tr><td style="min-width:170px">${F.t("fornitori",i,"nome",f.nome,"Ragione sociale")}</td>
+        <td style="min-width:150px">${F.t("fornitori",i,"serv",f.serv,"Che cosa fa")}</td>
+        <td style="width:160px">${F.s("fornitori",i,"ruolo",f.ruolo,RUOLI_F,1)}</td>
+        <td style="width:110px">${F.t("fornitori",i,"paese",f.paese)}</td>
+        <td style="width:110px">${F.s("fornitori",i,"dpa",f.dpa,["","Sì","No","Non dovuto"],1)}</td>
+        <td style="width:180px">${F.s("fornitori",i,"extra",f.extra,GARANZIE,1)}</td>
+        <td style="width:150px">${F.d("fornitori",i,"ver",f.ver,1)}</td>
+        <td style="width:130px">${F.s("fornitori",i,"esito",f.esito,["","Adeguato","Azioni richieste","Critico"],1)}</td>
+        <td style="width:34px">${F.x("fornitori",i)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Nessun fornitore censito.</div>'}
+    </div>`;
+  return `<h1>4 · Rischi e responsabili</h1>
+  <p class="sub">Per ogni trattamento del registro: vaglio sulla necessità della valutazione d'impatto e rischio per gli interessati. Nella seconda scheda i fornitori che trattano dati per conto dell'organizzazione e i trasferimenti all'estero.</p>
+  ${tabs("ris",[["rischi","Rischi e valutazioni d'impatto",T.length],["forn","Responsabili e trasferimenti",fs.n]])}
+  ${tab.ris==="rischi"?R:FO}`;
+}
+
+/* ---------- 5 politica, documenti, piano ---------- */
+function vPol(a){
+  const p=a.politica,nchk=POLCHK.filter(k=>p.chk[k[0]]).length,t0=oggi();
+  const POL=`<div class="grid gx" style="grid-template-columns:3fr 2fr">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px"><div><h2 style="margin:0">Politica di protezione dei dati</h2><span class="code">art. 24.2 · ${p.testo.trim().split(/\s+/).filter(Boolean).length} parole</span></div>
+          <button class="btn ghost sm" id="polMod">Inserisci testo modello</button></div>
+        <textarea data-pol="testo" style="min-height:420px" placeholder="Scrivi la politica oppure parti dal testo modello e adattalo">${esc(p.testo)}</textarea>
+        <div class="hint">Il testo modello fissa le regole essenziali. Va adattato ai ruoli reali dell'organizzazione: una politica che nessuno riconosce non dimostra nulla.</div>
+      </div>
+      <div class="card"><p class="eyebrow">Contenuti attesi · ${nchk} su ${POLCHK.length}</p>
+        ${POLCHK.map(k=>`<label class="chk"><input type="checkbox" data-chk="${k[0]}" ${p.chk[k[0]]?"checked":""}><span>${k[1]}</span></label>`).join("")}
+        <div class="hr"></div>
+        <label class="f"><span>Approvata il</span><input type="date" data-pol="data" value="${esc(p.data)}"></label>
+        <label class="f"><span>Firmata da</span><input type="text" data-pol="firma" value="${esc(p.firma)}" placeholder="Nome e carica"></label>
+      </div>
+    </div>`;
+  const ad=a.docs.filter(x=>x.stato==="Adottato").length;
+  const DOC=`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap"><div><h2 style="margin:0">Informative, nomine e procedure</h2><span class="code">${ad} adottati su ${a.docs.length}</span></div>
+        <div style="display:flex;gap:8px"><button class="btn ghost sm" id="docTipo">Carica elenco tipo</button><button class="btn sm" data-ladd="docs">Aggiungi documento</button></div></div>
+      <div class="hint" style="margin:0 0 10px">L'elenco dei documenti che compongono il sistema, con versione e stato. Lo strumento ne tiene l'inventario e le scadenze di revisione; i testi restano nei file dell'organizzazione. L'elenco tipo propone quindici documenti ricorrenti: elimina quelli che non servono.</div>
+      ${a.docs.length?`<div class="tw"><table style="min-width:900px"><thead><tr><th style="width:230px">Tipo</th><th>Oggetto o destinatari</th><th style="width:80px">Vers.</th><th style="width:150px">Adottato il</th><th style="width:150px">Prossima revisione</th><th style="width:140px">Stato</th><th style="width:34px"></th></tr></thead><tbody>
+      ${a.docs.map((x,i)=>`<tr${x.rev&&x.rev<t0&&x.stato==="Adottato"?' style="background:var(--amber-lt)"':""}><td>${F.s("docs",i,"tipo",x.tipo,DOC_K)}</td><td>${F.t("docs",i,"tit",x.tit,"",1)}</td><td>${F.t("docs",i,"ver",x.ver)}</td>
+        <td>${F.d("docs",i,"data",x.data)}</td><td>${F.d("docs",i,"rev",x.rev,1)}</td><td>${F.s("docs",i,"stato",x.stato,DOC_ST,1)}</td><td>${F.x("docs",i)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Nessun documento in elenco. Carica l’elenco tipo e adattalo.</div>'}
+    </div>`;
+  const fatti=a.piano.filter(x=>x.stato==="Fatto").length;
+  const PI=`<div class="card"><p class="eyebrow">Piano ${anno} · ${fatti} attività concluse su ${a.piano.length}</p>${chPiano(a)}</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap"><div><h2 style="margin:0">Attività dei dodici mesi</h2><span class="code">art. 24.1</span></div>
+        <div style="display:flex;gap:8px"><button class="btn ghost sm" id="pianoTipo">Carica piano tipo</button><button class="btn sm" data-ladd="piano">Aggiungi attività</button></div></div>
+      <div class="hint" style="margin:0 0 10px">Il Regolamento chiede che le misure siano riesaminate e aggiornate: un piano con scadenze e responsabili è il modo più semplice per dimostrarlo. Il piano tipo propone quindici attività ricorrenti.</div>
+      ${a.piano.length?`<div class="tw"><table style="min-width:760px"><thead><tr><th style="width:92px">Mese</th><th>Attività</th><th style="width:130px">Rif.</th><th style="width:150px">Responsabile</th><th style="width:120px">Stato</th><th style="width:34px"></th></tr></thead><tbody>
+      ${a.piano.map((x,i)=>[x,i]).sort((p1,p2)=>(+p1[0].mese)-(+p2[0].mese)).map(([x,i])=>`<tr>
+        <td>${F.s("piano",i,"mese",x.mese,MESI.map((m,k)=>[k+1,m]),1)}</td><td>${F.t("piano",i,"att",x.att,"Attività")}</td>
+        <td>${F.t("piano",i,"rif",x.rif)}</td><td>${F.t("piano",i,"resp",x.resp)}</td>
+        <td>${F.s("piano",i,"stato",x.stato,["Da fare","In corso","Fatto"],1)}</td><td>${F.x("piano",i)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Piano vuoto. Carica il piano tipo e adattalo.</div>'}
+    </div>`;
+  return `<h1>5 · Politica e piano</h1>
+  <p class="sub">La direzione fissa le regole, il sistema le traduce in informative, nomine e procedure, il piano annuale le tiene aggiornate.</p>
+  ${tabs("pol",[["pol","Politica",nchk+"/"+POLCHK.length],["docs","Informative e nomine",a.docs.length],["pia","Piano annuale",a.piano.length]])}
+  ${tab.pol==="pol"?POL:tab.pol==="docs"?DOC:PI}`;
+}
+
+/* ---------- 6 dati ---------- */
+function vDati(a){
+  const d=derive(a,anno),prev=anno-1,g=regStat(a,anno),fs=fornStat(a),ts=tratStat(a);
+  const row=k=>{const cur=dati(a,anno)[k.k],pre=dati(a,prev)[k.k];
+    return `<tr><td><b style="font-weight:500">${esc(k.n)}</b>${k.h?`<div class="hint">${esc(k.h)}</div>`:""}</td>
+    <td style="width:56px" class="code">${k.u}</td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${anno}" value="${esc(cur===undefined?"":cur)}" aria-label="${esc(k.n)} ${anno}"></td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${prev}" value="${esc(pre===undefined?"":pre)}" style="background:var(--bg)" aria-label="${esc(k.n)} ${prev}"></td></tr>`;};
+  const D={org:dtab([["Autorizzati formati nell'esercizio",fmt(d.pctForm,1),"%"],["Ore di formazione per autorizzato",fmt(d.oreForm,1),"ore"],["Nuovi ingressi formati",fmt(d.pctNuovi,1),"%"],["Ore-persona dal registro formazione",fmt(g.formOre),"ore"]]),
+    sic:dtab([["Utenze con autenticazione a più fattori",fmt(d.pctMfa,1),"%"],["Dispositivi mobili cifrati",fmt(d.pctCif,1),"%"],["Prove di ripristino dal registro verifiche",g.ripr,""]]),
+    mkt:dtab([["Contatti con consenso o base documentata",fmt(d.pctCons,1),"%"],["Tasso di opposizione",fmt(d.pctOpp,1),"%"]]),
+    aut:dtab([["Richieste degli interessati nell'esercizio",g.dir,"dal registro"],["Violazioni registrate",g.br,"dal registro"]])};
+  return `<h1>6 · Dati e indicatori</h1>
+  <p class="sub">I numeri che permettono di dimostrare che il sistema funziona. Inserisci i dati dell'esercizio e dell'anno precedente: quelli evidenziati si calcolano da soli, altri arrivano dal registro dei trattamenti e dai registri del passo 7.</p>
+  ${SEZ.map(s=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:8px"><h2 style="margin:0">${s.n}</h2><span class="tag t-acc">${esc(s.r)}</span></div>
+    <div class="tw"><table style="min-width:520px"><thead><tr><th>Indicatore</th><th>Unità</th><th>${anno}</th><th>${prev}</th></tr></thead>
+    <tbody>${KPI.filter(k=>k.s===s.id).map(row).join("")}</tbody></table></div>
+    <div style="margin-top:12px">${D[s.id]}</div></div>`).join("")}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:8px"><h2 style="margin:0">Dal registro dei trattamenti e dai registri</h2><span class="tag t-acc">artt. 12 · 28 · 30 · 33 · 35</span></div>
+    <div class="grid g2">
+    ${dtab([["Trattamenti censiti",ts.n,""],["Valutazioni d'impatto concluse",ts.dpiaOk.length,"su "+ts.dpia.length+" necessarie"],["Responsabili con contratto",fs.resp?fmt(fs.pDpa,1):"—","%"],["Responsabili verificati",fs.resp?fmt(fs.pVer,1):"—","%"],["Audit e verifiche svolti",g.audit,"· "+fmt(g.rilievi)+" rilievi"]])}
+    ${dtab([["Richieste riscontrate nei termini",g.dirOk,"su "+g.dir],["Tempo medio di riscontro",g.dirEv?g.dirTm:"—","giorni"],["Richieste aperte",g.dirOpen+g.dirOver,g.dirOver?"· "+g.dirOver+" scadute":""],["Violazioni notificate al Garante",g.brNot,"su "+g.brRis+" a rischio"],["Notifiche entro 72 ore",g.brOk,"su "+g.brNot]])}
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Richieste e violazioni</p>${chDir(a,anno)}</div>
+    <div class="card"><p class="eyebrow">Formazione e misure di sicurezza</p>${chSic(a,anno)}</div>
+  </div>`;
+}
+
+/* ---------- 8 verifica ---------- */
+function vVer(a,st){
+  const y=anno,c=conf(a),rs=rischiStat(a),fs=fornStat(a),ts=tratStat(a),g=regStat(a,y),al=allarmi(a,y),p=a.profilo,pol=a.politica,d=dpo(a);
+  const LBL={forma:"forma giuridica",sede:"sede",settore:"settore",ateco:"codice ATECO",ndip:"numero di dipendenti",legale:"legale rappresentante",ref:"referente interno",contatto:"recapito per gli interessati",ads:"presenza di amministratori di sistema"};
+  const nm=t=>t.nome||"senza nome";
+  const B=[
+   ["Organizzazione e ruoli",Object.keys(LBL).filter(k=>!String(p[k]||"").trim()).map(k=>LBL[k]).concat(!d.val?["valutazione dell'obbligo di designare il responsabile della protezione dei dati"]:d.obbl&&!d.nom?["designazione del responsabile della protezione dei dati"]:[]),"org"],
+   ["Registro dei trattamenti",[].concat(!ts.n?["nessun trattamento censito"]:[],a.trattamenti.filter(t=>tComp(t)<1).map(t=>"campi mancanti: "+nm(t)),ts.noB9.map(t=>"condizione dell'art. 9.2: "+nm(t)),ts.noLia.map(t=>"bilanciamento degli interessi: "+nm(t))),"trat"],
+   ["Requisiti da valutare",REQ.filter(r=>!(a.gap[r.id]||{}).st).map(r=>GN(r.g)+" "+r.ref),"gap"],
+   ["Requisiti da adeguare senza azione definita",REQ.filter(r=>{const x=a.gap[r.id]||{};return (x.st==="p"||x.st==="n")&&!x.az;}).map(r=>GN(r.g)+" "+r.ref),"gap"],
+   ["Requisiti conformi senza evidenza",REQ.filter(r=>{const x=a.gap[r.id]||{};return x.st==="c"&&!x.ev;}).map(r=>GN(r.g)+" "+r.ref),"gap"],
+   ["Rischi e valutazioni d'impatto",[].concat(a.trattamenti.filter(t=>!liv(t)).map(t=>"rischio da valutare: "+nm(t)),ts.dpiaNo.map(t=>"valutazione d'impatto da concludere: "+nm(t)),rs.scoperti.map(t=>"misure di mitigazione: "+nm(t))),"ris"],
+   ["Responsabili e trasferimenti",[].concat(!fs.n?["nessun fornitore censito"]:[],a.fornitori.filter(f=>!f.dpa||!f.extra).map(f=>"contratto o trasferimento da indicare: "+(f.nome||"senza nome")),fs.noDpa.filter(f=>f.dpa).map(f=>"contratto art. 28: "+(f.nome||"senza nome")),fs.noGar.map(f=>"garanzia per il trasferimento: "+(f.nome||"senza nome"))),"ris"],
+   ["Politica, documenti e piano",[].concat(pol.testo.trim().length<=200?["testo della politica"]:[],POLCHK.filter(k=>!pol.chk[k[0]]).map(k=>"politica: "+k[1].toLowerCase()),!pol.data?["data di approvazione della politica"]:[],
+     a.docs.filter(x=>x.tit).length<6?["meno di sei documenti in elenco"]:[],a.docs.filter(x=>x.tit&&x.stato!=="Adottato").map(x=>x.stato.toLowerCase()+": "+x.tit),a.piano.filter(x=>x.att).length<8?["piano annuale con meno di otto attività"]:[]),"pol"],
+   ["Indicatori dell'esercizio "+y,KPI.filter(k=>!has(a,y,k.k)).map(k=>k.n),"dati"],
+   ["Registrazioni dell'esercizio "+y,[].concat(!g.form?["formazione (art. 29)"]:[],!g.audit?["audit o verifica (art. 24)"]:[],p.ads==="Sì"&&!g.ads?["verifica degli amministratori di sistema"]:[],!g.ries?["riesame annuale"]:[],
+     g.dirOver?[g.dirOver+" richieste scadute"]:[],g.brAperte?[g.brAperte+" violazioni non chiuse"]:[]),"reg"]
+  ];
+  const aperti=B.reduce((s,b)=>s+b[1].length,0),crit=al.filter(x=>x.lv==="C").length;
+  const pronto=crit===0&&ts.n>0&&c.da===0&&c.n===0&&B[9][1].length===0&&st.tot>=85;
+  return `<h1>8 · Verifica</h1>
+  <p class="sub">Il Regolamento chiede di poter dimostrare la conformità in ogni momento: questo è l'elenco di ciò che oggi non si potrebbe mostrare a un'ispezione o a un cliente che chiede evidenze.</p>
+  <div class="card"><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div class="kpi"><div class="l">Sistema dimostrabile</div><div class="n">${st.tot}%</div></div>
+    <div style="flex:1;min-width:220px"><div class="track"><i style="width:${st.tot}%"></i></div>
+    <div class="hint">${pronto?"L'impianto è completo e documentato: mantienilo con il piano annuale.":crit?"Ci sono "+crit+" criticità: sono le situazioni più esposte a sanzione e vanno chiuse per prime.":st.tot>=60?"Impianto a buon punto. Chiudi le voci qui sotto nell'ordine in cui compaiono.":"Il sistema non è ancora rappresentativo: completa registro, valutazione dei requisiti e registrazioni."}</div></div>
+    <span class="tag ${pronto?"t-grn":crit?"t-red":"t-amb"}">${pronto?"dimostrabile":aperti+" voci aperte"}</span>
+  </div></div>
+  <div class="card"><p class="eyebrow">Segnali dai dati · ${al.length}</p>${alrList(al,true)}</div>
+  ${B.map(b=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div><h2 style="margin:0">${b[0]}</h2><span class="code">${b[1].length===0?"completo":b[1].length+" voci da sistemare"}</span></div>
+      ${b[1].length?`<button class="btn ghost sm" data-go="${b[2]}">Vai</button>`:'<span class="tag t-grn">ok</span>'}</div>
+    ${b[1].length?`<div style="margin-top:10px;font-size:12.5px;color:var(--ink-2);line-height:1.7">${b[1].slice(0,16).map(esc).join(" · ")}${b[1].length>16?" · <i>e altre "+(b[1].length-16)+"</i>":""}</div>`:""}
+  </div>`).join("")}
+  ${!g.dir&&!g.br?`<div class="card"><div class="hint" style="margin:0">Nel ${y} non risultano richieste degli interessati né violazioni. Se è così, i registri vuoti sono corretti; se qualcosa è arrivato per altri canali, va registrato.</div></div>`:""}`;
+}
+/* ---------- 9 documenti ---------- */
+const DOCS={reg:"Registro delle attività di trattamento",man:"Modello organizzativo per la protezione dei dati",pol:"Politica di protezione dei dati",dpia:"Valutazioni d'impatto",gap:"Rapporto di conformità e piano di adeguamento",rie:"Relazione annuale"};
+const par=t=>{t=String(t||"").trim();return t?t.split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join(""):"";};
+const miss=t=>`<p class="miss">[${t}]</p>`;
+const stTag=s=>({c:'<span class="tag t-grn">conforme</span>',p:'<span class="tag t-amb">parziale</span>',n:'<span class="tag t-red">non conforme</span>',na:'<span class="tag t-gry">non pertinente</span>'}[s]||'<span class="code">da valutare</span>');
+function cover(a,k){const p=a.profilo;
+  return `<div class="cover">${p.logo?`<div class="lg"><img src="${p.logo}" alt=""></div>`:""}
+    <div class="k">${esc(k)} · Regolamento (UE) 2016/679</div><h2>${esc(a.nome)}</h2>
+    <p>${esc(p.settore||"")}${p.sede?" · "+esc(p.sede):""}</p>
+    <p style="margin-top:16px;font-size:12px;opacity:.75">Esercizio ${anno} · documento generato il ${new Date().toLocaleDateString("it-IT")}</p></div>`;}
+function vDoc(a){
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+    <div><h1>9 · Documenti</h1><p class="sub" style="margin:0">Assemblati dai dati inseriti. Scegli il documento e usa <b>Stampa documento</b> per ottenere il PDF.</p></div>
+    <select id="docSel" style="width:auto;max-width:100%;font-weight:600" aria-label="Documento">${Object.keys(DOCS).map(k=>`<option value="${k}" ${docTipo===k?"selected":""}>${DOCS[k]}</option>`).join("")}</select></div>
+  <div class="doc">${({reg:dReg,man:dMan,pol:dPol,dpia:dDpia,gap:dGap,rie:dRie})[docTipo](a)}</div>`;
+}
+function dPol(a){const p=a.politica;
+  return cover(a,"Politica di protezione dei dati")+`<div class="inner"><h3>Politica di protezione dei dati</h3>
+    ${par(p.testo)||miss("Testo della politica da scrivere al passo 5")}
+    <div class="firma"><div>${esc(a.profilo.sede?a.profilo.sede.split("(")[0].trim()+", ":"")}${fdata(p.data)}</div><div>${esc(p.firma||"Il legale rappresentante")}</div></div>
+    <p class="note" style="margin-top:26px">Adottata ai sensi dell'art. 24, paragrafo 2, del Regolamento (UE) 2016/679 e comunicata a tutte le persone autorizzate al trattamento.</p></div>`;
+}
+function kpiTab(a,y,sez){
+  const n=(k,d=0)=>has(a,y,k)?fmt(num(a,y,k),d):"—",np=(k,d=0)=>has(a,y-1,k)?fmt(num(a,y-1,k),d):"—";
+  const dl=k=>{if(!has(a,y,k)||!has(a,y-1,k))return "—";const c=num(a,y,k),p=num(a,y-1,k);if(!p)return "—";const v=(c-p)/Math.abs(p)*100;return (v>0?"+":"")+fmt(v,1)+"%";};
+  return `<table><thead><tr><th>Indicatore</th><th class="num">${y}</th><th class="num">${y-1}</th><th class="num" style="width:80px">Var.</th></tr></thead><tbody>
+    ${KPI.filter(k=>k.s===sez).map(k=>`<tr><td>${esc(k.n)} <span class="code">${k.u}</span></td><td class="num">${n(k.k)}</td><td class="num">${np(k.k)}</td><td class="num">${dl(k.k)}</td></tr>`).join("")}</tbody></table>`;
+}
+function dGap(a){
+  const c=conf(a),bad=REQ.filter(r=>["p","n"].includes((a.gap[r.id]||{}).st)),na=REQ.filter(r=>(a.gap[r.id]||{}).st==="na");
+  return cover(a,"Rapporto di conformità")+`<div class="inner">
+  <h3>Sintesi</h3>
+  <p>La valutazione ha riguardato ${c.val} requisiti su ${c.tot}: ${c.c} conformi, ${c.p} parzialmente conformi, ${c.n} non conformi, ${c.na} non pertinenti${c.da?"; "+c.da+" restano da valutare":""}. L'indice di conformità sui requisiti pertinenti è <b>${c.val?c.pct+"%":"—"}</b>; le conformità parziali pesano per metà.</p>
+  <figure>${chConf(a)}<figcaption>Indice di conformità per gruppo di requisiti.</figcaption></figure>
+  <table><thead><tr><th>Gruppo</th><th class="num">Req.</th><th class="num">Conf.</th><th class="num">Parz.</th><th class="num">NC</th><th class="num">N.P.</th><th class="num">Da val.</th><th class="num">Indice</th></tr></thead><tbody>
+  ${GRP.map(g=>{const x=conf(a,g.id);return `<tr><td>${esc(g.n)} <span class="code">${esc(g.r)}</span></td><td class="num">${x.tot}</td><td class="num">${x.c}</td><td class="num">${x.p}</td><td class="num">${x.n}</td><td class="num">${x.na}</td><td class="num">${x.da}</td><td class="num"><b>${(x.c+x.p+x.n)?x.pct+"%":"—"}</b></td></tr>`;}).join("")}</tbody></table>
+  <h3>Piano di adeguamento</h3>
+  ${bad.length?`<table><thead><tr><th style="width:112px">Rif.</th><th>Requisito</th><th style="width:96px">Stato</th><th style="width:26%">Azione</th><th style="width:110px">Responsabile</th><th style="width:86px">Scadenza</th></tr></thead><tbody>
+  ${bad.map(r=>{const x=a.gap[r.id];return `<tr><td class="code">${r.ref}</td><td>${esc(r.t)}${x.ev?`<div class="note">${esc(x.ev)}</div>`:""}</td><td>${stTag(x.st)}</td><td>${esc(x.az)||'<span class="miss">da definire</span>'}</td><td>${esc(x.resp||"—")}</td><td>${fdata(x.scad)}</td></tr>`;}).join("")}</tbody></table>`:"<p>Nessun requisito risulta parziale o non conforme.</p>"}
+  ${na.length?`<h3>Requisiti non pertinenti</h3><table><thead><tr><th style="width:112px">Rif.</th><th>Requisito</th><th style="width:36%">Motivazione</th></tr></thead><tbody>${na.map(r=>`<tr><td class="code">${r.ref}</td><td>${esc(r.t)}</td><td>${esc(a.gap[r.id].ev)||'<span class="miss">da motivare</span>'}</td></tr>`).join("")}</tbody></table>
+  <p class="note">Sono indicati come non pertinenti gli adempimenti riferiti a situazioni che nell'organizzazione non ricorrono.</p>`:""}
+  <h3>Dettaglio per requisito</h3>
+  ${GRP.map(g=>`<h4>${esc(g.n)} <span class="code">${esc(g.r)}</span></h4><table><thead><tr><th style="width:112px">Rif.</th><th>Requisito</th><th style="width:110px">Stato</th><th style="width:30%">Evidenza</th></tr></thead><tbody>
+    ${REQ.filter(r=>r.g===g.id).map(r=>{const x=a.gap[r.id]||{};return `<tr><td class="code">${r.ref}</td><td>${esc(r.t)}</td><td>${stTag(x.st)}</td><td>${esc(x.ev||"")}</td></tr>`;}).join("")}</tbody></table>`).join("")}
+  <p class="note" style="margin-top:22px">Autovalutazione interna: non costituisce parere legale né attestazione di conformità. Adempimenti richiamati in sintesi; fanno fede il Regolamento (UE) 2016/679 e il D.Lgs. 196/2003.</p></div>`;
+}
+function titolare(a){const p=a.profilo,d=dpo(a);
+  return `<table><tbody>
+    <tr><td style="width:36%">Titolare del trattamento</td><td><b>${esc(a.nome)}</b>${p.forma?" · "+esc(p.forma):""}</td></tr>
+    ${[["sede","Sede legale"],["piva","Partita IVA"],["settore","Attività"],["legale","Legale rappresentante"],["ref","Referente interno"],["contatto","Recapito per gli interessati"]].map(x=>p[x[0]]?`<tr><td>${x[1]}</td><td>${esc(p[x[0]])}</td></tr>`:"").join("")}
+    <tr><td>Responsabile della protezione dei dati</td><td>${d.nom?esc(p.dpo_nome)+(p.dpo_cont?" · "+esc(p.dpo_cont):""):!d.val?'<span class="miss">obbligo da valutare al passo 1</span>':d.obbl?'<span class="miss">obbligatorio, da designare</span>':"Non designato: l'obbligo dell'art. 37 non ricorre"}</td></tr></tbody></table>`;}
+function dReg(a){
+  const T=a.trattamenti,v=(x,m)=>String(x||"").trim()?esc(x):`<span class="miss">${m||"da indicare"}</span>`;
+  return cover(a,"Registro delle attività di trattamento")+`<div class="inner">
+  <h3>Registro delle attività di trattamento</h3>
+  <p>Tenuto ai sensi dell'art. 30, paragrafo 1, del Regolamento (UE) 2016/679. Trattamenti censiti: ${T.length}. Ultimo aggiornamento: ${new Date().toLocaleDateString("it-IT")}.</p>
+  ${titolare(a)}
+  ${T.length?`<h4>Quadro d'insieme</h4><table><thead><tr><th style="width:28px">N.</th><th>Trattamento</th><th>Base giuridica</th><th>Interessati</th><th>Conservazione</th></tr></thead><tbody>
+    ${T.map((t,i)=>`<tr><td class="code">${i+1}</td><td><b>${esc(t.nome)}</b></td><td>${v(t.base.replace(/ \(/," ("))}</td><td>${v(t.int)}</td><td>${v(t.cons)}</td></tr>`).join("")}</tbody></table>`:miss("Registro da compilare al passo 2")}
+  ${T.map((t,i)=>`<h3>${i+1} · ${esc(t.nome||"Trattamento senza nome")}</h3><table><tbody>
+    <tr><td style="width:32%">Ruolo dell'organizzazione</td><td>${esc(t.ruolo)}${t.resp?" · funzione di riferimento: "+esc(t.resp):""}</td></tr>
+    <tr><td>Finalità</td><td>${v(t.fin)}</td></tr>
+    <tr><td>Base giuridica</td><td>${v(t.base)}${isLI(t)?(t.lia==="Sì"?" · bilanciamento degli interessi documentato":' · <span class="miss">bilanciamento da documentare</span>'):""}</td></tr>
+    <tr><td>Categorie di interessati</td><td>${v(t.int)}</td></tr>
+    <tr><td>Categorie di dati personali</td><td>${v(t.dati)}</td></tr>
+    <tr><td>Categorie particolari (art. 9)</td><td>${t.part==="Sì"?"Sì · condizione: "+v(t.b9):"No"}</td></tr>
+    <tr><td>Dati relativi a condanne e reati (art. 10)</td><td>${esc(t.giud)}</td></tr>
+    <tr><td>Categorie di destinatari</td><td>${v(t.dest)}</td></tr>
+    <tr><td>Trasferimenti verso paesi terzi</td><td>${t.extra==="Sì"?"Sì · "+v(t.extra_det,"paese e garanzia da indicare"):"Nessuno"}</td></tr>
+    <tr><td>Termine di cancellazione</td><td>${v(t.cons)}</td></tr>
+    <tr><td>Sistemi e archivi</td><td>${esc(t.sis||"—")}</td></tr>
+    <tr><td>Misure di sicurezza (art. 32)</td><td>${v(t.mis)}</td></tr></tbody></table>`).join("")}
+  <p class="note" style="margin-top:22px">Il registro è tenuto in forma elettronica ed è messo a disposizione del Garante per la protezione dei dati personali su richiesta.</p></div>`;
+}
+function dDpia(a){
+  const T=a.trattamenti,N=T.filter(t=>dpiaNec(a,t));
+  return cover(a,"Valutazioni d'impatto sulla protezione dei dati")+`<div class="inner">
+  <h3>Vaglio preliminare</h3>
+  <p>Per ogni trattamento del registro è stata verificata la presenza dei nove criteri di rischio indicati dalle linee guida europee sulla valutazione d'impatto. In presenza di almeno ${a.param.dpia_n} criteri la valutazione è considerata necessaria.</p>
+  ${T.length?`<table><thead><tr><th>Trattamento</th><th>Criteri presenti</th><th class="num" style="width:50px">N.</th><th style="width:150px">Esito del vaglio</th></tr></thead><tbody>
+  ${T.map(t=>`<tr><td><b>${esc(t.nome)}</b></td><td>${CRIT.filter(c=>t.crit[c[0]]).map(c=>esc(c[1])).join("; ")||"—"}</td><td class="num">${nCrit(t)}</td><td>${dpiaNec(a,t)?'<span class="tag t-amb">valutazione necessaria</span>':'<span class="tag t-gry">non necessaria</span>'}</td></tr>`).join("")}</tbody></table>`:miss("Registro da compilare al passo 2")}
+  ${N.length?N.map(t=>`<h3>${esc(t.nome)}</h3>
+    <table><tbody><tr><td style="width:30%">Stato</td><td>${esc(t.dpia_stato)}${t.dpia_data?" · "+fdata(t.dpia_data):""}</td></tr></tbody></table>
+    <h4>Descrizione sistematica del trattamento</h4>
+    <table><tbody><tr><td style="width:30%">Finalità</td><td>${esc(t.fin)}</td></tr><tr><td>Base giuridica</td><td>${esc(t.base)}</td></tr><tr><td>Interessati</td><td>${esc(t.int)}</td></tr>
+      <tr><td>Dati trattati</td><td>${esc(t.dati)}</td></tr><tr><td>Destinatari</td><td>${esc(t.dest)}</td></tr><tr><td>Conservazione</td><td>${esc(t.cons)}</td></tr><tr><td>Sistemi</td><td>${esc(t.sis||"—")}</td></tr></tbody></table>
+    <h4>Necessità e proporzionalità</h4>${par(t.dpia_nec)||miss("da compilare al passo 4")}
+    <h4>Rischi per i diritti e le libertà degli interessati</h4>
+    <p>Probabilità ${t.p||"—"}, gravità ${t.g||"—"}: livello ${liv(t)||"—"} ${liv(t)?(liv(t)>=a.param.alto?"(alto)":liv(t)>=a.param.medio?"(medio)":"(basso)"):""}.</p>
+    <h4>Misure previste</h4>${par(t.misr)||miss("misure di mitigazione da indicare")}${t.mis?`<p><b>Misure di sicurezza generali.</b> ${esc(t.mis)}</p>`:""}
+    <h4>Parere ed esito</h4>
+    <p><b>Parere del responsabile della protezione dei dati o del referente.</b> ${esc(t.dpia_dpo)||'<span class="miss">da acquisire</span>'}</p>
+    <p><b>Esito.</b> ${esc(t.dpia_esito)||'<span class="miss">da definire</span>'}</p>`).join(""):"<h3>Valutazioni d'impatto</h3><p>Nessun trattamento risulta soggetto a valutazione d'impatto in base al vaglio preliminare.</p>"}
+  <p class="note" style="margin-top:22px">Le valutazioni vanno riesaminate quando cambiano il trattamento o i rischi (art. 35.11).</p></div>`;
+}
+function dMan(a){
+  const y=anno,p=a.profilo,T=a.trattamenti,c=conf(a),rs=rischiStat(a),fs=fornStat(a),ts=tratStat(a),g=regStat(a,y),d=derive(a,y),dp=derive(a,y-1),al=allarmi(a,y);
+  const dr=(l,v,pv,u)=>`<tr><td>${l} <span class="code">${u||""}</span></td><td class="num">${v}</td><td class="num">${pv}</td></tr>`;
+  const sic=REQ.filter(r=>r.g==="S"&&(a.gap[r.id]||{}).st);
+  return cover(a,"Modello organizzativo per la protezione dei dati")+`<div class="inner">
+  <h3>1 · Titolare, ruoli e responsabilità</h3>
+  ${titolare(a)}
+  <p>Il legale rappresentante adotta la politica, firma nomine e contratti con i responsabili e assegna le risorse. Il referente interno coordina gli adempimenti, tiene il registro dei trattamenti, riceve le richieste degli interessati e le segnalazioni di incidente. Le persone autorizzate trattano i dati secondo le istruzioni scritte ricevute per il proprio ruolo.</p>
+  <p>Amministratori di sistema: ${p.ads==="Sì"?"presenti, designati individualmente e verificati con cadenza annuale":p.ads==="No"?"non presenti":'<span class="miss">da indicare al passo 1</span>'}.</p>
+
+  <h3>2 · Politica di protezione dei dati</h3>
+  ${par(a.politica.testo)||miss("Politica da scrivere al passo 5")}
+  ${a.politica.data?`<p class="note">Approvata il ${fdata(a.politica.data)}${a.politica.firma?" da "+esc(a.politica.firma):""}.</p>`:""}
+
+  <h3>3 · Trattamenti</h3>
+  <p>Il registro dell'art. 30 censisce ${ts.n} trattament${ts.n===1?"o":"i"}: ${ts.part} con categorie particolari di dati, ${ts.extra} con trasferimento fuori dallo Spazio economico europeo, ${ts.dpia.length} soggett${ts.dpia.length===1?"o":"i"} a valutazione d'impatto. Il registro completo è un documento a parte.</p>
+  ${T.length?`<table><thead><tr><th>Trattamento</th><th>Base giuridica</th><th>Dati particolari</th><th>Conservazione</th></tr></thead><tbody>${T.map(t=>`<tr><td><b>${esc(t.nome)}</b></td><td>${esc(t.base)||'<span class="miss">da indicare</span>'}</td><td>${esc(t.part)}</td><td>${esc(t.cons)||'<span class="miss">da indicare</span>'}</td></tr>`).join("")}</tbody></table>`:miss("Registro da compilare al passo 2")}
+
+  <h3>4 · Rischi, valutazioni d'impatto e misure di sicurezza</h3>
+  <p>Il rischio per i diritti e le libertà degli interessati è valutato per ogni trattamento su scala da 1 a 5 per probabilità e gravità. Trattamenti valutati: ${rs.val} su ${rs.tot}; ${rs.alti} a rischio alto, ${rs.medi} medio, ${rs.bassi} basso. Valutazioni d'impatto necessarie ${ts.dpia.length}, concluse ${ts.dpiaOk.length}.</p>
+  <figure>${chRisk(a)}<figcaption>Matrice dei rischi: numero di trattamenti per combinazione di probabilità e gravità.</figcaption></figure>
+  ${T.filter(liv).length?`<table><thead><tr><th>Trattamento</th><th class="num" style="width:60px">Livello</th><th style="width:150px">Valutazione d'impatto</th><th style="width:38%">Misure di mitigazione</th></tr></thead><tbody>
+  ${T.filter(liv).slice().sort((x,z)=>liv(z)-liv(x)).map(t=>`<tr><td>${esc(t.nome)}</td><td class="num">${liv(t)}</td><td>${dpiaNec(a,t)?esc(t.dpia_stato):"non necessaria"}</td><td>${esc(t.misr)||"—"}</td></tr>`).join("")}</tbody></table>`:""}
+  <h4>Misure di sicurezza (art. 32)</h4>
+  ${sic.length?`<table><thead><tr><th>Misura</th><th style="width:36%">Come è attuata</th><th style="width:110px">Stato</th></tr></thead><tbody>${sic.map(r=>`<tr><td>${esc(r.t)}</td><td>${esc(a.gap[r.id].ev||"")}</td><td>${stTag(a.gap[r.id].st)}</td></tr>`).join("")}</tbody></table>`:miss("Misure di sicurezza da valutare al passo 3")}
+
+  <h3>5 · Responsabili del trattamento e trasferimenti</h3>
+  <p>${fs.n?`Sono censiti ${fs.n} fornitori, ${fs.resp} dei quali qualificati come responsabili, sub-responsabili o contitolari. Il ${fmt(fs.pDpa,1)}% ha sottoscritto il contratto previsto. I trasferimenti fuori dallo Spazio economico europeo riguardano ${fs.extra} fornitor${fs.extra===1?"e":"i"}.`:'<span class="miss">[Fornitori da censire al passo 4]</span>'}</p>
+  ${fs.n?`<table><thead><tr><th>Fornitore</th><th>Servizio</th><th>Qualifica</th><th>Paese</th><th>Contratto</th><th>Trasferimento</th></tr></thead><tbody>${a.fornitori.map(f=>`<tr><td>${esc(f.nome)}</td><td>${esc(f.serv)}</td><td>${esc(f.ruolo)}</td><td>${esc(f.paese)}</td><td>${esc(f.dpa||"—")}</td><td>${esc(f.extra||"—")}</td></tr>`).join("")}</tbody></table>`:""}
+
+  <h3>6 · Diritti degli interessati</h3>
+  <p>Le richieste possono essere presentate a ${esc(p.contatto)||'<span class="miss">recapito da indicare</span>'} e, comunque arrivino, sono trasmesse al referente interno. Il riscontro è dato entro un mese, prorogabile di due con comunicazione motivata.</p>
+  <p>Nell'esercizio ${y}: ${g.dir} richiest${g.dir===1?"a ricevuta":"e ricevute"}, ${g.dirOk} riscontrat${g.dirOk===1?"a":"e"} nei termini${g.dirEv?", tempo medio "+g.dirTm+" giorni":""}${g.dirLate?"; "+g.dirLate+" oltre il termine":""}${g.dirOver?"; "+g.dirOver+" scadute senza riscontro":""}.</p>
+
+  <h3>7 · Violazioni dei dati personali</h3>
+  <p>Ogni incidente che coinvolge dati personali è segnalato al referente, che valuta il rischio per gli interessati. Se il rischio non è improbabile, la violazione è notificata al Garante entro 72 ore; se è elevato, è comunicata anche agli interessati. Tutte le violazioni sono registrate.</p>
+  <p>Nell'esercizio ${y}: ${g.br} violazion${g.br===1?"e registrata":"i registrate"}, ${g.brRis} con rischio per gli interessati, ${g.brNot} notificat${g.brNot===1?"a":"e"} al Garante, di cui ${g.brOk} entro 72 ore.</p>
+
+  <h3>8 · Formazione e consapevolezza</h3>
+  <p>Interventi formativi registrati nell'esercizio: ${g.form}, per ${fmt(g.formOre)} ore-persona. Persone autorizzate formate: ${fmt(d.pctForm,1)}%; nuovi ingressi formati: ${fmt(d.pctNuovi,1)}%.</p>
+
+  <h3>9 · Documenti del sistema</h3>
+  ${a.docs.filter(x=>x.tit).length?`<table><thead><tr><th>Tipo</th><th>Oggetto o destinatari</th><th style="width:60px">Vers.</th><th style="width:90px">Adottato</th><th style="width:90px">Revisione</th><th style="width:100px">Stato</th></tr></thead><tbody>
+  ${a.docs.filter(x=>x.tit).map(x=>`<tr><td>${esc(x.tipo)}</td><td>${esc(x.tit)}</td><td>${esc(x.ver)}</td><td>${fdata(x.data)}</td><td>${fdata(x.rev)}</td><td>${esc(x.stato)}</td></tr>`).join("")}</tbody></table>`:miss("Elenco dei documenti da compilare al passo 5")}
+
+  <h3>10 · Monitoraggio e miglioramento</h3>
+  <h4>Piano ${y}</h4>
+  ${a.piano.filter(x=>x.att).length?`<figure>${chPiano(a)}</figure><table><thead><tr><th style="width:60px">Mese</th><th>Attività</th><th style="width:110px">Rif.</th><th style="width:130px">Responsabile</th><th style="width:80px">Stato</th></tr></thead><tbody>
+  ${a.piano.filter(x=>x.att).slice().sort((x,z)=>(+x.mese)-(+z.mese)).map(x=>`<tr><td>${MESI[(+x.mese||1)-1]}</td><td>${esc(x.att)}</td><td class="code">${esc(x.rif)}</td><td>${esc(x.resp)}</td><td>${esc(x.stato)}</td></tr>`).join("")}</tbody></table>`:miss("Piano annuale da compilare al passo 5")}
+  <h4>Indicatori</h4>
+  ${SEZ.map(s=>`<p style="margin:14px 0 0"><b>${s.n}</b> <span class="code">${esc(s.r)}</span></p>${kpiTab(a,y,s.id)}`).join("")}
+  <table><thead><tr><th>Indicatore calcolato</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>
+    ${dr("Autorizzati formati",fmt(d.pctForm,1),fmt(dp.pctForm,1),"%")}${dr("Utenze con autenticazione a più fattori",fmt(d.pctMfa,1),fmt(dp.pctMfa,1),"%")}
+    ${dr("Dispositivi mobili cifrati",fmt(d.pctCif,1),fmt(dp.pctCif,1),"%")}${dr("Contatti promozionali con base documentata",fmt(d.pctCons,1),fmt(dp.pctCons,1),"%")}</tbody></table>
+  <h4>Verifiche e conformità</h4>
+  <p>Audit e verifiche svolti nell'esercizio: ${g.audit}, con ${fmt(g.rilievi)} rilievi; verifiche su responsabili ${g.verResp}; prove di ripristino ${g.ripr}. Riesami annuali: ${g.ries}.</p>
+  <figure>${chConf(a)}<figcaption>Indice di conformità per gruppo di requisiti. Complessivo: ${c.val?c.pct+"%":"—"} su ${c.val} requisiti valutati.</figcaption></figure>
+  ${al.length?`<h4>Punti di attenzione alla data del documento</h4><table><tbody>${al.map(x=>`<tr><td style="width:100px">${x.lv==="C"?'<span class="tag t-red">criticità</span>':'<span class="tag t-amb">attenzione</span>'}</td><td>${esc(x.t)}</td><td class="code" style="width:110px">${esc(x.r)}</td></tr>`).join("")}</tbody></table>`:""}
+  <p class="note" style="margin-top:22px">Gli adempimenti sono richiamati in sintesi: fanno fede il Regolamento (UE) 2016/679, il D.Lgs. 196/2003 e i provvedimenti del Garante.</p>
+  </div>`;
+}
+function dRie(a){
+  const y=anno,R=a.registri.ries.filter(r=>r.data).slice().sort((x,z)=>x.data<z.data?1:-1),r=R.find(x=>inY(x,y))||null,prec=R.find(x=>r&&x.data<r.data)||(!r?R[0]:null);
+  const c=conf(a),rs=rischiStat(a),ts=tratStat(a),fs=fornStat(a),g=regStat(a,y),d=derive(a,y),dp=derive(a,y-1),al=allarmi(a,y),fatti=a.piano.filter(x=>x.stato==="Fatto").length;
+  return cover(a,"Relazione annuale sulla protezione dei dati")+`<div class="inner">
+  <h3>Riesame annuale · esercizio ${y}</h3>
+  ${r?`<table><tbody><tr><td style="width:30%">Data</td><td>${fdata(r.data)}</td></tr><tr><td>Partecipanti</td><td>${esc(r.part||"—")}</td></tr></tbody></table>`:miss("Nessun riesame registrato per l'esercizio "+y+": aggiungilo nel registro del passo 7. Il quadro qui sotto è già aggiornato")}
+  <h3>Quadro dell'esercizio</h3>
+  <h4>Azioni del riesame precedente</h4>
+  ${prec&&prec.az?`<p>Azioni decise nel riesame del ${fdata(prec.data)}:</p>${par(prec.az)}`:"<p>Non risultano riesami precedenti con azioni registrate.</p>"}
+  <h4>Registro, rischi e valutazioni d'impatto</h4>
+  <p>Trattamenti censiti: ${ts.n}; con dati particolari ${ts.part}; senza base giuridica ${ts.noBase.length}; senza termine di conservazione ${ts.noCons.length}. Rischi alti ${rs.alti}, medi ${rs.medi}. Valutazioni d'impatto necessarie ${ts.dpia.length}, concluse ${ts.dpiaOk.length}.</p>
+  <h4>Fornitori e trasferimenti</h4>
+  <p>Fornitori censiti ${fs.n}; responsabili con contratto ${fs.resp?fmt(fs.pDpa,1)+"%":"—"}; verificati ${fs.resp?fmt(fs.pVer,1)+"%":"—"}; trasferimenti fuori dallo Spazio economico europeo ${fs.extra}, di cui ${fs.noGar.length} senza garanzia definita.</p>
+  <h4>Richieste degli interessati e violazioni</h4>
+  <table><thead><tr><th>Elemento</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>
+    ${(q=>[["Richieste ricevute","dir"],["Riscontrate nei termini","dirOk"],["Riscontrate oltre il termine","dirLate"],["Violazioni registrate","br"],["Violazioni notificate al Garante","brNot"],["Notifiche entro 72 ore","brOk"]].map(x=>`<tr><td>${x[0]}</td><td class="num">${g[x[1]]}</td><td class="num">${q[x[1]]}</td></tr>`).join(""))(regStat(a,y-1))}</tbody></table>
+  <h4>Formazione e sicurezza</h4>
+  <table><thead><tr><th>Indicatore</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>
+    <tr><td>Autorizzati formati <span class="code">%</span></td><td class="num">${fmt(d.pctForm,1)}</td><td class="num">${fmt(dp.pctForm,1)}</td></tr>
+    <tr><td>Utenze con autenticazione a più fattori <span class="code">%</span></td><td class="num">${fmt(d.pctMfa,1)}</td><td class="num">${fmt(dp.pctMfa,1)}</td></tr>
+    <tr><td>Dispositivi mobili cifrati <span class="code">%</span></td><td class="num">${fmt(d.pctCif,1)}</td><td class="num">${fmt(dp.pctCif,1)}</td></tr>
+    <tr><td>Incidenti di sicurezza informatica</td><td class="num">${fmt(num(a,y,"inc"))}</td><td class="num">${fmt(num(a,y-1,"inc"))}</td></tr></tbody></table>
+  <h4>Conformità, verifiche e piano</h4>
+  <p>Indice di conformità ${c.val?c.pct+"%":"—"} su ${c.val} requisiti valutati: ${c.n} non conformi, ${c.p} parziali, ${c.da} da valutare. Audit e verifiche svolti ${g.audit}, rilievi ${fmt(g.rilievi)}. Piano annuale: ${fatti} attività concluse su ${a.piano.length}.</p>
+  ${al.length?`<table><thead><tr><th style="width:100px">Segnale</th><th>Descrizione</th><th style="width:110px">Rif.</th></tr></thead><tbody>${al.map(x=>`<tr><td>${x.lv==="C"?'<span class="tag t-red">criticità</span>':'<span class="tag t-amb">attenzione</span>'}</td><td>${esc(x.t)}</td><td class="code">${esc(x.r)}</td></tr>`).join("")}</tbody></table>`:"<p>Dai dati non emergono segnali di criticità.</p>"}
+  <h3>Valutazioni e decisioni</h3>
+  <h4>Relazione del referente o del responsabile della protezione dei dati</h4>${r&&par(r.dpo)||miss("da registrare")}
+  <h4>Adeguatezza del sistema</h4>${r&&par(r.ido)||miss("da registrare")}
+  <h4>Opportunità di miglioramento</h4>${r&&par(r.mig)||miss("da registrare")}
+  <h4>Azioni decise</h4>${r&&par(r.az)||miss("da registrare")}
+  <div class="firma"><div>Il legale rappresentante${a.profilo.legale?" · "+esc(a.profilo.legale):""}</div><div>Il referente per la protezione dei dati${a.profilo.ref?" · "+esc(a.profilo.ref):""}</div></div>
+  </div>`;
+}
+
+/* ---------- guida all'uso ---------- */
+function vGuida(){
+  const FORMULE=[
+   ["Indice di conformità","(conformi + parziali × 0,5) ÷ (conformi + parziali + non conformi) × 100; i non pertinenti sono esclusi"],
+   ["Completezza del registro","campi obbligatori compilati ÷ campi obbligatori dell'art. 30.1, in media sui trattamenti"],
+   ["Necessità della valutazione d'impatto","numero di criteri di rischio presenti ≥ soglia impostata nei parametri (2 per impostazione)"],
+   ["Livello di rischio","probabilità × gravità; alto e medio secondo le soglie nei parametri"],
+   ["Scadenza di una richiesta","data di ricezione + 1 mese; + 3 mesi se la proroga è stata comunicata"],
+   ["Termine di notifica di una violazione","data e ora di conoscenza + 72 ore"],
+   ["Responsabili con contratto","responsabili, sub-responsabili e contitolari con contratto ÷ loro totale × 100"],
+   ["Autorizzati formati","autorizzati formati nell'esercizio ÷ persone autorizzate × 100"]
+  ];
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div><h1>Guida all'uso</h1><p class="sub" style="margin:0">Manuale operativo del percorso. Puoi stamparlo e consegnarlo al cliente.</p></div>
+    <button class="btn ghost sm" id="printGuida">Stampa la guida</button></div>
+  <div class="doc"><div class="inner">
+  <h3>A cosa serve</h3>
+  <p>Questo strumento accompagna un'organizzazione nella costruzione del proprio sistema di protezione dei dati personali secondo il Regolamento (UE) 2016/679 e la normativa italiana: dal registro dei trattamenti alla relazione annuale. Il Regolamento non chiede solo di rispettare le regole, ma di poterlo dimostrare: ogni passo produce una parte di quella dimostrazione.</p>
+  <p>Il lavoro è organizzato in nove passi. I primi sette raccolgono informazioni, valutazioni e registrazioni; l'ottavo dice che cosa manca; il nono assembla i documenti.</p>
+  <p><b>Dove finiscono i dati.</b> Restano nel browser del computer in uso. Non c'è un server e non serve una connessione. Cambiando computer o browser, o cancellando i dati di navigazione, i dati non seguono: vanno esportati dal portafoglio. Nei registri evita di riportare nomi e dettagli non necessari sulle persone coinvolte: basta un riferimento interno.</p>
+
+  <h3>In dieci minuti</h3>
+  <table><tbody>
+    <tr><td style="width:34px" class="code">1</td><td>Dal <b>Portafoglio</b> apri l'organizzazione di esempio e guarda al passo 9 il registro dei trattamenti: è il primo documento da ottenere.</td></tr>
+    <tr><td class="code">2</td><td>Nel quadro <b>Avanzamento</b> leggi i segnali: nascono dai dati inseriti, non da spunte manuali.</td></tr>
+    <tr><td class="code">3</td><td>Crea la tua organizzazione con <b>Nuova organizzazione</b> e compila il passo 1.</td></tr>
+    <tr><td class="code">4</td><td>Al passo 2 aggiungi dal catalogo i trattamenti che ti riguardano e apri il primo per adattarlo.</td></tr>
+    <tr><td class="code">5</td><td>Al passo 7 registra una richiesta di accesso con una data di cinque settimane fa: il segnale di scadenza compare subito.</td></tr>
+  </tbody></table>
+
+  <h3>Passo 1 · Organizzazione</h3>
+  <p>Oltre all'anagrafica del titolare, tre domande stabiliscono se la designazione del responsabile della protezione dei dati è obbligatoria. La valutazione va fatta e conservata anche quando l'esito è negativo. Se indichi che esistono amministratori di sistema, lo strumento si aspetta ogni anno la verifica del loro operato.</p>
+
+  <h3>Passo 2 · Registro dei trattamenti</h3>
+  <p>Un trattamento per ogni finalità, non per ogni archivio o programma. Il catalogo propone undici trattamenti ricorrenti già impostati: si aggiungono con un clic e vanno adattati. Per ciascuno servono finalità, base giuridica, categorie di interessati e di dati, destinatari, termine di conservazione, misure di sicurezza.</p>
+  <table><tbody>
+    <tr><td style="width:28%"><b>Base giuridica</b></td><td>Una sola, quella corretta. Il consenso è l'ultima da considerare, non la prima: nel rapporto di lavoro e nei contratti le basi sono altre.</td></tr>
+    <tr><td><b>Legittimo interesse</b></td><td>Richiede un bilanciamento scritto tra l'interesse dell'organizzazione e i diritti delle persone. Lo strumento lo chiede e segnala se manca.</td></tr>
+    <tr><td><b>Dati particolari</b></td><td>Salute, adesione sindacale, origine etnica, convinzioni, dati biometrici e genetici, vita sessuale. Serve una delle condizioni dell'art. 9.2 oltre alla base dell'art. 6.</td></tr>
+    <tr><td><b>Conservazione</b></td><td>Un termine o un criterio. «Per il tempo necessario» non è una risposta; «10 anni dalla cessazione del rapporto» sì.</td></tr>
+  </tbody></table>
+
+  <h3>Passo 3 · Conformità</h3>
+  <p>${REQ.length} requisiti in ${GRP.length} gruppi, riportati in sintesi operativa. Per ogni gruppo la guida spiega che cosa viene verificato, dove trovare le evidenze e qual è l'errore ricorrente. Il gruppo sulla sicurezza elenca le misure più richieste nei provvedimenti del Garante: le evidenze che scrivi lì finiscono nel modello organizzativo.</p>
+  <table><tbody>
+    <tr><td style="width:26%"><b>Conforme</b></td><td>L'adempimento è rispettato e lo puoi dimostrare. Scrivi l'evidenza.</td></tr>
+    <tr><td><b>Parziale</b></td><td>Rispettato in parte, oppure la prassi esiste ma non è documentata. Pesa per metà nell'indice.</td></tr>
+    <tr><td><b>Non conforme</b></td><td>Non rispettato. Si apre la riga dell'azione di adeguamento, con responsabile e scadenza.</td></tr>
+    <tr><td><b>Non pertinente</b></td><td>La situazione non ricorre: nessun servizio rivolto a minori, nessun trasferimento all'estero. Va motivato.</td></tr>
+  </tbody></table>
+
+  <h3>Passo 4 · Rischi e responsabili</h3>
+  <p><b>Vaglio preliminare.</b> Per ogni trattamento spunta i criteri di rischio presenti. Con due o più la valutazione d'impatto è di norma necessaria: compaiono i campi per svolgerla e il trattamento resta tra le criticità finché non è conclusa.</p>
+  <p><b>Rischio.</b> Probabilità e gravità da 1 a 5, dal punto di vista della persona a cui i dati si riferiscono. I rischi alti devono avere misure di mitigazione.</p>
+  <p><b>Responsabili e trasferimenti.</b> Censisci i fornitori che trattano dati per conto dell'organizzazione. Chi è qualificato come responsabile, sub-responsabile o contitolare deve avere un contratto; chi tratta dati fuori dallo Spazio economico europeo deve avere una garanzia. «Da definire» è una criticità.</p>
+
+  <h3>Passo 5 · Politica e piano</h3>
+  <p>Tre schede: la politica di protezione dei dati, con testo modello e lista di controllo; l'inventario di informative, nomine e procedure, con versione, data e scadenza di revisione; il piano annuale delle attività. Lo strumento non contiene i testi delle informative: ne tiene l'elenco e lo stato, e segnala quelle scadute.</p>
+
+  <h3>Passo 6 · Dati e indicatori</h3>
+  <p>Pochi numeri, su due esercizi. Lascia vuoto ciò che non conosci: lo zero è un'informazione, il vuoto è un dato mancante.</p>
+  <table><thead><tr><th style="width:34%">Calcolo</th><th>Formula</th></tr></thead><tbody>${FORMULE.map(f=>`<tr><td><b>${esc(f[0])}</b></td><td class="code">${esc(f[1])}</td></tr>`).join("")}</tbody></table>
+
+  <h3>Passo 7 · Registri</h3>
+  <table><tbody>
+    <tr><td style="width:30%"><b>Richieste degli interessati</b></td><td>La scadenza si calcola dalla data di ricezione. L'etichetta in fondo a ogni voce dice se il riscontro è nei termini, in ritardo o scaduto.</td></tr>
+    <tr><td><b>Violazioni dei dati</b></td><td>Inserisci data e ora in cui l'organizzazione ne è venuta a conoscenza e il livello di rischio. Se la notifica è dovuta, compare il termine delle 72 ore. Vanno registrate anche le violazioni non notificate.</td></tr>
+    <tr><td><b>Formazione, audit e verifiche</b></td><td>Comprese le verifiche sui fornitori e le prove di ripristino.</td></tr>
+    <tr><td><b>Amministratori di sistema</b></td><td>La verifica annuale prevista dal provvedimento del Garante.</td></tr>
+    <tr><td><b>Riesame annuale</b></td><td>Valutazioni e decisioni: il quadro dei dati si compila da solo nella relazione.</td></tr>
+  </tbody></table>
+  <p>Registri vuoti per richieste e violazioni non sono un difetto, se davvero non ce ne sono state.</p>
+
+  <h3>Passo 8 · Verifica</h3>
+  <p>Elenca ciò che manca, con il pulsante per andare al punto da sistemare. Le criticità sono le situazioni più esposte: trattamenti senza base giuridica, valutazioni d'impatto mancanti, responsabili senza contratto, trasferimenti senza garanzia, richieste scadute, violazioni non notificate.</p>
+
+  <h3>Passo 9 · Documenti</h3>
+  <table><tbody>
+    <tr><td style="width:32%"><b>Registro dei trattamenti</b></td><td>Il documento dell'art. 30, con una scheda per trattamento.</td></tr>
+    <tr><td><b>Modello organizzativo</b></td><td>Ruoli, politica, trattamenti, rischi e misure, fornitori, diritti, violazioni, formazione, documenti, monitoraggio.</td></tr>
+    <tr><td><b>Politica</b></td><td>Pagina da firmare e distribuire.</td></tr>
+    <tr><td><b>Valutazioni d'impatto</b></td><td>Vaglio di tutti i trattamenti e scheda completa per quelli che la richiedono.</td></tr>
+    <tr><td><b>Rapporto di conformità</b></td><td>Sintesi, piano di adeguamento, dettaglio per requisito.</td></tr>
+    <tr><td><b>Relazione annuale</b></td><td>Quadro dell'esercizio compilato dai dati, con valutazioni e decisioni del riesame.</td></tr>
+  </tbody></table>
+  <p><b>Per ottenere il PDF:</b> premi <b>Stampa documento</b>, scegli come destinazione «Salva come PDF» e attiva l'opzione «Grafica di sfondo».</p>
+
+  <h3>Salvataggi e trasferimenti</h3>
+  <p>Il salvataggio è automatico. Esporta l'archivio dal Portafoglio alla fine di ogni sessione e conserva il file in un luogo protetto: contiene informazioni riservate sull'organizzazione. Per consegnare il lavoro a un cliente esporta la singola organizzazione da Parametri e archivio.</p>
+
+  <h3>Limiti da conoscere</h3>
+  <p>Lo strumento organizza, calcola e segnala: non verifica la veridicità dei dati inseriti e non fornisce pareri legali. Gli adempimenti sono riportati in sintesi operativa; fanno fede il Regolamento, il Codice in materia di protezione dei dati personali e i provvedimenti del Garante, che cambiano nel tempo. Termini di conservazione, basi giuridiche e qualifiche dei fornitori proposti nel catalogo sono punti di partenza da verificare caso per caso.</p>
+  <p>Settori con regole proprie, come sanità, credito, telecomunicazioni e pubblica amministrazione, richiedono adempimenti ulteriori che qui non sono compresi.</p>
+  <p class="note">Guida generata dall'applicazione il ${new Date().toLocaleDateString("it-IT")}.</p>
+  </div></div>`;
+}
+
+/* ---------- impostazioni ---------- */
+function vConf(a){
+  const P=a.param,fi=(k,l,u)=>`<label class="f"><span>${l} <span class="code">${u}</span></span><input type="number" step="any" data-par="${k}" value="${P[k]}"></label>`;
+  return `<h1>Parametri e archivio</h1>
+  <p class="sub">Le soglie con cui lo strumento classifica rischi e valutazioni d'impatto. I termini di legge, un mese per le richieste e 72 ore per le violazioni, non sono modificabili.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Classi di rischio</p>
+      <div class="grid g2">${fi("alto","Rischio alto da","P × G")}${fi("medio","Rischio medio da","P × G")}</div>
+      <div class="hr"></div><p class="eyebrow">Valutazione d'impatto</p>
+      ${fi("dpia_n","Criteri di rischio che la rendono necessaria","n.")}
+      <div class="hint" style="margin:-6px 0 12px">Le linee guida europee indicano due criteri come soglia orientativa. Abbassarla a uno rende il vaglio più prudente.</div>
+      <button class="btn ghost sm" id="resetPar">Ripristina valori di riferimento</button>
+    </div>
+    <div class="card"><p class="eyebrow">Esercizio e dati</p>
+      <label class="f"><span>Esercizio di riferimento</span><input type="number" data-anno value="${a.anno}"></label>
+      <div class="hint">Indicatori e registrazioni restano legati all'anno in cui sono stati inseriti.</div>
+      <div class="hr"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="csvBtn">Esporta indicatori (CSV)</button>
+      <button class="btn ghost" id="expDoc">Esporta questa organizzazione (JSON)</button></div>
+      <div class="hr"></div>
+      <p class="eyebrow">Peso dei dati</p>
+      <div style="font-size:12.5px;color:var(--ink-2)">Questa organizzazione occupa <b class="code">${(JSON.stringify(a).length/1048576).toFixed(2)} MB</b>, archivio complessivo <b class="code">${(JSON.stringify(DB).length/1048576).toFixed(2)} MB</b>.</div>
+    </div>
+  </div>`;
+}
+/* ==========================================================
+   FINESTRE, IMMAGINI, FILE
+   ========================================================== */
+let mCb=null;
+function modal(t,p,input,cb,ok){$("#mT").textContent=t;$("#mP").textContent=p||"";$("#mP").hidden=!p;
+  const i=$("#mI");i.hidden=!input;i.value="";$("#mOk").textContent=ok||"Conferma";mCb=cb;$("#modal").hidden=false;(input?i:$("#mOk")).focus();}
+function mClose(okv){const m=$("#modal");if(m.hidden)return;m.hidden=true;const cb=mCb,v=$("#mI").value;mCb=null;if(okv&&cb)cb(v);}
+function pickImage(cb,maxW){
+  const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{const img=new Image();
+      img.onload=()=>{const sc=Math.min(1,maxW/img.width),c=document.createElement("canvas");
+        c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext("2d").drawImage(img,0,0,c.width,c.height);cb(c.toDataURL("image/png"));};
+      img.onerror=()=>toast("Immagine non leggibile");img.src=r.result;};
+    r.readAsDataURL(f);};
+  inp.click();
+}
+function dlFile(name,content,type){const b=new Blob([content],{type:type+";charset=utf-8"}),l=document.createElement("a");
+  l.href=URL.createObjectURL(b);l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(l.href),1500);}
+/* ==========================================================
+   EVENTI
+   ========================================================== */
+const persist=()=>Store.save(DB);
+const go=v=>{view=v;render();window.scrollTo(0,0);};
+function bind(a){
+  document.querySelectorAll("[data-go]").forEach(e=>e.onclick=()=>go(e.dataset.go));
+  document.querySelectorAll("[data-open]").forEach(e=>e.onclick=()=>{DB.current=e.dataset.open;openT=openR=null;anno=az().anno;persist();fillSel();fillAnni();go("home");});
+  document.querySelectorAll("[data-dup]").forEach(e=>e.onclick=()=>{
+    const src=DB.aziende.find(x=>x.id===e.dataset.dup),c=JSON.parse(JSON.stringify(src));
+    c.id=uid();c.nome=src.nome+" (copia)";c.created=new Date().toISOString();
+    DB.aziende.push(c);persist();fillSel();render();toast("Organizzazione duplicata");});
+  document.querySelectorAll("[data-del]").forEach(e=>e.onclick=()=>{
+    const x=DB.aziende.find(y=>y.id===e.dataset.del);
+    modal("Eliminare l'organizzazione?","«"+x.nome+"» e tutti i suoi dati verranno cancellati. L'operazione non si può annullare.",false,()=>{
+      DB.aziende=DB.aziende.filter(y=>y.id!==x.id);
+      if(DB.current===x.id){DB.current=null;anno=null;view="pf";}
+      persist();fillSel();fillAnni();render();toast("Organizzazione eliminata");},"Elimina");});
+  const q=$("#pfq");if(q)q.oninput=()=>{pfq=q.value;const p=q.selectionStart;render();const q2=$("#pfq");if(q2){q2.focus();q2.setSelectionRange(p,p);}};
+  const pn=$("#pfNew");if(pn)pn.onclick=creaAzienda;
+  const ex=$("#expBtn");if(ex)ex.onclick=()=>{dlFile("gdpr-archivio-"+oggi()+".json",JSON.stringify(DB,null,2),"application/json");toast("Archivio esportato");};
+  const im=$("#impBtn");if(im)im.onclick=()=>$("#impFile").click();
+  const imf=$("#impFile");if(imf)imf.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const o=JSON.parse(r.result);
+      if(Array.isArray(o.aziende)){o.aziende.forEach(norm);DB={aziende:o.aziende,current:null};anno=null;view="pf";}
+      else if(o.nome&&o.profilo){o.id=uid();DB.aziende.push(norm(o));}
+      else throw 0;
+      persist();fillSel();fillAnni();render();toast("Importazione completata");}catch(x){toast("File non valido: serve un archivio esportato da questo strumento");}};
+    r.readAsText(f);};
+  const pg=$("#printGuida");if(pg)pg.onclick=()=>window.print();
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab[b.dataset.tab]=b.dataset.tv;render();});
+  if(!a)return;
+
+  document.querySelectorAll("[data-p]").forEach(i=>i.onchange=()=>{a.profilo[i.dataset.p]=i.value;persist();rr();});
+  const nm=document.querySelector("[data-nome]");if(nm)nm.onchange=()=>{a.nome=nm.value.trim()||"Senza nome";persist();fillSel();rr();};
+  /* elenchi generici */
+  document.querySelectorAll("[data-l]").forEach(e=>e.onchange=()=>{const o=arr(a,e.dataset.l)[+e.dataset.i];if(!o)return;
+    o[e.dataset.k]=e.value;persist();if(e.dataset.rr!==undefined)rr();});
+  document.querySelectorAll("[data-ladd]").forEach(b=>b.onclick=()=>{const p=b.dataset.ladd,L=arr(a,p);
+    if(p.startsWith("registri.")){const k=p.split(".")[1],o={};REG[k].cols.forEach(c=>o[c[0]]=c[2]==="s"?(Array.isArray(c[3][0])?c[3][0][0]:c[3][0]):"");o.data=oggi();o.data=REG[k].cols[0][2]==="dt"?oggi()+"T09:00":oggi();L.push(o);}
+    else{L.push(TPL[p]());if(p==="trattamenti")openT=L.length-1;}
+    persist();render();});
+  document.querySelectorAll("[data-ldel]").forEach(b=>b.onclick=()=>modal("Eliminare questa voce?","",false,()=>{arr(a,b.dataset.ldel).splice(+b.dataset.i,1);openT=openR=null;persist();rr();},"Elimina"));
+  /* conformità */
+  document.querySelectorAll("[data-gap]").forEach(e=>e.onchange=()=>{const id=e.dataset.gap;a.gap[id]=a.gap[id]||{};a.gap[id][e.dataset.k]=e.value;persist();if(e.dataset.rr!==undefined)rr();});
+  document.querySelectorAll("[data-grp]").forEach(b=>b.onclick=()=>{openGrp[b.dataset.grp]=!openGrp[b.dataset.grp];const sy=window.scrollY;render();window.scrollTo(0,sy);});
+  document.querySelectorAll("[data-gapf]").forEach(b=>b.onclick=()=>{gapF=b.dataset.gapf;if(gapF!=="all")GRP.forEach(g=>openGrp[g.id]=true);render();});
+  /* politica e piano */
+  document.querySelectorAll("[data-pol]").forEach(e=>e.onchange=()=>{a.politica[e.dataset.pol]=e.value;persist();rr();});
+  document.querySelectorAll("[data-chk]").forEach(e=>e.onchange=()=>{a.politica.chk[e.dataset.chk]=e.checked;persist();rr();});
+  const pm=$("#polMod");if(pm)pm.onclick=()=>{const put=()=>{a.politica.testo=polModello(a);persist();render();toast("Testo modello inserito: adattalo all'organizzazione");};
+    a.politica.testo.trim()?modal("Sostituire il testo attuale?","Il testo della politica già scritto verrà sostituito dal modello.",false,put,"Sostituisci"):put();};
+  const pt=$("#pianoTipo");if(pt)pt.onclick=()=>{const has_=new Set(a.piano.map(x=>x.att));let n=0;
+    PIANO_TIPO.forEach(x=>{if(!has_.has(x[2])){a.piano.push({mese:String(x[0]),rif:x[1],att:x[2],resp:"",stato:"Da fare"});n++;}});
+    persist();render();toast(n?n+" attività aggiunte al piano":"Il piano tipo è già caricato");};
+  /* registro, vaglio e documenti */
+  document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const c=CAT.find(x=>x.nome===b.dataset.cat);if(!c)return;
+    const t=Object.assign(T_DEF(),JSON.parse(JSON.stringify(c)));t.crit={};(c.crit||[]).forEach(k=>t.crit[k]=true);
+    a.trattamenti.push(t);openT=a.trattamenti.length-1;persist();render();toast("Trattamento aggiunto: verifica ogni campo");});
+  document.querySelectorAll("[data-topen]").forEach(b=>b.onclick=()=>{const i=+b.dataset.topen;openT=openT===i?null:i;const sy=window.scrollY;render();window.scrollTo(0,sy);});
+  document.querySelectorAll("[data-ropen]").forEach(b=>b.onclick=()=>{const i=+b.dataset.ropen;openR=openR===i?null:i;const sy=window.scrollY;render();window.scrollTo(0,sy);});
+  document.querySelectorAll("[data-crit]").forEach(e=>e.onchange=()=>{const t=a.trattamenti[+e.dataset.crit];if(!t)return;t.crit[e.dataset.c]=e.checked;persist();rr();});
+  const dtp=$("#docTipo");if(dtp)dtp.onclick=()=>{const has_=new Set(a.docs.map(x=>x.tipo+"|"+x.tit));let n=0;
+    DOC_TIPO.forEach(x=>{if(!has_.has(x[0]+"|"+x[1])){a.docs.push({tipo:x[0],tit:x[1],ver:"1.0",data:"",rev:"",stato:"Da redigere"});n++;}});
+    persist();render();toast(n?n+" documenti aggiunti all'elenco":"L'elenco tipo è già caricato");};
+  /* indicatori e parametri */
+  document.querySelectorAll("[data-kpi]").forEach(i=>i.onchange=()=>{dati(a,+i.dataset.y)[i.dataset.kpi]=i.value;persist();rr();});
+  document.querySelectorAll("[data-par]").forEach(e=>e.onchange=()=>{a.param[e.dataset.par]=parseFloat(e.value)||0;persist();rr();});
+  const rp=$("#resetPar");if(rp)rp.onclick=()=>{a.param={...PARAM_DEF};persist();render();toast("Parametri ripristinati");};
+  const an=document.querySelector("[data-anno]");if(an)an.onchange=()=>{const v=parseInt(an.value,10);if(!v)return;a.anno=v;anno=v;persist();fillAnni();render();};
+  /* logo */
+  const ul=$("#upLogo");if(ul)ul.onclick=()=>pickImage(src=>{a.profilo.logo=src;persist();render();toast("Logo caricato");},480);
+  const rl=$("#rmLogo");if(rl)rl.onclick=()=>{a.profilo.logo="";persist();render();};
+  /* documenti ed esportazioni */
+  const ds=$("#docSel");if(ds)ds.onchange=()=>{docTipo=ds.value;render();};
+  const ed=$("#expDoc");if(ed)ed.onclick=()=>{dlFile("gdpr-"+a.nome.replace(/[^A-Za-z0-9]+/g,"-").toLowerCase()+"-"+anno+".json",JSON.stringify(a,null,2),"application/json");toast("Organizzazione esportata");};
+  const cv=$("#csvBtn");if(cv)cv.onclick=()=>{
+    const y=anno,rows=[["Sezione","Indicatore","Unità",y,y-1]],d=derive(a,y),dp=derive(a,y-1);
+    SEZ.forEach(s=>KPI.filter(k=>k.s===s.id).forEach(k=>rows.push([s.n,k.n,k.u,dati(a,y)[k.k]||"",dati(a,y-1)[k.k]||""])));
+    [["Autorizzati formati","%","pctForm"],["Ore di formazione per autorizzato","ore","oreForm"],["Nuovi ingressi formati","%","pctNuovi"],["Utenze con autenticazione a più fattori","%","pctMfa"],["Dispositivi mobili cifrati","%","pctCif"],["Contatti con base documentata","%","pctCons"]].forEach(r=>rows.push(["Calcolati",r[0],r[1],d[r[2]],dp[r[2]]]));
+    const g=regStat(a,y),gp=regStat(a,y-1);[["Richieste degli interessati","dir"],["Richieste riscontrate nei termini","dirOk"],["Violazioni registrate","br"],["Violazioni notificate","brNot"],["Notifiche entro 72 ore","brOk"]].forEach(r=>rows.push(["Registri",r[0],"n.",g[r[1]],gp[r[1]]]));
+    const c=conf(a);rows.push(["Conformità","Indice di conformità","%",c.pct,""]);
+    dlFile("gdpr-indicatori-"+y+".csv","﻿"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n"),"text/csv");
+    toast("Indicatori esportati");};
+}
+function fillSel(){$("#coSel").innerHTML=DB.aziende.map(a=>`<option value="${a.id}" ${a.id===DB.current?"selected":""}>${esc(a.nome)}</option>`).join("");}
+function fillAnni(){const a=az();if(!a){$("#annoSel").innerHTML="";return;}const y=a.anno;
+  $("#annoSel").innerHTML=[y+1,y,y-1,y-2].map(v=>`<option value="${v}" ${v===anno?"selected":""}>${v}</option>`).join("");}
+function creaAzienda(){modal("Nuova organizzazione","Denominazione dell'organizzazione che adotta il sistema.",true,n=>{
+  const a=nuova(n.trim());DB.aziende.push(a);DB.current=a.id;anno=a.anno;persist();fillSel();fillAnni();go("org");toast("Organizzazione creata");},"Crea");}
+
+document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>{$("#side").classList.remove("open");go(n.dataset.v);});
+$("#brandHome").onclick=()=>go("pf");
+$("#coSel").onchange=e=>{DB.current=e.target.value;openT=openR=null;anno=az().anno;persist();fillAnni();go("home");};
+$("#annoSel").onchange=e=>{anno=+e.target.value;render();};
+$("#addCo").onclick=creaAzienda;
+$("#printBtn").onclick=()=>{view="doc";render();setTimeout(()=>window.print(),200);};
+$("#menuBtn").onclick=()=>$("#side").classList.toggle("open");
+$("#mNo").onclick=()=>mClose(false);$("#mOk").onclick=()=>mClose(true);
+$("#modal").onclick=e=>{if(e.target.id==="modal")mClose(false);};
+document.addEventListener("keydown",e=>{if($("#modal").hidden)return;if(e.key==="Escape")mClose(false);if(e.key==="Enter"&&e.target.id==="mI")mClose(true);});
+function resp(){$("#menuBtn").hidden=window.innerWidth>980;}
+window.addEventListener("resize",resp);resp();
+/* ==========================================================
+   AVVIO — con un'organizzazione di esempio se l'archivio è vuoto
+   ========================================================== */
+function esempio(){
+  const a=nuova("Organizzazione di esempio S.r.l."),y=a.anno,z=n=>String(n).padStart(2,"0"),D=(m,g)=>y+"-"+z(m)+"-"+z(g),Dp=(m,g)=>(y-1)+"-"+z(m)+"-"+z(g);
+  const rel=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());};
+  Object.assign(a.profilo,{forma:"Società a responsabilità limitata",sede:"Aversa (CE)",settore:"Commercio online di articoli per la casa",ateco:"47.91.10",ndip:"34",
+    siti:"Sede con uffici e magazzino",legale:"Amministratore unico",ref:"Responsabile amministrativo",contatto:"privacy@esempio.example",dpo_a:"No",dpo_b:"No",dpo_c:"No",ads:"Sì"});
+  const add=(nome,x)=>{const c=CAT.find(k=>k.nome===nome),t=Object.assign(T_DEF(),JSON.parse(JSON.stringify(c)),x);t.crit={};(c.crit||[]).forEach(k=>t.crit[k]=true);a.trattamenti.push(t);};
+  const MIS="Utenze individuali, profili di autorizzazione per ruolo, copie di sicurezza giornaliere, archivi cartacei in armadi chiusi";
+  add("Gestione del rapporto di lavoro",{resp:"Amministrazione",sis:"Gestionale paghe dello studio esterno; fascicoli cartacei",mis:MIS,p:2,g:3,misr:"Accesso ai fascicoli limitato all'amministrazione; scambio dati con lo studio paghe su portale protetto"});
+  add("Selezione del personale",{resp:"Amministrazione",sis:"Casella di posta dedicata",mis:MIS,p:2,g:2,misr:"Cancellazione automatica dei curricula dopo 12 mesi"});
+  add("Salute e sicurezza sul lavoro",{resp:"Amministrazione",sis:"Fascicoli cartacei; cartelle sanitarie presso il medico competente",mis:"Giudizi di idoneità in busta chiusa; nessuna diagnosi in azienda",p:2,g:4,misr:"L'azienda riceve solo il giudizio di idoneità"});
+  add("Clienti: contratti, ordini e fatturazione",{resp:"Commerciale",sis:"Piattaforma di commercio elettronico, gestionale contabile",mis:MIS+"; pagamenti gestiti dal fornitore della piattaforma",extra:"Sì",extra_det:"Stati Uniti, decisione di adeguatezza",p:4,g:4,
+    misr:"Nessun dato di pagamento conservato; autenticazione a più fattori per gli operatori; cifratura dei portatili in corso"});
+  add("Fornitori: contratti e pagamenti",{resp:"Acquisti",sis:"Gestionale contabile",mis:MIS,p:1,g:2,misr:"Dati limitati ai referenti aziendali"});
+  add("Marketing e newsletter",{resp:"Marketing",sis:"Piattaforma di invio",mis:"Accesso riservato al marketing; disiscrizione in ogni messaggio",extra:"Sì",extra_det:"Stati Uniti, garanzia da definire con il fornitore",p:3,g:2,misr:"Doppia conferma dell'iscrizione; pulizia annuale dei contatti inattivi"});
+  add("Sito web e cookie",{resp:"Marketing",sis:"Sito aziendale, strumento di analisi delle visite",mis:"Connessione cifrata; aggiornamenti mensili del sito",lia:"No",p:3,g:2,misr:"Statistiche con indirizzo IP mascherato"});
+  add("Videosorveglianza",{resp:"Direzione",sis:"Sei telecamere su ingressi e magazzino; registratore in locale chiuso",mis:"Accesso alle immagini riservato alla direzione e all'istituto di vigilanza; cancellazione automatica dopo 48 ore",lia:"Sì",p:3,g:4,
+    misr:"Telecamere non orientate sulle postazioni di lavoro; accordo sindacale in vigore",dpia_stato:"In corso",dpia_data:D(5,6),dpia_nec:"Il magazzino ha subito due furti nell'ultimo triennio. Le riprese sono limitate a ingressi e aree di carico; non sono stati ritenuti sufficienti i soli allarmi perimetrali."});
+  add("Posta elettronica e strumenti informatici",{resp:"Amministrazione",sis:"Posta e archivi su servizio cloud; portatili e telefoni aziendali",mis:"Regolamento informatico consegnato a tutti; registrazioni degli accessi conservate 6 mesi",lia:"Sì",p:3,g:4,misr:"Nessun accesso ai contenuti della posta senza procedura autorizzativa"});
+  const S={"P-05":"p","P-08":"p","T-03":"p","D-01":"p","D-07":"p","A-03":"p","R-03":"p","R-05":"p","S-03":"p","S-05":"p","S-11":"p","V-07":"p","I-02":"p","N-03":"p","N-07":"p","S-10":"n",
+    "P-10":"na","P-12":"na","T-04":"na","D-12":"na","R-06":"na","R-07":"na","I-04":"na","I-07":"na","O-02":"na","O-03":"na","O-04":"na","O-05":"na","O-06":"na","N-09":"na"};
+  const EV={"P-05":"Termini indicati nel registro; cancellazioni periodiche non ancora eseguite sugli ordini più vecchi","P-07":"Registro dei trattamenti, colonna base giuridica","P-08":"Bilanciamento scritto per videosorveglianza e strumenti informatici; manca per il sito",
+    "P-09":"Consenso con doppia conferma; data e origine registrate dalla piattaforma","P-10":"Il sito non si rivolge a minori","P-12":"Non sono trattati dati giudiziari","T-02":"Informative per clienti, dipendenti e candidati adottate","T-03":"Contatti ricevuti da partner: informativa non ancora inviata al primo contatto",
+    "T-04":"Nessuna decisione automatizzata né profilazione","D-01":"Prassi consolidata presso il referente; procedura non ancora scritta","D-07":"Cancellazione eseguita sui sistemi principali; regola per le copie di sicurezza da definire","D-12":"Nessuna decisione automatizzata",
+    "A-02":"Politica approvata dall'amministratore unico","A-03":"Valutazione preventiva svolta per la nuova piattaforma; non ancora prevista come regola","A-05":"Lettere di autorizzazione firmate da tutti","R-01":"Elenco dei fornitori al passo 4",
+    "R-03":"Sette contratti su otto; manca l'assistenza informatica","R-05":"Verifica svolta sullo studio paghe; da estendere ai fornitori cloud","R-06":"Nessun rapporto di contitolarità","R-07":"L'organizzazione non tratta dati per conto di terzi",
+    "G-01":"Registro generato da questo strumento","S-02":"Utenze nominative; password di almeno 12 caratteri","S-03":"Secondo fattore attivo sulla posta; da estendere a gestionale e accessi remoti","S-04":"Profili per funzione; utenze disattivate alla cessazione",
+    "S-05":"Nove portatili cifrati su quattordici","S-06":"Aggiornamenti automatici su postazioni e server","S-07":"Protezione delle postazioni e filtro della posta attivi","S-08":"Copia giornaliera su cloud e settimanale non in linea; ripristino provato a maggio",
+    "S-10":"Le registrazioni degli accessi al gestionale non sono raccolte","S-11":"Solo prova di ripristino; nessuna verifica tecnica esterna","S-12":"Uffici con accesso controllato; archivio chiuso a chiave","S-14":"Regolamento informatico consegnato e firmato",
+    "V-01":"Procedura adottata; segnalazione al referente entro la giornata","V-04":"Registro delle violazioni al passo 7","V-07":"Nessuna esercitazione svolta","I-01":"Vaglio svolto per tutti i trattamenti al passo 4","I-02":"Valutazione sulla videosorveglianza in corso",
+    "I-04":"Responsabile della protezione dei dati non designato","I-07":"Nessun rischio residuo elevato","O-01":"Valutazione scritta: nessuna delle tre condizioni ricorre","O-02":"Designazione non obbligatoria e non effettuata",
+    "N-01":"Lettere di autorizzazione per ruolo","N-02":"Nomina dell'assistenza informatica esterna","N-03":"Registrazioni conservate; verifica annuale non ancora svolta","N-04":"Accordo sindacale sottoscritto prima dell'installazione","N-05":"Cartelli agli ingressi; conservazione 48 ore",
+    "N-07":"Banner presente; lo strumento di analisi parte prima del consenso","N-08":"Invii solo a iscritti con consenso; nessun telemarketing","N-09":"Organizzazione sotto la soglia dimensionale e senza modello 231"};
+  const AZ={"P-05":["Cancellare gli ordini oltre i 10 anni e programmare la cancellazione annuale","Responsabile amministrativo",D(6,30)],"P-08":["Documentare il bilanciamento per le statistiche del sito","Marketing",D(4,30)],
+    "T-03":["Informativa automatica al primo messaggio verso i contatti ricevuti da terzi","Marketing",D(5,31)],"D-01":["Scrivere la procedura e istruire l'assistenza clienti","Responsabile amministrativo",D(4,30)],
+    "D-07":["Definire la regola di cancellazione sulle copie di sicurezza","Assistenza informatica",D(6,30)],"A-03":["Inserire la valutazione preventiva nella procedura acquisti","Responsabile amministrativo",D(9,30)],
+    "R-03":["Sottoscrivere il contratto con l'assistenza informatica","Amministratore unico",D(3,31)],"R-05":["Questionario annuale ai fornitori di servizi cloud","Responsabile amministrativo",D(10,31)],
+    "S-03":["Estendere il secondo fattore a gestionale e accessi remoti","Assistenza informatica",D(6,30)],"S-05":["Cifrare i cinque portatili rimanenti","Assistenza informatica",D(9,30)],
+    "S-10":["Attivare e conservare le registrazioni degli accessi al gestionale","Assistenza informatica",D(5,31)],"S-11":["Analisi delle vulnerabilità annuale","Assistenza informatica",D(11,30)],
+    "V-07":["Esercitazione su una violazione simulata","Responsabile amministrativo",D(7,31)],"I-02":["Concludere la valutazione sulla videosorveglianza","Responsabile amministrativo",D(6,30)],
+    "N-03":["Verifica annuale dell'amministratore di sistema","Amministratore unico",D(6,30)],"N-07":["Bloccare lo strumento di analisi fino al consenso","Marketing",D(4,30)]};
+  REQ.forEach(r=>{if(r.g==="X")return;const z2=AZ[r.id];a.gap[r.id]={st:S[r.id]||"c",ev:EV[r.id]||""};if(z2)Object.assign(a.gap[r.id],{az:z2[0],resp:z2[1],scad:z2[2]});});
+  const fo=(nome,serv,ruolo,paese,dpa,extra,ver,esito)=>a.fornitori.push({nome,serv,ruolo,paese,dpa,dpa_data:"",extra,ver:ver||"",esito:esito||""});
+  fo("Studio paghe Esempio","Elaborazione delle paghe",RUOLI_F[0],"Italia","Sì","Nessun trasferimento",D(3,12),"Adeguato");
+  fo("Piattaforma Esempio Inc.","Negozio online e pagamenti",RUOLI_F[0],"Stati Uniti","Sì","Decisione di adeguatezza");
+  fo("Newsletter Esempio LLC","Invio delle comunicazioni promozionali",RUOLI_F[0],"Stati Uniti","Sì","Da definire");
+  fo("Hosting Esempio S.r.l.","Hosting del sito e della posta",RUOLI_F[0],"Italia","Sì","Nessun trasferimento");
+  fo("Assistenza informatica Esempio","Amministrazione di sistema",RUOLI_F[0],"Italia","No","Nessun trasferimento");
+  fo("Istituto di vigilanza Esempio","Gestione della videosorveglianza",RUOLI_F[0],"Italia","Sì","Nessun trasferimento");
+  fo("Corriere Esempio S.p.A.","Consegne ai clienti",RUOLI_F[3],"Italia","Non dovuto","Nessun trasferimento");
+  fo("Medico competente","Sorveglianza sanitaria",RUOLI_F[3],"Italia","Non dovuto","Nessun trasferimento");
+  a.politica={testo:polModello(a),chk:{pri:true,ruo:true,dir:true,sic:true,for:true,frm:true,app:true,rie:true},data:D(1,15),firma:"L'amministratore unico"};
+  a.docs=DOC_TIPO.slice(0,13).map((x,i)=>({tipo:x[0],tit:x[1],ver:i<3?"2.0":"1.0",data:i===9||i===11?"":D(1,20),rev:i===1?Dp(12,31):D(12,31),stato:i===3?"Da aggiornare":i===9||i===11?"In bozza":"Adottato"}));
+  a.piano=PIANO_TIPO.map(x=>({mese:String(x[0]),rif:x[1],att:x[2],resp:"Responsabile amministrativo",stato:x[0]<=5?"Fatto":x[0]<=6?"In corso":"Da fare"}));
+  a.dati[y]={dip:34,aut:30,aut_form:26,fo_ore:52,nuovi:5,nuovi_form:3,acc:38,acc_mfa:22,disp:14,disp_cif:9,bk_test:1,acc_rev:1,vuln:0,inc:2,cont:18400,cons_doc:17150,opp:610,opp_gg:2,recl:1,garante:0,sanz:0,liti:0};
+  a.dati[y-1]={dip:31,aut:27,aut_form:9,fo_ore:18,nuovi:4,nuovi_form:1,acc:35,acc_mfa:6,disp:12,disp_cif:3,bk_test:0,acc_rev:0,vuln:0,inc:1,cont:15200,cons_doc:12900,opp:540,opp_gg:5,recl:0,garante:0,sanz:0,liti:0};
+  const R=a.registri;
+  R.dir=[{data:Dp(5,9),diritto:"Accesso (art. 15)",rif:"R-01",canale:"Posta elettronica",tratt:"Clienti",proroga:"No",evasa:Dp(5,30),esito:"Accolta",note:"Inviata copia dei dati e degli ordini"},
+    {data:Dp(10,2),diritto:"Cancellazione (art. 17)",rif:"R-02",canale:"Modulo del sito",tratt:"Marketing",proroga:"No",evasa:Dp(11,20),esito:"Accolta",note:"Richiesta rimasta nella casella generica per sei settimane"},
+    {data:D(3,4),diritto:"Accesso (art. 15)",rif:"R-03",canale:"PEC",tratt:"Rapporto di lavoro",proroga:"No",evasa:D(3,20),esito:"Accolta",note:"Ex dipendente: consegnata copia del fascicolo"},
+    {data:D(6,10),diritto:"Cancellazione (art. 17)",rif:"R-04",canale:"Posta elettronica",tratt:"Clienti e marketing",proroga:"No",evasa:D(7,18),esito:"Accolta in parte",note:"Cancellati i dati di marketing; conservati i documenti fiscali per obbligo di legge"},
+    {data:rel(-10),diritto:"Opposizione (art. 21)",rif:"R-05",canale:"Posta elettronica",tratt:"Marketing",proroga:"No",evasa:"",esito:"In lavorazione",note:""}];
+  R.breach=[{data:D(4,14)+"T10:30",natura:"Riservatezza",nint:1,rischio:"Improbabile",desc:"Fattura inviata per posta elettronica a un cliente diverso dal destinatario",cat:"Dati anagrafici e fiscali di un cliente",notif:"",comint:"",chiusura:D(4,15),
+     mis:"Destinatario contattato, messaggio cancellato con conferma scritta. Rischio improbabile: un solo interessato, dati non sensibili, destinatario identificato. Introdotto il doppio controllo sugli invii."},
+    {data:D(7,2)+"T08:15",natura:"Riservatezza",nint:420,rischio:"Rischio",desc:"Furto di un portatile non cifrato contenente l'archivio degli ordini di un trimestre",cat:"Anagrafiche, indirizzi e ordini dei clienti",notif:D(7,4)+"T16:00",comint:"",chiusura:D(7,30),
+     mis:"Credenziali revocate, denuncia presentata. Rischio non elevato: nessun dato di pagamento. Cifratura estesa a tutti i portatili entro settembre."}];
+  R.form=[{data:D(3,18),tema:"Regole di base, richieste degli interessati, segnalazione degli incidenti",dest:"Tutte le persone autorizzate",doc:"Consulente esterno",part:26,ore:2,eff:"Questionario finale"}];
+  R.audit=[{data:D(3,12),tipo:"Verifica su un responsabile",amb:"Studio paghe",aud:"Responsabile amministrativo",stato:"Svolto",ril:0,sint:"Questionario e colloquio: misure adeguate"},
+    {data:D(5,22),tipo:"Prova di ripristino",amb:"Copie di sicurezza del gestionale",aud:"Assistenza informatica",stato:"Svolto",ril:1,sint:"Ripristino riuscito in 5 ore; tempo superiore all'obiettivo di 4"}];
+  return a;
+}
+(function init(){
+  const d=Store.load();
+  if(d&&Array.isArray(d.aziende)&&d.aziende.length){d.aziende.forEach(norm);DB=d;}
+  else DB={aziende:[esempio()],current:null};
+  if(!az())DB.current=null;
+  view=az()?"home":"pf";
+  fillSel();fillAnni();render();
+})();
+</script>
+</body>
+</html>

@@ -35,7 +35,9 @@ export type DominioContenuti =
   | "sgiqas"
   | "sa8000"
   | "filiera"
-  | "sgesg";
+  | "sgesg"
+  | "nis2"
+  | "gdpr";
 
 /**
  * L'identificativo del content set più recente per il dominio.

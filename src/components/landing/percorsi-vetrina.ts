@@ -267,6 +267,21 @@ export const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = 
     punto:
       "Un controllo dichiarato attuato e mai più verificato non è attuato: qui torna «da verificare» da solo, alla scadenza della sua frequenza. È la differenza fra un sistema che esiste e uno che sta scritto, e l'ispezione la trova in dieci minuti chiedendo l'ultima evidenza.",
   },
+  gdpr: {
+    norma: "Reg. (UE) 2016/679 · D.Lgs. 196/2003 · provvedimenti del Garante",
+    passi: [
+      "Titolare e obbligo del DPO",
+      `Registro dei trattamenti, ${NUMERI.trattamentiTipoGdpr} già impostati`,
+      `${NUMERI.requisitiGdpr} requisiti in ${NUMERI.gruppiGdpr} gruppi`,
+      "Rischi, valutazioni d'impatto e responsabili",
+      "Politica, nomine e piano annuale",
+      `${NUMERI.indicatoriGdpr} indicatori su due esercizi`,
+      `${NUMERI.registriGdpr} registri con i termini di legge`,
+      "Registro art. 30, valutazioni d'impatto, relazione annuale",
+    ],
+    punto:
+      "Il mese per rispondere a un interessato e le 72 ore per notificare una violazione si calcolano da soli, in ora italiana. E un requisito mai valutato pesa zero: saltare i requisiti difficili non fa salire l'indice.",
+  },
   soa: {
     norma: "ISO/IEC 27001:2022 §6.1.3 d)",
     passi: [

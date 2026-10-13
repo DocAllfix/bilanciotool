@@ -1,0 +1,92 @@
+[
+  {
+    "key": "doc-01",
+    "ordine": 1,
+    "tipo": "Informativa (art. 13)",
+    "oggetto": "Dipendenti e collaboratori"
+  },
+  {
+    "key": "doc-02",
+    "ordine": 2,
+    "tipo": "Informativa (art. 13)",
+    "oggetto": "Candidati"
+  },
+  {
+    "key": "doc-03",
+    "ordine": 3,
+    "tipo": "Informativa (art. 13)",
+    "oggetto": "Clienti e fornitori"
+  },
+  {
+    "key": "doc-04",
+    "ordine": 4,
+    "tipo": "Informativa (art. 13)",
+    "oggetto": "Sito web e cookie"
+  },
+  {
+    "key": "doc-05",
+    "ordine": 5,
+    "tipo": "Informativa (art. 13)",
+    "oggetto": "Videosorveglianza: cartello e informativa estesa"
+  },
+  {
+    "key": "doc-06",
+    "ordine": 6,
+    "tipo": "Modulo di consenso",
+    "oggetto": "Newsletter e comunicazioni promozionali"
+  },
+  {
+    "key": "doc-07",
+    "ordine": 7,
+    "tipo": "Autorizzazione e istruzioni (art. 29)",
+    "oggetto": "Lettere di autorizzazione per ruolo"
+  },
+  {
+    "key": "doc-08",
+    "ordine": 8,
+    "tipo": "Nomina amministratore di sistema",
+    "oggetto": "Amministratori di sistema interni ed esterni"
+  },
+  {
+    "key": "doc-09",
+    "ordine": 9,
+    "tipo": "Contratto con responsabile (art. 28)",
+    "oggetto": "Modello di contratto con i responsabili"
+  },
+  {
+    "key": "doc-10",
+    "ordine": 10,
+    "tipo": "Procedura",
+    "oggetto": "Gestione delle richieste degli interessati"
+  },
+  {
+    "key": "doc-11",
+    "ordine": 11,
+    "tipo": "Procedura",
+    "oggetto": "Gestione delle violazioni dei dati"
+  },
+  {
+    "key": "doc-12",
+    "ordine": 12,
+    "tipo": "Procedura",
+    "oggetto": "Valutazione d'impatto e nuovi trattamenti"
+  },
+  {
+    "key": "doc-13",
+    "ordine": 13,
+    "tipo": "Procedura",
+    "oggetto": "Conservazione e cancellazione dei dati"
+  },
+  {
+    "key": "doc-14",
+    "ordine": 14,
+    "tipo": "Regolamento interno",
+    "oggetto": "Uso di posta elettronica, internet e dispositivi"
+  },
+  {
+    "key": "doc-15",
+    "ordine": 15,
+    "tipo": "Valutazione o parere",
+    "oggetto": "Valutazione dell'obbligo di designare il responsabile della protezione dei dati"
+  }
+]

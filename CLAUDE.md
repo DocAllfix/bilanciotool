@@ -3581,3 +3581,163 @@ pagine legali, che un piede non ce l'hanno. Mai dentro l'app dopo l'accesso.
   `/api/auth/get-session` ci passa a ogni pagina pubblica.** Due collaudi pesanti di fila
   dallo stesso indirizzo fanno vedere 429 al secondo: non è un difetto del prodotto, è la
   finestra ancora piena. Si rilancia a finestra scaduta, e lo si dichiara.
+
+**Percorso GDPR, fasi 0–4 (2026-10-12) — il quindicesimo percorso, in Compliance**
+
+Dal prototipo `aggiuntenuovimoduli/percorso-gdpr-v1.html` (impronta verificata contro
+l'originale). Piano in `~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`;
+decisioni del committente: gruppo **Compliance**, un requisito **parziale pesa metà**
+(quello non valutato pesa zero), formazione **per ultima**, dopo il rilascio.
+
+- **Fase 0**: il prototipo si **esegue intero** in `vm` (`scripts/carica-prototipo-gdpr.mjs`):
+  `extractConst` qui non funziona, perché le costanti si citano a vicenda, e ora **solleva**
+  se estrae una funzione o `undefined` invece di scrivere `"undefined"` nel file. Golden
+  riproducibile con `Date` e `Math.random` bloccati (`scripts/golden-gdpr.mjs`, `TZ=Europe/Rome`).
+- **Fase 1**: motore in `src/lib/calc/gdpr/`, nove difetti del prototipo corretti e scritti in
+  `docs/politica-arrotondamento.md`. Il più grave: «non pertinente» va **mappato** su
+  `NON_APPLICABILE` prima di `mediaPesata`, altrimenti entra nel conto a zero e abbassa
+  l'indice in silenzio. Le 72 ore si contano su istanti, non nel fuso del processo.
+- **Fase 2**: migrazioni `0062` (tabelle) e `0063` (RLS, 37 CHECK, trigger), seme `gdpr-v1`.
+  **Le tabelle figlie non portano `company_id`** (precedente QAS): il trigger
+  `azienda_scrivibile` sta solo su `gdpr_system`, e l'azienda archiviata per le righe figlie
+  si ferma in `pretendiSistema(…, { nuovaRiga: true })`, con lo stesso messaggio del database.
+  Guardia nuova `azienda-scrivibile-copertura.db`: il trigger su OGNI tabella con FK verso
+  `company`, messa in rosso togliendolo.
+- **Fase 3**: `src/features/gdpr/`, un campo per volta attraverso tre registri di campi
+  validati (`CAMPI_SISTEMA`, `CAMPI_REQUISITO`, `CAMPI_RIGHE`); le `azione:` dell'audit scritte
+  **letterali** anche dentro gli oggetti del registro delle righe, perché lo scanner delle
+  etichette legge solo quelle.
+- **Fase 4**: modulo nel registro (dopo `sgnis2`), sei documenti tutti nella serie
+  **senza esercizio** (migrazione `0064`), una funzione `publishGdprSnapshot` e un template
+  `documento-gdpr.tsx` per tutti e sei. L'esercizio della relazione annuale sta **nello
+  snapshot**: il pannello di pubblicazione ha ora una prop `esercizio` distinta da `anno`,
+  perché `anno` è anche il filtro delle versioni — passandogli l'esercizio, la serie
+  `anno = 0` sarebbe sembrata vuota. E «per il 0» non compare più.
+
+⚠️ **Dei registri delle richieste e delle violazioni nello snapshot entrano SOLO conteggi.**
+Il portale cliente serve tutti i documenti pubblicati dell'azienda: una descrizione di
+violazione finirebbe lì. `gdpr-documenti.db` lo prova cercando testi-sentinella nello
+snapshot, ed è stato messo in rosso aggiungendo il registro allo snapshot.
+
+**Regole nate qui:**
+- **Un numero scritto in un collaudo per riconoscere «la barra dell'azienda» smette di
+  distinguere al percorso successivo.** `visual-check-shell` contava `< 15`, cioè quattordici
+  percorsi più il fascicolo; ora legge `MODULI` da `moduli.ts`.
+- **Un filtro e un parametro d'azione che condividono una prop divergono al primo modulo che
+  li vuole diversi.** `anno` del pannello era chiave della serie e anno del contenuto insieme.
+- **Una sostituzione testuale su un file CRLF non trova niente**, e uno script che lo pretende
+  si ferma: è il comportamento giusto. Si normalizza, si sostituisce, si ripristina il
+  terminatore.
+
+Gate fase 4: typecheck · `gdpr-documenti.db` 6/6 (render dei sei snapshot compreso) ·
+`paywall-superfici-nuove.db` 27/27, messo in rosso togliendo `requireEntitlement` (sei rossi)
+· guardie `etichette-audit`, `documento-ritorno`, `portale-riservati`, `documenti-spazi`,
+`copertina`, `vetrina-percorsi`, `navigazione.db` verdi · `0064` applicata allo sviluppo.
+
+**Percorso GDPR, fase 5 (2026-10-13) — interfaccia, giro guidato, dimostrativa**
+
+Pagina `/aziende/[id]/gdpr` a dieci viste (le chiavi sono quelle dei segnali del motore:
+un segnale porta dritto dove si rimedia), selettore d'esercizio nell'indirizzo. Tutti i
+numeri — scadenze, 72 ore, indice, segnali — li calcola il SERVER (`features/gdpr/vista.ts`)
+e gli istanti arrivano al campo già in ora italiana. Aprire la pagina non scrive: la radice
+nasce solo da «Avvia il percorso». Dimostrativa in `features/demo/seed-demo-gdpr.ts`
+(obbligo DPO che non ricorre a 48 dipendenti, una richiesta scaduta, una violazione
+notificata in tempo, una valutazione d'impatto in corso; date relative a oggi).
+
+**Tre difetti trovati GUARDANDO, nessuno visibile ai collaudi funzionali:**
+1. ⚠️ «**0** in attesa di riscontro, di cui **1** oltre il termine»: `aperte` e `scadute`
+   sono insiemi disgiunti. La stessa frase stava nel template, cioè sarebbe finita in un
+   PDF consegnato. Ora il collaudo legge il riepilogo e lo pretende coerente.
+2. «45da valutare»: lo spazio DOPO un'espressione, quando il testo che segue è l'ultimo
+   pezzo prima di un a-capo. La prima correzione l'ha messo prima dell'espressione e la
+   pagina è rimasta rotta. Guardia `gdpr-spazi-pure` sui file del percorso.
+3. «I valori predefiniti sono quelli delle Linee guida WP248»: falso per le soglie del
+   rischio, vero solo per i due criteri.
+
+**Regole nate qui:**
+- **Una foto rimpicciolita nasconde gli spazi.** «45da» si è visto ritagliando il punto a
+  piena risoluzione; ora `foto-gdpr.mjs` cerca nel testo RESO cifre incollate alle parole.
+- **Lo strumento che misura va provato rotto prima di credergli**: la prima versione della
+  scansione aveva perso il backslash di `\d` (di nuovo l'heredoc) e segnalava ogni «d».
+  Provata contro il build col difetto: trova «5da»; contro quello corretto: niente.
+- **Un contatore in un `<span>` con il margine è separato a schermo e incollato per chi
+  legge col lettore di schermo** («Quadro75%»): lo spazio vero va scritto.
+
+Gate fase 5: typecheck · build · `qa -- gdpr-percorso` **26/26** (sei PDF da 3 a 12 pagine),
+con due difetti rimessi di proposito — scrittura all'apertura e ora italiana letta in UTC —
+rossi esattamente sui loro controlli · regressioni `archiviata` 33/33, `shell`, `guida` 7/7,
+`demo-completa` 9/9, `portafoglio-aggiorna` 5/5, `tutto-demo` 68/68, `tutto-attivo` 31/31,
+`benvenuto` 12/12, `codice-documento` 22/22 · 30 foto guardate in chiaro, scuro e da
+telefono, zero errori di console, zero sfondamento, zero spazi mangiati.
+
+**Percorso GDPR, fasi 7 e 8 (2026-10-13, notte) — vetrina, legale, e sette difetti trovati guardando i PDF**
+
+- **Vetrina**: la scheda nasce in Fase 4 dal registro; qui l'ultimo passo nomina anche le
+  valutazioni d'impatto. `vetrina-percorsi-pure`, `landing`, `tutto-pubblico` 37/37,
+  `sitemap` 9/9, `axialoop` verdi.
+- **Privacy**: voce nuova «Registri della protezione dei dati delle aziende clienti» (richieste
+  degli interessati e violazioni, riferimento interno e non nome, Evalis responsabile ex art.
+  28, nei documenti solo conteggi), scritta prima che il modulo riceva un dato vero.
+  `AGGIORNATO_AL` = `2026-10-13`: **va portato alla data del rilascio**. `legale` 26/26.
+- **`PRE-LAUNCH.md`** voce 13 e **`docs/rilascio-gdpr-previsione.md`**: lo stato della
+  produzione chiesto in sola lettura (mancano esattamente `0062`÷`0064`, nessuna riga fuori dai
+  vincoli riscritti) e la previsione dei conteggi scritta PRIMA del seme.
+
+**Difetti trovati aprendo i PDF consegnati**, nessuno visibile ai collaudi funzionali:
+1. ⚠️ **`.doc-avviso` non aveva NESSUNA regola CSS**: il riquadro «riquadrato e in apertura»
+   usciva come testo semplice — anche nei tre documenti NIS2 **già in produzione** (quelli già
+   archiviati restano com'erano: lo snapshot e il PDF non cambiano).
+2. ⚠️ **Il colophon di TUTTI i documenti dichiarava il giorno UTC**: pubblicato in Italia fra
+   mezzanotte e le due diceva il giorno prima, mentre la copertina dello stesso PDF diceva
+   quello giusto. Ora `giornoItaliano`, e `colophon-data-pure` lo prova anche sotto `TZ=UTC`.
+3. Plurali sbagliati («1 trattamenti valutati», «1 soggetti esterni»), nel documento e a schermo.
+4. «Approvata il —» per una politica non approvata.
+5. «66.7%»: il punto decimale in un documento italiano. Guardia nel render degli snapshot.
+6. «48,0» persone: un decimale forzato anche sui conteggi.
+7. La dimostrativa dichiarava un fornitore negli Stati Uniti e nessun trattamento con
+   trasferimenti: due sezioni dello stesso documento che si contraddicono.
+
+**I PDF si consegnano dalla DIMOSTRATIVA**, non dall'azienda di collaudo (due trattamenti e
+mezza anagrafica): `SALVA_PDF=<cartella> npm run qa -- gdpr-percorso` pubblica i sei anche
+sulla dimostrativa, ne conta le pagine e salva quelli.
+
+**Regole nate qui:**
+- **Una classe CSS usata e mai definita non produce nessun errore**: il compilatore non la
+  vede, i collaudi nemmeno. Si vede solo nel PDF.
+- **Un controllo sulla data va lanciato anche fuori orario.** Il guasto del colophon esiste
+  solo fra mezzanotte e le due; di giorno ogni test passa.
+- **Un guardiano che guarda le date può dire rosso per l'ora del giorno, non per il codice**:
+  `sitemap` ha dato «nel futuro» all'1:28 e «modificata adesso» alle 02:07 italiane sulla
+  stessa data `2026-10-13`. Era giusto in entrambi i casi; verde dalle 02:10.
+
+⚠️ **Il rilascio (Fase 9) NON è fatto**: scritture in produzione e spinta sono del committente.
+La Fase 6 (formazione) è per decisione sua dopo il rilascio.
+
+**Percorso GDPR: corso, limite provvisorio e un danno mio (2026-10-13)**
+
+- **Il corso l'ha scritto la sessione di Academy** (`corsi/gdpr.ts`, 6 sezioni proprie, copione
+  e 68 slide in `audio-formazione/gdpr/`), noi le guardie. Senza corso `qa -- formazione` è
+  rosso: «OGNI percorso ha sezioni PROPRIE» è un'invariante del prodotto, quindi la formazione
+  **non poteva restare a dopo il rilascio** come avevamo deciso. Le tracce audio non ci sono
+  ancora: il corso esce «con la voce in parte», come fu per NIS2.
+- ⚠️ **Le 72 ore si mostrano anche col rischio in bianco** (`limiteProvvisorio`). Trovato da
+  Academy scrivendo il corso: per dire il vero avrebbe dovuto insegnare «la scadenza non
+  compare ma il termine corre». Era un difetto del prodotto ereditato dal prototipo. Stati e
+  conteggi delle notifiche non cambiano; il quadro ha un'attenzione propria. Divergenza n. 9
+  in `docs/politica-arrotondamento.md`.
+
+⚠️ **`git worktree remove --force` su un worktree con una GIUNZIONE a `node_modules` cancella
+DENTRO il `node_modules` vero.** È fallito con «Invalid argument» dopo aver già tolto `.bin` e
+`@esbuild`. Il mio controllo dopo (un file di `next` e il numero delle cartelle) era troppo
+debole per accorgersene; se n'è accorta l'altra sessione, a cui vitest non partiva. Rimedio:
+`npm ci`. Il giro sull'anteprima è degradato da metà in poi per questo, non per il prodotto.
+
+**Regole nate qui:**
+- **Prima di rimuovere un worktree si toglie la giunzione** (`cmd /c rmdir <collegamento>`,
+  che toglie il solo collegamento), e dopo si verifica `node_modules/.bin`, non un file a caso.
+- **Una serie di collaudi che muoiono senza conteggio, uno dopo l'altro, è l'ambiente**: tre
+  di fila non sono tre difetti. Si guarda che cosa hanno in comune prima di rilanciarli.
+- **Quando un corso, per dire il vero, deve insegnare un aggiramento, il difetto è nel
+  prodotto.** Chi scrive la spiegazione vede ciò che chi scrive il codice dà per normale.
+- **Il build scarica i font da Google**: dopo un `npm ci` la cache non c'è e un download
+  mancato ferma il build con «Module not found … font/google». Si rilancia.

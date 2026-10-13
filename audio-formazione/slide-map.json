@@ -6886,6 +6886,1351 @@
       ]
     }
   ],
+  "gdpr/conformita-requisiti": [
+    {
+      "sezione": "conformita-requisiti",
+      "p": 0,
+      "inizia": "La vista Conformità raccoglie novantanove requisiti,",
+      "layout": "apertura",
+      "titolo": "I requisiti",
+      "sottotitolo": "E il peso di quelli non guardati",
+      "testo": "{requisitiGdpr} requisiti in {gruppiGdpr} gruppi, ciascuno con la sua guida.",
+      "agenda": [
+        "La guida di ogni gruppo",
+        "Quattro esiti e i loro pesi",
+        "Il requisito non valutato",
+        "Il non pertinente",
+        "Evidenze e azioni"
+      ]
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 1,
+      "inizia": "Ogni gruppo ha la sua guida,",
+      "layout": "cards",
+      "titolo": "La guida di ogni gruppo",
+      "cards": [
+        {
+          "h": "Che cosa chiede",
+          "d": "Il gruppo di articoli, in chiaro."
+        },
+        {
+          "h": "Che cosa verificare",
+          "d": "In azienda, concretamente."
+        },
+        {
+          "h": "Quali evidenze",
+          "d": "Documenti e registrazioni da cercare."
+        },
+        {
+          "h": "Dove si sbaglia",
+          "d": "Gli errori più frequenti."
+        }
+      ]
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 2,
+      "inizia": "Ogni requisito ha quattro esiti possibili:",
+      "layout": "tabella",
+      "titolo": "Quattro esiti, più uno",
+      "cols": [
+        "Esito",
+        "Peso nell'indice"
+      ],
+      "righe": [
+        [
+          "Conforme",
+          "Pieno"
+        ],
+        [
+          "Parziale",
+          "Metà"
+        ],
+        [
+          "Non conforme",
+          "Zero"
+        ],
+        [
+          "Non pertinente",
+          "Fuori dal conto"
+        ],
+        [
+          "Da valutare",
+          "Zero, e resta nel conto"
+        ]
+      ]
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 4,
+      "inizia": "Ed ecco il punto che sorprende",
+      "layout": "evidenza",
+      "eyebrow": "Il punto che sorprende",
+      "titolo": "Un requisito non valutato pesa zero, e resta nel conto.",
+      "testo": "Tre conformi su {requisitiGdpr}: l'indice dice poco più del 3%. Non 100%."
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 5,
+      "inizia": "Un foglio di calcolo che facesse",
+      "layout": "confronto",
+      "titolo": "Due modi di fare la media",
+      "a": {
+        "h": "Solo i valutati",
+        "sub": "Il foglio di calcolo",
+        "punti": [
+          "Tre conformi: 100%",
+          "Tutto conforme: 100%",
+          "Più salti, più sale"
+        ]
+      },
+      "b": {
+        "h": "Tutti i pertinenti",
+        "sub": "Il prodotto",
+        "punti": [
+          "Tre conformi: poco più del 3%",
+          "Misura quanto è dimostrato"
+        ]
+      }
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 6,
+      "inizia": "Il non pertinente funziona all'opposto. Un",
+      "layout": "definizione",
+      "eyebrow": "Non pertinente",
+      "titolo": "Esce dal conto",
+      "definizione": "Non abbassa e non alza l'indice. È una dichiarazione motivata, non una scorciatoia per far salire la percentuale."
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 7,
+      "inizia": "C'è un caso limite che il",
+      "layout": "evidenza",
+      "eyebrow": "Nessun requisito valutato",
+      "titolo": "L'indice non compare.",
+      "testo": "Zero direbbe tutto non conforme di un sistema di cui non si sa ancora niente."
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 8,
+      "inizia": "Oltre all'indice complessivo, il prodotto calcola",
+      "layout": "split",
+      "titolo": "Un indice per ogni gruppo",
+      "lead": "La stessa regola, gruppo per gruppo.",
+      "punti": [
+        {
+          "h": "Un indice medio",
+          "d": "può nascondere un gruppo quasi vuoto"
+        },
+        {
+          "h": "I gruppi deboli",
+          "d": "sono quelli da cui partire"
+        }
+      ]
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 9,
+      "inizia": "Poi la vista Verifica guarda dentro",
+      "layout": "confronto",
+      "titolo": "Due incoerenze che la Verifica trova",
+      "a": {
+        "h": "Conforme senza evidenza",
+        "sub": "Nessun documento lo sostiene",
+        "punti": [
+          "La prima cosa che un'ispezione smonta"
+        ]
+      },
+      "b": {
+        "h": "Lacuna senza azione",
+        "sub": "Parziale o non conforme",
+        "punti": [
+          "Non entra in nessun piano"
+        ]
+      }
+    },
+    {
+      "sezione": "conformita-requisiti",
+      "p": 10,
+      "inizia": "Per ogni requisito toccato, quindi, si",
+      "layout": "chiusura",
+      "titolo": "Per ogni requisito toccato",
+      "punti": [
+        {
+          "h": "L'evidenza",
+          "d": "il documento che prova lo stato"
+        },
+        {
+          "h": "L'azione",
+          "d": "con un responsabile e una scadenza"
+        },
+        {
+          "h": "Il risultato",
+          "d": "il rapporto di conformità e il suo piano"
+        }
+      ]
+    }
+  ],
+  "gdpr/documenti-e-dimostrabile": [
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 0,
+      "inizia": "L'ultima parte del percorso mette insieme",
+      "layout": "apertura",
+      "titolo": "Politica, indicatori e documenti",
+      "sottotitolo": "Che cosa serve per essere dimostrabili",
+      "testo": "Le regole e i numeri, fino ai sei documenti.",
+      "agenda": [
+        "La politica",
+        "Inventario e piano",
+        "Gli indicatori",
+        "Dimostrabile",
+        "I sei documenti"
+      ]
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 1,
+      "inizia": "I contenuti attesi dicono che cosa",
+      "layout": "punti",
+      "titolo": "Che cosa deve fare una politica",
+      "numerati": false,
+      "punti": [
+        {
+          "h": "Principi",
+          "d": "richiama l'art. 5"
+        },
+        {
+          "h": "Ruoli",
+          "d": "e responsabilità interne"
+        },
+        {
+          "h": "Diritti, sicurezza, violazioni",
+          "d": "come si gestiscono"
+        },
+        {
+          "h": "Fornitori",
+          "d": "e trasferimenti all'estero"
+        },
+        {
+          "h": "Formazione",
+          "d": "di chi tratta dati"
+        },
+        {
+          "h": "Approvazione",
+          "d": "del vertice, con la data"
+        },
+        {
+          "h": "Comunicazione",
+          "d": "alle persone autorizzate"
+        },
+        {
+          "h": "Riesame",
+          "d": "periodico"
+        }
+      ]
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 2,
+      "inizia": "Accanto alla politica ci sono l'inventario",
+      "layout": "confronto",
+      "titolo": "Inventario e piano",
+      "a": {
+        "h": "Inventario",
+        "sub": "{documentiTipoGdpr} documenti tipici",
+        "punti": [
+          "Da redigere, in bozza, adottato, da aggiornare",
+          "Revisione scaduta: attenzione"
+        ]
+      },
+      "b": {
+        "h": "Piano annuale",
+        "sub": "{attivitaTipoGdpr} attività tipiche",
+        "punti": [
+          "Distribuite sui mesi"
+        ]
+      }
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 3,
+      "inizia": "La vista Indicatori chiede ventidue misure",
+      "layout": "split",
+      "titolo": "{indicatoriGdpr} misure per l'anno",
+      "lead": "Accanto a quelle dell'anno precedente.",
+      "punti": [
+        {
+          "h": "Formati",
+          "d": "su autorizzati"
+        },
+        {
+          "h": "Autenticazione a più fattori",
+          "d": "su utenze"
+        },
+        {
+          "h": "Cifrati",
+          "d": "su dispositivi"
+        },
+        {
+          "h": "Consenso documentato",
+          "d": "su contatti promozionali"
+        }
+      ]
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 4,
+      "inizia": "Due regole proteggono quei numeri. Un",
+      "layout": "confronto",
+      "titolo": "Due regole sui numeri",
+      "a": {
+        "h": "Un vuoto",
+        "sub": "Non è zero",
+        "punti": [
+          "La percentuale non si calcola"
+        ]
+      },
+      "b": {
+        "h": "Di cui oltre il totale",
+        "sub": "Respinto dal server",
+        "punti": [
+          "Un dato sbagliato si corregge"
+        ]
+      }
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 5,
+      "inizia": "Poi la vista Verifica, che è",
+      "layout": "evidenza",
+      "eyebrow": "La vista Verifica",
+      "titolo": "Che cosa oggi non si potrebbe mostrare a un'ispezione?",
+      "testo": "Vista per vista, con il nome della cosa da sistemare e il collegamento per rimediare."
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 6,
+      "inizia": "Il percorso risulta dimostrabile solo quando",
+      "layout": "punti",
+      "titolo": "Dimostrabile: cinque condizioni insieme",
+      "numerati": true,
+      "punti": [
+        {
+          "h": "Nessuna criticità",
+          "d": "aperta"
+        },
+        {
+          "h": "Registro dei trattamenti",
+          "d": "non vuoto"
+        },
+        {
+          "h": "Requisiti",
+          "d": "tutti valutati, nessuno non conforme"
+        },
+        {
+          "h": "Registrazioni dell'anno",
+          "d": "complete"
+        },
+        {
+          "h": "Compilazione",
+          "d": "almeno all'85%"
+        }
+      ]
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 7,
+      "inizia": "Infine i documenti. Sono sei: il",
+      "layout": "tabella",
+      "titolo": "I sei documenti",
+      "cols": [
+        "Documento",
+        "Che cosa contiene"
+      ],
+      "righe": [
+        [
+          "Registro dei trattamenti",
+          "Una scheda per trattamento"
+        ],
+        [
+          "Modello organizzativo",
+          "Ruoli, regole, rischi, responsabili, registri"
+        ],
+        [
+          "Politica",
+          "Il testo, con approvazione e firma"
+        ],
+        [
+          "Valutazioni d'impatto",
+          "Il vaglio e una scheda per ogni valutazione"
+        ],
+        [
+          "Rapporto di conformità",
+          "L'indice e il piano di adeguamento"
+        ],
+        [
+          "Relazione annuale",
+          "L'anno scelto, confrontato col precedente"
+        ]
+      ]
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 8,
+      "inizia": "Ognuno è una serie di revisioni,",
+      "layout": "definizione",
+      "eyebrow": "Revisioni",
+      "titolo": "Ogni revisione è congelata",
+      "definizione": "Una correzione entra nella revisione successiva. La relazione annuale porta dentro di sé l'anno di cui parla."
+    },
+    {
+      "sezione": "documenti-e-dimostrabile",
+      "p": 9,
+      "inizia": "Questo è il percorso della protezione",
+      "layout": "chiusura",
+      "titolo": "Il percorso, in breve",
+      "punti": [
+        {
+          "h": "Ruoli e registro",
+          "d": "chi decide, che cosa si tratta"
+        },
+        {
+          "h": "Requisiti e rischi",
+          "d": "che cosa è dimostrato"
+        },
+        {
+          "h": "Registri e termini",
+          "d": "che cosa è stato fatto, e quando"
+        },
+        {
+          "h": "Sei documenti",
+          "d": "veri il giorno della firma"
+        }
+      ]
+    }
+  ],
+  "gdpr/registri-e-termini": [
+    {
+      "sezione": "registri-e-termini",
+      "p": 0,
+      "inizia": "La vista Registri ne tiene sei:",
+      "layout": "apertura",
+      "titolo": "I registri",
+      "sottotitolo": "E i due termini che non si recuperano",
+      "testo": "{registriGdpr} registri: la memoria di ciò che l'azienda ha fatto, con le date.",
+      "agenda": [
+        "L'anno e l'archivio",
+        "Un mese per le richieste",
+        "72 ore per le violazioni",
+        "Rischio da valutare",
+        "Niente nomi"
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 1,
+      "inizia": "Le registrazioni si attribuiscono all'anno per",
+      "layout": "confronto",
+      "titolo": "L'anno o l'archivio",
+      "a": {
+        "h": "Per anno",
+        "sub": "Le registrazioni",
+        "punti": [
+          "Si attribuiscono per data"
+        ]
+      },
+      "b": {
+        "h": "Su tutto l'archivio",
+        "sub": "Richieste scadute, violazioni aperte",
+        "punti": [
+          "Un problema dell'anno scorso è di oggi"
+        ]
+      }
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 2,
+      "inizia": "Due registri hanno un termine di",
+      "layout": "timeline",
+      "titolo": "I due termini di legge",
+      "tappe": [
+        {
+          "t": "1 mese",
+          "h": "Richiesta",
+          "d": "Dalla ricezione, art. 12.3."
+        },
+        {
+          "t": "3 mesi",
+          "h": "Con proroga",
+          "d": "Comunicata e motivata."
+        },
+        {
+          "t": "72 ore",
+          "h": "Violazione",
+          "d": "Dalla conoscenza, art. 33.1."
+        }
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 3,
+      "inizia": "Il mese si conta sul calendario,",
+      "layout": "tabella",
+      "titolo": "Il mese si conta sul calendario",
+      "cols": [
+        "Ricevuta il",
+        "Scade il"
+      ],
+      "righe": [
+        [
+          "15 marzo",
+          "15 aprile"
+        ],
+        [
+          "31 gennaio",
+          "28 febbraio"
+        ]
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 4,
+      "inizia": "Ogni richiesta ha quindi uno stato",
+      "layout": "cards",
+      "titolo": "Quattro stati di una richiesta",
+      "cards": [
+        {
+          "h": "In corso",
+          "d": "Il termine non è ancora passato."
+        },
+        {
+          "h": "Nei termini",
+          "d": "Riscontro entro la scadenza."
+        },
+        {
+          "h": "Fuori termine",
+          "d": "Riscontro dopo la scadenza: resta scritto."
+        },
+        {
+          "h": "Scaduta",
+          "d": "Nessun riscontro: criticità."
+        }
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 5,
+      "inizia": "Il secondo termine è quello delle",
+      "layout": "definizione",
+      "eyebrow": "Art. 33.1",
+      "titolo": "72 ore da un istante",
+      "definizione": "Dal momento in cui l'azienda ne è venuta a conoscenza, se il rischio non è improbabile. Per questo si registra anche l'ora."
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 6,
+      "inizia": "Il termine lo calcola il server,",
+      "layout": "split",
+      "titolo": "Ore vere, in ora italiana",
+      "lead": "Il termine lo calcola il server.",
+      "punti": [
+        {
+          "h": "Non il computer",
+          "d": "di chi compila"
+        },
+        {
+          "h": "Non il fuso del server",
+          "d": "due ore di scarto in estate"
+        },
+        {
+          "h": "Il cambio d'ora",
+          "d": "72 ore di orologio non sono 72 ore vere"
+        }
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 7,
+      "inizia": "Un esempio concreto. Una violazione è",
+      "layout": "timeline",
+      "titolo": "A cavallo del cambio d'ora",
+      "tappe": [
+        {
+          "t": "24/10 · 09:30",
+          "h": "Conoscenza",
+          "d": "Ora legale."
+        },
+        {
+          "t": "Notte del 25/10",
+          "h": "Ora solare",
+          "d": "L'orologio torna indietro di un'ora."
+        },
+        {
+          "t": "27/10 · 08:30",
+          "h": "Limite",
+          "d": "Dopo 72 ore vere."
+        }
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 8,
+      "inizia": "C'è un dettaglio da capire bene.",
+      "layout": "evidenza",
+      "eyebrow": "Rischio da valutare",
+      "titolo": "Il limite compare subito: l'orologio lo vedi già.",
+      "testo": "Improbabile toglie la scadenza; Rischio e Rischio elevato la rendono un termine vero. Valutalo per prima cosa."
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 9,
+      "inizia": "Si registrano tutte le violazioni, anche",
+      "layout": "punti",
+      "titolo": "Che cosa si registra",
+      "numerati": false,
+      "punti": [
+        {
+          "h": "Tutte le violazioni",
+          "d": "anche quelle non notificate, con la valutazione"
+        },
+        {
+          "h": "Con rischio elevato",
+          "d": "la comunicazione agli interessati, art. 34"
+        },
+        {
+          "h": "Notifica oltre le 72 ore",
+          "d": "fuori termine, con il ritardo motivato"
+        }
+      ]
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 10,
+      "inizia": "Infine una regola che vale per",
+      "layout": "evidenza",
+      "eyebrow": "Richieste e violazioni",
+      "titolo": "Nei registri non si scrivono nomi.",
+      "testo": "Un riferimento interno, mai il nome dell'interessato. Nemmeno nelle note."
+    },
+    {
+      "sezione": "registri-e-termini",
+      "p": 11,
+      "inizia": "E nei documenti pubblicati, di questi",
+      "layout": "chiusura",
+      "titolo": "Nei documenti pubblicati",
+      "punti": [
+        {
+          "h": "Solo conteggi",
+          "d": "richieste, nei termini, violazioni, notificate"
+        },
+        {
+          "h": "Nessuna descrizione",
+          "d": "il collegamento del cliente serve tutti i documenti"
+        }
+      ]
+    }
+  ],
+  "gdpr/registro-trattamenti": [
+    {
+      "sezione": "registro-trattamenti",
+      "p": 0,
+      "inizia": "Il registro delle attività di trattamento",
+      "layout": "apertura",
+      "titolo": "Il registro dei trattamenti",
+      "sottotitolo": "Art. 30",
+      "testo": "Il primo documento che il Garante chiede, e la base di tutto il resto.",
+      "agenda": [
+        "I trattamenti tipici",
+        "I campi obbligatori",
+        "La base giuridica",
+        "Consenso e legittimo interesse",
+        "I dati particolari"
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 1,
+      "inizia": "Per non partire da un foglio",
+      "layout": "evidenza",
+      "eyebrow": "Per non partire da zero",
+      "titolo": "{trattamentiTipoGdpr} trattamenti tipici dal catalogo",
+      "testo": "Dal rapporto di lavoro alla videosorveglianza, dalle comunicazioni promozionali alla geolocalizzazione dei veicoli."
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 2,
+      "inizia": "Si aggiungono con un clic, e",
+      "layout": "confronto",
+      "titolo": "Un modello si corregge",
+      "a": {
+        "h": "Lasciato com'è",
+        "sub": "Descrive un'azienda media",
+        "punti": [
+          "Un ispettore se ne accorge alla seconda domanda"
+        ]
+      },
+      "b": {
+        "h": "Corretto sul caso",
+        "sub": "Descrive l'azienda che hai davanti",
+        "punti": [
+          "E si aggiungono i trattamenti scritti da zero"
+        ]
+      }
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 3,
+      "inizia": "Ogni trattamento ha sette campi che",
+      "layout": "punti",
+      "titolo": "I sette campi dell'art. 30.1",
+      "numerati": true,
+      "punti": [
+        {
+          "h": "Finalità",
+          "d": "perché si trattano i dati"
+        },
+        {
+          "h": "Base giuridica",
+          "d": "una delle sei dell'art. 6"
+        },
+        {
+          "h": "Interessati",
+          "d": "di chi sono i dati"
+        },
+        {
+          "h": "Categorie di dati",
+          "d": "quali dati"
+        },
+        {
+          "h": "Destinatari",
+          "d": "a chi si comunicano"
+        },
+        {
+          "h": "Conservazione",
+          "d": "un tempo o un criterio"
+        },
+        {
+          "h": "Misure di sicurezza",
+          "d": "come si proteggono"
+        }
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 4,
+      "inizia": "La finalità va scritta in modo",
+      "layout": "confronto",
+      "titolo": "Scritta perché la capisca un estraneo",
+      "a": {
+        "h": "Non è una finalità",
+        "sub": "Gestione del personale",
+        "punti": [
+          "È un ufficio"
+        ]
+      },
+      "b": {
+        "h": "È una finalità",
+        "sub": "Elaborazione delle paghe e adempimenti contributivi",
+        "punti": [
+          "Dice che cosa si fa"
+        ]
+      }
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 5,
+      "inizia": "La base giuridica è una delle",
+      "layout": "cards",
+      "titolo": "Le sei basi dell'art. 6",
+      "cards": [
+        {
+          "h": "Consenso",
+          "d": "6.1.a"
+        },
+        {
+          "h": "Contratto",
+          "d": "6.1.b"
+        },
+        {
+          "h": "Obbligo di legge",
+          "d": "6.1.c"
+        },
+        {
+          "h": "Interessi vitali",
+          "d": "6.1.d"
+        },
+        {
+          "h": "Interesse pubblico",
+          "d": "6.1.e"
+        },
+        {
+          "h": "Legittimo interesse",
+          "d": "6.1.f"
+        }
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 6,
+      "inizia": "Sul consenso vale un avvertimento che",
+      "layout": "evidenza",
+      "eyebrow": "Il consenso",
+      "titolo": "Non è la base per tutto.",
+      "testo": "Nel rapporto di lavoro quasi mai è libero. La busta paga si fonda sul contratto e sull'obbligo di legge."
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 7,
+      "inizia": "Il legittimo interesse, invece, ha un",
+      "layout": "definizione",
+      "eyebrow": "Art. 6.1.f",
+      "titolo": "Il legittimo interesse si dimostra",
+      "definizione": "Finché il bilanciamento con i diritti degli interessati non è documentato, il trattamento resta fra i punti d'attenzione."
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 8,
+      "inizia": "Poi ci sono i dati particolari:",
+      "layout": "definizione",
+      "eyebrow": "Art. 9.2",
+      "titolo": "Dati particolari: la regola è il divieto",
+      "definizione": "Oltre alla base dell'art. 6 serve una delle condizioni dell'art. 9.2: è l'eccezione che solleva il divieto.",
+      "punti": [
+        {
+          "h": "Per esempio",
+          "d": "salute, appartenenza sindacale, dati genetici e biometrici"
+        }
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 9,
+      "inizia": "Il prodotto lo traduce così: se",
+      "layout": "tabella",
+      "titolo": "La condizione, caso per caso",
+      "cols": [
+        "Situazione",
+        "Condizione o segnale"
+      ],
+      "righe": [
+        [
+          "Dati dei dipendenti",
+          "b) Lavoro e sicurezza sociale"
+        ],
+        [
+          "Sorveglianza sanitaria",
+          "h) Medicina del lavoro"
+        ],
+        [
+          "Dati particolari senza condizione",
+          "Criticità"
+        ]
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 10,
+      "inizia": "Accanto ai campi obbligatori, ogni trattamento",
+      "layout": "split",
+      "titolo": "Qui si dichiara, lì si valuta",
+      "lead": "Questi campi alimentano la vista Rischi e responsabili.",
+      "punti": [
+        {
+          "h": "Trasferimenti",
+          "d": "fuori dallo Spazio economico europeo"
+        },
+        {
+          "h": "Sistemi",
+          "d": "che supportano il trattamento"
+        },
+        {
+          "h": "Misure",
+          "d": "adottate"
+        }
+      ]
+    },
+    {
+      "sezione": "registro-trattamenti",
+      "p": 11,
+      "inizia": "Da questa vista nasce il primo",
+      "layout": "chiusura",
+      "titolo": "Rileggerlo come un ispettore",
+      "punti": [
+        {
+          "h": "Ogni finalità",
+          "d": "chiara"
+        },
+        {
+          "h": "Ogni base",
+          "d": "precisa"
+        },
+        {
+          "h": "Ogni dato particolare",
+          "d": "con la sua condizione"
+        },
+        {
+          "h": "Ogni conservazione",
+          "d": "con un tempo"
+        }
+      ]
+    }
+  ],
+  "gdpr/rischi-e-responsabili": [
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 0,
+      "inizia": "La vista Rischi e responsabili lavora",
+      "layout": "apertura",
+      "titolo": "Rischi e responsabili",
+      "sottotitolo": "Valutazioni d'impatto, rischio, fornitori",
+      "testo": "Tre lavori sugli stessi trattamenti del registro.",
+      "agenda": [
+        "I criteri di vaglio",
+        "Probabilità per gravità",
+        "Un asse solo non basta",
+        "Qualifiche e contratti",
+        "I trasferimenti"
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 1,
+      "inizia": "Si comincia dal vaglio. Per ogni",
+      "layout": "punti",
+      "titolo": "I criteri di vaglio",
+      "intro": "{criteriGdpr} in tutto, dalle linee guida europee.",
+      "numerati": false,
+      "punti": [
+        {
+          "h": "Valutazione o punteggio",
+          "d": "delle persone"
+        },
+        {
+          "h": "Decisioni automatizzate",
+          "d": "con effetti giuridici"
+        },
+        {
+          "h": "Monitoraggio sistematico",
+          "d": "degli interessati"
+        },
+        {
+          "h": "Dati sensibili",
+          "d": "o di natura personale"
+        },
+        {
+          "h": "Larga scala",
+          "d": "per numero o estensione"
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 2,
+      "inizia": "E ancora: la combinazione di insiemi",
+      "layout": "punti",
+      "titolo": "E gli altri quattro",
+      "numerati": false,
+      "punti": [
+        {
+          "h": "Combinazione",
+          "d": "di insiemi di dati"
+        },
+        {
+          "h": "Interessati vulnerabili",
+          "d": "dipendenti, minori, pazienti"
+        },
+        {
+          "h": "Tecnologie nuove",
+          "d": "o usi innovativi"
+        },
+        {
+          "h": "Blocco",
+          "d": "di un diritto o di un servizio"
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 3,
+      "inizia": "Con la soglia predefinita, da due",
+      "layout": "evidenza",
+      "eyebrow": "Soglia predefinita, art. 35",
+      "titolo": "Da due criteri, valutazione d'impatto.",
+      "testo": "La soglia si cambia per cliente. Necessaria e non conclusa: criticità."
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 4,
+      "inizia": "Il rischio si misura in un",
+      "layout": "numeri",
+      "titolo": "Probabilità per gravità",
+      "numeri": [
+        {
+          "n": "1 ÷ 5",
+          "h": "Ogni asse",
+          "d": "Con una descrizione per valore."
+        },
+        {
+          "n": "Da quindici",
+          "h": "Alto",
+          "d": "Soglia predefinita."
+        },
+        {
+          "n": "Da otto",
+          "h": "Medio",
+          "d": "Soglia predefinita. Sotto, basso."
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 5,
+      "inizia": "Un esempio. Probabilità quattro, gravità quattro:",
+      "layout": "flusso",
+      "titolo": "Un esempio",
+      "passi": [
+        {
+          "h": "Probabilità",
+          "d": "quattro"
+        },
+        {
+          "h": "Gravità",
+          "d": "quattro"
+        },
+        {
+          "h": "Livello sedici",
+          "d": "rischio alto"
+        },
+        {
+          "h": "Due criteri",
+          "d": "valutazione d'impatto necessaria"
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 6,
+      "inizia": "C'è una regola che il prodotto",
+      "layout": "evidenza",
+      "eyebrow": "La regola",
+      "titolo": "Un asse solo non fa un rischio.",
+      "testo": "Con la sola probabilità il trattamento resta da valutare: non diventa basso."
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 7,
+      "inizia": "Due segnali discendono dal rischio. Un",
+      "layout": "tabella",
+      "titolo": "Due segnali dal rischio",
+      "cols": [
+        "Situazione",
+        "Segnale"
+      ],
+      "righe": [
+        [
+          "Rischio alto senza mitigazione",
+          "Attenzione: art. 32"
+        ],
+        [
+          "Rischio residuo elevato dopo la valutazione",
+          "Consultazione preventiva: art. 36"
+        ]
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 8,
+      "inizia": "Poi i fornitori. Ogni fornitore che",
+      "layout": "cards",
+      "titolo": "Quattro qualifiche",
+      "cards": [
+        {
+          "h": "Responsabile",
+          "d": "Art. 28: tratta per conto dell'azienda."
+        },
+        {
+          "h": "Sub-responsabile",
+          "d": "Per conto di un responsabile."
+        },
+        {
+          "h": "Contitolare",
+          "d": "Art. 26: decide insieme all'azienda."
+        },
+        {
+          "h": "Titolare autonomo",
+          "d": "Tratta i dati per fini propri."
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 9,
+      "inizia": "Un responsabile, un sub responsabile o",
+      "layout": "evidenza",
+      "eyebrow": "Il contratto",
+      "titolo": "«Non dovuto» vale solo per il titolare autonomo.",
+      "testo": "Su un responsabile il server lo respinge, e spiega perché."
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 10,
+      "inizia": "Un responsabile senza contratto è una",
+      "layout": "split",
+      "titolo": "Criticità sui fornitori",
+      "lead": "Per ogni fornitore: data e esito dell'ultima verifica.",
+      "punti": [
+        {
+          "h": "Responsabile senza contratto",
+          "d": "criticità"
+        },
+        {
+          "h": "Esito critico alla verifica",
+          "d": "criticità"
+        }
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 11,
+      "inizia": "Infine i trasferimenti. Per ogni fornitore",
+      "layout": "tabella",
+      "titolo": "La garanzia del trasferimento",
+      "cols": [
+        "Garanzia",
+        "Segnale"
+      ],
+      "righe": [
+        [
+          "Nessun trasferimento",
+          "Nessuno"
+        ],
+        [
+          "Adeguatezza, clausole tipo, norme vincolanti d'impresa",
+          "Nessuno"
+        ],
+        [
+          "Deroga dell'art. 49",
+          "Attenzione"
+        ],
+        [
+          "Da definire",
+          "Criticità"
+        ]
+      ]
+    },
+    {
+      "sezione": "rischi-e-responsabili",
+      "p": 12,
+      "inizia": "La deroga, invece, è un punto",
+      "layout": "definizione",
+      "eyebrow": "Deroga dell'art. 49",
+      "titolo": "La deroga è per l'occasionale",
+      "definizione": "Un fornitore che riceve dati ogni giorno in deroga ha la garanzia sbagliata."
+    }
+  ],
+  "gdpr/ruoli-e-dpo": [
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 0,
+      "inizia": "Prima di censire un solo trattamento,",
+      "layout": "apertura",
+      "titolo": "Chi decide",
+      "sottotitolo": "E se serve il responsabile della protezione dei dati",
+      "testo": "Prima di censire un solo trattamento, bisogna sapere chi decide.",
+      "agenda": [
+        "Titolare e responsabile",
+        "La vista Organizzazione",
+        "Le tre lettere dell'art. 37.1",
+        "Vuoto non vuol dire No",
+        "Gli amministratori di sistema"
+      ]
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 1,
+      "inizia": "La vista Organizzazione comincia da qui.",
+      "layout": "cards",
+      "titolo": "La vista Organizzazione",
+      "cards": [
+        {
+          "h": "Anagrafica",
+          "d": "Forma giuridica, sede, settore, dipendenti."
+        },
+        {
+          "h": "Due persone",
+          "d": "Il legale rappresentante e il referente interno."
+        },
+        {
+          "h": "Un recapito",
+          "d": "Dove l'interessato scrive per esercitare i suoi diritti."
+        }
+      ]
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 2,
+      "inizia": "Poi viene la domanda che decide",
+      "layout": "definizione",
+      "eyebrow": "Art. 37.1",
+      "titolo": "Tre lettere, tre domande",
+      "definizione": "Serve un responsabile della protezione dei dati? Ogni lettera ha due sole risposte: Sì oppure No."
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 3,
+      "inizia": "La lettera a riguarda le autorità",
+      "layout": "punti",
+      "titolo": "Le tre lettere",
+      "numerati": false,
+      "punti": [
+        {
+          "h": "a)",
+          "d": "Autorità o organismo pubblico"
+        },
+        {
+          "h": "b)",
+          "d": "Monitoraggio regolare e sistematico degli interessati, su larga scala"
+        },
+        {
+          "h": "c)",
+          "d": "Categorie particolari o dati giudiziari, su larga scala"
+        }
+      ]
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 4,
+      "inizia": "La regola di calcolo è semplice,",
+      "layout": "evidenza",
+      "eyebrow": "La regola",
+      "titolo": "Basta un Sì.",
+      "testo": "Le altre due lettere non lo compensano: due No e un Sì danno un obbligo, non una media."
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 5,
+      "inizia": "Ma c'è una distinzione che il",
+      "layout": "confronto",
+      "titolo": "Tre vuoti non sono tre No",
+      "a": {
+        "h": "Non serve",
+        "sub": "Una conclusione",
+        "punti": [
+          "Qualcuno ha letto le tre lettere",
+          "E ha risposto"
+        ]
+      },
+      "b": {
+        "h": "Domanda vuota",
+        "sub": "Nessuna conclusione",
+        "punti": [
+          "Il prodotto la segnala",
+          "Non la dà per buona"
+        ]
+      }
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 6,
+      "inizia": "Per questo il prodotto distingue quattro",
+      "layout": "tabella",
+      "titolo": "Quattro situazioni",
+      "cols": [
+        "Situazione",
+        "Segnale"
+      ],
+      "righe": [
+        [
+          "Una domanda senza risposta",
+          "Attenzione: obbligo non valutato"
+        ],
+        [
+          "Un Sì, nessun designato",
+          "Criticità"
+        ],
+        [
+          "Designato, contatti non comunicati al Garante",
+          "Attenzione: art. 37.7"
+        ],
+        [
+          "Tre No",
+          "Nessuno"
+        ]
+      ]
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 7,
+      "inizia": "Le criticità e i punti d'attenzione",
+      "layout": "confronto",
+      "titolo": "Criticità e punto d'attenzione",
+      "a": {
+        "h": "Criticità",
+        "sub": "Oggi non si potrebbe difendere",
+        "punti": [
+          "Finché ce n'è una, il percorso non è dimostrabile"
+        ]
+      },
+      "b": {
+        "h": "Punto d'attenzione",
+        "sub": "Da sistemare prima che lo diventi",
+        "punti": [
+          "Il quadro lo conta a parte"
+        ]
+      }
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 8,
+      "inizia": "Nella stessa vista si dichiara un'ultima",
+      "layout": "split",
+      "titolo": "Gli amministratori di sistema",
+      "lead": "Provvedimento del Garante del 27 novembre 2008.",
+      "punti": [
+        {
+          "h": "Verifica dell'operato",
+          "d": "almeno una volta l'anno"
+        },
+        {
+          "h": "Registrazioni degli accessi",
+          "d": "conservate 6 mesi"
+        }
+      ]
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 9,
+      "inizia": "Con un sì, quella verifica entra",
+      "layout": "evidenza",
+      "eyebrow": "Con un Sì",
+      "titolo": "La verifica annuale diventa dovuta.",
+      "testo": "Accanto a formazione, audit e riesame. Se manca, l'anno non risulta completo."
+    },
+    {
+      "sezione": "ruoli-e-dpo",
+      "p": 10,
+      "inizia": "In sintesi: prima i ruoli, poi",
+      "layout": "chiusura",
+      "titolo": "In sintesi",
+      "punti": [
+        {
+          "h": "Prima i ruoli",
+          "d": "titolare o responsabile"
+        },
+        {
+          "h": "Poi le tre lettere",
+          "d": "basta un Sì"
+        },
+        {
+          "h": "Nessuna risposta presunta",
+          "d": "un vuoto si segnala, non si interpreta"
+        }
+      ]
+    }
+  ],
   "ghg/errori-ghg": [
     {
       "sezione": "errori-ghg",
