@@ -3741,3 +3741,21 @@ debole per accorgersene; se n'è accorta l'altra sessione, a cui vitest non part
   prodotto.** Chi scrive la spiegazione vede ciò che chi scrive il codice dà per normale.
 - **Il build scarica i font da Google**: dopo un `npm ci` la cache non c'è e un download
   mancato ferma il build con «Module not found … font/google». Si rilancia.
+
+✅ **Percorso GDPR in produzione dal 13 ottobre 2026 (`368cf53`)**, col metodo:
+- anteprima `anteprima/gdpr`: primo build annullato, sette variabili legate al ramo,
+  `gdpr-percorso` 26/26 sull'anteprima (che prova anche la precedenza: in produzione le
+  tabelle GDPR non esistevano ancora). Il giro completo è stato falsato prima dal
+  `node_modules` danneggiato, poi da una connessione a 3,5 Mbit/s: i collaudi caduti sono
+  stati rilanciati da soli o in locale sullo stesso codice, tutti verdi;
+- guardia vista **rifiutarsi** sulla produzione senza override, poi migrazioni `0062`÷`0064`
+  (65/65, 171 tabelle, nessuna senza RLS, dati vivi invariati);
+- seme `gdpr-v1`, e conteggi letti **come `app_rls`** in una transazione di sola lettura:
+  tutti e quattordici uguali alla previsione scritta prima (`docs/rilascio-gdpr-previsione.md`);
+- sei tracce audio del corso sull'archivio di produzione, con la prova di rilettura;
+- fusione su `main` come un commit solo. Dopo: `tutto-pubblico` 37/37 (al secondo giro: il
+  primo cadde su `ERR_NETWORK_CHANGED`, la connessione si era staccata), `legale` 26/26,
+  `sitemap` 9/9, vetrina con «15 percorsi» contato e privacy con la voce sui registri GDPR.
+
+⚠️ Le dimostrative degli studi già iscritti NON hanno il percorso GDPR compilato: si
+semina solo all'iscrizione. Decisione del committente se ripopolarle.
