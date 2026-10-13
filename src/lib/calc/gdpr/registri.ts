@@ -11,6 +11,7 @@ import {
   notificaDovuta,
   statoRichiesta,
   statoViolazione,
+  rischioDaValutare,
 } from "./termini";
 import type { Richiesta, Violazione } from "./tipi";
 
@@ -71,6 +72,8 @@ export type StatoRegistri = {
   notificheInCorso: number;
   /** Rischio elevato non comunicato agli interessati, su tutto l'archivio. */
   elevateNonComunicate: number;
+  /** Violazioni conosciute, non chiuse, col rischio ancora in bianco: le 72 ore corrono. */
+  rischioDaValutare: number;
   /** Violazioni senza data di chiusura, su tutto l'archivio. */
   violazioniAperte: number;
   interessatiCoinvolti: number;
@@ -123,6 +126,7 @@ export function statoRegistri(r: Registri, anno: number, oggi: string, adesso: D
     notificheInCorso: statiViolTutte.filter((s) => s === "open").length,
     elevateNonComunicate: r.violazioni.filter((x) => x.rischio === "Rischio elevato" && !x.comunicataIl).length,
     violazioniAperte: r.violazioni.filter((x) => !!x.conoscenzaIl && !x.chiusaIl).length,
+    rischioDaValutare: r.violazioni.filter((x) => rischioDaValutare(x) && !x.chiusaIl).length,
     interessatiCoinvolti: viol.reduce((s, x) => s + n(x.interessati), 0),
     formazioni: nell(r.formazione).length,
     orePersona: nell(r.formazione).reduce((s, x) => s + n(x.ore) * n(x.partecipanti), 0),

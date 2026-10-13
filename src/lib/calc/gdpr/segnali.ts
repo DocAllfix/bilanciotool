@@ -64,6 +64,8 @@ export function segnali(q: Quadro, anno: number, t: Tempo): Segnale[] {
   if (g.scadute) add("C", "Richieste degli interessati scadute senza riscontro: " + g.scadute, "Art. 12.3", "reg");
   if (g.fuoriTermine) add("A", `Richieste riscontrate oltre il termine nel ${anno}: ${g.fuoriTermine}`, "Art. 12.3", "reg");
   if (g.notificheScadute) add("C", "Violazioni a rischio non notificate entro 72 ore: " + g.notificheScadute, "Art. 33.1", "reg");
+  if (g.rischioDaValutare)
+    add("A", "Violazioni col rischio non ancora valutato, le 72 ore decorrono dalla conoscenza: " + g.rischioDaValutare, "Art. 33.1", "reg");
   if (g.notificheInCorso) add("A", "Violazioni da notificare al Garante con termine in corso: " + g.notificheInCorso, "Art. 33.1", "reg");
   if (g.notificateInRitardo)
     add("A", `Violazioni notificate oltre le 72 ore nel ${anno}: il ritardo va motivato (${g.notificateInRitardo})`, "Art. 33.1", "reg");

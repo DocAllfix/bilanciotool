@@ -8,7 +8,7 @@ import { classe, livello, statoRischi } from "@/lib/calc/gdpr/rischio";
 import { segnali, type Tempo } from "@/lib/calc/gdpr/segnali";
 import { avanzamento } from "@/lib/calc/gdpr/avanzamento";
 import { verifica } from "@/lib/calc/gdpr/verifica";
-import { limiteNotifica, scadenzaRichiesta, statoRichiesta, statoViolazione } from "@/lib/calc/gdpr/termini";
+import { limiteNotifica, limiteProvvisorio, scadenzaRichiesta, statoRichiesta, statoViolazione } from "@/lib/calc/gdpr/termini";
 import { giornoItaliano, oraItaliana } from "@/lib/calc/comune/tempo-italia";
 import { quadroDa } from "./quadro";
 import type { PercorsoGdprAvviato } from "./queries";
@@ -69,7 +69,9 @@ export function datiVistaGdpr(p: PercorsoGdprAvviato, anno: number, t: Tempo) {
         ...x,
         conoscenzaIl: inCampo(x.conoscenzaIl),
         notificataIl: inCampo(x.notificataIl),
-        limite: leggibile(limiteNotifica(v)),
+        limite: leggibile(limiteNotifica(v) ?? limiteProvvisorio(v)),
+        // Il limite c'è ma il rischio è in bianco: la notifica non è ancora «dovuta» né «non dovuta».
+        rischioDaValutare: limiteProvvisorio(v) !== null,
         termine: statoViolazione(v, t.adesso),
       };
     }),

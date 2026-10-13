@@ -56,6 +56,26 @@ export function limiteNotifica(v: Pick<Violazione, "conoscenzaIl" | "rischio">):
   return notificaDovuta(v) ? piuOre(v.conoscenzaIl, ORE_NOTIFICA) : null;
 }
 
+/**
+ * Il rischio non è ancora stato valutato: la violazione è conosciuta e nessuno ha detto se
+ * è improbabile, un rischio o un rischio elevato.
+ */
+export const rischioDaValutare = (v: Pick<Violazione, "conoscenzaIl" | "rischio">) => !!v.conoscenzaIl && !v.rischio;
+
+/**
+ * Il limite delle 72 ore mostrato PRIMA della valutazione del rischio.
+ *
+ * ⚠️ Il termine dell'art. 33 decorre dalla CONOSCENZA, non dalla valutazione: finché il
+ * rischio è in bianco la notifica non si può dire «non dovuta», e il prototipo in quel caso
+ * non mostrava nessuna scadenza — cioè nascondeva l'orologio proprio a chi stava ancora
+ * decidendo. Qui il limite si mostra, dichiarato provvisorio; non entra negli stati né nei
+ * conteggi delle notifiche, che restano quelli del rischio valutato. `null` se il rischio è
+ * già stato valutato o manca la conoscenza.
+ */
+export function limiteProvvisorio(v: Pick<Violazione, "conoscenzaIl" | "rischio">): string | null {
+  return rischioDaValutare(v) ? piuOre(v.conoscenzaIl, ORE_NOTIFICA) : null;
+}
+
 /** Lo stato della notifica; `null` se non è dovuta o manca la conoscenza. */
 export function statoViolazione(v: Violazione, adesso: Date): StatoTermine | null {
   const limite = limiteNotifica(v);

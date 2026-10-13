@@ -324,6 +324,11 @@ try {
       const [r] = await sql`select conoscenza_il from gdpr_violazione where id = ${v.id}`;
       return r.conoscenza_il && new Date(r.conoscenza_il).toISOString() === "2026-03-28T22:30:00.000Z";
     }, { cosa: "istante in UTC" });
+    // ⚠️ Il limite compare PRIMA che il rischio sia valutato: il termine decorre dalla
+    // conoscenza, e nascondere l'orologio finché il rischio è in bianco lo toglierebbe a chi
+    // sta ancora decidendo. Dichiarato «rischio da valutare», non «in corso».
+    await page.locator(`[data-riga="${v.id}"] summary`, { hasText: "notifica entro 2026-04-01 00:30" }).waitFor({ timeout: 20_000 });
+    await page.locator(`[data-riga="${v.id}"] [data-termine="rischio da valutare"]`).waitFor({ timeout: 20_000 });
     await page.locator(`#gdpr-breach-${v.id}-rischio`).click();
     await page.getByRole("option", { name: "Rischio", exact: true }).click();
     await page.locator(`[data-riga="${v.id}"] summary`, { hasText: "notifica entro 2026-04-01 00:30" }).waitFor({ timeout: 20_000 });

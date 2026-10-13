@@ -3712,3 +3712,32 @@ sulla dimostrativa, ne conta le pagine e salva quelli.
 
 ⚠️ **Il rilascio (Fase 9) NON è fatto**: scritture in produzione e spinta sono del committente.
 La Fase 6 (formazione) è per decisione sua dopo il rilascio.
+
+**Percorso GDPR: corso, limite provvisorio e un danno mio (2026-10-13)**
+
+- **Il corso l'ha scritto la sessione di Academy** (`corsi/gdpr.ts`, 6 sezioni proprie, copione
+  e 68 slide in `audio-formazione/gdpr/`), noi le guardie. Senza corso `qa -- formazione` è
+  rosso: «OGNI percorso ha sezioni PROPRIE» è un'invariante del prodotto, quindi la formazione
+  **non poteva restare a dopo il rilascio** come avevamo deciso. Le tracce audio non ci sono
+  ancora: il corso esce «con la voce in parte», come fu per NIS2.
+- ⚠️ **Le 72 ore si mostrano anche col rischio in bianco** (`limiteProvvisorio`). Trovato da
+  Academy scrivendo il corso: per dire il vero avrebbe dovuto insegnare «la scadenza non
+  compare ma il termine corre». Era un difetto del prodotto ereditato dal prototipo. Stati e
+  conteggi delle notifiche non cambiano; il quadro ha un'attenzione propria. Divergenza n. 9
+  in `docs/politica-arrotondamento.md`.
+
+⚠️ **`git worktree remove --force` su un worktree con una GIUNZIONE a `node_modules` cancella
+DENTRO il `node_modules` vero.** È fallito con «Invalid argument» dopo aver già tolto `.bin` e
+`@esbuild`. Il mio controllo dopo (un file di `next` e il numero delle cartelle) era troppo
+debole per accorgersene; se n'è accorta l'altra sessione, a cui vitest non partiva. Rimedio:
+`npm ci`. Il giro sull'anteprima è degradato da metà in poi per questo, non per il prodotto.
+
+**Regole nate qui:**
+- **Prima di rimuovere un worktree si toglie la giunzione** (`cmd /c rmdir <collegamento>`,
+  che toglie il solo collegamento), e dopo si verifica `node_modules/.bin`, non un file a caso.
+- **Una serie di collaudi che muoiono senza conteggio, uno dopo l'altro, è l'ambiente**: tre
+  di fila non sono tre difetti. Si guarda che cosa hanno in comune prima di rilanciarli.
+- **Quando un corso, per dire il vero, deve insegnare un aggiramento, il difetto è nel
+  prodotto.** Chi scrive la spiegazione vede ciò che chi scrive il codice dà per normale.
+- **Il build scarica i font da Google**: dopo un `npm ci` la cache non c'è e un download
+  mancato ferma il build con «Module not found … font/google». Si rilancia.

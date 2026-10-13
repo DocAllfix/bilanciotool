@@ -101,7 +101,7 @@ export function VistaRegistri({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr 
         )}
         {quale === "violazione" && (
           <p className="mt-2 text-sm" data-riepilogo-violazioni>
-            {g.violazioniAperte} non chiuse · {g.notificheInCorso} con la notifica nelle 72 ore · <b>{g.notificheScadute}</b> con la notifica oltre il termine.
+            {g.violazioniAperte} non chiuse · {g.rischioDaValutare} col rischio da valutare · {g.notificheInCorso} con la notifica nelle 72 ore · <b>{g.notificheScadute}</b> con la notifica oltre il termine.
           </p>
         )}
       </div>
@@ -151,7 +151,7 @@ export function VistaRegistri({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr 
 
         {quale === "violazione" &&
           dati.violazioni.map((v, i) => {
-            const t = v.termine ? TERMINE[v.termine] : null;
+            const t = v.termine ? TERMINE[v.termine] : v.rischioDaValutare ? { n: "rischio da valutare", v: "secondary" as const } : null;
             const salva = (c: string) => cmd.riga("violazione", v.id, c);
             const id = (c: string) => `gdpr-breach-${v.id}-${c}`;
             return (

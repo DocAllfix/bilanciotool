@@ -346,3 +346,9 @@ punteggio fuori scala produceva un livello che la matrice non sa disegnare.
 
 **8. Il riferimento «Passo 3» diventa «Conformita'».** Unica differenza nei testi dei segnali,
 che per il resto coincidono uno per uno, nello stesso ordine.
+**9. Le 72 ore si mostrano anche col rischio in bianco.** Nel prototipo una violazione senza
+valutazione del rischio non aveva scadenza: l'orologio compariva solo dopo aver scelto
+«Rischio». Il termine dell'art. 33 decorre pero' dalla conoscenza. Qui il limite si mostra
+subito, marcato «rischio da valutare» (`limiteProvvisorio`), e il quadro conta queste
+violazioni in un'attenzione propria. Stati e conteggi delle notifiche NON cambiano: restano
+quelli del rischio valutato, e il golden del prototipo continua a coincidere.

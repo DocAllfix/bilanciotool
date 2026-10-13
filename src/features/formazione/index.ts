@@ -14,6 +14,7 @@ import { SOA } from "./corsi/soa";
 import { SGESG } from "./corsi/sgesg";
 import { NIS2 } from "./corsi/nis2";
 import { SGNIS2 } from "./corsi/sgnis2";
+import { GDPR } from "./corsi/gdpr";
 import { AVVIARE_ATTIVITA } from "./corsi/avviare-attivita";
 import { minutiTotali, type Corso, type Sezione } from "./tipi";
 
@@ -47,6 +48,7 @@ const PROPRIE: Partial<Record<ModuloAzienda, Sezione[]>> = {
   sgesg: SGESG,
   nis2: NIS2,
   sgnis2: SGNIS2,
+  gdpr: GDPR,
 };
 
 export type SchedaCorso = {
