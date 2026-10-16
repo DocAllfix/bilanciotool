@@ -352,3 +352,59 @@ valutazione del rischio non aveva scadenza: l'orologio compariva solo dopo aver 
 subito, marcato «rischio da valutare» (`limiteProvvisorio`), e il quadro conta queste
 violazioni in un'attenzione propria. Stati e conteggi delle notifiche NON cambiano: restano
 quelli del rischio valutato, e il golden del prototipo continua a coincidere.
+
+## Sistema di gestione sociale — PAS 24000:2022 (percorso `pas24000`)
+
+Golden: `scripts/golden-pas.mjs` esegue il prototipo sul suo esempio, col tempo congelato
+al 12 ottobre 2026; `src/lib/calc/__tests__/pas-golden-pure.test.ts` confronta il motore
+risultato per risultato. Le divergenze qui sotto sono provate da
+`pas-difetti-pure.test.ts`, ciascuna messa in rosso rimettendo il difetto.
+
+**1. Un requisito non valutato pesa zero.** Il prototipo calcola
+`(conformi + parziali × 0,5) ÷ (conformi + parziali + non conformi)`: un conforme su 98 da'
+100%. Qui il denominatore e' l'insieme dei requisiti pertinenti; «non pertinente» ne esce
+(mappato su `NON_APPLICABILE`), il parziale pesa meta' (decisione del committente del
+16 ottobre 2026, come nel GDPR). Sull'esempio l'indice passa da 93 a 89: i quattro punti
+sono i quattro requisiti mai valutati di C10 e A11.
+
+**2. Gli importi si leggono all'italiana.** Il prototipo leggeva gli indicatori con
+`parseFloat(String(v).replace(",", "."))`: «1.580» euro diventava 1,58 e «1.234,5»
+diventava 1,234. Qui gli indicatori sono `numeric` e arrivano dal lettore degli importi
+italiani del progetto (fase dei dati, non del motore).
+
+**3. Un derivato esiste solo con TUTTI i suoi ingressi.** Il prototipo leggeva un campo
+vuoto come zero, e un ingresso mancante non produceva zero ma un numero falso: senza la
+retribuzione media delle donne il divario di genere usciva 100%, senza la retribuzione piu'
+bassa il margine sul CCNL usciva −100%, senza lo straordinario gli indici infortunistici si
+calcolavano sulle sole ore ordinarie. Qui il derivato e' `null` e si stampa «—». Un
+denominatore zero da' `null`, e una parte «di cui» oltre il totale e' un'incoerenza, non il
+104%.
+
+**4. Il giorno lo decide il server, in ora italiana.** `oggi()` del prototipo era
+`toISOString()`, cioe' il giorno UTC: fra mezzanotte e le due diceva ieri, e cambiava quali
+reclami andavano sollecitati e quali azioni erano scadute. I giorni si contano sul
+calendario (`giorniA`), senza istanti: il cambio d'ora non sposta il conto.
+
+**5. Date e numeri si formattano senza l'ICU del runtime** (`fmtDataEstesa`,
+`fmtDataBreve`, formattatori del progetto): server e browser ne hanno due diversi.
+
+**6. Il riesame «precedente» e' sempre prima dell'esercizio.** Senza un riesame
+dell'esercizio, il prototipo prendeva il piu' recente in assoluto, anche se successivo: nel
+verbale del 2025 sarebbero comparse le azioni decise nel 2026 (`riesamiDelVerbale`).
+
+**7. I numeri dei testi si derivano dal catalogo** («98 requisiti, 31 di sistema e 67
+dell'Allegato A», «venti scenari», «sedici attivita'»).
+
+**8. Il riferimento «Passo 3» diventa «Conformita'».** Unica differenza nei testi dei
+segnali, che per il resto coincidono uno per uno, nello stesso ordine. Un numero decimale
+nei segnali si scrive con la virgola.
+
+**9. Le chiavi dei requisiti sono quelle del prototipo** (`4.1`, `A.2-9`), congelate nel
+content set `pas-v1`. Non serve numerarle: sono gia' esplicite e uniche, e l'estrattore lo
+verifica.
+
+**10. Un rischio a meta' non e' valutato.** Il livello esiste solo con probabilita' e
+gravita' entrambe intere da 1 a 5; altrimenti e' `null`. Stessa regola del GDPR.
+
+**11. Senza fornitori le quote sono assenti**, non zero: «nessuno ha firmato la clausola»
+detto di un elenco vuoto e' un'affermazione falsa.
