@@ -1,0 +1,322 @@
+{
+  "sezioni": [
+    {
+      "key": "org",
+      "ordine": 1,
+      "nome": "Organico",
+      "riferimento": "A.3 · A.5 · A.8"
+    },
+    {
+      "key": "ret",
+      "ordine": 2,
+      "nome": "Retribuzioni",
+      "riferimento": "A.8"
+    },
+    {
+      "key": "ore",
+      "ordine": 3,
+      "nome": "Orario di lavoro",
+      "riferimento": "A.9"
+    },
+    {
+      "key": "ssl",
+      "ordine": 4,
+      "nome": "Salute e sicurezza",
+      "riferimento": "A.6 · A.7"
+    },
+    {
+      "key": "for",
+      "ordine": 5,
+      "nome": "Formazione e consapevolezza",
+      "riferimento": "7.2 · 7.3"
+    },
+    {
+      "key": "rel",
+      "ordine": 6,
+      "nome": "Rappresentanza, disciplina ed etica",
+      "riferimento": "A.4 · A.5 · A.11"
+    }
+  ],
+  "indicatori": [
+    {
+      "key": "lav_tot",
+      "ordine": 1,
+      "sezione": "org",
+      "nome": "Lavoratori in organico (media annua)",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "lav_don",
+      "ordine": 2,
+      "sezione": "org",
+      "nome": "di cui donne",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "lav_ind",
+      "ordine": 3,
+      "sezione": "org",
+      "nome": "di cui a tempo indeterminato",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "lav_stran",
+      "ordine": 4,
+      "sezione": "org",
+      "nome": "di cui stranieri",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "lav_min",
+      "ordine": 5,
+      "sezione": "org",
+      "nome": "di cui tra 15 e 17 anni",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "lav_u15",
+      "ordine": 6,
+      "sezione": "org",
+      "nome": "Minori di 15 anni presenti al lavoro",
+      "unita": "n.",
+      "aiuto": "Qualsiasi valore diverso da zero è una criticità (A.3)"
+    },
+    {
+      "key": "lav_somm",
+      "ordine": 7,
+      "sezione": "org",
+      "nome": "Lavoratori somministrati o di appaltatori in sito",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "ass",
+      "ordine": 8,
+      "sezione": "org",
+      "nome": "Assunzioni nell'esercizio",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "ces",
+      "ordine": 9,
+      "sezione": "org",
+      "nome": "Cessazioni nell'esercizio",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "re_min",
+      "ordine": 10,
+      "sezione": "ret",
+      "nome": "Retribuzione lorda mensile più bassa erogata (tempo pieno)",
+      "unita": "€",
+      "aiuto": ""
+    },
+    {
+      "key": "re_ccnl",
+      "ordine": 11,
+      "sezione": "ret",
+      "nome": "Minimo contrattuale del livello corrispondente",
+      "unita": "€",
+      "aiuto": ""
+    },
+    {
+      "key": "re_lw",
+      "ordine": 12,
+      "sezione": "ret",
+      "nome": "Salario dignitoso di riferimento",
+      "unita": "€",
+      "aiuto": "Raccomandazione della PAS: se supera il minimo erogato serve un piano di avvicinamento"
+    },
+    {
+      "key": "re_don",
+      "ordine": 13,
+      "sezione": "ret",
+      "nome": "Retribuzione lorda annua media donne",
+      "unita": "€",
+      "aiuto": ""
+    },
+    {
+      "key": "re_uom",
+      "ordine": 14,
+      "sezione": "ret",
+      "nome": "Retribuzione lorda annua media uomini",
+      "unita": "€",
+      "aiuto": ""
+    },
+    {
+      "key": "cop",
+      "ordine": 15,
+      "sezione": "ret",
+      "nome": "Lavoratori coperti da contratto collettivo",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "rit",
+      "ordine": 16,
+      "sezione": "ret",
+      "nome": "Mensilità pagate in ritardo",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "tratt",
+      "ordine": 17,
+      "sezione": "ret",
+      "nome": "Trattenute disciplinari applicate",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "ore_ord",
+      "ordine": 18,
+      "sezione": "ore",
+      "nome": "Ore ordinarie lavorate",
+      "unita": "ore",
+      "aiuto": ""
+    },
+    {
+      "key": "ore_str",
+      "ordine": 19,
+      "sezione": "ore",
+      "nome": "Ore di straordinario",
+      "unita": "ore",
+      "aiuto": ""
+    },
+    {
+      "key": "ore_max",
+      "ordine": 20,
+      "sezione": "ore",
+      "nome": "Settimana più lunga registrata per un lavoratore",
+      "unita": "ore",
+      "aiuto": "Ordinario più straordinario"
+    },
+    {
+      "key": "sett_60",
+      "ordine": 21,
+      "sezione": "ore",
+      "nome": "Casi di settimana oltre il limite complessivo",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "riposi",
+      "ordine": 22,
+      "sezione": "ore",
+      "nome": "Casi di riposo settimanale non fruito",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "inf",
+      "ordine": 23,
+      "sezione": "ssl",
+      "nome": "Infortuni registrabili (esclusi in itinere)",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "gg",
+      "ordine": 24,
+      "sezione": "ssl",
+      "nome": "Giorni di assenza per infortunio",
+      "unita": "gg",
+      "aiuto": ""
+    },
+    {
+      "key": "nm",
+      "ordine": 25,
+      "sezione": "ssl",
+      "nome": "Mancati infortuni segnalati",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "mal",
+      "ordine": 26,
+      "sezione": "ssl",
+      "nome": "Malattie professionali riconosciute",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "fssl",
+      "ordine": 27,
+      "sezione": "ssl",
+      "nome": "Lavoratori con formazione sulla sicurezza in corso di validità",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "fo_ore",
+      "ordine": 28,
+      "sezione": "for",
+      "nome": "Ore di formazione erogate",
+      "unita": "ore",
+      "aiuto": ""
+    },
+    {
+      "key": "fo_sgs",
+      "ordine": 29,
+      "sezione": "for",
+      "nome": "Lavoratori formati su politica sociale, diritti e canale di reclamo",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "fo_nuovi",
+      "ordine": 30,
+      "sezione": "for",
+      "nome": "Neoassunti formati all'ingresso",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "rapp",
+      "ordine": 31,
+      "sezione": "rel",
+      "nome": "Rappresentanti dei lavoratori",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "disc",
+      "ordine": 32,
+      "sezione": "rel",
+      "nome": "Provvedimenti disciplinari adottati",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "molest",
+      "ordine": 33,
+      "sezione": "rel",
+      "nome": "Segnalazioni di discriminazione o molestie",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "sanz",
+      "ordine": 34,
+      "sezione": "rel",
+      "nome": "Sanzioni in materia di lavoro e previdenza",
+      "unita": "n.",
+      "aiuto": ""
+    },
+    {
+      "key": "corr",
+      "ordine": 35,
+      "sezione": "rel",
+      "nome": "Episodi di corruzione accertati",
+      "unita": "n.",
+      "aiuto": ""
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "key": "parte-01",
+    "ordine": 1,
+    "nome": "Lavoratori dipendenti",
+    "esigenze": "Retribuzione regolare e adeguata, orari sostenibili, sicurezza, rispetto, possibilità di essere ascoltati",
+    "obbligo": true,
+    "coinvolgimento": "Riunioni periodiche, bacheca, canale di reclamo"
+  },
+  {
+    "key": "parte-02",
+    "ordine": 2,
+    "nome": "Lavoratori somministrati e degli appaltatori",
+    "esigenze": "Parità di trattamento, sicurezza, accesso al canale di reclamo",
+    "obbligo": true,
+    "coinvolgimento": "Informativa all'ingresso, canale di reclamo"
+  },
+  {
+    "key": "parte-03",
+    "ordine": 3,
+    "nome": "Rappresentanti dei lavoratori e sindacati",
+    "esigenze": "Informazione, consultazione, agibilità sindacale, rispetto degli accordi",
+    "obbligo": true,
+    "coinvolgimento": "Incontri periodici, consultazione sul sistema"
+  },
+  {
+    "key": "parte-04",
+    "ordine": 4,
+    "nome": "Clienti e committenti",
+    "esigenze": "Evidenza di condizioni di lavoro corrette lungo la filiera, risposte a questionari e audit",
+    "obbligo": false,
+    "coinvolgimento": "Questionari, audit di seconda parte, comunicazione annuale"
+  },
+  {
+    "key": "parte-05",
+    "ordine": 5,
+    "nome": "Fornitori, appaltatori e agenzie per il lavoro",
+    "esigenze": "Requisiti chiari, tempi di pagamento certi, rapporti stabili",
+    "obbligo": false,
+    "coinvolgimento": "Clausole sociali, questionari, verifiche"
+  },
+  {
+    "key": "parte-06",
+    "ordine": 6,
+    "nome": "Enti di controllo (Ispettorato del lavoro, ASL, INPS, INAIL)",
+    "esigenze": "Rispetto della normativa su lavoro, previdenza e sicurezza",
+    "obbligo": true,
+    "coinvolgimento": "Adempimenti, ispezioni"
+  },
+  {
+    "key": "parte-07",
+    "ordine": 7,
+    "nome": "Comunità locale",
+    "esigenze": "Occupazione regolare, nessun disturbo, attenzione al territorio",
+    "obbligo": false,
+    "coinvolgimento": "Comunicazione esterna annuale"
+  },
+  {
+    "key": "parte-08",
+    "ordine": 8,
+    "nome": "Proprietà e soci",
+    "esigenze": "Continuità, reputazione, accesso a clienti che richiedono la certificazione",
+    "obbligo": false,
+    "coinvolgimento": "Riesame della direzione"
+  }
+]

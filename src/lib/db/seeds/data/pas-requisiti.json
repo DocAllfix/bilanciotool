@@ -1,0 +1,688 @@
+[
+  {
+    "key": "4.1",
+    "ordine": 1,
+    "gruppo": "C4",
+    "riferimento": "4.1",
+    "testo": "Fattori esterni e interni che incidono sui risultati del sistema determinati, compresi gli effetti sociali e culturali sulla comunità locale, e tenuti aggiornati."
+  },
+  {
+    "key": "4.2",
+    "ordine": 2,
+    "gruppo": "C4",
+    "riferimento": "4.2",
+    "testo": "Parti interessate individuate oltre ai lavoratori, con esigenze e aspettative; distinte quelle che sono o possono diventare obblighi e quelle che il sistema sceglie di gestire."
+  },
+  {
+    "key": "4.3",
+    "ordine": 3,
+    "gruppo": "C4",
+    "riferimento": "4.3",
+    "testo": "Campo di applicazione definito e disponibile come informazione documentata; comprende attività, prodotti e servizi sotto il controllo o l'influenza dell'organizzazione."
+  },
+  {
+    "key": "4.4",
+    "ordine": 4,
+    "gruppo": "C4",
+    "riferimento": "4.4",
+    "testo": "Sistema di gestione sociale istituito, attuato e mantenuto, con i processi necessari e le loro interazioni."
+  },
+  {
+    "key": "5.1",
+    "ordine": 5,
+    "gruppo": "C5",
+    "riferimento": "5.1",
+    "testo": "L'alta direzione dimostra leadership: risorse, integrazione nei processi aziendali, sicurezza fisica dei lavoratori, tutela da ritorsioni per chi segnala, presidio dei requisiti di legge."
+  },
+  {
+    "key": "5.2",
+    "ordine": 6,
+    "gruppo": "C5",
+    "riferimento": "5.2",
+    "testo": "Politica sociale approvata dalla direzione e documentata; copre diritti umani, condizioni di lavoro, etica e integrità, salute e sicurezza; comunicata all'interno e ai partner commerciali."
+  },
+  {
+    "key": "5.3",
+    "ordine": 7,
+    "gruppo": "C5",
+    "riferimento": "5.3",
+    "testo": "Ruoli, responsabilità e autorità assegnati senza discriminazioni, comunicati e documentati; individuato chi risponde del sistema, della formazione sui diritti umani e dei rischi di lavoro minorile e forzato."
+  },
+  {
+    "key": "5.4",
+    "ordine": 8,
+    "gruppo": "C5",
+    "riferimento": "5.4",
+    "testo": "Processo di consultazione e partecipazione dei lavoratori e dei loro rappresentanti, con tempo, formazione e risorse dedicate; ostacoli alla partecipazione rimossi."
+  },
+  {
+    "key": "6.1.1",
+    "ordine": 9,
+    "gruppo": "C6",
+    "riferimento": "6.1.1",
+    "testo": "Rischi e opportunità determinati a partire da contesto, parti interessate e campo di applicazione; disponibili come informazione documentata."
+  },
+  {
+    "key": "6.1.2",
+    "ordine": 10,
+    "gruppo": "C6",
+    "riferimento": "6.1.2",
+    "testo": "Azioni pianificate per rischi e opportunità, requisiti di legge e situazioni di emergenza; integrate nei processi e verificate nell'efficacia."
+  },
+  {
+    "key": "6.2.1",
+    "ordine": 11,
+    "gruppo": "C6",
+    "riferimento": "6.2.1",
+    "testo": "Obiettivi di prestazione sociale coerenti con la politica, misurabili, monitorati, comunicati e documentati; tengono conto dei rischi e della consultazione dei lavoratori."
+  },
+  {
+    "key": "6.2.2",
+    "ordine": 12,
+    "gruppo": "C6",
+    "riferimento": "6.2.2",
+    "testo": "Per ogni obiettivo definiti azioni, risorse, responsabile, scadenza e indicatori di valutazione."
+  },
+  {
+    "key": "6.3",
+    "ordine": 13,
+    "gruppo": "C6",
+    "riferimento": "6.3",
+    "testo": "Cambiamenti dell'organizzazione, dei processi o del sistema valutati prima dell'attuazione e condotti in modo pianificato."
+  },
+  {
+    "key": "7.1",
+    "ordine": 14,
+    "gruppo": "C7",
+    "riferimento": "7.1",
+    "testo": "Risorse determinate e fornite; capacità dell'organizzazione valutata, con un piano documentato per svilupparla."
+  },
+  {
+    "key": "7.2",
+    "ordine": 15,
+    "gruppo": "C7",
+    "riferimento": "7.2",
+    "testo": "Competenze necessarie definite e assicurate; fabbisogni formativi individuati; evidenze documentate della competenza."
+  },
+  {
+    "key": "7.3",
+    "ordine": 16,
+    "gruppo": "C7",
+    "riferimento": "7.3",
+    "testo": "Lavoratori consapevoli di politica, obiettivi, proprio contributo, conseguenze delle non conformità e del diritto di allontanarsi da un pericolo grave e imminente senza subire conseguenze."
+  },
+  {
+    "key": "7.4.1",
+    "ordine": 17,
+    "gruppo": "C7",
+    "riferimento": "7.4.1",
+    "testo": "Comunicazioni interne ed esterne definite (cosa, quando, a chi, come) tenendo conto di lingua, alfabetizzazione, genere e disabilità; evidenze conservate."
+  },
+  {
+    "key": "7.4.2",
+    "ordine": 18,
+    "gruppo": "C7",
+    "riferimento": "7.4.2",
+    "testo": "Informazioni sul sistema comunicate all'interno almeno una volta l'anno, con canali che permettono ai lavoratori di contribuire al miglioramento."
+  },
+  {
+    "key": "7.4.3",
+    "ordine": 19,
+    "gruppo": "C7",
+    "riferimento": "7.4.3",
+    "testo": "Informazioni sul sistema comunicate all'esterno almeno una volta l'anno; requisiti sociali trasmessi ai partner commerciali rilevanti."
+  },
+  {
+    "key": "7.5",
+    "ordine": 20,
+    "gruppo": "C7",
+    "riferimento": "7.5",
+    "testo": "Informazioni documentate identificate, approvate, protette e tenute sotto controllo; accessibili ai lavoratori e ai loro rappresentanti."
+  },
+  {
+    "key": "8.1.1",
+    "ordine": 21,
+    "gruppo": "C8",
+    "riferimento": "8.1.1",
+    "testo": "Processi operativi pianificati e tenuti sotto controllo con criteri di prestazione; cambiamenti governati; evidenze dell'attuazione."
+  },
+  {
+    "key": "8.1.2",
+    "ordine": 22,
+    "gruppo": "C8",
+    "riferimento": "8.1.2",
+    "testo": "Piano di lavoro annuale allineato a politica e obiettivi, con il dettaglio delle attività dei dodici mesi successivi; monitorato."
+  },
+  {
+    "key": "8.1.3",
+    "ordine": 23,
+    "gruppo": "C8",
+    "riferimento": "8.1.3",
+    "testo": "Processi, materiali, prodotti e servizi forniti dall'esterno tenuti sotto controllo e conformi ai requisiti sociali applicabili."
+  },
+  {
+    "key": "8.2",
+    "ordine": 24,
+    "gruppo": "C8",
+    "riferimento": "8.2",
+    "testo": "Processo per le emergenze e la sicurezza antincendio, alloggi compresi: risposta pianificata, primo soccorso, formazione, prova almeno annuale, informazione a lavoratori, appaltatori e visitatori."
+  },
+  {
+    "key": "9.1.1",
+    "ordine": 25,
+    "gruppo": "C9",
+    "riferimento": "9.1.1",
+    "testo": "Definito che cosa monitorare, con quali metodi e scadenze; indicatori di prestazione stabiliti per ciascuna area dell'Allegato A; risultati documentati."
+  },
+  {
+    "key": "9.1.2",
+    "ordine": 26,
+    "gruppo": "C9",
+    "riferimento": "9.1.2",
+    "testo": "Dati di monitoraggio e di audit analizzati almeno una volta l'anno per valutare conformità, efficacia, prestazione dei fornitori ed esigenze di miglioramento."
+  },
+  {
+    "key": "9.2.1",
+    "ordine": 27,
+    "gruppo": "C9",
+    "riferimento": "9.2.1",
+    "testo": "Audit interni a intervalli pianificati sui requisiti propri e della PAS, Allegato A compreso; auditor tutelati da pressioni e ritorsioni."
+  },
+  {
+    "key": "9.2.2",
+    "ordine": 28,
+    "gruppo": "C9",
+    "riferimento": "9.2.2",
+    "testo": "Programma di audit con frequenza, metodi, responsabilità e criteri; auditor obiettivi e imparziali; risultati riferiti ai responsabili e documentati."
+  },
+  {
+    "key": "9.3",
+    "ordine": 29,
+    "gruppo": "C9",
+    "riferimento": "9.3",
+    "testo": "Riesame della direzione almeno annuale con gli elementi in ingresso previsti, decisioni documentate e risultati comunicati ai lavoratori."
+  },
+  {
+    "key": "10.1",
+    "ordine": 30,
+    "gruppo": "C10",
+    "riferimento": "10.1",
+    "testo": "Idoneità, adeguatezza ed efficacia del sistema migliorate in modo continuo."
+  },
+  {
+    "key": "10.2",
+    "ordine": 31,
+    "gruppo": "C10",
+    "riferimento": "10.2",
+    "testo": "Processo per incidenti, reclami e non conformità: reazione tempestiva, analisi delle cause con i lavoratori, azioni correttive verificate nell'efficacia, registrazioni comunicate agli interessati."
+  },
+  {
+    "key": "A.1-1",
+    "ordine": 32,
+    "gruppo": "A1",
+    "riferimento": "A.1 · 1",
+    "testo": "Inventario dei rischi relativi ai diritti umani predisposto."
+  },
+  {
+    "key": "A.1-2",
+    "ordine": 33,
+    "gruppo": "A1",
+    "riferimento": "A.1 · 2",
+    "testo": "Le attività dell'organizzazione non causano impatti negativi sui diritti umani; quelli che si verificano vengono affrontati."
+  },
+  {
+    "key": "A.1-3",
+    "ordine": 34,
+    "gruppo": "A1",
+    "riferimento": "A.1 · 3",
+    "testo": "Le attività dell'organizzazione non contribuiscono a impatti negativi sui diritti umani; quelli che si verificano vengono affrontati."
+  },
+  {
+    "key": "A.1-4",
+    "ordine": 35,
+    "gruppo": "A1",
+    "riferimento": "A.1 · 4",
+    "testo": "Processo di due diligence sui diritti umani attivo per individuare, prevenire, mitigare e rendere conto degli impatti propri e dei fornitori, con rimedio per quelli causati o a cui si è contribuito."
+  },
+  {
+    "key": "A.2-1",
+    "ordine": 36,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 1",
+    "testo": "Nessun impiego ottenuto con la forza o la costrizione: il lavoro è volontario e si può recedere con un preavviso ragionevole."
+  },
+  {
+    "key": "A.2-2",
+    "ordine": 37,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 2",
+    "testo": "Nessuno è costretto a lavorare sotto minaccia di penalità o sanzioni."
+  },
+  {
+    "key": "A.2-3",
+    "ordine": 38,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 3",
+    "testo": "Documenti personali, permessi e beni di valore non sono trattenuti né dati in deposito al datore di lavoro o al reclutatore."
+  },
+  {
+    "key": "A.2-4",
+    "ordine": 39,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 4",
+    "testo": "Nessuna commissione o costo di selezione e assunzione a carico di candidati e lavoratori."
+  },
+  {
+    "key": "A.2-5",
+    "ordine": 40,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 5",
+    "testo": "Nessun deposito cauzionale, garanzia finanziaria o bene personale richiesto come condizione di impiego."
+  },
+  {
+    "key": "A.2-6",
+    "ordine": 41,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 6",
+    "testo": "Nessuna servitù per debiti né obbligo di lavorare per estinguere un debito."
+  },
+  {
+    "key": "A.2-7",
+    "ordine": 42,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 7",
+    "testo": "Anticipi e prestiti ai lavoratori regolati da una politica scritta e comprensibile; condizioni e interessi non vincolano al rapporto di lavoro."
+  },
+  {
+    "key": "A.2-8",
+    "ordine": 43,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 8",
+    "testo": "Eventuale custodia di documenti e valori: scelta libera del lavoratore, registrata, con libero accesso ai propri beni."
+  },
+  {
+    "key": "A.2-9",
+    "ordine": 44,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 9",
+    "testo": "Agenzie per il lavoro e appaltatori in regola con la legge, autorizzati, vincolati ai divieti su lavoro forzato e costi di reclutamento, estranei a pratiche fraudolente."
+  },
+  {
+    "key": "A.2-10",
+    "ordine": 45,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 10",
+    "testo": "Libertà di movimento: nessun obbligo di restare sul luogo di lavoro a fine turno né confinamento negli alloggi."
+  },
+  {
+    "key": "A.2-11",
+    "ordine": 46,
+    "gruppo": "A2",
+    "riferimento": "A.2 · 11",
+    "testo": "In caso di lavoro forzato accertato: rimedio effettivo e risarcimento, piano documentato, azioni verificate e misure contro il ripetersi."
+  },
+  {
+    "key": "A.3-1",
+    "ordine": 47,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 1",
+    "testo": "Età minima di ammissione al lavoro non inferiore a 15 anni, o all'età più alta prevista dalla legge o dall'obbligo scolastico."
+  },
+  {
+    "key": "A.3-2",
+    "ordine": 48,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 2",
+    "testo": "Eventuale presenza di minori di 15 anni nel sito registrata e riferita nel dettaglio."
+  },
+  {
+    "key": "A.3-3",
+    "ordine": 49,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 3",
+    "testo": "Tirocini e apprendistato non configurano sfruttamento e rispettano la normativa nazionale."
+  },
+  {
+    "key": "A.3-4",
+    "ordine": 50,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 4",
+    "testo": "Nessun lavoratore sotto i 18 anni impiegato di notte o in condizioni pericolose."
+  },
+  {
+    "key": "A.3-5",
+    "ordine": 51,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 5",
+    "testo": "Verifica dell'età per tutti i lavoratori, con registrazioni valide conservate."
+  },
+  {
+    "key": "A.3-6",
+    "ordine": 52,
+    "gruppo": "A3",
+    "riferimento": "A.3 · 6",
+    "testo": "Procedura di rimedio in caso di lavoro minorile che mette al primo posto l'interesse del minore; piano documentato e verificato."
+  },
+  {
+    "key": "A.4-1",
+    "ordine": 53,
+    "gruppo": "A4",
+    "riferimento": "A.4 · 1",
+    "testo": "Diritto di aderire a sindacati e organizzazioni dei lavoratori o di costituirli, oppure di non farlo, e di contrattare collettivamente."
+  },
+  {
+    "key": "A.4-2",
+    "ordine": 54,
+    "gruppo": "A4",
+    "riferimento": "A.4 · 2",
+    "testo": "Rappresentanti e iscritti ai sindacati non subiscono discriminazioni o penalizzazioni."
+  },
+  {
+    "key": "A.4-3",
+    "ordine": 55,
+    "gruppo": "A4",
+    "riferimento": "A.4 · 3",
+    "testo": "I rappresentanti eletti accedono al luogo di lavoro per svolgere le loro funzioni."
+  },
+  {
+    "key": "A.4-4",
+    "ordine": 56,
+    "gruppo": "A4",
+    "riferimento": "A.4 · 4",
+    "testo": "Dove la legge non tutela associazione e contrattazione, attivati canali alternativi leciti di dialogo con i lavoratori."
+  },
+  {
+    "key": "A.5-1",
+    "ordine": 57,
+    "gruppo": "A5",
+    "riferimento": "A.5 · 1",
+    "testo": "Pari opportunità e parità di trattamento in selezione e rapporto di lavoro per tutti, compresi lavoratori temporanei, a tempo parziale e appaltatori."
+  },
+  {
+    "key": "A.5-2",
+    "ordine": 58,
+    "gruppo": "A5",
+    "riferimento": "A.5 · 2",
+    "testo": "Nessuna punizione corporale, coercizione fisica o mentale, bullismo, molestia anche sessuale o abuso, né minaccia di ricorrervi."
+  },
+  {
+    "key": "A.5-3",
+    "ordine": 59,
+    "gruppo": "A5",
+    "riferimento": "A.5 · 3",
+    "testo": "Procedure disciplinari scritte e comunicate in modo efficace a tutti i lavoratori."
+  },
+  {
+    "key": "A.5-4",
+    "ordine": 60,
+    "gruppo": "A5",
+    "riferimento": "A.5 · 4",
+    "testo": "Registrazioni di tutti i provvedimenti disciplinari conservate."
+  },
+  {
+    "key": "A.6-1",
+    "ordine": 61,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 1",
+    "testo": "Salute e sicurezza sul lavoro parte integrante del sistema di gestione sociale."
+  },
+  {
+    "key": "A.6-2",
+    "ordine": 62,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 2",
+    "testo": "Condizioni sicure, salubri e pulite in tutti i luoghi di lavoro, negli alloggi e nelle altre strutture fornite."
+  },
+  {
+    "key": "A.6-3",
+    "ordine": 63,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 3",
+    "testo": "Formazione su salute e sicurezza tempestiva, ripetuta periodicamente e in caso di nuovi assunti, cambi di mansione e nuovi rischi."
+  },
+  {
+    "key": "A.6-4",
+    "ordine": 64,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 4",
+    "testo": "Formazione adeguata ai bisogni, comprensibile, gratuita e svolta in orario retribuito."
+  },
+  {
+    "key": "A.6-5",
+    "ordine": 65,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 5",
+    "testo": "Registrazioni scritte di tutti gli incidenti relativi a salute e sicurezza."
+  },
+  {
+    "key": "A.6-6",
+    "ordine": 66,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 6",
+    "testo": "Cause degli incidenti determinate e azioni correttive adottate per evitarne il ripetersi."
+  },
+  {
+    "key": "A.6-7",
+    "ordine": 67,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 7",
+    "testo": "Dispositivi di protezione adeguati forniti gratuitamente, mantenuti e sostituiti; lavoratori istruiti all'uso e controllati."
+  },
+  {
+    "key": "A.6-8",
+    "ordine": 68,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 8",
+    "testo": "Disposizioni chiare per primo soccorso e assistenza medica in caso di infortunio."
+  },
+  {
+    "key": "A.6-9",
+    "ordine": 69,
+    "gruppo": "A6",
+    "riferimento": "A.6 · 9",
+    "testo": "Acqua potabile gratuita e servizi igienici puliti per tutti i lavoratori."
+  },
+  {
+    "key": "A.7-1",
+    "ordine": 70,
+    "gruppo": "A7",
+    "riferimento": "A.7 · 1",
+    "testo": "Uscite di emergenza, vie di fuga, mezzi antincendio e allarmi segnalati; uscite e percorsi liberi e accessibili."
+  },
+  {
+    "key": "A.7-2",
+    "ordine": 71,
+    "gruppo": "A7",
+    "riferimento": "A.7 · 2",
+    "testo": "Mezzi antincendio e allarmi provati o ispezionati secondo legge e norme di settore."
+  },
+  {
+    "key": "A.7-3",
+    "ordine": 72,
+    "gruppo": "A7",
+    "riferimento": "A.7 · 3",
+    "testo": "Solidità, stabilità e sicurezza di edifici e attrezzature, alloggi compresi, valutate e monitorate; azioni correttive dove servono."
+  },
+  {
+    "key": "A.7-4",
+    "ordine": 73,
+    "gruppo": "A7",
+    "riferimento": "A.7 · 4",
+    "testo": "Eventuali alloggi separati dalle aree di produzione e di magazzino."
+  },
+  {
+    "key": "A.8-1",
+    "ordine": 74,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 1",
+    "testo": "Condizioni di impiego comunicate per iscritto e in modo comprensibile prima dell'assunzione."
+  },
+  {
+    "key": "A.8-2",
+    "ordine": 75,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 2",
+    "testo": "Lavoro svolto solo nell'ambito di un rapporto formale e verificabile, conforme alla legge."
+  },
+  {
+    "key": "A.8-3",
+    "ordine": 76,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 3",
+    "testo": "Nessuna forma contrattuale usata per eludere gli obblighi di legge in materia di lavoro e previdenza."
+  },
+  {
+    "key": "A.8-4",
+    "ordine": 77,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 4",
+    "testo": "Retribuzione dell'orario ordinario pari o superiore ai minimi di legge, agli standard di settore o al contratto collettivo."
+  },
+  {
+    "key": "A.8-5",
+    "ordine": 78,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 5",
+    "testo": "Retribuzioni pagate con regolarità, puntualmente e per intero, direttamente al lavoratore in valuta legale o su un conto a lui intestato."
+  },
+  {
+    "key": "A.8-6",
+    "ordine": 79,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 6",
+    "testo": "Cottimo, quote o tariffe a pezzo consentono di raggiungere almeno il minimo entro l'orario ordinario."
+  },
+  {
+    "key": "A.8-7",
+    "ordine": 80,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 7",
+    "testo": "Straordinario retribuito secondo legge o contratto collettivo, applicando il trattamento più favorevole."
+  },
+  {
+    "key": "A.8-8",
+    "ordine": 81,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 8",
+    "testo": "Prospetto paga chiaro e scritto consegnato a ogni pagamento."
+  },
+  {
+    "key": "A.8-9",
+    "ordine": 82,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 9",
+    "testo": "Trattenute solo se previste da legge o contratto collettivo e comunicate per iscritto in modo comprensibile."
+  },
+  {
+    "key": "A.8-10",
+    "ordine": 83,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 10",
+    "testo": "Nessuna trattenuta sulla retribuzione a titolo disciplinare."
+  },
+  {
+    "key": "A.8-11",
+    "ordine": 84,
+    "gruppo": "A8",
+    "riferimento": "A.8 · 11",
+    "testo": "Tutte le prestazioni e i benefici obbligatori per legge riconosciuti a ogni lavoratore."
+  },
+  {
+    "key": "A.9-1",
+    "ordine": 85,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 1",
+    "testo": "Orario ordinario conforme a legge, contratti collettivi o standard di settore e comunque non superiore a 48 ore settimanali, straordinario escluso."
+  },
+  {
+    "key": "A.9-2",
+    "ordine": 86,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 2",
+    "testo": "Dove la legge ammette deroghe al limite di 60 ore settimanali complessive, adottate tutele per salute e sicurezza."
+  },
+  {
+    "key": "A.9-3",
+    "ordine": 87,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 3",
+    "testo": "Settimane oltre le 60 ore complessive registrate e riferite con il totale delle ore lavorate."
+  },
+  {
+    "key": "A.9-4",
+    "ordine": 88,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 4",
+    "testo": "Straordinario concordato con i lavoratori e mai tale da configurare lavoro forzato."
+  },
+  {
+    "key": "A.9-5",
+    "ordine": 89,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 5",
+    "testo": "Straordinario non richiesto in modo sistematico."
+  },
+  {
+    "key": "A.9-6",
+    "ordine": 90,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 6",
+    "testo": "Pause garantite durante i turni di lavoro."
+  },
+  {
+    "key": "A.9-7",
+    "ordine": 91,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 7",
+    "testo": "Almeno un giorno di riposo di 24 ore consecutive ogni settimana."
+  },
+  {
+    "key": "A.9-8",
+    "ordine": 92,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 8",
+    "testo": "In caso di deroghe di legge ai riposi, tutele adottate e comunque due giorni di riposo di 24 ore ogni quattordici giorni."
+  },
+  {
+    "key": "A.9-9",
+    "ordine": 93,
+    "gruppo": "A9",
+    "riferimento": "A.9 · 9",
+    "testo": "Ferie, festività, maternità, paternità e malattia retribuite secondo la normativa nazionale."
+  },
+  {
+    "key": "A.10-1",
+    "ordine": 94,
+    "gruppo": "A10",
+    "riferimento": "A.10 · 1",
+    "testo": "Procedura scritta per reclami e segnalazioni; meccanismo accessibile a tutti i lavoratori e alle parti esterne."
+  },
+  {
+    "key": "A.10-2",
+    "ordine": 95,
+    "gruppo": "A10",
+    "riferimento": "A.10 · 2",
+    "testo": "Riservatezza del reclamo garantita; informazioni rivelate solo per quanto serve a istruirlo."
+  },
+  {
+    "key": "A.10-3",
+    "ordine": 96,
+    "gruppo": "A10",
+    "riferimento": "A.10 · 3",
+    "testo": "Nessuna ritorsione verso chi presenta un reclamo in buona fede."
+  },
+  {
+    "key": "A.11-1",
+    "ordine": 97,
+    "gruppo": "A11",
+    "riferimento": "A.11 · 1",
+    "testo": "Nessun coinvolgimento, diretto o indiretto, in corruzione, estorsione, appropriazione indebita o qualsiasi forma di tangente."
+  },
+  {
+    "key": "A.11-2",
+    "ordine": 98,
+    "gruppo": "A11",
+    "riferimento": "A.11 · 2",
+    "testo": "Nessuna falsificazione di informazioni su attività, struttura e prestazioni, né dichiarazioni ingannevoli nella catena di fornitura."
+  }
+]

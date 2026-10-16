@@ -1,0 +1,477 @@
+[
+  {
+    "key": "recl",
+    "ordine": 1,
+    "nome": "Reclami e segnalazioni",
+    "riferimento": "A.10 · 10.2",
+    "aiuto": "Ogni reclamo o segnalazione, da lavoratori o esterni. Non riportare qui dati che permettano di identificare chi segnala.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Ricevuto il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "canale",
+        "etichetta": "Canale",
+        "genere": "s",
+        "opzioni": [
+          "",
+          "Cassetta o modulo",
+          "Indirizzo dedicato",
+          "Rappresentante dei lavoratori",
+          "Colloquio diretto",
+          "Piattaforma di segnalazione"
+        ]
+      },
+      {
+        "chiave": "prov",
+        "etichetta": "Provenienza",
+        "genere": "s",
+        "opzioni": [
+          "",
+          "Lavoratore",
+          "Lavoratore di un fornitore",
+          "Parte esterna",
+          "Anonimo"
+        ]
+      },
+      {
+        "chiave": "area",
+        "etichetta": "Area",
+        "genere": "s",
+        "opzioni": [
+          "",
+          "A1",
+          "A2",
+          "A3",
+          "A4",
+          "A5",
+          "A6",
+          "A7",
+          "A8",
+          "A9",
+          "A10",
+          "A11"
+        ]
+      },
+      {
+        "chiave": "desc",
+        "etichetta": "Oggetto",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "az",
+        "etichetta": "Istruttoria e risposta",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "resp",
+        "etichetta": "Responsabile",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "chiusura",
+        "etichetta": "Chiuso il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "esito",
+        "etichetta": "Esito",
+        "genere": "s",
+        "opzioni": [
+          "In istruttoria",
+          "Fondato, risolto",
+          "Fondato, azioni in corso",
+          "Non fondato"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "nc",
+    "ordine": 2,
+    "nome": "Non conformità e azioni correttive",
+    "riferimento": "10.2",
+    "aiuto": "Rilievi da audit, monitoraggi, incidenti e reclami fondati, fino alla verifica di efficacia.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Rilevata il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "orig",
+        "etichetta": "Origine",
+        "genere": "s",
+        "opzioni": [
+          "",
+          "Audit interno",
+          "Audit esterno",
+          "Reclamo",
+          "Incidente",
+          "Monitoraggio",
+          "Segnalazione"
+        ]
+      },
+      {
+        "chiave": "rif",
+        "etichetta": "Requisito",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "resp",
+        "etichetta": "Responsabile",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "desc",
+        "etichetta": "Descrizione",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "causa",
+        "etichetta": "Analisi delle cause",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "az",
+        "etichetta": "Azione correttiva",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "scad",
+        "etichetta": "Scadenza",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "chiusura",
+        "etichetta": "Chiusa il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "eff",
+        "etichetta": "Efficacia",
+        "genere": "s",
+        "opzioni": [
+          "Da verificare",
+          "Efficace",
+          "Non efficace"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "form",
+    "ordine": 3,
+    "nome": "Formazione",
+    "riferimento": "7.2 · 7.3 · A.6",
+    "aiuto": "Interventi formativi su sistema, diritti, sicurezza. Indica le ore del corso e i partecipanti.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "tema",
+        "etichetta": "Tema",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "dest",
+        "etichetta": "Destinatari",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "doc",
+        "etichetta": "Docente",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "part",
+        "etichetta": "Partecipanti",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "ore",
+        "etichetta": "Ore del corso",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "eff",
+        "etichetta": "Verifica di efficacia",
+        "genere": "t",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "emer",
+    "ordine": 4,
+    "nome": "Emergenze e antincendio",
+    "riferimento": "8.2 · A.7",
+    "aiuto": "Prove di evacuazione, verifiche dei presidi, emergenze reali. La prova è richiesta almeno una volta l'anno.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "tipo",
+        "etichetta": "Tipo",
+        "genere": "s",
+        "opzioni": [
+          "Prova di evacuazione",
+          "Prova antincendio",
+          "Esercitazione di primo soccorso",
+          "Verifica di presidi e vie di fuga",
+          "Emergenza reale"
+        ]
+      },
+      {
+        "chiave": "sito",
+        "etichetta": "Sito",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "resp",
+        "etichetta": "Responsabile",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "esito",
+        "etichetta": "Esito",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "az",
+        "etichetta": "Azioni conseguenti",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "com",
+    "ordine": 5,
+    "nome": "Comunicazioni",
+    "riferimento": "7.4",
+    "aiuto": "Almeno una comunicazione interna e una esterna sul sistema ogni anno.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "tipo",
+        "etichetta": "Tipo",
+        "genere": "s",
+        "opzioni": [
+          "Interna",
+          "Esterna"
+        ]
+      },
+      {
+        "chiave": "dest",
+        "etichetta": "Destinatari",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "canale",
+        "etichetta": "Canale",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "cont",
+        "etichetta": "Contenuto",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "cons",
+    "ordine": 6,
+    "nome": "Consultazione dei lavoratori",
+    "riferimento": "5.4",
+    "aiuto": "Incontri, questionari e ogni altra forma di consultazione e partecipazione.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "forma",
+        "etichetta": "Forma",
+        "genere": "s",
+        "opzioni": [
+          "Riunione con i lavoratori",
+          "Incontro con i rappresentanti",
+          "Questionario",
+          "Raccolta di proposte"
+        ]
+      },
+      {
+        "chiave": "part",
+        "etichetta": "Partecipanti",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "resp",
+        "etichetta": "Condotta da",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "arg",
+        "etichetta": "Argomenti",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "esiti",
+        "etichetta": "Esiti e seguito dato",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "audit",
+    "ordine": 7,
+    "nome": "Audit interni",
+    "riferimento": "9.2",
+    "aiuto": "Programma e risultati. L'audit deve coprire anche l'Allegato A.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "amb",
+        "etichetta": "Ambito",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "aud",
+        "etichetta": "Auditor",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "stato",
+        "etichetta": "Stato",
+        "genere": "s",
+        "opzioni": [
+          "Pianificato",
+          "Svolto",
+          "Chiuso"
+        ]
+      },
+      {
+        "chiave": "ril",
+        "etichetta": "Rilievi",
+        "genere": "n",
+        "opzioni": null
+      },
+      {
+        "chiave": "sint",
+        "etichetta": "Sintesi dei risultati",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  },
+  {
+    "key": "ries",
+    "ordine": 8,
+    "nome": "Riesame della direzione",
+    "riferimento": "9.3",
+    "aiuto": "Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nel verbale al passo 9: qui registri le decisioni.",
+    "colonne": [
+      {
+        "chiave": "data",
+        "etichetta": "Data",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "part",
+        "etichetta": "Partecipanti",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "com",
+        "etichetta": "Esiti comunicati ai lavoratori il",
+        "genere": "d",
+        "opzioni": null
+      },
+      {
+        "chiave": "ris",
+        "etichetta": "Adeguatezza delle risorse",
+        "genere": "t",
+        "opzioni": null
+      },
+      {
+        "chiave": "ido",
+        "etichetta": "Idoneità, adeguatezza ed efficacia del sistema",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "mig",
+        "etichetta": "Opportunità di miglioramento",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "mod",
+        "etichetta": "Modifiche al sistema e risorse necessarie",
+        "genere": "a",
+        "opzioni": null
+      },
+      {
+        "chiave": "az",
+        "etichetta": "Azioni decise",
+        "genere": "a",
+        "opzioni": null
+      }
+    ]
+  }
+]

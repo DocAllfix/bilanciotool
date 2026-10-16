@@ -1,0 +1,1560 @@
+{
+  "generato": "node scripts/golden-pas.mjs (TZ=Europe/Rome)",
+  "adesso": "2026-10-12T10:00:00.000Z",
+  "anno": 2026,
+  "dataset": {
+    "id": "OKYO55",
+    "nome": "Organizzazione di esempio S.r.l.",
+    "anno": 2026,
+    "created": "2026-10-12T10:00:00.000Z",
+    "profilo": {
+      "forma": "Società a responsabilità limitata",
+      "piva": "",
+      "sede": "Aversa (CE)",
+      "settore": "Trasformazione di ortaggi e conserve alimentari",
+      "ateco": "10.39.00",
+      "ccnl": "CCNL Industria alimentare",
+      "siti": "Stabilimento di produzione e magazzino; uffici amministrativi nello stesso sito",
+      "campo": "Trasformazione e confezionamento di ortaggi e conserve vegetali, magazzino e spedizione. Il sistema si applica a tutti i lavoratori che operano nel sito: dipendenti, lavoratori stagionali, somministrati e addetti della cooperativa di facchinaggio.",
+      "dir": "Amministratore unico",
+      "rsgs": "Responsabile risorse umane",
+      "rlav": "RSU di tre componenti; RLS eletto",
+      "contatto": "Responsabile risorse umane",
+      "logo": ""
+    },
+    "contesto": {
+      "fattori": [
+        {
+          "tipo": "Esterno",
+          "desc": "Campagna stagionale da luglio a settembre: picchi produttivi e ricorso a personale a termine",
+          "eff": "Rischio"
+        },
+        {
+          "tipo": "Esterno",
+          "desc": "Clienti della grande distribuzione che richiedono evidenze sulle condizioni di lavoro in filiera",
+          "eff": "Opportunità"
+        },
+        {
+          "tipo": "Esterno",
+          "desc": "Fornitori agricoli in un territorio esposto a lavoro irregolare e intermediazione illecita",
+          "eff": "Rischio"
+        },
+        {
+          "tipo": "Interno",
+          "desc": "Presenza di lavoratori stranieri con conoscenza limitata dell'italiano",
+          "eff": "Rischio"
+        },
+        {
+          "tipo": "Interno",
+          "desc": "Relazioni sindacali stabili e accordo aziendale sulla stagionalità",
+          "eff": "Opportunità"
+        }
+      ],
+      "parti": [
+        {
+          "nome": "Lavoratori dipendenti",
+          "esig": "Retribuzione regolare e adeguata, orari sostenibili, sicurezza, rispetto, possibilità di essere ascoltati",
+          "obb": "Sì",
+          "sgs": "Sì",
+          "mod": "Riunioni periodiche, bacheca, canale di reclamo"
+        },
+        {
+          "nome": "Lavoratori somministrati e degli appaltatori",
+          "esig": "Parità di trattamento, sicurezza, accesso al canale di reclamo",
+          "obb": "Sì",
+          "sgs": "Sì",
+          "mod": "Informativa all'ingresso, canale di reclamo"
+        },
+        {
+          "nome": "Rappresentanti dei lavoratori e sindacati",
+          "esig": "Informazione, consultazione, agibilità sindacale, rispetto degli accordi",
+          "obb": "Sì",
+          "sgs": "Sì",
+          "mod": "Incontri periodici, consultazione sul sistema"
+        },
+        {
+          "nome": "Clienti e committenti",
+          "esig": "Evidenza di condizioni di lavoro corrette lungo la filiera, risposte a questionari e audit",
+          "obb": "No",
+          "sgs": "Sì",
+          "mod": "Questionari, audit di seconda parte, comunicazione annuale"
+        },
+        {
+          "nome": "Fornitori, appaltatori e agenzie per il lavoro",
+          "esig": "Requisiti chiari, tempi di pagamento certi, rapporti stabili",
+          "obb": "No",
+          "sgs": "Sì",
+          "mod": "Clausole sociali, questionari, verifiche"
+        },
+        {
+          "nome": "Enti di controllo (Ispettorato del lavoro, ASL, INPS, INAIL)",
+          "esig": "Rispetto della normativa su lavoro, previdenza e sicurezza",
+          "obb": "Sì",
+          "sgs": "Sì",
+          "mod": "Adempimenti, ispezioni"
+        },
+        {
+          "nome": "Comunità locale",
+          "esig": "Occupazione regolare, nessun disturbo, attenzione al territorio",
+          "obb": "No",
+          "sgs": "Sì",
+          "mod": "Comunicazione esterna annuale"
+        },
+        {
+          "nome": "Proprietà e soci",
+          "esig": "Continuità, reputazione, accesso a clienti che richiedono la certificazione",
+          "obb": "No",
+          "sgs": "Sì",
+          "mod": "Riesame della direzione"
+        }
+      ]
+    },
+    "gap": {
+      "4.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "4.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "4.3": {
+        "st": "c",
+        "ev": "Campo di applicazione riportato nel manuale, sezione 1"
+      },
+      "4.4": {
+        "st": "c",
+        "ev": ""
+      },
+      "5.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "5.2": {
+        "st": "c",
+        "ev": "Politica sociale firmata, affissa in bacheca e pubblicata sul sito"
+      },
+      "5.3": {
+        "st": "c",
+        "ev": "Nomina del responsabile del sistema; organigramma"
+      },
+      "5.4": {
+        "st": "p",
+        "ev": "Riunioni con la RSU; manca la consultazione dei lavoratori stagionali",
+        "az": "Incontro di inizio campagna con i lavoratori stagionali",
+        "resp": "Responsabile risorse umane",
+        "scad": "2026-06-30"
+      },
+      "6.1.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "6.1.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "6.2.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "6.2.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "6.3": {
+        "st": "c",
+        "ev": ""
+      },
+      "7.1": {
+        "st": "p",
+        "ev": "Budget formazione approvato; piano di sviluppo delle capacità non ancora scritto",
+        "az": "Redigere il piano di sviluppo delle capacità",
+        "resp": "Responsabile risorse umane",
+        "scad": "2026-03-31"
+      },
+      "7.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "7.3": {
+        "st": "c",
+        "ev": ""
+      },
+      "7.4.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "7.4.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "7.4.3": {
+        "st": "p",
+        "ev": "Politica inviata ai clienti; nessuna comunicazione annuale strutturata",
+        "az": "Pubblicare la relazione sociale annuale sul sito",
+        "resp": "Direzione",
+        "scad": "2026-11-30"
+      },
+      "7.5": {
+        "st": "c",
+        "ev": ""
+      },
+      "8.1.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "8.1.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "8.1.3": {
+        "st": "p",
+        "ev": "Clausola sociale firmata da 4 fornitori su 6",
+        "az": "Ottenere la clausola dai due fornitori mancanti",
+        "resp": "Ufficio acquisti",
+        "scad": "2026-04-30"
+      },
+      "8.2": {
+        "st": "c",
+        "ev": "Piano di emergenza; prova di evacuazione di maggio"
+      },
+      "9.1.1": {
+        "st": "p",
+        "ev": "Indicatori definiti per 8 aree su 11",
+        "az": "Definire gli indicatori per A.1, A.4 e A.11",
+        "resp": "Responsabile risorse umane",
+        "scad": "2026-03-31"
+      },
+      "9.1.2": {
+        "st": "c",
+        "ev": ""
+      },
+      "9.2.1": {
+        "st": "c",
+        "ev": ""
+      },
+      "9.2.2": {
+        "st": "n",
+        "ev": "Programma di audit non ancora formalizzato",
+        "az": "Approvare il programma di audit e incaricare un auditor esterno",
+        "resp": "Direzione",
+        "scad": "2026-05-31"
+      },
+      "9.3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.1-1": {
+        "st": "c",
+        "ev": "Inventario dei rischi al passo 4"
+      },
+      "A.1-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.1-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.1-4": {
+        "st": "p",
+        "ev": "Questionari inviati; verifiche in sito ancora da avviare sui fornitori agricoli",
+        "az": "Verifica in sito sui due fornitori agricoli a rischio alto",
+        "resp": "Ufficio acquisti",
+        "scad": "2026-07-31"
+      },
+      "A.2-1": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-3": {
+        "st": "c",
+        "ev": "Nessun documento trattenuto: solo copia del documento d'identità in fascicolo"
+      },
+      "A.2-4": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-5": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-6": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-7": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-8": {
+        "st": "na",
+        "ev": "Non è offerta alcuna custodia di documenti o valori"
+      },
+      "A.2-9": {
+        "st": "p",
+        "ev": "Agenzia iscritta all'albo; contratto con la cooperativa privo del divieto di costi di reclutamento",
+        "az": "Integrare il contratto con la cooperativa",
+        "resp": "Ufficio acquisti",
+        "scad": "2026-04-30"
+      },
+      "A.2-10": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.2-11": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.3-1": {
+        "st": "c",
+        "ev": "Età minima di assunzione 18 anni per regolamento interno"
+      },
+      "A.3-2": {
+        "st": "na",
+        "ev": "Nessun minore di 15 anni ha accesso al sito"
+      },
+      "A.3-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.3-4": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.3-5": {
+        "st": "c",
+        "ev": "Copia del documento d'identità in ogni fascicolo personale"
+      },
+      "A.3-6": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.4-1": {
+        "st": "c",
+        "ev": "CCNL applicato a tutti; RSU eletta"
+      },
+      "A.4-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.4-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.4-4": {
+        "st": "na",
+        "ev": "La legge italiana tutela associazione e contrattazione"
+      },
+      "A.5-1": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.5-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.5-3": {
+        "st": "c",
+        "ev": "Codice disciplinare affisso; estratto tradotto in tre lingue"
+      },
+      "A.5-4": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-1": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-2": {
+        "st": "c",
+        "ev": "DVR aggiornato; sopralluoghi mensili del RSPP"
+      },
+      "A.6-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-4": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-5": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-6": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-7": {
+        "st": "c",
+        "ev": "Verbali di consegna dei DPI firmati"
+      },
+      "A.6-8": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.6-9": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.7-1": {
+        "st": "c",
+        "ev": "Planimetrie di emergenza; controllo settimanale delle vie di fuga"
+      },
+      "A.7-2": {
+        "st": "c",
+        "ev": "Registro antincendio; manutenzione semestrale"
+      },
+      "A.7-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.7-4": {
+        "st": "na",
+        "ev": "Non sono forniti alloggi ai lavoratori"
+      },
+      "A.8-1": {
+        "st": "c",
+        "ev": "Lettera di assunzione consegnata prima dell'inizio del lavoro"
+      },
+      "A.8-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-4": {
+        "st": "c",
+        "ev": "Retribuzioni da tabelle del CCNL; nessun inquadramento sotto il minimo"
+      },
+      "A.8-5": {
+        "st": "c",
+        "ev": "Bonifico entro il giorno 10 su conto intestato al lavoratore"
+      },
+      "A.8-6": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-7": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-8": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-9": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.8-10": {
+        "st": "c",
+        "ev": "Il codice disciplinare esclude la multa"
+      },
+      "A.8-11": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.9-1": {
+        "st": "c",
+        "ev": "Orario ordinario di 40 ore settimanali"
+      },
+      "A.9-2": {
+        "st": "na",
+        "ev": "Nessuna deroga applicata: il limite di legge è inferiore"
+      },
+      "A.9-3": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.9-4": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.9-5": {
+        "st": "p",
+        "ev": "Straordinario ricorrente nel reparto confezionamento durante la campagna",
+        "az": "Secondo turno in confezionamento da luglio a settembre",
+        "resp": "Direzione di stabilimento",
+        "scad": "2026-06-30"
+      },
+      "A.9-6": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.9-7": {
+        "st": "p",
+        "ev": "Due casi di riposo spostato oltre il settimo giorno in agosto",
+        "az": "Controllo automatico dei riposi nel sistema presenze",
+        "resp": "Ufficio paghe",
+        "scad": "2026-06-30"
+      },
+      "A.9-8": {
+        "st": "na",
+        "ev": "Nessuna deroga ai riposi"
+      },
+      "A.9-9": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.10-1": {
+        "st": "p",
+        "ev": "Procedura e cassetta in mensa; canale non ancora aperto agli esterni",
+        "az": "Aprire il canale agli esterni dal sito e tradurre l'informativa",
+        "resp": "Responsabile risorse umane",
+        "scad": "2026-05-31"
+      },
+      "A.10-2": {
+        "st": "c",
+        "ev": ""
+      },
+      "A.10-3": {
+        "st": "c",
+        "ev": ""
+      }
+    },
+    "rischi": [
+      {
+        "a": "A1",
+        "amb": "F",
+        "t": "Violazioni dei diritti umani presso fornitori di paesi o settori a rischio non intercettate",
+        "p": 3,
+        "g": 5,
+        "mis": "Clausola sociale, questionario e verifica in sito sui fornitori agricoli",
+        "resp": "Ufficio acquisti"
+      },
+      {
+        "a": "A2",
+        "amb": "O",
+        "t": "Agenzie o cooperative che addebitano costi di reclutamento o trattengono documenti dei lavoratori",
+        "p": 2,
+        "g": 4,
+        "mis": "Contratto con divieto di costi a carico dei lavoratori; interviste ai somministrati",
+        "resp": "Responsabile risorse umane"
+      },
+      {
+        "a": "A2",
+        "amb": "F",
+        "t": "Lavoro forzato o intermediazione illecita presso subappaltatori e fornitori di manodopera",
+        "p": 4,
+        "g": 5,
+        "mis": "",
+        "resp": "Ufficio acquisti"
+      },
+      {
+        "a": "A3",
+        "amb": "F",
+        "t": "Impiego di minori nella catena di fornitura a monte",
+        "p": 2,
+        "g": 5,
+        "mis": "Clausola sul divieto di lavoro minorile",
+        "resp": "Ufficio acquisti"
+      },
+      {
+        "a": "A3",
+        "amb": "O",
+        "t": "Tirocini o apprendistati usati al posto di lavoro ordinario; minori adibiti a lavori pericolosi o notturni",
+        "p": 1,
+        "g": 4,
+        "mis": "Età minima di assunzione 18 anni",
+        "resp": ""
+      },
+      {
+        "a": "A4",
+        "amb": "O",
+        "t": "Ostacoli o ritorsioni verso rappresentanti dei lavoratori e iscritti al sindacato",
+        "p": 1,
+        "g": 4,
+        "mis": "Relazioni sindacali regolate dall'accordo aziendale",
+        "resp": ""
+      },
+      {
+        "a": "A5",
+        "amb": "O",
+        "t": "Disparità di trattamento in selezione, retribuzione o carriera per genere, origine o età",
+        "p": 2,
+        "g": 3,
+        "mis": "Analisi retributiva annuale per genere",
+        "resp": "Responsabile risorse umane"
+      },
+      {
+        "a": "A5",
+        "amb": "O",
+        "t": "Molestie, bullismo o abusi non segnalati per timore di ritorsioni",
+        "p": 2,
+        "g": 4,
+        "mis": "Politica contro le molestie; canale riservato",
+        "resp": "Responsabile risorse umane"
+      },
+      {
+        "a": "A6",
+        "amb": "O",
+        "t": "Infortuni per formazione insufficiente, dispositivi inadeguati o procedure non applicate",
+        "p": 3,
+        "g": 4,
+        "mis": "Formazione all'ingresso anche in lingua; sopralluoghi mensili",
+        "resp": "RSPP"
+      },
+      {
+        "a": "A6",
+        "amb": "F",
+        "t": "Appaltatori che operano in sito senza coordinamento sulla sicurezza",
+        "p": 3,
+        "g": 4,
+        "mis": "DUVRI e riunione di coordinamento con la cooperativa",
+        "resp": "RSPP"
+      },
+      {
+        "a": "A7",
+        "amb": "O",
+        "t": "Vie di fuga ostruite, presidi antincendio non verificati, prove di evacuazione non svolte",
+        "p": 2,
+        "g": 5,
+        "mis": "Controllo settimanale delle vie di fuga; prova annuale",
+        "resp": "RSPP"
+      },
+      {
+        "a": "A8",
+        "amb": "O",
+        "t": "Inquadramenti impropri: false partite IVA, part-time fittizi, appalti non genuini",
+        "p": 2,
+        "g": 3,
+        "mis": "Verifica della genuinità dell'appalto di facchinaggio",
+        "resp": "Direzione"
+      },
+      {
+        "a": "A8",
+        "amb": "O",
+        "t": "Retribuzioni sotto i minimi contrattuali, pagamenti in ritardo o trattenute non dovute",
+        "p": 1,
+        "g": 4,
+        "mis": "Controllo mensile tra buste paga e tabelle contrattuali",
+        "resp": "Ufficio paghe"
+      },
+      {
+        "a": "A8",
+        "amb": "F",
+        "t": "Fornitori con lavoro irregolare o retribuzioni sotto i minimi",
+        "p": 4,
+        "g": 4,
+        "mis": "DURC e visura a ogni rinnovo",
+        "resp": "Ufficio acquisti"
+      },
+      {
+        "a": "A9",
+        "amb": "O",
+        "t": "Straordinario sistematico e superamento dei limiti di orario nei picchi produttivi",
+        "p": 4,
+        "g": 3,
+        "mis": "Secondo turno nei mesi di campagna; tetto individuale di straordinario",
+        "resp": "Direzione di stabilimento"
+      },
+      {
+        "a": "A9",
+        "amb": "O",
+        "t": "Riposi settimanali e ferie non fruiti",
+        "p": 3,
+        "g": 3,
+        "mis": "Controllo dei riposi nel sistema presenze",
+        "resp": "Ufficio paghe"
+      },
+      {
+        "a": "A10",
+        "amb": "O",
+        "t": "Canale di reclamo poco conosciuto, non accessibile a stranieri ed esterni o percepito come non riservato",
+        "p": 3,
+        "g": 3,
+        "mis": "Informativa tradotta; apertura del canale agli esterni",
+        "resp": "Responsabile risorse umane"
+      },
+      {
+        "a": "A11",
+        "amb": "O",
+        "t": "Corruzione o regalie nei rapporti con clienti, fornitori e pubblica amministrazione",
+        "p": 2,
+        "g": 4,
+        "mis": "Codice etico e procedura omaggi",
+        "resp": "Direzione"
+      },
+      {
+        "a": "A11",
+        "amb": "O",
+        "t": "Registrazioni di presenze, paghe o formazione non veritiere",
+        "p": 1,
+        "g": 5,
+        "mis": "Presenze rilevate con badge, non modificabili senza traccia",
+        "resp": "Ufficio paghe"
+      },
+      {
+        "a": "C5",
+        "amb": "O",
+        "t": "Sistema solo documentale: lavoratori non consultati, direzione non coinvolta",
+        "p": 2,
+        "g": 3,
+        "mis": "Riesame con la RSU; formazione dei capireparto",
+        "resp": "Direzione"
+      }
+    ],
+    "fornitori": [
+      {
+        "nome": "Agenzia Lavoro Esempio S.p.A.",
+        "cat": "Agenzia per il lavoro",
+        "paese": "Italia",
+        "rischio": "Medio",
+        "claus": "Sì",
+        "quest": "Sì",
+        "ver": "2026-02-18",
+        "esito": "Adeguato"
+      },
+      {
+        "nome": "Cooperativa Facchinaggio Esempio",
+        "cat": "Cooperativa di servizi",
+        "paese": "Italia",
+        "rischio": "Alto",
+        "claus": "Sì",
+        "quest": "Sì",
+        "ver": "2026-03-06",
+        "esito": "Azioni richieste"
+      },
+      {
+        "nome": "Azienda agricola Esempio Uno",
+        "cat": "Materie prime",
+        "paese": "Italia",
+        "rischio": "Alto",
+        "claus": "Sì",
+        "quest": "Sì",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Organizzazione di produttori Esempio",
+        "cat": "Materie prime",
+        "paese": "Italia",
+        "rischio": "Alto",
+        "claus": "No",
+        "quest": "No",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Scatolificio Esempio S.r.l.",
+        "cat": "Imballaggi e materiali",
+        "paese": "Italia",
+        "rischio": "Basso",
+        "claus": "Sì",
+        "quest": "No",
+        "ver": "",
+        "esito": ""
+      },
+      {
+        "nome": "Trasporti Esempio S.r.l.",
+        "cat": "Trasporti e logistica",
+        "paese": "Italia",
+        "rischio": "Medio",
+        "claus": "No",
+        "quest": "Sì",
+        "ver": "",
+        "esito": ""
+      }
+    ],
+    "politica": {
+      "testo": "Organizzazione di esempio S.r.l. considera il rispetto delle persone una condizione del proprio modo di fare impresa. Con questa politica la direzione assume gli impegni che seguono e li estende a chiunque lavori sotto il controllo dell'organizzazione, compresi i lavoratori somministrati e degli appaltatori.\n\nDiritti umani. Rispettiamo i diritti umani riconosciuti a livello internazionale, valutiamo i rischi delle nostre attività e della catena di fornitura e rimediamo agli impatti negativi che causiamo o a cui contribuiamo.\n\nCondizioni di lavoro. Non ricorriamo a lavoro forzato né minorile. Garantiamo rapporti di lavoro regolari, retribuzioni non inferiori ai minimi di legge e di contratto collettivo, orari e riposi conformi, libertà di associazione e di contrattazione collettiva, parità di trattamento e un ambiente libero da molestie e abusi.\n\nSalute e sicurezza. Assicuriamo luoghi di lavoro sicuri e salubri, formazione, dispositivi di protezione gratuiti e preparazione alle emergenze.\n\nEtica e integrità. Rifiutiamo ogni forma di corruzione e non forniamo informazioni false sulle nostre attività e prestazioni.\n\nAscolto. Mettiamo a disposizione di lavoratori e parti esterne un canale di reclamo riservato e tuteliamo da ritorsioni chi segnala in buona fede.\n\nCi impegniamo a rispettare i requisiti di legge, gli impegni contrattuali in materia sociale e i requisiti della PAS 24000:2022, applicando la tutela più favorevole ai lavoratori, e a migliorare in modo continuo il sistema di gestione sociale. Chiediamo lo stesso ai nostri fornitori.\n\nLa politica è comunicata a tutti i lavoratori, resa disponibile alle parti interessate e riesaminata ogni anno.",
+      "chk": {
+        "du": true,
+        "cl": true,
+        "et": true,
+        "ssl": true,
+        "leg": true,
+        "mig": true,
+        "app": true,
+        "int": true
+      },
+      "data": "2026-01-20",
+      "firma": "L'amministratore unico"
+    },
+    "obiettivi": [
+      {
+        "ob": "Ridurre lo straordinario nel reparto confezionamento durante la campagna",
+        "area": "A9",
+        "ind": "Ore di straordinario per addetto",
+        "target": "sotto 90 ore l'anno",
+        "scad": "2026-12-31",
+        "resp": "Direzione di stabilimento",
+        "ris": "Secondo turno da luglio a settembre con 12 assunzioni stagionali",
+        "stato": "In corso"
+      },
+      {
+        "ob": "Verificare in sito tutti i fornitori a rischio alto",
+        "area": "A1",
+        "ind": "Fornitori a rischio alto verificati",
+        "target": "100%",
+        "scad": "2026-10-31",
+        "resp": "Ufficio acquisti",
+        "ris": "Quattro giornate di verifica; lista di controllo sociale",
+        "stato": "In corso"
+      },
+      {
+        "ob": "Formare tutti i lavoratori stagionali su diritti e canale di reclamo",
+        "area": "A10",
+        "ind": "Neoassunti formati all'ingresso",
+        "target": "100%",
+        "scad": "2026-07-15",
+        "resp": "Responsabile risorse umane",
+        "ris": "Modulo di un'ora in tre lingue",
+        "stato": "In corso"
+      },
+      {
+        "ob": "Avvicinare la retribuzione minima al salario dignitoso",
+        "area": "A8",
+        "ind": "Distanza dal salario dignitoso",
+        "target": "sotto il 2%",
+        "scad": "2026-12-31",
+        "resp": "Direzione",
+        "ris": "Premio di risultato esteso agli stagionali",
+        "stato": "In corso"
+      }
+    ],
+    "piano": [
+      {
+        "mese": "1",
+        "rif": "4.1 · 6.1",
+        "att": "Riesame di contesto, parti interessate e rischi",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "1",
+        "rif": "8.1.2",
+        "att": "Approvazione del piano di lavoro annuale e degli obiettivi",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "2",
+        "rif": "7.4.2",
+        "att": "Comunicazione interna annuale sul sistema di gestione sociale",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "2",
+        "rif": "7.2 · 7.3",
+        "att": "Formazione su diritti, politica sociale e canale di reclamo",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "3",
+        "rif": "6.1.2",
+        "att": "Verifica dei requisiti di legge: orari, retribuzioni, contratti",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "4",
+        "rif": "8.1.3",
+        "att": "Invio dei requisiti sociali e del questionario ai fornitori",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "5",
+        "rif": "8.2",
+        "att": "Prova di emergenza ed evacuazione",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "5",
+        "rif": "A.7",
+        "att": "Verifica di presidi antincendio e vie di fuga",
+        "resp": "Responsabile risorse umane",
+        "stato": "Fatto"
+      },
+      {
+        "mese": "6",
+        "rif": "5.4",
+        "att": "Incontro di consultazione con i lavoratori e i loro rappresentanti",
+        "resp": "Responsabile risorse umane",
+        "stato": "In corso"
+      },
+      {
+        "mese": "6",
+        "rif": "9.1",
+        "att": "Monitoraggio semestrale degli indicatori",
+        "resp": "Responsabile risorse umane",
+        "stato": "In corso"
+      },
+      {
+        "mese": "7",
+        "rif": "8.1.3",
+        "att": "Verifiche sui fornitori a rischio alto",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "9",
+        "rif": "9.2",
+        "att": "Audit interno sul sistema e sull'Allegato A",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "10",
+        "rif": "10.2",
+        "att": "Chiusura delle azioni correttive e verifica di efficacia",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "11",
+        "rif": "9.1.2",
+        "att": "Analisi annuale dei dati e degli indicatori",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "11",
+        "rif": "7.4.3",
+        "att": "Comunicazione esterna annuale",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      },
+      {
+        "mese": "12",
+        "rif": "9.3",
+        "att": "Riesame della direzione e comunicazione degli esiti ai lavoratori",
+        "resp": "Responsabile risorse umane",
+        "stato": "Da fare"
+      }
+    ],
+    "dati": {
+      "2025": {
+        "lav_tot": 82,
+        "lav_don": 46,
+        "lav_ind": 50,
+        "lav_stran": 18,
+        "lav_min": 0,
+        "lav_u15": 0,
+        "lav_somm": 22,
+        "ass": 28,
+        "ces": 30,
+        "re_min": 1540,
+        "re_ccnl": 1510,
+        "re_lw": 1620,
+        "re_don": 23100,
+        "re_uom": 25300,
+        "cop": 82,
+        "rit": 1,
+        "tratt": 0,
+        "ore_ord": 141000,
+        "ore_str": 13200,
+        "ore_max": 58,
+        "sett_60": 0,
+        "riposi": 6,
+        "inf": 6,
+        "gg": 104,
+        "nm": 5,
+        "mal": 0,
+        "fssl": 70,
+        "fo_ore": 860,
+        "fo_sgs": 20,
+        "fo_nuovi": 17,
+        "rapp": 3,
+        "disc": 7,
+        "molest": 0,
+        "sanz": 1,
+        "corr": 0
+      },
+      "2026": {
+        "lav_tot": 86,
+        "lav_don": 49,
+        "lav_ind": 52,
+        "lav_stran": 21,
+        "lav_min": 0,
+        "lav_u15": 0,
+        "lav_somm": 18,
+        "ass": 31,
+        "ces": 27,
+        "re_min": 1580,
+        "re_ccnl": 1545,
+        "re_lw": 1650,
+        "re_don": 23900,
+        "re_uom": 25800,
+        "cop": 86,
+        "rit": 0,
+        "tratt": 0,
+        "ore_ord": 148000,
+        "ore_str": 9800,
+        "ore_max": 54,
+        "sett_60": 0,
+        "riposi": 2,
+        "inf": 4,
+        "gg": 62,
+        "nm": 11,
+        "mal": 0,
+        "fssl": 80,
+        "fo_ore": 1240,
+        "fo_sgs": 64,
+        "fo_nuovi": 29,
+        "rapp": 3,
+        "disc": 5,
+        "molest": 1,
+        "sanz": 0,
+        "corr": 0
+      }
+    },
+    "registri": {
+      "recl": [
+        {
+          "data": "2026-02-11",
+          "canale": "Cassetta o modulo",
+          "prov": "Lavoratore",
+          "area": "A9",
+          "desc": "Turni del confezionamento comunicati con meno di 48 ore di anticipo",
+          "az": "Verificato con il caporeparto; turni ora pubblicati il giovedì per la settimana successiva",
+          "resp": "Responsabile risorse umane",
+          "chiusura": "2026-02-25",
+          "esito": "Fondato, risolto"
+        },
+        {
+          "data": "2026-04-03",
+          "canale": "Rappresentante dei lavoratori",
+          "prov": "Lavoratore di un fornitore",
+          "area": "A6",
+          "desc": "Addetti della cooperativa senza guanti antitaglio nell'area di scarico",
+          "az": "Richiamo scritto alla cooperativa; consegna dei dispositivi verificata",
+          "resp": "RSPP",
+          "chiusura": "2026-04-12",
+          "esito": "Fondato, risolto"
+        },
+        {
+          "data": "2026-05-20",
+          "canale": "Cassetta o modulo",
+          "prov": "Anonimo",
+          "area": "A5",
+          "desc": "Linguaggio offensivo di un preposto verso lavoratori stranieri",
+          "az": "Colloqui in corso; formazione dei capireparto pianificata",
+          "resp": "Responsabile risorse umane",
+          "chiusura": "",
+          "esito": "In istruttoria"
+        }
+      ],
+      "nc": [
+        {
+          "data": "2026-03-06",
+          "orig": "Monitoraggio",
+          "rif": "A.2 · 9",
+          "resp": "Ufficio acquisti",
+          "desc": "Il contratto con la cooperativa non vieta l'addebito di costi ai lavoratori",
+          "causa": "Contratto precedente all'avvio del sistema, mai aggiornato",
+          "az": "Integrazione contrattuale con clausola sociale",
+          "scad": "2026-04-30",
+          "chiusura": "",
+          "eff": "Da verificare"
+        },
+        {
+          "data": "2026-04-12",
+          "orig": "Reclamo",
+          "rif": "A.6 · 7",
+          "resp": "RSPP",
+          "desc": "Dispositivi di protezione non consegnati agli addetti della cooperativa",
+          "causa": "Consegna lasciata al fornitore senza controllo all'ingresso",
+          "az": "Controllo dei dispositivi nella lista di accesso degli appaltatori",
+          "scad": "2026-04-30",
+          "chiusura": "2026-04-28",
+          "eff": "Efficace"
+        }
+      ],
+      "form": [
+        {
+          "data": "2026-02-14",
+          "tema": "Politica sociale, diritti dei lavoratori e canale di reclamo",
+          "dest": "Tutti i dipendenti stabili",
+          "doc": "Responsabile risorse umane",
+          "part": 52,
+          "ore": 2,
+          "eff": "Questionario finale"
+        },
+        {
+          "data": "2026-03-20",
+          "tema": "Gestione dei reclami e prevenzione delle molestie",
+          "dest": "Capireparto e preposti",
+          "doc": "Consulente esterno",
+          "part": 8,
+          "ore": 4,
+          "eff": "Colloquio a tre mesi"
+        }
+      ],
+      "emer": [
+        {
+          "data": "2026-05-15",
+          "tipo": "Prova di evacuazione",
+          "sito": "Stabilimento",
+          "resp": "RSPP",
+          "esito": "Evacuazione completata in 4 minuti; una via di fuga del magazzino parzialmente ostruita da bancali",
+          "az": "Segnaletica a pavimento e controllo settimanale"
+        },
+        {
+          "data": "2026-05-16",
+          "tipo": "Verifica di presidi e vie di fuga",
+          "sito": "Stabilimento e magazzino",
+          "resp": "RSPP",
+          "esito": "Estintori e idranti regolari",
+          "az": ""
+        }
+      ],
+      "com": [
+        {
+          "data": "2026-02-03",
+          "tipo": "Interna",
+          "dest": "Tutti i lavoratori",
+          "canale": "Bacheca, busta paga e riunione di reparto",
+          "cont": "Presentazione del sistema di gestione sociale, della politica e del canale di reclamo"
+        }
+      ],
+      "cons": [
+        {
+          "data": "2026-01-28",
+          "forma": "Incontro con i rappresentanti",
+          "part": 5,
+          "resp": "Direzione",
+          "arg": "Politica sociale, obiettivi dell'anno, organizzazione della campagna",
+          "esiti": "Condiviso l'obiettivo sullo straordinario; richiesta di turni comunicati con anticipo"
+        }
+      ],
+      "audit": [
+        {
+          "data": "2026-11-17",
+          "amb": "Sistema di gestione e Allegato A",
+          "aud": "Auditor esterno incaricato",
+          "stato": "Pianificato",
+          "ril": "",
+          "sint": ""
+        }
+      ],
+      "ries": []
+    },
+    "param": {
+      "ore_ord": 48,
+      "ore_tot": 60,
+      "sett": 46,
+      "alto": 15,
+      "medio": 8,
+      "gg_recl": 30
+    }
+  },
+  "risultati": {
+    "conf": {
+      "tot": 98,
+      "val": 94,
+      "c": 77,
+      "p": 10,
+      "n": 1,
+      "na": 6,
+      "da": 4,
+      "pct": 93
+    },
+    "confPerGruppo": {
+      "C4": {
+        "tot": 4,
+        "val": 4,
+        "c": 4,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "C5": {
+        "tot": 4,
+        "val": 4,
+        "c": 3,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 88
+      },
+      "C6": {
+        "tot": 5,
+        "val": 5,
+        "c": 5,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "C7": {
+        "tot": 7,
+        "val": 7,
+        "c": 5,
+        "p": 2,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 86
+      },
+      "C8": {
+        "tot": 4,
+        "val": 4,
+        "c": 3,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 88
+      },
+      "C9": {
+        "tot": 5,
+        "val": 5,
+        "c": 3,
+        "p": 1,
+        "n": 1,
+        "na": 0,
+        "da": 0,
+        "pct": 70
+      },
+      "C10": {
+        "tot": 2,
+        "val": 0,
+        "c": 0,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 2,
+        "pct": 0
+      },
+      "A1": {
+        "tot": 4,
+        "val": 4,
+        "c": 3,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 88
+      },
+      "A2": {
+        "tot": 11,
+        "val": 11,
+        "c": 9,
+        "p": 1,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 95
+      },
+      "A3": {
+        "tot": 6,
+        "val": 6,
+        "c": 5,
+        "p": 0,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 100
+      },
+      "A4": {
+        "tot": 4,
+        "val": 4,
+        "c": 3,
+        "p": 0,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 100
+      },
+      "A5": {
+        "tot": 4,
+        "val": 4,
+        "c": 4,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "A6": {
+        "tot": 9,
+        "val": 9,
+        "c": 9,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "A7": {
+        "tot": 4,
+        "val": 4,
+        "c": 3,
+        "p": 0,
+        "n": 0,
+        "na": 1,
+        "da": 0,
+        "pct": 100
+      },
+      "A8": {
+        "tot": 11,
+        "val": 11,
+        "c": 11,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 100
+      },
+      "A9": {
+        "tot": 9,
+        "val": 9,
+        "c": 5,
+        "p": 2,
+        "n": 0,
+        "na": 2,
+        "da": 0,
+        "pct": 86
+      },
+      "A10": {
+        "tot": 3,
+        "val": 3,
+        "c": 2,
+        "p": 1,
+        "n": 0,
+        "na": 0,
+        "da": 0,
+        "pct": 83
+      },
+      "A11": {
+        "tot": 2,
+        "val": 0,
+        "c": 0,
+        "p": 0,
+        "n": 0,
+        "na": 0,
+        "da": 2,
+        "pct": 0
+      }
+    },
+    "livelli": [
+      15,
+      8,
+      20,
+      10,
+      4,
+      4,
+      6,
+      8,
+      12,
+      12,
+      10,
+      6,
+      4,
+      16,
+      12,
+      9,
+      9,
+      8,
+      5,
+      6
+    ],
+    "rischiStat": {
+      "tot": 20,
+      "val": 20,
+      "alti": 3,
+      "medi": 10,
+      "bassi": 7,
+      "scoperti": [
+        "Lavoro forzato o intermediazione illecita presso subappaltatori e fornitori di manodopera"
+      ]
+    },
+    "fornStat": {
+      "n": 6,
+      "claus": 4,
+      "quest": 4,
+      "alti": 3,
+      "val": 6,
+      "scoperti": [
+        "Azienda agricola Esempio Uno",
+        "Organizzazione di produttori Esempio"
+      ],
+      "critici": 0,
+      "pClaus": 66.7,
+      "pQuest": 66.7,
+      "pVer": 33.3
+    },
+    "regStat": {
+      "recl": 3,
+      "reclChiusi": 2,
+      "reclTm": 12,
+      "reclVecchi": 1,
+      "nc": 2,
+      "ncChiuse": 1,
+      "ncAperte": 1,
+      "ncScadute": 1,
+      "ncEff": 1,
+      "form": 2,
+      "formOre": 136,
+      "prove": 1,
+      "emer": 2,
+      "comInt": 1,
+      "comEst": 0,
+      "cons": 1,
+      "audit": 0,
+      "auditPian": 1,
+      "rilievi": 0,
+      "ries": 0
+    },
+    "regStatPrec": {
+      "recl": 0,
+      "reclChiusi": 0,
+      "reclTm": 0,
+      "reclVecchi": 1,
+      "nc": 0,
+      "ncChiuse": 0,
+      "ncAperte": 1,
+      "ncScadute": 1,
+      "ncEff": 0,
+      "form": 0,
+      "formOre": 0,
+      "prove": 0,
+      "emer": 0,
+      "comInt": 0,
+      "comEst": 0,
+      "cons": 0,
+      "audit": 0,
+      "auditPian": 0,
+      "rilievi": 0,
+      "ries": 0
+    },
+    "derive": {
+      "ore": 157800,
+      "pctDonne": 57,
+      "pctInd": 60.5,
+      "pctStran": 24.4,
+      "pctSomm": 17.3,
+      "turnover": 31.4,
+      "margCcnl": 2.3,
+      "gapLw": 4.2,
+      "payGap": 7.4,
+      "pctCop": 100,
+      "pctStr": 6.6,
+      "oreSett": 39.9,
+      "strAdd": 114,
+      "if_": 25.35,
+      "ig": 0.39,
+      "pctSsl": 93,
+      "oreForm": 14.4,
+      "pctSgs": 74.4,
+      "pctNuovi": 93.5
+    },
+    "derivePrec": {
+      "ore": 154200,
+      "pctDonne": 56.1,
+      "pctInd": 61,
+      "pctStran": 22,
+      "pctSomm": 21.2,
+      "turnover": 36.6,
+      "margCcnl": 2,
+      "gapLw": 4.9,
+      "payGap": 8.7,
+      "pctCop": 100,
+      "pctStr": 9.4,
+      "oreSett": 40.9,
+      "strAdd": 161,
+      "if_": 38.91,
+      "ig": 0.67,
+      "pctSsl": 85.4,
+      "oreForm": 10.5,
+      "pctSgs": 24.4,
+      "pctNuovi": 60.7
+    },
+    "allarmi": [
+      {
+        "lv": "A",
+        "t": "Settimana di 54 ore: verifica che l'eccedenza oltre 48 sia straordinario volontario e retribuito",
+        "r": "A.9 · 1",
+        "go": "dati"
+      },
+      {
+        "lv": "A",
+        "t": "Casi di riposo settimanale non fruito: 2",
+        "r": "A.9 · 7",
+        "go": "dati"
+      },
+      {
+        "lv": "A",
+        "t": "Retribuzione minima sotto il salario dignitoso di riferimento: predisponi un piano di avvicinamento",
+        "r": "A.8 · 4 nota",
+        "go": "pol"
+      },
+      {
+        "lv": "C",
+        "t": "Requisiti valutati non conformi: 1",
+        "r": "Passo 3",
+        "go": "gap"
+      },
+      {
+        "lv": "A",
+        "t": "Rischi alti senza misure definite: 1",
+        "r": "6.1.2",
+        "go": "ris"
+      },
+      {
+        "lv": "A",
+        "t": "Fornitori a rischio alto mai verificati: 2",
+        "r": "8.1.3",
+        "go": "ris"
+      },
+      {
+        "lv": "A",
+        "t": "Azioni correttive scadute e non chiuse: 1",
+        "r": "10.2",
+        "go": "reg"
+      },
+      {
+        "lv": "A",
+        "t": "Reclami aperti da più di 30 giorni: 1",
+        "r": "A.10",
+        "go": "reg"
+      },
+      {
+        "lv": "A",
+        "t": "Nessuna comunicazione esterna sul sistema nel 2026",
+        "r": "7.4.3",
+        "go": "reg"
+      },
+      {
+        "lv": "A",
+        "t": "Nessun audit interno svolto nel 2026",
+        "r": "9.2",
+        "go": "reg"
+      },
+      {
+        "lv": "A",
+        "t": "Riesame della direzione non ancora svolto nel 2026",
+        "r": "9.3",
+        "go": "reg"
+      }
+    ],
+    "stato": {
+      "s1": 1,
+      "s2": 1,
+      "s3": 0.9591836734693877,
+      "s4": 1,
+      "s5": 0.9814814814814815,
+      "s6": 1,
+      "s7": 0.875,
+      "s8": 0.973666450707267,
+      "tot": 97
+    }
+  }
+}

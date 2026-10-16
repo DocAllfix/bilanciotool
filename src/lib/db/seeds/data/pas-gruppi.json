@@ -1,0 +1,308 @@
+[
+  {
+    "key": "C4",
+    "ordine": 1,
+    "natura": "sistema",
+    "nome": "Contesto dell'organizzazione",
+    "riferimento": "Clausola 4",
+    "guida": {
+      "definizione": "Il punto di partenza: capire in quale ambiente opera l'organizzazione, chi ha interessi legittimi verso le sue pratiche sociali e fin dove arriva il sistema.",
+      "verifiche": [
+        "Analisi del contesto scritta e aggiornata, non copiata da un altro sistema di gestione",
+        "Lavoratori trattati come prima parte interessata, con esigenze raccolte e non presunte",
+        "Campo di applicazione che non lascia fuori siti, reparti o lavoratori esterni presenti in azienda"
+      ],
+      "evidenze": "Analisi del contesto, registro delle parti interessate, dichiarazione del campo di applicazione, visura camerale, organigramma.",
+      "attenzione": "I requisiti dell'Allegato A non ammettono esclusioni: un campo di applicazione che taglia fuori i lavoratori somministrati o un reparto non regge all'audit."
+    }
+  },
+  {
+    "key": "C5",
+    "ordine": 2,
+    "natura": "sistema",
+    "nome": "Leadership e partecipazione dei lavoratori",
+    "riferimento": "Clausola 5",
+    "guida": {
+      "definizione": "L'impegno della direzione e il coinvolgimento dei lavoratori. La PAS li chiede entrambi e li verifica con le interviste, non solo sui documenti.",
+      "verifiche": [
+        "Direzione in grado di spiegare politica, obiettivi e risorse assegnate",
+        "Responsabile del sistema nominato per iscritto, con autorità reale",
+        "Lavoratori non dirigenti consultati su politica, obiettivi, audit e azioni correttive"
+      ],
+      "evidenze": "Politica firmata, nomine e mansionari, verbali di consultazione, verbali di riunione con RSU, RSA o RLS, bacheca e intranet.",
+      "attenzione": "Se i lavoratori intervistati non conoscono la politica o il canale di reclamo, la non conformità è certa anche con documenti impeccabili."
+    }
+  },
+  {
+    "key": "C6",
+    "ordine": 3,
+    "natura": "sistema",
+    "nome": "Pianificazione",
+    "riferimento": "Clausola 6",
+    "guida": {
+      "definizione": "Dalla lettura del contesto alle decisioni: quali rischi sociali affrontare, con quali obiettivi e con quale piano.",
+      "verifiche": [
+        "Valutazione dei rischi che copre tutte le aree dell'Allegato A e la catena di fornitura",
+        "Obiettivi con indicatore, responsabile, scadenza e risorse",
+        "Scadenzario dei requisiti di legge in materia di lavoro tenuto aggiornato"
+      ],
+      "evidenze": "Registro rischi e opportunità, elenco degli obiettivi, registro dei requisiti legali, verbali di valutazione dei cambiamenti organizzativi.",
+      "attenzione": "Obiettivi generici come «migliorare il clima aziendale» non superano l'audit: servono un numero e una data."
+    }
+  },
+  {
+    "key": "C7",
+    "ordine": 4,
+    "natura": "sistema",
+    "nome": "Supporto",
+    "riferimento": "Clausola 7",
+    "guida": {
+      "definizione": "Ciò che rende il sistema praticabile: risorse, competenze, consapevolezza, comunicazione e documenti sotto controllo.",
+      "verifiche": [
+        "Piano documentato di sviluppo delle capacità, distinto dal piano di formazione obbligatoria",
+        "Comunicazione comprensibile a tutti, lavoratori stranieri compresi",
+        "Almeno una comunicazione interna e una esterna sul sistema ogni anno"
+      ],
+      "evidenze": "Piano di formazione e registri delle presenze, materiali tradotti, comunicazioni in bacheca, pagina del sito o relazione annuale, elenco dei documenti.",
+      "attenzione": "La comunicazione esterna annuale viene spesso dimenticata: basta una pagina del sito o una nota a clienti e fornitori, purché datata e conservata."
+    }
+  },
+  {
+    "key": "C8",
+    "ordine": 5,
+    "natura": "sistema",
+    "nome": "Attività operative",
+    "riferimento": "Clausola 8",
+    "guida": {
+      "definizione": "Il sistema in funzione: controllo operativo, piano di lavoro annuale, governo dei fornitori e preparazione alle emergenze.",
+      "verifiche": [
+        "Piano annuale con attività, mesi e responsabili, effettivamente monitorato",
+        "Fornitori e appaltatori classificati per rischio, con requisiti sociali accettati per iscritto",
+        "Prova di emergenza svolta nell'anno, con verbale e azioni conseguenti"
+      ],
+      "evidenze": "Piano di lavoro annuale, albo fornitori e questionari, clausole sociali firmate, DURC, piano di emergenza, verbali delle prove di evacuazione.",
+      "attenzione": "Il piano di lavoro annuale è un requisito specifico della PAS, assente nelle norme ISO: va generato ogni anno e non coincide con il programma di audit."
+    }
+  },
+  {
+    "key": "C9",
+    "ordine": 6,
+    "natura": "sistema",
+    "nome": "Valutazione delle prestazioni",
+    "riferimento": "Clausola 9",
+    "guida": {
+      "definizione": "Misurare e verificare: indicatori per ogni area dell'Allegato A, audit interni, riesame della direzione.",
+      "verifiche": [
+        "Almeno un indicatore per ciascuna delle undici aree dell'Allegato A",
+        "Audit interno che copre anche l'Allegato A, con interviste ai lavoratori",
+        "Riesame annuale con tutti gli elementi in ingresso e gli esiti comunicati ai lavoratori"
+      ],
+      "evidenze": "Quadro degli indicatori, programma e rapporti di audit, qualifica degli auditor, verbale di riesame, comunicazione degli esiti.",
+      "attenzione": "L'auditor interno non può verificare il proprio lavoro: nelle piccole organizzazioni conviene affidare l'audit a una persona esterna."
+    }
+  },
+  {
+    "key": "C10",
+    "ordine": 7,
+    "natura": "sistema",
+    "nome": "Miglioramento",
+    "riferimento": "Clausola 10",
+    "guida": {
+      "definizione": "Imparare da ciò che non funziona: incidenti, reclami e non conformità trattati fino alla verifica dell'efficacia.",
+      "verifiche": [
+        "Analisi delle cause svolta con la partecipazione dei lavoratori",
+        "Azioni correttive con responsabile, scadenza e verifica di efficacia",
+        "Esiti comunicati ai lavoratori interessati e ai loro rappresentanti"
+      ],
+      "evidenze": "Registro delle non conformità, registro dei reclami, registro infortuni e mancati infortuni, verbali di chiusura delle azioni.",
+      "attenzione": "Chiudere un'azione senza verificarne l'efficacia è una delle non conformità più frequenti in sorveglianza."
+    }
+  },
+  {
+    "key": "A1",
+    "ordine": 8,
+    "natura": "allegato",
+    "nome": "Diritti umani e due diligence",
+    "riferimento": "Allegato A · A.1",
+    "guida": {
+      "definizione": "L'organizzazione conosce i propri rischi per i diritti umani, non causa né favorisce impatti negativi e vigila sui fornitori con un processo di due diligence.",
+      "verifiche": [
+        "Inventario dei rischi che distingue attività proprie e catena di fornitura",
+        "Criteri per decidere quali fornitori approfondire",
+        "Modalità di rimedio previste quando un impatto si verifica"
+      ],
+      "evidenze": "Inventario dei rischi, procedura di due diligence, mappatura dei fornitori per paese e settore, esiti di questionari e verifiche.",
+      "attenzione": "Non basta la clausola nel contratto: la due diligence richiede di individuare, prevenire, mitigare e rendere conto di ciò che si è fatto."
+    }
+  },
+  {
+    "key": "A2",
+    "ordine": 9,
+    "natura": "allegato",
+    "nome": "Lavoro forzato",
+    "riferimento": "Allegato A · A.2",
+    "guida": {
+      "definizione": "Il lavoro è sempre una scelta libera: nessuna costrizione, nessun documento trattenuto, nessun costo di assunzione, nessun debito che vincoli.",
+      "verifiche": [
+        "Contratti con agenzie e cooperative: autorizzazioni e divieto di addebitare costi ai lavoratori",
+        "Gestione di anticipi e prestiti",
+        "Libertà di lasciare il sito a fine turno e di dimettersi"
+      ],
+      "evidenze": "Contratti di somministrazione e appalto, iscrizione dell'agenzia all'albo ministeriale, lettere di assunzione, politica su anticipi e prestiti, interviste.",
+      "attenzione": "Il rischio vero in Italia è l'intermediazione illecita: appalti di manodopera non genuini e cooperative spurie vanno verificati uno per uno."
+    }
+  },
+  {
+    "key": "A3",
+    "ordine": 10,
+    "natura": "allegato",
+    "nome": "Lavoro minorile",
+    "riferimento": "Allegato A · A.3",
+    "guida": {
+      "definizione": "Nessun minore sotto l'età minima, tutele rafforzate per chi ha meno di 18 anni e una procedura di rimedio pronta in caso di necessità.",
+      "verifiche": [
+        "Copia del documento d'identità acquisita all'assunzione per tutti",
+        "Tirocini, alternanza scuola-lavoro e apprendistato con progetto formativo reale",
+        "Mansioni e turni dei minori di 18 anni"
+      ],
+      "evidenze": "Libro unico del lavoro, documenti d'identità, convenzioni di tirocinio, valutazione dei rischi per i minori, procedura di rimedio.",
+      "attenzione": "In Italia l'età minima è 16 anni con obbligo scolastico assolto: vale il limite più alto. La procedura di rimedio serve anche se il rischio interno è nullo, perché copre i fornitori."
+    }
+  },
+  {
+    "key": "A4",
+    "ordine": 11,
+    "natura": "allegato",
+    "nome": "Libertà di associazione",
+    "riferimento": "Allegato A · A.4",
+    "guida": {
+      "definizione": "I lavoratori sono liberi di organizzarsi e di contrattare collettivamente, senza ostacoli né ritorsioni.",
+      "verifiche": [
+        "Contratto collettivo applicato e sua corretta applicazione",
+        "Trattamento di rappresentanti e iscritti in carriera, turni e premi",
+        "Spazi, permessi e bacheca sindacale"
+      ],
+      "evidenze": "CCNL e accordi aziendali, verbali di elezione di RSU o RSA, deleghe sindacali, registro dei permessi, interviste ai rappresentanti.",
+      "attenzione": "L'assenza di rappresentanze non è una non conformità, ma i lavoratori devono sapere di poterle costituire: va detto esplicitamente."
+    }
+  },
+  {
+    "key": "A5",
+    "ordine": 12,
+    "natura": "allegato",
+    "nome": "Discriminazione e trattamento equo",
+    "riferimento": "Allegato A · A.5",
+    "guida": {
+      "definizione": "Parità di trattamento in ogni fase del rapporto di lavoro, nessuna forma di abuso o molestia, disciplina regolata per iscritto.",
+      "verifiche": [
+        "Annunci di lavoro e criteri di selezione",
+        "Differenze retributive e di inquadramento a parità di mansione",
+        "Codice disciplinare affisso e registro dei provvedimenti"
+      ],
+      "evidenze": "Procedure di selezione, analisi retributiva per genere, codice disciplinare, registro dei provvedimenti, politica contro le molestie, segnalazioni ricevute.",
+      "attenzione": "Vanno compresi i lavoratori temporanei e degli appaltatori: trattamenti diversi per mensa, spogliatoi o dispositivi di protezione vengono rilevati."
+    }
+  },
+  {
+    "key": "A6",
+    "ordine": 13,
+    "natura": "allegato",
+    "nome": "Salute e sicurezza sul lavoro",
+    "riferimento": "Allegato A · A.6",
+    "guida": {
+      "definizione": "Ambienti di lavoro sicuri e salubri, formazione, dispositivi di protezione gratuiti, incidenti registrati e analizzati.",
+      "verifiche": [
+        "Valutazione dei rischi aggiornata e misure attuate",
+        "Formazione svolta in orario di lavoro e compresa da tutti",
+        "Registro di infortuni e mancati infortuni con analisi delle cause"
+      ],
+      "evidenze": "DVR, nomine di RSPP, medico competente e RLS, attestati di formazione, verbali di consegna dei DPI, registro infortuni, cassette di primo soccorso.",
+      "attenzione": "La PAS non sostituisce la ISO 45001 né il D.Lgs. 81/2008: qui si verifica che i presidi essenziali funzionino davvero, anche in mensa, spogliatoi e alloggi."
+    }
+  },
+  {
+    "key": "A7",
+    "ordine": 14,
+    "natura": "allegato",
+    "nome": "Sicurezza degli edifici",
+    "riferimento": "Allegato A · A.7",
+    "guida": {
+      "definizione": "Edifici e impianti sicuri: vie di fuga libere, presidi antincendio verificati, strutture stabili.",
+      "verifiche": [
+        "Uscite di emergenza apribili e percorsi sgombri durante il sopralluogo",
+        "Registro dei controlli antincendio compilato",
+        "Agibilità e verifiche strutturali, soprattutto su edifici datati o modificati"
+      ],
+      "evidenze": "Certificato di prevenzione incendi o SCIA, registro antincendio, agibilità, verifiche di impianti elettrici e scaffalature, planimetrie di emergenza.",
+      "attenzione": "Le uscite bloccate da bancali o chiuse a chiave sono la non conformità più rilevata in sopralluogo: si controllano il giorno stesso dell'audit."
+    }
+  },
+  {
+    "key": "A8",
+    "ordine": 15,
+    "natura": "allegato",
+    "nome": "Rapporti di lavoro e retribuzione",
+    "riferimento": "Allegato A · A.8",
+    "guida": {
+      "definizione": "Rapporti di lavoro regolari e trasparenti, retribuzioni almeno pari ai minimi, pagate puntualmente e senza trattenute indebite.",
+      "verifiche": [
+        "Lettera di assunzione consegnata prima dell'inizio del lavoro",
+        "Confronto tra buste paga, presenze e minimi contrattuali",
+        "Uso di tirocini, partite IVA, part-time e appalti"
+      ],
+      "evidenze": "Lettere di assunzione, comunicazioni obbligatorie, libro unico del lavoro, buste paga, bonifici, DURC, tabelle retributive del CCNL.",
+      "attenzione": "La multa disciplinare prevista dai contratti collettivi è una trattenuta sulla retribuzione: la scelta prudente è rinunciare ad applicarla e dichiararlo nel codice disciplinare. La PAS raccomanda inoltre un piano verso il salario dignitoso."
+    }
+  },
+  {
+    "key": "A9",
+    "ordine": 16,
+    "natura": "allegato",
+    "nome": "Orario di lavoro",
+    "riferimento": "Allegato A · A.9",
+    "guida": {
+      "definizione": "Orari sostenibili: ordinario entro 48 ore, totale entro 60, straordinario volontario e non sistematico, riposi e ferie garantiti.",
+      "verifiche": [
+        "Rilevazione delle presenze affidabile e coerente con le buste paga",
+        "Settimane di picco: ore totali e riposi",
+        "Straordinario ricorrente sugli stessi reparti o sulle stesse persone"
+      ],
+      "evidenze": "Registro delle presenze, turni, buste paga, accordi su straordinario e banca ore, piano ferie.",
+      "attenzione": "I limiti italiani sono più stretti di quelli della PAS (media di 48 ore compreso lo straordinario) e prevalgono. I picchi stagionali vanno pianificati, non subiti."
+    }
+  },
+  {
+    "key": "A10",
+    "ordine": 17,
+    "natura": "allegato",
+    "nome": "Meccanismo di reclamo",
+    "riferimento": "Allegato A · A.10",
+    "guida": {
+      "definizione": "Un canale per reclami e segnalazioni aperto a lavoratori ed esterni, riservato e senza ritorsioni.",
+      "verifiche": [
+        "Procedura scritta con tempi di risposta",
+        "Canale conosciuto dai lavoratori e raggiungibile anche da esterni",
+        "Reclami ricevuti: istruttoria, risposta, chiusura"
+      ],
+      "evidenze": "Procedura reclami, cassetta o indirizzo dedicato, informativa in bacheca e sul sito, registro dei reclami, canale di segnalazione ex D.Lgs. 24/2023.",
+      "attenzione": "Zero reclami in un anno non dimostra che vada tutto bene: l'auditor verifica se il canale è conosciuto e ritenuto affidabile."
+    }
+  },
+  {
+    "key": "A11",
+    "ordine": 18,
+    "natura": "allegato",
+    "nome": "Etica aziendale",
+    "riferimento": "Allegato A · A.11",
+    "guida": {
+      "definizione": "Integrità negli affari: nessuna corruzione, nessuna informazione falsa su attività e prestazioni.",
+      "verifiche": [
+        "Regole su omaggi, sponsorizzazioni e rapporti con la pubblica amministrazione",
+        "Coerenza tra registrazioni di presenze, paghe e formazione",
+        "Dichiarazioni rese a clienti e in fase di qualifica"
+      ],
+      "evidenze": "Codice etico, modello 231, procedura omaggi, dichiarazioni a clienti, registrazioni originali di presenze e formazione.",
+      "attenzione": "Registri di presenza «aggiustati» per l'audit sono una falsificazione: è una delle poche situazioni che può fermare la certificazione."
+    }
+  }
+]

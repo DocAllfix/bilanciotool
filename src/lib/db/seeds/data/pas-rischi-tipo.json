@@ -1,0 +1,142 @@
+[
+  {
+    "key": "rischio-01",
+    "ordine": 1,
+    "area": "A1",
+    "ambito": "F",
+    "testo": "Violazioni dei diritti umani presso fornitori di paesi o settori a rischio non intercettate"
+  },
+  {
+    "key": "rischio-02",
+    "ordine": 2,
+    "area": "A2",
+    "ambito": "O",
+    "testo": "Agenzie o cooperative che addebitano costi di reclutamento o trattengono documenti dei lavoratori"
+  },
+  {
+    "key": "rischio-03",
+    "ordine": 3,
+    "area": "A2",
+    "ambito": "F",
+    "testo": "Lavoro forzato o intermediazione illecita presso subappaltatori e fornitori di manodopera"
+  },
+  {
+    "key": "rischio-04",
+    "ordine": 4,
+    "area": "A3",
+    "ambito": "F",
+    "testo": "Impiego di minori nella catena di fornitura a monte"
+  },
+  {
+    "key": "rischio-05",
+    "ordine": 5,
+    "area": "A3",
+    "ambito": "O",
+    "testo": "Tirocini o apprendistati usati al posto di lavoro ordinario; minori adibiti a lavori pericolosi o notturni"
+  },
+  {
+    "key": "rischio-06",
+    "ordine": 6,
+    "area": "A4",
+    "ambito": "O",
+    "testo": "Ostacoli o ritorsioni verso rappresentanti dei lavoratori e iscritti al sindacato"
+  },
+  {
+    "key": "rischio-07",
+    "ordine": 7,
+    "area": "A5",
+    "ambito": "O",
+    "testo": "Disparità di trattamento in selezione, retribuzione o carriera per genere, origine o età"
+  },
+  {
+    "key": "rischio-08",
+    "ordine": 8,
+    "area": "A5",
+    "ambito": "O",
+    "testo": "Molestie, bullismo o abusi non segnalati per timore di ritorsioni"
+  },
+  {
+    "key": "rischio-09",
+    "ordine": 9,
+    "area": "A6",
+    "ambito": "O",
+    "testo": "Infortuni per formazione insufficiente, dispositivi inadeguati o procedure non applicate"
+  },
+  {
+    "key": "rischio-10",
+    "ordine": 10,
+    "area": "A6",
+    "ambito": "F",
+    "testo": "Appaltatori che operano in sito senza coordinamento sulla sicurezza"
+  },
+  {
+    "key": "rischio-11",
+    "ordine": 11,
+    "area": "A7",
+    "ambito": "O",
+    "testo": "Vie di fuga ostruite, presidi antincendio non verificati, prove di evacuazione non svolte"
+  },
+  {
+    "key": "rischio-12",
+    "ordine": 12,
+    "area": "A8",
+    "ambito": "O",
+    "testo": "Inquadramenti impropri: false partite IVA, part-time fittizi, appalti non genuini"
+  },
+  {
+    "key": "rischio-13",
+    "ordine": 13,
+    "area": "A8",
+    "ambito": "O",
+    "testo": "Retribuzioni sotto i minimi contrattuali, pagamenti in ritardo o trattenute non dovute"
+  },
+  {
+    "key": "rischio-14",
+    "ordine": 14,
+    "area": "A8",
+    "ambito": "F",
+    "testo": "Fornitori con lavoro irregolare o retribuzioni sotto i minimi"
+  },
+  {
+    "key": "rischio-15",
+    "ordine": 15,
+    "area": "A9",
+    "ambito": "O",
+    "testo": "Straordinario sistematico e superamento dei limiti di orario nei picchi produttivi"
+  },
+  {
+    "key": "rischio-16",
+    "ordine": 16,
+    "area": "A9",
+    "ambito": "O",
+    "testo": "Riposi settimanali e ferie non fruiti"
+  },
+  {
+    "key": "rischio-17",
+    "ordine": 17,
+    "area": "A10",
+    "ambito": "O",
+    "testo": "Canale di reclamo poco conosciuto, non accessibile a stranieri ed esterni o percepito come non riservato"
+  },
+  {
+    "key": "rischio-18",
+    "ordine": 18,
+    "area": "A11",
+    "ambito": "O",
+    "testo": "Corruzione o regalie nei rapporti con clienti, fornitori e pubblica amministrazione"
+  },
+  {
+    "key": "rischio-19",
+    "ordine": 19,
+    "area": "A11",
+    "ambito": "O",
+    "testo": "Registrazioni di presenze, paghe o formazione non veritiere"
+  },
+  {
+    "key": "rischio-20",
+    "ordine": 20,
+    "area": "C5",
+    "ambito": "O",
+    "testo": "Sistema solo documentale: lavoratori non consultati, direzione non coinvolta"
+  }
+]

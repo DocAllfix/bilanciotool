@@ -1,0 +1,50 @@
+{
+  "contenuti": [
+    {
+      "key": "du",
+      "ordine": 1,
+      "testo": "Tratta i diritti umani"
+    },
+    {
+      "key": "cl",
+      "ordine": 2,
+      "testo": "Tratta le condizioni di lavoro"
+    },
+    {
+      "key": "et",
+      "ordine": 3,
+      "testo": "Tratta etica e integrità negli affari"
+    },
+    {
+      "key": "ssl",
+      "ordine": 4,
+      "testo": "Tratta salute e sicurezza sul lavoro"
+    },
+    {
+      "key": "leg",
+      "ordine": 5,
+      "testo": "Impegna al rispetto dei requisiti di legge e contrattuali, PAS compresa"
+    },
+    {
+      "key": "mig",
+      "ordine": 6,
+      "testo": "Impegna al miglioramento continuo del sistema"
+    },
+    {
+      "key": "app",
+      "ordine": 7,
+      "testo": "È approvata e firmata dall'alta direzione"
+    },
+    {
+      "key": "int",
+      "ordine": 8,
+      "testo": "È comunicata, compresa e applicata all'interno"
+    },
+    {
+      "key": "ext",
+      "ordine": 9,
+      "testo": "È comunicata a fornitori e altri partner rilevanti"
+    }
+  ],
+  "modello": "{nome} considera il rispetto delle persone una condizione del proprio modo di fare impresa. Con questa politica la direzione assume gli impegni che seguono e li estende a chiunque lavori sotto il controllo dell'organizzazione, compresi i lavoratori somministrati e degli appaltatori.\n\nDiritti umani. Rispettiamo i diritti umani riconosciuti a livello internazionale, valutiamo i rischi delle nostre attività e della catena di fornitura e rimediamo agli impatti negativi che causiamo o a cui contribuiamo.\n\nCondizioni di lavoro. Non ricorriamo a lavoro forzato né minorile. Garantiamo rapporti di lavoro regolari, retribuzioni non inferiori ai minimi di legge e di contratto collettivo, orari e riposi conformi, libertà di associazione e di contrattazione collettiva, parità di trattamento e un ambiente libero da molestie e abusi.\n\nSalute e sicurezza. Assicuriamo luoghi di lavoro sicuri e salubri, formazione, dispositivi di protezione gratuiti e preparazione alle emergenze.\n\nEtica e integrità. Rifiutiamo ogni forma di corruzione e non forniamo informazioni false sulle nostre attività e prestazioni.\n\nAscolto. Mettiamo a disposizione di lavoratori e parti esterne un canale di reclamo riservato e tuteliamo da ritorsioni chi segnala in buona fede.\n\nCi impegniamo a rispettare i requisiti di legge, gli impegni contrattuali in materia sociale e i requisiti della PAS 24000:2022, applicando la tutela più favorevole ai lavoratori, e a migliorare in modo continuo il sistema di gestione sociale. Chiediamo lo stesso ai nostri fornitori.\n\nLa politica è comunicata a tutti i lavoratori, resa disponibile alle parti interessate e riesaminata ogni anno."
+}
