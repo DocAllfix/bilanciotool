@@ -24,7 +24,7 @@ describe.skipIf(!url)("azienda demo al signup", () => {
     if (cleanupUserIds.length) await db.delete(user).where(inArray(user.id, cleanupUserIds));
   });
 
-  it("registrazione → studio demo con Meccanica Adriatica pre-compilata", async () => {
+  it("registrazione → studio demo con Corvane Meccanica pre-compilata", async () => {
     const { auth } = await import("@/lib/auth");
     const res = await auth.api.signUpEmail({ body: { email, password: `Pw-demo-${RUN}!x`, name: "Prova Demo" } });
     cleanupUserIds.push(res.user.id);
@@ -38,7 +38,7 @@ describe.skipIf(!url)("azienda demo al signup", () => {
     expect(aziende).toHaveLength(1);
     const demo = aziende[0];
     expect(demo.isDemo).toBe(true);
-    expect(demo.nome).toContain("Meccanica Adriatica");
+    expect(demo.nome).toContain("Corvane Meccanica");
 
     // Contenuto: 2 inventari (2024+2025) con voci, progetto bilancio con dati
     const inventari = await db.select().from(ghgInventory).where(eq(ghgInventory.companyId, demo.id));

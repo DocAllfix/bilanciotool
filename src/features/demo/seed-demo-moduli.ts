@@ -41,7 +41,7 @@ import { dbCorrente, type withTenant } from "@/lib/db/tenant";
 // un'azienda dimostrativa a metà è peggio di una che non c'è, perché sembra un
 // guasto del prodotto invece che un seed non arrivato.
 //
-// I dati sono gli stessi di Meccanica Adriatica: 612.000 kWh e 42.500 Smc qui
+// I dati sono gli stessi di Corvane Meccanica: 612.000 kWh e 42.500 Smc qui
 // sono gli stessi numeri che stanno nell'inventario GHG. Un cliente che apre due
 // percorsi della stessa azienda e trova consumi diversi smette di fidarsi di
 // entrambi, ed è la prima cosa che un consulente controlla.
@@ -57,7 +57,7 @@ type Tx = Parameters<Parameters<typeof withTenant>[1]>[0];
 
 const CAPITOLI_ENE: [string, string][] = [
   ["sintesi", "Nel 2025 il sito ha consumato 1.017 MWh di energia primaria, per 181.390 euro. Il 60% dell'elettricità va alle macchine di lavorazione e all'aria compressa: sono le due utenze su cui si decide la bolletta.\n\nTre interventi sono stati valutati. Il relamping è già stato realizzato. La sostituzione del compressore, approvata, vale da sola 68.000 kWh l'anno e rientra in poco più di tre anni."],
-  ["contesto", "Meccanica Adriatica lavora componenti di precisione per l'automotive su due turni, 228 giorni l'anno, nello stabilimento di Bari. La superficie coperta è di 6.800 m², di cui 4.200 riscaldati.\n\nL'impianto fotovoltaico da 200 kWp, entrato in servizio a marzo 2025, ha coperto 42.000 kWh in autoconsumo. Il contratto di fornitura elettrica prevede garanzie d'origine per 180.000 kWh."],
+  ["contesto", "Corvane Meccanica lavora componenti di precisione per l'automotive su due turni, 228 giorni l'anno, nello stabilimento di Bari. La superficie coperta è di 6.800 m², di cui 4.200 riscaldati.\n\nL'impianto fotovoltaico da 200 kWp, entrato in servizio a marzo 2025, ha coperto 42.000 kWh in autoconsumo. Il contratto di fornitura elettrica prevede garanzie d'origine per 180.000 kWh."],
   ["azioni", "La priorità è l'aria compressa: 118.000 kWh l'anno per un servizio che non trasforma il prodotto. Il compressore attuale lavora a carico parziale per gran parte del turno, e il rifacimento della rete elimina perdite stimate in un quinto della portata.\n\nIl secondo fronte è il riscaldamento: 33.000 Smc su volumetrie in parte non isolate. Il recupero termico dai compressori affronta il fabbisogno di acqua tecnica senza toccare la centrale."],
 ];
 
@@ -127,7 +127,7 @@ function statoDi(cardine: boolean, i: number): "nd" | "pl" | "pa" | "at" | "av" 
  * che nessun altro modulo mostra — un controllo dichiarato attuato con la verifica scaduta
  * che compare come «da verificare».
  *
- * ⚠️ E gli STESSI NUMERI degli altri moduli: Meccanica Adriatica e' una grande impresa in
+ * ⚠️ E gli STESSI NUMERI degli altri moduli: Corvane Meccanica e' una grande impresa in
  * un settore dell'Allegato I in tutti i percorsi. Un consulente che apre due percorsi della
  * stessa azienda e trova due classificazioni smette di fidarsi di entrambi.
  */
@@ -362,7 +362,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   const sistemaId = randomUUID();
   await tx.insert(briberySystem).values({
     id: sistemaId, organizationId: orgId, companyId, contentSetId: acSet,
-    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", forma: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48", paesi: "Italia, Germania, Tunisia",
     direzione: "Ing. Marco Loprete — Amministratore Unico",
@@ -463,7 +463,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   const modelloId = randomUUID();
   await tx.insert(mogModel).values({
     id: modelloId, organizationId: orgId, companyId, contentSetId: mogSet,
-    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", forma: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48",
     organoAmministrativo: "Amministratore Unico — Ing. Marco Loprete",
@@ -566,7 +566,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   const assettoId = randomUUID();
   await tx.insert(wbSystem).values({
     id: assettoId, organizationId: orgId, companyId, contentSetId: wbSet,
-    ragione: "Meccanica Adriatica S.r.l.", formaGiuridica: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", formaGiuridica: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48",
     // 48 addetti: sotto i 50. L'obbligo nasce dal Modello 231, ed e' il caso che fa
@@ -686,7 +686,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   await tx.insert(qasSystem).values({
     id: sistemaQasId, organizationId: orgId, companyId, contentSetId: qasSet,
     norme: ["Q", "S"],
-    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", forma: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48",
     direzione: "Amministratore Unico — Ing. Marco Loprete",
@@ -766,7 +766,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   const sistemaSaId = randomUUID();
   await tx.insert(saSystem).values({
     id: sistemaSaId, organizationId: orgId, companyId, contentSetId: saSet,
-    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", forma: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48",
     ccnl: "CCNL Metalmeccanica Industria — Federmeccanica/Assistal",
@@ -810,7 +810,7 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   const programmaId = randomUUID();
   await tx.insert(chainProgram).values({
     id: programmaId, organizationId: orgId, companyId, contentSetId: filSet,
-    ragione: "Meccanica Adriatica S.r.l.", forma: "S.r.l.", piva: "07566620723",
+    ragione: "Corvane Meccanica S.r.l.", forma: "S.r.l.", piva: "07481930726",
     sede: "Bari, via delle Officine 12", settore: "Componenti meccanici di precisione",
     addetti: "48",
     direzione: "Amministratore Unico — Ing. Marco Loprete",

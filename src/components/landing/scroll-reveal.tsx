@@ -48,10 +48,17 @@ export function Reveal({
   );
 }
 
+/** Le migliaia col punto, a mano: `toLocaleString` dipende dall'ICU, e server e browser ne hanno due diversi. */
+export const migliaia = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 // Contatore animato per la banda numeri.
+//
+// ⚠️ Il valore di partenza è quello VERO, non zero: la pagina è statica, e l'HTML che
+// leggono un motore di ricerca o chi non ha JavaScript diceva «0 controlli». Si azzera
+// solo nel browser, prima di animare.
 export function Contatore({ fino, suffisso = "" }: { fino: number; suffisso?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [valore, setValore] = useState(0);
+  const [valore, setValore] = useState(fino);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -60,6 +67,9 @@ export function Contatore({ fino, suffisso = "" }: { fino: number; suffisso?: st
     }
     const el = ref.current;
     if (!el) return;
+    // Già sullo schermo all'arrivo: niente animazione, il numero resta quello vero.
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+    setValore(0);
     const io = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
@@ -81,7 +91,7 @@ export function Contatore({ fino, suffisso = "" }: { fino: number; suffisso?: st
 
   return (
     <span ref={ref} data-slot="kpi">
-      {valore}
+      {migliaia(valore)}
       {suffisso}
     </span>
   );

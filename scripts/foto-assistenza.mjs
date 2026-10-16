@@ -42,7 +42,7 @@ await page.goto(`${BASE}/assistenza`, { waitUntil: "domcontentloaded" });
 await spegniTour(page);
 await page.click("[data-nuova-richiesta]");
 await page.fill("#oggetto", "Il PDF del bilancio energetico non si scarica");
-await page.fill("#testo", "Ho pubblicato il documento per Meccanica Adriatica.\nPremendo «Scarica» resta in attesa per più di un minuto e poi non succede niente.");
+await page.fill("#testo", "Ho pubblicato il documento per Corvane Meccanica.\nPremendo «Scarica» resta in attesa per più di un minuto e poi non succede niente.");
 await page.getByRole("button", { name: "Invia la richiesta" }).click();
 await page.waitForURL(/\/assistenza\/[^/]+$/, { timeout: 60_000 });
 const id = page.url().split("/").pop();

@@ -170,16 +170,16 @@ await prova("è dentro lo studio giusto, e ci lavora", async () => {
   let testo = "";
   for (let t = 0; t < 8; t++) {
     testo = await collega.page.locator("main").innerText();
-    if (/Meccanica Adriatica/i.test(testo)) break;
+    if (/Corvane Meccanica/i.test(testo)) break;
     await collega.page.waitForTimeout(1200);
     await collega.page.reload({ waitUntil: "networkidle" });
   }
-  if (!/Meccanica Adriatica/i.test(testo)) {
+  if (!/Corvane Meccanica/i.test(testo)) {
     // La verita' del SERVER, con gli stessi cookie ma senza il router del client: se
     // anche questa e' vuota, il difetto e' del prodotto e non del server di prova.
     const html = await collega.page.request.get(`${BASE}/dashboard`);
     const dalServer = await html.text();
-    if (!/Meccanica Adriatica/i.test(dalServer)) {
+    if (!/Corvane Meccanica/i.test(dalServer)) {
       throw new Error("nemmeno il server rende le aziende dello studio");
     }
     throw new Error("il browser non le mostra, il server si (ritardo del router locale)");

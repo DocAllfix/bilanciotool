@@ -271,7 +271,7 @@ await agisci("il cliente apre il collegamento SENZA account", async () => {
   const r = await p2.goto(sulBersaglio(url), { waitUntil: "networkidle" });
   if (!r || r.status() !== 200) throw new Error(`stato ${r?.status()}`);
   const t = await p2.locator("body").innerText();
-  if (!/Meccanica Adriatica/.test(t)) throw new Error("l'azienda non compare");
+  if (!/Corvane Meccanica/.test(t)) throw new Error("l'azienda non compare");
   const doc = await p2.locator("a[href*='/api/condivisione/']").count();
   if (doc < 5) throw new Error(`solo ${doc} documenti scaricabili`);
   // La pagina non deve finire nei motori di ricerca.
@@ -322,7 +322,7 @@ await agisci("dopo la revoca il collegamento non apre piu'", async () => {
   const r = await p2.goto(sulBersaglio(url), { waitUntil: "domcontentloaded" });
   const t = await p2.locator("body").innerText();
   await anonimo.close();
-  if (r.status() === 200 && /Meccanica Adriatica/.test(t)) throw new Error("i documenti si vedono ancora");
+  if (r.status() === 200 && /Corvane Meccanica/.test(t)) throw new Error("i documenti si vedono ancora");
 });
 
 console.log("\n— abbonamento, membri, archiviazione —");

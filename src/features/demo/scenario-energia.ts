@@ -92,7 +92,7 @@ export const INTERVENTI = [
  *  al passo 1, che lì è in anteprima. */
 export const PROFILO = {
   forma: "S.r.l.",
-  piva: "07566620723",
+  piva: "07481930726",
   sede: "Bari",
   settore: "Componenti meccanici di precisione",
   ateco: "25.62",

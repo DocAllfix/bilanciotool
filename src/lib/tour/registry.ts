@@ -26,7 +26,7 @@ export const TOURS: TourDef[] = [
       {
         element: '[data-tour="azienda-demo"]',
         title: "L'azienda dimostrativa",
-        description: "Meccanica Adriatica è un esempio realistico: due esercizi di dati, inventario GHG e bilancio già avviati. Modificala liberamente, è fatta per questo.",
+        description: "È un esempio realistico, con tutti i percorsi già avviati e due esercizi di dati. Modificala liberamente, è fatta per questo.",
       },
       {
         element: '[data-tour="azienda-demo"] a[href*="/ghg"]',

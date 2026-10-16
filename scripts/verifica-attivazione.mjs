@@ -120,7 +120,7 @@ await check("chi cambia idea trova comunque la demo", async () => {
   await page.goto(`${BASE}/dashboard`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(2500);
   const t = await page.locator("body").innerText();
-  if (!/Meccanica Adriatica/.test(t)) throw new Error("l'azienda dimostrativa non c'è");
+  if (!/Corvane Meccanica/.test(t)) throw new Error("l'azienda dimostrativa non c'è");
 });
 
 // ── La porta della singola fascia, che parte dalla vetrina ──────────────────────────────

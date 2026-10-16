@@ -3843,3 +3843,40 @@ pagine), messo in rosso rimettendo il difetto e tornato verde · regressioni `gd
 `benvenuto` 12/12, `tutto-attivo` 31/31, `codice-documento` 22/22, `portafoglio-aggiorna` 5/5 ·
 30 foto in chiaro, scuro e da telefono **guardate**, zero errori di console, zero sfondamento.
 `formazione` resta rossa su «pas24000 senza parte propria» finché non arriva il corso (Fase 6).
+
+**Percorso PAS 24000, fase 7 (2026-10-16) — la vetrina: nome fittizio, numeri contati**
+
+- **«Meccanica Adriatica S.r.l.» diventa «Corvane Meccanica S.r.l.»** su landing, semi della
+  dimostrativa, vetrina energetica, collaudi e test. Il nome è stato cercato prima di adottarlo
+  (nessuna azienda «Corvane»; «Valmora» scartato perché vicino a una vera «Officina Meccanica
+  Valmori»). Partita IVA nuova `07481930726` con il **carattere di controllo sbagliato**, quindi
+  impossibile per un'azienda reale (anche la vecchia lo era). Banner della demo e giro guidato
+  **non nominano più l'azienda**: le dimostrative già in produzione mantengono il vecchio nome.
+- **Banda dei numeri ricavata** (`components/landing/numeri-vetrina.ts`): 16 percorsi in 3
+  gruppi con 32 tipi di documento, **1.007** requisiti e controlli catalogati (i controlli NIS2
+  non si sommano ai requisiti NIS2: stesso perimetro), **511** procedure e moduli. Le norme
+  vengono dal registro dei moduli. Spariti il «30 calcolati» e il «30 indicatori derivati»: il
+  passo 02 ora legge le chiavi di `deriveKpi` (25). Guardia `banda-numeri-pure`, messa in rosso
+  rimettendo la tupla e il «30».
+- ⚠️ **Il contatore animato partiva da ZERO nell'HTML statico**: chi legge senza JavaScript, e i
+  motori di ricerca, leggevano «0 documenti». Ora parte dal valore vero e si azzera solo nel
+  browser, se la banda è sotto la piega. E le migliaia hanno il punto («1.007»), scritto a mano.
+- `description` della home, `DESCRIZIONE` del layout e risposta FAQ sulle norme coprono NIS2,
+  GDPR e PAS.
+- ⚠️ **Trovato dal collaudo da telefono**: un passo della scheda PAS («Manuale, politica, rapporto
+  di conformità, verbale di riesame») non va a capo per costruzione e sfondava di 12px a 360px.
+
+⚠️ **I due PDF in `public/esempi/` NON sono stati sostituiti**, e portano ancora il vecchio nome.
+Rigenerati in sviluppo sarebbero corretti nel nome ma con un colophon che rimanda a
+`localhost:3000/verifica` e un codice che esiste solo nel database di sviluppo: un documento
+pubblico che non si verifica. Si generano **in produzione al rilascio**, con l'autorizzazione del
+committente a pubblicare sulla dimostrativa dello studio Evalis.
+
+**Regola nata qui:** **un numero in un contatore animato va reso vero nell'HTML**, e animato solo
+nel browser: altrimenti lo stato iniziale dell'animazione è ciò che legge chi non la vede.
+
+Gate: typecheck · build (home statica) · **1914 test** · `demo-seed` e `gdpr-demo` anche con
+`app_rls` · `landing` · `tutto-pubblico` 37/37 · `sitemap` · `legale` 26/26 · `axialoop` ·
+`vetrina-energia` 11/11 · `attivazione` 10/10 · `tutto-demo` 68/68 · `tutto-attivo` 31/31 ·
+`invito` 14/14 · `benvenuto` 12/12 (`axialoop` e `vetrina-energia` al secondo giro, il primo
+caduto sul freno di Better Auth a 429) · banda fotografata e guardata a 1440 e 360px.

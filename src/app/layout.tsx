@@ -25,7 +25,7 @@ const display = Bricolage_Grotesque({
 
 const SITO = "https://evalisdeck.it";
 const DESCRIZIONE =
-  "La piattaforma per bilanci di sostenibilità e inventari GHG delle PMI: percorso guidato GRI/ESRS-VSME e ISO 14064-1.";
+  "Percorsi guidati per studi di consulenza e PMI: sostenibilità e GHG, Modello 231, NIS2, GDPR, sistemi di gestione certificabili. Calcoli automatici, documenti impaginati.";
 
 export const metadata: Metadata = {
   // Nome scelto dal committente (2026-07-30): famiglia di prodotto Evalis.

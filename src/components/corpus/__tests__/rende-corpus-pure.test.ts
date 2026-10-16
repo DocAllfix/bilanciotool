@@ -28,7 +28,7 @@ const SEGNAPOSTI: Segnaposto[] = [
 
 const CTX: Contesto = {
   studio: "Studio Rossi",
-  azienda: { ragione: "Meccanica Adriatica S.r.l." },
+  azienda: { ragione: "Corvane Meccanica S.r.l." },
   revisione: "01",
   data: null,
 };
@@ -60,7 +60,7 @@ describe("resa dei paragrafi", () => {
 describe("i segnaposto", () => {
   it("un token con valore sparisce, sostituito", () => {
     const html = rendi([p("a", "[Nome Organizzazione] adotta il modello.")]);
-    expect(html).toContain("Meccanica Adriatica S.r.l. adotta il modello.");
+    expect(html).toContain("Corvane Meccanica S.r.l. adotta il modello.");
     expect(html).not.toContain("[Nome Organizzazione]");
   });
 
@@ -79,7 +79,7 @@ describe("i segnaposto", () => {
 
   it("il testo su misura del cliente sostituisce il paragrafo, e i token dentro si risolvono", () => {
     const html = rendi([p("a", "originale")], { a: "[Nome Organizzazione] su misura" });
-    expect(html).toContain("Meccanica Adriatica S.r.l. su misura");
+    expect(html).toContain("Corvane Meccanica S.r.l. su misura");
     expect(html).not.toContain("originale");
   });
 });

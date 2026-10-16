@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
+import { NORME_VETRINA, NUMERI_VETRINA as NV } from "@/components/landing/numeri-vetrina";
 import { FONDATORI, PIANI, fasceVendibili } from "@/lib/prezzi";
 
 /** Tutti i percorsi in fila, per i testi che li elencano. */
@@ -26,18 +27,9 @@ export const metadata: Metadata = {
   title: {
     absolute: "EvalisDeck · I documenti di conformità, un solo strumento",
   },
-  description:
-    "Inventario GHG ISO 14064-1, bilancio di sostenibilità e conformità ESG, bilancio energetico UNI CEI EN 16247, autovalutazione ESG dei fornitori e Statement of Applicability ISO 27001. Percorsi guidati per studi di consulenza e PMI, con calcoli automatici e versioni immutabili.",
+  description: `${QUANTI_PERCORSI} percorsi guidati per studi di consulenza e PMI: inventario GHG, bilanci ESG ed energetico, Modello 231, NIS2, GDPR, ISO 27001, SA8000, PAS 24000 e altri. Calcoli automatici e versioni immutabili.`,
 };
 
-const NORME = [
-  "ISO 14064-1:2018",
-  "GRI 2021 · ESRS VSME",
-  "UNI CEI EN 16247",
-  "ISO 50001",
-  "ISO/IEC 27001:2022",
-  "ISO 20400",
-];
 
 // Dati strutturati: chi produce lo strumento e con quale riconoscimento.
 // Il rating sta su Organization (è di Evalis), non sul software: la stessa
@@ -164,9 +156,9 @@ export default function LandingPage() {
             <div className="grid gap-x-0 gap-y-10 md:grid-cols-[1fr_1fr_1fr_1.2fr]">
               {(
                 [
-                  [5, "", "documenti pubblicabili", "dall'inventario GHG allo Statement of Applicability"],
-                  [174, "", "controlli ISO 27001", "61 dei quali cardine, con verifiche di coerenza"],
-                  [49, "", "indicatori di bilancio", "30 dei quali calcolati in automatico"],
+                  [NV.percorsi, "", "percorsi guidati", `in ${NV.gruppi} gruppi, con ${NV.tipiDocumento} tipi di documento pubblicabili`],
+                  [NV.requisiti, "", "requisiti e controlli", "catalogati uno per uno, ciascuno con la sua guida"],
+                  [NV.corpus, "", "procedure e moduli", "pronti da adattare all'azienda e da stampare"],
                 ] as [number, string, string, string][]
               ).map(([n, suff, titolo, sotto], i) => (
                 <div key={titolo} className={i > 0 ? "md:border-l md:border-white/10 md:pl-10" : ""}>
@@ -181,9 +173,9 @@ export default function LandingPage() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/50">
                   Standard di riferimento
                 </p>
-                <ul className="mt-4 space-y-2.5">
-                  {NORME.map((n) => (
-                    <li key={n} className="border-b border-white/8 pb-2.5 text-[13px] font-medium tracking-wide text-sidebar-foreground/90">
+                <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
+                  {NORME_VETRINA.map((n) => (
+                    <li key={n} className="border-b border-white/8 pb-2 text-[12px] font-medium leading-snug text-sidebar-foreground/90">
                       {n}
                     </li>
                   ))}
@@ -193,7 +185,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ==================================================== I CINQUE DOCUMENTI */}
+        {/* ==================================================== I PERCORSI */}
         <section id="percorsi" className="scroll-mt-20 border-b">
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <Reveal>
@@ -296,7 +288,7 @@ export default function LandingPage() {
                 </PassoScuro>
               </Reveal>
               <Reveal delay={100} className="h-full">
-                <PassoScuro n="02" titolo="I calcoli si fanno da soli" testo="Quantità per fattore, doppio Scope 2, incertezza combinata, 30 indicatori derivati. In decimale, mai in virgola mobile.">
+                <PassoScuro n="02" titolo="I calcoli si fanno da soli" testo={`Quantità per fattore, doppio Scope 2, incertezza combinata, ${NV.derivatiBilancio} indicatori derivati. In decimale, mai in virgola mobile.`}>
                   <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
                     <p className="text-[10px] text-sidebar-foreground/70">Gas naturale · 12.500 Smc × 1,9755</p>
                     <p className="mt-1 text-xl font-semibold tracking-tight text-white" data-slot="kpi">24,694 <span className="text-xs font-normal text-sidebar-foreground/70">tCO₂e</span></p>

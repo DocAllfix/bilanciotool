@@ -292,7 +292,9 @@ export const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = 
       "Politica, obiettivi e piano annuale",
       `${NUMERI.indicatoriPas} indicatori su due esercizi`,
       `${NUMERI.registriPas} registri, dai reclami al riesame`,
-      "Manuale, politica, rapporto di conformità, verbale di riesame",
+      // Un passo non va a capo (vedi la vetrina): sopra i 40 caratteri, da un telefono a
+      // 360px esce dallo schermo. La versione lunga sfondava di 12px.
+      "Manuale, politica, conformità e riesame",
     ],
     punto:
       "Stesso tema di SA8000, schema diverso: la PAS 24000 è una specifica BSI con la struttura delle norme ISO di sistema, e le condizioni di lavoro stanno in un Allegato che non ammette esclusioni. E un indicatore senza i suoi dati resta vuoto: un divario retributivo non esce al 100% perché manca una retribuzione.",

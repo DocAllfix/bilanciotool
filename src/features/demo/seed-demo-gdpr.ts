@@ -28,7 +28,7 @@ import politica from "@/lib/db/seeds/data/gdpr-politica.json";
 type Tx = Parameters<Parameters<typeof withTenant>[1]>[0];
 
 /**
- * Il percorso Protezione dei dati della dimostrativa: Meccanica Adriatica S.r.l., Bari,
+ * Il percorso Protezione dei dati della dimostrativa: Corvane Meccanica S.r.l., Bari,
  * ATECO 25.62, 48 dipendenti — gli STESSI dati degli altri percorsi.
  *
  * ⚠️ Con 48 dipendenti e un'attività manifatturiera l'obbligo del responsabile della
@@ -59,7 +59,7 @@ export async function seedDemoGdpr(tx: Tx, orgId: string, companyId: string): Pr
   const oggi = oggiIso();
   const anno = Number(oggi.slice(0, 4));
   const giorni = (n: number) => piuGiorni(oggi, n)!;
-  const nome = "Meccanica Adriatica S.r.l.";
+  const nome = "Corvane Meccanica S.r.l.";
 
   const systemId = randomUUID();
   await tx.insert(gdprSystem).values({
