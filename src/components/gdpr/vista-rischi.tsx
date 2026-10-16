@@ -4,13 +4,12 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { SceltaScala } from "@/components/comune/percorso";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
 import { GARANZIE, QUALIFICHE } from "@/lib/calc/gdpr/tipi";
 import { CONTRATTI, ESITI_DPIA, ESITI_FORNITORE, STATI_DPIA } from "@/features/gdpr/validation";
-import { CampoCasella, Intro, pct, pl, type ComandiGdpr, type DatiGdpr, type Esito } from "./comune";
+import { CampoCasella, Intro, pct, pl, type ComandiGdpr, type DatiGdpr } from "./comune";
 
 // Vista 4 — Rischi e responsabili.
 //
@@ -137,57 +136,6 @@ function SchedaRischio({ t, i, dati, cmd }: { t: Trattamento; i: number; dati: D
         )}
       </div>
     </details>
-  );
-}
-
-/** Una scala da 1 a 5 col nome di ogni gradino: «3 · Possibile», non «3». */
-function SceltaScala({
-  id,
-  etichetta,
-  valore,
-  voci,
-  salva,
-}: {
-  id: string;
-  etichetta: string;
-  valore: number | null;
-  voci: { valore: number; nome: string; descrizione: string }[];
-  salva: (v: unknown) => Promise<Esito>;
-}) {
-  const [scelto, setScelto] = useState(valore === null ? "" : String(valore));
-  const [errore, setErrore] = useState<string | null>(null);
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={id}>{etichetta}</Label>
-      <select
-        id={id}
-        className="h-9 w-full rounded-md border bg-background px-2 text-sm"
-        value={scelto}
-        onChange={async (e) => {
-          const v = e.currentTarget.value;
-          const prima = scelto;
-          setScelto(v);
-          setErrore(null);
-          const esito = await salva(v);
-          if (!esito.ok) {
-            setScelto(prima);
-            setErrore(esito.errore);
-          }
-        }}
-      >
-        <option value="">—</option>
-        {voci.map((x) => (
-          <option key={x.valore} value={String(x.valore)} title={x.descrizione}>
-            {x.valore} · {x.nome}
-          </option>
-        ))}
-      </select>
-      {errore && (
-        <p className="text-[12px] text-destructive" role="alert">
-          {errore}
-        </p>
-      )}
-    </div>
   );
 }
 

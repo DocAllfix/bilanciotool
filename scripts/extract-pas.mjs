@@ -95,6 +95,20 @@ const modello = p.polModello({ nome: "{nome}" });
 if (!modello.startsWith("{nome} ")) throw new Error("Il modello di politica non comincia dal nome: segnaposto non applicato");
 scrivi("politica", { contenuti: p.POLCHK.map(([key, testo], i) => ({ key, ordine: i + 1, testo })), modello }, `${p.POLCHK.length} contenuti`);
 
+const RIMANDI_AI_PASSI = [["si compilano da soli nel verbale al passo 9", "si compilano da soli nel verbale, fra i documenti"]];
+let rimandiCorretti = 0;
+function correggiPassi(testo) {
+  let t = testo;
+  for (const [vecchio, nuovo] of RIMANDI_AI_PASSI) {
+    if (t.includes(vecchio)) {
+      t = t.replace(vecchio, nuovo);
+      rimandiCorretti++;
+    }
+  }
+  if (/passo \d/i.test(t)) throw new Error(`Rimando a un passo del prototipo non corretto: «${t}»`);
+  return t;
+}
+
 // I registri: etichette, riferimenti e aiuti. Le tabelle sono tipizzate a mano, e un test
 // confronta le chiavi delle colonne. Le opzioni dell'area si scrivono come chiavi di gruppo.
 const registri = Object.entries(p.REG).map(([key, r], i) => ({
@@ -102,7 +116,11 @@ const registri = Object.entries(p.REG).map(([key, r], i) => ({
   ordine: i + 1,
   nome: r.n,
   riferimento: r.r,
-  aiuto: r.h,
+  // ⚠️ Il prototipo rimanda ai propri passi numerati («nel verbale al passo 9»), che nel
+  // prodotto non esistono: il verbale sta fra i documenti. Si corregge QUI e non nel JSON,
+  // perché il JSON lo rigenera questo file. La sostituzione si conta: se il testo cambia nel
+  // prototipo, l'estrazione si ferma invece di lasciare il rimando sbagliato.
+  aiuto: correggiPassi(r.h),
   colonne: r.cols.map(([chiave, etichetta, genere, opzioni]) => ({
     chiave,
     etichetta,
@@ -110,6 +128,7 @@ const registri = Object.entries(p.REG).map(([key, r], i) => ({
     opzioni: opzioni ? opzioni.map((o) => (Array.isArray(o) ? o[0] : o)) : null,
   })),
 }));
+if (rimandiCorretti !== RIMANDI_AI_PASSI.length) throw new Error(`Rimandi ai passi corretti: ${rimandiCorretti} su ${RIMANDI_AI_PASSI.length}`);
 scrivi("registri", registri, registri.length);
 
 // ⚠️ Alcune liste chiuse non sono costanti del prototipo: stanno scritte DENTRO le viste

@@ -3813,3 +3813,33 @@ corregge con `riesamiDelVerbale`. Da correggere con un test, su decisione del co
 
 ⚠️ **E sulla landing**: oltre al «30 calcolati» della banda dei numeri, il passo 02 dice «30
 indicatori derivati», e il motore del bilancio ne calcola 25. Si chiude in Fase 7.
+
+**Percorso PAS 24000, fase 5 (2026-10-16) — interfaccia, giro guidato, dimostrativa**
+
+Pagina `/aziende/[id]/pas24000` a dieci viste (quadro, organizzazione, contesto, conformità,
+rischi e fornitori, politica e piano, indicatori, registri, verifica, documenti), esercizio
+nell'indirizzo, tutti i numeri calcolati dal server (`features/pas/vista.ts`): anche l'età di
+un reclamo da sollecitare, riga per riga, con la stessa regola del riepilogo. Dimostrativa in
+`features/demo/seed-demo-pas.ts` (48 dipendenti come negli altri moduli, a metà strada, date
+relative a oggi, nome letto dal database). Giro guidato in cinque tappe.
+
+**I pezzi che GDPR e PAS condividono** (`Esito`, `Intro`, `CampoCasella`, `SceltaScala`,
+`SceltaMese`, `CampoParametro`, `RigaRegistro`) passano in `components/comune/percorso.tsx`,
+spostati alla lettera: `gdpr-percorso` 26/26 dopo lo spostamento.
+
+**Difetti trovati, tutti prima del commit:**
+1. ⚠️ **Il registro del riesame rimandava al «passo 9»**: il prototipo è a passi numerati, il
+   prodotto a viste con un nome. Corretto **nell'estrattore** (`correggiPassi`, che si ferma se
+   resta un «passo N»), non nel JSON: una correzione a valle sparirebbe alla prima riesecuzione.
+2. **«25,03 per 10⁶ ore25,00 per 10⁶ ore»** nella tabella dei derivati: l'unità accanto al
+   numero, in una colonna stretta, toccava la colonna vicina. Ora sta accanto al nome, come nel
+   documento. L'ha vista la foto.
+3. **`{g.reclamiChiusi} chiusi`**: lo spazio fragile. `gdpr-spazi-pure` ora guarda anche
+   `components/pas`, il file comune e `documento-pas.tsx`, e l'ha trovato da sé.
+
+Gate fase 5: typecheck · build · `qa -- pas-percorso` **25/25** (quattro PDF: 14, 3, 13 e 4
+pagine), messo in rosso rimettendo il difetto e tornato verde · regressioni `gdpr-percorso`
+26/26, `archiviata` 35/35, `shell`, `guida` 7/7, `demo-completa` 9/9, `tutto-demo` 68/68,
+`benvenuto` 12/12, `tutto-attivo` 31/31, `codice-documento` 22/22, `portafoglio-aggiorna` 5/5 ·
+30 foto in chiaro, scuro e da telefono **guardate**, zero errori di console, zero sfondamento.
+`formazione` resta rossa su «pas24000 senza parte propria» finché non arriva il corso (Fase 6).

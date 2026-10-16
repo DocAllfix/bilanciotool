@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { FileText, ListPlus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { SceltaMese } from "@/components/comune/percorso";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
 import domini from "@/lib/db/seeds/data/gdpr-domini.json";
@@ -20,7 +20,6 @@ import { CampoCasella, Intro, type ComandiGdpr, type DatiGdpr, type Esito } from
 // ⚠️ «Carica l'elenco tipo» e «Carica il piano tipo» sono idempotenti: premuti due volte
 // non duplicano niente, lo garantisce il database con un vincolo di unicità.
 
-const MESI = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 
 export function VistaPolitica({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr }) {
   const s = dati.sistema;
@@ -158,48 +157,6 @@ export function VistaPolitica({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr 
           ))}
         </div>
       </div>
-    </div>
-  );
-}
-
-function SceltaMese({ id, etichetta, valore, salva }: { id: string; etichetta: string; valore: number; salva: (v: unknown) => Promise<Esito> }) {
-  const [scelto, setScelto] = useState(String(valore));
-  const [errore, setErrore] = useState<string | null>(null);
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={id} className="sr-only">
-        {etichetta}
-      </Label>
-      <span aria-hidden className="block text-sm font-medium">
-        Mese
-      </span>
-      <select
-        id={id}
-        className="h-9 w-full rounded-md border bg-background px-2 text-sm"
-        value={scelto}
-        onChange={async (e) => {
-          const v = e.currentTarget.value;
-          const prima = scelto;
-          setScelto(v);
-          setErrore(null);
-          const esito = await salva(v);
-          if (!esito.ok) {
-            setScelto(prima);
-            setErrore(esito.errore);
-          }
-        }}
-      >
-        {MESI.map((m, i) => (
-          <option key={m} value={String(i + 1)}>
-            {m}
-          </option>
-        ))}
-      </select>
-      {errore && (
-        <p className="text-[12px] text-destructive" role="alert">
-          {errore}
-        </p>
-      )}
     </div>
   );
 }

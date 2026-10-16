@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { CampoParametro as Parametro } from "@/components/comune/percorso";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { RUOLI_SISTEMA } from "@/features/gdpr/validation";
 import { Intro, type ComandiGdpr, type DatiGdpr } from "./comune";
@@ -132,53 +130,6 @@ export function VistaOrganizzazione({ dati, cmd }: { dati: DatiGdpr; cmd: Comand
           />
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function Parametro({
-  id,
-  etichetta,
-  valore,
-  min,
-  max,
-  salva,
-}: {
-  id: string;
-  etichetta: string;
-  valore: number;
-  min: number;
-  max: number;
-  salva: (v: number) => Promise<{ ok: boolean; errore?: string }>;
-}) {
-  const [errore, setErrore] = useState<string | null>(null);
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={id}>{etichetta}</Label>
-      <Input
-        id={id}
-        type="number"
-        min={min}
-        max={max}
-        defaultValue={valore}
-        aria-invalid={errore ? true : undefined}
-        onBlur={async (e) => {
-          const campo = e.currentTarget;
-          const v = Number(campo.value);
-          if (v === valore) return;
-          setErrore(null);
-          const esito = await salva(v);
-          if (!esito.ok) {
-            setErrore(esito.errore ?? "Valore non accettato");
-            campo.value = String(valore);
-          }
-        }}
-      />
-      {errore && (
-        <p className="text-[12px] text-destructive" role="alert">
-          {errore}
-        </p>
-      )}
     </div>
   );
 }

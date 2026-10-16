@@ -454,6 +454,42 @@ export const TOURS: TourDef[] = [
     ],
   },
   {
+    pageId: "pas24000",
+    pathPattern: /^\/aziende\/[^/]+\/pas24000/,
+    steps: [
+      {
+        element: '[data-tour="pas-vista-org"]',
+        title: "Si comincia dal campo di applicazione",
+        description:
+          "Fin dove arriva il sistema, chi ne risponde e quale contratto collettivo fa da metro. Il campo deve comprendere anche i somministrati e gli appaltatori che lavorano nel sito: è la prima cosa che l'ente di certificazione chiede.",
+      },
+      {
+        element: '[data-tour="pas-vista-gap"]',
+        title: "Clausole di sistema e Allegato A",
+        description:
+          "Le clausole da 4 a 10 hanno la struttura delle norme ISO di sistema; l'Allegato A, sulle condizioni di lavoro, non ammette esclusioni. Un requisito che non ricorre si dichiara «non pertinente», con la motivazione.",
+      },
+      {
+        element: '[data-tour="pas-conformita"]',
+        title: "Un requisito non valutato pesa zero",
+        description:
+          "Non viene ignorato: pochi requisiti conformi e il resto mai guardato non fanno cento. Un parziale vale metà; i soli «non pertinenti» escono dal conto.",
+      },
+      {
+        element: '[data-tour="pas-vista-dati"]',
+        title: "Un dato mancante non vale zero",
+        description:
+          "Gli indicatori calcolati compaiono solo quando ci sono tutti i dati da cui si ricavano. Senza la retribuzione delle donne il divario di genere non esce al 100%: resta un trattino, ed è la verità.",
+      },
+      {
+        element: '[data-tour="pas-segnali"]',
+        title: "Ogni segnale porta dove si rimedia",
+        description:
+          "Criticità e attenzioni dell'esercizio scelto in alto, con il collegamento alla vista in cui si chiudono. Dei registri, i documenti pubblicati riportano soltanto conteggi: l'oggetto di un reclamo resta qui.",
+      },
+    ],
+  },
+  {
     pageId: "soa",
     pathPattern: /^\/aziende\/[^/]+\/soa/,
     steps: [

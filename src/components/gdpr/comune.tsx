@@ -22,9 +22,13 @@ import {
 } from "@/features/gdpr/actions";
 import type { TipoRiga } from "@/features/gdpr/validation";
 import type { DatiVistaGdpr } from "@/features/gdpr/vista";
+import type { Esito } from "@/components/comune/percorso";
+
+// I pezzi comuni (casella, intestazione, plurali) stanno in `components/comune/percorso.tsx`,
+// condivisi col sistema di gestione sociale: si riesportano perché le viste li prendono da qui.
+export { CampoCasella, Intro, pct, pl, type Esito } from "@/components/comune/percorso";
 
 export type DatiGdpr = DatiVistaGdpr;
-export type Esito = { ok: true } | { ok: false; errore: string };
 
 // I comandi del percorso, tutti dalla stessa CODA.
 //
@@ -62,50 +66,6 @@ export function useGdpr(companyId: string, systemId: string) {
 }
 
 export type ComandiGdpr = ReturnType<typeof useGdpr>;
-
-/** Una casella che salva al clic, ottimistica: mostra subito e ripristina se il server rifiuta. */
-export function CampoCasella({
-  id,
-  etichetta,
-  valore,
-  salva,
-}: {
-  id: string;
-  etichetta: string;
-  valore: boolean;
-  salva: (v: boolean) => Promise<Esito>;
-}) {
-  const [acceso, setAcceso] = useState(valore);
-  const [errore, setErrore] = useState<string | null>(null);
-  return (
-    <div>
-      <label htmlFor={id} className="flex cursor-pointer items-start gap-2 text-sm">
-        <input
-          id={id}
-          type="checkbox"
-          className="mt-0.5 size-4 accent-primary"
-          checked={acceso}
-          onChange={async (e) => {
-            const nuovo = e.currentTarget.checked;
-            setAcceso(nuovo);
-            setErrore(null);
-            const esito = await salva(nuovo);
-            if (!esito.ok) {
-              setAcceso(!nuovo);
-              setErrore(esito.errore);
-            }
-          }}
-        />
-        <span>{etichetta}</span>
-      </label>
-      {errore && (
-        <p className="text-[12px] text-destructive" role="alert">
-          {errore}
-        </p>
-      )}
-    </div>
-  );
-}
 
 /**
  * Data e ora in ORA ITALIANA. Il valore va e torna nel formato del campo
@@ -150,18 +110,3 @@ export function CampoIstante({
     </div>
   );
 }
-
-/** Il blocco che spiega che cosa una vista chiede, sotto il titolo. */
-export function Intro({ titolo, children }: { titolo: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-4">
-      <h2 className="font-display text-lg font-semibold tracking-tight">{titolo}</h2>
-      <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{children}</p>
-    </div>
-  );
-}
-
-export const pct = (v: number | null) => (v === null ? "—" : `${String(v).replace(".", ",")}%`);
-
-/** «1 attenzione», «2 attenzioni»: il plurale italiano non si fa attaccando lettere in coda. */
-export const pl = (n: number, uno: string, molti: string) => `${n} ${n === 1 ? uno : molti}`;

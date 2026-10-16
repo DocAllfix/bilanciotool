@@ -29,6 +29,7 @@ import { latestSgiQasSetId } from "@/features/sgiqas/sistema";
 import { latestSa8000SetId } from "@/features/sa8000/sistema";
 import { latestSetId } from "@/features/content-set";
 import { seedDemoGdpr } from "./seed-demo-gdpr";
+import { seedDemoPas } from "./seed-demo-pas";
 import { latestFilieraSetId } from "@/features/filiera/programma";
 import { dbCorrente, type withTenant } from "@/lib/db/tenant";
 
@@ -926,6 +927,8 @@ export async function seedDemoModuli(tx: Tx, orgId: string, companyId: string): 
   await seedDemoNis2(tx, orgId, companyId);
   // La protezione dei dati, in un file proprio: legge i propri cataloghi come NIS2.
   await seedDemoGdpr(tx, orgId, companyId);
+  // Il sistema di gestione sociale, allo stesso modo.
+  await seedDemoPas(tx, orgId, companyId);
 }
 
 

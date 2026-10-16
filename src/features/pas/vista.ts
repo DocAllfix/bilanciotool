@@ -7,6 +7,7 @@ import { classe, livello, statoRischi } from "@/lib/calc/pas/rischio";
 import { segnali } from "@/lib/calc/pas/segnali";
 import { avanzamento } from "@/lib/calc/pas/avanzamento";
 import { verifica } from "@/lib/calc/pas/verifica";
+import { giorniA } from "@/lib/calc/segnalazioni/termini";
 import { quadroDa } from "./quadro";
 import type { PercorsoPasAvviato } from "./queries";
 
@@ -55,7 +56,12 @@ export function datiVistaPas(p: PercorsoPasAvviato, anno: number, oggi: string) 
     misure: { corrente: misure(anno), precedente: misure(anno - 1) },
     derivati: { corrente: derivati(misure(anno), par.settimane), precedente: derivati(misure(anno - 1), par.settimane) },
     oltreTotale: parteOltreTotale(misure(anno)),
-    reclami: r.reclami,
+    // L'età di un reclamo aperto la conta il server, sul giorno italiano: la stessa regola di
+    // `statoRegistri`, riga per riga, così il conteggio del riepilogo e le pastiglie coincidono.
+    reclami: r.reclami.map((x) => {
+      const eta = !x.chiusoIl && x.data ? giorniA(oggi, x.data) : null;
+      return { ...x, daSollecitare: eta !== null && eta > par.giorniReclamo };
+    }),
     nonConformita: r.nonConformita.map((x) => ({ ...x, scaduta: !x.chiusaIl && !!x.scadenza && x.scadenza < oggi })),
     formazione: r.formazione,
     emergenze: r.emergenze,

@@ -17,9 +17,14 @@ import { join } from "node:path";
 // Limitata ai file nuovi di questo percorso: estenderla al resto del prodotto è un lavoro a
 // sé, e va fatto misurando le pagine, non correggendo alla cieca.
 
+// Estesa al sistema di gestione sociale (PAS 24000), costruito sullo stesso stampo, e al file
+// dei pezzi comuni che i due percorsi condividono.
 const FILE = [
   ...readdirSync("src/components/gdpr").map((f) => join("src/components/gdpr", f)),
+  ...readdirSync("src/components/pas").map((f) => join("src/components/pas", f)),
+  "src/components/comune/percorso.tsx",
   "src/components/documento/documento-gdpr.tsx",
+  "src/components/documento/documento-pas.tsx",
 ].filter((f) => f.endsWith(".tsx"));
 
 /** `}` seguita da spazio e testo fino a fine riga, senza altre espressioni né tag. */

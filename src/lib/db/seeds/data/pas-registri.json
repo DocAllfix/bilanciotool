@@ -422,7 +422,7 @@
     "ordine": 8,
     "nome": "Riesame della direzione",
     "riferimento": "9.3",
-    "aiuto": "Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nel verbale al passo 9: qui registri le decisioni.",
+    "aiuto": "Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nel verbale, fra i documenti: qui registri le decisioni.",
     "colonne": [
       {
         "chiave": "data",
