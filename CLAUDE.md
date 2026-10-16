@@ -3880,3 +3880,17 @@ Gate: typecheck · build (home statica) · **1914 test** · `demo-seed` e `gdpr-
 `vetrina-energia` 11/11 · `attivazione` 10/10 · `tutto-demo` 68/68 · `tutto-attivo` 31/31 ·
 `invito` 14/14 · `benvenuto` 12/12 (`axialoop` e `vetrina-energia` al secondo giro, il primo
 caduto sul freno di Better Auth a 429) · banda fotografata e guardata a 1440 e 360px.
+
+**Percorso PAS 24000, fase 8 (2026-10-16) — privacy, PRE-LAUNCH, previsione**
+
+- **Privacy**: voce sui registri e sugli indicatori del sistema di gestione sociale (Evalis
+  responsabile ex art. 28, indicatori in forma aggregata, nei documenti solo conteggi tranne le
+  decisioni del riesame). La frase su chi reclama è stata scritta **dopo aver letto ciò che il
+  registro dice davvero** («non riportare dati che permettano di identificare chi segnala»): la
+  prima versione prometteva una cosa diversa. `AGGIORNATO_AL` = `2026-10-16`, da portare alla
+  data del rilascio.
+- **`PRE-LAUNCH.md`** voce 14 e **`docs/rilascio-pas-previsione.md`**: stato della produzione
+  chiesto in sola lettura (mancano esattamente `0065`÷`0067`, nessuna riga fuori dai vincoli
+  riscritti) e previsione dei conteggi scritta prima del seme.
+
+Gate: typecheck · build · `qa -- legale` 26/26 · spazi verificati sull'HTML reso della privacy.
