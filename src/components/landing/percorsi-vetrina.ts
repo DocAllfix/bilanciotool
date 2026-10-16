@@ -282,6 +282,21 @@ export const RACCONTO: Record<ModuloAzienda, Omit<PercorsoVetrina, "titolo">> = 
     punto:
       "Il mese per rispondere a un interessato e le 72 ore per notificare una violazione si calcolano da soli, in ora italiana. E un requisito mai valutato pesa zero: saltare i requisiti difficili non fa salire l'indice.",
   },
+  pas24000: {
+    norma: "PAS 24000:2022 · Allegato A",
+    passi: [
+      "Campo di applicazione e ruoli",
+      `Contesto e ${NUMERI.partiTipoPas} parti interessate`,
+      `${NUMERI.requisitiPas} requisiti: ${NUMERI.requisitiSistemaPas} di sistema, ${NUMERI.requisitiAllegatoPas} dell'Allegato A`,
+      `${NUMERI.rischiTipoPas} rischi sociali e due diligence sui fornitori`,
+      "Politica, obiettivi e piano annuale",
+      `${NUMERI.indicatoriPas} indicatori su due esercizi`,
+      `${NUMERI.registriPas} registri, dai reclami al riesame`,
+      "Manuale, politica, rapporto di conformità, verbale di riesame",
+    ],
+    punto:
+      "Stesso tema di SA8000, schema diverso: la PAS 24000 è una specifica BSI con la struttura delle norme ISO di sistema, e le condizioni di lavoro stanno in un Allegato che non ammette esclusioni. E un indicatore senza i suoi dati resta vuoto: un divario retributivo non esce al 100% perché manca una retribuzione.",
+  },
   soa: {
     norma: "ISO/IEC 27001:2022 §6.1.3 d)",
     passi: [

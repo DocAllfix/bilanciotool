@@ -3759,3 +3759,57 @@ debole per accorgersene; se n'è accorta l'altra sessione, a cui vitest non part
 
 ⚠️ Le dimostrative degli studi già iscritti NON hanno il percorso GDPR compilato: si
 semina solo all'iscrizione. Decisione del committente se ripopolarle.
+
+**Percorso PAS 24000, fasi 0–4 (2026-10-16) — il sedicesimo percorso, nei Sistemi di gestione**
+
+Dal prototipo `aggiuntenuovimoduli/percorso-pas24000-v1.html` (impronta `3131612f…ba94c`),
+costruito sullo STESSO stampo del prototipo GDPR: stesse costanti, stesse funzioni, stesso
+avvio. Piano in `~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`. Decisioni del
+committente: gruppo **Sistemi di gestione** accanto a SA8000 (certificabile da un ente terzo),
+un requisito **parziale pesa metà** (in SA8000 pesa zero, e non è una contraddizione: lo decide
+lo schema), uno non valutato pesa zero.
+
+- **Fase 0**: caricatore che esegue il prototipo in `vm` (`scripts/carica-prototipo-pas.mjs`),
+  estrazione dei cataloghi (`extract-pas.mjs`: 18 gruppi, 98 requisiti 31+67, 8 parti, 20
+  rischi, 35 indicatori in 6 sezioni, 16 attività, 9 contenuti della politica, 8 registri),
+  golden riproducibile. Le liste copiate a mano devono comparire letterali nel prototipo, o
+  l'estrazione si ferma.
+- **Fase 1**: motore in `src/lib/calc/pas/`, 39 test, copertura dei rami 96%, undici
+  divergenze in `docs/politica-arrotondamento.md`. La più grave: **un derivato esiste solo se ci
+  sono TUTTI i suoi ingressi** — il prototipo leggeva un vuoto come zero, e senza la
+  retribuzione delle donne il divario di genere usciva **100%**, senza la minima il margine sul
+  CCNL **−100%**.
+- **Fase 2**: migrazioni `0065` (esportata dallo schema) e `0066` (generata da
+  `scripts/genera-0066-pas.mjs`: RLS, 33 CHECK, trigger sulla radice, `content_set_dominio_ck`
+  riscritto con `pas`), seme `pas-v1`. Radice unica per azienda, figlie senza `company_id`.
+- **Fase 3**: `src/features/pas/`. Le primitive dei campi del GDPR (`testo`, `scelta`,
+  `decimale` all'italiana, `interoNonNegativo`, `validaCampo`) passano in `features/campi.ts`.
+- **Fase 4**: registro dei moduli (icona `UsersRound`, dopo SA8000), quattro documenti tutti
+  nella serie SENZA esercizio (`manuale_pas`, `politica_pas`, `conformita_pas`, `riesame_pas`,
+  migrazione `0067`), un template solo (`documento-pas.tsx`) con un grafico nuovo
+  (`charts-pas.tsx`, orario contro il limite) e i tre del GDPR. `MatriceRischi` guadagna
+  `oggetto` e `perChi` con i predefiniti del GDPR: i documenti già pubblicati si rendono uguali.
+
+⚠️ **Nei documenti dei registri entrano solo conteggi, con un'eccezione dichiarata**: le
+decisioni del riesame, che sono il verbale. L'oggetto di un reclamo, l'istruttoria, la
+descrizione e la causa di una non conformità, gli argomenti di una consultazione e la sintesi di
+un audit non entrano: `pas-documenti.db` li semina come testi-sentinella e li cerca nello
+snapshot, e l'ha provato rosso rimettendo l'oggetto dei reclami nei dati.
+
+**Regole nate qui:**
+- **Un controllo sui plurali va provato su un conteggio che vale uno.** La prima controprova
+  guastava «20 rischi», che resta giusto comunque, e il test è rimasto verde per il motivo
+  sbagliato. Rifatta su «1 rischio alto è privo di misure»: rosso sull'asserzione giusta.
+- **Una funzione condivisa che cambia etichetta si estende con un predefinito, non con una
+  copia.** La matrice dei rischi del GDPR diceva «trattamenti» e «per l'interessato»: due
+  parametri col valore di prima bastano, e i PDF già consegnati non cambiano.
+- **Il typecheck va rilanciato a ogni fase, anche quando la fase è «solo motore»**: un errore
+  di tipo nei registri della Fase 1 è emerso solo in Fase 2.
+
+⚠️ **Trovato strada facendo, nel GDPR già in produzione e NON corretto qui**: nella relazione
+annuale, senza un riesame dell'esercizio, il «riesame precedente» è il più recente in assoluto,
+anche se successivo all'anno (`features/gdpr/documento.ts`). È il difetto che il motore PAS
+corregge con `riesamiDelVerbale`. Da correggere con un test, su decisione del committente.
+
+⚠️ **E sulla landing**: oltre al «30 calcolati» della banda dei numeri, il passo 02 dice «30
+indicatori derivati», e il motore del bilancio ne calcola 25. Si chiude in Fase 7.

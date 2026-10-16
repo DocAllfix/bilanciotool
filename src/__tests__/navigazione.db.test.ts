@@ -113,10 +113,12 @@ describe.skipIf(!url)("viste che attraversano il portafoglio", () => {
     // fra loro perche' il secondo contiene per intero il primo.
     // Dal 12 ottobre 2026 sono QUINDICI: «gdpr» entra in Compliance dopo i due NIS2.
     // E' un obbligo di legge con un'Autorita' di controllo, non una certificazione.
+    // Dal 16 ottobre 2026 sono SEDICI: «pas24000» entra nei Sistemi di gestione accanto a
+    // SA8000, perche' e' certificabile da un ente terzo come lui.
     expect(f.voci.map((v) => v.modulo)).toEqual([
       "ghg", "energetico", "bilancio", "sgesg", "fornitore",
       "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "gdpr",
-      "sgiqas", "sa8000", "soa",
+      "sgiqas", "sa8000", "pas24000", "soa",
     ]);
     // L'elenco qui sopra si puo' aggiornare distrattamente; questa no. Se un modulo
     // finisse lontano dai suoi, il suo gruppo comparirebbe due volte a distanza — e nel

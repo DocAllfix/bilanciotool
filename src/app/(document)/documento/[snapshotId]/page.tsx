@@ -24,6 +24,7 @@ import { DocumentoRiesameQas } from "@/components/documento/documento-riesame-qa
 import { DocumentoRelazioneWb } from "@/components/documento/documento-relazione-wb";
 import { DocumentoRelazioneOdv } from "@/components/documento/documento-relazione-odv";
 import { DocumentoGdpr } from "@/components/documento/documento-gdpr";
+import { DocumentoPas } from "@/components/documento/documento-pas";
 import { DocToolbar } from "@/components/documento/doc-toolbar";
 import { ritornoDelDocumento } from "@/features/companies/moduli";
 import { indirizzoCanonico } from "@/lib/indirizzo";
@@ -164,6 +165,12 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
       case "conformita_gdpr":
       case "relazione_privacy":
         return <DocumentoGdpr immagini={immagini} dati={snap.dati as never} tipo={snap.tipo} />;
+      // ⚠️ I quattro del sistema di gestione sociale da UN template solo, guidato dal tipo.
+      case "manuale_pas":
+      case "politica_pas":
+      case "conformita_pas":
+      case "riesame_pas":
+        return <DocumentoPas immagini={immagini} dati={snap.dati as never} tipo={snap.tipo} />;
       case "attestato":
         // Il codice di verifica si ricava dall'identità dello snapshot: è
         // stabile per la revisione pubblicata e non va conservato nei dati.

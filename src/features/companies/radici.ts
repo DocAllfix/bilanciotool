@@ -43,6 +43,7 @@ const RADICI: Record<ModuloAzienda, { tabella: string; anno: string | null }> = 
   nis2: { tabella: "nis2_assessment", anno: null },
   sgnis2: { tabella: "nis2_system", anno: null },
   gdpr: { tabella: "gdpr_system", anno: null },
+  pas24000: { tabella: "pas_system", anno: null },
 };
 
 export type Radice = { modulo: ModuloAzienda; companyId: string; anno: number | null };

@@ -13,7 +13,10 @@ export const TIPI_DOCUMENTO = ["ghg", "bilancio", "energetico", "attestato", "so
   // I sei della protezione dei dati (Reg. UE 2016/679). Nessuno è annuale, nemmeno la
   // relazione: l'esercizio sta nello snapshot e nel titolo, la chiave resta una serie
   // unica di revisioni come per gli altri moduli di conformità.
-  "registro_trattamenti", "modello_privacy", "politica_privacy", "dpia", "conformita_gdpr", "relazione_privacy"] as const;
+  "registro_trattamenti", "modello_privacy", "politica_privacy", "dpia", "conformita_gdpr", "relazione_privacy",
+  // I quattro del sistema di gestione sociale (PAS 24000:2022). Come per il GDPR, nessuno e'
+  // annuale: il verbale di riesame porta l'esercizio nello snapshot, non nella chiave.
+  "manuale_pas", "politica_pas", "conformita_pas", "riesame_pas"] as const;
 export type TipoDocumento = (typeof TIPI_DOCUMENTO)[number];
 
 /** `document_snapshot.anno` per i documenti che non si riferiscono a un esercizio.
@@ -275,6 +278,38 @@ export const DOCUMENTI = {
     nome: "Relazione annuale sulla protezione dei dati",
     breve: "Relazione privacy",
     file: "relazione-annuale-privacy",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  // ─── il sistema di gestione sociale ────────────────────────────────────────
+  // Tutti `mostraAnno: false`, come il GDPR: fotografie che si revisionano. Le etichette
+  // corte nominano la norma perche' «Politica sociale» o «Riesame» da soli si confonderebbero
+  // con SA8000 e col riesame del sistema integrato nello stesso archivio.
+  manuale_pas: {
+    nome: "Manuale del sistema di gestione sociale (PAS 24000)",
+    breve: "Manuale PAS 24000",
+    file: "manuale-sistema-gestione-sociale",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  politica_pas: {
+    nome: "Politica sociale",
+    breve: "Politica sociale PAS 24000",
+    file: "politica-sociale",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  conformita_pas: {
+    nome: "Rapporto di conformità e piano di adeguamento PAS 24000",
+    breve: "Conformità PAS 24000",
+    file: "rapporto-conformita-pas24000",
+    mostraAnno: false,
+    haMedia: false,
+  },
+  riesame_pas: {
+    nome: "Verbale di riesame della direzione (PAS 24000)",
+    breve: "Riesame PAS 24000",
+    file: "verbale-riesame-pas24000",
     mostraAnno: false,
     haMedia: false,
   },
