@@ -1,0 +1,495 @@
+[
+  {
+    "sezione": "avvio-e-organizzazione", "p": 0, "inizia": "Un sistema di gestione sociale nasce una volta sola",
+    "layout": "apertura",
+    "titolo": "Avviare il sistema",
+    "sottotitolo": "Campo di applicazione, ruoli e contesto",
+    "testo": "Un sistema di gestione sociale nasce una volta sola per ogni azienda.",
+    "agenda": ["Avvia il percorso", "Le dieci viste", "L'esercizio in alto", "Organizzazione e campo di applicazione", "Contesto e parti", "PAS 24000 non è SA8000"]
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 1, "inizia": "L'avvio non parte da zero.",
+    "layout": "cards",
+    "titolo": "Che cosa carica l'avvio",
+    "cards": [
+      { "h": "{partiTipoPas} parti interessate tipo", "d": "Dai lavoratori dipendenti agli enti di controllo." },
+      { "h": "{rischiTipoPas} rischi tipo", "d": "Da valutare, correggere o togliere." },
+      { "h": "Il piano tipo, dopo", "d": "Si carica a richiesta, quando l'azienda è stata capita." }
+    ]
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 2, "inizia": "Il lavoro è diviso in dieci viste",
+    "layout": "punti",
+    "titolo": "Dieci viste con un nome",
+    "numerati": false,
+    "punti": [
+      { "h": "Quadro", "d": "i segnali portano dove si rimedia" },
+      { "h": "Organizzazione · Contesto e parti", "d": "chi, dove, per chi" },
+      { "h": "Conformità · Rischi e fornitori", "d": "che cosa si dimostra, che cosa si rischia" },
+      { "h": "Politica e piano · Indicatori · Registri", "d": "impegni, numeri, fatti" },
+      { "h": "Verifica · Documenti", "d": "che cosa manca, che cosa esce" }
+    ]
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 3, "inizia": "In cima alla pagina c'è una scelta",
+    "layout": "evidenza",
+    "eyebrow": "In alto",
+    "titolo": "L'esercizio si sceglie in cima alla pagina.",
+    "testo": "Finisce nell'indirizzo. Cambiarlo non crea un percorso nuovo: cambia l'anno che si guarda, dentro l'unica radice dell'azienda."
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 4, "inizia": "La vista Organizzazione chiede l'anagrafica",
+    "layout": "split",
+    "titolo": "La vista Organizzazione",
+    "lead": "Anagrafica, siti, alta direzione, rappresentanti dei lavoratori.",
+    "punti": [
+      { "h": "Contratto collettivo", "d": "il termine di confronto per paghe, orari e disciplina" },
+      { "h": "Responsabile del sistema", "d": "punto 5.3: autorità reale, riferisce alla direzione" }
+    ]
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 5, "inizia": "Il campo più delicato è il campo di applicazione.",
+    "layout": "definizione",
+    "eyebrow": "Campo di applicazione",
+    "titolo": "Chi è lavoratore",
+    "definizione": "Chiunque operi sotto il controllo dell'organizzazione.",
+    "punti": ["Dipendenti", "Somministrati", "Soci di cooperativa", "Appaltatori in sito"]
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 6, "inizia": "Se non ci sono rappresentanze sindacali",
+    "layout": "evidenza",
+    "eyebrow": "Rappresentanti",
+    "titolo": "Un campo vuoto non dice che mancano.",
+    "testo": "Dice che nessuno l'ha scritto. Senza rappresentanze, si descrive come avviene la consultazione."
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 7, "inizia": "La vista Contesto e parti raccoglie",
+    "layout": "confronto",
+    "titolo": "Contesto e parti",
+    "a": { "h": "Fattori", "sub": "Esterni e interni", "punti": ["Rischio o opportunità", "Ne bastano quattro, specifici", "Stagionalità, agenzie, lavoratori stranieri"] },
+    "b": { "h": "Parti interessate", "sub": "Da adattare", "punti": ["Esigenze", "Obbligo o aspettativa", "Gestita, e come la si coinvolge"] }
+  },
+  {
+    "sezione": "avvio-e-organizzazione", "p": 8, "inizia": "Un'ultima avvertenza, perché la confusione è frequente.",
+    "layout": "confronto",
+    "titolo": "PAS 24000 non è SA8000",
+    "a": { "h": "PAS 24000:2022", "sub": "Specifica BSI", "punti": ["Struttura delle norme ISO", "Allegato A sulla prestazione sociale"] },
+    "b": { "h": "SA8000", "sub": "Standard SAI", "punti": ["Criteri e regole suoi", "Un altro percorso nel prodotto"] }
+  },
+
+  {
+    "sezione": "conformita-requisiti", "p": 0, "inizia": "La vista Conformità è il cuore del percorso.",
+    "layout": "numeri",
+    "titolo": "I requisiti",
+    "numeri": [
+      { "n": "{requisitiPas}", "h": "Requisiti", "d": "In {gruppiPas} gruppi." },
+      { "n": "{requisitiSistemaPas}", "h": "Di sistema", "d": "Sulle {clausolePas} clausole, dal contesto al miglioramento." },
+      { "n": "{requisitiAllegatoPas}", "h": "Allegato A", "d": "Sulle {areeAllegatoPas} aree della prestazione sociale." }
+    ]
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 1, "inizia": "Ogni gruppo ha la sua guida in testa",
+    "layout": "cards",
+    "titolo": "La guida di ogni gruppo",
+    "cards": [
+      { "h": "Che cosa guarda l'auditor", "d": "Il punto su cui si concentra la visita." },
+      { "h": "Dove sono le evidenze", "d": "Documenti, registri, prassi." },
+      { "h": "L'errore ricorrente", "d": "Da leggere prima di valutare, non dopo." }
+    ]
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 2, "inizia": "Ogni requisito ha quattro esiti possibili.",
+    "layout": "tabella",
+    "titolo": "Quattro esiti",
+    "cols": ["Esito", "Che cosa pretende"],
+    "righe": [
+      ["Conforme", "Un'evidenza scritta accanto"],
+      ["Parziale", "Un'azione, chi la porta, per quando"],
+      ["Non conforme", "Un'azione, chi la porta, per quando"],
+      ["Non pertinente", "Una motivazione"]
+    ]
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 3, "inizia": "La regola di calcolo va detta",
+    "layout": "numeri",
+    "titolo": "Il peso di ciascun esito",
+    "numeri": [
+      { "n": "100", "h": "Conforme", "d": "Pieno." },
+      { "n": "metà", "h": "Parziale", "d": "Vale la metà di un conforme." },
+      { "n": "0", "h": "Non conforme", "d": "E zero anche il non valutato, che resta nel conto." }
+    ]
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 4, "inizia": "Quest'ultima regola è quella che sorprende.",
+    "layout": "evidenza",
+    "eyebrow": "La regola che sorprende",
+    "titolo": "Un requisito mai guardato pesa zero.",
+    "testo": "Mediando i soli valutati, un conforme su {requisitiPas} darebbe cento. L'indice dice quanto è dimostrato, e senza valutazioni non compare."
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 5, "inizia": "Il quarto esito è non pertinente",
+    "layout": "definizione",
+    "eyebrow": "Allegato A",
+    "titolo": "Non pertinente non è un'esclusione",
+    "definizione": "La situazione nell'organizzazione non ricorre: per esempio, non vengono forniti alloggi.",
+    "punti": ["L'Allegato A si applica per intero", "Esce dal conto", "Al posto dell'evidenza, la motivazione"]
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 6, "inizia": "L'errore ricorrente è segnare conforme",
+    "layout": "confronto",
+    "titolo": "Previsto non vuol dire fatto",
+    "a": { "h": "Procedura scritta", "sub": "Ciò che dovrebbe succedere", "punti": ["Non basta per Conforme"] },
+    "b": { "h": "Situazione reale", "sub": "Interviste e sopralluoghi", "punti": ["È ciò che si valuta", "L'evidenza finisce nel manuale"] }
+  },
+  {
+    "sezione": "conformita-requisiti", "p": 7, "inizia": "La vista Verifica guarda dentro queste valutazioni.",
+    "layout": "chiusura",
+    "titolo": "Che cosa elenca la Verifica",
+    "punti": [
+      { "h": "Da valutare", "d": "requisiti ancora senza esito" },
+      { "h": "Senza azione", "d": "parziali e non conformi" },
+      { "h": "Senza evidenza", "d": "conformi che nessuno dimostra" }
+    ]
+  },
+
+  {
+    "sezione": "rischi-e-fornitori", "p": 0, "inizia": "La vista Rischi e fornitori comincia",
+    "layout": "apertura",
+    "titolo": "Rischi e fornitori",
+    "sottotitolo": "Per le persone, non per l'azienda",
+    "testo": "{rischiTipoPas} rischi tipo, ciascuno con un'area dell'Allegato A e un ambito.",
+    "agenda": ["Organizzazione o catena di fornitura", "Probabilità per gravità", "Un asse solo non basta", "Due diligence sui fornitori"]
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 1, "inizia": "Per ogni rischio si danno due punteggi",
+    "layout": "evidenza",
+    "eyebrow": "Il cambio di prospettiva",
+    "titolo": "La gravità si misura sulle persone.",
+    "testo": "Un problema piccolo per il bilancio può essere grave per chi lo subisce."
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 2, "inizia": "Il livello è probabilità per gravità.",
+    "layout": "flusso",
+    "titolo": "Un esempio",
+    "passi": [
+      { "h": "Probabilità", "d": "quattro" },
+      { "h": "Gravità", "d": "quattro" },
+      { "h": "Livello sedici", "d": "alto, con le soglie predefinite" },
+      { "h": "Servono misure", "d": "con un responsabile" }
+    ]
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 3, "inizia": "Un livello però esiste solo se",
+    "layout": "evidenza",
+    "eyebrow": "La regola",
+    "titolo": "Un asse solo non fa un rischio.",
+    "testo": "Con la sola probabilità il rischio resta da valutare, e la Verifica lo conta."
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 4, "inizia": "Un rischio alto senza misure",
+    "layout": "split",
+    "titolo": "Il rischio alto",
+    "lead": "Senza misure è un punto d'attenzione nel Quadro.",
+    "punti": [
+      { "h": "Misure", "d": "di prevenzione o di mitigazione" },
+      { "h": "Responsabile", "d": "chi le porta" },
+      { "h": "Obiettivo", "d": "spesso nella vista Politica e piano" }
+    ]
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 5, "inizia": "Accanto ai rischi ci sono i fornitori",
+    "layout": "cards",
+    "titolo": "Chi censire",
+    "cards": [
+      { "h": "Sempre", "d": "Agenzie per il lavoro, cooperative, appaltatori in sito." },
+      { "h": "Gli altri", "d": "Secondo paese, settore e intensità di manodopera." }
+    ]
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 6, "inizia": "Per ogni fornitore si registrano il livello",
+    "layout": "tabella",
+    "titolo": "La due diligence",
+    "cols": ["Situazione", "Peso"],
+    "righe": [
+      ["Rischio alto, mai verificato", "Punto d'attenzione"],
+      ["Esito critico alla verifica", "Criticità"],
+      ["Senza livello di rischio", "Nella Verifica"]
+    ]
+  },
+  {
+    "sezione": "rischi-e-fornitori", "p": 7, "inizia": "Un dettaglio sui numeri di questa vista.",
+    "layout": "chiusura",
+    "titolo": "In sintesi",
+    "punti": [
+      { "h": "Le persone", "d": "danno la gravità" },
+      { "h": "Due punteggi", "d": "o il rischio resta da valutare" },
+      { "h": "Senza fornitori", "d": "le quote si leggono «—», non zero" }
+    ]
+  },
+
+  {
+    "sezione": "politica-e-piano", "p": 0, "inizia": "La vista Politica e piano tiene insieme",
+    "layout": "flusso",
+    "titolo": "Tre cose collegate",
+    "passi": [
+      { "h": "Politica", "d": "che cosa ci si impegna a fare" },
+      { "h": "Obiettivi", "d": "di quanto e per quando" },
+      { "h": "Piano", "d": "in quale mese" }
+    ]
+  },
+  {
+    "sezione": "politica-e-piano", "p": 1, "inizia": "La politica parte da un testo modello",
+    "layout": "punti",
+    "titolo": "I {contenutiPoliticaPas} contenuti attesi",
+    "numerati": false,
+    "punti": [
+      { "h": "Quattro temi", "d": "diritti umani, condizioni di lavoro, etica, salute e sicurezza" },
+      { "h": "Due impegni", "d": "requisiti di legge e contrattuali, miglioramento continuo" },
+      { "h": "Approvazione", "d": "dell'alta direzione, con firma" },
+      { "h": "Comunicazione", "d": "all'interno, e a fornitori e partner" }
+    ]
+  },
+  {
+    "sezione": "politica-e-piano", "p": 2, "inizia": "Ogni contenuto non spuntato compare nella Verifica",
+    "layout": "evidenza",
+    "eyebrow": "Nella Verifica",
+    "titolo": "Una politica di chiunque non convince nessuno.",
+    "testo": "Contenuti non spuntati e data di approvazione mancante compaiono nella Verifica."
+  },
+  {
+    "sezione": "politica-e-piano", "p": 3, "inizia": "Gli obiettivi devono essere misurabili e datati.",
+    "layout": "confronto",
+    "titolo": "Obiettivo o auspicio",
+    "a": { "h": "Auspicio", "sub": "Non misurabile", "punti": ["Migliorare il clima aziendale"] },
+    "b": { "h": "Obiettivo", "sub": "Misurabile e datato", "punti": ["Straordinario per addetto sotto 80 ore entro dicembre", "Indicatore, traguardo, scadenza, responsabile"] }
+  },
+  {
+    "sezione": "politica-e-piano", "p": 4, "inizia": "Il piano annuale è un requisito proprio",
+    "layout": "definizione",
+    "eyebrow": "Punto 8.1.2",
+    "titolo": "Il piano annuale",
+    "definizione": "Le attività dei dodici mesi, ciascuna col suo mese, il responsabile e lo stato.",
+    "punti": ["È la prova che il sistema ha un ritmo"]
+  },
+  {
+    "sezione": "politica-e-piano", "p": 5, "inizia": "Per non partire da un foglio bianco",
+    "layout": "timeline",
+    "titolo": "Dal piano tipo",
+    "tappe": [
+      { "t": "Gennaio", "h": "Riesame del contesto", "d": "Parti interessate e rischi." },
+      { "t": "Febbraio", "h": "Formazione", "d": "Diritti, politica e canale di reclamo." },
+      { "t": "Maggio", "h": "Prova di emergenza", "d": "Ed evacuazione." },
+      { "t": "Settembre", "h": "Audit interno", "d": "Sul sistema e sull'Allegato A." },
+      { "t": "Dicembre", "h": "Riesame della direzione", "d": "E comunicazione ai lavoratori." }
+    ]
+  },
+  {
+    "sezione": "politica-e-piano", "p": 6, "inizia": "Il piano tipo non arriva con l'avvio",
+    "layout": "chiusura",
+    "titolo": "Il piano tipo",
+    "punti": [
+      { "h": "{attivitaTipoPas} attività", "d": "gli adempimenti a cadenza annuale" },
+      { "h": "A richiesta", "d": "dopo aver capito l'azienda" },
+      { "h": "Premuto due volte", "d": "non duplica niente" }
+    ]
+  },
+
+  {
+    "sezione": "indicatori-e-segnali", "p": 0, "inizia": "La vista Indicatori raccoglie i numeri",
+    "layout": "numeri",
+    "titolo": "Gli indicatori",
+    "numeri": [
+      { "n": "{indicatoriPas}", "h": "Misure", "d": "Per l'esercizio scelto, con l'anno precedente accanto." },
+      { "n": "{sezioniIndicatoriPas}", "h": "Schede", "d": "Organico, retribuzioni, orario, sicurezza, formazione, rappresentanza." },
+      { "n": "{derivatiPas}", "h": "Derivati", "d": "Calcolati dal prodotto." }
+    ]
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 1, "inizia": "Dove si trovano questi dati",
+    "layout": "tabella",
+    "titolo": "Dove si trovano i dati",
+    "cols": ["Scheda", "Fonte"],
+    "righe": [
+      ["Organico", "Libro unico, prospetto dell'organico"],
+      ["Retribuzioni", "Buste paga, tabelle del contratto collettivo"],
+      ["Orario", "Presenze: la settimana più lunga nei mesi di picco"],
+      ["Salute e sicurezza", "Registro infortuni"],
+      ["Formazione", "Registri delle presenze, attestati"]
+    ]
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 2, "inizia": "Dalle misure il prodotto ricava diciannove derivati",
+    "layout": "cards",
+    "titolo": "Alcuni derivati",
+    "cards": [
+      { "h": "Margine sul minimo contrattuale", "d": "La retribuzione più bassa contro il contratto." },
+      { "h": "Divario retributivo di genere", "d": "Media uomini contro media donne." },
+      { "h": "Ore settimanali medie", "d": "Per addetto, sulle settimane lavorate." },
+      { "h": "Indici infortunistici", "d": "Frequenza e gravità." }
+    ]
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 3, "inizia": "E qui c'è la regola più importante",
+    "layout": "evidenza",
+    "eyebrow": "La regola",
+    "titolo": "Un derivato esiste solo con tutti i suoi ingressi.",
+    "testo": "Ne manca uno, e al suo posto si legge «—»."
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 4, "inizia": "Perché tanta severità?",
+    "layout": "tabella",
+    "titolo": "Il vuoto letto come zero",
+    "cols": ["Manca", "Uscirebbe"],
+    "righe": [
+      ["La retribuzione media delle donne", "Divario di genere al 100%"],
+      ["La retribuzione più bassa", "Margine sul contratto a −100%"],
+      ["Lo straordinario", "Indici infortunistici migliori del vero"]
+    ]
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 5, "inizia": "La stessa logica vale per chi compila.",
+    "layout": "confronto",
+    "titolo": "Zero o vuoto",
+    "a": { "h": "Zero", "sub": "Un'informazione", "punti": ["Zero infortuni si scrive"] },
+    "b": { "h": "Vuoto", "sub": "Un dato mancante", "punti": ["La Verifica lo elenca", "Un «di cui» oltre il totale è respinto"] }
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 6, "inizia": "Dai dati nascono anche i segnali",
+    "layout": "split",
+    "titolo": "I segnali dai dati",
+    "lead": "Nessuno deve spuntare niente: li ricava il Quadro.",
+    "punti": [
+      { "h": "Criticità", "d": "minori di 15 anni, paga sotto contratto, trattenute disciplinari, settimana oltre il limite, corruzione" },
+      { "h": "Punti d'attenzione", "d": "mensilità in ritardo, riposi non fruiti, non coperti da contratto, sotto il salario dignitoso" }
+    ]
+  },
+  {
+    "sezione": "indicatori-e-segnali", "p": 7, "inizia": "Sull'orario la specifica fissa quarantotto ore",
+    "layout": "timeline",
+    "titolo": "I limiti d'orario",
+    "tappe": [
+      { "t": "48 ore", "h": "Ordinarie", "d": "Oltre: verificare che sia straordinario volontario e retribuito." },
+      { "t": "60 ore", "h": "Complessive", "d": "Oltre: criticità." },
+      { "t": "Parametri", "h": "Legge e contratto", "d": "Vale la regola più favorevole ai lavoratori." }
+    ]
+  },
+
+  {
+    "sezione": "registri", "p": 0, "inizia": "La vista Registri ne tiene otto",
+    "layout": "apertura",
+    "titolo": "I registri",
+    "sottotitolo": "La memoria del sistema",
+    "testo": "{registriPas} registri: quello che è successo davvero, con la sua data.",
+    "agenda": ["Reclami e segnalazioni", "Non conformità e azioni correttive", "Formazione · Emergenze · Comunicazioni", "Consultazione · Audit interni · Riesame"]
+  },
+  {
+    "sezione": "registri", "p": 1, "inizia": "Ogni voce ha una data",
+    "layout": "evidenza",
+    "eyebrow": "L'esercizio",
+    "titolo": "È la data ad assegnare la voce all'anno.",
+    "testo": "Una formazione del marzo scorso appartiene all'anno scorso, anche se la si registra oggi."
+  },
+  {
+    "sezione": "registri", "p": 2, "inizia": "Le voci aperte però fanno eccezione",
+    "layout": "split",
+    "titolo": "Le voci aperte, su tutto l'archivio",
+    "lead": "Un reclamo dell'anno scorso ancora aperto è un problema di oggi.",
+    "punti": [
+      { "h": "Reclamo da sollecitare", "d": "aperto da più di 30 giorni" },
+      { "h": "Azione scaduta", "d": "scadenza passata, non chiusa" },
+      { "h": "I giorni", "d": "li conta il server, sul calendario italiano" }
+    ]
+  },
+  {
+    "sezione": "registri", "p": 3, "inizia": "Il registro dei reclami ha una regola sua",
+    "layout": "evidenza",
+    "eyebrow": "Riservatezza",
+    "titolo": "Nel registro reclami non si identifica chi segnala.",
+    "testo": "Un canale di cui le persone non si fidano non riceve reclami. Nei documenti dei registri entrano solo conteggi."
+  },
+  {
+    "sezione": "registri", "p": 4, "inizia": "Alcune registrazioni sono attese almeno una volta",
+    "layout": "tabella",
+    "titolo": "Le registrazioni minime dell'esercizio",
+    "cols": ["Registrazione", "Riferimento"],
+    "righe": [
+      ["Prova di emergenza", "8.2"],
+      ["Comunicazione interna ed esterna", "7.4.2 · 7.4.3"],
+      ["Consultazione dei lavoratori", "5.4"],
+      ["Formazione", "7.2"],
+      ["Audit interno svolto", "9.2"],
+      ["Riesame della direzione", "9.3"]
+    ]
+  },
+  {
+    "sezione": "registri", "p": 5, "inizia": "Attenzione a due dettagli",
+    "layout": "confronto",
+    "titolo": "Due dettagli",
+    "a": { "h": "Audit pianificato", "sub": "Non è un audit fatto", "punti": ["Conta come voce", "Il segnale resta finché non è svolto o chiuso"] },
+    "b": { "h": "Verifica dei presidi", "sub": "Non è una prova", "punti": ["Contano le prove e le esercitazioni", "Un'emergenza reale non sostituisce l'esercitazione"] }
+  },
+
+  {
+    "sezione": "verifica-e-documenti", "p": 0, "inizia": "La vista Verifica risponde a una domanda sola",
+    "layout": "apertura",
+    "titolo": "Verifica e documenti",
+    "sottotitolo": "Che cosa manca, che cosa esce",
+    "testo": "Che cosa oggi manca prima dell'audit di certificazione.",
+    "agenda": ["Presentabile", "Compilazione e conformità", "I quattro documenti", "Una serie di revisioni", "Dai registri solo conteggi"]
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 1, "inizia": "Il sistema risulta presentabile solo se",
+    "layout": "punti",
+    "titolo": "Presentabile, se insieme",
+    "numerati": true,
+    "punti": [
+      { "h": "Nessuna criticità", "d": "aperta" },
+      { "h": "Tutti i requisiti valutati", "d": "e nessuno non conforme" },
+      { "h": "Le registrazioni minime", "d": "dell'esercizio" },
+      { "h": "La compilazione", "d": "almeno all'85%" }
+    ]
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 2, "inizia": "Compilazione e conformità sono due misure diverse",
+    "layout": "confronto",
+    "titolo": "Due misure diverse",
+    "a": { "h": "Avanzamento", "sub": "Quanto è compilato", "punti": ["Sette parti", "Può essere pieno di non conformità"] },
+    "b": { "h": "Indice di conformità", "sub": "Quanto è dimostrato", "punti": ["Il non valutato pesa zero", "Non sostituisce l'audit"] }
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 3, "inizia": "Alla fine escono quattro documenti.",
+    "layout": "cards",
+    "titolo": "I quattro documenti",
+    "cards": [
+      { "h": "Manuale del sistema", "d": "Dieci sezioni, con gli indicatori dell'esercizio scelto." },
+      { "h": "Politica sociale", "d": "Da firmare, affiggere e inviare ai fornitori." },
+      { "h": "Rapporto di conformità e piano di adeguamento", "d": "Indice per gruppo, azioni, non pertinenti motivati." },
+      { "h": "Verbale di riesame", "d": "Ingressi dai dati, decisioni dall'alta direzione." }
+    ]
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 4, "inizia": "Ognuno dei quattro si pubblica in una serie di revisioni",
+    "layout": "definizione",
+    "eyebrow": "Pubblicare",
+    "titolo": "Una serie di revisioni",
+    "definizione": "L'esercizio non fa parte della serie: il nuovo anno è la revisione successiva.",
+    "punti": ["Manuale e verbale riportano l'esercizio scelto", "Politica e rapporto fotografano il sistema alla data"]
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 5, "inizia": "Ogni revisione è congelata.",
+    "layout": "evidenza",
+    "eyebrow": "Revisione",
+    "titolo": "Dice ciò che era vero il giorno della firma.",
+    "testo": "Derivati compresi. Una correzione entra nella revisione seguente, non in quella consegnata."
+  },
+  {
+    "sezione": "verifica-e-documenti", "p": 6, "inizia": "E c'è una regola di riservatezza",
+    "layout": "chiusura",
+    "titolo": "In sintesi",
+    "punti": [
+      { "h": "Dai registri", "d": "solo conteggi" },
+      { "h": "L'eccezione", "d": "le decisioni del riesame" },
+      { "h": "Il riesame precedente", "d": "sempre quello prima dell'esercizio" }
+    ]
+  }
+]
