@@ -59,3 +59,78 @@ export const dataIsoSchema = z
     },
     { message: "Data non valida: usa il formato gg/mm/aaaa" },
   );
+
+// ─── Primitive dei campi a valore singolo ──────────────────────────────────
+//
+// Nate nel percorso GDPR e servite identiche alla PAS 24000: la seconda volta che la stessa
+// astrazione nasce, le si da' una casa. Sono primitive senza significato di dominio — testo
+// libero, voce di un elenco, numero scritto all'italiana — e per questo stanno qui: il
+// significato di un campo lo decide il `validation.ts` del modulo che le compone.
+
+const vuotoANull = (v: string) => (v === "" ? null : v);
+
+/** Testo libero; vuoto = `null`. */
+export const testo = (max: number) => z.string().trim().max(max, `Massimo ${max} caratteri`).transform(vuotoANull);
+
+/** Una voce di un elenco chiuso; vuoto = `null`. */
+export const scelta = (valori: readonly string[]) =>
+  z
+    .string()
+    .trim()
+    .refine((v) => v === "" || valori.includes(v), "Valore non ammesso")
+    .transform(vuotoANull);
+
+/** Una voce obbligatoria di un elenco chiuso. */
+export const sceltaObbligatoria = (valori: readonly string[]) =>
+  z.string().refine((v) => valori.includes(v), "Valore non ammesso");
+
+/** Una data, oppure vuoto = `null`. */
+export const dataOpzionale = dataIsoSchema.transform(vuotoANull);
+
+/** Un intero non negativo, opzionale; vuoto = `null`. Mai la virgola italiana scambiata. */
+export const interoNonNegativo = (max = 10_000_000) =>
+  z
+    .string()
+    .trim()
+    .transform((v, ctx) => {
+      if (v === "") return null;
+      if (!/^\d+$/.test(v)) {
+        ctx.addIssue({ code: "custom", message: "Serve un numero intero" });
+        return z.NEVER;
+      }
+      const n = Number(v);
+      if (n > max) {
+        ctx.addIssue({ code: "custom", message: "Numero troppo grande" });
+        return z.NEVER;
+      }
+      return n;
+    });
+
+/**
+ * Un numero decimale non negativo, scritto come lo scrive un italiano o un browser.
+ *
+ * ⚠️ «1.234,5» è milleduecentotrentaquattro e mezzo, non «uno virgola duecento…»: il
+ * prototipo leggeva con `parseFloat`, che si ferma al punto. Qui il punto delle migliaia
+ * si toglie SOLO se c'è anche la virgola decimale, o se divide gruppi di tre cifre; un
+ * numero ambiguo si rifiuta invece di indovinarlo.
+ */
+export const decimale = z
+  .string()
+  .trim()
+  .transform((v, ctx) => {
+    if (v === "") return null;
+    let s = v.replace(/\s/g, "");
+    if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");
+    else if (/^\d+,\d+$/.test(s)) s = s.replace(",", ".");
+    if (!/^\d+(\.\d+)?$/.test(s)) {
+      ctx.addIssue({ code: "custom", message: "Serve un numero non negativo" });
+      return z.NEVER;
+    }
+    return s;
+  });
+
+/** Il valore di un campo, validato con lo schema di quel campo. Solleva se il campo non c'è. */
+export function validaCampo<C extends Record<string, z.ZodType>>(campi: C, campo: string, valore: unknown): unknown {
+  if (!Object.hasOwn(campi, campo)) throw new Error("Campo non modificabile");
+  return (campi[campo] as z.ZodType).parse(valore);
+}

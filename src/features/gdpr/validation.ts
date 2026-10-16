@@ -1,5 +1,15 @@
 import { z } from "zod";
-import { companyIdSchema, dataIsoSchema } from "@/features/campi";
+import {
+  companyIdSchema,
+  dataIsoSchema,
+  dataOpzionale as data,
+  decimale,
+  interoNonNegativo,
+  scelta,
+  sceltaObbligatoria,
+  testo,
+  validaCampo,
+} from "@/features/campi";
 import { daOraItaliana } from "@/lib/calc/comune/tempo-italia";
 import domini from "@/lib/db/seeds/data/gdpr-domini.json";
 import registri from "@/lib/db/seeds/data/gdpr-registri.json";
@@ -17,25 +27,6 @@ import requisiti from "@/lib/db/seeds/data/gdpr-requisiti.json";
 // ⚠️ OGNI MUTAZIONE TOCCA UN CAMPO SOLO. Si manda `{ campo, valore }`, mai la riga intera:
 // rimandare la riga letta dalle props cancella ciò che un altro comando ha appena salvato,
 // e in questo progetto è successo quattro volte.
-
-const vuotoANull = (v: string) => (v === "" ? null : v);
-
-/** Testo libero; vuoto = `null`. */
-const testo = (max: number) => z.string().trim().max(max, `Massimo ${max} caratteri`).transform(vuotoANull);
-
-/** Una voce di un elenco chiuso; vuoto = `null`. */
-const scelta = (valori: readonly string[]) =>
-  z
-    .string()
-    .trim()
-    .refine((v) => v === "" || valori.includes(v), "Valore non ammesso")
-    .transform(vuotoANull);
-
-/** Una voce obbligatoria di un elenco chiuso. */
-const sceltaObbligatoria = (valori: readonly string[]) =>
-  z.string().refine((v) => valori.includes(v), "Valore non ammesso");
-
-const data = dataIsoSchema.transform(vuotoANull);
 
 /**
  * Un istante scritto in ORA ITALIANA (`AAAA-MM-GGThh:mm`, il formato di un campo
@@ -58,48 +49,6 @@ export const istanteItaliano = z
       return z.NEVER;
     }
     return d.toISOString();
-  });
-
-/** Un intero non negativo, opzionale; vuoto = `null`. Mai la virgola italiana scambiata. */
-const interoNonNegativo = (max = 10_000_000) =>
-  z
-    .string()
-    .trim()
-    .transform((v, ctx) => {
-      if (v === "") return null;
-      if (!/^\d+$/.test(v)) {
-        ctx.addIssue({ code: "custom", message: "Serve un numero intero" });
-        return z.NEVER;
-      }
-      const n = Number(v);
-      if (n > max) {
-        ctx.addIssue({ code: "custom", message: "Numero troppo grande" });
-        return z.NEVER;
-      }
-      return n;
-    });
-
-/**
- * Un numero decimale non negativo, scritto come lo scrive un italiano o un browser.
- *
- * ⚠️ «1.234,5» è milleduecentotrentaquattro e mezzo, non «uno virgola duecento…»: il
- * prototipo leggeva con `parseFloat`, che si ferma al punto. Qui il punto delle migliaia
- * si toglie SOLO se c'è anche la virgola decimale, o se divide gruppi di tre cifre; un
- * numero ambiguo si rifiuta invece di indovinarlo.
- */
-export const decimale = z
-  .string()
-  .trim()
-  .transform((v, ctx) => {
-    if (v === "") return null;
-    let s = v.replace(/\s/g, "");
-    if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");
-    else if (/^\d+,\d+$/.test(s)) s = s.replace(",", ".");
-    if (!/^\d+(\.\d+)?$/.test(s)) {
-      ctx.addIssue({ code: "custom", message: "Serve un numero non negativo" });
-      return z.NEVER;
-    }
-    return s;
   });
 
 const SI_NO = ["Sì", "No"] as const;
@@ -304,10 +253,6 @@ export const CAMPI_RIGHE = {
 export type TipoRiga = keyof typeof CAMPI_RIGHE;
 export const TIPI_RIGA = Object.keys(CAMPI_RIGHE) as TipoRiga[];
 
-/** Il valore di un campo, validato con lo schema di quel campo. Solleva se il campo non c'è. */
-export function validaCampo<C extends Record<string, z.ZodType>>(campi: C, campo: string, valore: unknown): unknown {
-  if (!Object.hasOwn(campi, campo)) throw new Error("Campo non modificabile");
-  return (campi[campo] as z.ZodType).parse(valore);
-}
+export { decimale, validaCampo };
 
 export const criterioSchema = z.object({ chiave: z.enum(CRITERI as [string, ...string[]]), acceso: z.boolean() });

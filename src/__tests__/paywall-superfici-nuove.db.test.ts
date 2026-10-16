@@ -10,6 +10,8 @@ import {
   gdprSystem,
   gdprTrattamento,
   orgEntitlement,
+  pasReclamo,
+  pasSystem,
   sgesgFase,
   sgesgProgramma,
   sgesgSchedaDato,
@@ -22,6 +24,7 @@ import { publishGdprSnapshot, publishSgesgSnapshot, TIPI_GDPR } from "@/features
 import { creaVoce } from "@/features/agenda";
 import { creaCompenso } from "@/features/compensi";
 import { avviaSistema, creaRiga, latestGdprSetId } from "@/features/gdpr/sistema";
+import { avviaSistema as avviaSistemaPas, creaRiga as creaRigaPas, latestPasSetId } from "@/features/pas/sistema";
 
 // IL PAYWALL SULLE SUPERFICI NUOVE.
 //
@@ -112,7 +115,26 @@ const SCRITTURE: {
     fai: async (u, o, c) => creaRiga(u, o, await radiceGdpr(o, c), "trattamento", "2026-10-12"),
     righe: async (o) => (await db.select().from(gdprTrattamento).where(eq(gdprTrattamento.organizationId, o))).length,
   },
+  {
+    nome: "avviare il sistema di gestione sociale",
+    fai: (u, o, c) => avviaSistemaPas(u, o, { companyId: c }),
+    righe: async (o) => (await db.select().from(pasSystem).where(eq(pasSystem.organizationId, o))).length,
+  },
+  {
+    // Come per il GDPR: radice inserita direttamente, si prova la riga del registro.
+    nome: "registrare un reclamo nel sistema di gestione sociale",
+    fai: async (u, o, c) => creaRigaPas(u, o, await radicePas(o, c), "reclamo", "2026-10-16"),
+    righe: async (o) => (await db.select().from(pasReclamo).where(eq(pasReclamo.organizationId, o))).length,
+  },
 ];
+
+async function radicePas(orgId: string, companyId: string): Promise<string> {
+  const [c] = await db.select({ id: pasSystem.id }).from(pasSystem).where(eq(pasSystem.companyId, companyId));
+  if (c) return c.id;
+  const id = `pas-pw-${orgId}`;
+  await db.insert(pasSystem).values({ id, organizationId: orgId, companyId, contentSetId: await latestPasSetId() });
+  return id;
+}
 
 async function radiceGdpr(orgId: string, companyId: string): Promise<string> {
   const [c] = await db.select({ id: gdprSystem.id }).from(gdprSystem).where(eq(gdprSystem.companyId, companyId));
