@@ -48,6 +48,8 @@ const SGESG_SET = "sgesg-v1";
 const NIS2_SET = "nis2-v1";
 const GDPR_SET = "gdpr-v1";
 const pid = (tipo, key) => `${GDPR_SET}:${tipo}:${key}`;
+const PAS_SET = "pas-v1";
+const pasid = (tipo, key) => `${PAS_SET}:${tipo}:${key}`;
 const gid = (key) => `${SGESG_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
@@ -65,7 +67,9 @@ try {
       -- ⚠️ GDPR non ha corpus, quindi \`seed-corpus.mjs\` non creerebbe il suo content set:
       -- si inserisce qui come quelli dei moduli senza corpus, altrimenti i cataloghi sotto
       -- falliscono sulla chiave esterna.
-      (${GDPR_SET}, 'gdpr', 1, 'Estratto dal prototipo percorso-gdpr-v1.html')
+      (${GDPR_SET}, 'gdpr', 1, 'Estratto dal prototipo percorso-gdpr-v1.html'),
+      -- Come GDPR: nessun corpus, il content set si crea qui.
+      (${PAS_SET}, 'pas', 1, 'Estratto dal prototipo percorso-pas24000-v1.html')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -738,6 +742,86 @@ try {
     values (${pid("testo", "politica")}, ${GDPR_SET}, 'politica', 1, ${politica.modello})
     on conflict (id) do update set testo = excluded.testo`;
 
+  // --- Sistema di gestione sociale (PAS 24000:2022) ----------------------------
+  //
+  // Cataloghi prodotti da `scripts/extract-pas.mjs` ESEGUENDO il prototipo, come per il GDPR.
+  // Le chiavi dei requisiti (`4.1`, `A.2-9`) sono quelle del prototipo; parti, rischi e
+  // attivita' tipo hanno chiavi stabili (`parte-01`…), che l'avvio del percorso copia in
+  // `tipo_key` per restare idempotente.
+  for (const g of load("pas-gruppi.json")) {
+    await sql`
+      insert into pas_gruppo (id, set_id, key, ordine, natura, nome, riferimento, definizione, verifiche, evidenze, attenzione)
+      values (${pasid("gruppo", g.key)}, ${PAS_SET}, ${g.key}, ${g.ordine}, ${g.natura}, ${g.nome}, ${g.riferimento},
+              ${g.guida.definizione}, ${sql.array(g.guida.verifiche)}, ${g.guida.evidenze}, ${g.guida.attenzione})
+      on conflict (id) do update set ordine = excluded.ordine, natura = excluded.natura, nome = excluded.nome,
+        riferimento = excluded.riferimento, definizione = excluded.definizione, verifiche = excluded.verifiche,
+        evidenze = excluded.evidenze, attenzione = excluded.attenzione`;
+  }
+  for (const r of load("pas-requisiti.json")) {
+    await sql`
+      insert into pas_requisito (id, set_id, key, ordine, gruppo_key, riferimento, testo)
+      values (${pasid("requisito", r.key)}, ${PAS_SET}, ${r.key}, ${r.ordine}, ${r.gruppo}, ${r.riferimento}, ${r.testo})
+      on conflict (id) do update set ordine = excluded.ordine, gruppo_key = excluded.gruppo_key,
+        riferimento = excluded.riferimento, testo = excluded.testo`;
+  }
+  for (const t of load("pas-parti-tipo.json")) {
+    await sql`
+      insert into pas_parte_tipo (id, set_id, key, ordine, nome, esigenze, obbligo, coinvolgimento)
+      values (${pasid("parte", t.key)}, ${PAS_SET}, ${t.key}, ${t.ordine}, ${t.nome}, ${t.esigenze}, ${t.obbligo},
+              ${t.coinvolgimento})
+      on conflict (id) do update set ordine = excluded.ordine, nome = excluded.nome, esigenze = excluded.esigenze,
+        obbligo = excluded.obbligo, coinvolgimento = excluded.coinvolgimento`;
+  }
+  for (const t of load("pas-rischi-tipo.json")) {
+    await sql`
+      insert into pas_rischio_tipo (id, set_id, key, ordine, area, ambito, testo)
+      values (${pasid("rischio", t.key)}, ${PAS_SET}, ${t.key}, ${t.ordine}, ${t.area}, ${t.ambito}, ${t.testo})
+      on conflict (id) do update set ordine = excluded.ordine, area = excluded.area, ambito = excluded.ambito,
+        testo = excluded.testo`;
+  }
+  const scalePas = load("pas-scale.json");
+  for (const asse of ["probabilita", "gravita"]) {
+    for (const s of scalePas[asse]) {
+      await sql`
+        insert into pas_scala (id, set_id, key, ordine, asse, valore, nome, descrizione)
+        values (${pasid("scala", `${asse}-${s.valore}`)}, ${PAS_SET}, ${`${asse}-${s.valore}`}, ${s.valore}, ${asse},
+                ${s.valore}, ${s.nome}, ${s.descrizione})
+        on conflict (id) do update set nome = excluded.nome, descrizione = excluded.descrizione`;
+    }
+  }
+  const indPas = load("pas-indicatori.json");
+  for (const s of indPas.sezioni) {
+    await sql`
+      insert into pas_sezione (id, set_id, key, ordine, nome, riferimento)
+      values (${pasid("sezione", s.key)}, ${PAS_SET}, ${s.key}, ${s.ordine}, ${s.nome}, ${s.riferimento})
+      on conflict (id) do update set ordine = excluded.ordine, nome = excluded.nome, riferimento = excluded.riferimento`;
+  }
+  for (const k of indPas.indicatori) {
+    await sql`
+      insert into pas_indicatore (id, set_id, key, ordine, sezione_key, nome, unita, aiuto)
+      values (${pasid("indicatore", k.key)}, ${PAS_SET}, ${k.key}, ${k.ordine}, ${k.sezione}, ${k.nome}, ${k.unita}, ${k.aiuto || null})
+      on conflict (id) do update set ordine = excluded.ordine, sezione_key = excluded.sezione_key, nome = excluded.nome,
+        unita = excluded.unita, aiuto = excluded.aiuto`;
+  }
+  for (const a of load("pas-piano-tipo.json")) {
+    await sql`
+      insert into pas_attivita_tipo (id, set_id, key, ordine, mese, riferimento, attivita)
+      values (${pasid("attivita", a.key)}, ${PAS_SET}, ${a.key}, ${a.ordine}, ${a.mese}, ${a.riferimento}, ${a.attivita})
+      on conflict (id) do update set ordine = excluded.ordine, mese = excluded.mese, riferimento = excluded.riferimento,
+        attivita = excluded.attivita`;
+  }
+  const politicaPas = load("pas-politica.json");
+  for (const c of politicaPas.contenuti) {
+    await sql`
+      insert into pas_contenuto_politica (id, set_id, key, ordine, testo)
+      values (${pasid("contenuto", c.key)}, ${PAS_SET}, ${c.key}, ${c.ordine}, ${c.testo})
+      on conflict (id) do update set ordine = excluded.ordine, testo = excluded.testo`;
+  }
+  await sql`
+    insert into pas_testo (id, set_id, key, ordine, testo)
+    values (${pasid("testo", "politica")}, ${PAS_SET}, 'politica', 1, ${politicaPas.modello})
+    on conflict (id) do update set testo = excluded.testo`;
+
   console.log("Seed completato:");
   for (const t of [
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",
@@ -754,6 +838,8 @@ try {
     "chain_dimension", "chain_area", "chain_flag_def", "chain_phase",
     "gdpr_gruppo", "gdpr_requisito", "gdpr_criterio", "gdpr_trattamento_tipo", "gdpr_scala", "gdpr_sezione",
     "gdpr_indicatore", "gdpr_documento_tipo", "gdpr_attivita_tipo", "gdpr_contenuto_politica", "gdpr_testo",
+    "pas_gruppo", "pas_requisito", "pas_parte_tipo", "pas_rischio_tipo", "pas_scala", "pas_sezione",
+    "pas_indicatore", "pas_attivita_tipo", "pas_contenuto_politica", "pas_testo",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

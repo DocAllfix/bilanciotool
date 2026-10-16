@@ -82,8 +82,9 @@ export function statoRegistri(r: Registri, anno: number, oggi: string, giorniRec
 
   const recl = nell(r.reclami);
   const chiusi = recl.filter((x) => !!x.chiusoIl);
-  // `giorniA(a, b)` è a − b in giorni di calendario: chiusura − ricezione.
-  const durate = chiusi.map((x) => Math.max(0, giorniA(x.chiusoIl, x.data) ?? 0));
+  // `giorniA(a, b)` è a − b in giorni di calendario: chiusura − ricezione. `data` qui non è
+  // mai nulla: `nell` tiene solo le voci che hanno un anno, cioè una data.
+  const durate = chiusi.map((x) => Math.max(0, giorniA(x.chiusoIl, x.data!) ?? 0));
 
   const nc = nell(r.nonConformita);
   const audit = nell(r.audit);

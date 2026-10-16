@@ -54,10 +54,12 @@ describe.skipIf(!url)("azienda_scrivibile su ogni tabella legata a un'azienda", 
     }
   });
 
-  it("la radice del percorso GDPR porta il trigger col ruolo «lavoro»", async () => {
+  // Le radici senza figlie con `company_id`: le figlie si fermano in `pretendiSistema`, e
+  // allora il ruolo del trigger sulla radice e' l'unica cosa che decide.
+  it.each(["gdpr_system", "pas_system"])("la radice %s porta il trigger col ruolo «lavoro»", async (radice) => {
     const r = (await db.execute(sql`
       select pg_get_triggerdef(t.oid) as def from pg_trigger t join pg_class c on c.oid = t.tgrelid
-      where c.relname = 'gdpr_system' and t.tgname = 'azienda_scrivibile'`)) as unknown as { def: string }[];
+      where c.relname = ${radice} and t.tgname = 'azienda_scrivibile'`)) as unknown as { def: string }[];
     expect(r).toHaveLength(1);
     expect(r[0].def).toContain("azienda_scrivibile('lavoro')");
   });

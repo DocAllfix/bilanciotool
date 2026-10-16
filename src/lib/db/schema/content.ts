@@ -16,7 +16,7 @@ export const contentSet = pgTable(
         // del corpus si congela indipendentemente da quella degli altri.
         "mog231", "iso37001", "sgiqas", "sa8000", "filiera", "wb", "sgesg",
         // `nis2` mancava qui pur essendo nel CHECK dalla migrazione 0055.
-        "nis2", "gdpr"],
+        "nis2", "gdpr", "pas"],
     }).notNull(),
     versione: integer("versione").notNull(),
     note: text("note"),
