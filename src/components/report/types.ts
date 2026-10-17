@@ -69,7 +69,12 @@ export type StatoReport = {
     /** Temi proposti dal codice ATECO e non ancora toccati: chiave → motivo. */
     proposte: Record<string, string>;
   };
-  kpi: { corrente: Record<string, string>; precedente: Record<string, string> };
+  kpi: {
+    corrente: Record<string, string>;
+    precedente: Record<string, string>;
+    /** Indicatori vuoti dell'esercizio con un valore proposto da un altro percorso o dall'anagrafica. */
+    proposte: Record<string, { valore: string; fonte: string }>;
+  };
   derivati: Record<string, string>;
   derivatiPrecedente: Record<string, string>;
   gestione: {

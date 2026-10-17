@@ -1,3 +1,4 @@
+import { assessMateriality } from "@/lib/calc/report/materiality";
 import { db } from "@/lib/db";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import {
@@ -167,11 +168,16 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
       kpi: defs.map((d) => ({ key: d.key, sectionKey: d.sectionKey, nome: d.nome, um: d.um })),
       capitoli: templates.map((t) => ({ key: t.key, nome: t.nome })),
     },
-    materialita: {
-      soglia: materialita.soglia,
-      perTopic: materialita.esito.perTopic,
-      materialKeys: materialita.esito.materialKeys,
-    },
+    // ⚠️ Una materialità PROPOSTA dal codice ATECO e mai toccata non è una valutazione: è il
+    // punteggio tipico del settore. Nel documento conta solo ciò che il consulente ha valutato,
+    // altrimenti un tema risulterebbe «materiale» senza che nessuno l'abbia guardato.
+    materialita: (() => {
+      const valutati = Object.fromEntries(
+        materialita.valutazioni.filter((v) => !v.propostaMotivo).map((v) => [v.topicKey, { imp: v.scoreImpact, fin: v.scoreFinancial }]),
+      );
+      const esito = assessMateriality(valutati, materialita.soglia);
+      return { soglia: materialita.soglia, perTopic: esito.perTopic, materialKeys: esito.materialKeys };
+    })(),
     kpi: {
       corrente: kpi.corrente,
       precedente: kpi.precedente,

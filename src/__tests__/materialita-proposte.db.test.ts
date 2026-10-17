@@ -5,6 +5,8 @@ import { company, materialityAssessment, orgEntitlement, reportProject } from "@
 import { creaStudio, pulisciStudio, type Studio } from "./comune";
 import { createReportProject, updateProfilo } from "@/features/report/projects";
 import { setTopicScoreField } from "@/features/report/materiality";
+import { publishBilancioSnapshot } from "@/features/documents/snapshot";
+import { documentSnapshot } from "@/lib/db/schema";
 
 // La materialità tipica del settore entra da sola nei temi vuoti, marcata «proposta».
 // Prima era un'etichetta che nessuno poteva accettare, mentre il corso diceva il contrario.
@@ -24,6 +26,7 @@ describe.skipIf(!DB)("materialità proposta dal codice ATECO", () => {
   });
 
   afterAll(async () => {
+    await db.delete(documentSnapshot).where(eq(documentSnapshot.organizationId, S.orgId)).catch(() => {});
     await db.delete(reportProject).where(eq(reportProject.organizationId, S.orgId));
     await pulisciStudio(S.orgId, S.userId);
   });
@@ -42,6 +45,16 @@ describe.skipIf(!DB)("materialità proposta dal codice ATECO", () => {
     expect(dopo.propostaMotivo).toBeNull();
     expect(dopo.scoreImpact).toBe(1);
     expect(dopo.scoreFinancial).toBe(t.scoreFinancial);
+  });
+
+  it("⚠️ nel documento pubblicato conta solo il tema toccato, non le proposte", async () => {
+    const tutte = await db.select().from(materialityAssessment).where(eq(materialityAssessment.projectId, pid));
+    const toccati = tutte.filter((x) => !x.propostaMotivo).map((x) => x.topicKey);
+    const id = await publishBilancioSnapshot(S.userId, S.orgId, S.companyId, 2025);
+    const [snap] = await db.select().from(documentSnapshot).where(eq(documentSnapshot.id, id));
+    const perTopic = (snap.dati as { materialita: { perTopic: Record<string, { valutato: boolean }> } }).materialita.perTopic;
+    const valutatiNelDocumento = Object.entries(perTopic).filter(([, v]) => v.valutato).map(([k]) => k);
+    expect(valutatiNelDocumento.sort()).toEqual(toccati.sort());
   });
 
   it("⚠️ cambiando ATECO escono solo le proposte non toccate", async () => {

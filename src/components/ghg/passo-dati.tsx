@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Check, Copy, Pencil, Plus, Sparkles } from "lucide-react";
 import type { Catalogo, Inventario, InventarioBreve, Riga, StatoWizard } from "./types";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
+import { PropostaValore } from "@/components/comune/proposta-valore";
 
 // Passo 3 — Dati di attività: una riga per sorgente e sito.
 // L'anteprima usa LE STESSE funzioni pure del server (src/lib/calc): mai
@@ -243,6 +244,30 @@ export function PassoDati({
                     </TableCell>
                     <TableCell className="text-right">
                       {fmtNum(r.quantita, 2)} <span className="text-xs text-muted-foreground">{r.um}</span>
+                      {r.propostaMotivo && Number(r.quantita) === 0 && r.factorKey && stato.proposteQuantita[r.factorKey] && (
+                        <div>
+                          <PropostaValore
+                            valore={stato.proposteQuantita[r.factorKey].valore}
+                            fonte={stato.proposteQuantita[r.factorKey].fonte}
+                            um={r.um}
+                            etichetta={r.descrizione || "la voce"}
+                            applica={async (q) => {
+                              // La voce si salva intera come dal dialogo: è una modifica del
+                              // consulente, e spegne la marca «proposta».
+                              const esito = await updateActivityRowAction(companyId, r.id, {
+                                sourceTypeKey: r.sourceTypeKey,
+                                categoryKey: r.categoryKey as "1" | "2" | "3" | "4" | "5" | "6",
+                                sede: r.sede ?? "", descrizione: r.descrizione ?? "", factorKey: r.factorKey,
+                                um: r.um, quantita: q, fe: r.fe,
+                                feMarket: r.feMarket, quotaGo: r.quotaGo, feBiogenic: r.feBiogenic,
+                                dq: r.dq, incertezza: r.incertezza, evidenza: r.evidenza ?? "", note: r.note ?? "",
+                              });
+                              if (!esito.ok) return setErrore(esito.errore);
+                              router.refresh();
+                            }}
+                          />
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">{fmtNum(r.fe, 4)}</TableCell>
                     <TableCell className="text-right font-semibold">

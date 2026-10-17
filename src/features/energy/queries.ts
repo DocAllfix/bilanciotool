@@ -1,3 +1,4 @@
+import { consumiDellAnno, proposteVettori } from "@/features/ponti/consumi";
 import { and, asc, eq } from "drizzle-orm";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import {
@@ -181,6 +182,11 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
         costo: i.costo,
         mensili: (i.mensili as string[]) ?? [],
       })),
+      // Le quantità dei vettori ancora VUOTI, proposte dall'inventario GHG dello stesso anno.
+      proposteVettori: proposteVettori(
+        await withTenant({ userId, orgId }, (tx) => consumiDellAnno(tx, orgId, companyId, anno)),
+        Object.fromEntries(inputs.map((i) => [i.vettoreKey, i.quantita])),
+      ),
       celle: celle.map((c) => ({ usoKey: c.usoKey, vettoreKey: c.vettoreKey, quantita: c.quantita })),
       driver: { corrente: driverPerAnno(anno), base: driverPerAnno(annoBase) },
       misure: misure.map((m) => ({

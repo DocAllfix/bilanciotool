@@ -65,6 +65,9 @@ export function PassoVerificaBilancio({
         </CardContent>
       </Card>
 
+      {/* I temi proposti dal codice ATECO e mai toccati NON entrano nel documento: senza
+          questa voce chi pubblica scoprirebbe nel PDF una matrice più povera di quella vista. */}
+      {blocco("Temi proposti da confermare", Object.keys(stato.materialita.proposte), 2, (k) => nomiTemi.get(k) ?? k)}
       {blocco("Anagrafica e profilo", g.profiloMancanti, 1)}
       {blocco("Dati dell'esercizio", g.kpiMancanti, 3, (k) => nomiKpi.get(k) ?? k)}
       {blocco("Confronto con l'anno precedente", g.kpiSenzaConfronto, 3, (k) => nomiKpi.get(k) ?? k)}
