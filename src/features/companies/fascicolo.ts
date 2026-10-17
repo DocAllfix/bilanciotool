@@ -18,7 +18,7 @@ import {
   soaDeclaration,
   soaControlDecision, briberySystem, briberyRequirementState, mogModel, mogProcess, mogScenario,
   wbSystem, wbRequirementState, qasSystem, qasRequirementState, saSystem, saCriterionState, chainProgram, chainPartner,
-  sgesgProgramma, sgesgFase, gdprSystem, gdprRequisitoStato } from "@/lib/db/schema";
+  sgesgProgramma, sgesgFase, gdprSystem, gdprRequisitoStato, pasSystem, pasRequisitoStato } from "@/lib/db/schema";
 import { MODULI_AZIENDA, type ModuloAzienda } from "./moduli";
 import { and, count, desc, eq, isNotNull } from "drizzle-orm";
 
@@ -81,7 +81,7 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
 
     // Tutte le radici dei cinque moduli in parallelo: cinque select piccole,
     // non cinque motori.
-    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, autovalutazioneNis2, sistemaNis2, programmaFiliera, documenti, sistemaGdpr] = await Promise.all([
+    const [inventari, progetti, bilanciEnergia, programmiEsg, valutazione, dichiarazione, sistemaPc, modello231, sistemaWb, sistemaQas, sistemaSa, autovalutazioneNis2, sistemaNis2, programmaFiliera, documenti, sistemaGdpr, sistemaPas] = await Promise.all([
       tx
         .select({ id: ghgInventory.id, anno: ghgInventory.anno })
         .from(ghgInventory)
@@ -159,6 +159,11 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         .select({ id: gdprSystem.id })
         .from(gdprSystem)
         .where(and(eq(gdprSystem.companyId, companyId), eq(gdprSystem.organizationId, orgId))),
+      // In coda anche questa, per la stessa ragione.
+      tx
+        .select({ id: pasSystem.id })
+        .from(pasSystem)
+        .where(and(eq(pasSystem.companyId, companyId), eq(pasSystem.organizationId, orgId))),
     ]);
 
     const invId = inventari[0]?.id ?? null;
@@ -176,11 +181,12 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
     const sgnis2Id = sistemaNis2[0]?.id ?? null;
     const filId = programmaFiliera[0]?.id ?? null;
     const gdprId = sistemaGdpr[0]?.id ?? null;
+    const pasId = sistemaPas[0]?.id ?? null;
     const annoBilancio = progetti[0]?.anno ?? null;
 
     // Conteggi di riempimento: un COUNT per modulo avviato, zero query per gli altri.
     const zero = Promise.resolve([{ n: 0 }]);
-    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner, nReqNis2, nCtrlNis2, nReqGdpr] = await Promise.all([
+    const [nVoci, nKpi, nCelle, nFasiEsg, nRisposte, nDecisioni, nRequisiti, nScenari, nRequisitiWb, nRequisitiQas, nCriteriSa, nPartner, nReqNis2, nCtrlNis2, nReqGdpr, nReqPas] = await Promise.all([
       invId
         ? tx.select({ n: count() }).from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, invId))
         : zero,
@@ -288,6 +294,13 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
             .from(gdprRequisitoStato)
             .where(and(eq(gdprRequisitoStato.systemId, gdprId), isNotNull(gdprRequisitoStato.stato)))
         : zero,
+      // In coda, e con `isNotNull(stato)` per la stessa ragione del GDPR.
+      pasId
+        ? tx
+            .select({ n: count() })
+            .from(pasRequisitoStato)
+            .where(and(eq(pasRequisitoStato.systemId, pasId), isNotNull(pasRequisitoStato.stato)))
+        : zero,
     ]);
 
     // Per ogni tipo di documento, la versione più alta (l'elenco è già ordinato
@@ -367,6 +380,13 @@ export async function getFascicolo(userId: string, orgId: string, companyId: str
         anno: null,
         riempimento: mogId
           ? { valore: nScenari[0].n, etichetta: nScenari[0].n === 1 ? "scenario mappato" : "scenari mappati" }
+          : null,
+      },
+      pas24000: {
+        avviato: !!pasId,
+        anno: null,
+        riempimento: pasId
+          ? { valore: nReqPas[0].n, etichetta: nReqPas[0].n === 1 ? "requisito valutato" : "requisiti valutati" }
           : null,
       },
       sa8000: {

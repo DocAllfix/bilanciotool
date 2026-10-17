@@ -34,6 +34,8 @@ import { getFiliera } from "@/features/filiera/queries";
 import { getSa8000 } from "@/features/sa8000/queries";
 import { leggiPercorsoGdpr, type PercorsoGdprAvviato } from "@/features/gdpr/queries";
 import { datiDocumentoGdpr } from "@/features/gdpr/documento";
+import { leggiPercorsoPas, type PercorsoPasAvviato } from "@/features/pas/queries";
+import { datiDocumentoPas } from "@/features/pas/documento";
 import { oggiIso } from "@/lib/calc/comune/tempo-italia";
 import { statistiche, statoTermine, urgenza } from "@/lib/calc/segnalazioni/relazione";
 import { avvisoEntro, riscontroEntro } from "@/lib/calc/segnalazioni/termini";
@@ -1354,5 +1356,36 @@ export async function publishGdprSnapshot(
   if (!p?.sistema || !p.righe) throw new Error("Nessun percorso protezione dei dati da pubblicare per questa azienda");
   const adesso = new Date();
   const dati = datiDocumentoGdpr(p as PercorsoGdprAvviato, esercizio, { oggi: oggiIso(adesso), adesso });
+  return salvaSnapshot(userId, orgId, companyId, tipo, SENZA_ESERCIZIO, dati, p.sistema.contentSetId);
+}
+
+// ------------------------------------------------------------- Sistema di gestione sociale
+
+/** I quattro tipi del percorso PAS 24000. */
+export const TIPI_PAS = ["manuale_pas", "politica_pas", "conformita_pas", "riesame_pas"] as const satisfies readonly TipoDocumento[];
+export type TipoPas = (typeof TIPI_PAS)[number];
+
+/**
+ * I quattro documenti del sistema di gestione sociale, da una funzione sola, come il GDPR.
+ *
+ * ⚠️ `esercizio` va NEI DATI, non nella chiave: la chiave resta `SENZA_ESERCIZIO`. Indicatori,
+ * registri e riesame si leggono per quell'esercizio e il precedente.
+ *
+ * ⚠️ «Oggi» lo decide il server, in ora italiana: l'età dei reclami e le azioni scadute
+ * congelate nel documento devono essere quelle del giorno della firma.
+ */
+export async function publishPasSnapshot(
+  userId: string,
+  orgId: string,
+  companyId: string,
+  tipo: TipoPas,
+  esercizio: number,
+): Promise<string> {
+  await requireEntitlement(userId, orgId, "generate_pdf");
+  if (!Number.isInteger(esercizio) || esercizio < 1990 || esercizio > 2100) throw new Error("Esercizio non valido");
+  const p = await leggiPercorsoPas(userId, orgId, companyId);
+  if (!p?.sistema || !p.righe) throw new Error("Nessun sistema di gestione sociale da pubblicare per questa azienda");
+  const adesso = new Date();
+  const dati = datiDocumentoPas(p as PercorsoPasAvviato, esercizio, oggiIso(adesso), adesso);
   return salvaSnapshot(userId, orgId, companyId, tipo, SENZA_ESERCIZIO, dati, p.sistema.contentSetId);
 }

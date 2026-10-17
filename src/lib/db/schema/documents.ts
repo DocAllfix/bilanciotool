@@ -21,7 +21,8 @@ export const documentSnapshot = pgTable(
     // scrive o legge questa colonna. E' successo, e ci ha messo tre secondi.
     tipo: text("tipo", { enum: ["ghg", "bilancio", "energetico", "attestato", "soa", "relazione_pc", "matrice_pc", "matrice_231", "relazione_odv", "relazione_wb", "riesame_qas", "manuale_sa8000", "dichiarazione_filiera", "analisi_ambientale", "valutazione_ssl", "offerta_esg", "verbale_avvio", "diagnosi_esg", "dossier_finale",
       "conformita_nis2", "relazione_nis2", "controlli_nis2",
-      "registro_trattamenti", "modello_privacy", "politica_privacy", "dpia", "conformita_gdpr", "relazione_privacy"] }).notNull(),
+      "registro_trattamenti", "modello_privacy", "politica_privacy", "dpia", "conformita_gdpr", "relazione_privacy",
+      "manuale_pas", "politica_pas", "conformita_pas", "riesame_pas"] }).notNull(),
     anno: integer("anno").notNull(),
     versione: integer("versione").notNull(),
     dati: jsonb("dati").notNull(), // tutti i dati risolti + derivati calcolati alla pubblicazione

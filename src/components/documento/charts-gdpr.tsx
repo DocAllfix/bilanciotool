@@ -46,19 +46,29 @@ export function BarreConformita({ voci }: { voci: { nome: string; indice: number
   );
 }
 
-/** La matrice 5 × 5 dei rischi, col numero di trattamenti in ogni casella. */
+/**
+ * La matrice 5 × 5 dei rischi, col numero di elementi in ogni casella.
+ *
+ * `oggetto` e `perChi` esistono perché la usa anche il sistema di gestione sociale, dove si
+ * contano rischi e non trattamenti, e la gravità è per le persone e non per l'interessato.
+ * I predefiniti sono quelli del GDPR: i documenti già pubblicati si rendono identici.
+ */
 export function MatriceRischi({
   punti,
   alto,
   medio,
   probabilita,
   gravita,
+  oggetto = "trattamenti",
+  perChi = "per l'interessato",
 }: {
   punti: { p: number; g: number }[];
   alto: number;
   medio: number;
   probabilita: string[];
   gravita: string[];
+  oggetto?: string;
+  perChi?: string;
 }) {
   const W = 640, H = 330, L = 110, T = 16, cw = 76, ch = 50;
   const celle = [];
@@ -89,7 +99,7 @@ export function MatriceRischi({
     }
   }
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Matrice dei rischi: trattamenti per probabilità e gravità">
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Matrice dei rischi: ${oggetto} per probabilità e gravità`}>
       {celle}
       {[1, 2, 3, 4, 5].map((v) => (
         <g key={v}>
@@ -102,7 +112,7 @@ export function MatriceRischi({
         </g>
       ))}
       <text x={L + cw * 2.5} y={H - 8} fontSize={10.5} fill={DOC.ink} textAnchor="middle">
-        gravità per l&apos;interessato →
+        gravità {perChi} →
       </text>
       {[
         [VERDE, "basso"],

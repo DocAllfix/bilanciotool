@@ -1,0 +1,56 @@
+{
+  "probabilita": [
+    {
+      "valore": 1,
+      "nome": "Remota",
+      "descrizione": "Mai accaduto, non plausibile nelle condizioni attuali"
+    },
+    {
+      "valore": 2,
+      "nome": "Improbabile",
+      "descrizione": "Potrebbe accadere solo in circostanze particolari"
+    },
+    {
+      "valore": 3,
+      "nome": "Possibile",
+      "descrizione": "È accaduto nel settore o in situazioni simili"
+    },
+    {
+      "valore": 4,
+      "nome": "Probabile",
+      "descrizione": "È già accaduto in azienda o tra i fornitori"
+    },
+    {
+      "valore": 5,
+      "nome": "Frequente",
+      "descrizione": "Accade o è atteso che accada in modo ricorrente"
+    }
+  ],
+  "gravita": [
+    {
+      "valore": 1,
+      "nome": "Trascurabile",
+      "descrizione": "Disagio lieve, rimediabile subito"
+    },
+    {
+      "valore": 2,
+      "nome": "Lieve",
+      "descrizione": "Danno limitato a poche persone, pienamente rimediabile"
+    },
+    {
+      "valore": 3,
+      "nome": "Moderata",
+      "descrizione": "Violazione di un requisito di legge o danno apprezzabile a un gruppo"
+    },
+    {
+      "valore": 4,
+      "nome": "Grave",
+      "descrizione": "Lesione di diritti dei lavoratori o danno difficilmente rimediabile"
+    },
+    {
+      "valore": 5,
+      "nome": "Molto grave",
+      "descrizione": "Violazione di diritti fondamentali, danno irreversibile"
+    }
+  ]
+}

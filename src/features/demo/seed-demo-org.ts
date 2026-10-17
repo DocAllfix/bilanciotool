@@ -15,7 +15,7 @@ import { randomUUID } from "node:crypto";
 // dentro il hook di signup e non deve pesare.
 
 const B = {
-  forma: "Meccanica Adriatica S.r.l.", piva: "07566620723", sede: "Bari, via delle Officine 12",
+  forma: "Corvane Meccanica S.r.l.", piva: "07481930726", sede: "Bari, via delle Officine 12",
   settore: "Componenti meccanici di precisione", ateco: "25.62",
   siti: "Stabilimento di Bari (produzione); deposito di Modugno (logistica)",
   dipendenti: "48", responsabile: "Ing. Paola Ranieri — HSE Manager", consolidamento: "Controllo operativo",
@@ -75,7 +75,7 @@ const GESTIONE: [string, string, string, string, string, string, string][] = [
 
 const CAPITOLI: [string, string][] = [
   ["lettera", "Il 2025 è stato l'anno in cui la sostenibilità è passata dai propositi ai numeri. Abbiamo installato il fotovoltaico, ridotto di un terzo gli infortuni e, per la prima volta, misurato per intero le nostre emissioni secondo la ISO 14064-1.\n\nQuesto documento racconta come lavoriamo: ai nostri clienti, alle banche che ci accompagnano e soprattutto alle 48 persone che ogni giorno costruiscono questa azienda."],
-  ["identita", "Meccanica Adriatica nasce a Bari nel 1987 come officina di tornitura conto terzi. Oggi produce componenti meccanici di precisione per l'automotive e la meccanica agricola, con 48 dipendenti e un fatturato di 5,2 milioni di euro.\n\nLa proprietà è alla seconda generazione familiare; dal 2019 l'azienda è certificata ISO 9001 e IATF 16949, dal 2023 ISO 14001 e 45001."],
+  ["identita", "Corvane Meccanica nasce a Bari nel 1987 come officina di tornitura conto terzi. Oggi produce componenti meccanici di precisione per l'automotive e la meccanica agricola, con 48 dipendenti e un fatturato di 5,2 milioni di euro.\n\nLa proprietà è alla seconda generazione familiare; dal 2019 l'azienda è certificata ISO 9001 e IATF 16949, dal 2023 ISO 14001 e 45001."],
   ["metodo", "Il bilancio è redatto con riferimento ai GRI Standards 2021 e tiene conto della struttura del modulo VSME. I dati provengono dai sistemi gestionali aziendali e dall'inventario GHG redatto secondo ISO 14064-1."],
 ];
 
@@ -95,10 +95,10 @@ export async function seedDemoCompany(userId: string, orgId: string): Promise<st
     await tx.insert(company).values({
       id: companyId,
       organizationId: orgId,
-      nome: "Meccanica Adriatica S.r.l. (demo)",
+      nome: "Corvane Meccanica S.r.l. (demo)",
       settore: "Componenti meccanici di precisione",
       sede: "Bari",
-      piva: "07566620723",
+      piva: "07481930726",
       ateco: "25.62",
       isDemo: true,
     });

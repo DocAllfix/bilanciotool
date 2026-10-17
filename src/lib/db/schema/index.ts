@@ -25,4 +25,5 @@ export * from "./compensi";
 export * from "./verifica";
 export * from "./nis2";
 export * from "./gdpr";
+export * from "./pas";
 export * from "./assistenza";

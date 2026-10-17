@@ -24,7 +24,7 @@ describe.skipIf(!url)("la dimostrativa GDPR", () => {
   let v: ReturnType<typeof datiVistaGdpr>;
 
   beforeAll(async () => {
-    S = await creaStudio({ prefisso: "gdpr-demo", run: RUN, nomeAzienda: "Meccanica Adriatica S.r.l." });
+    S = await creaStudio({ prefisso: "gdpr-demo", run: RUN, nomeAzienda: "Corvane Meccanica S.r.l." });
     await db.insert(orgEntitlement).values({ organizationId: S.orgId, status: "active" });
     await withTenant({ userId: S.userId, orgId: S.orgId }, (tx) => seedDemoGdpr(tx, S.orgId, S.companyId));
     const p = await leggiPercorsoGdpr(S.userId, S.orgId, S.companyId);

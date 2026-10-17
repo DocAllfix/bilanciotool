@@ -18,6 +18,7 @@ import {
   publishAnalisiAmbientaleSnapshot,
   publishValutazioneSslSnapshot,
   publishGdprSnapshot,
+  publishPasSnapshot,
 } from "./snapshot";
 import { oggiIso } from "@/lib/calc/comune/tempo-italia";
 
@@ -94,6 +95,15 @@ export async function publishDocumentAction(
           const t = tipo;
           return (u: string, o: string, c: string, a: number) =>
             publishGdprSnapshot(u, o, c, t, a > 0 ? a : Number(oggiIso().slice(0, 4)));
+        }
+        // ⚠️ I quattro del sistema di gestione sociale: stessa forma del GDPR.
+        case "manuale_pas":
+        case "politica_pas":
+        case "conformita_pas":
+        case "riesame_pas": {
+          const t = tipo;
+          return (u: string, o: string, c: string, a: number) =>
+            publishPasSnapshot(u, o, c, t, a > 0 ? a : Number(oggiIso().slice(0, 4)));
         }
         default: {
           const mai: never = tipo;

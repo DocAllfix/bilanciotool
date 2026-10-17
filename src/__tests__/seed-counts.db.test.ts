@@ -17,7 +17,10 @@ import {
   nis2IndicatorDef, nis2Sector, nis2Criterion,
   gdprGruppo, gdprRequisito, gdprCriterio, gdprTrattamentoTipo, gdprScala, gdprSezione,
   gdprIndicatore, gdprDocumentoTipo, gdprAttivitaTipo, gdprContenutoPolitica, gdprTesto,
+  pasGruppo, pasRequisito, pasParteTipo, pasRischioTipo, pasScala, pasSezione, pasIndicatore,
+  pasAttivitaTipo, pasContenutoPolitica, pasTesto,
 } from "@/lib/db/schema";
+import { DERIVATI as DERIVATI_PAS } from "@/lib/calc/pas/indicatori";
 import { DERIVATI } from "@/lib/calc/gdpr/indicatori";
 import { INDICATORI_KEYS } from "@/lib/calc/energy/indicators";
 import { AREE_PESI } from "@/lib/calc/supplier/scoring";
@@ -44,7 +47,8 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // percorsi — il sistema di gestione contiene per intero l'autovalutazione, e due set
     // duplicherebbero 518 blocchi identici destinati a divergere.
     // Dal 12 ottobre 2026 sono QUATTORDICI: si aggiunge `gdpr-v1`, protezione dei dati.
-    expect(await conta(contentSet)).toBe(14);
+    // Dal 16 ottobre 2026 sono QUINDICI: si aggiunge `pas-v1`, sistema di gestione sociale.
+    expect(await conta(contentSet)).toBe(15);
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
     expect(await conta(sgesgPhaseDef)).toBe(8);
@@ -390,6 +394,54 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
       expect(ind.has(d.totale), d.totale).toBe(true);
     }
     const [modello] = await db.select().from(gdprTesto);
+    expect(modello.testo.startsWith("{nome} ")).toBe(true);
+  });
+
+  // ──────────────────────────────────────────────────────────────── PAS 24000
+  //
+  // I conteggi sono quelli che il prototipo produce ESEGUITO (`scripts/extract-pas.mjs`):
+  // 98 requisiti in 18 gruppi, 31 sulle sette clausole di sistema e 67 sulle undici aree
+  // dell'Allegato A, che non ammette esclusioni.
+
+  it("PAS 24000: i conteggi del catalogo", async () => {
+    expect(await conta(pasGruppo)).toBe(18);
+    expect(await conta(pasRequisito)).toBe(98);
+    expect(await conta(pasParteTipo)).toBe(8);
+    expect(await conta(pasRischioTipo)).toBe(20);
+    expect(await conta(pasScala)).toBe(10);
+    expect(await conta(pasSezione)).toBe(6);
+    expect(await conta(pasIndicatore)).toBe(35);
+    expect(await conta(pasAttivitaTipo)).toBe(16);
+    expect(await conta(pasContenutoPolitica)).toBe(9);
+    expect(await conta(pasTesto)).toBe(1);
+  });
+
+  it("PAS 24000: ogni requisito ha un gruppo, ogni gruppo una guida, nella distribuzione del prototipo", async () => {
+    const gruppi = await db.select().from(pasGruppo).orderBy(pasGruppo.ordine);
+    const requisiti = await db.select().from(pasRequisito);
+    const per = Object.fromEntries(gruppi.map((g) => [g.key, requisiti.filter((r) => r.gruppoKey === g.key).length]));
+    expect(per).toEqual({
+      C4: 4, C5: 4, C6: 5, C7: 7, C8: 4, C9: 5, C10: 2,
+      A1: 4, A2: 11, A3: 6, A4: 4, A5: 4, A6: 9, A7: 4, A8: 11, A9: 9, A10: 3, A11: 2,
+    });
+    const sistema = gruppi.filter((g) => g.natura === "sistema").map((g) => g.key);
+    expect(requisiti.filter((r) => sistema.includes(r.gruppoKey))).toHaveLength(31);
+    for (const g of gruppi) {
+      expect(g.definizione.length, g.key).toBeGreaterThan(40);
+      expect(g.verifiche.length, g.key).toBe(3);
+      expect(g.attenzione.length, g.key).toBeGreaterThan(40);
+    }
+    expect(new Set(requisiti.map((r) => r.key)).size).toBe(98);
+  });
+
+  it("PAS 24000: gli ingressi dei derivati sono indicatori seminati, i rischi tipo stanno in un'area", async () => {
+    // Una chiave sbagliata darebbe un derivato sempre `null`, senza errori: con la regola
+    // «manca un ingresso, il derivato non esiste» il sintomo sarebbe un trattino per sempre.
+    const ind = new Set((await db.select().from(pasIndicatore)).map((k) => k.key));
+    for (const d of DERIVATI_PAS) for (const k of d.ingressi) expect(ind.has(k), `${d.key}: ${k}`).toBe(true);
+    const gruppi = new Set((await db.select().from(pasGruppo)).map((g) => g.key));
+    for (const r of await db.select().from(pasRischioTipo)) expect(gruppi.has(r.area), r.key).toBe(true);
+    const [modello] = await db.select().from(pasTesto);
     expect(modello.testo.startsWith("{nome} ")).toBe(true);
   });
 

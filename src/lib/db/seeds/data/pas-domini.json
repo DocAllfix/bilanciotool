@@ -1,0 +1,133 @@
+{
+  "stati": [
+    {
+      "key": "c",
+      "etichetta": "Conforme"
+    },
+    {
+      "key": "p",
+      "etichetta": "Parziale"
+    },
+    {
+      "key": "n",
+      "etichetta": "Non conforme"
+    },
+    {
+      "key": "na",
+      "etichetta": "Non pertinente"
+    }
+  ],
+  "ambiti": [
+    {
+      "key": "O",
+      "etichetta": "Organizzazione"
+    },
+    {
+      "key": "F",
+      "etichetta": "Catena di fornitura"
+    }
+  ],
+  "tipiFattore": [
+    "Esterno",
+    "Interno"
+  ],
+  "effettiFattore": [
+    "Rischio",
+    "Opportunità"
+  ],
+  "categorieFornitore": [
+    "Materie prime",
+    "Imballaggi e materiali",
+    "Agenzia per il lavoro",
+    "Appalto in sito",
+    "Cooperativa di servizi",
+    "Trasporti e logistica",
+    "Servizi",
+    "Lavorazioni esterne"
+  ],
+  "rischiFornitore": [
+    "Basso",
+    "Medio",
+    "Alto"
+  ],
+  "esitiFornitore": [
+    "Adeguato",
+    "Azioni richieste",
+    "Critico"
+  ],
+  "statiObiettivo": [
+    "In corso",
+    "Raggiunto",
+    "In ritardo",
+    "Abbandonato"
+  ],
+  "statiAttivita": [
+    "Da fare",
+    "In corso",
+    "Fatto"
+  ],
+  "registri": {
+    "reclamoCanale": [
+      "Cassetta o modulo",
+      "Indirizzo dedicato",
+      "Rappresentante dei lavoratori",
+      "Colloquio diretto",
+      "Piattaforma di segnalazione"
+    ],
+    "reclamoProvenienza": [
+      "Lavoratore",
+      "Lavoratore di un fornitore",
+      "Parte esterna",
+      "Anonimo"
+    ],
+    "reclamoEsito": [
+      "In istruttoria",
+      "Fondato, risolto",
+      "Fondato, azioni in corso",
+      "Non fondato"
+    ],
+    "ncOrigine": [
+      "Audit interno",
+      "Audit esterno",
+      "Reclamo",
+      "Incidente",
+      "Monitoraggio",
+      "Segnalazione"
+    ],
+    "ncEfficacia": [
+      "Da verificare",
+      "Efficace",
+      "Non efficace"
+    ],
+    "emergenzaTipo": [
+      "Prova di evacuazione",
+      "Prova antincendio",
+      "Esercitazione di primo soccorso",
+      "Verifica di presidi e vie di fuga",
+      "Emergenza reale"
+    ],
+    "comunicazioneTipo": [
+      "Interna",
+      "Esterna"
+    ],
+    "consultazioneForma": [
+      "Riunione con i lavoratori",
+      "Incontro con i rappresentanti",
+      "Questionario",
+      "Raccolta di proposte"
+    ],
+    "auditStato": [
+      "Pianificato",
+      "Svolto",
+      "Chiuso"
+    ]
+  },
+  "parametri": {
+    "ore_ord": 48,
+    "ore_tot": 60,
+    "sett": 46,
+    "alto": 15,
+    "medio": 8,
+    "gg_recl": 30
+  }
+}

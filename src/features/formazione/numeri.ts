@@ -80,6 +80,15 @@ import indicatoriGdpr from "@/lib/db/seeds/data/gdpr-indicatori.json";
 import registriGdpr from "@/lib/db/seeds/data/gdpr-registri.json";
 import documentiTipoGdpr from "@/lib/db/seeds/data/gdpr-documenti-tipo.json";
 import attivitaTipoGdpr from "@/lib/db/seeds/data/gdpr-piano-tipo.json";
+import requisitiPas from "@/lib/db/seeds/data/pas-requisiti.json";
+import gruppiPas from "@/lib/db/seeds/data/pas-gruppi.json";
+import partiTipoPas from "@/lib/db/seeds/data/pas-parti-tipo.json";
+import rischiTipoPas from "@/lib/db/seeds/data/pas-rischi-tipo.json";
+import indicatoriPas from "@/lib/db/seeds/data/pas-indicatori.json";
+import registriPas from "@/lib/db/seeds/data/pas-registri.json";
+import attivitaTipoPas from "@/lib/db/seeds/data/pas-piano-tipo.json";
+import politicaPas from "@/lib/db/seeds/data/pas-politica.json";
+import { DERIVATI as DERIVATI_PAS } from "@/lib/calc/pas/indicatori";
 
 
 import { MODULI_AZIENDA, MODULI_PER_AREA } from "@/features/companies/moduli";
@@ -240,6 +249,22 @@ export const NUMERI = {
   registriGdpr: registriGdpr.length,
   documentiTipoGdpr: documentiTipoGdpr.length,
   attivitaTipoGdpr: attivitaTipoGdpr.length,
+
+  /** Sistema di gestione sociale (PAS 24000). */
+  requisitiPas: requisitiPas.length,
+  requisitiSistemaPas: requisitiPas.filter((r) => gruppiPas.find((g) => g.key === r.gruppo)?.natura === "sistema").length,
+  requisitiAllegatoPas: requisitiPas.filter((r) => gruppiPas.find((g) => g.key === r.gruppo)?.natura === "allegato").length,
+  gruppiPas: gruppiPas.length,
+  clausolePas: gruppiPas.filter((g) => g.natura === "sistema").length,
+  areeAllegatoPas: gruppiPas.filter((g) => g.natura === "allegato").length,
+  partiTipoPas: partiTipoPas.length,
+  rischiTipoPas: rischiTipoPas.length,
+  indicatoriPas: indicatoriPas.indicatori.length,
+  sezioniIndicatoriPas: indicatoriPas.sezioni.length,
+  derivatiPas: DERIVATI_PAS.length,
+  registriPas: registriPas.length,
+  attivitaTipoPas: attivitaTipoPas.length,
+  contenutiPoliticaPas: politicaPas.contenuti.length,
 
 
   /**

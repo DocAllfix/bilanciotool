@@ -3,11 +3,9 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { RigaRegistro as Riga } from "@/components/comune/percorso";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
-import { BottoneElimina } from "@/components/comune/bottone-elimina";
 import { fmtDataBreve } from "@/lib/format";
 import catalogo from "@/lib/db/seeds/data/gdpr-registri.json";
 import { OPZIONI_REGISTRI, type TipoRiga } from "@/features/gdpr/validation";
@@ -275,52 +273,5 @@ export function VistaRegistri({ dati, cmd }: { dati: DatiGdpr; cmd: ComandiGdpr 
         {conteggi[quale] === 0 && <p className="text-sm text-muted-foreground">Nessuna registrazione.</p>}
       </div>
     </div>
-  );
-}
-
-function Riga({
-  id,
-  aperto,
-  titolo,
-  sotto,
-  stato,
-  elimina,
-  nome,
-  children,
-}: {
-  id: string;
-  aperto: boolean;
-  titolo: string;
-  sotto: string;
-  stato?: { n: string; v: "destructive" | "secondary" | "outline" } | null;
-  elimina: () => Promise<unknown>;
-  nome: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <details className="rounded-lg border bg-card" open={aperto || undefined} data-riga={id}>
-      <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3">
-        <span className="min-w-0 flex-1 truncate font-medium">{titolo}</span>
-        <span className="text-[12px] text-muted-foreground">{sotto}</span>
-        {stato && (
-          <Badge variant={stato.v} data-termine={stato.n}>
-            {stato.n}
-          </Badge>
-        )}
-      </summary>
-      <Card className="rounded-t-none border-0 border-t shadow-none">
-        <CardContent className="grid gap-4 pt-4 sm:grid-cols-2">
-          {children}
-          <div className="flex justify-end sm:col-span-2">
-            <BottoneElimina
-              etichetta={`Elimina ${nome}`}
-              titolo={`Eliminare ${nome}?`}
-              descrizione="La registrazione esce dal registro. I documenti già pubblicati non cambiano."
-              onConferma={elimina}
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </details>
   );
 }

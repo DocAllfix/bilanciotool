@@ -1,0 +1,114 @@
+[
+  {
+    "key": "att-01",
+    "ordine": 1,
+    "mese": 1,
+    "riferimento": "4.1 · 6.1",
+    "attivita": "Riesame di contesto, parti interessate e rischi"
+  },
+  {
+    "key": "att-02",
+    "ordine": 2,
+    "mese": 1,
+    "riferimento": "8.1.2",
+    "attivita": "Approvazione del piano di lavoro annuale e degli obiettivi"
+  },
+  {
+    "key": "att-03",
+    "ordine": 3,
+    "mese": 2,
+    "riferimento": "7.4.2",
+    "attivita": "Comunicazione interna annuale sul sistema di gestione sociale"
+  },
+  {
+    "key": "att-04",
+    "ordine": 4,
+    "mese": 2,
+    "riferimento": "7.2 · 7.3",
+    "attivita": "Formazione su diritti, politica sociale e canale di reclamo"
+  },
+  {
+    "key": "att-05",
+    "ordine": 5,
+    "mese": 3,
+    "riferimento": "6.1.2",
+    "attivita": "Verifica dei requisiti di legge: orari, retribuzioni, contratti"
+  },
+  {
+    "key": "att-06",
+    "ordine": 6,
+    "mese": 4,
+    "riferimento": "8.1.3",
+    "attivita": "Invio dei requisiti sociali e del questionario ai fornitori"
+  },
+  {
+    "key": "att-07",
+    "ordine": 7,
+    "mese": 5,
+    "riferimento": "8.2",
+    "attivita": "Prova di emergenza ed evacuazione"
+  },
+  {
+    "key": "att-08",
+    "ordine": 8,
+    "mese": 5,
+    "riferimento": "A.7",
+    "attivita": "Verifica di presidi antincendio e vie di fuga"
+  },
+  {
+    "key": "att-09",
+    "ordine": 9,
+    "mese": 6,
+    "riferimento": "5.4",
+    "attivita": "Incontro di consultazione con i lavoratori e i loro rappresentanti"
+  },
+  {
+    "key": "att-10",
+    "ordine": 10,
+    "mese": 6,
+    "riferimento": "9.1",
+    "attivita": "Monitoraggio semestrale degli indicatori"
+  },
+  {
+    "key": "att-11",
+    "ordine": 11,
+    "mese": 7,
+    "riferimento": "8.1.3",
+    "attivita": "Verifiche sui fornitori a rischio alto"
+  },
+  {
+    "key": "att-12",
+    "ordine": 12,
+    "mese": 9,
+    "riferimento": "9.2",
+    "attivita": "Audit interno sul sistema e sull'Allegato A"
+  },
+  {
+    "key": "att-13",
+    "ordine": 13,
+    "mese": 10,
+    "riferimento": "10.2",
+    "attivita": "Chiusura delle azioni correttive e verifica di efficacia"
+  },
+  {
+    "key": "att-14",
+    "ordine": 14,
+    "mese": 11,
+    "riferimento": "9.1.2",
+    "attivita": "Analisi annuale dei dati e degli indicatori"
+  },
+  {
+    "key": "att-15",
+    "ordine": 15,
+    "mese": 11,
+    "riferimento": "7.4.3",
+    "attivita": "Comunicazione esterna annuale"
+  },
+  {
+    "key": "att-16",
+    "ordine": 16,
+    "mese": 12,
+    "riferimento": "9.3",
+    "attivita": "Riesame della direzione e comunicazione degli esiti ai lavoratori"
+  }
+]

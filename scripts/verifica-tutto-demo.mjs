@@ -112,7 +112,7 @@ for (const [nome, href] of [["Privacy", "/privacy"], ["Cookie", "/cookie"], ["Te
 console.log("\n— portafoglio e fascicolo —");
 await agisci("il portafoglio elenca l'azienda dimostrativa", async () => {
   await vai("/dashboard");
-  if (!(await page.getByText(/Meccanica Adriatica/).count())) throw new Error("azienda assente");
+  if (!(await page.getByText(/Corvane Meccanica/).count())) throw new Error("azienda assente");
 });
 
 await respinto("in prova non si crea un'azienda propria", async () => {

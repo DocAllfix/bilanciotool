@@ -604,6 +604,27 @@ Non bloccano il lancio, ma vanno saputi.
     - **Il corso di formazione GDPR non c'è ancora**: decisione del committente, si fa dopo
       il rilascio. Il percorso esce con le sole sezioni comuni.
 
+14. **Percorso Sistema di gestione sociale (PAS 24000), il sedicesimo.** Voci da tenere vere
+    al rilascio, ciascuna col modo di verificarla:
+    - **Ordine: migrazioni `0065`÷`0067`, poi il seme `pas-v1`, poi la fusione.** **Come si
+      verifica**: `scripts/stato-produzione.mjs` prima, conteggi letti come `app_rls` dopo il
+      seme contro `docs/rilascio-pas-previsione.md`.
+    - **Dei registri i documenti portano solo conteggi**, tranne le decisioni del riesame.
+      **Come si verifica**: `pas-documenti.db` cerca testi-sentinella negli snapshot.
+    - **Il corso di formazione PAS non c'è ancora**: lo scrive la sessione di Evalis Academy.
+      Finché manca, `qa -- formazione` è rosso su «pas24000 senza parte propria».
+      **Come si verifica**: `npm run qa -- formazione`.
+    - **Nome fittizio**: la vetrina e le dimostrative dei NUOVI iscritti usano «Corvane
+      Meccanica S.r.l.»; quelle già create in produzione mantengono il vecchio nome finché il
+      committente non decide. **Come si verifica**: `git grep Adriatica` vuoto (salvo
+      «Intermediaria Adriatica», partner fittizio di un test) e HTML della home.
+    - ⚠️ **I PDF d'esempio di `public/esempi/` portano ancora il vecchio nome.** Si rigenerano
+      in produzione al rilascio (passo 4 della previsione). **Come si verifica**:
+      `pdftotext public/esempi/*.pdf - | grep -c Adriatica` deve dare 0, e il codice del
+      colophon deve aprirsi su `evalisdeck.it/verifica`.
+    - **Privacy**: voce sui registri e sugli indicatori del sistema di gestione sociale,
+      `AGGIORNATO_AL` da portare alla data del rilascio. **Come si verifica**: `qa -- legale`.
+
 ---
 
 ## Miglioramenti rimandati, con il vantaggio di ciascuno

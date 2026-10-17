@@ -1,3 +1,4 @@
+import { giornoItaliano } from "@/lib/calc/comune/tempo-italia";
 // Formattazione centralizzata it-IT (regola DESIGN.md/i18n-ready).
 // I valori arrivano come stringhe decimali dal server: qui SOLO presentazione.
 
@@ -35,20 +36,31 @@ const MESI_BREVI = [
   "lug", "ago", "set", "ott", "nov", "dic",
 ] as const;
 
+// ⚠️ E IL GIORNO SI PRENDE IN ORA ITALIANA, non nel fuso del processo. I mesi scritti a mano
+// avevano tolto di mezzo l'ICU, non il fuso: `getDate()` sul server di Vercel (UTC) e nel
+// browser (Roma) dà due giorni diversi fra mezzanotte e le due, e React butta via l'HTML del
+// server con lo stesso #418. Trovato dal giro sull'anteprima del 17 ottobre 2026, finito alle
+// due di notte: in locale non si vede mai, il processo è già a Roma. Una data pura
+// («2026-10-16») si legge come mezzanotte UTC, che è sempre lo stesso giorno italiano.
+function partiItaliane(d: Date | string): [number, number, number] | null {
+  const x = new Date(d);
+  if (Number.isNaN(x.getTime())) return null;
+  const [a, m, g] = giornoItaliano(x).split("-").map(Number);
+  return [a, m - 1, g];
+}
+
 /** «27 agosto 2026». */
 export function fmtDataEstesa(d: Date | string | null | undefined): string {
-  if (!d) return "—";
-  const x = new Date(d);
-  if (Number.isNaN(x.getTime())) return "—";
-  return `${x.getDate()} ${MESI[x.getMonth()]} ${x.getFullYear()}`;
+  const p = d ? partiItaliane(d) : null;
+  if (!p) return "—";
+  return `${p[2]} ${MESI[p[1]]} ${p[0]}`;
 }
 
 /** «27 ago 2026», dove lo spazio e' poco. */
 export function fmtDataBreve(d: Date | string | null | undefined): string {
-  if (!d) return "—";
-  const x = new Date(d);
-  if (Number.isNaN(x.getTime())) return "—";
-  return `${x.getDate()} ${MESI_BREVI[x.getMonth()]} ${x.getFullYear()}`;
+  const p = d ? partiItaliane(d) : null;
+  if (!p) return "—";
+  return `${p[2]} ${MESI_BREVI[p[1]]} ${p[0]}`;
 }
 
 export function fmtData(d: Date | string): string {

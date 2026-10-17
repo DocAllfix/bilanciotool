@@ -79,7 +79,7 @@ await sql.end();
 await go("/dashboard");
 await shot("05-portfolio-vuoto");
 await page.click('[data-tour="nuova-azienda"]');
-await page.fill("#na-nome", "Meccanica Adriatica S.r.l.");
+await page.fill("#na-nome", "Corvane Meccanica S.r.l.");
 await page.fill("#na-settore", "Componenti meccanici");
 await page.fill("#na-sede", "Bari");
 await page.click('button[type="submit"]:has-text("Crea azienda")');
@@ -96,7 +96,7 @@ await tema("chiaro");
 // aspettava `**/ghg**` per quindici secondi: moriva con «TimeoutError», che non dice
 // niente. `apriModulo` conosce la strada, ed e' l'unico posto da aggiornare quando
 // cambiera' ancora.
-await apriModulo(page, "Meccanica Adriatica S.r.l.", "ghg");
+await apriModulo(page, "Corvane Meccanica S.r.l.", "ghg");
 await page.waitForURL("**/ghg", { timeout: 20000 });
 await page.waitForLoadState("networkidle");
 await page.fill("#ci-anno", "2025");

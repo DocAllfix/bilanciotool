@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percorso PAS 24000</title>
+<style>
+/* Impianto: colonna di navigazione a sinistra, barra di contesto in alto, percorso a passi; i documenti si assemblano dai dati */
+:root{
+  --acc:#3F4A8C;--acc-dk:#2B3366;--acc-lt:#ECEEF7;--acc-mid:#6F7BBD;
+  --ink:#171A26;--ink-2:#4B5063;--ink-3:#7F8496;
+  --bg:#FAFAF8;--card:#fff;--line:#E4E2DC;--line-2:#F0EEE9;
+  --red:#B3261E;--red-lt:#FBEAE8;--amber:#B06E00;--amber-lt:#FDF2DF;
+  --green:#2E7D32;--green-lt:#E8F3E9;--teal:#2E7D6B;--teal-lt:#E6F1ED;
+  --blue:#1F5F8B;--blue-lt:#E7F0F6;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.app{display:flex;min-height:100vh}
+.side{width:250px;flex:0 0 250px;background:var(--card);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:16px 18px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.brand b{display:block;font-size:15px;letter-spacing:-.2px}
+.brand span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.navgrp{padding:14px 12px 5px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 16px);text-align:left;background:none;border:0;padding:8px 10px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--ink-2)}
+.nav:hover{background:var(--line-2);color:var(--ink)}
+.nav.on{background:var(--acc);color:#fff;font-weight:600}
+.nav .st{width:19px;height:19px;flex:0 0 19px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--mono);color:var(--ink-3)}
+.nav.on .st{border-color:rgba(255,255,255,.5);color:#fff}
+.nav .st.ok{background:var(--green);border-color:var(--green);color:#fff}
+.nav .st.mid{background:var(--amber);border-color:var(--amber);color:#fff}
+.sidefoot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line-2);font-size:10.5px;color:var(--ink-3)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.wrap{padding:26px 26px 70px;max-width:1200px;width:100%}
+h1{font-size:24px;margin:0 0 2px;letter-spacing:-.4px;text-wrap:balance}
+h2{font-size:15px;margin:0 0 12px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 22px;max-width:76ch}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.grid>*{min-width:0}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--acc-dk)}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--line-2);color:var(--ink)}
+.btn.sm{padding:5px 10px;font-size:12.5px;font-weight:500}
+.btn.icon{padding:4px 8px;font-size:12px}
+button:focus-visible,.nav:focus-visible{outline:2px solid var(--acc-mid);outline-offset:2px}
+input[type=text],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+textarea{min-height:110px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc-mid);outline-offset:-1px}
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px;font-weight:500}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.t-red{background:var(--red-lt);color:var(--red)}.t-amb{background:var(--amber-lt);color:var(--amber)}
+.t-grn{background:var(--green-lt);color:var(--green)}.t-acc{background:var(--acc-lt);color:var(--acc-dk)}
+.t-tea{background:var(--teal-lt);color:var(--teal)}.t-blu{background:var(--blue-lt);color:var(--blue)}
+.t-gry{background:var(--line-2);color:var(--ink-3)}
+.empty{padding:30px;text-align:center;color:var(--ink-3);font-size:13px}
+.kpi .l{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.kpi .n{font-size:26px;font-weight:650;letter-spacing:-.8px;line-height:1.1;font-family:var(--mono)}
+.kpi .h{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.track{height:7px;background:var(--line-2);border-radius:20px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:20px;background:var(--acc)}
+.hr{height:1px;background:var(--line-2);margin:16px 0}
+.hint{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.45}
+.derived{background:var(--acc-lt);border-radius:8px;padding:12px 14px}
+.derived table td{border-bottom:1px solid rgba(43,51,102,.12)}
+.derived table tr:last-child td{border-bottom:0}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line-2);cursor:pointer}
+.step:last-child{border-bottom:0}
+.step:hover .stepname{color:var(--acc-dk)}
+.stepno{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--line-2);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600}
+.stepno.ok{background:var(--green);color:#fff}.stepno.mid{background:var(--amber);color:#fff}
+.stepname{font-weight:600}.stepdesc{font-size:12.5px;color:var(--ink-3)}
+.stepbar{width:110px;flex:0 0 110px}
+
+/* ---- schede a linguetta ---- */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 13px;cursor:pointer;color:var(--ink-2);font-size:12.5px}
+.tab:hover{border-color:var(--acc-mid)}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.tab .c{font-family:var(--mono);font-size:10.5px;opacity:.75;margin-left:5px}
+
+/* ---- analisi di conformità ---- */
+.grp{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.grp .gh{display:flex;gap:14px;align-items:center;padding:13px 16px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.grp .gh:hover{background:var(--bg)}
+.grp .gh .nm{flex:1;min-width:0;font-weight:600}
+.grp .gh .bar{width:120px;flex:0 0 120px}
+.grp .gh .pc{width:44px;flex:0 0 44px;text-align:right;font-family:var(--mono);font-weight:600}
+.grp .gb{border-top:1px solid var(--line-2);padding:14px 16px 6px}
+.guide{background:var(--acc-lt);border-radius:9px;padding:16px 18px;margin:0 0 12px}
+.guide .def{font-size:13px;color:var(--ink-2);margin:0 0 12px;line-height:1.55;max-width:80ch}
+.guide h5{margin:0 0 7px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc-dk)}
+.guide ul{margin:0 0 10px;padding-left:17px;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.guide .flag{background:#fff;border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.guide .ev{font-size:11.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+select.st-c{background:var(--green-lt);color:var(--green);border-color:transparent;font-weight:600}
+select.st-p{background:var(--amber-lt);color:var(--amber);border-color:transparent;font-weight:600}
+select.st-n{background:var(--red-lt);color:var(--red);border-color:transparent;font-weight:600}
+select.st-na{background:var(--line-2);color:var(--ink-3);border-color:transparent}
+tr.subr td{border-bottom:1px solid var(--line-2);padding-top:0}
+tr.hasub td{border-bottom:0}
+.adeg{display:grid;grid-template-columns:2fr 1fr 150px;gap:8px}
+
+/* ---- allarmi, registri, elenchi ---- */
+.alr{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.alr:last-child{border-bottom:0}
+.alr .tag{flex:0 0 auto;margin-top:1px}
+.alr .tx{flex:1;min-width:0}
+.rec{border:1px solid var(--line);border-radius:9px;padding:14px 14px 2px;margin-bottom:10px;background:#fff}
+.rec .rx{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 10px}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:6px 0;cursor:pointer;font-size:13px}
+.chk input{margin-top:3px;accent-color:var(--acc)}
+.rowl{display:grid;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.rowl:last-child{border-bottom:0}
+
+/* ---- portafoglio ---- */
+.pf{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pfc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
+.pfc:hover{border-color:var(--acc-mid);box-shadow:0 2px 14px rgba(23,26,38,.07)}
+.pfc .hd{padding:16px 16px 12px;display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.pfc .logo{width:44px;height:44px;flex:0 0 44px;border-radius:9px;background:var(--acc-lt);color:var(--acc-dk);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;overflow:hidden}
+.pfc .logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.pfc .nm{font-weight:650;letter-spacing:-.2px;line-height:1.25}
+.pfc .mt{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.pfc .bd{padding:0 16px 12px}
+.pfc .stats{display:flex;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line-2)}
+.pfc .stats div{flex:1}
+.pfc .stats b{display:block;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.3px}
+.pfc .stats span{font-size:10.5px;color:var(--ink-3)}
+.pfc .ft{margin-top:auto;padding:10px 16px;background:var(--bg);border-top:1px solid var(--line-2);display:flex;gap:6px}
+.pfnew{border:1.5px dashed var(--line);background:transparent;border-radius:10px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--ink-3)}
+.pfnew:hover{border-color:var(--acc);color:var(--acc-dk);background:var(--acc-lt)}
+.pfnew b{font-size:22px;font-weight:400}
+
+/* ---- documento ---- */
+.doc{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.doc .cover{background:var(--acc-dk);color:#fff;padding:52px 46px;position:relative}
+.doc .cover .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.doc .cover h2{font-size:34px;margin:12px 0 6px;letter-spacing:-.8px;color:#fff;text-wrap:balance}
+.doc .cover p{margin:0;opacity:.85;font-size:14px}
+.doc .cover .lg{position:absolute;top:22px;right:26px;background:#fff;border-radius:8px;padding:8px;max-width:118px}
+.doc .cover .lg img{width:100%;display:block}
+.doc .inner{padding:34px 46px 46px}
+.doc h3{font-size:19px;margin:34px 0 4px;letter-spacing:-.3px;padding-top:18px;border-top:2px solid var(--acc);clear:both}
+.doc h3:first-of-type{margin-top:0;border-top:0;padding-top:0}
+.doc h4{font-size:14px;margin:20px 0 8px;color:var(--acc-dk)}
+.doc p{margin:0 0 11px;line-height:1.65;max-width:86ch}
+.doc table{margin:10px 0 6px}
+.doc th{background:var(--line-2)}
+.doc td{vertical-align:top}
+.doc .note{font-size:11.5px;color:var(--ink-3);font-style:italic}
+.doc .miss{color:var(--red);font-style:italic}
+.doc figure{margin:16px 0;break-inside:avoid}
+.doc figure svg{width:100%;height:auto;max-width:640px}
+.doc figure figcaption{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.doc .firma{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+.doc .firma div{flex:1;min-width:200px;border-top:1px solid var(--ink-3);padding-top:6px;font-size:12px;color:var(--ink-2)}
+
+/* ---- finestra di conferma ---- */
+.modal{position:fixed;inset:0;background:rgba(23,26,38,.45);display:flex;align-items:center;justify-content:center;z-index:90;padding:16px}
+.mbox{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:420px;box-shadow:0 12px 40px rgba(23,26,38,.25)}
+.mbox h2{margin:0 0 6px}.mbox p{margin:0 0 14px;color:var(--ink-2);font-size:13px}
+.mbtn{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+@media (max-width:980px){
+  .g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
+  .side{position:fixed;left:-254px;z-index:60;transition:left .2s}.side.open{left:0;box-shadow:0 0 40px rgba(23,26,38,.25)}
+  .top{padding:10px 16px}.wrap{padding:20px 16px 60px}
+  .doc .inner,.doc .cover{padding:24px}
+  .adeg,.gx{grid-template-columns:1fr!important}
+  .rowl{grid-template-columns:1fr!important}
+  .grp .gh .bar{display:none}
+}
+@media (max-width:560px){.g4{grid-template-columns:1fr}.stepbar{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .side,.top,.noprint,#toast,.modal{display:none!important}
+  .wrap{padding:0;max-width:100%}
+  .doc{border:0}
+  .doc h3,.doc h4{page-break-after:avoid}
+  tr,figure{page-break-inside:avoid}
+  body{background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;z-index:99}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand" id="brandHome"><b>Sistema di Gestione Sociale</b><span>Percorso guidato · PAS 24000:2022</span></div>
+  <div class="navgrp">Studio</div>
+  <button class="nav" data-v="pf"><span class="st">▦</span> Portafoglio</button>
+  <div class="navgrp" id="grpPercorso">Percorso</div>
+  <button class="nav" data-v="home"><span class="st">◇</span> Avanzamento</button>
+  <button class="nav" data-v="org"><span class="st" id="s1">1</span> Organizzazione</button>
+  <button class="nav" data-v="ctx"><span class="st" id="s2">2</span> Contesto e parti</button>
+  <button class="nav" data-v="gap"><span class="st" id="s3">3</span> Conformità</button>
+  <button class="nav" data-v="ris"><span class="st" id="s4">4</span> Rischi e fornitori</button>
+  <button class="nav" data-v="pol"><span class="st" id="s5">5</span> Politica e piano</button>
+  <button class="nav" data-v="dati"><span class="st" id="s6">6</span> Dati e indicatori</button>
+  <button class="nav" data-v="reg"><span class="st" id="s7">7</span> Registri</button>
+  <button class="nav" data-v="ver"><span class="st" id="s8">8</span> Verifica</button>
+  <button class="nav" data-v="doc"><span class="st" id="s9">9</span> Documenti</button>
+  <div class="navgrp" id="grpImp">Impostazioni</div>
+  <button class="nav" data-v="conf"><span class="st">⚙</span> Parametri e archivio</button>
+  <div class="navgrp">Aiuto</div>
+  <button class="nav" data-v="guida"><span class="st">?</span> Guida all'uso</button>
+  <div class="sidefoot">I dati restano su questo dispositivo. Esportali dal portafoglio per conservarli.</div>
+</aside>
+<div class="main">
+  <div class="top">
+    <button class="btn ghost sm" id="menuBtn" hidden>Menu</button>
+    <select id="coSel" style="width:auto;min-width:210px;max-width:100%;font-weight:600" aria-label="Organizzazione"></select>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)">Esercizio
+      <select id="annoSel" style="width:auto;font-weight:600"></select></label>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn ghost sm" id="addCo">Nuova organizzazione</button>
+      <button class="btn sm" id="printBtn">Stampa documento</button>
+    </div>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+</div>
+<div class="modal" id="modal" hidden>
+  <div class="mbox" role="dialog" aria-modal="true">
+    <h2 id="mT"></h2><p id="mP"></p>
+    <input type="text" id="mI">
+    <div class="mbtn"><button class="btn ghost" id="mNo">Annulla</button><button class="btn" id="mOk">Conferma</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ==========================================================
+   STRUTTURA DELLA PAS 24000:2022
+   Requisiti in sintesi operativa: non sostituiscono il testo ufficiale.
+   ========================================================== */
+const GRP=[
+ {id:"C4",k:"S",n:"Contesto dell'organizzazione",r:"Clausola 4"},
+ {id:"C5",k:"S",n:"Leadership e partecipazione dei lavoratori",r:"Clausola 5"},
+ {id:"C6",k:"S",n:"Pianificazione",r:"Clausola 6"},
+ {id:"C7",k:"S",n:"Supporto",r:"Clausola 7"},
+ {id:"C8",k:"S",n:"Attività operative",r:"Clausola 8"},
+ {id:"C9",k:"S",n:"Valutazione delle prestazioni",r:"Clausola 9"},
+ {id:"C10",k:"S",n:"Miglioramento",r:"Clausola 10"},
+ {id:"A1",k:"A",n:"Diritti umani e due diligence",r:"Allegato A · A.1"},
+ {id:"A2",k:"A",n:"Lavoro forzato",r:"Allegato A · A.2"},
+ {id:"A3",k:"A",n:"Lavoro minorile",r:"Allegato A · A.3"},
+ {id:"A4",k:"A",n:"Libertà di associazione",r:"Allegato A · A.4"},
+ {id:"A5",k:"A",n:"Discriminazione e trattamento equo",r:"Allegato A · A.5"},
+ {id:"A6",k:"A",n:"Salute e sicurezza sul lavoro",r:"Allegato A · A.6"},
+ {id:"A7",k:"A",n:"Sicurezza degli edifici",r:"Allegato A · A.7"},
+ {id:"A8",k:"A",n:"Rapporti di lavoro e retribuzione",r:"Allegato A · A.8"},
+ {id:"A9",k:"A",n:"Orario di lavoro",r:"Allegato A · A.9"},
+ {id:"A10",k:"A",n:"Meccanismo di reclamo",r:"Allegato A · A.10"},
+ {id:"A11",k:"A",n:"Etica aziendale",r:"Allegato A · A.11"}
+];
+const GN=id=>(GRP.find(g=>g.id===id)||{n:id}).n;
+const AREE=GRP.filter(g=>g.k==="A");
+
+const REQ=[
+ ["C4","4.1","Fattori esterni e interni che incidono sui risultati del sistema determinati, compresi gli effetti sociali e culturali sulla comunità locale, e tenuti aggiornati."],
+ ["C4","4.2","Parti interessate individuate oltre ai lavoratori, con esigenze e aspettative; distinte quelle che sono o possono diventare obblighi e quelle che il sistema sceglie di gestire."],
+ ["C4","4.3","Campo di applicazione definito e disponibile come informazione documentata; comprende attività, prodotti e servizi sotto il controllo o l'influenza dell'organizzazione."],
+ ["C4","4.4","Sistema di gestione sociale istituito, attuato e mantenuto, con i processi necessari e le loro interazioni."],
+ ["C5","5.1","L'alta direzione dimostra leadership: risorse, integrazione nei processi aziendali, sicurezza fisica dei lavoratori, tutela da ritorsioni per chi segnala, presidio dei requisiti di legge."],
+ ["C5","5.2","Politica sociale approvata dalla direzione e documentata; copre diritti umani, condizioni di lavoro, etica e integrità, salute e sicurezza; comunicata all'interno e ai partner commerciali."],
+ ["C5","5.3","Ruoli, responsabilità e autorità assegnati senza discriminazioni, comunicati e documentati; individuato chi risponde del sistema, della formazione sui diritti umani e dei rischi di lavoro minorile e forzato."],
+ ["C5","5.4","Processo di consultazione e partecipazione dei lavoratori e dei loro rappresentanti, con tempo, formazione e risorse dedicate; ostacoli alla partecipazione rimossi."],
+ ["C6","6.1.1","Rischi e opportunità determinati a partire da contesto, parti interessate e campo di applicazione; disponibili come informazione documentata."],
+ ["C6","6.1.2","Azioni pianificate per rischi e opportunità, requisiti di legge e situazioni di emergenza; integrate nei processi e verificate nell'efficacia."],
+ ["C6","6.2.1","Obiettivi di prestazione sociale coerenti con la politica, misurabili, monitorati, comunicati e documentati; tengono conto dei rischi e della consultazione dei lavoratori."],
+ ["C6","6.2.2","Per ogni obiettivo definiti azioni, risorse, responsabile, scadenza e indicatori di valutazione."],
+ ["C6","6.3","Cambiamenti dell'organizzazione, dei processi o del sistema valutati prima dell'attuazione e condotti in modo pianificato."],
+ ["C7","7.1","Risorse determinate e fornite; capacità dell'organizzazione valutata, con un piano documentato per svilupparla."],
+ ["C7","7.2","Competenze necessarie definite e assicurate; fabbisogni formativi individuati; evidenze documentate della competenza."],
+ ["C7","7.3","Lavoratori consapevoli di politica, obiettivi, proprio contributo, conseguenze delle non conformità e del diritto di allontanarsi da un pericolo grave e imminente senza subire conseguenze."],
+ ["C7","7.4.1","Comunicazioni interne ed esterne definite (cosa, quando, a chi, come) tenendo conto di lingua, alfabetizzazione, genere e disabilità; evidenze conservate."],
+ ["C7","7.4.2","Informazioni sul sistema comunicate all'interno almeno una volta l'anno, con canali che permettono ai lavoratori di contribuire al miglioramento."],
+ ["C7","7.4.3","Informazioni sul sistema comunicate all'esterno almeno una volta l'anno; requisiti sociali trasmessi ai partner commerciali rilevanti."],
+ ["C7","7.5","Informazioni documentate identificate, approvate, protette e tenute sotto controllo; accessibili ai lavoratori e ai loro rappresentanti."],
+ ["C8","8.1.1","Processi operativi pianificati e tenuti sotto controllo con criteri di prestazione; cambiamenti governati; evidenze dell'attuazione."],
+ ["C8","8.1.2","Piano di lavoro annuale allineato a politica e obiettivi, con il dettaglio delle attività dei dodici mesi successivi; monitorato."],
+ ["C8","8.1.3","Processi, materiali, prodotti e servizi forniti dall'esterno tenuti sotto controllo e conformi ai requisiti sociali applicabili."],
+ ["C8","8.2","Processo per le emergenze e la sicurezza antincendio, alloggi compresi: risposta pianificata, primo soccorso, formazione, prova almeno annuale, informazione a lavoratori, appaltatori e visitatori."],
+ ["C9","9.1.1","Definito che cosa monitorare, con quali metodi e scadenze; indicatori di prestazione stabiliti per ciascuna area dell'Allegato A; risultati documentati."],
+ ["C9","9.1.2","Dati di monitoraggio e di audit analizzati almeno una volta l'anno per valutare conformità, efficacia, prestazione dei fornitori ed esigenze di miglioramento."],
+ ["C9","9.2.1","Audit interni a intervalli pianificati sui requisiti propri e della PAS, Allegato A compreso; auditor tutelati da pressioni e ritorsioni."],
+ ["C9","9.2.2","Programma di audit con frequenza, metodi, responsabilità e criteri; auditor obiettivi e imparziali; risultati riferiti ai responsabili e documentati."],
+ ["C9","9.3","Riesame della direzione almeno annuale con gli elementi in ingresso previsti, decisioni documentate e risultati comunicati ai lavoratori."],
+ ["C10","10.1","Idoneità, adeguatezza ed efficacia del sistema migliorate in modo continuo."],
+ ["C10","10.2","Processo per incidenti, reclami e non conformità: reazione tempestiva, analisi delle cause con i lavoratori, azioni correttive verificate nell'efficacia, registrazioni comunicate agli interessati."],
+
+ ["A1","A.1-1","Inventario dei rischi relativi ai diritti umani predisposto."],
+ ["A1","A.1-2","Le attività dell'organizzazione non causano impatti negativi sui diritti umani; quelli che si verificano vengono affrontati."],
+ ["A1","A.1-3","Le attività dell'organizzazione non contribuiscono a impatti negativi sui diritti umani; quelli che si verificano vengono affrontati."],
+ ["A1","A.1-4","Processo di due diligence sui diritti umani attivo per individuare, prevenire, mitigare e rendere conto degli impatti propri e dei fornitori, con rimedio per quelli causati o a cui si è contribuito."],
+ ["A2","A.2-1","Nessun impiego ottenuto con la forza o la costrizione: il lavoro è volontario e si può recedere con un preavviso ragionevole."],
+ ["A2","A.2-2","Nessuno è costretto a lavorare sotto minaccia di penalità o sanzioni."],
+ ["A2","A.2-3","Documenti personali, permessi e beni di valore non sono trattenuti né dati in deposito al datore di lavoro o al reclutatore."],
+ ["A2","A.2-4","Nessuna commissione o costo di selezione e assunzione a carico di candidati e lavoratori."],
+ ["A2","A.2-5","Nessun deposito cauzionale, garanzia finanziaria o bene personale richiesto come condizione di impiego."],
+ ["A2","A.2-6","Nessuna servitù per debiti né obbligo di lavorare per estinguere un debito."],
+ ["A2","A.2-7","Anticipi e prestiti ai lavoratori regolati da una politica scritta e comprensibile; condizioni e interessi non vincolano al rapporto di lavoro."],
+ ["A2","A.2-8","Eventuale custodia di documenti e valori: scelta libera del lavoratore, registrata, con libero accesso ai propri beni."],
+ ["A2","A.2-9","Agenzie per il lavoro e appaltatori in regola con la legge, autorizzati, vincolati ai divieti su lavoro forzato e costi di reclutamento, estranei a pratiche fraudolente."],
+ ["A2","A.2-10","Libertà di movimento: nessun obbligo di restare sul luogo di lavoro a fine turno né confinamento negli alloggi."],
+ ["A2","A.2-11","In caso di lavoro forzato accertato: rimedio effettivo e risarcimento, piano documentato, azioni verificate e misure contro il ripetersi."],
+ ["A3","A.3-1","Età minima di ammissione al lavoro non inferiore a 15 anni, o all'età più alta prevista dalla legge o dall'obbligo scolastico."],
+ ["A3","A.3-2","Eventuale presenza di minori di 15 anni nel sito registrata e riferita nel dettaglio."],
+ ["A3","A.3-3","Tirocini e apprendistato non configurano sfruttamento e rispettano la normativa nazionale."],
+ ["A3","A.3-4","Nessun lavoratore sotto i 18 anni impiegato di notte o in condizioni pericolose."],
+ ["A3","A.3-5","Verifica dell'età per tutti i lavoratori, con registrazioni valide conservate."],
+ ["A3","A.3-6","Procedura di rimedio in caso di lavoro minorile che mette al primo posto l'interesse del minore; piano documentato e verificato."],
+ ["A4","A.4-1","Diritto di aderire a sindacati e organizzazioni dei lavoratori o di costituirli, oppure di non farlo, e di contrattare collettivamente."],
+ ["A4","A.4-2","Rappresentanti e iscritti ai sindacati non subiscono discriminazioni o penalizzazioni."],
+ ["A4","A.4-3","I rappresentanti eletti accedono al luogo di lavoro per svolgere le loro funzioni."],
+ ["A4","A.4-4","Dove la legge non tutela associazione e contrattazione, attivati canali alternativi leciti di dialogo con i lavoratori."],
+ ["A5","A.5-1","Pari opportunità e parità di trattamento in selezione e rapporto di lavoro per tutti, compresi lavoratori temporanei, a tempo parziale e appaltatori."],
+ ["A5","A.5-2","Nessuna punizione corporale, coercizione fisica o mentale, bullismo, molestia anche sessuale o abuso, né minaccia di ricorrervi."],
+ ["A5","A.5-3","Procedure disciplinari scritte e comunicate in modo efficace a tutti i lavoratori."],
+ ["A5","A.5-4","Registrazioni di tutti i provvedimenti disciplinari conservate."],
+ ["A6","A.6-1","Salute e sicurezza sul lavoro parte integrante del sistema di gestione sociale."],
+ ["A6","A.6-2","Condizioni sicure, salubri e pulite in tutti i luoghi di lavoro, negli alloggi e nelle altre strutture fornite."],
+ ["A6","A.6-3","Formazione su salute e sicurezza tempestiva, ripetuta periodicamente e in caso di nuovi assunti, cambi di mansione e nuovi rischi."],
+ ["A6","A.6-4","Formazione adeguata ai bisogni, comprensibile, gratuita e svolta in orario retribuito."],
+ ["A6","A.6-5","Registrazioni scritte di tutti gli incidenti relativi a salute e sicurezza."],
+ ["A6","A.6-6","Cause degli incidenti determinate e azioni correttive adottate per evitarne il ripetersi."],
+ ["A6","A.6-7","Dispositivi di protezione adeguati forniti gratuitamente, mantenuti e sostituiti; lavoratori istruiti all'uso e controllati."],
+ ["A6","A.6-8","Disposizioni chiare per primo soccorso e assistenza medica in caso di infortunio."],
+ ["A6","A.6-9","Acqua potabile gratuita e servizi igienici puliti per tutti i lavoratori."],
+ ["A7","A.7-1","Uscite di emergenza, vie di fuga, mezzi antincendio e allarmi segnalati; uscite e percorsi liberi e accessibili."],
+ ["A7","A.7-2","Mezzi antincendio e allarmi provati o ispezionati secondo legge e norme di settore."],
+ ["A7","A.7-3","Solidità, stabilità e sicurezza di edifici e attrezzature, alloggi compresi, valutate e monitorate; azioni correttive dove servono."],
+ ["A7","A.7-4","Eventuali alloggi separati dalle aree di produzione e di magazzino."],
+ ["A8","A.8-1","Condizioni di impiego comunicate per iscritto e in modo comprensibile prima dell'assunzione."],
+ ["A8","A.8-2","Lavoro svolto solo nell'ambito di un rapporto formale e verificabile, conforme alla legge."],
+ ["A8","A.8-3","Nessuna forma contrattuale usata per eludere gli obblighi di legge in materia di lavoro e previdenza."],
+ ["A8","A.8-4","Retribuzione dell'orario ordinario pari o superiore ai minimi di legge, agli standard di settore o al contratto collettivo."],
+ ["A8","A.8-5","Retribuzioni pagate con regolarità, puntualmente e per intero, direttamente al lavoratore in valuta legale o su un conto a lui intestato."],
+ ["A8","A.8-6","Cottimo, quote o tariffe a pezzo consentono di raggiungere almeno il minimo entro l'orario ordinario."],
+ ["A8","A.8-7","Straordinario retribuito secondo legge o contratto collettivo, applicando il trattamento più favorevole."],
+ ["A8","A.8-8","Prospetto paga chiaro e scritto consegnato a ogni pagamento."],
+ ["A8","A.8-9","Trattenute solo se previste da legge o contratto collettivo e comunicate per iscritto in modo comprensibile."],
+ ["A8","A.8-10","Nessuna trattenuta sulla retribuzione a titolo disciplinare."],
+ ["A8","A.8-11","Tutte le prestazioni e i benefici obbligatori per legge riconosciuti a ogni lavoratore."],
+ ["A9","A.9-1","Orario ordinario conforme a legge, contratti collettivi o standard di settore e comunque non superiore a 48 ore settimanali, straordinario escluso."],
+ ["A9","A.9-2","Dove la legge ammette deroghe al limite di 60 ore settimanali complessive, adottate tutele per salute e sicurezza."],
+ ["A9","A.9-3","Settimane oltre le 60 ore complessive registrate e riferite con il totale delle ore lavorate."],
+ ["A9","A.9-4","Straordinario concordato con i lavoratori e mai tale da configurare lavoro forzato."],
+ ["A9","A.9-5","Straordinario non richiesto in modo sistematico."],
+ ["A9","A.9-6","Pause garantite durante i turni di lavoro."],
+ ["A9","A.9-7","Almeno un giorno di riposo di 24 ore consecutive ogni settimana."],
+ ["A9","A.9-8","In caso di deroghe di legge ai riposi, tutele adottate e comunque due giorni di riposo di 24 ore ogni quattordici giorni."],
+ ["A9","A.9-9","Ferie, festività, maternità, paternità e malattia retribuite secondo la normativa nazionale."],
+ ["A10","A.10-1","Procedura scritta per reclami e segnalazioni; meccanismo accessibile a tutti i lavoratori e alle parti esterne."],
+ ["A10","A.10-2","Riservatezza del reclamo garantita; informazioni rivelate solo per quanto serve a istruirlo."],
+ ["A10","A.10-3","Nessuna ritorsione verso chi presenta un reclamo in buona fede."],
+ ["A11","A.11-1","Nessun coinvolgimento, diretto o indiretto, in corruzione, estorsione, appropriazione indebita o qualsiasi forma di tangente."],
+ ["A11","A.11-2","Nessuna falsificazione di informazioni su attività, struttura e prestazioni, né dichiarazioni ingannevoli nella catena di fornitura."]
+].map(r=>({g:r[0],id:r[1],ref:r[1].replace("-"," · "),t:r[2]}));
+
+const STATI=[["","Da valutare"],["c","Conforme"],["p","Parziale"],["n","Non conforme"],["na","Non pertinente"]];
+
+/* ---- guida per gruppo di requisiti ---- */
+const GUIDE={
+ C4:{def:"Il punto di partenza: capire in quale ambiente opera l'organizzazione, chi ha interessi legittimi verso le sue pratiche sociali e fin dove arriva il sistema.",
+  look:["Analisi del contesto scritta e aggiornata, non copiata da un altro sistema di gestione","Lavoratori trattati come prima parte interessata, con esigenze raccolte e non presunte","Campo di applicazione che non lascia fuori siti, reparti o lavoratori esterni presenti in azienda"],
+  ev:"Analisi del contesto, registro delle parti interessate, dichiarazione del campo di applicazione, visura camerale, organigramma.",
+  flag:"I requisiti dell'Allegato A non ammettono esclusioni: un campo di applicazione che taglia fuori i lavoratori somministrati o un reparto non regge all'audit."},
+ C5:{def:"L'impegno della direzione e il coinvolgimento dei lavoratori. La PAS li chiede entrambi e li verifica con le interviste, non solo sui documenti.",
+  look:["Direzione in grado di spiegare politica, obiettivi e risorse assegnate","Responsabile del sistema nominato per iscritto, con autorità reale","Lavoratori non dirigenti consultati su politica, obiettivi, audit e azioni correttive"],
+  ev:"Politica firmata, nomine e mansionari, verbali di consultazione, verbali di riunione con RSU, RSA o RLS, bacheca e intranet.",
+  flag:"Se i lavoratori intervistati non conoscono la politica o il canale di reclamo, la non conformità è certa anche con documenti impeccabili."},
+ C6:{def:"Dalla lettura del contesto alle decisioni: quali rischi sociali affrontare, con quali obiettivi e con quale piano.",
+  look:["Valutazione dei rischi che copre tutte le aree dell'Allegato A e la catena di fornitura","Obiettivi con indicatore, responsabile, scadenza e risorse","Scadenzario dei requisiti di legge in materia di lavoro tenuto aggiornato"],
+  ev:"Registro rischi e opportunità, elenco degli obiettivi, registro dei requisiti legali, verbali di valutazione dei cambiamenti organizzativi.",
+  flag:"Obiettivi generici come «migliorare il clima aziendale» non superano l'audit: servono un numero e una data."},
+ C7:{def:"Ciò che rende il sistema praticabile: risorse, competenze, consapevolezza, comunicazione e documenti sotto controllo.",
+  look:["Piano documentato di sviluppo delle capacità, distinto dal piano di formazione obbligatoria","Comunicazione comprensibile a tutti, lavoratori stranieri compresi","Almeno una comunicazione interna e una esterna sul sistema ogni anno"],
+  ev:"Piano di formazione e registri delle presenze, materiali tradotti, comunicazioni in bacheca, pagina del sito o relazione annuale, elenco dei documenti.",
+  flag:"La comunicazione esterna annuale viene spesso dimenticata: basta una pagina del sito o una nota a clienti e fornitori, purché datata e conservata."},
+ C8:{def:"Il sistema in funzione: controllo operativo, piano di lavoro annuale, governo dei fornitori e preparazione alle emergenze.",
+  look:["Piano annuale con attività, mesi e responsabili, effettivamente monitorato","Fornitori e appaltatori classificati per rischio, con requisiti sociali accettati per iscritto","Prova di emergenza svolta nell'anno, con verbale e azioni conseguenti"],
+  ev:"Piano di lavoro annuale, albo fornitori e questionari, clausole sociali firmate, DURC, piano di emergenza, verbali delle prove di evacuazione.",
+  flag:"Il piano di lavoro annuale è un requisito specifico della PAS, assente nelle norme ISO: va generato ogni anno e non coincide con il programma di audit."},
+ C9:{def:"Misurare e verificare: indicatori per ogni area dell'Allegato A, audit interni, riesame della direzione.",
+  look:["Almeno un indicatore per ciascuna delle undici aree dell'Allegato A","Audit interno che copre anche l'Allegato A, con interviste ai lavoratori","Riesame annuale con tutti gli elementi in ingresso e gli esiti comunicati ai lavoratori"],
+  ev:"Quadro degli indicatori, programma e rapporti di audit, qualifica degli auditor, verbale di riesame, comunicazione degli esiti.",
+  flag:"L'auditor interno non può verificare il proprio lavoro: nelle piccole organizzazioni conviene affidare l'audit a una persona esterna."},
+ C10:{def:"Imparare da ciò che non funziona: incidenti, reclami e non conformità trattati fino alla verifica dell'efficacia.",
+  look:["Analisi delle cause svolta con la partecipazione dei lavoratori","Azioni correttive con responsabile, scadenza e verifica di efficacia","Esiti comunicati ai lavoratori interessati e ai loro rappresentanti"],
+  ev:"Registro delle non conformità, registro dei reclami, registro infortuni e mancati infortuni, verbali di chiusura delle azioni.",
+  flag:"Chiudere un'azione senza verificarne l'efficacia è una delle non conformità più frequenti in sorveglianza."},
+ A1:{def:"L'organizzazione conosce i propri rischi per i diritti umani, non causa né favorisce impatti negativi e vigila sui fornitori con un processo di due diligence.",
+  look:["Inventario dei rischi che distingue attività proprie e catena di fornitura","Criteri per decidere quali fornitori approfondire","Modalità di rimedio previste quando un impatto si verifica"],
+  ev:"Inventario dei rischi, procedura di due diligence, mappatura dei fornitori per paese e settore, esiti di questionari e verifiche.",
+  flag:"Non basta la clausola nel contratto: la due diligence richiede di individuare, prevenire, mitigare e rendere conto di ciò che si è fatto."},
+ A2:{def:"Il lavoro è sempre una scelta libera: nessuna costrizione, nessun documento trattenuto, nessun costo di assunzione, nessun debito che vincoli.",
+  look:["Contratti con agenzie e cooperative: autorizzazioni e divieto di addebitare costi ai lavoratori","Gestione di anticipi e prestiti","Libertà di lasciare il sito a fine turno e di dimettersi"],
+  ev:"Contratti di somministrazione e appalto, iscrizione dell'agenzia all'albo ministeriale, lettere di assunzione, politica su anticipi e prestiti, interviste.",
+  flag:"Il rischio vero in Italia è l'intermediazione illecita: appalti di manodopera non genuini e cooperative spurie vanno verificati uno per uno."},
+ A3:{def:"Nessun minore sotto l'età minima, tutele rafforzate per chi ha meno di 18 anni e una procedura di rimedio pronta in caso di necessità.",
+  look:["Copia del documento d'identità acquisita all'assunzione per tutti","Tirocini, alternanza scuola-lavoro e apprendistato con progetto formativo reale","Mansioni e turni dei minori di 18 anni"],
+  ev:"Libro unico del lavoro, documenti d'identità, convenzioni di tirocinio, valutazione dei rischi per i minori, procedura di rimedio.",
+  flag:"In Italia l'età minima è 16 anni con obbligo scolastico assolto: vale il limite più alto. La procedura di rimedio serve anche se il rischio interno è nullo, perché copre i fornitori."},
+ A4:{def:"I lavoratori sono liberi di organizzarsi e di contrattare collettivamente, senza ostacoli né ritorsioni.",
+  look:["Contratto collettivo applicato e sua corretta applicazione","Trattamento di rappresentanti e iscritti in carriera, turni e premi","Spazi, permessi e bacheca sindacale"],
+  ev:"CCNL e accordi aziendali, verbali di elezione di RSU o RSA, deleghe sindacali, registro dei permessi, interviste ai rappresentanti.",
+  flag:"L'assenza di rappresentanze non è una non conformità, ma i lavoratori devono sapere di poterle costituire: va detto esplicitamente."},
+ A5:{def:"Parità di trattamento in ogni fase del rapporto di lavoro, nessuna forma di abuso o molestia, disciplina regolata per iscritto.",
+  look:["Annunci di lavoro e criteri di selezione","Differenze retributive e di inquadramento a parità di mansione","Codice disciplinare affisso e registro dei provvedimenti"],
+  ev:"Procedure di selezione, analisi retributiva per genere, codice disciplinare, registro dei provvedimenti, politica contro le molestie, segnalazioni ricevute.",
+  flag:"Vanno compresi i lavoratori temporanei e degli appaltatori: trattamenti diversi per mensa, spogliatoi o dispositivi di protezione vengono rilevati."},
+ A6:{def:"Ambienti di lavoro sicuri e salubri, formazione, dispositivi di protezione gratuiti, incidenti registrati e analizzati.",
+  look:["Valutazione dei rischi aggiornata e misure attuate","Formazione svolta in orario di lavoro e compresa da tutti","Registro di infortuni e mancati infortuni con analisi delle cause"],
+  ev:"DVR, nomine di RSPP, medico competente e RLS, attestati di formazione, verbali di consegna dei DPI, registro infortuni, cassette di primo soccorso.",
+  flag:"La PAS non sostituisce la ISO 45001 né il D.Lgs. 81/2008: qui si verifica che i presidi essenziali funzionino davvero, anche in mensa, spogliatoi e alloggi."},
+ A7:{def:"Edifici e impianti sicuri: vie di fuga libere, presidi antincendio verificati, strutture stabili.",
+  look:["Uscite di emergenza apribili e percorsi sgombri durante il sopralluogo","Registro dei controlli antincendio compilato","Agibilità e verifiche strutturali, soprattutto su edifici datati o modificati"],
+  ev:"Certificato di prevenzione incendi o SCIA, registro antincendio, agibilità, verifiche di impianti elettrici e scaffalature, planimetrie di emergenza.",
+  flag:"Le uscite bloccate da bancali o chiuse a chiave sono la non conformità più rilevata in sopralluogo: si controllano il giorno stesso dell'audit."},
+ A8:{def:"Rapporti di lavoro regolari e trasparenti, retribuzioni almeno pari ai minimi, pagate puntualmente e senza trattenute indebite.",
+  look:["Lettera di assunzione consegnata prima dell'inizio del lavoro","Confronto tra buste paga, presenze e minimi contrattuali","Uso di tirocini, partite IVA, part-time e appalti"],
+  ev:"Lettere di assunzione, comunicazioni obbligatorie, libro unico del lavoro, buste paga, bonifici, DURC, tabelle retributive del CCNL.",
+  flag:"La multa disciplinare prevista dai contratti collettivi è una trattenuta sulla retribuzione: la scelta prudente è rinunciare ad applicarla e dichiararlo nel codice disciplinare. La PAS raccomanda inoltre un piano verso il salario dignitoso."},
+ A9:{def:"Orari sostenibili: ordinario entro 48 ore, totale entro 60, straordinario volontario e non sistematico, riposi e ferie garantiti.",
+  look:["Rilevazione delle presenze affidabile e coerente con le buste paga","Settimane di picco: ore totali e riposi","Straordinario ricorrente sugli stessi reparti o sulle stesse persone"],
+  ev:"Registro delle presenze, turni, buste paga, accordi su straordinario e banca ore, piano ferie.",
+  flag:"I limiti italiani sono più stretti di quelli della PAS (media di 48 ore compreso lo straordinario) e prevalgono. I picchi stagionali vanno pianificati, non subiti."},
+ A10:{def:"Un canale per reclami e segnalazioni aperto a lavoratori ed esterni, riservato e senza ritorsioni.",
+  look:["Procedura scritta con tempi di risposta","Canale conosciuto dai lavoratori e raggiungibile anche da esterni","Reclami ricevuti: istruttoria, risposta, chiusura"],
+  ev:"Procedura reclami, cassetta o indirizzo dedicato, informativa in bacheca e sul sito, registro dei reclami, canale di segnalazione ex D.Lgs. 24/2023.",
+  flag:"Zero reclami in un anno non dimostra che vada tutto bene: l'auditor verifica se il canale è conosciuto e ritenuto affidabile."},
+ A11:{def:"Integrità negli affari: nessuna corruzione, nessuna informazione falsa su attività e prestazioni.",
+  look:["Regole su omaggi, sponsorizzazioni e rapporti con la pubblica amministrazione","Coerenza tra registrazioni di presenze, paghe e formazione","Dichiarazioni rese a clienti e in fase di qualifica"],
+  ev:"Codice etico, modello 231, procedura omaggi, dichiarazioni a clienti, registrazioni originali di presenze e formazione.",
+  flag:"Registri di presenza «aggiustati» per l'audit sono una falsificazione: è una delle poche situazioni che può fermare la certificazione."}
+};
+
+/* ---- parti interessate e rischi precaricati ---- */
+const PARTI_DEF=[
+ ["Lavoratori dipendenti","Retribuzione regolare e adeguata, orari sostenibili, sicurezza, rispetto, possibilità di essere ascoltati","Sì","Riunioni periodiche, bacheca, canale di reclamo"],
+ ["Lavoratori somministrati e degli appaltatori","Parità di trattamento, sicurezza, accesso al canale di reclamo","Sì","Informativa all'ingresso, canale di reclamo"],
+ ["Rappresentanti dei lavoratori e sindacati","Informazione, consultazione, agibilità sindacale, rispetto degli accordi","Sì","Incontri periodici, consultazione sul sistema"],
+ ["Clienti e committenti","Evidenza di condizioni di lavoro corrette lungo la filiera, risposte a questionari e audit","No","Questionari, audit di seconda parte, comunicazione annuale"],
+ ["Fornitori, appaltatori e agenzie per il lavoro","Requisiti chiari, tempi di pagamento certi, rapporti stabili","No","Clausole sociali, questionari, verifiche"],
+ ["Enti di controllo (Ispettorato del lavoro, ASL, INPS, INAIL)","Rispetto della normativa su lavoro, previdenza e sicurezza","Sì","Adempimenti, ispezioni"],
+ ["Comunità locale","Occupazione regolare, nessun disturbo, attenzione al territorio","No","Comunicazione esterna annuale"],
+ ["Proprietà e soci","Continuità, reputazione, accesso a clienti che richiedono la certificazione","No","Riesame della direzione"]
+];
+const RISK_DEF=[
+ ["A1","F","Violazioni dei diritti umani presso fornitori di paesi o settori a rischio non intercettate"],
+ ["A2","O","Agenzie o cooperative che addebitano costi di reclutamento o trattengono documenti dei lavoratori"],
+ ["A2","F","Lavoro forzato o intermediazione illecita presso subappaltatori e fornitori di manodopera"],
+ ["A3","F","Impiego di minori nella catena di fornitura a monte"],
+ ["A3","O","Tirocini o apprendistati usati al posto di lavoro ordinario; minori adibiti a lavori pericolosi o notturni"],
+ ["A4","O","Ostacoli o ritorsioni verso rappresentanti dei lavoratori e iscritti al sindacato"],
+ ["A5","O","Disparità di trattamento in selezione, retribuzione o carriera per genere, origine o età"],
+ ["A5","O","Molestie, bullismo o abusi non segnalati per timore di ritorsioni"],
+ ["A6","O","Infortuni per formazione insufficiente, dispositivi inadeguati o procedure non applicate"],
+ ["A6","F","Appaltatori che operano in sito senza coordinamento sulla sicurezza"],
+ ["A7","O","Vie di fuga ostruite, presidi antincendio non verificati, prove di evacuazione non svolte"],
+ ["A8","O","Inquadramenti impropri: false partite IVA, part-time fittizi, appalti non genuini"],
+ ["A8","O","Retribuzioni sotto i minimi contrattuali, pagamenti in ritardo o trattenute non dovute"],
+ ["A8","F","Fornitori con lavoro irregolare o retribuzioni sotto i minimi"],
+ ["A9","O","Straordinario sistematico e superamento dei limiti di orario nei picchi produttivi"],
+ ["A9","O","Riposi settimanali e ferie non fruiti"],
+ ["A10","O","Canale di reclamo poco conosciuto, non accessibile a stranieri ed esterni o percepito come non riservato"],
+ ["A11","O","Corruzione o regalie nei rapporti con clienti, fornitori e pubblica amministrazione"],
+ ["A11","O","Registrazioni di presenze, paghe o formazione non veritiere"],
+ ["C5","O","Sistema solo documentale: lavoratori non consultati, direzione non coinvolta"]
+];
+const SCALA={
+ p:[[1,"Remota","Mai accaduto, non plausibile nelle condizioni attuali"],[2,"Improbabile","Potrebbe accadere solo in circostanze particolari"],[3,"Possibile","È accaduto nel settore o in situazioni simili"],[4,"Probabile","È già accaduto in azienda o tra i fornitori"],[5,"Frequente","Accade o è atteso che accada in modo ricorrente"]],
+ g:[[1,"Trascurabile","Disagio lieve, rimediabile subito"],[2,"Lieve","Danno limitato a poche persone, pienamente rimediabile"],[3,"Moderata","Violazione di un requisito di legge o danno apprezzabile a un gruppo"],[4,"Grave","Lesione di diritti dei lavoratori o danno difficilmente rimediabile"],[5,"Molto grave","Violazione di diritti fondamentali, danno irreversibile"]]
+};
+
+const POLCHK=[["du","Tratta i diritti umani"],["cl","Tratta le condizioni di lavoro"],["et","Tratta etica e integrità negli affari"],["ssl","Tratta salute e sicurezza sul lavoro"],
+ ["leg","Impegna al rispetto dei requisiti di legge e contrattuali, PAS compresa"],["mig","Impegna al miglioramento continuo del sistema"],
+ ["app","È approvata e firmata dall'alta direzione"],["int","È comunicata, compresa e applicata all'interno"],["ext","È comunicata a fornitori e altri partner rilevanti"]];
+function polModello(a){return [
+ a.nome+" considera il rispetto delle persone una condizione del proprio modo di fare impresa. Con questa politica la direzione assume gli impegni che seguono e li estende a chiunque lavori sotto il controllo dell'organizzazione, compresi i lavoratori somministrati e degli appaltatori.",
+ "Diritti umani. Rispettiamo i diritti umani riconosciuti a livello internazionale, valutiamo i rischi delle nostre attività e della catena di fornitura e rimediamo agli impatti negativi che causiamo o a cui contribuiamo.",
+ "Condizioni di lavoro. Non ricorriamo a lavoro forzato né minorile. Garantiamo rapporti di lavoro regolari, retribuzioni non inferiori ai minimi di legge e di contratto collettivo, orari e riposi conformi, libertà di associazione e di contrattazione collettiva, parità di trattamento e un ambiente libero da molestie e abusi.",
+ "Salute e sicurezza. Assicuriamo luoghi di lavoro sicuri e salubri, formazione, dispositivi di protezione gratuiti e preparazione alle emergenze.",
+ "Etica e integrità. Rifiutiamo ogni forma di corruzione e non forniamo informazioni false sulle nostre attività e prestazioni.",
+ "Ascolto. Mettiamo a disposizione di lavoratori e parti esterne un canale di reclamo riservato e tuteliamo da ritorsioni chi segnala in buona fede.",
+ "Ci impegniamo a rispettare i requisiti di legge, gli impegni contrattuali in materia sociale e i requisiti della PAS 24000:2022, applicando la tutela più favorevole ai lavoratori, e a migliorare in modo continuo il sistema di gestione sociale. Chiediamo lo stesso ai nostri fornitori.",
+ "La politica è comunicata a tutti i lavoratori, resa disponibile alle parti interessate e riesaminata ogni anno."].join("\n\n");}
+
+const MESI=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+const PIANO_TIPO=[
+ [1,"4.1 · 6.1","Riesame di contesto, parti interessate e rischi"],
+ [1,"8.1.2","Approvazione del piano di lavoro annuale e degli obiettivi"],
+ [2,"7.4.2","Comunicazione interna annuale sul sistema di gestione sociale"],
+ [2,"7.2 · 7.3","Formazione su diritti, politica sociale e canale di reclamo"],
+ [3,"6.1.2","Verifica dei requisiti di legge: orari, retribuzioni, contratti"],
+ [4,"8.1.3","Invio dei requisiti sociali e del questionario ai fornitori"],
+ [5,"8.2","Prova di emergenza ed evacuazione"],
+ [5,"A.7","Verifica di presidi antincendio e vie di fuga"],
+ [6,"5.4","Incontro di consultazione con i lavoratori e i loro rappresentanti"],
+ [6,"9.1","Monitoraggio semestrale degli indicatori"],
+ [7,"8.1.3","Verifiche sui fornitori a rischio alto"],
+ [9,"9.2","Audit interno sul sistema e sull'Allegato A"],
+ [10,"10.2","Chiusura delle azioni correttive e verifica di efficacia"],
+ [11,"9.1.2","Analisi annuale dei dati e degli indicatori"],
+ [11,"7.4.3","Comunicazione esterna annuale"],
+ [12,"9.3","Riesame della direzione e comunicazione degli esiti ai lavoratori"]
+];
+
+/* ---- indicatori ---- */
+const SEZ=[
+ {id:"org",n:"Organico",r:"A.3 · A.5 · A.8"},
+ {id:"ret",n:"Retribuzioni",r:"A.8"},
+ {id:"ore",n:"Orario di lavoro",r:"A.9"},
+ {id:"ssl",n:"Salute e sicurezza",r:"A.6 · A.7"},
+ {id:"for",n:"Formazione e consapevolezza",r:"7.2 · 7.3"},
+ {id:"rel",n:"Rappresentanza, disciplina ed etica",r:"A.4 · A.5 · A.11"}
+];
+const KPI=[
+ {k:"lav_tot",s:"org",n:"Lavoratori in organico (media annua)",u:"n."},
+ {k:"lav_don",s:"org",n:"di cui donne",u:"n."},
+ {k:"lav_ind",s:"org",n:"di cui a tempo indeterminato",u:"n."},
+ {k:"lav_stran",s:"org",n:"di cui stranieri",u:"n."},
+ {k:"lav_min",s:"org",n:"di cui tra 15 e 17 anni",u:"n."},
+ {k:"lav_u15",s:"org",n:"Minori di 15 anni presenti al lavoro",u:"n.",h:"Qualsiasi valore diverso da zero è una criticità (A.3)"},
+ {k:"lav_somm",s:"org",n:"Lavoratori somministrati o di appaltatori in sito",u:"n."},
+ {k:"ass",s:"org",n:"Assunzioni nell'esercizio",u:"n."},
+ {k:"ces",s:"org",n:"Cessazioni nell'esercizio",u:"n."},
+ {k:"re_min",s:"ret",n:"Retribuzione lorda mensile più bassa erogata (tempo pieno)",u:"€"},
+ {k:"re_ccnl",s:"ret",n:"Minimo contrattuale del livello corrispondente",u:"€"},
+ {k:"re_lw",s:"ret",n:"Salario dignitoso di riferimento",u:"€",h:"Raccomandazione della PAS: se supera il minimo erogato serve un piano di avvicinamento"},
+ {k:"re_don",s:"ret",n:"Retribuzione lorda annua media donne",u:"€"},
+ {k:"re_uom",s:"ret",n:"Retribuzione lorda annua media uomini",u:"€"},
+ {k:"cop",s:"ret",n:"Lavoratori coperti da contratto collettivo",u:"n."},
+ {k:"rit",s:"ret",n:"Mensilità pagate in ritardo",u:"n."},
+ {k:"tratt",s:"ret",n:"Trattenute disciplinari applicate",u:"n."},
+ {k:"ore_ord",s:"ore",n:"Ore ordinarie lavorate",u:"ore"},
+ {k:"ore_str",s:"ore",n:"Ore di straordinario",u:"ore"},
+ {k:"ore_max",s:"ore",n:"Settimana più lunga registrata per un lavoratore",u:"ore",h:"Ordinario più straordinario"},
+ {k:"sett_60",s:"ore",n:"Casi di settimana oltre il limite complessivo",u:"n."},
+ {k:"riposi",s:"ore",n:"Casi di riposo settimanale non fruito",u:"n."},
+ {k:"inf",s:"ssl",n:"Infortuni registrabili (esclusi in itinere)",u:"n."},
+ {k:"gg",s:"ssl",n:"Giorni di assenza per infortunio",u:"gg"},
+ {k:"nm",s:"ssl",n:"Mancati infortuni segnalati",u:"n."},
+ {k:"mal",s:"ssl",n:"Malattie professionali riconosciute",u:"n."},
+ {k:"fssl",s:"ssl",n:"Lavoratori con formazione sulla sicurezza in corso di validità",u:"n."},
+ {k:"fo_ore",s:"for",n:"Ore di formazione erogate",u:"ore"},
+ {k:"fo_sgs",s:"for",n:"Lavoratori formati su politica sociale, diritti e canale di reclamo",u:"n."},
+ {k:"fo_nuovi",s:"for",n:"Neoassunti formati all'ingresso",u:"n."},
+ {k:"rapp",s:"rel",n:"Rappresentanti dei lavoratori",u:"n."},
+ {k:"disc",s:"rel",n:"Provvedimenti disciplinari adottati",u:"n."},
+ {k:"molest",s:"rel",n:"Segnalazioni di discriminazione o molestie",u:"n."},
+ {k:"sanz",s:"rel",n:"Sanzioni in materia di lavoro e previdenza",u:"n."},
+ {k:"corr",s:"rel",n:"Episodi di corruzione accertati",u:"n."}
+];
+const PARAM_DEF={ore_ord:48,ore_tot:60,sett:46,alto:15,medio:8,gg_recl:30};
+
+/* ---- registri ---- */
+const AREE_OPT=[["","—"]].concat(AREE.map(g=>[g.id,g.n]));
+const REG={
+ recl:{n:"Reclami e segnalazioni",r:"A.10 · 10.2",h:"Ogni reclamo o segnalazione, da lavoratori o esterni. Non riportare qui dati che permettano di identificare chi segnala.",
+  cols:[["data","Ricevuto il","d"],["canale","Canale","s",["","Cassetta o modulo","Indirizzo dedicato","Rappresentante dei lavoratori","Colloquio diretto","Piattaforma di segnalazione"]],
+   ["prov","Provenienza","s",["","Lavoratore","Lavoratore di un fornitore","Parte esterna","Anonimo"]],["area","Area","s",AREE_OPT],
+   ["desc","Oggetto","a"],["az","Istruttoria e risposta","a"],["resp","Responsabile","t"],["chiusura","Chiuso il","d"],
+   ["esito","Esito","s",["In istruttoria","Fondato, risolto","Fondato, azioni in corso","Non fondato"]]]},
+ nc:{n:"Non conformità e azioni correttive",r:"10.2",h:"Rilievi da audit, monitoraggi, incidenti e reclami fondati, fino alla verifica di efficacia.",
+  cols:[["data","Rilevata il","d"],["orig","Origine","s",["","Audit interno","Audit esterno","Reclamo","Incidente","Monitoraggio","Segnalazione"]],["rif","Requisito","t"],["resp","Responsabile","t"],
+   ["desc","Descrizione","a"],["causa","Analisi delle cause","a"],["az","Azione correttiva","a"],
+   ["scad","Scadenza","d"],["chiusura","Chiusa il","d"],["eff","Efficacia","s",["Da verificare","Efficace","Non efficace"]]]},
+ form:{n:"Formazione",r:"7.2 · 7.3 · A.6",h:"Interventi formativi su sistema, diritti, sicurezza. Indica le ore del corso e i partecipanti.",
+  cols:[["data","Data","d"],["tema","Tema","t"],["dest","Destinatari","t"],["doc","Docente","t"],["part","Partecipanti","n"],["ore","Ore del corso","n"],["eff","Verifica di efficacia","t"]]},
+ emer:{n:"Emergenze e antincendio",r:"8.2 · A.7",h:"Prove di evacuazione, verifiche dei presidi, emergenze reali. La prova è richiesta almeno una volta l'anno.",
+  cols:[["data","Data","d"],["tipo","Tipo","s",["Prova di evacuazione","Prova antincendio","Esercitazione di primo soccorso","Verifica di presidi e vie di fuga","Emergenza reale"]],["sito","Sito","t"],["resp","Responsabile","t"],
+   ["esito","Esito","a"],["az","Azioni conseguenti","a"]]},
+ com:{n:"Comunicazioni",r:"7.4",h:"Almeno una comunicazione interna e una esterna sul sistema ogni anno.",
+  cols:[["data","Data","d"],["tipo","Tipo","s",["Interna","Esterna"]],["dest","Destinatari","t"],["canale","Canale","t"],["cont","Contenuto","a"]]},
+ cons:{n:"Consultazione dei lavoratori",r:"5.4",h:"Incontri, questionari e ogni altra forma di consultazione e partecipazione.",
+  cols:[["data","Data","d"],["forma","Forma","s",["Riunione con i lavoratori","Incontro con i rappresentanti","Questionario","Raccolta di proposte"]],["part","Partecipanti","n"],["resp","Condotta da","t"],
+   ["arg","Argomenti","a"],["esiti","Esiti e seguito dato","a"]]},
+ audit:{n:"Audit interni",r:"9.2",h:"Programma e risultati. L'audit deve coprire anche l'Allegato A.",
+  cols:[["data","Data","d"],["amb","Ambito","t"],["aud","Auditor","t"],["stato","Stato","s",["Pianificato","Svolto","Chiuso"]],["ril","Rilievi","n"],["sint","Sintesi dei risultati","a"]]},
+ ries:{n:"Riesame della direzione",r:"9.3",h:"Almeno una volta l'anno. Gli elementi in ingresso si compilano da soli nel verbale al passo 9: qui registri le decisioni.",
+  cols:[["data","Data","d"],["part","Partecipanti","t"],["com","Esiti comunicati ai lavoratori il","d"],["ris","Adeguatezza delle risorse","t"],
+   ["ido","Idoneità, adeguatezza ed efficacia del sistema","a"],["mig","Opportunità di miglioramento","a"],["mod","Modifiche al sistema e risorse necessarie","a"],["az","Azioni decise","a"]]}
+};
+/* ==========================================================
+   ARCHIVIO
+   ========================================================== */
+const KEY="percorso-pas24000-v1";
+const Store={
+  load(){try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):null;}catch(e){return null;}},
+  save(d){try{localStorage.setItem(KEY,JSON.stringify(d));return true;}catch(e){toast("Archivio pieno o non disponibile: esporta i dati dal portafoglio");return false;}}
+};
+let DB={aziende:[],current:null}, view="pf", anno=null;
+let tab={ris:"rischi",pol:"pol",reg:"recl"}, openGrp={C4:true}, gapF="all", docTipo="man", pfq="";
+const uid=()=>"O"+Math.random().toString(36).slice(2,7).toUpperCase();
+const oggi=()=>new Date().toISOString().slice(0,10);
+function norm(a){
+  a.profilo=Object.assign({forma:"",piva:"",sede:"",settore:"",ateco:"",ccnl:"",siti:"",campo:"",dir:"",rsgs:"",rlav:"",contatto:"",logo:""},a.profilo||{});
+  a.contesto=a.contesto||{};
+  a.contesto.fattori=a.contesto.fattori||[];
+  a.contesto.parti=a.contesto.parti||PARTI_DEF.map(p=>({nome:p[0],esig:p[1],obb:p[2],sgs:"Sì",mod:p[3]}));
+  a.gap=a.gap||{};
+  a.rischi=a.rischi||RISK_DEF.map(r=>({a:r[0],amb:r[1],t:r[2],p:"",g:"",mis:"",resp:""}));
+  a.fornitori=a.fornitori||[];
+  a.politica=Object.assign({testo:"",chk:{},data:"",firma:""},a.politica||{});
+  a.politica.chk=a.politica.chk||{};
+  a.obiettivi=a.obiettivi||[];a.piano=a.piano||[];a.dati=a.dati||{};
+  a.registri=a.registri||{};Object.keys(REG).forEach(k=>a.registri[k]=a.registri[k]||[]);
+  a.param=Object.assign({...PARAM_DEF},a.param||{});
+  return a;
+}
+function nuova(nome){return norm({id:uid(),nome:nome||"Nuova organizzazione",anno:new Date().getFullYear(),created:new Date().toISOString()});}
+const az=()=>DB.aziende.find(a=>a.id===DB.current);
+const dati=(a,y)=>{a.dati[y]=a.dati[y]||{};return a.dati[y];};
+const num=(a,y,k)=>{const v=dati(a,y)[k];const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:0;};
+const has=(a,y,k)=>{const v=dati(a,y)[k];return v!==undefined&&v!=="";};
+const arr=(a,path)=>path.split(".").reduce((o,k)=>o[k],a);
+const inY=(r,y)=>String(r.data||"").slice(0,4)===String(y);
+const TPL={
+  "contesto.fattori":()=>({tipo:"Esterno",desc:"",eff:"Rischio"}),
+  "contesto.parti":()=>({nome:"",esig:"",obb:"No",sgs:"Sì",mod:""}),
+  "rischi":()=>({a:"A1",amb:"O",t:"",p:"",g:"",mis:"",resp:""}),
+  "fornitori":()=>({nome:"",cat:"Materie prime",paese:"Italia",rischio:"",claus:"No",quest:"No",ver:"",esito:""}),
+  "obiettivi":()=>({ob:"",area:"A6",ind:"",target:"",scad:"",resp:"",ris:"",stato:"In corso"}),
+  "piano":()=>({att:"",rif:"",mese:String(new Date().getMonth()+1),resp:"",stato:"Da fare"})
+};
+
+/* ==========================================================
+   CALCOLI
+   ========================================================== */
+function conf(a,g){
+  const L=REQ.filter(r=>!g||r.g===g);let c=0,p=0,n=0,na=0;
+  L.forEach(r=>{const s=(a.gap[r.id]||{}).st;if(s==="c")c++;else if(s==="p")p++;else if(s==="n")n++;else if(s==="na")na++;});
+  const val=c+p+n+na,app=c+p+n;
+  return {tot:L.length,val,c,p,n,na,da:L.length-val,pct:app?Math.round((c+p*.5)/app*100):0};
+}
+const liv=r=>(+r.p||0)*(+r.g||0);
+function livTag(a,r){const v=liv(r);if(!v)return '<span class="code">da valutare</span>';
+  return v>=a.param.alto?`<span class="tag t-red">alto · ${v}</span>`:v>=a.param.medio?`<span class="tag t-amb">medio · ${v}</span>`:`<span class="tag t-grn">basso · ${v}</span>`;}
+function rischiStat(a){const v=a.rischi.filter(liv);
+  return {tot:a.rischi.length,val:v.length,alti:v.filter(r=>liv(r)>=a.param.alto).length,medi:v.filter(r=>liv(r)>=a.param.medio&&liv(r)<a.param.alto).length,
+    bassi:v.filter(r=>liv(r)<a.param.medio).length,scoperti:v.filter(r=>liv(r)>=a.param.alto&&!String(r.mis||"").trim())};}
+function fornStat(a){const F=a.fornitori,n=F.length;
+  const pc=x=>n?Math.round(x/n*1000)/10:0;
+  return {n,claus:F.filter(f=>f.claus==="Sì").length,quest:F.filter(f=>f.quest==="Sì").length,alti:F.filter(f=>f.rischio==="Alto").length,
+    val:F.filter(f=>f.rischio).length,scoperti:F.filter(f=>f.rischio==="Alto"&&!f.ver),critici:F.filter(f=>f.esito==="Critico").length,
+    pClaus:pc(F.filter(f=>f.claus==="Sì").length),pQuest:pc(F.filter(f=>f.quest==="Sì").length),pVer:pc(F.filter(f=>f.ver).length)};}
+function regStat(a,y){
+  const R=a.registri,Y=k=>R[k].filter(r=>inY(r,y)),t=oggi();
+  const recl=Y("recl"),chiusi=recl.filter(r=>r.chiusura);
+  const gg=(d1,d2)=>Math.round((new Date(d2)-new Date(d1))/864e5);
+  const tm=chiusi.length?Math.round(chiusi.reduce((s,r)=>s+Math.max(0,gg(r.data,r.chiusura)),0)/chiusi.length):0;
+  const nc=Y("nc");
+  return {recl:recl.length,reclChiusi:chiusi.length,reclTm:tm,
+    reclVecchi:R.recl.filter(r=>r.data&&!r.chiusura&&gg(r.data,t)>a.param.gg_recl).length,
+    nc:nc.length,ncChiuse:nc.filter(r=>r.chiusura).length,ncAperte:R.nc.filter(r=>!r.chiusura).length,
+    ncScadute:R.nc.filter(r=>!r.chiusura&&r.scad&&r.scad<t).length,ncEff:nc.filter(r=>r.eff==="Efficace").length,
+    form:Y("form").length,formOre:Y("form").reduce((s,r)=>s+(parseFloat(r.ore)||0)*(parseFloat(r.part)||0),0),
+    prove:Y("emer").filter(r=>/^Prova|^Esercitazione/.test(r.tipo||"")).length,emer:Y("emer").length,
+    comInt:Y("com").filter(r=>r.tipo==="Interna").length,comEst:Y("com").filter(r=>r.tipo==="Esterna").length,
+    cons:Y("cons").length,audit:Y("audit").filter(r=>r.stato!=="Pianificato").length,auditPian:Y("audit").length,
+    rilievi:Y("audit").reduce((s,r)=>s+(parseFloat(r.ril)||0),0),ries:Y("ries").length};
+}
+function derive(a,y){
+  const n=k=>num(a,y,k),r=(x,d=1)=>{const m=Math.pow(10,d);return Math.round(x*m)/m;},P=a.param;
+  const t=n("lav_tot"),ore=n("ore_ord")+n("ore_str");
+  return {ore:r(ore,0),
+    pctDonne:t?r(n("lav_don")/t*100):0,pctInd:t?r(n("lav_ind")/t*100):0,pctStran:t?r(n("lav_stran")/t*100):0,
+    pctSomm:(t+n("lav_somm"))?r(n("lav_somm")/(t+n("lav_somm"))*100):0,
+    turnover:t?r(n("ces")/t*100):0,
+    margCcnl:n("re_ccnl")?r((n("re_min")-n("re_ccnl"))/n("re_ccnl")*100):0,
+    gapLw:n("re_lw")?r((n("re_lw")-n("re_min"))/n("re_lw")*100):0,
+    payGap:n("re_uom")?r((n("re_uom")-n("re_don"))/n("re_uom")*100):0,
+    pctCop:t?r(n("cop")/t*100):0,
+    pctStr:n("ore_ord")?r(n("ore_str")/n("ore_ord")*100):0,
+    oreSett:t&&P.sett?r(ore/t/P.sett):0,strAdd:t?r(n("ore_str")/t,0):0,
+    if_:ore?r(n("inf")/ore*1e6,2):0,ig:ore?r(n("gg")/ore*1e3,2):0,
+    pctSsl:t?r(n("fssl")/t*100):0,oreForm:t?r(n("fo_ore")/t):0,pctSgs:t?r(n("fo_sgs")/t*100):0,
+    pctNuovi:n("ass")?r(n("fo_nuovi")/n("ass")*100):0};
+}
+/* Segnali ricavati dai dati: C = criticità, A = attenzione */
+function allarmi(a,y){
+  const n=k=>num(a,y,k),h=k=>has(a,y,k),P=a.param,L=[],add=(lv,t,r,go)=>L.push({lv,t,r,go});
+  if(h("lav_u15")&&n("lav_u15")>0)add("C","Minori di 15 anni presenti al lavoro: "+n("lav_u15"),"A.3 · 1","dati");
+  if(h("re_min")&&h("re_ccnl")&&n("re_min")<n("re_ccnl"))add("C","La retribuzione più bassa erogata è sotto il minimo contrattuale","A.8 · 4","dati");
+  if(n("tratt")>0)add("C","Trattenute disciplinari applicate sulla retribuzione: "+n("tratt"),"A.8 · 10","dati");
+  if(n("rit")>0)add("A","Mensilità pagate in ritardo: "+n("rit"),"A.8 · 5","dati");
+  if(h("cop")&&h("lav_tot")&&n("cop")<n("lav_tot"))add("A","Lavoratori non coperti da contratto collettivo: "+(n("lav_tot")-n("cop")),"A.8 · 4","dati");
+  if(n("ore_max")>P.ore_tot)add("C","Settimana di "+n("ore_max")+" ore: oltre il limite complessivo di "+P.ore_tot,"A.9 · 2-3","dati");
+  else if(n("ore_max")>P.ore_ord)add("A","Settimana di "+n("ore_max")+" ore: verifica che l'eccedenza oltre "+P.ore_ord+" sia straordinario volontario e retribuito","A.9 · 1","dati");
+  if(n("sett_60")>0)add("C","Casi di settimana oltre il limite complessivo: "+n("sett_60"),"A.9 · 3","dati");
+  if(n("riposi")>0)add("A","Casi di riposo settimanale non fruito: "+n("riposi"),"A.9 · 7","dati");
+  if(h("re_lw")&&h("re_min")&&n("re_lw")>n("re_min"))add("A","Retribuzione minima sotto il salario dignitoso di riferimento: predisponi un piano di avvicinamento","A.8 · 4 nota","pol");
+  if(n("corr")>0)add("C","Episodi di corruzione accertati: "+n("corr"),"A.11 · 1","dati");
+  const c=conf(a);if(c.n)add("C","Requisiti valutati non conformi: "+c.n,"Passo 3","gap");
+  const rs=rischiStat(a);if(rs.scoperti.length)add("A","Rischi alti senza misure definite: "+rs.scoperti.length,"6.1.2","ris");
+  const fs=fornStat(a);if(fs.scoperti.length)add("A","Fornitori a rischio alto mai verificati: "+fs.scoperti.length,"8.1.3","ris");
+  if(fs.critici)add("C","Fornitori con esito critico alla verifica: "+fs.critici,"A.1 · 4","ris");
+  const g=regStat(a,y);
+  if(g.ncScadute)add("A","Azioni correttive scadute e non chiuse: "+g.ncScadute,"10.2","reg");
+  if(g.reclVecchi)add("A","Reclami aperti da più di "+P.gg_recl+" giorni: "+g.reclVecchi,"A.10","reg");
+  if(!g.prove)add("A","Nessuna prova di emergenza registrata nel "+y,"8.2","reg");
+  if(!g.comInt)add("A","Nessuna comunicazione interna sul sistema nel "+y,"7.4.2","reg");
+  if(!g.comEst)add("A","Nessuna comunicazione esterna sul sistema nel "+y,"7.4.3","reg");
+  if(!g.audit)add("A","Nessun audit interno svolto nel "+y,"9.2","reg");
+  if(!g.ries)add("A","Riesame della direzione non ancora svolto nel "+y,"9.3","reg");
+  return L;
+}
+function stato(a,y){
+  const p=a.profilo,pf=["forma","sede","settore","ateco","ccnl","siti","campo","dir","rsgs","rlav"];
+  const s1=pf.filter(k=>String(p[k]||"").trim()).length/pf.length;
+  const P=a.contesto.parti,s2=(Math.min(1,a.contesto.fattori.filter(f=>f.desc).length/4)+(P.length?P.filter(x=>x.nome&&x.esig).length/P.length:0))/2;
+  const c=conf(a),s3=c.val/c.tot;
+  const rs=rischiStat(a),fs=fornStat(a),s4=((rs.tot?rs.val/rs.tot:0)+(fs.n?fs.val/fs.n:0))/2;
+  const pol=a.politica,sp=(pol.testo.trim().length>200?.5:0)+POLCHK.filter(k=>pol.chk[k[0]]).length/POLCHK.length*.5;
+  const s5=(sp+Math.min(1,a.obiettivi.filter(o=>o.ob).length/3)+Math.min(1,a.piano.filter(o=>o.att).length/8))/3;
+  const s6=KPI.filter(k=>has(a,y,k.k)).length/KPI.length;
+  const s7=Object.keys(REG).filter(k=>a.registri[k].some(r=>inY(r,y))).length/Object.keys(REG).length;
+  const s8=(s1+s2+s3+s4+s5+s6+s7)/7;
+  return {s1,s2,s3,s4,s5,s6,s7,s8,tot:Math.round(s8*100)};
+}
+
+/* ==========================================================
+   DIAGRAMMI — generati dai dati inseriti
+   ========================================================== */
+const CFONT='font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"';
+function chConf(a){
+  const rowH=24,L=250,W=620,H=14+GRP.length*rowH+22,bw=W-L-64;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Conformità per gruppo di requisiti">`;
+  [0,50,100].forEach(v=>{const x=L+bw*v/100;s+=`<line x1="${x}" y1="8" x2="${x}" y2="${H-20}" stroke="#E4E2DC"/><text x="${x}" y="${H-6}" font-size="9.5" fill="#7F8496" text-anchor="middle">${v}%</text>`;});
+  GRP.forEach((g,i)=>{const c=conf(a,g.id),y=14+i*rowH,app=c.c+c.p+c.n,col=!app?"#C9C7C0":c.pct>=90?"#2E7D32":c.pct>=60?"#B06E00":"#B3261E";
+    s+=`<text x="${L-10}" y="${y+11}" font-size="11" fill="#171A26" text-anchor="end">${g.n}</text>
+        <rect x="${L}" y="${y}" width="${bw}" height="15" fill="#F0EEE9" rx="3"/>
+        ${app?`<rect x="${L}" y="${y}" width="${Math.max(2,bw*c.pct/100)}" height="15" fill="${col}" rx="3"/>`:""}
+        <text x="${L+bw+8}" y="${y+11.5}" font-size="10.5" fill="#4B5063">${app?c.pct+"%":"—"}</text>`;});
+  return s+"</svg>";
+}
+function chRisk(a){
+  const W=620,H=330,L=96,T=16,cw=78,ch=50,P=a.param;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Matrice dei rischi">`;
+  for(let p=5;p>=1;p--)for(let g=1;g<=5;g++){
+    const v=p*g,x=L+(g-1)*cw,y=T+(5-p)*ch,n=a.rischi.filter(r=>+r.p===p&&+r.g===g).length;
+    const f=v>=P.alto?"#FBEAE8":v>=P.medio?"#FDF2DF":"#E8F3E9",c=v>=P.alto?"#B3261E":v>=P.medio?"#B06E00":"#2E7D32";
+    s+=`<rect x="${x+1.5}" y="${y+1.5}" width="${cw-3}" height="${ch-3}" fill="${f}" rx="5"/>
+        <text x="${x+cw-9}" y="${y+15}" font-size="9" fill="${c}" text-anchor="end" opacity=".7">${v}</text>`;
+    if(n)s+=`<circle cx="${x+cw/2}" cy="${y+ch/2+2}" r="14" fill="${c}"/><text x="${x+cw/2}" y="${y+ch/2+6.5}" font-size="12.5" fill="#fff" text-anchor="middle" font-weight="700">${n}</text>`;
+  }
+  [1,2,3,4,5].forEach(v=>{s+=`<text x="${L+(v-1)*cw+cw/2}" y="${T+5*ch+16}" font-size="10" fill="#7F8496" text-anchor="middle">${v} · ${SCALA.g[v-1][1]}</text>
+    <text x="${L-8}" y="${T+(5-v)*ch+ch/2+4}" font-size="10" fill="#7F8496" text-anchor="end">${v} · ${SCALA.p[v-1][1]}</text>`;});
+  s+=`<text x="${L+cw*2.5}" y="${H-8}" font-size="10.5" fill="#4B5063" text-anchor="middle">gravità →</text>
+      <text x="12" y="${T+ch*2.5}" font-size="10.5" fill="#4B5063" text-anchor="middle" transform="rotate(-90 12 ${T+ch*2.5})">probabilità →</text>`;
+  [["#2E7D32","basso"],["#B06E00","medio"],["#B3261E","alto"]].forEach((x,i)=>{s+=`<rect x="${L+5*cw+18}" y="${T+6+i*22}" width="11" height="11" fill="${x[0]}" rx="2"/><text x="${L+5*cw+35}" y="${T+16+i*22}" font-size="10.5" fill="#4B5063">${x[1]}</text>`;});
+  return s+"</svg>";
+}
+function svgGroupBars(groups,cats,colors,unit,dec,limit){
+  const W=620,H=270,L=54,R=14,T=26,B=54,pw=W-L-R,ph=H-T-B;
+  let max=limit||0;groups.forEach(g=>g.v.forEach(v=>{if(v>max)max=v;}));
+  if(max<=0)max=1;max*=1.08;
+  const gw=pw/groups.length,bw=Math.min(52,gw/(cats.length+.8)),y=v=>T+ph-(v/max)*ph;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img">`;
+  for(let i=0;i<=4;i++){const gy=T+ph-ph*i/4,val=max*i/4;
+    s+=`<line x1="${L}" y1="${gy}" x2="${W-R}" y2="${gy}" stroke="#E4E2DC"/><text x="${L-8}" y="${gy+3.5}" font-size="9.5" fill="#7F8496" text-anchor="end">${fmt(val,dec||0)}</text>`;}
+  groups.forEach((g,gi)=>{const x0=L+gi*gw+(gw-bw*cats.length)/2;
+    g.v.forEach((v,ci)=>{const bx=x0+ci*bw,by=y(v),bh=T+ph-by;
+      s+=`<rect x="${bx+3}" y="${by}" width="${bw-6}" height="${Math.max(0,bh)}" fill="${colors[ci]}" rx="3"/>`;
+      if(v>0)s+=`<text x="${bx+bw/2}" y="${by-5}" font-size="9.5" fill="#4B5063" text-anchor="middle">${fmt(v,dec||0)}</text>`;});
+    s+=`<text x="${L+gi*gw+gw/2}" y="${T+ph+17}" font-size="11" fill="#171A26" text-anchor="middle" font-weight="600">${g.n}</text>`;});
+  if(limit)s+=`<line x1="${L}" y1="${y(limit)}" x2="${W-R}" y2="${y(limit)}" stroke="#B3261E" stroke-dasharray="5 4"/><text x="${W-R}" y="${y(limit)-5}" font-size="9.5" fill="#B3261E" text-anchor="end">limite ${fmt(limit)}</text>`;
+  cats.forEach((c,i)=>{const lx=L+i*190;s+=`<rect x="${lx}" y="${H-20}" width="10" height="10" fill="${colors[i]}" rx="2"/><text x="${lx+15}" y="${H-11}" font-size="10.5" fill="#4B5063">${c}</text>`;});
+  if(unit)s+=`<text x="${W-R}" y="${H-11}" font-size="10" fill="#7F8496" text-anchor="end">${unit}</text>`;
+  return s+"</svg>";
+}
+function chInf(a,y){const d=derive(a,y),p=derive(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.if_,p.ig]},{n:String(y),v:[d.if_,d.ig]}],["Indice di frequenza","Indice di gravità"],["#3F4A8C","#A9B0D6"],"",2);}
+function chOre(a,y){const d=derive(a,y),p=derive(a,y-1);
+  return svgGroupBars([{n:String(y-1),v:[p.oreSett,num(a,y-1,"ore_max")]},{n:String(y),v:[d.oreSett,num(a,y,"ore_max")]}],
+    ["Ore settimanali medie per addetto","Settimana più lunga"],["#3F4A8C","#A9B0D6"],"ore",1,a.param.ore_tot);}
+function chPiano(a){
+  const W=620,H=200,L=30,T=18,B=40,pw=W-L-10,ph=H-T-B,cw=pw/12;
+  const cnt=m=>a.piano.filter(x=>+x.mese===m&&x.att),max=Math.max(1,...MESI.map((_,i)=>cnt(i+1).length));
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" ${CFONT} role="img" aria-label="Piano di lavoro annuale per mese">`;
+  s+=`<line x1="${L}" y1="${T+ph}" x2="${W-10}" y2="${T+ph}" stroke="#E4E2DC"/>`;
+  MESI.forEach((m,i)=>{const all=cnt(i+1),done=all.filter(x=>x.stato==="Fatto").length,x=L+i*cw,u=ph/max;
+    for(let k=0;k<all.length;k++)s+=`<rect x="${x+7}" y="${T+ph-(k+1)*u+2}" width="${cw-14}" height="${u-4}" fill="${k<done?"#2E7D32":"#A9B0D6"}" rx="3"/>`;
+    s+=`<text x="${x+cw/2}" y="${T+ph+15}" font-size="10" fill="#4B5063" text-anchor="middle">${m}</text>`;});
+  s+=`<rect x="${L}" y="${H-14}" width="10" height="10" fill="#2E7D32" rx="2"/><text x="${L+15}" y="${H-5}" font-size="10.5" fill="#4B5063">attività concluse</text>
+      <rect x="${L+130}" y="${H-14}" width="10" height="10" fill="#A9B0D6" rx="2"/><text x="${L+145}" y="${H-5}" font-size="10.5" fill="#4B5063">pianificate o in corso</text>`;
+  return s+"</svg>";
+}
+
+/* ==========================================================
+   RENDER
+   ========================================================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const fmt=(v,d=0)=>v===0||v?Number(v).toLocaleString("it-IT",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const fdata=d=>d?String(d).split("-").reverse().join("/"):"—";
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400);}
+const iniz=n=>n.replace(/[^A-Za-zÀ-ÿ ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("");
+/* campi generici legati a un elenco: data-l percorso, data-i indice, data-k chiave */
+const F={
+  at:(p,i,k,rr)=>`data-l="${p}" data-i="${i}" data-k="${k}"${rr?" data-rr":""}`,
+  t:(p,i,k,v,ph,rr)=>`<input type="text" ${F.at(p,i,k,rr)} value="${esc(v||"")}" placeholder="${esc(ph||"")}">`,
+  n:(p,i,k,v,rr)=>`<input type="number" step="any" ${F.at(p,i,k,rr)} value="${esc(v||"")}">`,
+  d:(p,i,k,v,rr)=>`<input type="date" ${F.at(p,i,k,rr)} value="${esc(v||"")}">`,
+  a:(p,i,k,v,ph)=>`<textarea ${F.at(p,i,k)} style="min-height:62px" placeholder="${esc(ph||"")}">${esc(v||"")}</textarea>`,
+  s:(p,i,k,v,opts,rr)=>`<select ${F.at(p,i,k,rr)}>${opts.map(o=>{const x=Array.isArray(o)?o:[o,o===""?"—":o];
+    return `<option value="${esc(x[0])}" ${String(v==null?"":v)===String(x[0])?"selected":""}>${esc(x[1])}</option>`;}).join("")}</select>`,
+  x:(p,i)=>`<button class="btn ghost icon" data-ldel="${p}" data-i="${i}" title="Elimina" aria-label="Elimina">✕</button>`
+};
+const tabs=(grp,items)=>`<div class="tabs">${items.map(t=>`<button class="tab ${tab[grp]===t[0]?"on":""}" data-tab="${grp}" data-tv="${t[0]}">${t[1]}${t[2]!==undefined?`<span class="c">${t[2]}</span>`:""}</button>`).join("")}</div>`;
+const dtab=rows=>`<div class="derived"><table><tbody>${rows.map(r=>`<tr><td style="border:0;padding:5px 0;font-size:12.5px">${r[0]}</td><td class="num" style="border:0;padding:5px 0"><b>${r[1]}</b> <span class="code">${r[2]||""}</span></td></tr>`).join("")}</tbody></table></div>`;
+const alrList=(L,go)=>L.length?L.map(x=>`<div class="alr"><span class="tag ${x.lv==="C"?"t-red":"t-amb"}">${x.lv==="C"?"criticità":"attenzione"}</span>
+  <div class="tx">${esc(x.t)} <span class="code">${esc(x.r)}</span></div>${go?`<button class="btn ghost sm" data-go="${x.go}">Vai</button>`:""}</div>`).join(""):'<div class="empty" style="padding:14px">Nessun segnale dai dati inseriti.</div>';
+
+function render(){
+  const a=az();
+  document.querySelectorAll('.nav:not([data-v="pf"]):not([data-v="guida"])').forEach(n=>n.hidden=!a);
+  $("#grpPercorso").hidden=!a;$("#grpImp").hidden=!a;
+  $("#coSel").hidden=!a;$("#annoSel").parentElement.hidden=!a;$("#printBtn").hidden=!a;
+  if(!a&&view!=="guida")view="pf";
+  if(a&&!anno)anno=a.anno;
+  if(a){const st=stato(a,anno);
+    [1,2,3,4,5,6,7,8,9].forEach(i=>{const v=st["s"+Math.min(i,8)],e=$("#s"+i);e.className="st"+(v>=.99?" ok":v>0?" mid":"");e.textContent=v>=.99?"✓":i;});}
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("on",n.dataset.v===view));
+  const V={home:vHome,org:vOrg,ctx:vCtx,gap:vGap,ris:vRis,pol:vPol,dati:vDati,reg:vReg,ver:vVer,doc:vDoc,conf:vConf};
+  $("#view").innerHTML=view==="pf"?vPf():view==="guida"?vGuida():V[view](a,stato(a,anno));
+  bind(a);
+}
+/* ridisegna conservando campo attivo e posizione */
+function rr(){setTimeout(()=>{
+  const e=document.activeElement,sig=e&&e.dataset&&Object.keys(e.dataset).length?JSON.stringify(e.dataset):null,sy=window.scrollY;
+  render();
+  if(sig){const m=[...document.querySelectorAll("#view input,#view select,#view textarea")].find(x=>JSON.stringify(x.dataset)===sig);if(m)m.focus({preventScroll:true});}
+  window.scrollTo(0,sy);},0);}
+
+/* ---------- portafoglio ---------- */
+function vPf(){
+  const size=(JSON.stringify(DB).length/1048576);
+  const list=DB.aziende.filter(a=>!pfq||(a.nome+" "+(a.profilo.settore||"")+" "+(a.profilo.sede||"")).toLowerCase().includes(pfq.toLowerCase()));
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px">
+    <div><h1>Portafoglio</h1><p class="sub" style="margin:0">${DB.aziende.length} organizzazion${DB.aziende.length===1?"e":"i"} in archivio. Apri una scheda per riprendere il percorso da dove era rimasto.</p></div>
+    <input type="search" id="pfq" placeholder="Cerca per nome, settore, sede…" value="${esc(pfq)}" style="width:260px;max-width:100%">
+  </div>
+  <div class="pf" style="margin-top:20px">
+    ${list.map(a=>{const y=a.anno,st=stato(a,y),c=conf(a),al=allarmi(a,y);
+      return `<div class="pfc">
+        <div class="hd" data-open="${a.id}">
+          <div class="logo">${a.profilo.logo?`<img src="${a.profilo.logo}" alt="">`:esc(iniz(a.nome)||"—")}</div>
+          <div style="min-width:0">
+            <div class="nm">${esc(a.nome)}</div>
+            <div class="mt">${esc(a.profilo.settore||"settore da indicare")}${a.profilo.sede?" · "+esc(a.profilo.sede):""}</div>
+            <div class="mt code">esercizio ${y}</div>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="track"><i style="width:${st.tot}%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px" class="code"><span>avanzamento</span><span>${st.tot}%</span></div>
+          <div class="stats">
+            <div><b>${c.val?c.pct+"%":"—"}</b><span>conformità</span></div>
+            <div><b>${rischiStat(a).alti}</b><span>rischi alti</span></div>
+            <div><b>${al.filter(x=>x.lv==="C").length}</b><span>criticità</span></div>
+          </div>
+        </div>
+        <div class="ft">
+          <button class="btn sm" data-open="${a.id}">Apri</button>
+          <button class="btn ghost sm" data-dup="${a.id}">Duplica</button>
+          <button class="btn ghost sm" data-del="${a.id}" style="margin-left:auto">Elimina</button>
+        </div>
+      </div>`;}).join("")}
+    <button class="pfnew" id="pfNew"><b>+</b>Nuova organizzazione</button>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <p class="eyebrow" style="margin-bottom:4px">Archivio</p>
+        <div style="font-size:12.5px;color:var(--ink-2)">Peso attuale <b class="code">${size.toFixed(2)} MB</b>${size>3.2?' — <span style="color:var(--red)">vicino al limite del browser: esporta e alleggerisci</span>':""}. L'esportazione è l'unico vero backup: falla alla fine di ogni sessione di lavoro.</div>
+      </div>
+      <button class="btn ghost sm" id="expBtn">Esporta archivio</button>
+      <button class="btn ghost sm" id="impBtn">Importa archivio</button>
+      <input type="file" id="impFile" accept="application/json,.json" hidden>
+    </div>
+  </div>`;
+}
+
+/* ---------- avanzamento ---------- */
+const STEPS=[["org","Organizzazione","Chi adotta il sistema, con quale campo di applicazione e quali ruoli"],
+ ["ctx","Contesto e parti interessate","Fattori interni ed esterni, esigenze di lavoratori e altre parti"],
+ ["gap","Conformità","I 98 requisiti della PAS valutati uno per uno, con evidenze e azioni"],
+ ["ris","Rischi e fornitori","Inventario dei rischi sociali e due diligence sulla catena di fornitura"],
+ ["pol","Politica e piano","Politica sociale, obiettivi e piano di lavoro annuale"],
+ ["dati","Dati e indicatori","I numeri dell'esercizio per ciascuna area dell'Allegato A"],
+ ["reg","Registri","Reclami, azioni correttive, formazione, emergenze, audit, riesame"],
+ ["ver","Verifica","Cosa manca prima dell'audit di certificazione"],
+ ["doc","Documenti","Manuale, politica, rapporto di conformità e verbale di riesame"]];
+function vHome(a,st){
+  const c=conf(a),rs=rischiStat(a),al=allarmi(a,anno);
+  return `<h1>${esc(a.nome)} — esercizio ${anno}</h1>
+  <p class="sub">Il sistema di gestione sociale si costruisce lungo il percorso. Ogni passo alimenta i documenti finali e il quadro dei segnali qui sotto.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Avanzamento</div><div class="n">${st.tot}%</div><div class="track" style="margin-top:8px"><i style="width:${st.tot}%"></i></div></div>
+    <div class="card kpi"><div class="l">Conformità</div><div class="n">${c.val?c.pct+"%":"—"}</div><div class="h">${c.val} requisiti valutati su ${c.tot}</div></div>
+    <div class="card kpi"><div class="l">Rischi alti</div><div class="n">${rs.alti}</div><div class="h">${rs.val} valutati su ${rs.tot}</div></div>
+    <div class="card kpi"><div class="l">Segnali</div><div class="n">${al.length}</div><div class="h">${al.filter(x=>x.lv==="C").length} criticità · ${al.filter(x=>x.lv==="A").length} da presidiare</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">I nove passi</p>
+      ${STEPS.map((s,i)=>{const v=st["s"+Math.min(i+1,8)];return `<div class="step" data-go="${s[0]}">
+        <div class="stepno ${v>=.99?"ok":v>0?"mid":""}">${v>=.99?"✓":i+1}</div>
+        <div style="flex:1;min-width:0"><div class="stepname">${s[1]}</div><div class="stepdesc">${s[2]}</div></div>
+        <div class="stepbar"><div class="track"><i style="width:${Math.round(v*100)}%"></i></div>
+        <div class="code" style="text-align:right;margin-top:4px">${Math.round(v*100)}%</div></div></div>`;}).join("")}
+    </div>
+    <div>
+      <div class="card"><p class="eyebrow">Segnali dai dati</p>${alrList(al,true)}</div>
+      <div class="card"><p class="eyebrow">Conformità per gruppo di requisiti</p>${chConf(a)}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 1 organizzazione ---------- */
+function vOrg(a){
+  const p=a.profilo,f=(k,l,h)=>`<label class="f"><span>${l}</span><input type="text" data-p="${k}" value="${esc(p[k])}">${h?`<div class="hint">${h}</div>`:""}</label>`;
+  return `<h1>1 · Organizzazione</h1>
+  <p class="sub">Identifica chi adotta il sistema, fin dove arriva e chi ne risponde. Questi dati aprono il manuale e definiscono il campo di applicazione richiesto al punto 4.3.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Identità</p>
+      <label class="f"><span>Denominazione</span><input type="text" data-nome value="${esc(a.nome)}"></label>
+      ${f("forma","Forma giuridica")}${f("piva","Partita IVA")}${f("sede","Sede legale")}
+      ${f("settore","Settore di attività")}${f("ateco","Codice ATECO")}
+      ${f("ccnl","Contratto collettivo applicato","È il riferimento per minimi retributivi, orari e disciplina")}
+      <div class="hr"></div>
+      <p class="eyebrow">Logo per i documenti</p>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff;min-height:70px;min-width:140px;display:flex;align-items:center;justify-content:center">
+          ${p.logo?`<img src="${p.logo}" alt="Logo" style="max-width:140px;max-height:56px">`:'<span class="code">nessun logo</span>'}</div>
+        <button class="btn ghost sm" id="upLogo">Carica logo</button>${p.logo?'<button class="btn ghost sm" id="rmLogo">Rimuovi</button>':""}
+      </div>
+    </div>
+    <div class="card"><p class="eyebrow">Campo di applicazione e ruoli</p>
+      ${f("siti","Siti inclusi","Stabilimenti, magazzini, uffici, eventuali alloggi forniti ai lavoratori")}
+      <label class="f"><span>Campo di applicazione del sistema</span><textarea data-p="campo" style="min-height:90px" placeholder="Attività, prodotti e servizi coperti; lavoratori compresi">${esc(p.campo)}</textarea>
+        <div class="hint">Deve comprendere tutti i lavoratori sotto il controllo dell'organizzazione, somministrati e appaltatori in sito inclusi. I requisiti dell'Allegato A non si possono escludere.</div></label>
+      ${f("dir","Alta direzione","Chi approva la politica e conduce il riesame")}
+      ${f("rsgs","Responsabile del sistema di gestione sociale","La persona incaricata ai sensi del punto 5.3")}
+      ${f("rlav","Rappresentanti dei lavoratori","RSU, RSA, RLS o altra forma; se assenti, scrivi come avviene la consultazione")}
+      ${f("contatto","Referente per i rapporti con l'organismo di certificazione")}
+    </div>
+  </div>`;
+}
+
+/* ---------- 2 contesto ---------- */
+function vCtx(a){
+  const C=a.contesto;
+  return `<h1>2 · Contesto e parti interessate</h1>
+  <p class="sub">Punti 4.1 e 4.2. Pochi elementi, ma veri: i fattori che condizionano le pratiche sociali dell'organizzazione e ciò che lavoratori e altre parti si aspettano.</p>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Fattori interni ed esterni</h2><button class="btn sm" data-ladd="contesto.fattori">Aggiungi fattore</button></div>
+    <div class="hint" style="margin:0 0 10px">Spunti: stagionalità e picchi produttivi · ricorso ad agenzie e appalti · presenza di lavoratori stranieri · mercato del lavoro locale · richieste sociali dei clienti · irregolarità diffuse nel settore o nel territorio · turnover · relazioni sindacali · rapporto con la comunità locale.</div>
+    ${C.fattori.length?C.fattori.map((x,i)=>`<div class="rowl" style="grid-template-columns:120px 1fr 140px 34px">
+      ${F.s("contesto.fattori",i,"tipo",x.tipo,["Esterno","Interno"])}${F.t("contesto.fattori",i,"desc",x.desc,"Descrizione del fattore e di come incide sul sistema",1)}
+      ${F.s("contesto.fattori",i,"eff",x.eff,["Rischio","Opportunità"])}${F.x("contesto.fattori",i)}</div>`).join(""):'<div class="empty">Nessun fattore inserito. Ne servono almeno quattro per un’analisi credibile.</div>'}
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Parti interessate</h2><button class="btn sm" data-ladd="contesto.parti">Aggiungi parte</button></div>
+    <div class="hint" style="margin:0 0 10px">L'elenco è precaricato con le parti ricorrenti: adatta esigenze e modalità di coinvolgimento alla realtà dell'organizzazione ed elimina ciò che non serve.</div>
+    ${C.parti.map((x,i)=>`<div class="rec">
+      <div class="grid g4">
+        <label class="f" style="grid-column:span 2"><span>Parte interessata</span>${F.t("contesto.parti",i,"nome",x.nome,"",1)}</label>
+        <label class="f"><span>È o può diventare un obbligo</span>${F.s("contesto.parti",i,"obb",x.obb,["Sì","No"])}</label>
+        <label class="f"><span>Gestita nel sistema</span>${F.s("contesto.parti",i,"sgs",x.sgs,["Sì","No"])}</label>
+        <label class="f" style="grid-column:span 2"><span>Esigenze e aspettative</span>${F.a("contesto.parti",i,"esig",x.esig)}</label>
+        <label class="f" style="grid-column:span 2"><span>Come viene coinvolta</span>${F.a("contesto.parti",i,"mod",x.mod)}</label>
+      </div>
+      <div class="rx"><span class="code">4.2</span>${F.x("contesto.parti",i)}</div></div>`).join("")}
+  </div>`;
+}
+
+/* ---------- 3 conformità ---------- */
+function vGap(a){
+  const c=conf(a);
+  const show=r=>{const s=(a.gap[r.id]||{}).st;return gapF==="all"||(gapF==="todo"&&!s)||(gapF==="nc"&&(s==="p"||s==="n"));};
+  const row=r=>{const g=a.gap[r.id]||{},bad=g.st==="p"||g.st==="n";
+    return `<tr class="${bad?"hasub":""}"><td class="code" style="width:70px;vertical-align:top;padding-top:13px;white-space:nowrap">${r.ref}</td>
+      <td style="vertical-align:top;padding-top:11px;min-width:220px">${esc(r.t)}</td>
+      <td style="width:150px;vertical-align:top"><select class="st-${g.st||"x"}" data-gap="${r.id}" data-k="st" data-rr aria-label="Stato ${r.ref}">${STATI.map(s=>`<option value="${s[0]}" ${(g.st||"")===s[0]?"selected":""}>${s[1]}</option>`).join("")}</select></td>
+      <td style="width:30%;min-width:180px;vertical-align:top"><input type="text" data-gap="${r.id}" data-k="ev" value="${esc(g.ev||"")}" placeholder="${g.st==="na"?"Motivazione":"Evidenza: documento, registrazione, prassi"}"></td></tr>
+      ${bad?`<tr class="subr"><td></td><td colspan="3"><div class="adeg">
+        <input type="text" data-gap="${r.id}" data-k="az" value="${esc(g.az||"")}" placeholder="Azione di adeguamento">
+        <input type="text" data-gap="${r.id}" data-k="resp" value="${esc(g.resp||"")}" placeholder="Responsabile">
+        <input type="date" data-gap="${r.id}" data-k="scad" value="${esc(g.scad||"")}" aria-label="Scadenza"></div></td></tr>`:""}`;};
+  return `<h1>3 · Conformità</h1>
+  <p class="sub">I requisiti della PAS 24000 in sintesi operativa: 31 sul sistema di gestione (clausole 4–10) e 67 sulla prestazione sociale (Allegato A). Per ciascuno indica lo stato reale e l'evidenza che lo dimostra. Le voci parziali o non conformi aprono la riga dell'azione di adeguamento e confluiscono nel piano.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Indice di conformità</div><div class="n">${c.val?c.pct+"%":"—"}</div><div class="h">sui requisiti pertinenti valutati</div></div>
+    <div class="card kpi"><div class="l">Conformi</div><div class="n" style="color:var(--green)">${c.c}</div><div class="h">${c.na} non pertinenti</div></div>
+    <div class="card kpi"><div class="l">Da adeguare</div><div class="n" style="color:var(--amber)">${c.p+c.n}</div><div class="h">${c.p} parziali · ${c.n} non conformi</div></div>
+    <div class="card kpi"><div class="l">Da valutare</div><div class="n">${c.da}</div><div class="h">su ${c.tot} requisiti</div></div>
+  </div>
+  <div class="tabs">${[["all","Tutti i requisiti"],["todo","Da valutare",c.da],["nc","Da adeguare",c.p+c.n]].map(t=>`<button class="tab ${gapF===t[0]?"on":""}" data-gapf="${t[0]}">${t[1]}${t[2]!==undefined?`<span class="c">${t[2]}</span>`:""}</button>`).join("")}</div>
+  ${GRP.map(g=>{const cg=conf(a,g.id),L=REQ.filter(r=>r.g===g.id&&show(r)),op=!!openGrp[g.id],G=GUIDE[g.id];
+    if(!L.length&&gapF!=="all")return "";
+    return `<div class="grp">
+      <button class="gh" data-grp="${g.id}" aria-expanded="${op}">
+        <span class="code" style="width:14px">${op?"▾":"▸"}</span>
+        <span class="nm">${esc(g.n)}<span class="code" style="display:block;font-weight:400">${esc(g.r)} · ${cg.tot} requisiti${cg.da?" · "+cg.da+" da valutare":""}</span></span>
+        ${cg.n?`<span class="tag t-red">${cg.n} NC</span>`:""}${cg.p?`<span class="tag t-amb">${cg.p} parziali</span>`:""}
+        <span class="bar"><span class="track" style="display:block"><i style="width:${cg.val?cg.pct:0}%;background:${cg.pct>=90?"var(--green)":cg.pct>=60?"var(--amber)":"var(--red)"}"></i></span></span>
+        <span class="pc">${(cg.c+cg.p+cg.n)?cg.pct+"%":"—"}</span>
+      </button>
+      ${op?`<div class="gb">
+        <div class="guide"><p class="def">${esc(G.def)}</p>
+          <h5>Che cosa guarda l'auditor</h5><ul>${G.look.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+          <div class="flag">${esc(G.flag)}</div>
+          <div class="ev"><b>Dove trovare le evidenze:</b> ${esc(G.ev)}</div></div>
+        <div class="tw"><table><thead><tr><th>Rif.</th><th>Requisito</th><th>Stato</th><th>Evidenza</th></tr></thead><tbody>${L.map(row).join("")||'<tr><td colspan="4" class="empty">Nessun requisito con questo filtro.</td></tr>'}</tbody></table></div>
+      </div>`:""}
+    </div>`;}).join("")}`;
+}
+
+/* ---------- 4 rischi e fornitori ---------- */
+function vRis(a){
+  const rs=rischiStat(a),fs=fornStat(a);
+  const scala=k=>`<table><tbody>${SCALA[k].map(s=>`<tr><td class="code" style="width:20px;padding:4px 0"><b>${s[0]}</b></td><td style="padding:4px 8px"><b style="font-weight:600;font-size:12.5px">${s[1]}</b> <span style="font-size:11.5px;color:var(--ink-3)">${s[2]}</span></td></tr>`).join("")}</tbody></table>`;
+  const sel15=[["","—"],[1,1],[2,2],[3,3],[4,4],[5,5]],aree=AREE.map(g=>[g.id,g.n]).concat([["C5","Sistema di gestione"]]);
+  const R=`<div class="grid g2">
+      <div class="card"><p class="eyebrow">Matrice dei rischi</p>${chRisk(a)}
+        <div class="hint">${rs.val} rischi valutati su ${rs.tot}: ${rs.alti} alti, ${rs.medi} medi, ${rs.bassi} bassi. Il numero nel cerchio indica quanti rischi cadono in quella casella.</div></div>
+      <div class="card"><p class="eyebrow">Come attribuire i punteggi</p>
+        <h2 style="font-size:12.5px;margin:0 0 4px">Probabilità</h2>${scala("p")}
+        <h2 style="font-size:12.5px;margin:12px 0 4px">Gravità per le persone</h2>${scala("g")}
+        <div class="hint" style="margin-top:10px">Valuta il rischio per i lavoratori, non per l'azienda: è questa la prospettiva dei diritti umani chiesta dalla tabella A.1. Livello = probabilità × gravità; alto da ${a.param.alto}, medio da ${a.param.medio}.</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><h2 style="margin:0">Inventario dei rischi</h2><span class="code">6.1.1 · A.1 · 1</span></div><button class="btn sm" data-ladd="rischi">Aggiungi rischio</button></div>
+      ${a.rischi.map((r,i)=>`<div class="rec">
+        <div class="grid gx" style="grid-template-columns:1.4fr 1fr 80px 80px 110px;align-items:end">
+          <label class="f"><span>Area</span>${F.s("rischi",i,"a",r.a,aree)}</label>
+          <label class="f"><span>Ambito</span>${F.s("rischi",i,"amb",r.amb,[["O","Organizzazione"],["F","Catena di fornitura"]])}</label>
+          <label class="f"><span>Prob.</span>${F.s("rischi",i,"p",r.p,sel15,1)}</label>
+          <label class="f"><span>Gravità</span>${F.s("rischi",i,"g",r.g,sel15,1)}</label>
+          <div style="margin-bottom:18px">${livTag(a,r)}</div>
+        </div>
+        <label class="f"><span>Rischio</span>${F.t("rischi",i,"t",r.t,"Che cosa può accadere e a chi")}</label>
+        <div class="grid gx" style="grid-template-columns:3fr 1fr">
+          <label class="f"><span>Misure di prevenzione e mitigazione</span>${F.t("rischi",i,"mis",r.mis,"Controlli in atto e azioni pianificate",1)}</label>
+          <label class="f"><span>Responsabile</span>${F.t("rischi",i,"resp",r.resp)}</label></div>
+        <div class="rx"><span class="code">${esc(r.a)}</span>${F.x("rischi",i)}</div></div>`).join("")}
+    </div>`;
+  const FO=`<div class="grid g4">
+      <div class="card kpi"><div class="l">Fornitori censiti</div><div class="n">${fs.n}</div><div class="h">${fs.alti} a rischio alto</div></div>
+      <div class="card kpi"><div class="l">Clausola sociale</div><div class="n">${fs.n?fmt(fs.pClaus,1)+"%":"—"}</div><div class="h">${fs.claus} hanno sottoscritto i requisiti</div></div>
+      <div class="card kpi"><div class="l">Questionario</div><div class="n">${fs.n?fmt(fs.pQuest,1)+"%":"—"}</div><div class="h">${fs.quest} hanno risposto</div></div>
+      <div class="card kpi"><div class="l">Verificati</div><div class="n">${fs.n?fmt(fs.pVer,1)+"%":"—"}</div><div class="h">${fs.scoperti.length} ad alto rischio mai verificati</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div><h2 style="margin:0">Due diligence sui fornitori</h2><span class="code">8.1.3 · A.1 · 4 · A.2 · 9</span></div><button class="btn sm" data-ladd="fornitori">Aggiungi fornitore</button></div>
+      <div class="hint" style="margin:0 0 10px">Inserisci i fornitori rilevanti per il sistema: agenzie per il lavoro, cooperative e appaltatori in sito vanno sempre censiti; per materie e servizi parti da quelli con maggiore intensità di manodopera o provenienti da paesi a rischio. Il rischio si attribuisce per paese, settore e tipo di rapporto.</div>
+      ${fs.n?`<div class="tw"><table style="min-width:980px"><thead><tr><th>Fornitore</th><th>Categoria</th><th>Paese</th><th>Rischio</th><th>Clausola</th><th>Questionario</th><th>Ultima verifica</th><th>Esito</th><th></th></tr></thead><tbody>
+      ${a.fornitori.map((f,i)=>`<tr><td style="min-width:180px">${F.t("fornitori",i,"nome",f.nome,"Ragione sociale")}</td>
+        <td>${F.s("fornitori",i,"cat",f.cat,["Materie prime","Imballaggi e materiali","Agenzia per il lavoro","Appalto in sito","Cooperativa di servizi","Trasporti e logistica","Servizi","Lavorazioni esterne"])}</td>
+        <td style="width:120px">${F.t("fornitori",i,"paese",f.paese)}</td>
+        <td style="width:100px">${F.s("fornitori",i,"rischio",f.rischio,["","Basso","Medio","Alto"],1)}</td>
+        <td style="width:80px">${F.s("fornitori",i,"claus",f.claus,["No","Sì"],1)}</td>
+        <td style="width:80px">${F.s("fornitori",i,"quest",f.quest,["No","Sì"],1)}</td>
+        <td style="width:150px">${F.d("fornitori",i,"ver",f.ver,1)}</td>
+        <td style="width:130px">${F.s("fornitori",i,"esito",f.esito,["","Adeguato","Azioni richieste","Critico"],1)}</td>
+        <td style="width:34px">${F.x("fornitori",i)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Nessun fornitore censito.</div>'}
+    </div>`;
+  return `<h1>4 · Rischi e fornitori</h1>
+  <p class="sub">L'inventario dei rischi sociali richiesto dai punti 6.1 e A.1 e il controllo della catena di fornitura del punto 8.1.3. L'elenco dei rischi è precaricato con gli scenari ricorrenti: valuta quelli pertinenti, elimina gli altri, aggiungi i tuoi.</p>
+  ${tabs("ris",[["rischi","Rischi",rs.tot],["forn","Fornitori",fs.n]])}
+  ${tab.ris==="rischi"?R:FO}`;
+}
+
+/* ---------- 5 politica, obiettivi, piano ---------- */
+function vPol(a){
+  const p=a.politica,nchk=POLCHK.filter(k=>p.chk[k[0]]).length;
+  const POL=`<div class="grid gx" style="grid-template-columns:3fr 2fr">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><h2 style="margin:0">Testo della politica sociale</h2><span class="code">5.2 · ${p.testo.trim().split(/\s+/).filter(Boolean).length} parole</span></div>
+          <button class="btn ghost sm" id="polMod">Inserisci testo modello</button></div>
+        <textarea data-pol="testo" style="min-height:420px" placeholder="Scrivi la politica oppure parti dal testo modello e adattalo">${esc(p.testo)}</textarea>
+        <div class="hint">Il testo modello copre i contenuti obbligatori: va adattato all'organizzazione, non copiato. Una politica che i lavoratori non riconoscono come propria non regge alle interviste.</div>
+      </div>
+      <div class="card"><p class="eyebrow">Requisiti del punto 5.2 · ${nchk} su ${POLCHK.length}</p>
+        ${POLCHK.map(k=>`<label class="chk"><input type="checkbox" data-chk="${k[0]}" ${p.chk[k[0]]?"checked":""}><span>${k[1]}</span></label>`).join("")}
+        <div class="hr"></div>
+        <label class="f"><span>Approvata il</span><input type="date" data-pol="data" value="${esc(p.data)}"></label>
+        <label class="f"><span>Firmata da</span><input type="text" data-pol="firma" value="${esc(p.firma)}" placeholder="Nome e carica"></label>
+      </div>
+    </div>`;
+  const OB=`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div><h2 style="margin:0">Obiettivi di prestazione sociale</h2><span class="code">6.2</span></div><button class="btn sm" data-ladd="obiettivi">Aggiungi obiettivo</button></div>
+      <div class="hint" style="margin:0 0 10px">Ogni obiettivo vuole un indicatore, un traguardo, una data, un responsabile e le risorse. Parti dai rischi alti del passo 4 e dai segnali del quadro di avanzamento.</div>
+      ${a.obiettivi.length?a.obiettivi.map((o,i)=>`<div class="rec"><div class="grid g4">
+        <label class="f" style="grid-column:span 2"><span>Obiettivo</span>${F.t("obiettivi",i,"ob",o.ob,"es. Ridurre lo straordinario nei mesi di picco",1)}</label>
+        <label class="f"><span>Area</span>${F.s("obiettivi",i,"area",o.area,AREE.map(g=>[g.id,g.n]).concat([["C5","Sistema di gestione"]]))}</label>
+        <label class="f"><span>Stato</span>${F.s("obiettivi",i,"stato",o.stato,["In corso","Raggiunto","In ritardo","Abbandonato"])}</label>
+        <label class="f"><span>Indicatore</span>${F.t("obiettivi",i,"ind",o.ind,"es. Ore di straordinario per addetto")}</label>
+        <label class="f"><span>Traguardo</span>${F.t("obiettivi",i,"target",o.target,"es. −20%")}</label>
+        <label class="f"><span>Scadenza</span>${F.d("obiettivi",i,"scad",o.scad)}</label>
+        <label class="f"><span>Responsabile</span>${F.t("obiettivi",i,"resp",o.resp)}</label>
+        <label class="f" style="grid-column:1/-1"><span>Azioni e risorse</span>${F.t("obiettivi",i,"ris",o.ris,"Che cosa verrà fatto e con quali mezzi")}</label>
+      </div><div class="rx"><span class="code">6.2.2</span>${F.x("obiettivi",i)}</div></div>`).join(""):'<div class="empty">Nessun obiettivo. Ne servono almeno tre, collegati ai rischi principali.</div>'}
+    </div>`;
+  const fatti=a.piano.filter(x=>x.stato==="Fatto").length;
+  const PI=`<div class="card"><p class="eyebrow">Piano di lavoro ${anno} · ${fatti} attività concluse su ${a.piano.length}</p>${chPiano(a)}</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap"><div><h2 style="margin:0">Attività dei dodici mesi</h2><span class="code">8.1.2</span></div>
+        <div style="display:flex;gap:8px"><button class="btn ghost sm" id="pianoTipo">Carica piano tipo</button><button class="btn sm" data-ladd="piano">Aggiungi attività</button></div></div>
+      <div class="hint" style="margin:0 0 10px">Il piano di lavoro annuale è un requisito specifico della PAS: va generato ogni anno, allineato a politica e obiettivi, e monitorato. Il piano tipo propone sedici attività che coprono gli adempimenti ricorrenti.</div>
+      ${a.piano.length?`<div class="tw"><table style="min-width:760px"><thead><tr><th style="width:92px">Mese</th><th>Attività</th><th style="width:110px">Rif.</th><th style="width:150px">Responsabile</th><th style="width:120px">Stato</th><th style="width:34px"></th></tr></thead><tbody>
+      ${a.piano.map((x,i)=>[x,i]).sort((p1,p2)=>(+p1[0].mese)-(+p2[0].mese)).map(([x,i])=>`<tr>
+        <td>${F.s("piano",i,"mese",x.mese,MESI.map((m,k)=>[k+1,m]),1)}</td><td>${F.t("piano",i,"att",x.att,"Attività")}</td>
+        <td>${F.t("piano",i,"rif",x.rif)}</td><td>${F.t("piano",i,"resp",x.resp)}</td>
+        <td>${F.s("piano",i,"stato",x.stato,["Da fare","In corso","Fatto"],1)}</td><td>${F.x("piano",i)}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Piano vuoto. Carica il piano tipo e adattalo.</div>'}
+    </div>`;
+  return `<h1>5 · Politica e piano</h1>
+  <p class="sub">La direzione dichiara gli impegni, li traduce in obiettivi misurabili e li distribuisce nei dodici mesi. Sono i tre documenti che l'auditor chiede per primi.</p>
+  ${tabs("pol",[["pol","Politica sociale",nchk+"/"+POLCHK.length],["ob","Obiettivi",a.obiettivi.length],["pia","Piano annuale",a.piano.length]])}
+  ${tab.pol==="pol"?POL:tab.pol==="ob"?OB:PI}`;
+}
+
+/* ---------- 6 dati ---------- */
+function vDati(a){
+  const d=derive(a,anno),prev=anno-1,g=regStat(a,anno),fs=fornStat(a),P=a.param;
+  const row=k=>{const cur=dati(a,anno)[k.k],pre=dati(a,prev)[k.k];
+    return `<tr><td><b style="font-weight:500">${esc(k.n)}</b>${k.h?`<div class="hint">${esc(k.h)}</div>`:""}</td>
+    <td style="width:56px" class="code">${k.u}</td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${anno}" value="${esc(cur===undefined?"":cur)}" aria-label="${esc(k.n)} ${anno}"></td>
+    <td style="width:130px"><input type="number" step="any" data-kpi="${k.k}" data-y="${prev}" value="${esc(pre===undefined?"":pre)}" style="background:var(--bg)" aria-label="${esc(k.n)} ${prev}"></td></tr>`;};
+  const D={org:dtab([["Presenza femminile",fmt(d.pctDonne,1),"%"],["Contratti a tempo indeterminato",fmt(d.pctInd,1),"%"],["Lavoratori stranieri",fmt(d.pctStran,1),"%"],
+      ["Quota di lavoratori esterni in sito",fmt(d.pctSomm,1),"%"],["Tasso di uscita",fmt(d.turnover,1),"%"]]),
+    ret:dtab([["Margine sul minimo contrattuale",fmt(d.margCcnl,1),"%"],["Distanza dal salario dignitoso",d.gapLw>0?fmt(d.gapLw,1):"nessuna",d.gapLw>0?"%":""],
+      ["Divario retributivo di genere",fmt(d.payGap,1),"%"],["Copertura della contrattazione collettiva",fmt(d.pctCop,1),"%"]]),
+    ore:dtab([["Ore lavorate totali",fmt(d.ore),"ore"],["Incidenza dello straordinario",fmt(d.pctStr,1),"% dell'ordinario"],["Straordinario per addetto",fmt(d.strAdd),"ore/anno"],
+      ["Ore settimanali medie per addetto",fmt(d.oreSett,1),"su "+P.sett+" settimane"],["Limiti applicati",P.ore_ord+" / "+P.ore_tot,"ore ordinarie / totali"]]),
+    ssl:dtab([["Indice di frequenza infortuni",fmt(d.if_,2),"per 1.000.000 ore"],["Indice di gravità",fmt(d.ig,2),"per 1.000 ore"],["Lavoratori con formazione valida",fmt(d.pctSsl,1),"%"],
+      ["Prove di emergenza nell'anno",g.prove,"dal registro"]]),
+    for:dtab([["Ore di formazione per addetto",fmt(d.oreForm,1),"ore"],["Lavoratori formati sul sistema",fmt(d.pctSgs,1),"%"],["Neoassunti formati all'ingresso",fmt(d.pctNuovi,1),"%"],
+      ["Ore-persona dal registro formazione",fmt(g.formOre),"ore"]]),
+    rel:dtab([["Incontri di consultazione",g.cons,"dal registro"],["Reclami ricevuti",g.recl,"dal registro"],["Reclami chiusi",g.reclChiusi,g.recl?"· "+fmt(g.reclChiusi/g.recl*100,0)+"%":""],
+      ["Tempo medio di chiusura dei reclami",g.reclChiusi?g.reclTm:"—","giorni"]])};
+  return `<h1>6 · Dati e indicatori</h1>
+  <p class="sub">Il punto 9.1 chiede indicatori per ciascuna area dell'Allegato A. Inserisci i dati dell'esercizio e dell'anno precedente: quelli evidenziati si calcolano da soli, alcuni arrivano dai registri del passo 7. I valori fuori soglia generano i segnali del quadro di avanzamento.</p>
+  ${SEZ.map(s=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:8px"><h2 style="margin:0">${s.n}</h2><span class="tag t-acc">${esc(s.r)}</span></div>
+    <div class="tw"><table style="min-width:520px"><thead><tr><th>Indicatore</th><th>Unità</th><th>${anno}</th><th>${prev}</th></tr></thead>
+    <tbody>${KPI.filter(k=>k.s===s.id).map(row).join("")}</tbody></table></div>
+    <div style="margin-top:12px">${D[s.id]}</div></div>`).join("")}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:8px"><h2 style="margin:0">Catena di fornitura e miglioramento</h2><span class="tag t-acc">8.1.3 · 10.2</span></div>
+    ${dtab([["Fornitori censiti",fs.n,""],["Con clausola sociale sottoscritta",fs.n?fmt(fs.pClaus,1):"—","%"],["Verificati almeno una volta",fs.n?fmt(fs.pVer,1):"—","%"],
+      ["Non conformità rilevate nell'anno",g.nc,""],["Non conformità ancora aperte",g.ncAperte,g.ncScadute?"· "+g.ncScadute+" scadute":""]])}
+    <div class="hint">Questi valori si ricavano dall'elenco fornitori del passo 4 e dai registri del passo 7.</div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Indici infortunistici</p>${chInf(a,anno)}</div>
+    <div class="card"><p class="eyebrow">Orario di lavoro</p>${chOre(a,anno)}</div>
+  </div>`;
+}
+
+/* ---------- 7 registri ---------- */
+function vReg(a){
+  const k=tab.reg,R=REG[k],path="registri."+k,L=a.registri[k];
+  const field=(c,r,i)=>c[2]==="d"?F.d(path,i,c[0],r[c[0]],1):c[2]==="n"?F.n(path,i,c[0],r[c[0]],1):c[2]==="a"?F.a(path,i,c[0],r[c[0]]):c[2]==="s"?F.s(path,i,c[0],r[c[0]],c[3],1):F.t(path,i,c[0],r[c[0]]);
+  return `<h1>7 · Registri</h1>
+  <p class="sub">Le registrazioni che dimostrano il funzionamento del sistema. Il numero accanto a ogni registro conta le voci dell'esercizio ${anno}; alcune sono richieste almeno una volta l'anno.</p>
+  ${tabs("reg",Object.keys(REG).map(x=>[x,REG[x].n,a.registri[x].filter(r=>inY(r,anno)).length]))}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div><h2 style="margin:0">${R.n}</h2><span class="code">${R.r} · ${L.length} voci in archivio</span></div>
+      <button class="btn sm" data-ladd="${path}">Aggiungi voce</button></div>
+    <div class="hint" style="margin:8px 0 14px">${R.h}</div>
+    ${L.length?L.map((r,i)=>`<div class="rec"><div class="grid g4">${R.cols.map(c=>`<label class="f"${c[2]==="a"?' style="grid-column:1/-1"':""}><span>${c[1]}</span>${field(c,r,i)}</label>`).join("")}</div>
+      <div class="rx"><span class="code">${inY(r,anno)?"esercizio "+anno:r.data?"altro esercizio":"senza data"}</span>${F.x(path,i)}</div></div>`).reverse().join(""):'<div class="empty">Nessuna voce in questo registro.</div>'}
+  </div>`;
+}
+
+/* ---------- 8 verifica ---------- */
+function vVer(a,st){
+  const y=anno,c=conf(a),rs=rischiStat(a),fs=fornStat(a),g=regStat(a,y),al=allarmi(a,y),p=a.profilo,pol=a.politica;
+  const LBL={forma:"forma giuridica",sede:"sede",settore:"settore",ateco:"codice ATECO",ccnl:"contratto collettivo",siti:"siti inclusi",campo:"campo di applicazione",dir:"alta direzione",rsgs:"responsabile del sistema",rlav:"rappresentanti dei lavoratori"};
+  const B=[
+   ["Organizzazione e campo di applicazione",Object.keys(LBL).filter(k=>!String(p[k]||"").trim()).map(k=>LBL[k]),"org"],
+   ["Contesto e parti interessate",[].concat(a.contesto.fattori.filter(f=>f.desc).length<4?["meno di quattro fattori di contesto"]:[],a.contesto.parti.filter(x=>x.nome&&!x.esig).map(x=>"esigenze di: "+x.nome)),"ctx"],
+   ["Requisiti da valutare",REQ.filter(r=>!(a.gap[r.id]||{}).st).map(r=>r.ref),"gap"],
+   ["Requisiti da adeguare senza azione definita",REQ.filter(r=>{const x=a.gap[r.id]||{};return (x.st==="p"||x.st==="n")&&!x.az;}).map(r=>r.ref),"gap"],
+   ["Requisiti conformi senza evidenza",REQ.filter(r=>{const x=a.gap[r.id]||{};return x.st==="c"&&!x.ev;}).map(r=>r.ref),"gap"],
+   ["Rischi e fornitori",[].concat(rs.tot-rs.val?[(rs.tot-rs.val)+" rischi da valutare"]:[],rs.scoperti.map(r=>"senza misure: "+r.t.slice(0,50)),!fs.n?["nessun fornitore censito"]:[],fs.n-fs.val?[(fs.n-fs.val)+" fornitori senza livello di rischio"]:[]),"ris"],
+   ["Politica, obiettivi e piano",[].concat(pol.testo.trim().length<=200?["testo della politica"]:[],POLCHK.filter(k=>!pol.chk[k[0]]).map(k=>"politica: "+k[1].toLowerCase()),!pol.data?["data di approvazione della politica"]:[],
+     a.obiettivi.filter(o=>o.ob).length<3?["meno di tre obiettivi"]:[],a.obiettivi.filter(o=>o.ob&&(!o.ind||!o.scad||!o.resp)).map(o=>"obiettivo incompleto: "+o.ob.slice(0,40)),a.piano.filter(x=>x.att).length<8?["piano annuale con meno di otto attività"]:[]),"pol"],
+   ["Indicatori dell'esercizio "+y,KPI.filter(k=>!has(a,y,k.k)).map(k=>k.n),"dati"],
+   ["Registrazioni minime dell'esercizio "+y,[].concat(!g.prove?["prova di emergenza (8.2)"]:[],!g.comInt?["comunicazione interna (7.4.2)"]:[],!g.comEst?["comunicazione esterna (7.4.3)"]:[],!g.cons?["consultazione dei lavoratori (5.4)"]:[],
+     !g.form?["formazione (7.2)"]:[],!g.audit?["audit interno svolto (9.2)"]:[],!g.ries?["riesame della direzione (9.3)"]:[]),"reg"]
+  ];
+  const aperti=B.reduce((s,b)=>s+b[1].length,0),crit=al.filter(x=>x.lv==="C").length;
+  const pronto=crit===0&&c.da===0&&c.n===0&&B[8][1].length===0&&st.tot>=85;
+  return `<h1>8 · Verifica</h1>
+  <p class="sub">Cosa manca prima dell'audit di certificazione. Lo stage 1 guarda documenti e impianto del sistema; lo stage 2 verifica sul campo, con interviste ai lavoratori, che i requisiti dell'Allegato A siano rispettati.</p>
+  <div class="card"><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div class="kpi"><div class="l">Pronto all'audit</div><div class="n">${st.tot}%</div></div>
+    <div style="flex:1;min-width:220px"><div class="track"><i style="width:${st.tot}%"></i></div>
+    <div class="hint">${pronto?"Il sistema è presentabile all'organismo di certificazione: rileggi il manuale e pianifica lo stage 1.":crit?"Ci sono "+crit+" criticità sui requisiti di prestazione sociale: vanno risolte prima di chiedere l'audit.":st.tot>=60?"Impianto a buon punto. Chiudi le voci qui sotto nell'ordine in cui compaiono.":"Il sistema non è ancora rappresentativo: completa valutazione dei requisiti, dati e registrazioni."}</div></div>
+    <span class="tag ${pronto?"t-grn":crit?"t-red":"t-amb"}">${pronto?"presentabile":aperti+" voci aperte"}</span>
+  </div></div>
+  <div class="card"><p class="eyebrow">Segnali dai dati · ${al.length}</p>${alrList(al,true)}</div>
+  ${B.map(b=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div><h2 style="margin:0">${b[0]}</h2><span class="code">${b[1].length===0?"completo":b[1].length+" voci da sistemare"}</span></div>
+      ${b[1].length?`<button class="btn ghost sm" data-go="${b[2]}">Vai</button>`:'<span class="tag t-grn">ok</span>'}</div>
+    ${b[1].length?`<div style="margin-top:10px;font-size:12.5px;color:var(--ink-2);line-height:1.7">${b[1].slice(0,16).map(esc).join(" · ")}${b[1].length>16?" · <i>e altre "+(b[1].length-16)+"</i>":""}</div>`:""}
+  </div>`).join("")}`;
+}
+/* ---------- 9 documenti ---------- */
+const DOCS={man:"Manuale del sistema di gestione sociale",pol:"Politica sociale",gap:"Rapporto di conformità e piano di adeguamento",rie:"Verbale di riesame della direzione"};
+const par=t=>{t=String(t||"").trim();return t?t.split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,"<br>")}</p>`).join(""):"";};
+const miss=t=>`<p class="miss">[${t}]</p>`;
+const stTag=s=>({c:'<span class="tag t-grn">conforme</span>',p:'<span class="tag t-amb">parziale</span>',n:'<span class="tag t-red">non conforme</span>',na:'<span class="tag t-gry">non pertinente</span>'}[s]||'<span class="code">da valutare</span>');
+function cover(a,k){const p=a.profilo;
+  return `<div class="cover">${p.logo?`<div class="lg"><img src="${p.logo}" alt=""></div>`:""}
+    <div class="k">${esc(k)} · PAS 24000:2022</div><h2>${esc(a.nome)}</h2>
+    <p>${esc(p.settore||"")}${p.sede?" · "+esc(p.sede):""}</p>
+    <p style="margin-top:16px;font-size:12px;opacity:.75">Esercizio ${anno} · documento generato il ${new Date().toLocaleDateString("it-IT")}</p></div>`;}
+function vDoc(a){
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+    <div><h1>9 · Documenti</h1><p class="sub" style="margin:0">Assemblati dai dati inseriti. Scegli il documento e usa <b>Stampa documento</b> per ottenere il PDF.</p></div>
+    <select id="docSel" style="width:auto;max-width:100%;font-weight:600" aria-label="Documento">${Object.keys(DOCS).map(k=>`<option value="${k}" ${docTipo===k?"selected":""}>${DOCS[k]}</option>`).join("")}</select></div>
+  <div class="doc">${({man:dMan,pol:dPol,gap:dGap,rie:dRie})[docTipo](a)}</div>`;
+}
+function dPol(a){const p=a.politica;
+  return cover(a,"Politica sociale")+`<div class="inner"><h3>Politica sociale</h3>
+    ${par(p.testo)||miss("Testo della politica da scrivere al passo 5")}
+    <div class="firma"><div>${esc(a.profilo.sede?a.profilo.sede.split("(")[0].trim()+", ":"")}${fdata(p.data)}</div><div>${esc(p.firma||"L'alta direzione")}</div></div>
+    <p class="note" style="margin-top:26px">Documento del sistema di gestione sociale, punto 5.2 della PAS 24000:2022. Disponibile a lavoratori e parti interessate.</p></div>`;
+}
+function kpiTab(a,y,sez){
+  const n=(k,d=0)=>has(a,y,k)?fmt(num(a,y,k),d):"—",np=(k,d=0)=>has(a,y-1,k)?fmt(num(a,y-1,k),d):"—";
+  const dl=k=>{if(!has(a,y,k)||!has(a,y-1,k))return "—";const c=num(a,y,k),p=num(a,y-1,k);if(!p)return "—";const v=(c-p)/Math.abs(p)*100;return (v>0?"+":"")+fmt(v,1)+"%";};
+  return `<table><thead><tr><th>Indicatore</th><th class="num">${y}</th><th class="num">${y-1}</th><th class="num" style="width:80px">Var.</th></tr></thead><tbody>
+    ${KPI.filter(k=>k.s===sez).map(k=>`<tr><td>${esc(k.n)} <span class="code">${k.u}</span></td><td class="num">${n(k.k)}</td><td class="num">${np(k.k)}</td><td class="num">${dl(k.k)}</td></tr>`).join("")}</tbody></table>`;
+}
+function dMan(a){
+  const y=anno,p=a.profilo,C=a.contesto,c=conf(a),rs=rischiStat(a),fs=fornStat(a),g=regStat(a,y),d=derive(a,y),dp=derive(a,y-1),al=allarmi(a,y);
+  const rilev=a.rischi.filter(r=>liv(r)>=a.param.medio).sort((x,z)=>liv(z)-liv(x));
+  const dr=(l,v,pv,u)=>`<tr><td>${l} <span class="code">${u||""}</span></td><td class="num">${v}</td><td class="num">${pv}</td></tr>`;
+  return cover(a,"Manuale del sistema di gestione sociale")+`<div class="inner">
+  <h3>1 · Presentazione e campo di applicazione</h3>
+  <table><tbody>
+    <tr><td style="width:36%">Denominazione</td><td><b>${esc(a.nome)}</b></td></tr>
+    ${[["forma","Forma giuridica"],["piva","Partita IVA"],["sede","Sede legale"],["settore","Attività"],["ateco","Codice ATECO"],["ccnl","Contratto collettivo applicato"],["siti","Siti inclusi"]].map(x=>p[x[0]]?`<tr><td>${x[1]}</td><td>${esc(p[x[0]])}</td></tr>`:"").join("")}
+    <tr><td>Lavoratori in organico</td><td>${has(a,y,"lav_tot")?fmt(num(a,y,"lav_tot")):"—"}${num(a,y,"lav_somm")?" · "+fmt(num(a,y,"lav_somm"))+" esterni in sito":""}</td></tr></tbody></table>
+  <h4>Campo di applicazione (4.3)</h4>${par(p.campo)||miss("Campo di applicazione da definire al passo 1")}
+  <p>Il sistema è impostato secondo la PAS 24000:2022, clausole da 4 a 10 e Allegato A. I requisiti dell'Allegato A sono applicati senza esclusioni; dove una situazione non ricorre, la non pertinenza è motivata nel rapporto di conformità.</p>
+
+  <h3>2 · Contesto e parti interessate</h3>
+  <h4>Fattori interni ed esterni (4.1)</h4>
+  ${C.fattori.filter(f=>f.desc).length?`<table><thead><tr><th style="width:90px">Tipo</th><th>Fattore</th><th style="width:110px">Effetto</th></tr></thead><tbody>${C.fattori.filter(f=>f.desc).map(f=>`<tr><td>${esc(f.tipo)}</td><td>${esc(f.desc)}</td><td>${esc(f.eff)}</td></tr>`).join("")}</tbody></table>`:miss("Analisi del contesto da completare al passo 2")}
+  <h4>Parti interessate (4.2)</h4>
+  <table><thead><tr><th style="width:24%">Parte</th><th>Esigenze e aspettative</th><th style="width:70px">Obbligo</th><th style="width:26%">Coinvolgimento</th></tr></thead><tbody>
+  ${C.parti.filter(x=>x.nome).map(x=>`<tr><td><b>${esc(x.nome)}</b></td><td>${esc(x.esig)}</td><td>${esc(x.obb)}</td><td>${esc(x.mod)}</td></tr>`).join("")}</tbody></table>
+
+  <h3>3 · Leadership, ruoli e partecipazione</h3>
+  <table><tbody>
+    <tr><td style="width:36%">Alta direzione</td><td>${esc(p.dir)||'<span class="miss">da indicare</span>'}</td></tr>
+    <tr><td>Responsabile del sistema (5.3)</td><td>${esc(p.rsgs)||'<span class="miss">da indicare</span>'}</td></tr>
+    <tr><td>Rappresentanti dei lavoratori (5.4)</td><td>${esc(p.rlav)||'<span class="miss">da indicare</span>'}</td></tr></tbody></table>
+  <p>L'alta direzione risponde dell'efficacia del sistema, assegna le risorse, tutela da ritorsioni chi segnala incidenti, pericoli e non conformità e assicura che i ruoli siano attribuiti senza discriminazioni. Il responsabile del sistema ne cura l'attuazione, la formazione sui diritti umani, la gestione dei rischi di lavoro minorile e forzato e riferisce alla direzione sulle prestazioni.</p>
+  <p>I lavoratori e i loro rappresentanti sono consultati su politica, obiettivi, valutazione dei rischi, audit e azioni correttive. Nell'esercizio ${y} risultano ${g.cons} moment${g.cons===1?"o":"i"} di consultazione registrat${g.cons===1?"o":"i"}.</p>
+
+  <h3>4 · Politica sociale</h3>
+  ${par(a.politica.testo)||miss("Politica da scrivere al passo 5")}
+  ${a.politica.data?`<p class="note">Approvata il ${fdata(a.politica.data)}${a.politica.firma?" da "+esc(a.politica.firma):""}.</p>`:""}
+
+  <h3>5 · Rischi e opportunità</h3>
+  <p>L'inventario comprende ${rs.tot} rischi, di cui ${rs.val} valutati per probabilità e gravità su scala da 1 a 5: ${rs.alti} di livello alto, ${rs.medi} medio, ${rs.bassi} basso. La valutazione adotta la prospettiva delle persone esposte e distingue le attività proprie dalla catena di fornitura.</p>
+  <figure>${chRisk(a)}<figcaption>Matrice dei rischi: numero di rischi per combinazione di probabilità e gravità.</figcaption></figure>
+  ${rilev.length?`<table><thead><tr><th>Rischio</th><th style="width:120px">Ambito</th><th class="num" style="width:60px">Livello</th><th style="width:34%">Misure</th></tr></thead><tbody>
+  ${rilev.map(r=>`<tr><td>${esc(r.t)} <span class="code">${esc(GN(r.a))}</span></td><td>${r.amb==="F"?"Catena di fornitura":"Organizzazione"}</td><td class="num">${liv(r)}</td><td>${esc(r.mis)||'<span class="miss">da definire</span>'}</td></tr>`).join("")}</tbody></table>`:miss("Nessun rischio di livello medio o alto valutato al passo 4")}
+
+  <h3>6 · Obiettivi e piano di lavoro annuale</h3>
+  ${a.obiettivi.filter(o=>o.ob).length?`<table><thead><tr><th>Obiettivo</th><th>Indicatore e traguardo</th><th style="width:90px">Scadenza</th><th style="width:120px">Responsabile</th><th style="width:90px">Stato</th></tr></thead><tbody>
+  ${a.obiettivi.filter(o=>o.ob).map(o=>`<tr><td>${esc(o.ob)} <span class="code">${esc(GN(o.area))}</span>${o.ris?`<div class="note">${esc(o.ris)}</div>`:""}</td><td>${esc(o.ind)}${o.target?" · <b>"+esc(o.target)+"</b>":""}</td><td>${fdata(o.scad)}</td><td>${esc(o.resp)}</td><td>${esc(o.stato)}</td></tr>`).join("")}</tbody></table>`:miss("Obiettivi da definire al passo 5")}
+  <h4>Piano di lavoro ${y} (8.1.2)</h4>
+  ${a.piano.filter(x=>x.att).length?`<figure>${chPiano(a)}</figure><table><thead><tr><th style="width:60px">Mese</th><th>Attività</th><th style="width:90px">Rif.</th><th style="width:130px">Responsabile</th><th style="width:80px">Stato</th></tr></thead><tbody>
+  ${a.piano.filter(x=>x.att).slice().sort((x,z)=>(+x.mese)-(+z.mese)).map(x=>`<tr><td>${MESI[(+x.mese||1)-1]}</td><td>${esc(x.att)}</td><td class="code">${esc(x.rif)}</td><td>${esc(x.resp)}</td><td>${esc(x.stato)}</td></tr>`).join("")}</tbody></table>`:miss("Piano annuale da compilare al passo 5")}
+
+  <h3>7 · Supporto</h3>
+  <p><b>Competenza e consapevolezza.</b> Nell'esercizio sono stati registrati ${g.form} interventi formativi per ${fmt(g.formOre)} ore-persona. I lavoratori formati su politica sociale, diritti e canale di reclamo sono il ${fmt(d.pctSgs,1)}% dell'organico; i neoassunti formati all'ingresso il ${fmt(d.pctNuovi,1)}%.</p>
+  <p><b>Comunicazione.</b> Le informazioni sul sistema sono comunicate almeno una volta l'anno all'interno e all'esterno, con modalità comprensibili a tutti i lavoratori. Registrate nell'esercizio: ${g.comInt} comunicazion${g.comInt===1?"e interna":"i interne"}, ${g.comEst} estern${g.comEst===1?"a":"e"}.</p>
+  <p><b>Informazioni documentate.</b> Il sistema è descritto da questo manuale, dalla politica sociale, dal rapporto di conformità e dai registri: reclami, non conformità e azioni correttive, formazione, emergenze, comunicazioni, consultazione, audit interni, riesame. I documenti sono accessibili ai lavoratori e ai loro rappresentanti.</p>
+
+  <h3>8 · Controllo operativo e prestazione sociale</h3>
+  <p>Per ciascuna area dell'Allegato A sono riportati lo stato di conformità rilevato e i presidi che lo dimostrano.</p>
+  ${AREE.map(G=>{const cg=conf(a,G.id),L=REQ.filter(r=>r.g===G.id&&(a.gap[r.id]||{}).ev);
+    return `<h4>${esc(G.n)} <span class="code">${esc(G.r)}</span></h4>
+    <p>${cg.val?`Requisiti: ${cg.tot} · conformi ${cg.c}, parziali ${cg.p}, non conformi ${cg.n}, non pertinenti ${cg.na}${cg.da?", da valutare "+cg.da:""}. Indice di conformità <b>${(cg.c+cg.p+cg.n)?cg.pct+"%":"—"}</b>.`:'<span class="miss">[Area da valutare al passo 3]</span>'}</p>
+    ${L.length?`<table><thead><tr><th style="width:70px">Rif.</th><th>Presidio ed evidenza</th><th style="width:110px">Stato</th></tr></thead><tbody>${L.map(r=>`<tr><td class="code">${r.ref}</td><td>${esc(a.gap[r.id].ev)}</td><td>${stTag(a.gap[r.id].st)}</td></tr>`).join("")}</tbody></table>`:""}`;}).join("")}
+  <h4>Approvvigionamento sociale (8.1.3)</h4>
+  <p>${fs.n?`Sono censiti ${fs.n} fornitori rilevanti, ${fs.alti} dei quali a rischio alto. Il ${fmt(fs.pClaus,1)}% ha sottoscritto i requisiti sociali, il ${fmt(fs.pQuest,1)}% ha risposto al questionario, il ${fmt(fs.pVer,1)}% è stato verificato almeno una volta.`:'<span class="miss">[Fornitori da censire al passo 4]</span>'}</p>
+  ${fs.n?`<table><thead><tr><th>Fornitore</th><th>Categoria</th><th>Paese</th><th>Rischio</th><th>Clausola</th><th>Verifica</th><th>Esito</th></tr></thead><tbody>${a.fornitori.map(f=>`<tr><td>${esc(f.nome)}</td><td>${esc(f.cat)}</td><td>${esc(f.paese)}</td><td>${esc(f.rischio||"—")}</td><td>${esc(f.claus)}</td><td>${fdata(f.ver)}</td><td>${esc(f.esito||"—")}</td></tr>`).join("")}</tbody></table>`:""}
+  <h4>Emergenze (8.2)</h4>
+  <p>Nell'esercizio sono state registrate ${g.emer} attività tra prove, verifiche ed emergenze reali, di cui ${g.prove} prov${g.prove===1?"a":"e"} o esercitazion${g.prove===1?"e":"i"}.${g.prove?"":' <span class="miss">La prova annuale non risulta ancora svolta.</span>'}</p>
+
+  <h3>9 · Valutazione delle prestazioni</h3>
+  ${SEZ.map(s=>`<h4>${s.n} <span class="code">${esc(s.r)}</span></h4>${kpiTab(a,y,s.id)}`).join("")}
+  <h4>Indicatori calcolati</h4>
+  <table><thead><tr><th>Indicatore</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>
+    ${dr("Presenza femminile",fmt(d.pctDonne,1),fmt(dp.pctDonne,1),"%")}${dr("Contratti a tempo indeterminato",fmt(d.pctInd,1),fmt(dp.pctInd,1),"%")}
+    ${dr("Tasso di uscita",fmt(d.turnover,1),fmt(dp.turnover,1),"%")}${dr("Margine sul minimo contrattuale",fmt(d.margCcnl,1),fmt(dp.margCcnl,1),"%")}
+    ${dr("Divario retributivo di genere",fmt(d.payGap,1),fmt(dp.payGap,1),"%")}${dr("Incidenza dello straordinario",fmt(d.pctStr,1),fmt(dp.pctStr,1),"% dell'ordinario")}
+    ${dr("Ore settimanali medie per addetto",fmt(d.oreSett,1),fmt(dp.oreSett,1),"ore")}${dr("Indice di frequenza infortuni",fmt(d.if_,2),fmt(dp.if_,2),"per 10⁶ ore")}
+    ${dr("Indice di gravità",fmt(d.ig,2),fmt(dp.ig,2),"per 10³ ore")}${dr("Ore di formazione per addetto",fmt(d.oreForm,1),fmt(dp.oreForm,1),"ore")}
+  </tbody></table>
+  <figure>${chOre(a,y)}<figcaption>Orario di lavoro a confronto con il limite complessivo applicato.</figcaption></figure>
+  <h4>Audit interni e riesame (9.2 · 9.3)</h4>
+  <p>Audit interni svolti nell'esercizio: ${g.audit}, con ${fmt(g.rilievi)} rilievi complessivi. Riesami della direzione: ${g.ries}.</p>
+  <figure>${chConf(a)}<figcaption>Indice di conformità per gruppo di requisiti. Complessivo: ${c.val?c.pct+"%":"—"} su ${c.val} requisiti valutati.</figcaption></figure>
+
+  <h3>10 · Miglioramento</h3>
+  <p>Reclami e segnalazioni ricevuti nell'esercizio: ${g.recl}, di cui ${g.reclChiusi} chiusi${g.reclChiusi?" con un tempo medio di "+g.reclTm+" giorni":""}. Non conformità rilevate: ${g.nc}, di cui ${g.ncChiuse} chiuse e ${g.ncEff} con efficacia verificata; ${g.ncAperte} risultano ancora aperte.</p>
+  ${al.length?`<h4>Punti di attenzione alla data del documento</h4><table><tbody>${al.map(x=>`<tr><td style="width:100px">${x.lv==="C"?'<span class="tag t-red">criticità</span>':'<span class="tag t-amb">attenzione</span>'}</td><td>${esc(x.t)}</td><td class="code" style="width:100px">${esc(x.r)}</td></tr>`).join("")}</tbody></table>`:""}
+
+  <h3>Correlazione con la PAS 24000:2022</h3>
+  <table><thead><tr><th>Requisito</th><th>Sezione del manuale e registrazioni</th></tr></thead><tbody>
+    <tr><td>4 · Contesto dell'organizzazione</td><td>Sezioni 1 e 2</td></tr><tr><td>5 · Leadership e partecipazione</td><td>Sezioni 3 e 4 · registro consultazione</td></tr>
+    <tr><td>6 · Pianificazione</td><td>Sezioni 5 e 6</td></tr><tr><td>7 · Supporto</td><td>Sezione 7 · registri formazione e comunicazioni</td></tr>
+    <tr><td>8 · Attività operative</td><td>Sezioni 6 e 8 · registro emergenze · elenco fornitori</td></tr><tr><td>9 · Valutazione delle prestazioni</td><td>Sezione 9 · registro audit · verbale di riesame</td></tr>
+    <tr><td>10 · Miglioramento</td><td>Sezione 10 · registri reclami e non conformità</td></tr><tr><td>Allegato A · A.1–A.11</td><td>Sezione 8 · rapporto di conformità</td></tr></tbody></table>
+  <p class="note" style="margin-top:22px">I requisiti sono richiamati in sintesi: per il testo normativo vale la PAS 24000:2022 pubblicata da BSI. ${esc(p.contatto||"")}</p>
+  </div>`;
+}
+function dGap(a){
+  const c=conf(a),bad=REQ.filter(r=>["p","n"].includes((a.gap[r.id]||{}).st)),na=REQ.filter(r=>(a.gap[r.id]||{}).st==="na");
+  return cover(a,"Rapporto di conformità")+`<div class="inner">
+  <h3>Sintesi</h3>
+  <p>La valutazione ha riguardato ${c.val} requisiti su ${c.tot}: ${c.c} conformi, ${c.p} parzialmente conformi, ${c.n} non conformi, ${c.na} non pertinenti${c.da?"; "+c.da+" restano da valutare":""}. L'indice di conformità sui requisiti pertinenti è <b>${c.val?c.pct+"%":"—"}</b>; le conformità parziali pesano per metà.</p>
+  <figure>${chConf(a)}<figcaption>Indice di conformità per gruppo di requisiti.</figcaption></figure>
+  <table><thead><tr><th>Gruppo</th><th class="num">Req.</th><th class="num">Conf.</th><th class="num">Parz.</th><th class="num">NC</th><th class="num">N.P.</th><th class="num">Da val.</th><th class="num">Indice</th></tr></thead><tbody>
+  ${GRP.map(g=>{const x=conf(a,g.id);return `<tr><td>${esc(g.n)} <span class="code">${esc(g.r)}</span></td><td class="num">${x.tot}</td><td class="num">${x.c}</td><td class="num">${x.p}</td><td class="num">${x.n}</td><td class="num">${x.na}</td><td class="num">${x.da}</td><td class="num"><b>${(x.c+x.p+x.n)?x.pct+"%":"—"}</b></td></tr>`;}).join("")}</tbody></table>
+  <h3>Piano di adeguamento</h3>
+  ${bad.length?`<table><thead><tr><th style="width:70px">Rif.</th><th>Requisito</th><th style="width:96px">Stato</th><th style="width:26%">Azione</th><th style="width:110px">Responsabile</th><th style="width:86px">Scadenza</th></tr></thead><tbody>
+  ${bad.map(r=>{const x=a.gap[r.id];return `<tr><td class="code">${r.ref}</td><td>${esc(r.t)}${x.ev?`<div class="note">${esc(x.ev)}</div>`:""}</td><td>${stTag(x.st)}</td><td>${esc(x.az)||'<span class="miss">da definire</span>'}</td><td>${esc(x.resp||"—")}</td><td>${fdata(x.scad)}</td></tr>`;}).join("")}</tbody></table>`:"<p>Nessun requisito risulta parziale o non conforme.</p>"}
+  ${na.length?`<h3>Requisiti non pertinenti</h3><table><thead><tr><th style="width:70px">Rif.</th><th>Requisito</th><th style="width:36%">Motivazione</th></tr></thead><tbody>${na.map(r=>`<tr><td class="code">${r.ref}</td><td>${esc(r.t)}</td><td>${esc(a.gap[r.id].ev)||'<span class="miss">da motivare</span>'}</td></tr>`).join("")}</tbody></table>
+  <p class="note">I requisiti dell'Allegato A non sono esclusi dal sistema: sono indicati come non pertinenti quelli riferiti a situazioni che nell'organizzazione non ricorrono.</p>`:""}
+  <h3>Dettaglio per requisito</h3>
+  ${GRP.map(g=>`<h4>${esc(g.n)} <span class="code">${esc(g.r)}</span></h4><table><thead><tr><th style="width:70px">Rif.</th><th>Requisito</th><th style="width:110px">Stato</th><th style="width:30%">Evidenza</th></tr></thead><tbody>
+    ${REQ.filter(r=>r.g===g.id).map(r=>{const x=a.gap[r.id]||{};return `<tr><td class="code">${r.ref}</td><td>${esc(r.t)}</td><td>${stTag(x.st)}</td><td>${esc(x.ev||"")}</td></tr>`;}).join("")}</tbody></table>`).join("")}
+  <p class="note" style="margin-top:22px">Autovalutazione interna: non sostituisce l'audit dell'organismo di certificazione. Requisiti richiamati in sintesi; per il testo normativo vale la PAS 24000:2022.</p></div>`;
+}
+function dRie(a){
+  const y=anno,R=a.registri.ries.filter(r=>r.data).slice().sort((x,z)=>x.data<z.data?1:-1),r=R.find(x=>inY(x,y))||null,prec=R.find(x=>r&&x.data<r.data)||(!r?R[0]:null);
+  const c=conf(a),rs=rischiStat(a),g=regStat(a,y),d=derive(a,y),dp=derive(a,y-1),al=allarmi(a,y),fs=fornStat(a),ob=a.obiettivi.filter(o=>o.ob);
+  const cnt=s=>ob.filter(o=>o.stato===s).length;
+  return cover(a,"Verbale di riesame della direzione")+`<div class="inner">
+  <h3>Riesame della direzione · esercizio ${y}</h3>
+  ${r?`<table><tbody><tr><td style="width:30%">Data</td><td>${fdata(r.data)}</td></tr><tr><td>Partecipanti</td><td>${esc(r.part||"—")}</td></tr></tbody></table>`:miss("Nessun riesame registrato per l'esercizio "+y+": aggiungilo nel registro del passo 7. Gli elementi in ingresso qui sotto sono già aggiornati")}
+  <h3>Elementi in ingresso (9.3.2)</h3>
+  <h4>a) Stato delle azioni dei riesami precedenti</h4>
+  ${prec&&prec.az?`<p>Azioni decise nel riesame del ${fdata(prec.data)}:</p>${par(prec.az)}`:"<p>Non risultano riesami precedenti con azioni registrate.</p>"}
+  <h4>b) Cambiamenti nel contesto, nelle parti interessate, nei requisiti e nei rischi</h4>
+  <p>Fattori di contesto censiti: ${a.contesto.fattori.filter(f=>f.desc).length}. Parti interessate: ${a.contesto.parti.filter(x=>x.nome).length}. Rischi in inventario: ${rs.tot}, di cui ${rs.alti} alti e ${rs.medi} medi${rs.scoperti.length?"; "+rs.scoperti.length+" rischi alti sono privi di misure":""}.</p>
+  <h4>c) Politica e obiettivi</h4>
+  <p>Politica sociale ${a.politica.data?"approvata il "+fdata(a.politica.data):"non ancora approvata"}. Obiettivi: ${ob.length}, di cui ${cnt("Raggiunto")} raggiunti, ${cnt("In corso")} in corso, ${cnt("In ritardo")} in ritardo.</p>
+  ${ob.length?`<table><thead><tr><th>Obiettivo</th><th>Traguardo</th><th style="width:90px">Scadenza</th><th style="width:90px">Stato</th></tr></thead><tbody>${ob.map(o=>`<tr><td>${esc(o.ob)}</td><td>${esc(o.ind)} ${esc(o.target)}</td><td>${fdata(o.scad)}</td><td>${esc(o.stato)}</td></tr>`).join("")}</tbody></table>`:""}
+  <h4>d) Prestazione sociale</h4>
+  <table><thead><tr><th>Elemento</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>
+    <tr><td>Indice di frequenza infortuni</td><td class="num">${fmt(d.if_,2)}</td><td class="num">${fmt(dp.if_,2)}</td></tr>
+    <tr><td>Indice di gravità</td><td class="num">${fmt(d.ig,2)}</td><td class="num">${fmt(dp.ig,2)}</td></tr>
+    <tr><td>Incidenza dello straordinario <span class="code">%</span></td><td class="num">${fmt(d.pctStr,1)}</td><td class="num">${fmt(dp.pctStr,1)}</td></tr>
+    <tr><td>Settimana più lunga <span class="code">ore</span></td><td class="num">${fmt(num(a,y,"ore_max"))}</td><td class="num">${fmt(num(a,y-1,"ore_max"))}</td></tr>
+    <tr><td>Tasso di uscita <span class="code">%</span></td><td class="num">${fmt(d.turnover,1)}</td><td class="num">${fmt(dp.turnover,1)}</td></tr>
+    <tr><td>Divario retributivo di genere <span class="code">%</span></td><td class="num">${fmt(d.payGap,1)}</td><td class="num">${fmt(dp.payGap,1)}</td></tr>
+    <tr><td>Lavoratori formati sul sistema <span class="code">%</span></td><td class="num">${fmt(d.pctSgs,1)}</td><td class="num">${fmt(dp.pctSgs,1)}</td></tr></tbody></table>
+  <p><b>Incidenti, non conformità e azioni correttive.</b> Non conformità dell'esercizio: ${g.nc}, chiuse ${g.ncChiuse}, con efficacia verificata ${g.ncEff}. Ancora aperte ${g.ncAperte}, scadute ${g.ncScadute}.</p>
+  <p><b>Conformità ai requisiti.</b> Indice complessivo ${c.val?c.pct+"%":"—"} su ${c.val} requisiti valutati: ${c.n} non conformi, ${c.p} parziali, ${c.da} da valutare.</p>
+  <p><b>Audit.</b> Audit interni svolti: ${g.audit}, rilievi ${fmt(g.rilievi)}.</p>
+  <p><b>Consultazione e partecipazione dei lavoratori.</b> Momenti di consultazione: ${g.cons}. Reclami e segnalazioni: ${g.recl}, chiusi ${g.reclChiusi}${g.reclChiusi?", tempo medio "+g.reclTm+" giorni":""}.</p>
+  <p><b>Fornitori.</b> ${fs.n} censiti, ${fs.alti} a rischio alto, ${fmt(fs.pClaus,1)}% con clausola sociale, ${fmt(fs.pVer,1)}% verificati.</p>
+  ${al.length?`<table><thead><tr><th style="width:100px">Segnale</th><th>Descrizione</th><th style="width:100px">Rif.</th></tr></thead><tbody>${al.map(x=>`<tr><td>${x.lv==="C"?'<span class="tag t-red">criticità</span>':'<span class="tag t-amb">attenzione</span>'}</td><td>${esc(x.t)}</td><td class="code">${esc(x.r)}</td></tr>`).join("")}</tbody></table>`:"<p>Dai dati non emergono segnali di criticità.</p>"}
+  <h4>e) Adeguatezza delle risorse</h4><p>${r&&r.ris?esc(r.ris):'<span class="miss">[da registrare]</span>'}</p>
+  <h4>f) Comunicazioni con le parti interessate</h4><p>Comunicazioni interne: ${g.comInt}. Comunicazioni esterne: ${g.comEst}.</p>
+  <h3>Decisioni (9.3.3)</h3>
+  <h4>Idoneità, adeguatezza ed efficacia del sistema</h4>${r&&par(r.ido)||miss("da registrare")}
+  <h4>Opportunità di miglioramento</h4>${r&&par(r.mig)||miss("da registrare")}
+  <h4>Modifiche al sistema e risorse necessarie</h4>${r&&par(r.mod)||miss("da registrare")}
+  <h4>Azioni decise</h4>${r&&par(r.az)||miss("da registrare")}
+  <p><b>Comunicazione ai lavoratori.</b> ${r&&r.com?"Gli esiti sono stati comunicati ai lavoratori e ai loro rappresentanti il "+fdata(r.com)+".":'<span class="miss">Esiti non ancora comunicati ai lavoratori.</span>'}</p>
+  <div class="firma"><div>L'alta direzione${a.profilo.dir?" · "+esc(a.profilo.dir):""}</div><div>Il responsabile del sistema${a.profilo.rsgs?" · "+esc(a.profilo.rsgs):""}</div></div>
+  </div>`;
+}
+
+/* ---------- guida all'uso ---------- */
+function vGuida(){
+  const FONTI=[
+   ["Organico","Libro unico del lavoro, prospetto dell'organico, comunicazioni obbligatorie, contratti di somministrazione e di appalto."],
+   ["Retribuzioni","Buste paga e tabelle retributive del contratto collettivo; per il salario dignitoso una fonte pubblica e dichiarata, da citare nel manuale."],
+   ["Orario di lavoro","Rilevazione delle presenze, riepiloghi paghe, turni. La settimana più lunga va cercata nei mesi di picco, lavoratore per lavoratore."],
+   ["Salute e sicurezza","Registro infortuni e denunce INAIL, segnalazioni di mancato infortunio, scadenzario della formazione."],
+   ["Formazione","Registri delle presenze, attestati, piattaforma di formazione a distanza."],
+   ["Rappresentanza, disciplina, etica","Verbali di nomina dei rappresentanti, registro dei provvedimenti disciplinari, segnalazioni ricevute, verbali ispettivi."]
+  ];
+  const FORMULE=[
+   ["Indice di conformità","(conformi + parziali × 0,5) ÷ (conformi + parziali + non conformi) × 100; i non pertinenti sono esclusi"],
+   ["Livello di rischio","probabilità × gravità; alto e medio secondo le soglie impostate nei parametri"],
+   ["Indice di frequenza infortuni","infortuni ÷ ore lavorate × 1.000.000"],
+   ["Indice di gravità","giorni di assenza ÷ ore lavorate × 1.000"],
+   ["Incidenza dello straordinario","ore di straordinario ÷ ore ordinarie × 100"],
+   ["Ore settimanali medie per addetto","(ore ordinarie + straordinario) ÷ organico ÷ settimane lavorate nell'anno"],
+   ["Margine sul minimo contrattuale","(retribuzione più bassa − minimo contrattuale) ÷ minimo contrattuale × 100"],
+   ["Distanza dal salario dignitoso","(salario dignitoso − retribuzione più bassa) ÷ salario dignitoso × 100"],
+   ["Divario retributivo di genere","(media uomini − media donne) ÷ media uomini × 100"],
+   ["Tasso di uscita","cessazioni ÷ organico × 100"],
+   ["Tempo medio di chiusura dei reclami","media dei giorni tra ricezione e chiusura, sui reclami chiusi dell'esercizio"]
+  ];
+  return `<div class="noprint" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div><h1>Guida all'uso</h1><p class="sub" style="margin:0">Manuale operativo del percorso. Puoi stamparlo e consegnarlo al cliente.</p></div>
+    <button class="btn ghost sm" id="printGuida">Stampa la guida</button></div>
+  <div class="doc"><div class="inner">
+  <h3>A cosa serve</h3>
+  <p>Questo strumento accompagna un'organizzazione nell'impianto di un sistema di gestione sociale conforme alla PAS 24000:2022, dalla prima analisi fino ai documenti da presentare all'organismo di certificazione. La PAS unisce due blocchi: i requisiti di sistema delle clausole da 4 a 10, costruiti sulla struttura comune alle norme ISO, e i requisiti di prestazione sociale dell'Allegato A, che non ammettono esclusioni.</p>
+  <p>Il lavoro è organizzato in nove passi. I primi sette raccolgono informazioni, valutazioni e registrazioni; l'ottavo dice che cosa manca; il nono assembla i documenti. Nulla è definitivo: si può tornare su ogni passo in qualsiasi momento.</p>
+  <p><b>Dove finiscono i dati.</b> Restano nel browser del computer in uso. Non c'è un server e non serve una connessione. Di conseguenza, cambiando computer o browser, o cancellando i dati di navigazione, i dati non seguono: vanno esportati dal portafoglio.</p>
+
+  <h3>In dieci minuti</h3>
+  <table><tbody>
+    <tr><td style="width:34px" class="code">1</td><td>Dal <b>Portafoglio</b> apri l'organizzazione di esempio e guarda il passo 9: è il risultato a cui si arriva.</td></tr>
+    <tr><td class="code">2</td><td>Guarda il quadro <b>Avanzamento</b>: i segnali a destra nascono dai dati inseriti, non da una spunta manuale.</td></tr>
+    <tr><td class="code">3</td><td>Torna al Portafoglio e crea la tua organizzazione con <b>Nuova organizzazione</b>.</td></tr>
+    <tr><td class="code">4</td><td>Compila il passo 1, poi apri al passo 3 un gruppo di requisiti e valuta le prime voci leggendo la guida in testa al gruppo.</td></tr>
+    <tr><td class="code">5</td><td>Al passo 6 inserisci i dati sull'orario: se la settimana più lunga supera i limiti, il segnale compare subito.</td></tr>
+  </tbody></table>
+
+  <h3>Il portafoglio</h3>
+  <p>Contiene tutte le organizzazioni seguite. Ogni scheda mostra avanzamento, indice di conformità, rischi alti e criticità aperte. <b>Duplica</b> crea una copia completa, utile per organizzazioni simili: i dati copiati vanno poi sostituiti. <b>Elimina</b> è definitivo. <b>Esporta</b> e <b>Importa</b> salvano e ricaricano l'intero archivio e servono anche per spostare il lavoro su un altro computer.</p>
+
+  <h3>Passo 1 · Organizzazione</h3>
+  <p>Il campo più delicato è il campo di applicazione. Deve dire quali siti e quali attività sono coperti e, soprattutto, quali lavoratori: la PAS considera lavoratore chiunque operi sotto il controllo dell'organizzazione, compresi somministrati, soci di cooperative e appaltatori in sito. Indica il contratto collettivo applicato: è il termine di confronto per retribuzioni, orari e disciplina.</p>
+  <p>Il responsabile del sistema è la figura del punto 5.3: deve avere autorità reale e riferire alla direzione. Per i rappresentanti dei lavoratori, se non esistono RSU o RSA, descrivi come avviene la consultazione.</p>
+
+  <h3>Passo 2 · Contesto e parti interessate</h3>
+  <p>Bastano pochi fattori di contesto, purché specifici: la stagionalità che genera picchi di straordinario, il ricorso ad agenzie, la presenza di lavoratori stranieri che richiede materiali tradotti. Le parti interessate sono precaricate con le voci ricorrenti: adatta esigenze e modalità di coinvolgimento, e indica per ciascuna se l'esigenza è o può diventare un obbligo.</p>
+
+  <h3>Passo 3 · Conformità</h3>
+  <p>È il cuore del percorso: 98 requisiti, 31 di sistema e 67 dell'Allegato A, riportati in sintesi operativa. Per ogni gruppo la guida spiega che cosa guarda l'auditor, dove trovare le evidenze e qual è l'errore ricorrente.</p>
+  <table><tbody>
+    <tr><td style="width:26%"><b>Conforme</b></td><td>Il requisito è rispettato e lo puoi dimostrare. Scrivi l'evidenza: finirà nel manuale come descrizione del presidio.</td></tr>
+    <tr><td><b>Parziale</b></td><td>Il requisito è rispettato in parte, oppure la prassi esiste ma non è documentata. Pesa per metà nell'indice.</td></tr>
+    <tr><td><b>Non conforme</b></td><td>Il requisito non è rispettato. Si apre la riga dell'azione di adeguamento, con responsabile e scadenza.</td></tr>
+    <tr><td><b>Non pertinente</b></td><td>La situazione non ricorre: per esempio non sono forniti alloggi. Va motivato. Non è un'esclusione: l'Allegato A si applica per intero.</td></tr>
+  </tbody></table>
+  <p><b>Errore ricorrente.</b> Segnare conforme ciò che è solo previsto da una procedura. La PAS si verifica con interviste e sopralluoghi: valuta la situazione reale.</p>
+
+  <h3>Passo 4 · Rischi e fornitori</h3>
+  <p>L'inventario è precaricato con venti scenari tipici. Per ognuno attribuisci probabilità e gravità da 1 a 5, pensando alle conseguenze per le persone e non per l'azienda. I rischi alti devono avere misure definite, altrimenti compaiono tra i segnali.</p>
+  <p>Nella scheda <b>Fornitori</b> censisci chi conta per il sistema. Agenzie per il lavoro, cooperative e appaltatori in sito vanno sempre inseriti; per gli altri parti da paese, settore e intensità di manodopera. Per ciascuno registra clausola sociale, questionario, ultima verifica ed esito: è la traccia della due diligence chiesta dalla tabella A.1.</p>
+
+  <h3>Passo 5 · Politica e piano</h3>
+  <p><b>Politica.</b> Il testo modello copre i contenuti obbligatori del punto 5.2 e va adattato. La lista di controllo a fianco ricorda ciò che l'auditor verifica: i quattro temi, i due impegni, l'approvazione, la comunicazione interna ed esterna.</p>
+  <p><b>Obiettivi.</b> Misurabili e datati. «Migliorare il clima aziendale» non è un obiettivo; «portare lo straordinario per addetto sotto 80 ore entro dicembre» lo è.</p>
+  <p><b>Piano annuale.</b> È un requisito proprio della PAS, punto 8.1.2: l'elenco delle attività dei dodici mesi, con responsabile e stato. Il piano tipo propone sedici attività che coprono gli adempimenti a cadenza annuale.</p>
+
+  <h3>Passo 6 · Dati e indicatori</h3>
+  <p>Inserisci i dati dell'esercizio e dell'anno precedente. Lascia vuoto ciò che non conosci: lo zero è un'informazione, il vuoto è un dato mancante.</p>
+  <h4>Dove trovare i dati</h4>
+  <table><thead><tr><th style="width:26%">Sezione</th><th>Documenti da recuperare</th></tr></thead><tbody>${FONTI.map(f=>`<tr><td><b>${esc(f[0])}</b></td><td>${esc(f[1])}</td></tr>`).join("")}</tbody></table>
+  <h4>Formule applicate</h4>
+  <table><thead><tr><th style="width:34%">Indicatore</th><th>Formula</th></tr></thead><tbody>${FORMULE.map(f=>`<tr><td><b>${esc(f[0])}</b></td><td class="code">${esc(f[1])}</td></tr>`).join("")}</tbody></table>
+  <h4>I segnali</h4>
+  <p>Lo strumento confronta i dati con le soglie della PAS e segnala le situazioni da presidiare. Sono <b>criticità</b>: minori di 15 anni al lavoro, retribuzioni sotto il minimo contrattuale, trattenute disciplinari, settimane oltre il limite complessivo, requisiti non conformi, fornitori con esito critico. Sono <b>attenzioni</b>: pagamenti in ritardo, riposi non fruiti, retribuzione sotto il salario dignitoso, rischi alti senza misure, azioni scadute, registrazioni annuali mancanti.</p>
+  <p class="note">Limiti di orario: la PAS fissa 48 ore ordinarie e 60 complessive. La normativa italiana è più restrittiva e prevale: i limiti si adeguano in Parametri e archivio.</p>
+
+  <h3>Passo 7 · Registri</h3>
+  <p>Otto registri: reclami e segnalazioni, non conformità e azioni correttive, formazione, emergenze, comunicazioni, consultazione dei lavoratori, audit interni, riesame della direzione. Ogni voce ha una data: è quella che la assegna all'esercizio. Alcune registrazioni sono attese almeno una volta l'anno: prova di emergenza, comunicazione interna, comunicazione esterna, audit interno, riesame.</p>
+  <p>Nel registro reclami non riportare elementi che permettano di identificare chi segnala: la riservatezza è un requisito della tabella A.10.</p>
+
+  <h3>Passo 8 · Verifica</h3>
+  <p>Elenca ciò che manca, con il pulsante per andare al punto da sistemare. Il giudizio «presentabile» richiede che non ci siano criticità, che tutti i requisiti siano valutati senza non conformità aperte e che le registrazioni annuali siano presenti.</p>
+
+  <h3>Passo 9 · Documenti</h3>
+  <table><tbody>
+    <tr><td style="width:30%"><b>Manuale del sistema</b></td><td>Dieci sezioni che seguono le clausole della PAS. La sezione 8 si costruisce con le evidenze scritte al passo 3.</td></tr>
+    <tr><td><b>Politica sociale</b></td><td>Pagina da firmare, affiggere e inviare ai fornitori.</td></tr>
+    <tr><td><b>Rapporto di conformità</b></td><td>Sintesi, piano di adeguamento, requisiti non pertinenti con motivazione, dettaglio completo.</td></tr>
+    <tr><td><b>Verbale di riesame</b></td><td>Gli elementi in ingresso del punto 9.3.2 si compilano da soli; le decisioni vengono dal registro riesame.</td></tr>
+  </tbody></table>
+  <p><b>Per ottenere il PDF:</b> premi <b>Stampa documento</b>, scegli come destinazione «Salva come PDF» e attiva l'opzione «Grafica di sfondo», altrimenti copertina ed etichette escono bianche.</p>
+
+  <h3>Salvataggi e trasferimenti</h3>
+  <p>Il salvataggio è automatico a ogni modifica. I dati si perdono cancellando i dati di navigazione, usando una finestra in incognito o cambiando browser. Esporta l'archivio dal Portafoglio alla fine di ogni sessione e conserva il file con la data nel nome. Per consegnare il lavoro a un cliente esporta la singola organizzazione da Parametri e archivio: il file si importa nel portafoglio di destinazione.</p>
+
+  <h3>Limiti da conoscere</h3>
+  <p>Lo strumento organizza, calcola e segnala; non verifica la veridicità dei dati e non sostituisce il giudizio di chi conosce l'organizzazione. I requisiti sono riportati in sintesi operativa in italiano: il riferimento normativo resta il testo ufficiale della PAS 24000:2022 pubblicata da BSI. L'autovalutazione non equivale all'audit di un organismo di certificazione, e uno schema basato sulla PAS può prevedere requisiti aggiuntivi che qui non sono compresi.</p>
+  <p>La PAS chiede di applicare, tra legge nazionale e specifica, la regola più favorevole ai lavoratori: il confronto con contratto collettivo e normativa italiana va fatto caso per caso.</p>
+  <p class="note">Guida generata dall'applicazione il ${new Date().toLocaleDateString("it-IT")}.</p>
+  </div></div>`;
+}
+
+/* ---------- impostazioni ---------- */
+function vConf(a){
+  const P=a.param,fi=(k,l,u)=>`<label class="f"><span>${l} <span class="code">${u}</span></span><input type="number" step="any" data-par="${k}" value="${P[k]}"></label>`;
+  return `<h1>Parametri e archivio</h1>
+  <p class="sub">Le soglie con cui lo strumento legge i dati. Quelle precaricate sono i limiti della PAS: se legge o contratto collettivo sono più restrittivi, imposta i valori più favorevoli ai lavoratori.</p>
+  <div class="grid g2">
+    <div class="card"><p class="eyebrow">Orario di lavoro</p>
+      <div class="grid g2">${fi("ore_ord","Limite ordinario settimanale","ore")}${fi("ore_tot","Limite complessivo settimanale","ore")}${fi("sett","Settimane lavorate nell'anno","n.")}${fi("gg_recl","Reclamo da sollecitare dopo","giorni")}</div>
+      <div class="hr"></div><p class="eyebrow">Classi di rischio</p>
+      <div class="grid g2">${fi("alto","Rischio alto da","P × G")}${fi("medio","Rischio medio da","P × G")}</div>
+      <button class="btn ghost sm" id="resetPar">Ripristina valori della PAS</button>
+    </div>
+    <div class="card"><p class="eyebrow">Esercizio e dati</p>
+      <label class="f"><span>Esercizio di riferimento</span><input type="number" data-anno value="${a.anno}"></label>
+      <div class="hint">Indicatori e registrazioni restano legati all'anno in cui sono stati inseriti.</div>
+      <div class="hr"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="csvBtn">Esporta indicatori (CSV)</button>
+      <button class="btn ghost" id="expDoc">Esporta questa organizzazione (JSON)</button></div>
+      <div class="hr"></div>
+      <p class="eyebrow">Peso dei dati</p>
+      <div style="font-size:12.5px;color:var(--ink-2)">Questa organizzazione occupa <b class="code">${(JSON.stringify(a).length/1048576).toFixed(2)} MB</b>, archivio complessivo <b class="code">${(JSON.stringify(DB).length/1048576).toFixed(2)} MB</b>.</div>
+    </div>
+  </div>`;
+}
+
+/* ==========================================================
+   FINESTRE, IMMAGINI, FILE
+   ========================================================== */
+let mCb=null;
+function modal(t,p,input,cb,ok){$("#mT").textContent=t;$("#mP").textContent=p||"";$("#mP").hidden=!p;
+  const i=$("#mI");i.hidden=!input;i.value="";$("#mOk").textContent=ok||"Conferma";mCb=cb;$("#modal").hidden=false;(input?i:$("#mOk")).focus();}
+function mClose(okv){const m=$("#modal");if(m.hidden)return;m.hidden=true;const cb=mCb,v=$("#mI").value;mCb=null;if(okv&&cb)cb(v);}
+function pickImage(cb,maxW){
+  const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{const img=new Image();
+      img.onload=()=>{const sc=Math.min(1,maxW/img.width),c=document.createElement("canvas");
+        c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext("2d").drawImage(img,0,0,c.width,c.height);cb(c.toDataURL("image/png"));};
+      img.onerror=()=>toast("Immagine non leggibile");img.src=r.result;};
+    r.readAsDataURL(f);};
+  inp.click();
+}
+function dlFile(name,content,type){const b=new Blob([content],{type:type+";charset=utf-8"}),l=document.createElement("a");
+  l.href=URL.createObjectURL(b);l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(l.href),1500);}
+
+/* ==========================================================
+   EVENTI
+   ========================================================== */
+const persist=()=>Store.save(DB);
+const go=v=>{view=v;render();window.scrollTo(0,0);};
+function bind(a){
+  document.querySelectorAll("[data-go]").forEach(e=>e.onclick=()=>go(e.dataset.go));
+  document.querySelectorAll("[data-open]").forEach(e=>e.onclick=()=>{DB.current=e.dataset.open;anno=az().anno;persist();fillSel();fillAnni();go("home");});
+  document.querySelectorAll("[data-dup]").forEach(e=>e.onclick=()=>{
+    const src=DB.aziende.find(x=>x.id===e.dataset.dup),c=JSON.parse(JSON.stringify(src));
+    c.id=uid();c.nome=src.nome+" (copia)";c.created=new Date().toISOString();
+    DB.aziende.push(c);persist();fillSel();render();toast("Organizzazione duplicata");});
+  document.querySelectorAll("[data-del]").forEach(e=>e.onclick=()=>{
+    const x=DB.aziende.find(y=>y.id===e.dataset.del);
+    modal("Eliminare l'organizzazione?","«"+x.nome+"» e tutti i suoi dati verranno cancellati. L'operazione non si può annullare.",false,()=>{
+      DB.aziende=DB.aziende.filter(y=>y.id!==x.id);
+      if(DB.current===x.id){DB.current=null;anno=null;view="pf";}
+      persist();fillSel();fillAnni();render();toast("Organizzazione eliminata");},"Elimina");});
+  const q=$("#pfq");if(q)q.oninput=()=>{pfq=q.value;const p=q.selectionStart;render();const q2=$("#pfq");if(q2){q2.focus();q2.setSelectionRange(p,p);}};
+  const pn=$("#pfNew");if(pn)pn.onclick=creaAzienda;
+  const ex=$("#expBtn");if(ex)ex.onclick=()=>{dlFile("pas24000-archivio-"+oggi()+".json",JSON.stringify(DB,null,2),"application/json");toast("Archivio esportato");};
+  const im=$("#impBtn");if(im)im.onclick=()=>$("#impFile").click();
+  const imf=$("#impFile");if(imf)imf.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const o=JSON.parse(r.result);
+      if(Array.isArray(o.aziende)){o.aziende.forEach(norm);DB={aziende:o.aziende,current:null};anno=null;view="pf";}
+      else if(o.nome&&o.profilo){o.id=uid();DB.aziende.push(norm(o));}
+      else throw 0;
+      persist();fillSel();fillAnni();render();toast("Importazione completata");}catch(x){toast("File non valido: serve un archivio esportato da questo strumento");}};
+    r.readAsText(f);};
+  const pg=$("#printGuida");if(pg)pg.onclick=()=>window.print();
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab[b.dataset.tab]=b.dataset.tv;render();});
+  if(!a)return;
+
+  document.querySelectorAll("[data-p]").forEach(i=>i.onchange=()=>{a.profilo[i.dataset.p]=i.value;persist();rr();});
+  const nm=document.querySelector("[data-nome]");if(nm)nm.onchange=()=>{a.nome=nm.value.trim()||"Senza nome";persist();fillSel();rr();};
+  /* elenchi generici */
+  document.querySelectorAll("[data-l]").forEach(e=>e.onchange=()=>{const o=arr(a,e.dataset.l)[+e.dataset.i];if(!o)return;
+    o[e.dataset.k]=e.value;persist();if(e.dataset.rr!==undefined)rr();});
+  document.querySelectorAll("[data-ladd]").forEach(b=>b.onclick=()=>{const p=b.dataset.ladd,L=arr(a,p);
+    if(p.startsWith("registri.")){const k=p.split(".")[1],o={};REG[k].cols.forEach(c=>o[c[0]]=c[2]==="s"?(Array.isArray(c[3][0])?c[3][0][0]:c[3][0]):"");o.data=oggi();L.push(o);}
+    else L.push(TPL[p]());
+    persist();render();});
+  document.querySelectorAll("[data-ldel]").forEach(b=>b.onclick=()=>modal("Eliminare questa voce?","",false,()=>{arr(a,b.dataset.ldel).splice(+b.dataset.i,1);persist();rr();},"Elimina"));
+  /* conformità */
+  document.querySelectorAll("[data-gap]").forEach(e=>e.onchange=()=>{const id=e.dataset.gap;a.gap[id]=a.gap[id]||{};a.gap[id][e.dataset.k]=e.value;persist();if(e.dataset.rr!==undefined)rr();});
+  document.querySelectorAll("[data-grp]").forEach(b=>b.onclick=()=>{openGrp[b.dataset.grp]=!openGrp[b.dataset.grp];const sy=window.scrollY;render();window.scrollTo(0,sy);});
+  document.querySelectorAll("[data-gapf]").forEach(b=>b.onclick=()=>{gapF=b.dataset.gapf;if(gapF!=="all")GRP.forEach(g=>openGrp[g.id]=true);render();});
+  /* politica e piano */
+  document.querySelectorAll("[data-pol]").forEach(e=>e.onchange=()=>{a.politica[e.dataset.pol]=e.value;persist();rr();});
+  document.querySelectorAll("[data-chk]").forEach(e=>e.onchange=()=>{a.politica.chk[e.dataset.chk]=e.checked;persist();rr();});
+  const pm=$("#polMod");if(pm)pm.onclick=()=>{const put=()=>{a.politica.testo=polModello(a);persist();render();toast("Testo modello inserito: adattalo all'organizzazione");};
+    a.politica.testo.trim()?modal("Sostituire il testo attuale?","Il testo della politica già scritto verrà sostituito dal modello.",false,put,"Sostituisci"):put();};
+  const pt=$("#pianoTipo");if(pt)pt.onclick=()=>{const has_=new Set(a.piano.map(x=>x.att));let n=0;
+    PIANO_TIPO.forEach(x=>{if(!has_.has(x[2])){a.piano.push({mese:String(x[0]),rif:x[1],att:x[2],resp:"",stato:"Da fare"});n++;}});
+    persist();render();toast(n?n+" attività aggiunte al piano":"Il piano tipo è già caricato");};
+  /* indicatori e parametri */
+  document.querySelectorAll("[data-kpi]").forEach(i=>i.onchange=()=>{dati(a,+i.dataset.y)[i.dataset.kpi]=i.value;persist();rr();});
+  document.querySelectorAll("[data-par]").forEach(e=>e.onchange=()=>{a.param[e.dataset.par]=parseFloat(e.value)||0;persist();rr();});
+  const rp=$("#resetPar");if(rp)rp.onclick=()=>{a.param={...PARAM_DEF};persist();render();toast("Parametri ripristinati");};
+  const an=document.querySelector("[data-anno]");if(an)an.onchange=()=>{const v=parseInt(an.value,10);if(!v)return;a.anno=v;anno=v;persist();fillAnni();render();};
+  /* logo */
+  const ul=$("#upLogo");if(ul)ul.onclick=()=>pickImage(src=>{a.profilo.logo=src;persist();render();toast("Logo caricato");},480);
+  const rl=$("#rmLogo");if(rl)rl.onclick=()=>{a.profilo.logo="";persist();render();};
+  /* documenti ed esportazioni */
+  const ds=$("#docSel");if(ds)ds.onchange=()=>{docTipo=ds.value;render();};
+  const ed=$("#expDoc");if(ed)ed.onclick=()=>{dlFile("pas24000-"+a.nome.replace(/[^A-Za-z0-9]+/g,"-").toLowerCase()+"-"+anno+".json",JSON.stringify(a,null,2),"application/json");toast("Organizzazione esportata");};
+  const cv=$("#csvBtn");if(cv)cv.onclick=()=>{
+    const y=anno,rows=[["Sezione","Indicatore","Unità",y,y-1]],d=derive(a,y),dp=derive(a,y-1);
+    SEZ.forEach(s=>KPI.filter(k=>k.s===s.id).forEach(k=>rows.push([s.n,k.n,k.u,dati(a,y)[k.k]||"",dati(a,y-1)[k.k]||""])));
+    [["Presenza femminile","%","pctDonne"],["Tempo indeterminato","%","pctInd"],["Tasso di uscita","%","turnover"],["Margine sul minimo contrattuale","%","margCcnl"],
+     ["Divario retributivo di genere","%","payGap"],["Incidenza dello straordinario","%","pctStr"],["Ore settimanali medie per addetto","ore","oreSett"],
+     ["Indice di frequenza","-","if_"],["Indice di gravità","-","ig"],["Ore di formazione per addetto","ore","oreForm"]].forEach(r=>rows.push(["Calcolati",r[0],r[1],d[r[2]],dp[r[2]]]));
+    const c=conf(a);rows.push(["Conformità","Indice di conformità","%",c.pct,""]);
+    dlFile("pas24000-indicatori-"+y+".csv","﻿"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n"),"text/csv");
+    toast("Indicatori esportati");};
+}
+function fillSel(){$("#coSel").innerHTML=DB.aziende.map(a=>`<option value="${a.id}" ${a.id===DB.current?"selected":""}>${esc(a.nome)}</option>`).join("");}
+function fillAnni(){const a=az();if(!a){$("#annoSel").innerHTML="";return;}const y=a.anno;
+  $("#annoSel").innerHTML=[y+1,y,y-1,y-2].map(v=>`<option value="${v}" ${v===anno?"selected":""}>${v}</option>`).join("");}
+function creaAzienda(){modal("Nuova organizzazione","Denominazione dell'organizzazione che adotta il sistema.",true,n=>{
+  const a=nuova(n.trim());DB.aziende.push(a);DB.current=a.id;anno=a.anno;persist();fillSel();fillAnni();go("org");toast("Organizzazione creata");},"Crea");}
+
+document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>{$("#side").classList.remove("open");go(n.dataset.v);});
+$("#brandHome").onclick=()=>go("pf");
+$("#coSel").onchange=e=>{DB.current=e.target.value;anno=az().anno;persist();fillAnni();go("home");};
+$("#annoSel").onchange=e=>{anno=+e.target.value;render();};
+$("#addCo").onclick=creaAzienda;
+$("#printBtn").onclick=()=>{view="doc";render();setTimeout(()=>window.print(),200);};
+$("#menuBtn").onclick=()=>$("#side").classList.toggle("open");
+$("#mNo").onclick=()=>mClose(false);$("#mOk").onclick=()=>mClose(true);
+$("#modal").onclick=e=>{if(e.target.id==="modal")mClose(false);};
+document.addEventListener("keydown",e=>{if($("#modal").hidden)return;if(e.key==="Escape")mClose(false);if(e.key==="Enter"&&e.target.id==="mI")mClose(true);});
+function resp(){$("#menuBtn").hidden=window.innerWidth>980;}
+window.addEventListener("resize",resp);resp();
+
+/* ==========================================================
+   AVVIO — con un'organizzazione di esempio se l'archivio è vuoto
+   ========================================================== */
+function esempio(){
+  const a=nuova("Organizzazione di esempio S.r.l."),y=a.anno,D=(m,g)=>y+"-"+String(m).padStart(2,"0")+"-"+String(g).padStart(2,"0");
+  Object.assign(a.profilo,{forma:"Società a responsabilità limitata",sede:"Aversa (CE)",settore:"Trasformazione di ortaggi e conserve alimentari",ateco:"10.39.00",
+    ccnl:"CCNL Industria alimentare",siti:"Stabilimento di produzione e magazzino; uffici amministrativi nello stesso sito",
+    campo:"Trasformazione e confezionamento di ortaggi e conserve vegetali, magazzino e spedizione. Il sistema si applica a tutti i lavoratori che operano nel sito: dipendenti, lavoratori stagionali, somministrati e addetti della cooperativa di facchinaggio.",
+    dir:"Amministratore unico",rsgs:"Responsabile risorse umane",rlav:"RSU di tre componenti; RLS eletto",contatto:"Responsabile risorse umane"});
+  a.contesto.fattori=[
+    {tipo:"Esterno",desc:"Campagna stagionale da luglio a settembre: picchi produttivi e ricorso a personale a termine",eff:"Rischio"},
+    {tipo:"Esterno",desc:"Clienti della grande distribuzione che richiedono evidenze sulle condizioni di lavoro in filiera",eff:"Opportunità"},
+    {tipo:"Esterno",desc:"Fornitori agricoli in un territorio esposto a lavoro irregolare e intermediazione illecita",eff:"Rischio"},
+    {tipo:"Interno",desc:"Presenza di lavoratori stranieri con conoscenza limitata dell'italiano",eff:"Rischio"},
+    {tipo:"Interno",desc:"Relazioni sindacali stabili e accordo aziendale sulla stagionalità",eff:"Opportunità"}];
+  const S={"5.4":"p","7.1":"p","7.4.3":"p","8.1.3":"p","9.1.1":"p","9.2.2":"n","A.1-4":"p","A.2-9":"p","A.9-5":"p","A.9-7":"p","A.10-1":"p",
+    "A.2-8":"na","A.3-2":"na","A.4-4":"na","A.7-4":"na","A.9-2":"na","A.9-8":"na"};
+  const EV={"4.3":"Campo di applicazione riportato nel manuale, sezione 1","5.2":"Politica sociale firmata, affissa in bacheca e pubblicata sul sito","5.3":"Nomina del responsabile del sistema; organigramma",
+    "5.4":"Riunioni con la RSU; manca la consultazione dei lavoratori stagionali","7.1":"Budget formazione approvato; piano di sviluppo delle capacità non ancora scritto","7.4.3":"Politica inviata ai clienti; nessuna comunicazione annuale strutturata",
+    "8.1.3":"Clausola sociale firmata da 4 fornitori su 6","8.2":"Piano di emergenza; prova di evacuazione di maggio","9.1.1":"Indicatori definiti per 8 aree su 11","9.2.2":"Programma di audit non ancora formalizzato",
+    "A.1-1":"Inventario dei rischi al passo 4","A.1-4":"Questionari inviati; verifiche in sito ancora da avviare sui fornitori agricoli","A.2-3":"Nessun documento trattenuto: solo copia del documento d'identità in fascicolo",
+    "A.2-8":"Non è offerta alcuna custodia di documenti o valori","A.2-9":"Agenzia iscritta all'albo; contratto con la cooperativa privo del divieto di costi di reclutamento","A.3-1":"Età minima di assunzione 18 anni per regolamento interno",
+    "A.3-2":"Nessun minore di 15 anni ha accesso al sito","A.3-5":"Copia del documento d'identità in ogni fascicolo personale","A.4-1":"CCNL applicato a tutti; RSU eletta","A.4-4":"La legge italiana tutela associazione e contrattazione",
+    "A.5-3":"Codice disciplinare affisso; estratto tradotto in tre lingue","A.6-2":"DVR aggiornato; sopralluoghi mensili del RSPP","A.6-7":"Verbali di consegna dei DPI firmati","A.7-1":"Planimetrie di emergenza; controllo settimanale delle vie di fuga",
+    "A.7-2":"Registro antincendio; manutenzione semestrale","A.7-4":"Non sono forniti alloggi ai lavoratori","A.8-1":"Lettera di assunzione consegnata prima dell'inizio del lavoro","A.8-4":"Retribuzioni da tabelle del CCNL; nessun inquadramento sotto il minimo",
+    "A.8-5":"Bonifico entro il giorno 10 su conto intestato al lavoratore","A.8-10":"Il codice disciplinare esclude la multa","A.9-1":"Orario ordinario di 40 ore settimanali","A.9-2":"Nessuna deroga applicata: il limite di legge è inferiore",
+    "A.9-5":"Straordinario ricorrente nel reparto confezionamento durante la campagna","A.9-7":"Due casi di riposo spostato oltre il settimo giorno in agosto","A.9-8":"Nessuna deroga ai riposi","A.10-1":"Procedura e cassetta in mensa; canale non ancora aperto agli esterni"};
+  const AZ={"5.4":["Incontro di inizio campagna con i lavoratori stagionali","Responsabile risorse umane",D(6,30)],"7.1":["Redigere il piano di sviluppo delle capacità","Responsabile risorse umane",D(3,31)],
+    "7.4.3":["Pubblicare la relazione sociale annuale sul sito","Direzione",D(11,30)],"8.1.3":["Ottenere la clausola dai due fornitori mancanti","Ufficio acquisti",D(4,30)],"9.1.1":["Definire gli indicatori per A.1, A.4 e A.11","Responsabile risorse umane",D(3,31)],
+    "9.2.2":["Approvare il programma di audit e incaricare un auditor esterno","Direzione",D(5,31)],"A.1-4":["Verifica in sito sui due fornitori agricoli a rischio alto","Ufficio acquisti",D(7,31)],
+    "A.2-9":["Integrare il contratto con la cooperativa","Ufficio acquisti",D(4,30)],"A.9-5":["Secondo turno in confezionamento da luglio a settembre","Direzione di stabilimento",D(6,30)],
+    "A.9-7":["Controllo automatico dei riposi nel sistema presenze","Ufficio paghe",D(6,30)],"A.10-1":["Aprire il canale agli esterni dal sito e tradurre l'informativa","Responsabile risorse umane",D(5,31)]};
+  REQ.forEach(r=>{if(r.g==="C10"||r.g==="A11")return;const st=S[r.id]||"c",z=AZ[r.id];
+    a.gap[r.id]={st,ev:EV[r.id]||""};if(z)Object.assign(a.gap[r.id],{az:z[0],resp:z[1],scad:z[2]});});
+  [[3,5,"Clausola sociale, questionario e verifica in sito sui fornitori agricoli","Ufficio acquisti"],[2,4,"Contratto con divieto di costi a carico dei lavoratori; interviste ai somministrati","Responsabile risorse umane"],[4,5,"","Ufficio acquisti"],[2,5,"Clausola sul divieto di lavoro minorile","Ufficio acquisti"],
+   [1,4,"Età minima di assunzione 18 anni",""],[1,4,"Relazioni sindacali regolate dall'accordo aziendale",""],[2,3,"Analisi retributiva annuale per genere","Responsabile risorse umane"],[2,4,"Politica contro le molestie; canale riservato","Responsabile risorse umane"],
+   [3,4,"Formazione all'ingresso anche in lingua; sopralluoghi mensili","RSPP"],[3,4,"DUVRI e riunione di coordinamento con la cooperativa","RSPP"],[2,5,"Controllo settimanale delle vie di fuga; prova annuale","RSPP"],[2,3,"Verifica della genuinità dell'appalto di facchinaggio","Direzione"],
+   [1,4,"Controllo mensile tra buste paga e tabelle contrattuali","Ufficio paghe"],[4,4,"DURC e visura a ogni rinnovo","Ufficio acquisti"],[4,3,"Secondo turno nei mesi di campagna; tetto individuale di straordinario","Direzione di stabilimento"],[3,3,"Controllo dei riposi nel sistema presenze","Ufficio paghe"],
+   [3,3,"Informativa tradotta; apertura del canale agli esterni","Responsabile risorse umane"],[2,4,"Codice etico e procedura omaggi","Direzione"],[1,5,"Presenze rilevate con badge, non modificabili senza traccia","Ufficio paghe"],[2,3,"Riesame con la RSU; formazione dei capireparto","Direzione"]]
+   .forEach((v,i)=>Object.assign(a.rischi[i],{p:v[0],g:v[1],mis:v[2],resp:v[3]}));
+  a.fornitori=[
+    {nome:"Agenzia Lavoro Esempio S.p.A.",cat:"Agenzia per il lavoro",paese:"Italia",rischio:"Medio",claus:"Sì",quest:"Sì",ver:D(2,18),esito:"Adeguato"},
+    {nome:"Cooperativa Facchinaggio Esempio",cat:"Cooperativa di servizi",paese:"Italia",rischio:"Alto",claus:"Sì",quest:"Sì",ver:D(3,6),esito:"Azioni richieste"},
+    {nome:"Azienda agricola Esempio Uno",cat:"Materie prime",paese:"Italia",rischio:"Alto",claus:"Sì",quest:"Sì",ver:"",esito:""},
+    {nome:"Organizzazione di produttori Esempio",cat:"Materie prime",paese:"Italia",rischio:"Alto",claus:"No",quest:"No",ver:"",esito:""},
+    {nome:"Scatolificio Esempio S.r.l.",cat:"Imballaggi e materiali",paese:"Italia",rischio:"Basso",claus:"Sì",quest:"No",ver:"",esito:""},
+    {nome:"Trasporti Esempio S.r.l.",cat:"Trasporti e logistica",paese:"Italia",rischio:"Medio",claus:"No",quest:"Sì",ver:"",esito:""}];
+  a.politica={testo:polModello(a),chk:{du:true,cl:true,et:true,ssl:true,leg:true,mig:true,app:true,int:true},data:D(1,20),firma:"L'amministratore unico"};
+  a.obiettivi=[
+    {ob:"Ridurre lo straordinario nel reparto confezionamento durante la campagna",area:"A9",ind:"Ore di straordinario per addetto",target:"sotto 90 ore l'anno",scad:D(12,31),resp:"Direzione di stabilimento",ris:"Secondo turno da luglio a settembre con 12 assunzioni stagionali",stato:"In corso"},
+    {ob:"Verificare in sito tutti i fornitori a rischio alto",area:"A1",ind:"Fornitori a rischio alto verificati",target:"100%",scad:D(10,31),resp:"Ufficio acquisti",ris:"Quattro giornate di verifica; lista di controllo sociale",stato:"In corso"},
+    {ob:"Formare tutti i lavoratori stagionali su diritti e canale di reclamo",area:"A10",ind:"Neoassunti formati all'ingresso",target:"100%",scad:D(7,15),resp:"Responsabile risorse umane",ris:"Modulo di un'ora in tre lingue",stato:"In corso"},
+    {ob:"Avvicinare la retribuzione minima al salario dignitoso",area:"A8",ind:"Distanza dal salario dignitoso",target:"sotto il 2%",scad:D(12,31),resp:"Direzione",ris:"Premio di risultato esteso agli stagionali",stato:"In corso"}];
+  a.piano=PIANO_TIPO.map(x=>({mese:String(x[0]),rif:x[1],att:x[2],resp:"Responsabile risorse umane",stato:x[0]<=5?"Fatto":x[0]<=6?"In corso":"Da fare"}));
+  a.dati[y]={lav_tot:86,lav_don:49,lav_ind:52,lav_stran:21,lav_min:0,lav_u15:0,lav_somm:18,ass:31,ces:27,
+    re_min:1580,re_ccnl:1545,re_lw:1650,re_don:23900,re_uom:25800,cop:86,rit:0,tratt:0,
+    ore_ord:148000,ore_str:9800,ore_max:54,sett_60:0,riposi:2,inf:4,gg:62,nm:11,mal:0,fssl:80,fo_ore:1240,fo_sgs:64,fo_nuovi:29,rapp:3,disc:5,molest:1,sanz:0,corr:0};
+  a.dati[y-1]={lav_tot:82,lav_don:46,lav_ind:50,lav_stran:18,lav_min:0,lav_u15:0,lav_somm:22,ass:28,ces:30,
+    re_min:1540,re_ccnl:1510,re_lw:1620,re_don:23100,re_uom:25300,cop:82,rit:1,tratt:0,
+    ore_ord:141000,ore_str:13200,ore_max:58,sett_60:0,riposi:6,inf:6,gg:104,nm:5,mal:0,fssl:70,fo_ore:860,fo_sgs:20,fo_nuovi:17,rapp:3,disc:7,molest:0,sanz:1,corr:0};
+  const R=a.registri;
+  R.recl=[{data:D(2,11),canale:"Cassetta o modulo",prov:"Lavoratore",area:"A9",desc:"Turni del confezionamento comunicati con meno di 48 ore di anticipo",az:"Verificato con il caporeparto; turni ora pubblicati il giovedì per la settimana successiva",resp:"Responsabile risorse umane",chiusura:D(2,25),esito:"Fondato, risolto"},
+    {data:D(4,3),canale:"Rappresentante dei lavoratori",prov:"Lavoratore di un fornitore",area:"A6",desc:"Addetti della cooperativa senza guanti antitaglio nell'area di scarico",az:"Richiamo scritto alla cooperativa; consegna dei dispositivi verificata",resp:"RSPP",chiusura:D(4,12),esito:"Fondato, risolto"},
+    {data:D(5,20),canale:"Cassetta o modulo",prov:"Anonimo",area:"A5",desc:"Linguaggio offensivo di un preposto verso lavoratori stranieri",az:"Colloqui in corso; formazione dei capireparto pianificata",resp:"Responsabile risorse umane",chiusura:"",esito:"In istruttoria"}];
+  R.nc=[{data:D(3,6),orig:"Monitoraggio",rif:"A.2 · 9",resp:"Ufficio acquisti",desc:"Il contratto con la cooperativa non vieta l'addebito di costi ai lavoratori",causa:"Contratto precedente all'avvio del sistema, mai aggiornato",az:"Integrazione contrattuale con clausola sociale",scad:D(4,30),chiusura:"",eff:"Da verificare"},
+    {data:D(4,12),orig:"Reclamo",rif:"A.6 · 7",resp:"RSPP",desc:"Dispositivi di protezione non consegnati agli addetti della cooperativa",causa:"Consegna lasciata al fornitore senza controllo all'ingresso",az:"Controllo dei dispositivi nella lista di accesso degli appaltatori",scad:D(4,30),chiusura:D(4,28),eff:"Efficace"}];
+  R.form=[{data:D(2,14),tema:"Politica sociale, diritti dei lavoratori e canale di reclamo",dest:"Tutti i dipendenti stabili",doc:"Responsabile risorse umane",part:52,ore:2,eff:"Questionario finale"},
+    {data:D(3,20),tema:"Gestione dei reclami e prevenzione delle molestie",dest:"Capireparto e preposti",doc:"Consulente esterno",part:8,ore:4,eff:"Colloquio a tre mesi"}];
+  R.emer=[{data:D(5,15),tipo:"Prova di evacuazione",sito:"Stabilimento",resp:"RSPP",esito:"Evacuazione completata in 4 minuti; una via di fuga del magazzino parzialmente ostruita da bancali",az:"Segnaletica a pavimento e controllo settimanale"},
+    {data:D(5,16),tipo:"Verifica di presidi e vie di fuga",sito:"Stabilimento e magazzino",resp:"RSPP",esito:"Estintori e idranti regolari",az:""}];
+  R.com=[{data:D(2,3),tipo:"Interna",dest:"Tutti i lavoratori",canale:"Bacheca, busta paga e riunione di reparto",cont:"Presentazione del sistema di gestione sociale, della politica e del canale di reclamo"}];
+  R.cons=[{data:D(1,28),forma:"Incontro con i rappresentanti",part:5,resp:"Direzione",arg:"Politica sociale, obiettivi dell'anno, organizzazione della campagna",esiti:"Condiviso l'obiettivo sullo straordinario; richiesta di turni comunicati con anticipo"}];
+  R.audit=[{data:D(11,17),amb:"Sistema di gestione e Allegato A",aud:"Auditor esterno incaricato",stato:"Pianificato",ril:"",sint:""}];
+  return a;
+}
+(function init(){
+  const d=Store.load();
+  if(d&&Array.isArray(d.aziende)&&d.aziende.length){d.aziende.forEach(norm);DB=d;}
+  else DB={aziende:[esempio()],current:null};
+  if(!az())DB.current=null;
+  view=az()?"home":"pf";
+  fillSel();fillAnni();render();
+})();
+</script>
+</body>
+</html>

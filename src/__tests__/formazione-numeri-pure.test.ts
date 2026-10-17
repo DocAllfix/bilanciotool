@@ -181,7 +181,9 @@ describe("i numeri della formazione", () => {
           // un template literal un solo `\d` è la lettera «d», e la guardia smetterebbe di
           // scattare senza dirlo. Ci sono ricascato scrivendo proprio questa riga.
           const comeConteggio = new RegExp(
-            `(?<![\\d\\-/])(?<![\\d][.,])(?<!${RIFERIMENTI} )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
+            // «il 31», «dal 31», «al 31» sono date: un conteggio prende «i» o «gli», mai
+            // l'articolo singolare. Stessa regola di `slide-distillate.ts`.
+            `(?<![\\d\\-/])(?<![\\d][.,])(?<!${RIFERIMENTI} )(?<!\\b(?:il|dal|al) )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
             "u",
           );
           if (comeConteggio.test(daControllare)) {

@@ -53,14 +53,14 @@ await sql`update org_entitlement set status='active' where organization_id=${org
 //    coperti dagli e2e — qui serve un documento RICCO da fotografare).
 const co = crypto.randomUUID();
 await sql`insert into company (id, organization_id, nome, settore, sede, piva, ateco)
-  values (${co}, ${org.id}, 'Meccanica Adriatica S.r.l.', 'Componenti meccanici', 'Bari', '07566620723', '25.62')`;
+  values (${co}, ${org.id}, 'Corvane Meccanica S.r.l.', 'Componenti meccanici', 'Bari', '07481930726', '25.62')`;
 
 // Inventario GHG 2025 + 2024 (anno base) con voci golden
 const [cs] = await sql`select id from content_set where dominio='ghg' order by versione desc limit 1`;
 const inv25 = crypto.randomUUID();
 const inv24 = crypto.randomUUID();
 const boundaries = {
-  forma: "Meccanica Adriatica S.r.l.", piva: "07566620723", sede: "Bari, via delle Officine 12",
+  forma: "Corvane Meccanica S.r.l.", piva: "07481930726", sede: "Bari, via delle Officine 12",
   settore: "Componenti meccanici di precisione", ateco: "25.62", siti: "Stabilimento di Bari (produzione); deposito di Modugno (logistica)",
   dipendenti: "48", responsabile: "Ing. Paola Ranieri — HSE Manager", consolidamento: "Controllo operativo",
   perimetroOrg: "La società non detiene partecipazioni: il perimetro coincide con la persona giuridica, con i due siti operativi di Bari e Modugno.",
@@ -100,7 +100,7 @@ const proj = crypto.randomUUID();
 await sql`insert into report_project (id, organization_id, company_id, anno, content_set_id, standard, perimetro, profilo, soglia_materialita)
   values (${proj}, ${org.id}, ${co}, 2025, ${csr.id}, 'GRI 2021 — opzione con riferimento',
     'Tutte le sedi operative della società: stabilimento di Bari e deposito di Modugno.',
-    ${sql.json({ forma: "S.r.l.", piva: "07566620723", sede: "Bari", settore: "Componenti meccanici di precisione", ateco: "25.62", sitiop: "Bari (produzione), Modugno (logistica)", mercati: "Automotive e meccanica agricola, Italia ed export UE (60/40)", contatto: "sostenibilita@esempio.it" })}, '3')`;
+    ${sql.json({ forma: "S.r.l.", piva: "07481930726", sede: "Bari", settore: "Componenti meccanici di precisione", ateco: "25.62", sitiop: "Bari (produzione), Modugno (logistica)", mercati: "Automotive e meccanica agricola, Italia ed export UE (60/40)", contatto: "sostenibilita@esempio.it" })}, '3')`;
 for (const [t, i, f] of [["T01",4,3],["T02",4,4],["T06",3,3],["T07",5,4],["T08",3,3],["T10",4,3],["T13",4,4],["T16",3,3],["T03",2,2],["T04",2,1],["T09",3,2],["T14",2,3]])
   await sql`insert into materiality_assessment (id, organization_id, project_id, topic_key, score_impact, score_financial)
     values (${crypto.randomUUID()}, ${org.id}, ${proj}, ${t}, ${i}, ${f})`;
@@ -132,7 +132,7 @@ const capitolo = async (key, testo, media = []) => {
       values (${crypto.randomUUID()}, ${org.id}, ${sid}, 'chart', ${ch[0]}, ${ch[1]}, ${ch[2] ?? "full"}, ${i})`;
 };
 await capitolo("lettera", "Il 2025 è stato l'anno in cui la sostenibilità è passata dai propositi ai numeri. Abbiamo installato il fotovoltaico, ridotto di un terzo gli infortuni e — per la prima volta — misurato per intero le nostre emissioni secondo la ISO 14064-1.\n\nQuesto documento racconta come lavoriamo: ai nostri clienti, alle banche che ci accompagnano e soprattutto alle 48 persone che ogni giorno costruiscono questa azienda.", [["emissioni","Emissioni Scope 1 e 2: confronto 2024-2025."]]);
-await capitolo("identita", "Meccanica Adriatica nasce a Bari nel 1987 come officina di tornitura conto terzi. Oggi produce componenti meccanici di precisione per l'automotive e la meccanica agricola, con 48 dipendenti e un fatturato di 5,2 milioni di euro.\n\nLa proprietà è alla seconda generazione familiare; dal 2019 l'azienda è certificata ISO 9001 e IATF 16949, dal 2023 ISO 14001 e 45001.", [["persone","Composizione dell'organico al 31 dicembre 2025.", "half"]]);
+await capitolo("identita", "Corvane Meccanica nasce a Bari nel 1987 come officina di tornitura conto terzi. Oggi produce componenti meccanici di precisione per l'automotive e la meccanica agricola, con 48 dipendenti e un fatturato di 5,2 milioni di euro.\n\nLa proprietà è alla seconda generazione familiare; dal 2019 l'azienda è certificata ISO 9001 e IATF 16949, dal 2023 ISO 14001 e 45001.", [["persone","Composizione dell'organico al 31 dicembre 2025.", "half"]]);
 await capitolo("business", "Il modello è semplice: trasformiamo acciaio e leghe in componenti finiti per i capofiliera, con lavorazioni CNC ad alta precisione e controllo qualità al 100% sulle serie critiche.\n\nL'energia è il secondo costo dopo i materiali: per questo l'efficienza energetica è insieme una scelta ambientale e industriale.", [["energia","Composizione dei consumi energetici 2025."]]);
 await capitolo("catena", "A monte: acciai da fornitori italiani e tedeschi qualificati (94 fornitori su 118 hanno sede in Italia). A valle: consegne dirette ai capofiliera con vettori consorziati.\n\nDal 2025 la qualifica fornitori include criteri ambientali e sociali: 36 fornitori sono già stati valutati.", [["fornitori","Provenienza e valutazione ESG dei fornitori."]]);
 await capitolo("stake", "L'analisi di doppia rilevanza ha coinvolto direzione, RSPP, responsabili di funzione e — tramite questionario — i tre clienti principali e le rappresentanze sindacali.\n\nSono risultati materiali 8 temi su 18 valutati: clima ed energia, economia circolare, salute e sicurezza, condizioni di lavoro, competenze, qualità di prodotto e filiera responsabile.", [["materialita","Matrice di doppia rilevanza 2025."]]);

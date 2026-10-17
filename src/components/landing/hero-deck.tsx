@@ -125,16 +125,16 @@ export function HeroDeck() {
         >
           <div className="flex h-full flex-col p-[2.4em] text-white">
             <div className="ml-auto rounded-[0.4em] bg-white/95 px-[0.8em] py-[0.4em] text-[0.9em] font-semibold tracking-tight text-[oklch(0.24_0.028_240)]">
-              Meccanica Adriatica
+              Corvane Meccanica
             </div>
             <div className="mt-auto">
               <p className="text-[0.8em] uppercase tracking-[0.22em] text-white/70">
                 Bilancio di sostenibilità e conformità ESG · 2025
               </p>
               <p className="mt-[0.8em] text-[2.2em] leading-tight" style={{ fontFamily: "Georgia, serif" }}>
-                Meccanica
+                Corvane
                 <br />
-                Adriatica S.r.l.
+                Meccanica S.r.l.
               </p>
               <p className="mt-[0.6em] text-[0.9em] text-white/75">Componenti meccanici di precisione · Bari</p>
               <p className="mt-[1.6em] text-[0.8em] text-white/60">Redatto secondo GRI 2021 · ISO 14064-1</p>

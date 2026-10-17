@@ -99,9 +99,14 @@ const RIFERIMENTI = "(art\\.|articolo|artt\\.|comma|commi|allegato|Allegato|dire
 const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti)";
 const SEGNAPOSTO = /\{([A-Za-z0-9]+)\}/g;
 
+// Una data: «il 31», «dal 31», «al 31». Un conteggio in italiano prende «i» o «gli» («i 31
+// requisiti»), mai l'articolo singolare: dopo «il», «dal» o «al» un numero è un giorno, un
+// anno o una quota. Nato quando un conteggio del catalogo è arrivato a valere 31.
+const ARTICOLO_DI_DATA = "(?<!\\b(?:il|dal|al) )";
+
 function comeConteggio(valore: number): RegExp {
   return new RegExp(
-    "(?<![\\d\\-/])(?<![\\d][.,])(?<!" + RIFERIMENTI + " )" + valore +
+    "(?<![\\d\\-/])(?<![\\d][.,])(?<!" + RIFERIMENTI + " )" + ARTICOLO_DI_DATA + valore +
       "(?![\\d\\-/%])(?![.,]\\d)(?! " + MESI + ")(?! " + GRANDEZZE + ")",
     "u",
   );

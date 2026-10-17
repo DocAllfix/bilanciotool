@@ -3759,3 +3759,138 @@ debole per accorgersene; se n'è accorta l'altra sessione, a cui vitest non part
 
 ⚠️ Le dimostrative degli studi già iscritti NON hanno il percorso GDPR compilato: si
 semina solo all'iscrizione. Decisione del committente se ripopolarle.
+
+**Percorso PAS 24000, fasi 0–4 (2026-10-16) — il sedicesimo percorso, nei Sistemi di gestione**
+
+Dal prototipo `aggiuntenuovimoduli/percorso-pas24000-v1.html` (impronta `3131612f…ba94c`),
+costruito sullo STESSO stampo del prototipo GDPR: stesse costanti, stesse funzioni, stesso
+avvio. Piano in `~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`. Decisioni del
+committente: gruppo **Sistemi di gestione** accanto a SA8000 (certificabile da un ente terzo),
+un requisito **parziale pesa metà** (in SA8000 pesa zero, e non è una contraddizione: lo decide
+lo schema), uno non valutato pesa zero.
+
+- **Fase 0**: caricatore che esegue il prototipo in `vm` (`scripts/carica-prototipo-pas.mjs`),
+  estrazione dei cataloghi (`extract-pas.mjs`: 18 gruppi, 98 requisiti 31+67, 8 parti, 20
+  rischi, 35 indicatori in 6 sezioni, 16 attività, 9 contenuti della politica, 8 registri),
+  golden riproducibile. Le liste copiate a mano devono comparire letterali nel prototipo, o
+  l'estrazione si ferma.
+- **Fase 1**: motore in `src/lib/calc/pas/`, 39 test, copertura dei rami 96%, undici
+  divergenze in `docs/politica-arrotondamento.md`. La più grave: **un derivato esiste solo se ci
+  sono TUTTI i suoi ingressi** — il prototipo leggeva un vuoto come zero, e senza la
+  retribuzione delle donne il divario di genere usciva **100%**, senza la minima il margine sul
+  CCNL **−100%**.
+- **Fase 2**: migrazioni `0065` (esportata dallo schema) e `0066` (generata da
+  `scripts/genera-0066-pas.mjs`: RLS, 33 CHECK, trigger sulla radice, `content_set_dominio_ck`
+  riscritto con `pas`), seme `pas-v1`. Radice unica per azienda, figlie senza `company_id`.
+- **Fase 3**: `src/features/pas/`. Le primitive dei campi del GDPR (`testo`, `scelta`,
+  `decimale` all'italiana, `interoNonNegativo`, `validaCampo`) passano in `features/campi.ts`.
+- **Fase 4**: registro dei moduli (icona `UsersRound`, dopo SA8000), quattro documenti tutti
+  nella serie SENZA esercizio (`manuale_pas`, `politica_pas`, `conformita_pas`, `riesame_pas`,
+  migrazione `0067`), un template solo (`documento-pas.tsx`) con un grafico nuovo
+  (`charts-pas.tsx`, orario contro il limite) e i tre del GDPR. `MatriceRischi` guadagna
+  `oggetto` e `perChi` con i predefiniti del GDPR: i documenti già pubblicati si rendono uguali.
+
+⚠️ **Nei documenti dei registri entrano solo conteggi, con un'eccezione dichiarata**: le
+decisioni del riesame, che sono il verbale. L'oggetto di un reclamo, l'istruttoria, la
+descrizione e la causa di una non conformità, gli argomenti di una consultazione e la sintesi di
+un audit non entrano: `pas-documenti.db` li semina come testi-sentinella e li cerca nello
+snapshot, e l'ha provato rosso rimettendo l'oggetto dei reclami nei dati.
+
+**Regole nate qui:**
+- **Un controllo sui plurali va provato su un conteggio che vale uno.** La prima controprova
+  guastava «20 rischi», che resta giusto comunque, e il test è rimasto verde per il motivo
+  sbagliato. Rifatta su «1 rischio alto è privo di misure»: rosso sull'asserzione giusta.
+- **Una funzione condivisa che cambia etichetta si estende con un predefinito, non con una
+  copia.** La matrice dei rischi del GDPR diceva «trattamenti» e «per l'interessato»: due
+  parametri col valore di prima bastano, e i PDF già consegnati non cambiano.
+- **Il typecheck va rilanciato a ogni fase, anche quando la fase è «solo motore»**: un errore
+  di tipo nei registri della Fase 1 è emerso solo in Fase 2.
+
+⚠️ **Trovato strada facendo, nel GDPR già in produzione e NON corretto qui**: nella relazione
+annuale, senza un riesame dell'esercizio, il «riesame precedente» è il più recente in assoluto,
+anche se successivo all'anno (`features/gdpr/documento.ts`). È il difetto che il motore PAS
+corregge con `riesamiDelVerbale`. Da correggere con un test, su decisione del committente.
+
+⚠️ **E sulla landing**: oltre al «30 calcolati» della banda dei numeri, il passo 02 dice «30
+indicatori derivati», e il motore del bilancio ne calcola 25. Si chiude in Fase 7.
+
+**Percorso PAS 24000, fase 5 (2026-10-16) — interfaccia, giro guidato, dimostrativa**
+
+Pagina `/aziende/[id]/pas24000` a dieci viste (quadro, organizzazione, contesto, conformità,
+rischi e fornitori, politica e piano, indicatori, registri, verifica, documenti), esercizio
+nell'indirizzo, tutti i numeri calcolati dal server (`features/pas/vista.ts`): anche l'età di
+un reclamo da sollecitare, riga per riga, con la stessa regola del riepilogo. Dimostrativa in
+`features/demo/seed-demo-pas.ts` (48 dipendenti come negli altri moduli, a metà strada, date
+relative a oggi, nome letto dal database). Giro guidato in cinque tappe.
+
+**I pezzi che GDPR e PAS condividono** (`Esito`, `Intro`, `CampoCasella`, `SceltaScala`,
+`SceltaMese`, `CampoParametro`, `RigaRegistro`) passano in `components/comune/percorso.tsx`,
+spostati alla lettera: `gdpr-percorso` 26/26 dopo lo spostamento.
+
+**Difetti trovati, tutti prima del commit:**
+1. ⚠️ **Il registro del riesame rimandava al «passo 9»**: il prototipo è a passi numerati, il
+   prodotto a viste con un nome. Corretto **nell'estrattore** (`correggiPassi`, che si ferma se
+   resta un «passo N»), non nel JSON: una correzione a valle sparirebbe alla prima riesecuzione.
+2. **«25,03 per 10⁶ ore25,00 per 10⁶ ore»** nella tabella dei derivati: l'unità accanto al
+   numero, in una colonna stretta, toccava la colonna vicina. Ora sta accanto al nome, come nel
+   documento. L'ha vista la foto.
+3. **`{g.reclamiChiusi} chiusi`**: lo spazio fragile. `gdpr-spazi-pure` ora guarda anche
+   `components/pas`, il file comune e `documento-pas.tsx`, e l'ha trovato da sé.
+
+Gate fase 5: typecheck · build · `qa -- pas-percorso` **25/25** (quattro PDF: 14, 3, 13 e 4
+pagine), messo in rosso rimettendo il difetto e tornato verde · regressioni `gdpr-percorso`
+26/26, `archiviata` 35/35, `shell`, `guida` 7/7, `demo-completa` 9/9, `tutto-demo` 68/68,
+`benvenuto` 12/12, `tutto-attivo` 31/31, `codice-documento` 22/22, `portafoglio-aggiorna` 5/5 ·
+30 foto in chiaro, scuro e da telefono **guardate**, zero errori di console, zero sfondamento.
+`formazione` resta rossa su «pas24000 senza parte propria» finché non arriva il corso (Fase 6).
+
+**Percorso PAS 24000, fase 7 (2026-10-16) — la vetrina: nome fittizio, numeri contati**
+
+- **«Meccanica Adriatica S.r.l.» diventa «Corvane Meccanica S.r.l.»** su landing, semi della
+  dimostrativa, vetrina energetica, collaudi e test. Il nome è stato cercato prima di adottarlo
+  (nessuna azienda «Corvane»; «Valmora» scartato perché vicino a una vera «Officina Meccanica
+  Valmori»). Partita IVA nuova `07481930726` con il **carattere di controllo sbagliato**, quindi
+  impossibile per un'azienda reale (anche la vecchia lo era). Banner della demo e giro guidato
+  **non nominano più l'azienda**: le dimostrative già in produzione mantengono il vecchio nome.
+- **Banda dei numeri ricavata** (`components/landing/numeri-vetrina.ts`): 16 percorsi in 3
+  gruppi con 32 tipi di documento, **1.007** requisiti e controlli catalogati (i controlli NIS2
+  non si sommano ai requisiti NIS2: stesso perimetro), **511** procedure e moduli. Le norme
+  vengono dal registro dei moduli. Spariti il «30 calcolati» e il «30 indicatori derivati»: il
+  passo 02 ora legge le chiavi di `deriveKpi` (25). Guardia `banda-numeri-pure`, messa in rosso
+  rimettendo la tupla e il «30».
+- ⚠️ **Il contatore animato partiva da ZERO nell'HTML statico**: chi legge senza JavaScript, e i
+  motori di ricerca, leggevano «0 documenti». Ora parte dal valore vero e si azzera solo nel
+  browser, se la banda è sotto la piega. E le migliaia hanno il punto («1.007»), scritto a mano.
+- `description` della home, `DESCRIZIONE` del layout e risposta FAQ sulle norme coprono NIS2,
+  GDPR e PAS.
+- ⚠️ **Trovato dal collaudo da telefono**: un passo della scheda PAS («Manuale, politica, rapporto
+  di conformità, verbale di riesame») non va a capo per costruzione e sfondava di 12px a 360px.
+
+⚠️ **I due PDF in `public/esempi/` NON sono stati sostituiti**, e portano ancora il vecchio nome.
+Rigenerati in sviluppo sarebbero corretti nel nome ma con un colophon che rimanda a
+`localhost:3000/verifica` e un codice che esiste solo nel database di sviluppo: un documento
+pubblico che non si verifica. Si generano **in produzione al rilascio**, con l'autorizzazione del
+committente a pubblicare sulla dimostrativa dello studio Evalis.
+
+**Regola nata qui:** **un numero in un contatore animato va reso vero nell'HTML**, e animato solo
+nel browser: altrimenti lo stato iniziale dell'animazione è ciò che legge chi non la vede.
+
+Gate: typecheck · build (home statica) · **1914 test** · `demo-seed` e `gdpr-demo` anche con
+`app_rls` · `landing` · `tutto-pubblico` 37/37 · `sitemap` · `legale` 26/26 · `axialoop` ·
+`vetrina-energia` 11/11 · `attivazione` 10/10 · `tutto-demo` 68/68 · `tutto-attivo` 31/31 ·
+`invito` 14/14 · `benvenuto` 12/12 (`axialoop` e `vetrina-energia` al secondo giro, il primo
+caduto sul freno di Better Auth a 429) · banda fotografata e guardata a 1440 e 360px.
+
+**Percorso PAS 24000, fase 8 (2026-10-16) — privacy, PRE-LAUNCH, previsione**
+
+- **Privacy**: voce sui registri e sugli indicatori del sistema di gestione sociale (Evalis
+  responsabile ex art. 28, indicatori in forma aggregata, nei documenti solo conteggi tranne le
+  decisioni del riesame). La frase su chi reclama è stata scritta **dopo aver letto ciò che il
+  registro dice davvero** («non riportare dati che permettano di identificare chi segnala»): la
+  prima versione prometteva una cosa diversa. `AGGIORNATO_AL` = `2026-10-16`, da portare alla
+  data del rilascio.
+- **`PRE-LAUNCH.md`** voce 14 e **`docs/rilascio-pas-previsione.md`**: stato della produzione
+  chiesto in sola lettura (mancano esattamente `0065`÷`0067`, nessuna riga fuori dai vincoli
+  riscritti) e previsione dei conteggi scritta prima del seme.
+
+Gate: typecheck · build · `qa -- legale` 26/26 · spazi verificati sull'HTML reso della privacy.

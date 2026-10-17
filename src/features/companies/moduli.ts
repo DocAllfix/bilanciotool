@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, LockKeyhole, Megaphone, Network, Radar, Scale, ShieldAlert, ShieldCheck, Zap, type LucideIcon } from "lucide-react";
+import { BadgeCheck, BookOpen, ClipboardCheck, Compass, Factory, Gavel, HeartHandshake, LockKeyhole, Megaphone, Network, Radar, Scale, ShieldAlert, ShieldCheck, UsersRound, Zap, type LucideIcon } from "lucide-react";
 import type { TipoDocumento } from "@/features/documents/tipi";
 
 // Registro dei moduli di lavoro di un'azienda: SOLI DATI, importabile anche dai
@@ -11,7 +11,7 @@ import type { TipoDocumento } from "@/features/documents/tipi";
 // elencava: aggiungendone uno restavano indietro in silenzio, e nella card del
 // portafoglio gli ultimi due finivano fuori dal bordo, irraggiungibili.
 
-export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "gdpr", "sgiqas", "sa8000", "soa"] as const;
+export const MODULI = ["ghg", "energetico", "bilancio", "sgesg", "fornitore", "mog231", "anticorruzione", "segnalazioni", "filiera", "nis2", "sgnis2", "gdpr", "sgiqas", "sa8000", "pas24000", "soa"] as const;
 export type ModuloAzienda = (typeof MODULI)[number];
 
 
@@ -355,6 +355,23 @@ export const MODULI_AZIENDA = [
     area: "sistemi",
     colore: AREE.sistemi.colore,
     documenti: ["manuale_sa8000"],
+    perEsercizio: false,
+  },
+  {
+    href: "pas24000",
+    nome: "Sistema di gestione sociale",
+    // La PAS 24000 e' una specifica BSI con la struttura delle norme ISO di sistema e un
+    // Allegato A sulle condizioni di lavoro: stesso tema di SA8000, schema diverso. La
+    // vetrina li distingue, e il nome qui non porta l'anno perche' e' gia' nella norma.
+    norma: "PAS 24000:2022",
+    icona: UsersRound,
+    // SISTEMI DI GESTIONE, decisione del committente del 16 ottobre 2026: e' certificabile
+    // da un ente terzo come SA8000, e gli sta accanto.
+    area: "sistemi",
+    colore: AREE.sistemi.colore,
+    // Il manuale e' cio' che l'ente di certificazione legge per primo, e racchiude contesto,
+    // politica, rischi e controllo operativo: e' il documento principale.
+    documenti: ["manuale_pas", "politica_pas", "conformita_pas", "riesame_pas"],
     perEsercizio: false,
   },
   {

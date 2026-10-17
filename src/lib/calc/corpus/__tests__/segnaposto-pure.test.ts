@@ -28,7 +28,7 @@ const TUTTI = Object.values(S);
 
 const ctx = (over: Partial<Contesto> = {}): Contesto => ({
   studio: "Studio Rossi",
-  azienda: { ragione: "Meccanica Adriatica S.r.l.", direzione: "Ing. Bianchi" },
+  azienda: { ragione: "Corvane Meccanica S.r.l.", direzione: "Ing. Bianchi" },
   revisione: "03",
   data: "12/05/2026",
   ...over,
@@ -37,7 +37,7 @@ const ctx = (over: Partial<Contesto> = {}): Contesto => ({
 describe("valore di un token", () => {
   it("pesca dallo studio, dall'azienda, dalla revisione e dalla data", () => {
     expect(valore(S.studio, ctx())).toBe("Studio Rossi");
-    expect(valore(S.ragione, ctx())).toBe("Meccanica Adriatica S.r.l.");
+    expect(valore(S.ragione, ctx())).toBe("Corvane Meccanica S.r.l.");
     expect(valore(S.rev, ctx())).toBe("03");
     expect(valore(S.data, ctx())).toBe("12/05/2026");
   });
@@ -63,7 +63,7 @@ describe("sostituzione", () => {
   it("sostituisce ogni occorrenza, non solo la prima", () => {
     const t = "[Nome Organizzazione] adotta il modello. [Nome Organizzazione] lo aggiorna.";
     expect(sostituisci(t, TUTTI, ctx())).toBe(
-      "Meccanica Adriatica S.r.l. adotta il modello. Meccanica Adriatica S.r.l. lo aggiorna.",
+      "Corvane Meccanica S.r.l. adotta il modello. Corvane Meccanica S.r.l. lo aggiorna.",
     );
   });
 

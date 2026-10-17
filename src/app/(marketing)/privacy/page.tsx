@@ -99,6 +99,17 @@ export default function PrivacyPage() {
             mai descrizioni o note.
           </li>
           <li>
+            <strong>Registri e indicatori del sistema di gestione sociale delle aziende clienti</strong>: reclami
+            di lavoratori e di terzi, non conformità, formazione, emergenze, comunicazioni, consultazioni dei
+            lavoratori, audit e riesame della direzione, più indicatori su organico, retribuzioni, orari, infortuni
+            e provvedimenti disciplinari, raccolti <strong>in forma aggregata</strong>{" "}(numeri e medie, non dati
+            della singola persona). Il registro dei reclami chiede di non riportare dati che permettano di identificare chi segnala. Anche
+            per questi dati vale la sezione 2: il titolare è l&apos;azienda cliente (o lo studio che opera per essa),
+            {" "}{TITOLARE.ragioneSociale} è responsabile del trattamento ai sensi dell&apos;articolo 28 del GDPR. Nei
+            documenti pubblicati compaiono <strong>soltanto conteggi</strong>{" "}di questi registri, con l&apos;unica
+            eccezione delle decisioni del riesame, che sono testo dell&apos;alta direzione.
+          </li>
+          <li>
             {/* ⚠️ Chi si candida al Programma Fondatori NON e' un utente: non ha un account,
                 non ha accettato i Termini, e ci lascia nome ed email prima di qualunque
                 rapporto. Qui il titolare siamo NOI, e la base giuridica e' la sua stessa
