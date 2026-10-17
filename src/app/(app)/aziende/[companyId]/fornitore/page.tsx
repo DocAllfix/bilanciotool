@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
 import { getSupplierData } from "@/features/supplier/queries";
 import { suggerimentiDaFiliera } from "@/features/supplier/ponte-filiera";
+import { suggerimentiDaPercorsi } from "@/features/supplier/ponte-percorsi";
 import { SupplierShell } from "@/components/supplier/supplier-shell";
 import { CreaValutazione } from "@/components/supplier/crea-valutazione";
 
@@ -24,10 +25,14 @@ export default async function FornitorePage({
   // dentro un solo tenant — sono dati che questo studio ha gia' scritto per questa
   // azienda — quindi non c'e' nessun consenso da chiedere. Vuoto se il modulo filiera non
   // e' avviato. Vedi `features/supplier/ponte-filiera.ts`.
-  const [dati, suggerimenti] = await Promise.all([
+  // Dal 17 ottobre 2026 anche dagli altri percorsi della stessa azienda (energetico, GHG,
+  // bilancio, 231, segnalazioni, 37001, GDPR, SoA): vedi `features/supplier/ponte-percorsi.ts`.
+  const [dati, daFiliera, daPercorsi] = await Promise.all([
     getSupplierData(s.userId, s.orgId, companyId),
     suggerimentiDaFiliera(s.userId, s.orgId, companyId),
+    suggerimentiDaPercorsi(s.userId, s.orgId, companyId),
   ]);
+  const suggerimenti = [...daFiliera, ...daPercorsi];
   if (!dati) notFound();
 
   if (!dati.valutazione || !dati.catalogo || !dati.stato || !dati.esito) {

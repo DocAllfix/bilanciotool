@@ -140,7 +140,7 @@ export function VistaQuestionario({ companyId, valutazione, catalogo, stato, sug
                           if (!sug || risposte[q.key]) return null;
                           return (
                             <p className="mt-1.5 flex flex-wrap items-center gap-2 text-xs" data-slot="suggerimento">
-                              <span className="text-muted-foreground">Dalla due diligence di filiera:</span>
+                              <span className="text-muted-foreground">Proposta dai percorsi dell&apos;azienda:</span>
                               <button
                                 type="button"
                                 onClick={() => rispondi(q.key, sug.risposta)}
