@@ -260,6 +260,15 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // Questa cronologia si vede nel quadro dello studio, cioe' anche da un socio che con
   // quel cliente non lavora: «Contatto aggiunto» dice che e' successo qualcosa, «Aggiunta
   // Giulia Ferri» dice chi. Il nome sta nella rubrica, dove serve a chiamarla.
+  // Fascia «Azienda»: chi lavora su che cosa. Le etichette non nominano la persona, come
+  // quelle dei contatti: la cronologia la legge anche chi con quella persona non lavora.
+  // Le voci che si trovano da sole.
+  "ghg.proposte.ateco": "Voci GHG proposte dal codice ATECO",
+  "ghg.proposte.precedente": "Voci GHG riprese dall'esercizio precedente",
+  "ghg.proposte.conferma": "Voci GHG proposte confermate",
+  "percorso.assegna": "Percorso assegnato a un collaboratore",
+  "percorso.revoca": "Percorso tolto a un collaboratore",
+  "membro.ruolo": "Cambiato il ruolo di una persona",
   "company_contact.create": "Contatto aggiunto alla rubrica",
   "company_contact.update": "Recapito di un contatto aggiornato",
   "company_contact.promote": "Cambiato il contatto di riferimento",

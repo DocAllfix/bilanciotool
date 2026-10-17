@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { Membro, InvitoPendente } from "@/features/studio/queries";
+import type { ModuloAzienda } from "@/features/companies/moduli";
 import { fmtDataBreve } from "@/lib/format";
+import { PercorsiDelMembro, RuoloDelMembro } from "./percorsi-membro";
 
 // Inviti, revoche e rimozioni.
 //
@@ -24,6 +26,9 @@ import { fmtDataBreve } from "@/lib/format";
 const data = (d: Date | string) =>
   fmtDataBreve(d);
 
+// Il ruolo come lo legge una persona: «owner» e «member» sono nomi di Better Auth.
+const RUOLO: Record<string, string> = { owner: "Titolare", admin: "Amministratore", member: "Collaboratore" };
+
 export function GestioneMembri({
   organizationId,
   membri,
@@ -32,6 +37,8 @@ export function GestioneMembri({
   limite,
   puoGestire,
   ioSono,
+  interno = false,
+  assegnazioni = {},
 }: {
   organizationId: string;
   membri: Membro[];
@@ -40,8 +47,12 @@ export function GestioneMembri({
   limite: number;
   puoGestire: boolean;
   ioSono: string;
+  /** Fascia «Azienda»: ruoli e percorsi assegnati a ciascuno. */
+  interno?: boolean;
+  assegnazioni?: Record<string, ModuloAzienda[]>;
 }) {
   const [email, setEmail] = useState("");
+  const [ruoloInvito, setRuoloInvito] = useState<"member" | "admin">("member");
   const [inCorso, setInCorso] = useState(false);
   const router = useRouter();
 
@@ -53,7 +64,8 @@ export function GestioneMembri({
     try {
       const { error } = await authClient.organization.inviteMember({
         email: indirizzo,
-        role: "member",
+        // Negli studi ognuno è un membro come prima; nella fascia «Azienda» si sceglie.
+        role: interno ? ruoloInvito : "member",
         organizationId,
       });
       if (error) {
@@ -87,7 +99,7 @@ export function GestioneMembri({
       toast.error(error.message ?? "Rimozione non riuscita.");
       return;
     }
-    toast.success(`${nome} non fa più parte dello studio.`);
+    toast.success(`${nome} non fa più parte ${interno ? "dell'azienda" : "dello studio"}.`);
     router.refresh();
   }
 
@@ -95,14 +107,16 @@ export function GestioneMembri({
     <div className="space-y-6">
       <ul className="divide-y rounded-lg border">
         {membri.map((m) => (
-          <li key={m.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3">
+          <li key={m.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3" data-membro={m.email}>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{m.nome}</p>
               <p className="truncate text-[13px] text-muted-foreground">{m.email}</p>
             </div>
-            <Badge variant={m.ruolo === "owner" ? "default" : "secondary"} className="capitalize">
-              {m.ruolo}
-            </Badge>
+            {interno && puoGestire && m.ruolo !== "owner" && m.userId !== ioSono ? (
+              <RuoloDelMembro memberId={m.id} nome={m.nome} ruolo={m.ruolo === "admin" ? "admin" : "member"} />
+            ) : (
+              <Badge variant={m.ruolo === "owner" ? "default" : "secondary"}>{RUOLO[m.ruolo] ?? m.ruolo}</Badge>
+            )}
             {/* Il titolare non si rimuove, e nessuno rimuove sé stesso: lo studio resterebbe
                 senza nessuno che possa amministrarlo. */}
             {puoGestire && m.ruolo !== "owner" && m.userId !== ioSono && (
@@ -115,6 +129,17 @@ export function GestioneMembri({
                 Rimuovi
               </Button>
             )}
+            {/* Solo i collaboratori hanno percorsi assegnati: titolare e amministratori li
+                vedono tutti, e una casella spenta accanto a loro direbbe il falso. */}
+            {interno && m.ruolo === "member" && (puoGestire ? (
+              <PercorsiDelMembro userId={m.userId} nome={m.nome} assegnati={assegnazioni[m.userId] ?? []} />
+            ) : (
+              <p className="w-full text-[12.5px] text-muted-foreground">
+                {(assegnazioni[m.userId] ?? []).length
+                  ? `Percorsi assegnati: ${(assegnazioni[m.userId] ?? []).length}`
+                  : "Nessun percorso assegnato"}
+              </p>
+            ))}
           </li>
         ))}
       </ul>
@@ -152,12 +177,37 @@ export function GestioneMembri({
           <label htmlFor="invita-email" className="text-sm font-medium">
             Invita un collega
           </label>
+          {interno && (
+            <fieldset className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+              <legend className="sr-only">Ruolo della persona invitata</legend>
+              {(
+                [
+                  ["member", "Collaboratore", "vede solo i percorsi che gli assegni"],
+                  ["admin", "Amministratore", "vede tutto e assegna i percorsi"],
+                ] as const
+              ).map(([valore, etichetta, cosa]) => (
+                <label key={valore} className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="radio"
+                    name="ruolo-invito"
+                    value={valore}
+                    checked={ruoloInvito === valore}
+                    onChange={() => setRuoloInvito(valore)}
+                    className="accent-primary"
+                  />
+                  <span>
+                    {etichetta} <span className="text-muted-foreground">· {cosa}</span>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+          )}
           <div className="mt-2 flex flex-col gap-2 sm:flex-row">
             <Input
               id="invita-email"
               type="email"
               required
-              placeholder="nome@studio.it"
+              placeholder={interno ? "nome@azienda.it" : "nome@studio.it"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={pieno || inCorso}
@@ -174,7 +224,11 @@ export function GestioneMembri({
             </p>
           ) : (
             <p className="mt-2 text-[13px] text-muted-foreground">
-              Riceverà un collegamento per entrare nello studio. Vedrà tutte le aziende del portafoglio.
+              {interno
+                ? ruoloInvito === "admin"
+                  ? "Riceverà un collegamento per entrare. Da amministratore vedrà tutti i percorsi e potrà assegnarli."
+                  : "Riceverà un collegamento per entrare. Vedrà i percorsi che gli assegnerai qui, dopo che avrà accettato."
+                : "Riceverà un collegamento per entrare nello studio. Vedrà tutte le aziende del portafoglio."}
             </p>
           )}
         </form>

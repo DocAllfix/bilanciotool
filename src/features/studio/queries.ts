@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
-import { organization, member, invitation, user, orgEntitlement, entitlementEvent } from "@/lib/db/schema";
+import { organization, member, invitation, user, orgEntitlement, entitlementEvent, assegnazionePercorso } from "@/lib/db/schema";
+import type { ModuloAzienda } from "@/features/companies/moduli";
 import { and, eq, gt, asc } from "drizzle-orm";
 import { getAccountStatus, getCompanyUsage, getLimitiEffettivi } from "@/features/entitlement";
 import { PIANI, type PianoKey } from "@/lib/prezzi";
@@ -49,6 +50,8 @@ export type QuadroAccessi = {
   inviti: InvitoPendente[];
   /** Persone che occupano un posto: membri effettivi. Gli inviti non ancora accettati no. */
   usati: number;
+  /** Fascia «Azienda»: i percorsi assegnati a ciascuna persona, per `userId`. Vuoto negli studi. */
+  assegnazioni: Record<string, ModuloAzienda[]>;
   limite: number;
   pieno: boolean;
 };
@@ -88,9 +91,20 @@ export async function getQuadroAccessi(orgId: string): Promise<QuadroAccessi> {
     .orderBy(asc(invitation.expiresAt));
 
   const limiti = await getLimitiEffettivi(orgId);
+  // Tabella tenant: in produzione, senza contesto, la lettura vedrebbe zero righe e la
+  // pagina direbbe «nessun percorso» a chi ne ha. La valvola è quella di `getLimitiEffettivi`.
+  const righe = await withTenant({ orgId, platformAdmin: true }, (tx) =>
+    tx
+      .select({ userId: assegnazionePercorso.userId, modulo: assegnazionePercorso.modulo })
+      .from(assegnazionePercorso)
+      .where(eq(assegnazionePercorso.organizationId, orgId)),
+  );
+  const assegnazioni: Record<string, ModuloAzienda[]> = {};
+  for (const r of righe) (assegnazioni[r.userId] ??= []).push(r.modulo);
   return {
     membri,
     inviti,
+    assegnazioni,
     usati: membri.length,
     limite: limiti.maxMembers,
     pieno: membri.length >= limiti.maxMembers,
