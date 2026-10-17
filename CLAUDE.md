@@ -3894,3 +3894,26 @@ caduto sul freno di Better Auth a 429) · banda fotografata e guardata a 1440 e 
   riscritti) e previsione dei conteggi scritta prima del seme.
 
 Gate: typecheck · build · `qa -- legale` 26/26 · spazi verificati sull'HTML reso della privacy.
+
+✅ **Percorso PAS 24000 in produzione dal 17 ottobre 2026 (`bc8c055`)**, col metodo:
+- anteprima `anteprima/pas24000`: primo build annullato, sette variabili legate al ramo,
+  precedenza provata da `pas-percorso` 25/25 sull'anteprima (le tabelle PAS in produzione non
+  esistevano ancora). Giro completo 63/64: `csp` rosso per il debito noto di Google Ads; tre
+  collaudi al secondo tentativo; cinque rossi al primo giro tornati verdi dopo la correzione
+  delle date (sotto);
+- ⚠️ **difetto vero trovato dal giro, già in produzione e non introdotto qui**: `fmtDataBreve` e
+  `fmtDataEstesa` prendevano il giorno nel fuso del PROCESSO. Vercel è in UTC, il browser a
+  Roma: fra mezzanotte e le due React #418 su assistenza e condivisione. I mesi scritti a mano
+  avevano tolto l'ICU, non il fuso. Ora `giornoItaliano`; prova `format-data-fuso-pure` messa in
+  rosso col codice vecchio. Il giro è finito alle due di notte: di giorno non si vede;
+- stato chiesto in sola lettura, guardia vista **rifiutarsi**, migrazioni `0065`÷`0067` (68/68,
+  198 tabelle, 0 senza RLS), seme `pas-v1`, conteggi letti **come `app_rls`** uguali alla
+  previsione (15 content set, 18 gruppi, 98 requisiti, 8, 20, 10, 6, 35, 16, 9, 1);
+- fusione su `main` come un commit solo. Dopo: `tutto-pubblico` 37/37, `sitemap`, `legale`
+  26/26, `vetrina-energia` 11/11 sul sito vero; la home dice 16 / 1.007 / 511, «Corvane» e
+  zero «Adriatica».
+
+⚠️ **Restano aperti**: i due PDF di `public/esempi/` col vecchio nome (decisione del committente
+su come rigenerarli); il corso PAS muto finché non si decidono le pronunce di «PAS» e «Social
+Accountability International»; le dimostrative già iscritte senza percorso PAS e col vecchio
+nome.
