@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { company, materialityAssessment, orgEntitlement, reportProject } from "@/lib/db/schema";
 import { creaStudio, pulisciStudio, type Studio } from "./comune";
 import { createReportProject, updateProfilo } from "@/features/report/projects";
-import { setTopicScoreField } from "@/features/report/materiality";
+import { confermaTema, getMateriality, setTopicScoreField } from "@/features/report/materiality";
 import { publishBilancioSnapshot } from "@/features/documents/snapshot";
 import { documentSnapshot } from "@/lib/db/schema";
 
@@ -45,6 +45,20 @@ describe.skipIf(!DB)("materialità proposta dal codice ATECO", () => {
     expect(dopo.propostaMotivo).toBeNull();
     expect(dopo.scoreImpact).toBe(1);
     expect(dopo.scoreFinancial).toBe(t.scoreFinancial);
+  });
+
+  it("⚠️ confermare un tema proposto lo rende del consulente coi punteggi proposti, e conta nell'esito", async () => {
+    // Senza conferma, chi era d'accordo con la proposta non poteva dirlo: scegliere nella
+    // tendina lo stesso valore non salva niente, e il tema restava fuori dall'esito.
+    const [t] = await proposte();
+    const prima = (await getMateriality(S.userId, S.orgId, pid)).esito.perTopic[t.topicKey];
+    expect(prima?.valutato ?? false).toBe(false);
+    await confermaTema(S.userId, S.orgId, pid, t.topicKey);
+    const [dopo] = await db.select().from(materialityAssessment).where(eq(materialityAssessment.id, t.id));
+    expect(dopo.propostaMotivo).toBeNull();
+    expect(dopo.scoreImpact).toBe(t.scoreImpact);
+    expect(dopo.scoreFinancial).toBe(t.scoreFinancial);
+    expect((await getMateriality(S.userId, S.orgId, pid)).esito.perTopic[t.topicKey]?.valutato).toBe(true);
   });
 
   it("⚠️ nel documento pubblicato conta solo il tema toccato, non le proposte", async () => {

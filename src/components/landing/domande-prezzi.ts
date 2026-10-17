@@ -1,4 +1,4 @@
-import { ESTENSIONI, PIANI, euro, prezzoDiVendita, fasceVendibili } from "@/lib/prezzi";
+import { ESTENSIONI, PIANI, euro, prezzoDiVendita, fasceStudio } from "@/lib/prezzi";
 
 // Le domande sui prezzi, con le risposte vere.
 //
@@ -19,7 +19,13 @@ const rinnovo = (k: keyof typeof PIANI) => euro(prezzoDiVendita(PIANI[k], "rinno
 function elenco(voci: string[]): string {
   return voci.length < 2 ? voci.join("") : `${voci.slice(0, -1).join(", ")} e ${voci.at(-1)}`;
 }
-const [prima, ...altre] = fasceVendibili();
+// Le fasce per studio in fila; «Azienda» (uso interno) ha una frase sua, perché ha la stessa
+// capienza della prima e messa in fila si leggerebbe come un doppione più caro.
+const [prima, ...altre] = fasceStudio();
+const interna = PIANI.azienda;
+const fraseInterna =
+  `Per l'uso interno di un'azienda c'è la fascia «${interna.nome}»: ${anno1("azienda")} l'anno, una sola azienda, ` +
+  `la propria, e ${interna.accessi} accessi per i colleghi, ciascuno coi percorsi che gli assegni.`;
 const capienza = (k: keyof typeof PIANI) =>
   PIANI[k].aziende === 1 ? "un'azienda" : `fino a ${PIANI[k].aziende} aziende`;
 
@@ -29,7 +35,8 @@ export const DOMANDE_PREZZI: [string, string][] = [
     `L'abbonamento è annuale e si sottoscrive per studio, non per documento e non per utente. ` +
       `Si parte da ${anno1(prima)} l'anno per seguire ${capienza(prima)}; poi ` +
       `${elenco(altre.map((k) => `${anno1(k)} ${capienza(k)}`))}. ` +
-      `IVA esclusa. L'unica cosa che scegli è la capienza del portafoglio: il contenuto è identico in ogni fascia.`,
+      `IVA esclusa. L'unica cosa che scegli è la capienza del portafoglio: il contenuto è identico in ogni fascia. ` +
+      fraseInterna,
   ],
   [
     "Che cosa è compreso in ogni fascia?",
@@ -41,8 +48,8 @@ export const DOMANDE_PREZZI: [string, string][] = [
   ],
   [
     "Il secondo anno costa uguale?",
-    `No, costa il 20% in meno: ${elenco(fasceVendibili().map(rinnovo))} ` +
-      `secondo la fascia. Il rinnovo è automatico e si disdice fino al giorno prima della scadenza.`,
+    `No, costa il 20% in meno: ${elenco(fasceStudio().map(rinnovo))} ` +
+      `secondo la fascia, e ${rinnovo("azienda")} la fascia «${interna.nome}». Il rinnovo è automatico e si disdice fino al giorno prima della scadenza.`,
   ],
   [
     "Cosa succede se supero le aziende della mia fascia?",
@@ -50,6 +57,13 @@ export const DOMANDE_PREZZI: [string, string][] = [
       `${ESTENSIONI.bloccoAziende.aziende} aziende a ${euro(ESTENSIONI.bloccoAziende.prezzo)} l'anno ciascuno, ` +
       `oppure scriverci per passare alla fascia superiore. Dalla fascia «${PIANI.singola.nome}» si passa ` +
       `direttamente alla superiore, che costa meno di un'azienda più un blocco. Nessun lavoro si blocca e nulla va rifatto.`,
+  ],
+  [
+    "Lavoro dentro un'azienda, non per clienti. Fa per me?",
+    `Sì: è la fascia «${interna.nome}». Gestisci una sola azienda, la tua, con ${interna.accessi} accessi per i ` +
+      `colleghi. Chi amministra assegna a ciascuno i percorsi di cui si occupa, per esempio l'inventario GHG ` +
+      `all'ufficio ambiente e la protezione dei dati al referente privacy: ognuno vede e modifica soltanto i ` +
+      `suoi. Percorsi e documenti sono gli stessi delle altre fasce.`,
   ],
   [
     "Posso vedere il prodotto prima di pagare?",

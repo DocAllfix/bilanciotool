@@ -86,6 +86,46 @@ export async function setTopicScoreField(
   });
 }
 
+/**
+ * Conferma un tema proposto così com'è: spegne la marca senza toccare i punteggi.
+ *
+ * ⚠️ Senza, chi è d'accordo con la proposta non aveva modo di dirlo: la tendina mostra già il
+ * valore proposto, e sceglierlo di nuovo non cambia niente, quindi non salva niente. Il tema
+ * restava «proposta», fuori dall'esito e dalle politiche, finché qualcuno non cambiava il
+ * valore per poi rimetterlo.
+ */
+export async function confermaTema(userId: string, orgId: string, projectId: string, topicKey: string): Promise<void> {
+  await requireEntitlement(userId, orgId, "write_data");
+  const tema = z.string().regex(/^T\d{2}$/).parse(topicKey);
+  await withTenant({ userId, orgId }, async (tx) => {
+    const [p] = await tx
+      .select({ id: reportProject.id })
+      .from(reportProject)
+      .where(and(eq(reportProject.id, projectId), eq(reportProject.organizationId, orgId)));
+    if (!p) throw new Error("Progetto inesistente o di un altro tenant");
+    const toccate = await tx
+      .update(materialityAssessment)
+      .set({ propostaMotivo: null })
+      .where(
+        and(
+          eq(materialityAssessment.projectId, projectId),
+          eq(materialityAssessment.organizationId, orgId),
+          eq(materialityAssessment.topicKey, tema),
+          isNotNull(materialityAssessment.propostaMotivo),
+        ),
+      )
+      .returning({ id: materialityAssessment.id });
+    if (!toccate.length) return;
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: "report.materialita.conferma",
+      entita: "materiality_assessment",
+      entitaId: `${projectId}:${tema}`,
+    });
+  });
+}
+
 export async function getMateriality(userId: string, orgId: string, projectId: string) {
   const { soglia, valutazioni } = await withTenant({ userId, orgId }, async (tx) => {
     const [p] = await tx.select({ soglia: reportProject.sogliaMaterialita }).from(reportProject).where(eq(reportProject.id, projectId));

@@ -159,6 +159,15 @@ export default function TerminiPage() {
           utenti</strong>{" "}per studio, più le eventuali estensioni acquistate. Le aziende archiviate non concorrono al limite e
           restano consultabili in sola lettura; l&apos;azienda dimostrativa è esclusa dal conteggio.
         </p>
+        {/* ⚠️ La fascia per l'uso interno vende un perimetro diverso, e va detto qui: senza,
+            nulla vieterebbe di usarla per redigere documenti di clienti a un prezzo pensato per
+            un'azienda sola. */}
+        <p>
+          La fascia <strong>«{PIANI.azienda.nome}»</strong>{" "}è destinata all&apos;uso interno: consente di gestire
+          una sola azienda, che deve essere quella del cliente stesso, con fino a {PIANI.azienda.accessi}{" "}utenti,
+          e non può essere usata per redigere documenti per conto di terzi. L&apos;amministratore dell&apos;account
+          assegna a ciascun utente i percorsi a cui può accedere.
+        </p>
         <p>
           Sono limiti tecnici volti a preservare la qualità del servizio, non barriere commerciali: chi abbia necessità
           superiori può concordare condizioni diverse scrivendo ai contatti indicati.

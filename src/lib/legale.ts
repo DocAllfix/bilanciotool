@@ -26,7 +26,7 @@ export const SEDE_COMPLETA = `${TITOLARE.indirizzo}, ${TITOLARE.cap} ${TITOLARE.
 /** Data di ultima revisione dei testi legali, in ISO. Una sola per tutti e tre:
  *  si rivedono insieme, e tre date diverse in fondo a tre pagine sorelle sono
  *  solo un modo per far sembrare vecchia quella che non è cambiata. */
-export const AGGIORNATO_AL = "2026-10-16";
+export const AGGIORNATO_AL = "2026-10-17";
 
 export const AGGIORNATO_AL_ESTESO = new Date(AGGIORNATO_AL).toLocaleDateString("it-IT", {
   day: "numeric",

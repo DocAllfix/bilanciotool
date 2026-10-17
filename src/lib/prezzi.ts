@@ -441,6 +441,18 @@ export function fasceVendibili(): PianoKey[] {
 }
 
 /**
+ * Le fasce PER STUDIO, cioè quelle che si scelgono per capienza del portafoglio.
+ *
+ * ⚠️ «Azienda» (uso interno) ha la stessa capienza di «Un'azienda» ma è un'altra cosa: una
+ * sola azienda propria, percorsi assegnati per persona. Messa in fila con le altre, la pagina
+ * dei prezzi direbbe «350 € per un'azienda; poi 490 € un'azienda» senza spiegare la differenza.
+ * Le pagine pubbliche la presentano a parte.
+ */
+export function fasceStudio(): PianoKey[] {
+  return fasceVendibili().filter((k) => !PIANI[k].usoInterno);
+}
+
+/**
  * Il primo anno più basso fra le fasce in vendita: il «da … l'anno» delle pagine pubbliche.
  *
  * ⚠️ Prima quel numero leggeva `PIANI.professional`: con la fascia da un'azienda la pagina

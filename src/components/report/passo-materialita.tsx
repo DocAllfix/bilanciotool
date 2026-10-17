@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { applicaPropostaMaterialitaAction, setSogliaAction, setTopicScoreFieldAction } from "@/features/report/actions";
+import { applicaPropostaMaterialitaAction, confermaTemaAction, setSogliaAction, setTopicScoreFieldAction } from "@/features/report/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,7 +35,21 @@ export function PassoMaterialita({
   const router = useRouter();
   const [guidaAperta, setGuidaAperta] = useState<string | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
+  // Temi proposti confermati in questa pagina: la marca sparisce subito (comando ottimistico,
+  // ripristinato se il server rifiuta).
+  const [confermati, setConfermati] = useState<ReadonlySet<string>>(new Set());
   const m = stato.materialita;
+
+  async function conferma(topicKey: string) {
+    setErrore(null);
+    setConfermati((s) => new Set(s).add(topicKey));
+    const esito = await confermaTemaAction(companyId, progetto.id, topicKey);
+    if (!esito.ok) {
+      setConfermati((s) => { const n = new Set(s); n.delete(topicKey); return n; });
+      return setErrore(esito.errore);
+    }
+    setTimeout(() => router.refresh(), 0);
+  }
 
   // Punti della matrice con jitter deterministico per i temi sovrapposti.
   const conteggioPosizione = new Map<string, number>();
@@ -193,10 +207,10 @@ export function PassoMaterialita({
         <CardContent className="divide-y px-0">
           {catalogo.temi.map((t) => {
             const s = m.perTopic[t.key] ?? { imp: null, fin: null, materiale: false, valutato: false };
-            const proposta = m.proposte[t.key];
+            const proposta = confermati.has(t.key) ? undefined : m.proposte[t.key];
             const aperta = guidaAperta === t.key;
             return (
-              <div key={t.key} className="px-5 py-3">
+              <div key={t.key} className="px-5 py-3" data-tema={t.key} data-tema-proposto={proposta ? "" : undefined}>
                 <div className="grid items-center gap-3 sm:grid-cols-[auto_1fr_auto_auto_auto]">
                   <Button
                     variant={aperta ? "default" : "ghost"}
@@ -233,6 +247,17 @@ export function PassoMaterialita({
                     )}
                   </div>
                 </div>
+                {/* Il motivo si legge in chiaro, non solo al passaggio del mouse: da telefono il
+                    `title` non esiste. E «Conferma» è l'unico modo di dire «sono d'accordo» quando
+                    il valore proposto va già bene: sceglierlo di nuovo non cambia niente. */}
+                {proposta && (
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2 sm:pl-12" data-motivo-tema={t.key}>
+                    <p className="max-w-prose text-[12px] leading-relaxed text-muted-foreground">{proposta}</p>
+                    <Button size="sm" variant="outline" onClick={() => conferma(t.key)} aria-label={`Conferma la proposta per ${t.nome}`}>
+                      Conferma
+                    </Button>
+                  </div>
+                )}
                 {aperta && (
                   <div className="mt-3 rounded-lg bg-muted/50 p-4 text-sm">
                     <p className="font-medium">{t.guida.def}</p>

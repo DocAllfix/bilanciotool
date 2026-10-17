@@ -265,6 +265,7 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // Le voci che si trovano da sole.
   "company.anagrafica.propaga": "Anagrafica riportata nei percorsi avviati",
   "ghg.proposte.ateco": "Voci GHG proposte dal codice ATECO",
+  "report.materialita.conferma": "Tema di materialità proposto confermato",
   "report.materialita.proposte": "Materialità proposta dal codice ATECO",
   "mog231.reati.proposte": "Reati 231 proposti dal codice ATECO",
   "gdpr.trattamenti.proposte": "Trattamenti tipici proposti all'avvio",

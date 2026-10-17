@@ -9,7 +9,7 @@ import { proponiMaterialita } from "./materiality";
 import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { createReportProject, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
-import { setTopicScoreField, getAtecoSuggestions } from "./materiality";
+import { confermaTema, setTopicScoreField, getAtecoSuggestions } from "./materiality";
 import { setKpiValue } from "./kpi";
 import { setTopicManagement, setTopicManagementField, type CampoGestione } from "./policies";
 import { addMedia, removeMedia, saveChapter, updateMedia } from "./chapters";
@@ -83,6 +83,17 @@ export async function setTopicScoreFieldAction(
   try {
     const s = await requirePercorso("bilancio");
     await setTopicScoreField(s.userId, s.orgId, projectId, input);
+    revalidatePath(percorso(companyId));
+    return { ok: true };
+  } catch (e) {
+    return daErrore(e);
+  }
+}
+
+export async function confermaTemaAction(companyId: string, projectId: string, topicKey: string): Promise<ActionEsito> {
+  try {
+    const s = await requirePercorso("bilancio");
+    await confermaTema(s.userId, s.orgId, projectId, topicKey);
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

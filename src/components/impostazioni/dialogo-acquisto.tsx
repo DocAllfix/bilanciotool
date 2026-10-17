@@ -164,7 +164,14 @@ export function DialogoAcquisto({
           {/* ⚠️ Nella fascia «Un'azienda» il contatore non c'è: un blocco costerebbe più della
               fascia superiore. Il server rifiuta comunque i blocchi su questa fascia
               (`apriCheckoutAction`): qui si indica la strada giusta invece di nasconderla. */}
-          {p.senzaBlocchi ? (
+          {/* ⚠️ Per l'uso interno il suggerimento della fascia superiore sarebbe fuorviante: le
+              fasce per studio servono a chi segue clienti, e non hanno i percorsi assegnati. */}
+          {p.usoInterno ? (
+            <p className="rounded-lg border p-3 text-[13px] leading-relaxed text-muted-foreground">
+              Questa fascia copre una sola azienda, la tua. Se segui anche aziende di clienti ti serve una
+              fascia per studio: scrivici e spostiamo l&apos;account senza rifare niente.
+            </p>
+          ) : p.senzaBlocchi ? (
             <p className="rounded-lg border p-3 text-[13px] leading-relaxed text-muted-foreground">
               Più di un&apos;azienda? La fascia «{PIANI.professional.nome}» costa{" "}
               <span className="font-medium text-foreground tabular-nums">
