@@ -127,8 +127,10 @@ export function SchedaCliente({ companyId, azienda, contatti, soloLettura }: Pro
           questa riga, un consulente che li vede in due posti diversi con due numeri
           diversi conclude che il prodotto sbaglia. */}
       <p className="mt-2 max-w-prose text-[12px] leading-relaxed text-muted-foreground">
-        Sono i valori correnti dell&apos;anagrafica. I singoli percorsi conservano i propri, riferiti
-        all&apos;esercizio che rendicontano: un inventario del 2024 continua a usare l&apos;organico del 2024.
+        Sono i valori correnti dell&apos;anagrafica, e si riportano da soli nei percorsi: in quelli nuovi
+        alla creazione, in quelli già avviati dove il campo è ancora vuoto. Un campo già compilato in un
+        percorso resta com&apos;è: un inventario del 2024 continua a usare l&apos;organico del 2024. Il codice
+        ATECO porta con sé le voci tipiche dell&apos;inventario GHG, da compilare o togliere.
       </p>
 
       {/* ── rubrica ─────────────────────────────────────────────────────────── */}

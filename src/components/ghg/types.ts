@@ -55,6 +55,8 @@ export type Riga = {
   incertezza: string | null;
   evidenza: string | null;
   note: string | null;
+  /** Voce proposta (dal codice ATECO o dall'esercizio prima) e non ancora toccata: il motivo. */
+  propostaMotivo: string | null;
 };
 
 export type Obiettivo = {

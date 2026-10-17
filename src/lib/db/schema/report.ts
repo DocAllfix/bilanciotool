@@ -49,6 +49,8 @@ export const materialityAssessment = pgTable(
     scoreImpact: integer("score_impact"), // 1..5
     scoreFinancial: integer("score_financial"), // 1..5
     nota: text("nota"),
+    /** Proposta dal codice ATECO e non ancora toccata (migrazione 0069): il motivo. */
+    propostaMotivo: text("proposta_motivo"),
   },
   (t) => [
     uniqueIndex("materiality_uq").on(t.projectId, t.topicKey),

@@ -1,3 +1,4 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { withTenant, type Tx } from "@/lib/db/tenant";
@@ -34,12 +35,20 @@ export async function creaSistema(
       .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
     await tx.insert(saSystem).values({
       id,
       organizationId: orgId,
       companyId: v.companyId,
       contentSetId: setId,
       ragione: co.nome,
+      piva: an.piva,
+      sede: an.sede,
+      settore: an.settore,
+      addetti: an.addetti,
+      sitoWeb: an.sitoWeb,
       revisione: "1.0",
     });
     await logAudit(tx, {

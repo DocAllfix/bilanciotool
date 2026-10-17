@@ -263,7 +263,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // Fascia «Azienda»: chi lavora su che cosa. Le etichette non nominano la persona, come
   // quelle dei contatti: la cronologia la legge anche chi con quella persona non lavora.
   // Le voci che si trovano da sole.
+  "company.anagrafica.propaga": "Anagrafica riportata nei percorsi avviati",
   "ghg.proposte.ateco": "Voci GHG proposte dal codice ATECO",
+  "report.materialita.proposte": "Materialità proposta dal codice ATECO",
   "ghg.proposte.precedente": "Voci GHG riprese dall'esercizio precedente",
   "ghg.proposte.conferma": "Voci GHG proposte confermate",
   "percorso.assegna": "Percorso assegnato a un collaboratore",

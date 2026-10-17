@@ -97,7 +97,7 @@ export async function requireAmministrazioneInterna() {
  * Il percorso di ogni dominio di contenuti. `Record` sull'enum: un dominio nuovo senza il
  * suo percorso non compila, invece di restare aperto a chiunque.
  */
-const PERCORSI_DEL_DOMINIO: Record<(typeof contentSet.$inferSelect)["dominio"], [ModuloAzienda, ...ModuloAzienda[]]> = {
+const PERCORSI_DEL_DOMINIO: Record<(typeof contentSet.$inferSelect)["dominio"], [ModuloAzienda, ...ModuloAzienda[]] | null> = {
   ghg: ["ghg"],
   energy: ["energetico"],
   report: ["bilancio"],
@@ -113,6 +113,9 @@ const PERCORSI_DEL_DOMINIO: Record<(typeof contentSet.$inferSelect)["dominio"], 
   nis2: ["nis2", "sgnis2"],
   gdpr: ["gdpr"],
   pas: ["pas24000"],
+  // Il catalogo delle proposte ATECO non ha procedure né registri: nessuna azione del corpus
+  // lo può nominare, e se ci prova viene rifiutata.
+  ateco: null,
 };
 
 /**
@@ -121,8 +124,9 @@ const PERCORSI_DEL_DOMINIO: Record<(typeof contentSet.$inferSelect)["dominio"], 
  */
 export async function requirePercorsoDelContentSet(contentSetId: string) {
   const r = await dbCorrente().select({ dominio: contentSet.dominio }).from(contentSet).where(eq(contentSet.id, contentSetId)).limit(1);
-  if (!r[0]) throw new ForbiddenError("Contenuto sconosciuto.");
-  return requirePercorso(...PERCORSI_DEL_DOMINIO[r[0].dominio]);
+  const moduli = r[0] ? PERCORSI_DEL_DOMINIO[r[0].dominio] : null;
+  if (!moduli) throw new ForbiddenError("Contenuto sconosciuto.");
+  return requirePercorso(...moduli);
 }
 
 /** Come sopra, quando la chiamata porta solo la riga di un registro. */

@@ -67,6 +67,18 @@ export function PassoVerifica({
       </div>
       {errore && <p role="alert" className="mb-3 text-sm text-destructive">{errore}</p>}
 
+      {/* Le voci proposte e mai toccate NON entrano nel documento: chi pubblica deve saperlo
+          prima, non trovarle mancanti nel PDF. */}
+      {stato.righe.some((r) => r.propostaMotivo) && (
+        <p className="mb-4 rounded-md border border-warning/40 bg-warning-subtle px-3 py-2.5 text-sm" data-proposte-aperte>
+          {(() => {
+            const n = stato.righe.filter((r) => r.propostaMotivo).length;
+            return n === 1 ? "Una voce proposta è" : `${n} voci proposte sono`;
+          })()}{" "}
+          ancora da compilare o confermare nei dati di attività. Finché restano proposte non entrano nel documento.
+        </p>
+      )}
+
       <Card>
         <CardHeader>
           <p className="text-sm text-muted-foreground">

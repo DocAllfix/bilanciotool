@@ -50,6 +50,7 @@ const GDPR_SET = "gdpr-v1";
 const pid = (tipo, key) => `${GDPR_SET}:${tipo}:${key}`;
 const PAS_SET = "pas-v1";
 const pasid = (tipo, key) => `${PAS_SET}:${tipo}:${key}`;
+const ATECO_SET = "ateco-v1";
 const gid = (key) => `${SGESG_SET}:${key}`;
 const numStr = (v) => (v === undefined || v === null ? null : String(v));
 
@@ -69,7 +70,9 @@ try {
       -- falliscono sulla chiave esterna.
       (${GDPR_SET}, 'gdpr', 1, 'Estratto dal prototipo percorso-gdpr-v1.html'),
       -- Come GDPR: nessun corpus, il content set si crea qui.
-      (${PAS_SET}, 'pas', 1, 'Estratto dal prototipo percorso-pas24000-v1.html')
+      (${PAS_SET}, 'pas', 1, 'Estratto dal prototipo percorso-pas24000-v1.html'),
+      -- Le proposte per codice ATECO: catalogo nostro, da far rivedere al committente.
+      (${ATECO_SET}, 'ateco', 1, 'Proposte per codice ATECO, rule-based (docs/ateco-profili.md)')
     on conflict (id) do update set note = excluded.note`;
 
   // --- GHG ---
@@ -822,6 +825,38 @@ try {
     values (${pasid("testo", "politica")}, ${PAS_SET}, 'politica', 1, ${politicaPas.modello})
     on conflict (id) do update set testo = excluded.testo`;
 
+  // --- Le voci che si trovano da sole (proposte per codice ATECO) -----------------
+  //
+  // Un catalogo solo per tutti i percorsi: profilo ATECO, percorso, chiave del catalogo del
+  // percorso, valori, MOTIVO. Il file è `ateco-proposte.json`, e `ateco-proposte-pure`
+  // controlla che ogni chiave esista nel catalogo del percorso prima di arrivare qui.
+  {
+    const ateco = load("ateco-proposte.json");
+    const fattoriGhg = new Map(load("ghg-emission-factors.json").map((x) => [x.id, x]));
+    const righe = [];
+    for (const [profilo, voci] of Object.entries(ateco.ghg.profili)) {
+      voci.forEach((chiave, i) => {
+        const fattore = fattoriGhg.get(chiave);
+        if (!fattore) throw new Error(`ateco-proposte: fattore GHG sconosciuto ${chiave}`);
+        righe.push({ profilo, modulo: "ghg", tipo: "voce", chiave, ordine: i + 1, valore: { sorgente: fattore.src }, motivo: ateco.ghg.motivi[chiave] });
+      });
+    }
+    const usiEnergia = new Set(load("energy-end-uses.json").map((u) => u.id));
+    for (const [profilo, usi] of Object.entries(ateco.energia.profili)) {
+      usi.forEach((chiave, i) => {
+        if (!usiEnergia.has(chiave)) throw new Error(`ateco-proposte: uso finale sconosciuto ${chiave}`);
+        righe.push({ profilo, modulo: "energetico", tipo: "uso", chiave, ordine: i + 1, valore: {}, motivo: ateco.energia.motivi[chiave] });
+      });
+    }
+    for (const r of righe) {
+      await sql`
+        insert into ateco_proposta (id, set_id, profilo, modulo, tipo, chiave, ordine, valore, motivo)
+        values (${`${ATECO_SET}:${r.profilo}:${r.modulo}:${r.tipo}:${r.chiave}`}, ${ATECO_SET}, ${r.profilo}, ${r.modulo},
+                ${r.tipo}, ${r.chiave}, ${r.ordine}, ${sql.json(r.valore)}, ${r.motivo})
+        on conflict (id) do update set ordine = excluded.ordine, valore = excluded.valore, motivo = excluded.motivo`;
+    }
+  }
+
   console.log("Seed completato:");
   for (const t of [
     "content_set", "ghg_category", "ghg_source_type", "emission_factor", "gwp_set",
@@ -840,6 +875,7 @@ try {
     "gdpr_indicatore", "gdpr_documento_tipo", "gdpr_attivita_tipo", "gdpr_contenuto_politica", "gdpr_testo",
     "pas_gruppo", "pas_requisito", "pas_parte_tipo", "pas_rischio_tipo", "pas_scala", "pas_sezione",
     "pas_indicatore", "pas_attivita_tipo", "pas_contenuto_politica", "pas_testo",
+    "ateco_proposta",
   ]) {
     console.log(`  ${t}: ${await conta(t)}`);
   }

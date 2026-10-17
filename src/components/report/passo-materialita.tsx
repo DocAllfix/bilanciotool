@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAtecoSuggestionsAction, setSogliaAction, setTopicScoreFieldAction } from "@/features/report/actions";
+import { applicaPropostaMaterialitaAction, setSogliaAction, setTopicScoreFieldAction } from "@/features/report/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -15,7 +15,8 @@ import {
 import type { CatalogoReport, ProgettoReport, StatoReport } from "./types";
 
 // Passo 2 — Doppia materialità: matrice interattiva, guide consulenziali per
-// tema, soglia regolabile, suggerimenti ATECO rule-based (proposta, mai automatica).
+// tema, soglia regolabile, suggerimenti ATECO rule-based. Dal 17 ottobre 2026 la proposta
+// entra nei temi vuoti marcata «proposta» col motivo, e diventa del consulente appena la tocca.
 
 const PILLAR = {
   E: { nome: "Ambiente", colore: "var(--esg-e)" },
@@ -33,7 +34,6 @@ export function PassoMaterialita({
 }) {
   const router = useRouter();
   const [guidaAperta, setGuidaAperta] = useState<string | null>(null);
-  const [suggerimenti, setSuggerimenti] = useState<Record<string, { imp: number; fin: number }> | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
   const m = stato.materialita;
 
@@ -69,13 +69,11 @@ export function PassoMaterialita({
 
   async function proponiDaAteco() {
     setErrore(null);
-    const ateco = progetto.profilo.ateco;
-    if (!ateco) return setErrore("Compila il codice ATECO al passo 1 per avere una proposta di partenza.");
-    const esito = await getAtecoSuggestionsAction(ateco);
+    const esito = await applicaPropostaMaterialitaAction(companyId, progetto.id);
     if (!esito.ok) return setErrore(esito.errore);
-    if (!esito.dati) return setErrore("Nessuna proposta curata per questo settore: valuta i temi con le guide.");
-    setSuggerimenti(esito.dati.punteggi);
+    router.refresh();
   }
+
 
   const selettore = (t: string, campo: "imp" | "fin", valore: number | null) => (
     <Select value={valore === null ? "-" : String(valore)} onValueChange={(v) => imposta(t, campo, v === "-" ? null : Number(v))}>
@@ -172,11 +170,14 @@ export function PassoMaterialita({
             </div>
           </CardHeader>
           <CardContent>
-            {suggerimenti && (
-              <div className="mb-3 rounded-lg border border-primary/30 bg-accent px-4 py-3 text-sm">
-                <p className="font-medium text-accent-foreground">Proposta indicativa per il tuo settore (da confermare tema per tema):</p>
+            {Object.keys(m.proposte).length > 0 && (
+              <div className="mb-3 rounded-lg border border-primary/30 bg-accent px-4 py-3 text-sm" data-proposte-materialita={Object.keys(m.proposte).length}>
+                <p className="font-medium text-accent-foreground">
+                  {Object.keys(m.proposte).length === 1 ? "Un tema proposto" : `${Object.keys(m.proposte).length} temi proposti`} dal codice ATECO.
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  I valori suggeriti compaiono accanto ai temi evidenziati qui sotto. Applicali solo se rispecchiano la realtà dell&apos;azienda.
+                  Sono punteggi tipici del settore, non della tua azienda: confermali toccandoli, o correggili. Un tema toccato
+                  resta tuo anche se cambi il codice ATECO.
                 </p>
               </div>
             )}
@@ -192,7 +193,7 @@ export function PassoMaterialita({
         <CardContent className="divide-y px-0">
           {catalogo.temi.map((t) => {
             const s = m.perTopic[t.key] ?? { imp: null, fin: null, materiale: false, valutato: false };
-            const sug = suggerimenti?.[t.key];
+            const proposta = m.proposte[t.key];
             const aperta = guidaAperta === t.key;
             return (
               <div key={t.key} className="px-5 py-3">
@@ -209,9 +210,9 @@ export function PassoMaterialita({
                     <p className="text-sm font-medium">{t.nome}</p>
                     <p className="text-xs text-muted-foreground">
                       {t.key} · {t.riferimenti} · <span style={{ color: PILLAR[t.pillar].colore }}>{PILLAR[t.pillar].nome}</span>
-                      {sug && (
-                        <span className="ml-2 rounded bg-accent px-1.5 py-0.5 text-accent-foreground">
-                          proposta: imp {sug.imp} · fin {sug.fin}
+                      {proposta && (
+                        <span className="ml-2 rounded bg-accent px-1.5 py-0.5 text-accent-foreground" title={proposta} data-proposta>
+                          proposta
                         </span>
                       )}
                     </p>

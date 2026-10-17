@@ -121,6 +121,10 @@ export async function getReportWizardData(userId: string, orgId: string, company
         perTopic: materialita.esito.perTopic,
         materialKeys: materialita.esito.materialKeys,
         assessedCount: materialita.esito.assessedCount,
+        // I temi proposti dal codice ATECO e non ancora toccati, col motivo.
+        proposte: Object.fromEntries(
+          materialita.valutazioni.filter((v) => v.propostaMotivo).map((v) => [v.topicKey, v.propostaMotivo as string]),
+        ),
       },
       kpi: { corrente: kpiAnni[anno], precedente: kpiAnni[anno - 1] },
       derivati: serDerivati(derivati),

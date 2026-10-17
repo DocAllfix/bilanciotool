@@ -38,7 +38,9 @@ export type DominioContenuti =
   | "sgesg"
   | "nis2"
   | "gdpr"
-  | "pas";
+  | "pas"
+  // Le proposte per codice ATECO (migrazione 0069): un catalogo comune a tutti i percorsi.
+  | "ateco";
 
 /**
  * L'identificativo del content set più recente per il dominio.

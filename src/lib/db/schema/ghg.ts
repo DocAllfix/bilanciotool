@@ -88,6 +88,11 @@ export const ghgActivityRow = pgTable(
     incertezza: numeric("incertezza"), // % override (null = default del livello dq)
     evidenza: text("evidenza"),
     note: text("note"),
+    /** Voce proposta (migrazione 0069): la chiave della proposta, per non inserirla due volte. */
+    tipoKey: text("tipo_key"),
+    /** La MARCA «proposta»: il motivo, finché nessuno ha toccato la voce. Vuota dopo la prima
+     *  modifica o la conferma, e sempre vuota per le voci scritte a mano. */
+    propostaMotivo: text("proposta_motivo"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

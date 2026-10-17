@@ -1,5 +1,11 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
+import { withTenant } from "@/lib/db/tenant";
+import { reportProject } from "@/lib/db/schema";
+import { requireEntitlement } from "@/features/entitlement";
+import { proponiMaterialita } from "./materiality";
+
 import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { createReportProject, setSoglia, updateProfilo, updateStandardEPerimetro } from "./projects";
@@ -209,6 +215,33 @@ export async function importBilancioAction(companyId: string, json: unknown): Pr
     revalidatePath(percorso(companyId));
     revalidatePath("/dashboard");
     return { ok: true, dati: esito };
+  } catch (e) {
+    return daErrore(e);
+  }
+}
+
+/**
+ * Applica la materialità tipica del codice ATECO del progetto ai temi ancora vuoti (o
+ * aggiorna quelle già proposte e non toccate). Il consulente le conferma toccandole.
+ */
+export async function applicaPropostaMaterialitaAction(companyId: string, projectId: string): Promise<ActionEsito<{ inserite: number }>> {
+  try {
+    const s = await requirePercorso("bilancio");
+    await requireEntitlement(s.userId, s.orgId, "write_data");
+    const esito = await withTenant({ userId: s.userId, orgId: s.orgId }, async (tx) => {
+      const [p] = await tx
+        .select({ profilo: reportProject.profilo })
+        .from(reportProject)
+        .where(and(eq(reportProject.id, projectId), eq(reportProject.organizationId, s.orgId)))
+        .limit(1);
+      if (!p) throw new Error("Progetto inesistente o di un altro tenant");
+      const ateco = (p.profilo as Record<string, string | undefined>).ateco;
+      if (!ateco?.trim()) throw new Error("Compila il codice ATECO al passo 1 per avere una proposta di partenza.");
+      return proponiMaterialita(tx, s.userId, s.orgId, projectId, ateco);
+    });
+    if (!esito.inserite) throw new Error("Nessuna proposta curata per questo settore, oppure tutti i temi sono già valutati: valutali con le guide.");
+    revalidatePath(percorso(companyId));
+    return { ok: true, dati: { inserite: esito.inserite } };
   } catch (e) {
     return daErrore(e);
   }

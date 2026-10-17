@@ -3,7 +3,9 @@ import { atecoSuggestion, materialityAssessment, reportProject } from "@/lib/db/
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { assessMateriality } from "@/lib/calc/report/materiality";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
+import type { Tx } from "@/lib/db/tenant";
+import { divisioneAteco, sezioneDellaDivisione } from "@/lib/calc/ateco";
 import { randomUUID } from "node:crypto";
 import { punteggioMaterialitaSchema } from "./validation";
 import { z } from "zod";
@@ -35,7 +37,7 @@ export async function setTopicScore(
       })
       .onConflictDoUpdate({
         target: [materialityAssessment.projectId, materialityAssessment.topicKey],
-        set: { scoreImpact: v.scoreImpact, scoreFinancial: v.scoreFinancial, nota: v.nota || null },
+        set: { scoreImpact: v.scoreImpact, scoreFinancial: v.scoreFinancial, nota: v.nota || null, propostaMotivo: null },
       });
     await logAudit(tx, {
       organizationId: orgId,
@@ -69,7 +71,9 @@ export async function setTopicScoreField(
       .values({ id: randomUUID(), organizationId: orgId, projectId, topicKey, [colonna]: valore })
       .onConflictDoUpdate({
         target: [materialityAssessment.projectId, materialityAssessment.topicKey],
-        set: { [colonna]: valore }, // SOLO il campo toccato: l'altro resta com'è nel DB
+        // SOLO il campo toccato: l'altro resta com'è nel DB. Toccare un tema proposto lo rende
+        // del consulente: la marca si spegne.
+        set: { [colonna]: valore, propostaMotivo: null },
       });
     await logAudit(tx, {
       organizationId: orgId,
@@ -93,13 +97,15 @@ export async function getMateriality(userId: string, orgId: string, projectId: s
   return { soglia, valutazioni, esito: assessMateriality(scores, soglia) };
 }
 
-// Suggerimenti rule-based per macro-settore ATECO (tabella curata, niente AI):
-// punteggi INDICATIVI di partenza che l'utente conferma o corregge, mai applicati
-// in automatico.
+// Suggerimenti rule-based per sezione ATECO (tabella curata, niente AI): punteggi
+// INDICATIVI di partenza. Dal 17 ottobre 2026 entrano nei temi ancora vuoti come PROPOSTE
+// col motivo (`proponiMaterialita`): il consulente le conferma toccandole, o le corregge.
+//
+// ⚠️ Si legge la DIVISIONE, non la lettera scritta nel codice: con l'ATECO 2025 «K 62.10» è
+// l'informatica, che nella tabella curata (scritta in ATECO 2007) sta sotto «J».
 export async function getAtecoSuggestions(codiceAteco: string, contentSetId: string) {
-  const lettera = /^\d/.test(codiceAteco.trim())
-    ? codiceAtecoToMacro(codiceAteco.trim())
-    : codiceAteco.trim().charAt(0).toUpperCase();
+  const div = divisioneAteco(codiceAteco);
+  const lettera = div === null ? null : sezioneDellaDivisione(div);
   if (!lettera) return null;
   const rows = await dbCorrente()
     .select()
@@ -108,18 +114,54 @@ export async function getAtecoSuggestions(codiceAteco: string, contentSetId: str
   return rows.find((r) => r.macroSettore === lettera) ?? null;
 }
 
-// Mappa divisione ATECO (prime 2 cifre) → sezione. Copre le sezioni per cui
-// abbiamo suggerimenti curati; le altre restano senza proposta.
-function codiceAtecoToMacro(codice: string): string | null {
-  const div = Number(codice.slice(0, 2));
-  if (!Number.isFinite(div)) return null;
-  if (div >= 1 && div <= 3) return "A";
-  if (div >= 10 && div <= 33) return "C";
-  if (div >= 41 && div <= 43) return "F";
-  if (div >= 45 && div <= 47) return "G";
-  if (div >= 49 && div <= 53) return "H";
-  if (div >= 55 && div <= 56) return "I";
-  if (div >= 58 && div <= 63) return "J";
-  if (div >= 69 && div <= 75) return "M";
-  return null;
+/**
+ * La materialità proposta dal codice ATECO, nei temi ancora vuoti.
+ *
+ * ⚠️ Le stesse tre regole delle voci GHG: un tema toccato non si tocca più; cambiando ATECO
+ * escono solo le proposte non toccate; si scrive solo dove non c'è niente.
+ */
+export async function proponiMaterialita(
+  tx: Tx,
+  userId: string,
+  orgId: string,
+  projectId: string,
+  ateco: string | null | undefined,
+): Promise<{ inserite: number; tolte: number }> {
+  const [p] = await tx
+    .select({ id: reportProject.id, contentSetId: reportProject.contentSetId })
+    .from(reportProject)
+    .where(and(eq(reportProject.id, projectId), eq(reportProject.organizationId, orgId)))
+    .limit(1);
+  if (!p) throw new Error("Progetto inesistente o di un altro tenant");
+  const tolte = await tx
+    .delete(materialityAssessment)
+    .where(and(eq(materialityAssessment.projectId, projectId), isNotNull(materialityAssessment.propostaMotivo)))
+    .returning({ id: materialityAssessment.id });
+  const s = ateco ? await getAtecoSuggestions(ateco, p.contentSetId) : null;
+  let inserite = 0;
+  if (s) {
+    const punteggi = s.punteggi as Record<string, { imp: number; fin: number }>;
+    const righe = Object.entries(punteggi).map(([topicKey, v]) => ({
+      id: randomUUID(),
+      organizationId: orgId,
+      projectId,
+      topicKey,
+      scoreImpact: v.imp,
+      scoreFinancial: v.fin,
+      propostaMotivo: `Proposta dal codice ATECO (${s.descrizione}): punteggio tipico del settore, da confermare o correggere.`,
+    }));
+    const r = await tx.insert(materialityAssessment).values(righe).onConflictDoNothing().returning({ id: materialityAssessment.id });
+    inserite = r.length;
+  }
+  if (inserite || tolte.length) {
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: "report.materialita.proposte",
+      entita: "report_project",
+      entitaId: projectId,
+      dettagli: { inserite, tolte: tolte.length },
+    });
+  }
+  return { inserite, tolte: tolte.length };
 }

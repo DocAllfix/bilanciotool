@@ -8,6 +8,9 @@ import { addActivityRow, copyRowsFromInventory, deleteActivityRow, duplicateActi
 import { deleteOrgFactor, upsertOrgFactor } from "./factors";
 import { addTarget, deleteTarget } from "./targets";
 import { setChecklistState } from "./checklist";
+import { confermaVoce } from "./proposte";
+import { withTenant } from "@/lib/db/tenant";
+import { requireEntitlement } from "@/features/entitlement";
 import { importGhgFromJson, type GhgImportEsito } from "./import";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
@@ -218,6 +221,19 @@ export async function importGhgAction(companyId: string, json: unknown): Promise
     revalidatePath(percorso(companyId));
     revalidatePath("/dashboard");
     return { ok: true, dati: esito };
+  } catch (e) {
+    return daErrore(e);
+  }
+}
+
+/** «Conferma» delle voci proposte: smettono di essere proposte e diventano del consulente. */
+export async function confermaVociAction(companyId: string, rowIds: string[]): Promise<ActionEsito<{ confermate: number }>> {
+  try {
+    const s = await requirePercorso("ghg");
+    await requireEntitlement(s.userId, s.orgId, "write_data");
+    const confermate = await withTenant({ userId: s.userId, orgId: s.orgId }, (tx) => confermaVoce(tx, s.userId, s.orgId, rowIds));
+    revalidatePath(percorso(companyId));
+    return { ok: true, dati: { confermate } };
   } catch (e) {
     return daErrore(e);
   }

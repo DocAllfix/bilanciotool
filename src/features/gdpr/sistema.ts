@@ -1,3 +1,4 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
 import type { PgTable } from "drizzle-orm/pg-core";
@@ -74,9 +75,16 @@ export async function avviaSistema(userId: string, orgId: string, input: z.input
     if (!co) throw new Error("Azienda inesistente o di un altro studio");
 
     const id = randomUUID();
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
     const nuova = await tx
       .insert(gdprSystem)
-      .values({ id, organizationId: orgId, companyId: v.companyId, contentSetId: setId, ruolo: "Titolare del trattamento" })
+      .values({
+        id, organizationId: orgId, companyId: v.companyId, contentSetId: setId, ruolo: "Titolare del trattamento",
+        // L'anagrafica si copia una volta (vedi `features/companies/profilo.ts`).
+        piva: an.piva, sede: an.sede, settore: an.settore, ateco: an.ateco, dipendenti: an.addetti,
+      })
       .onConflictDoNothing({ target: gdprSystem.companyId })
       .returning({ id: gdprSystem.id });
     if (!nuova.length) {

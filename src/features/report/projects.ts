@@ -1,4 +1,7 @@
+import { proponiMaterialita } from "./materiality";
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { withTenant } from "@/lib/db/tenant";
+import { fondiJsonb } from "@/lib/db/jsonb";
 import { company, reportProject } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
@@ -22,15 +25,21 @@ export async function createReportProject(userId: string, orgId: string, input: 
   await withTenant({ userId, orgId }, async (tx) => {
     const [co] = await tx.select({ id: company.id }).from(company).where(eq(company.id, v.companyId));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
     await tx.insert(reportProject).values({
       id,
       organizationId: orgId,
       companyId: v.companyId,
       anno: v.anno,
       contentSetId: setId,
+      profilo: { piva: an.piva, sede: an.sede, settore: an.settore, ateco: an.ateco },
       ...(v.standard ? { standard: v.standard } : {}),
     });
     await logAudit(tx, { organizationId: orgId, userId, azione: "report.project.create", entita: "report_project", entitaId: id });
+    // La materialità tipica del settore, nei temi vuoti, marcata «proposta».
+    await proponiMaterialita(tx, userId, orgId, id, an.ateco);
   });
   return id;
 }
@@ -39,13 +48,15 @@ export async function updateProfilo(userId: string, orgId: string, projectId: st
   await requireEntitlement(userId, orgId, "write_data");
   const v = profiloSchema.parse(patch);
   await withTenant({ userId, orgId }, async (tx) => {
-    const [p] = await tx.select({ profilo: reportProject.profilo }).from(reportProject).where(eq(reportProject.id, projectId));
-    if (!p) throw new Error("Progetto inesistente o di un altro tenant");
-    await tx
+    // Fusione in un'istruzione sola: vedi `fondiJsonb`.
+    const toccate = await tx
       .update(reportProject)
-      .set({ profilo: { ...(p.profilo as Record<string, string>), ...v } })
-      .where(eq(reportProject.id, projectId));
+      .set({ profilo: fondiJsonb(reportProject.profilo, v) })
+      .where(and(eq(reportProject.id, projectId), eq(reportProject.organizationId, orgId)))
+      .returning({ id: reportProject.id });
+    if (!toccate.length) throw new Error("Progetto inesistente o di un altro tenant");
     await logAudit(tx, { organizationId: orgId, userId, azione: "report.profilo.update", entita: "report_project", entitaId: projectId });
+    if (v.ateco !== undefined) await proponiMaterialita(tx, userId, orgId, projectId, v.ateco);
   });
 }
 

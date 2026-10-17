@@ -66,6 +66,8 @@ export type StatoReport = {
     perTopic: Record<string, { imp: number | null; fin: number | null; materiale: boolean; valutato: boolean }>;
     materialKeys: string[];
     assessedCount: number;
+    /** Temi proposti dal codice ATECO e non ancora toccati: chiave → motivo. */
+    proposte: Record<string, string>;
   };
   kpi: { corrente: Record<string, string>; precedente: Record<string, string> };
   derivati: Record<string, string>;

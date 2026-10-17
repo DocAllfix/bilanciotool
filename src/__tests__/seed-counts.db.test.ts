@@ -1,8 +1,9 @@
+import propostePerAteco from "@/lib/db/seeds/data/ateco-proposte.json";
 import { describe, it, expect } from "vitest";
 import { db } from "@/lib/db";
 import { count, eq } from "drizzle-orm";
 import {
-  contentSet, ghgCategory, ghgSourceType, emissionFactor, gwpSet,
+  contentSet, atecoProposta, ghgCategory, ghgSourceType, emissionFactor, gwpSet,
   checklistRequirement, materialityTopic, kpiSection, kpiDefinition,
   ratingScale, narrativeTemplate, atecoSuggestion,
   energyVector, energyArea, energyEndUse, energyDriverDefinition, energyIndicator,
@@ -48,7 +49,12 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // duplicherebbero 518 blocchi identici destinati a divergere.
     // Dal 12 ottobre 2026 sono QUATTORDICI: si aggiunge `gdpr-v1`, protezione dei dati.
     // Dal 16 ottobre 2026 sono QUINDICI: si aggiunge `pas-v1`, sistema di gestione sociale.
-    expect(await conta(contentSet)).toBe(15);
+    // Dal 17 ottobre 2026 sono SEDICI: si aggiunge `ateco-v1`, le proposte per codice ATECO.
+    expect(await conta(contentSet)).toBe(16);
+    // Le proposte: una riga per voce di ogni profilo, contate dal file e non scritte qui.
+    const pa = propostePerAteco as { ghg: { profili: Record<string, string[]> }; energia: { profili: Record<string, string[]> } };
+    const attese = [pa.ghg, pa.energia].reduce((n, m) => n + Object.values(m.profili).flat().length, 0);
+    expect(await conta(atecoProposta)).toBe(attese);
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.
     expect(await conta(sgesgPhaseDef)).toBe(8);

@@ -484,6 +484,13 @@
       "when": 1791547694459,
       "tag": "0068_fascia_azienda",
       "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1791634094459,
+      "tag": "0069_ateco_proposte",
+      "breakpoints": true
     }
   ]
 }

@@ -89,6 +89,7 @@ export async function publishGhgSnapshot(userId: string, orgId: string, companyI
     const [a] = await tx.select().from(company).where(eq(company.id, companyId));
     return a!;
   });
+  const righeDati = wiz.stato.righe.filter((r) => !r.propostaMotivo).map(({ propostaMotivo: _p, ...r }) => r);
 
   const dati = {
     generatoIl: new Date().toISOString(),
@@ -110,9 +111,11 @@ export async function publishGhgSnapshot(userId: string, orgId: string, companyI
     },
     sorgenti: wiz.stato.sorgenti,
     checklist: wiz.stato.checklist,
-    righe: wiz.stato.righe,
+    // ⚠️ Una voce ancora «proposta» non è un dato: nessuno l'ha guardata. Non entra nel
+    // documento, e il suo motivo non si congela. Il totale non cambia (sono a quantità zero).
+    righe: righeDati,
     obiettivi: wiz.stato.obiettivi,
-    fattoriUsati: wiz.catalogo.fattori.filter((f) => wiz.stato.righe.some((r) => r.factorKey === f.key)),
+    fattoriUsati: wiz.catalogo.fattori.filter((f) => righeDati.some((r) => r.factorKey === f.key)),
     risultati, // derivati congelati QUI
   };
 

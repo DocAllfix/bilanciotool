@@ -87,6 +87,7 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
         incertezza: r.incertezza,
         evidenza: r.evidenza,
         note: r.note,
+        propostaMotivo: r.propostaMotivo,
       })),
       obiettivi: targets.map((t) => ({ id: t.id, nome: t.nome, ambito: t.ambito, riduzionePct: t.riduzionePct, annoTarget: t.annoTarget, note: t.note })),
       risultati,
