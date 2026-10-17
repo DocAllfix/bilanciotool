@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Monogramma } from "@/components/brand/logo";
 import { SidebarNav } from "./sidebar-nav";
+import type { ModuloAzienda } from "@/features/companies/moduli";
 import { UserMenu } from "./user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
@@ -18,6 +19,8 @@ export function CollapsibleShell({
   nome,
   email,
   aziende,
+  percorsi = null,
+  senzaCompensi = false,
   children,
 }: {
   nome: string;
@@ -25,6 +28,9 @@ export function CollapsibleShell({
   /** Nomi delle aziende dello studio: servono alla navigazione contestuale, che
    *  vive sopra la rotta dell'azienda e non può riceverli da un contesto sotto. */
   aziende: { id: string; nome: string }[];
+  /** Vedi `SidebarNav`: i percorsi visibili (`null` = tutti) e i compensi nascosti. */
+  percorsi?: readonly ModuloAzienda[] | null;
+  senzaCompensi?: boolean;
   children: React.ReactNode;
 }) {
   const [compatta, setCompatta] = useState(false);
@@ -87,7 +93,7 @@ export function CollapsibleShell({
             «Comprimi» e il piede restano FUORI da questa area apposta: sono controlli, non
             contenuto, e devono essere raggiungibili anche a metà elenco. */}
         <div className="min-h-0 flex-1 overflow-y-auto scorri-sobrio">
-          <SidebarNav compatta={compatta} aziende={aziende} />
+          <SidebarNav compatta={compatta} aziende={aziende} percorsi={percorsi} senzaCompensi={senzaCompensi} />
         </div>
         <button
           type="button"

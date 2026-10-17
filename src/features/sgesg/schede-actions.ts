@@ -1,8 +1,8 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { setCampoScheda, setStatoScheda } from "./schede";
 
@@ -23,7 +23,7 @@ export async function setCampoSchedaAction(
   valore: string | string[] | null,
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     // Il campo NON si valida contro un elenco chiuso qui: sono 314 chiavi che vivono nel
     // catalogo, ed e' `setCampoScheda` a confrontarle con le sezioni della scheda dentro
     // la transazione. Qui si limita la forma, che e' quanto un endpoint puo' sapere.
@@ -46,7 +46,7 @@ export async function setStatoSchedaAction(
   stato: "bozza" | "completata",
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     const st = z.enum(["bozza", "completata"]).parse(stato);
     await setStatoScheda(s.userId, s.orgId, idSchema.parse(programId), idSchema.parse(schedaKey), st);
     revalidatePath(rotta(companyId, anno, fase, schedaKey));

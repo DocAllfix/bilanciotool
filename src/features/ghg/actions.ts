@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { createInventory, setBaseYear, updateBoundaries, updatePeriodMeta } from "./inventories";
 import { setSourceState } from "./sources";
 import { addActivityRow, copyRowsFromInventory, deleteActivityRow, duplicateActivityRow, updateActivityRow } from "./activity-data";
@@ -25,7 +25,7 @@ const percorso = (companyId: string) => percorsoModulo(companyId, "ghg");
 
 export async function createInventoryAction(input: { companyId: string; anno: number; annoBase?: number }): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     const id = await createInventory(s.userId, s.orgId, input);
     revalidatePath(percorso(input.companyId));
     return { ok: true, dati: { id } };
@@ -36,7 +36,7 @@ export async function createInventoryAction(input: { companyId: string; anno: nu
 
 export async function updateBoundariesAction(companyId: string, inventoryId: string, patch: Record<string, string>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await updateBoundaries(s.userId, s.orgId, inventoryId, patch);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -51,7 +51,7 @@ export async function updatePeriodMetaAction(
   patch: { ricavi?: string | null; fte?: string | null; produzione?: string | null; umProduzione?: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await updatePeriodMeta(s.userId, s.orgId, inventoryId, patch);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -62,7 +62,7 @@ export async function updatePeriodMetaAction(
 
 export async function setBaseYearAction(companyId: string, inventoryId: string, annoBase: number): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await setBaseYear(s.userId, s.orgId, inventoryId, annoBase);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -77,7 +77,7 @@ export async function setSourceStateAction(
   input: { sourceTypeKey: string; stato: "in" | "out" | "na"; motivazione?: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await setSourceState(s.userId, s.orgId, inventoryId, input);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -90,7 +90,7 @@ export type RigaInput = Parameters<typeof addActivityRow>[3];
 
 export async function addActivityRowAction(companyId: string, inventoryId: string, riga: RigaInput): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     const id = await addActivityRow(s.userId, s.orgId, inventoryId, riga);
     revalidatePath(percorso(companyId));
     return { ok: true, dati: { id } };
@@ -101,7 +101,7 @@ export async function addActivityRowAction(companyId: string, inventoryId: strin
 
 export async function updateActivityRowAction(companyId: string, rowId: string, riga: RigaInput): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await updateActivityRow(s.userId, s.orgId, rowId, riga);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -112,7 +112,7 @@ export async function updateActivityRowAction(companyId: string, rowId: string, 
 
 export async function duplicateActivityRowAction(companyId: string, rowId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await duplicateActivityRow(s.userId, s.orgId, rowId);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -123,7 +123,7 @@ export async function duplicateActivityRowAction(companyId: string, rowId: strin
 
 export async function deleteActivityRowAction(companyId: string, rowId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await deleteActivityRow(s.userId, s.orgId, rowId);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -134,7 +134,7 @@ export async function deleteActivityRowAction(companyId: string, rowId: string):
 
 export async function copyRowsAction(companyId: string, fromInventoryId: string, toInventoryId: string): Promise<ActionEsito<{ copiate: number }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     const copiate = await copyRowsFromInventory(s.userId, s.orgId, fromInventoryId, toInventoryId);
     revalidatePath(percorso(companyId));
     return { ok: true, dati: { copiate } };
@@ -147,7 +147,7 @@ export type FattoreInput = Parameters<typeof upsertOrgFactor>[2];
 
 export async function upsertOrgFactorAction(companyId: string, input: FattoreInput): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await upsertOrgFactor(s.userId, s.orgId, input);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -158,7 +158,7 @@ export async function upsertOrgFactorAction(companyId: string, input: FattoreInp
 
 export async function deleteOrgFactorAction(companyId: string, key: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await deleteOrgFactor(s.userId, s.orgId, key);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -176,7 +176,7 @@ export async function addTargetAction(input: {
   note?: string;
 }): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await addTarget(s.userId, s.orgId, input);
     revalidatePath(percorso(input.companyId));
     return { ok: true };
@@ -187,7 +187,7 @@ export async function addTargetAction(input: {
 
 export async function deleteTargetAction(companyId: string, targetId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await deleteTarget(s.userId, s.orgId, targetId);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -202,7 +202,7 @@ export async function setChecklistStateAction(
   input: { requirementKey: string; stato: "ok" | "par" | "no"; nota?: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     await setChecklistState(s.userId, s.orgId, inventoryId, input);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -213,7 +213,7 @@ export async function setChecklistStateAction(
 
 export async function importGhgAction(companyId: string, json: unknown): Promise<ActionEsito<GhgImportEsito>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("ghg");
     const esito = await importGhgFromJson(s.userId, s.orgId, companyId, json);
     revalidatePath(percorso(companyId));
     revalidatePath("/dashboard");

@@ -1,6 +1,6 @@
 "use server";
 
-import { requireConsultant } from "@/features/auth/guards";
+import { requireAmministrazioneInterna } from "@/features/auth/percorsi";
 import { getCompanyUsage } from "@/features/entitlement";
 import { archiveCompany, createCompany, restoreCompany } from "./index";
 import { z } from "zod";
@@ -43,7 +43,7 @@ const nuovaAziendaSchema = z.object({
 
 export async function createCompanyAction(input: unknown): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     const v = nuovaAziendaSchema.parse(input);
     const id = await createCompany(s.userId, s.orgId, v);
     return { ok: true, dati: { id } };
@@ -54,7 +54,7 @@ export async function createCompanyAction(input: unknown): Promise<ActionEsito<{
 
 export async function archiveCompanyAction(companyId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     await archiveCompany(s.userId, s.orgId, companyId);
     return { ok: true };
   } catch (e) {
@@ -64,7 +64,7 @@ export async function archiveCompanyAction(companyId: string): Promise<ActionEsi
 
 export async function restoreCompanyAction(companyId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     await restoreCompany(s.userId, s.orgId, companyId);
     return { ok: true };
   } catch (e) {

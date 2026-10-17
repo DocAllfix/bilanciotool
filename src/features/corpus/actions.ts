@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
+import { requirePercorsoDelContentSet, requirePercorsoDellaRiga } from "@/features/auth/percorsi";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { setOverride, setStatoDocumento } from "./documenti";
 import { aggiornaRiga, aggiungiRiga, eliminaRiga } from "./registri";
@@ -26,7 +26,7 @@ export async function setStatoDocumentoAction(
   input: z.input<typeof statoDocumentoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDelContentSet(input.contentSetId);
     await setStatoDocumento(s.userId, s.orgId, input);
     revalidatePath(rotta);
     return { ok: true };
@@ -45,7 +45,7 @@ export async function setOverrideAction(
   input: z.input<typeof overrideSchema>,
 ): Promise<ActionEsito<{ rimosso: boolean }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDelContentSet(input.contentSetId);
     const dati = await setOverride(s.userId, s.orgId, input);
     revalidatePath(rotta);
     return { ok: true, dati };
@@ -57,7 +57,7 @@ export async function aggiungiRigaAction(
   input: z.input<typeof rigaRegistroSchema>,
 ): Promise<ActionEsito<{ id: string; numero: number; riferimento: string | null }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDelContentSet(input.contentSetId);
     const dati = await aggiungiRiga(s.userId, s.orgId, input);
     revalidatePath(rotta);
     return { ok: true, dati };
@@ -79,7 +79,7 @@ export async function aggiornaRigaAction(
   input: z.input<typeof aggiornaRigaSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDellaRiga(input.rowId);
     if (Object.keys(input.dati ?? {}).length !== 1) {
       throw new Error("Si aggiorna un campo per volta: la riga non si rimanda mai intera");
     }
@@ -95,7 +95,7 @@ export async function eliminaRigaAction(
   rowId: string,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDellaRiga(rowId);
     await eliminaRiga(s.userId, s.orgId, companyId, rowId);
     revalidatePath(rotta);
     return { ok: true };

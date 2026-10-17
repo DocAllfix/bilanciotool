@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthError, ForbiddenError, requireConsultant } from "@/features/auth/guards";
+import { AuthError, ForbiddenError } from "@/features/auth/guards";
+import { requirePercorsoDelContentSet } from "@/features/auth/percorsi";
 import { EntitlementError, requireEntitlement } from "@/features/entitlement";
 import { renderPdf } from "@/features/documents/pdf";
 import { anagraficaPerEdizione } from "@/features/corpus/anagrafiche";
@@ -31,7 +32,7 @@ export async function GET(
   // autenticato» e «Chromium non parte» uscirebbero entrambi come 500.
   let s;
   try {
-    s = await requireConsultant();
+    s = await requirePercorsoDelContentSet(contentSetId);
     await requireEntitlement(s.userId, s.orgId, "generate_pdf");
   } catch (e) {
     if (e instanceof AuthError) return NextResponse.json({ errore: "Non autenticato" }, { status: 401 });

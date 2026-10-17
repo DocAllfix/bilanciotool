@@ -35,6 +35,9 @@ export async function listArchivioDocumenti(
   userId: string,
   orgId: string,
   filtri: { tipo: TipoDocumento | null; area: AreaModuli | null; companyId: string | null },
+  /** Fascia «Azienda»: i soli tipi dei percorsi assegnati, oppure `null` per tutti. Si
+   *  applica PRIMA dei conteggi, così le pastiglie non contano documenti che non si vedono. */
+  visibile: (tipo: TipoDocumento) => boolean = () => true,
 ): Promise<Archivio> {
   return withTenant({ userId, orgId }, async (tx) => {
     // Si legge una volta sola l'elenco completo dei metadati: i conteggi per
@@ -51,7 +54,8 @@ export async function listArchivioDocumenti(
       })
       .from(documentSnapshot)
       .where(eq(documentSnapshot.organizationId, orgId))
-      .orderBy(desc(documentSnapshot.publishedAt));
+      .orderBy(desc(documentSnapshot.publishedAt))
+      .then((righe) => righe.filter((d) => visibile(d.tipo)));
 
     const companyIds = [...new Set(tutti.map((d) => d.companyId))];
     const nomi = companyIds.length

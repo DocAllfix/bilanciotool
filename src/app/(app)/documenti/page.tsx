@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireConsultant } from "@/features/auth/guards";
+import { documentoVisibile, percorsiVisibili } from "@/features/auth/percorsi";
 import { listArchivioDocumenti } from "@/features/documents/archivio";
 import { DOCUMENTI, TIPI_DOCUMENTO, etichettaDocumento, type TipoDocumento } from "@/features/documents/tipi";
 import { AREE, AREE_MODULI, type AreaModuli } from "@/features/companies/moduli";
@@ -27,6 +28,7 @@ export default async function DocumentiPage({
 }) {
   const { tipo, area, azienda } = await searchParams;
   const s = await requireConsultant();
+  const visibili = await percorsiVisibili(s);
 
   const tipoFiltro = TIPI_DOCUMENTO.includes(tipo as TipoDocumento) ? (tipo as TipoDocumento) : null;
   const areaFiltro = AREE_MODULI.includes(area as AreaModuli) ? (area as AreaModuli) : null;
@@ -34,6 +36,8 @@ export default async function DocumentiPage({
     s.userId,
     s.orgId,
     { tipo: tipoFiltro, area: areaFiltro, companyId: azienda ?? null },
+    // Fascia «Azienda»: il collaboratore vede in archivio solo i documenti dei suoi percorsi.
+    (t) => documentoVisibile(visibili, t),
   );
   const areeConDocumenti = AREE_MODULI.filter((a) => (conteggiPerArea[a] ?? 0) > 0);
 

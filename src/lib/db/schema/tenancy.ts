@@ -124,6 +124,8 @@ export const companyReferent = pgTable(
 // una policy per persona su centocinquanta tabelle di percorso, molte senza `company_id`,
 // sarebbe una seconda verità da tenere allineata. Lo dichiara `percorso-guardia-pure`.
 //
+// ⚠️ PER PERCORSO, non per azienda: vedi la migrazione 0068.
+//
 // ⚠️ Uscire dallo studio CANCELLA le assegnazioni (trigger sulla `member`, migrazione 0068):
 // chi venisse reinvitato non deve ritrovarsi i permessi di allora senza che nessuno li dia.
 export const assegnazionePercorso = pgTable(
@@ -133,9 +135,6 @@ export const assegnazionePercorso = pgTable(
     organizationId: text("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
-    companyId: text("company_id")
-      .notNull()
-      .references(() => company.id, { onDelete: "cascade" }),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -143,8 +142,5 @@ export const assegnazionePercorso = pgTable(
     createdBy: text("created_by"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("assegnazione_percorso_uq").on(t.companyId, t.userId, t.modulo),
-    index("assegnazione_percorso_utente_idx").on(t.organizationId, t.userId),
-  ],
+  (t) => [uniqueIndex("assegnazione_percorso_uq").on(t.organizationId, t.userId, t.modulo)],
 );

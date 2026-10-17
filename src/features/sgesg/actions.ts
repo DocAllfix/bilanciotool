@@ -1,8 +1,8 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import { creaProgramma, setCampoProgramma, setNotaFase, setStatoFase } from "./programma";
@@ -24,7 +24,7 @@ export async function creaProgrammaAction(
   standard: "GRI" | "ESRS" | "ENTRAMBI",
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     const a = z.coerce.number().int().min(2000).max(2100).parse(anno);
     const st = z.enum(["GRI", "ESRS", "ENTRAMBI"]).parse(standard);
     const id = await creaProgramma(s.userId, s.orgId, {
@@ -47,7 +47,7 @@ export async function setCampoProgrammaAction(
   valore: string | null,
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     // ⚠️ Il campo si valida contro un elenco CHIUSO: finisce dentro un `set({[campo]:…})`,
     // e un nome arbitrario che arriva dalla rete deciderebbe quale colonna scrivere.
     const c = z.enum(CAMPI).parse(campo);
@@ -68,7 +68,7 @@ export async function setStatoFaseAction(
   stato: "da_avviare" | "in_corso" | "conclusa",
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     const st = z.enum(["da_avviare", "in_corso", "conclusa"]).parse(stato);
     await setStatoFase(s.userId, s.orgId, idSchema.parse(programId), idSchema.parse(faseKey), st);
     revalidatePath(rotta(companyId, anno));
@@ -86,7 +86,7 @@ export async function setNotaFaseAction(
   note: string | null,
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgesg");
     const v = z.string().max(4000).nullable().parse(note);
     await setNotaFase(s.userId, s.orgId, idSchema.parse(programId), idSchema.parse(faseKey), v);
     revalidatePath(rotta(companyId, anno));

@@ -1,9 +1,9 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -37,7 +37,7 @@ export async function setCampoControlloAction(
   input: z.input<typeof controlloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     await setCampoControllo(s.userId, s.orgId, companyId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -51,7 +51,7 @@ export async function setCampoFaseAction(
   input: z.input<typeof faseSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     await setCampoFase(s.userId, s.orgId, companyId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -65,7 +65,7 @@ export async function aggiornaRoadmapAction(
   patch: z.input<typeof roadmapSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     await aggiornaRoadmap(s.userId, s.orgId, companyId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -78,7 +78,7 @@ export async function caricaIndicatoriBaseAction(
   companyId: string,
 ): Promise<ActionEsito<{ aggiunti: number }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     const aggiunti = await caricaIndicatoriBase(s.userId, s.orgId, companyId);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { aggiunti } };
@@ -92,7 +92,7 @@ export async function creaIndicatoreAction(
   input: z.input<typeof nuovoIndicatoreSchema>,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     const id = await creaIndicatore(s.userId, s.orgId, companyId, input);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -106,7 +106,7 @@ export async function setCampoIndicatoreAction(
   input: z.input<typeof campoIndicatoreSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     await setCampoIndicatore(s.userId, s.orgId, companyId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -120,7 +120,7 @@ export async function setRilevazioneAction(
   input: z.input<typeof rilevazioneSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgnis2");
     await setRilevazione(s.userId, s.orgId, companyId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };

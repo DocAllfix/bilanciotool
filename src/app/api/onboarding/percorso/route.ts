@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireActiveOrg } from "@/features/auth/guards";
+import { percorsiVisibili } from "@/features/auth/percorsi";
 import { getStatiPortafoglio } from "@/features/companies/stati-moduli";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
 import { TOURS } from "@/lib/tour/registry";
@@ -27,6 +28,8 @@ export async function GET() {
   }
 
   const { aziende } = await getStatiPortafoglio(s.userId, s.orgId);
+  // Fascia «Azienda»: il giro passa solo dai percorsi di questa persona.
+  const visibili = await percorsiVisibili(s);
   // L'azienda dimostrativa è quella già compilata: è lì che il giro ha qualcosa da
   // mostrare. Se manca (studio che ha già cancellato la demo) resta la sola dashboard.
   const demo = aziende.find((a) => a.isDemo) ?? aziende[0];
@@ -62,6 +65,7 @@ export async function GET() {
   /** La tappa di un modulo, o `null` se non è visitabile. */
   const tappaDi = (m: (typeof MODULI_AZIENDA)[number]): Tappa | null => {
     if (!conTour.has(m.href)) return null;
+    if (visibili && !visibili.has(m.href)) return null;
     const stato = demo?.moduli.find((x) => x.modulo === m.href);
     // Un modulo mai avviato non si visita: mostrerebbe la pagina di creazione, non il
     // modulo. La presentazione fa vedere il prodotto pieno, non i suoi vuoti.

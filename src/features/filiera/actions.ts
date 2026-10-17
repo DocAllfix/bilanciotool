@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -28,7 +28,7 @@ const rotta = (companyId: string) => percorsoModulo(companyId, "filiera");
 
 export async function creaProgrammaAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     const id = await creaProgramma(s.userId, s.orgId, { companyId });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -43,7 +43,7 @@ export async function aggiornaProfiloAction(
   patch: z.input<typeof profiloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     await aggiornaProfilo(s.userId, s.orgId, programId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -58,7 +58,7 @@ export async function creaPartnerAction(
   input: z.input<typeof partnerNuovoSchema>,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     const id = await creaPartner(s.userId, s.orgId, programId, input);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -73,7 +73,7 @@ export async function setCampoPartnerAction(
   input: z.input<typeof campoPartnerSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     await setCampoPartner(s.userId, s.orgId, partnerId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -84,7 +84,7 @@ export async function setCampoPartnerAction(
 
 export async function eliminaPartnerAction(companyId: string, partnerId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     await eliminaPartner(s.userId, s.orgId, partnerId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -99,7 +99,7 @@ export async function setPunteggioAction(
   input: z.input<typeof punteggioSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     await setPunteggio(s.userId, s.orgId, partnerId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -114,7 +114,7 @@ export async function setFlagAction(
   input: z.input<typeof flagSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("filiera");
     await setFlag(s.userId, s.orgId, partnerId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };

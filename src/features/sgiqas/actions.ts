@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -33,7 +33,7 @@ const rotta = (companyId: string) => percorsoModulo(companyId, "sgiqas");
 
 export async function creaSistemaAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     const id = await creaSistema(s.userId, s.orgId, { companyId });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -46,7 +46,7 @@ export async function aggiornaProfiloAction(
   patch: z.input<typeof profiloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await aggiornaProfilo(s.userId, s.orgId, systemId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -59,7 +59,7 @@ export async function setNormeAction(
   norme: z.input<typeof normeSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await setNorme(s.userId, s.orgId, systemId, norme);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -72,7 +72,7 @@ export async function setCampoRequisitoAction(
   input: z.input<typeof requisitoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await setCampoRequisito(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -85,7 +85,7 @@ export async function creaIndicatoreAction(
   input: z.input<typeof nuovoIndicatoreSchema>,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     const id = await creaIndicatore(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -97,7 +97,7 @@ export async function caricaIndicatoriBaseAction(
   systemId: string,
 ): Promise<ActionEsito<{ aggiunti: number }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     const dati = await caricaIndicatoriBase(s.userId, s.orgId, systemId);
     revalidatePath(rotta(companyId));
     return { ok: true, dati };
@@ -110,7 +110,7 @@ export async function setCampoIndicatoreAction(
   input: z.input<typeof campoIndicatoreSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await setCampoIndicatore(s.userId, s.orgId, indicatorId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -119,7 +119,7 @@ export async function setCampoIndicatoreAction(
 
 export async function eliminaIndicatoreAction(companyId: string, indicatorId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await eliminaIndicatore(s.userId, s.orgId, indicatorId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -131,7 +131,7 @@ export async function setRilevazioneAction(
   input: z.input<typeof rilevazioneSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await setRilevazione(s.userId, s.orgId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -144,7 +144,7 @@ export async function eliminaRilevazioneAction(
   periodo: string,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sgiqas");
     await eliminaRilevazione(s.userId, s.orgId, indicatorId, periodo);
     revalidatePath(rotta(companyId));
     return { ok: true };

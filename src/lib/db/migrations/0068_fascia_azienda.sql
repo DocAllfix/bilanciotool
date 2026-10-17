@@ -11,10 +11,15 @@ ALTER TABLE "org_entitlement" ADD CONSTRAINT "org_entitlement_piano_ck"
 --> statement-breakpoint
 
 -- I percorsi assegnati alle persone. Negli studi resta vuota.
+--
+-- ⚠️ PER PERCORSO, NON PER AZIENDA. Nella fascia «Azienda» l'azienda vera è una sola (più la
+-- dimostrativa), e le azioni dei percorsi ricevono l'id della RIGA, non quello dell'azienda:
+-- una guardia per azienda andrebbe verificata riga per riga in centoquaranta azioni, e
+-- basterebbe dimenticarne una. Per percorso, la guardia non dipende da nessun id che arriva
+-- dal browser.
 CREATE TABLE "assegnazione_percorso" (
   "id" text PRIMARY KEY NOT NULL,
   "organization_id" text NOT NULL REFERENCES "organization"("id") ON DELETE CASCADE,
-  "company_id" text NOT NULL REFERENCES "company"("id") ON DELETE CASCADE,
   "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
   "modulo" text NOT NULL,
   "created_by" text,
@@ -24,9 +29,7 @@ CREATE TABLE "assegnazione_percorso" (
     'filiera','nis2','sgnis2','gdpr','sgiqas','sa8000','pas24000','soa'))
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX "assegnazione_percorso_uq" ON "assegnazione_percorso" ("company_id","user_id","modulo");
---> statement-breakpoint
-CREATE INDEX "assegnazione_percorso_utente_idx" ON "assegnazione_percorso" ("organization_id","user_id");
+CREATE UNIQUE INDEX "assegnazione_percorso_uq" ON "assegnazione_percorso" ("organization_id","user_id","modulo");
 --> statement-breakpoint
 
 ALTER TABLE "assegnazione_percorso" ENABLE ROW LEVEL SECURITY;
@@ -38,12 +41,6 @@ CREATE POLICY "assegnazione_percorso_tenant_rls" ON "assegnazione_percorso" FOR 
          OR current_setting('app.platform_admin', true) = 'on')
   WITH CHECK (organization_id = current_setting('app.org_id', true)
          OR current_setting('app.platform_admin', true) = 'on');
---> statement-breakpoint
-
--- L'azienda deve essere dello stesso studio. Assegnare non è lavoro nuovo: si può anche su
--- un'azienda archiviata, come i contatti e l'agenda.
-CREATE TRIGGER azienda_scrivibile BEFORE INSERT OR UPDATE OF company_id, organization_id ON assegnazione_percorso
-  FOR EACH ROW EXECUTE FUNCTION azienda_scrivibile('amministrazione');
 --> statement-breakpoint
 
 -- Uscire dallo studio cancella le assegnazioni: chi venisse reinvitato non deve ritrovarsi i

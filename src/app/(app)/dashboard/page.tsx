@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireConsultant } from "@/features/auth/guards";
+import { amministra, documentoVisibile, percorsiVisibili, usoInterno } from "@/features/auth/percorsi";
 import { getCompanyUsage } from "@/features/entitlement";
 import { getPortfolioOverview, listCompaniesWithStats } from "@/features/companies/queries";
 import { getScadenzario, testoMotivo } from "@/features/companies/scadenzario";
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
   // `withTenant` riusa quella aperta nella stessa catena di chiamate, l'annidamento è
   // sicuro — e chiederle fuori costava una transazione intera, cioè ~300 ms su questo
   // database.
-  const [aziende, usage, quadro, scadenzario, stati, agendaOggi, compensi] = await withTenant(
+  const [aziende, usage, quadroTutto, scadenzarioTutto, statiTutti, agendaOggi, compensi, visibili, interno] = await withTenant(
     { userId: s.userId, orgId: s.orgId },
     () =>
       Promise.all([
@@ -50,8 +51,24 @@ export default async function DashboardPage() {
         // L'agenda dello studio, dentro la stessa transazione delle altre letture.
         conteggioDaFare(s.userId, s.orgId, oggiIso()),
         elencaCompensi(s.userId, s.orgId),
+        percorsiVisibili(s),
+        usoInterno(s.userId, s.orgId),
       ]),
   );
+  // ⚠️ FASCIA «AZIENDA»: il collaboratore vede solo i suoi percorsi. Lo scadenzario, i
+  // gruppi delle card, i servizi e i documenti recenti si filtrano; l'attività recente e il
+  // totale dei documenti dello studio non si mostrano, perché nominerebbero il lavoro degli
+  // altri. Creare o archiviare l'azienda e i compensi restano a chi amministra.
+  const scadenzario = visibili ? scadenzarioTutto.filter((v) => visibili.has(v.modulo)) : scadenzarioTutto;
+  const stati = visibili ? { ...statiTutti, servizi: statiTutti.servizi.filter((x) => visibili.has(x.modulo)) } : statiTutti;
+  const quadro = visibili
+    ? { ...quadroTutto, recenti: quadroTutto.recenti.filter((d) => documentoVisibile(visibili, d.tipo)), attivita: [] }
+    : quadroTutto;
+  const gruppi = MODULI_PER_AREA.map((g) => ({
+    ...g,
+    moduli: visibili ? g.moduli.filter((m) => visibili.has(m.href)) : g.moduli,
+  })).filter((g) => g.moduli.length > 0);
+  const gestisce = !interno || amministra(s.role);
   // L'andamento economico dello studio: si calcola dalle righe, mai persistito.
   const soldi = riepilogoCompensi(compensi, oggiIso());
   const attive = aziende.filter((a) => a.stato === "active");
@@ -96,7 +113,7 @@ export default async function DashboardPage() {
           <h1 className="font-display text-2xl font-semibold tracking-tight">Portafoglio</h1>
           <p className="mt-1 text-sm text-muted-foreground">Il quadro dello studio e le aziende che rendiconti.</p>
         </div>
-        <NuovaAziendaDialog atLimit={usage.atLimit} limite={usage.limit} />
+        {gestisce && <NuovaAziendaDialog atLimit={usage.atLimit} limite={usage.limit} />}
       </div>
 
       {/* Quadro dello studio: banda quieta di numeri reali, calcolati al volo */}
@@ -142,7 +159,7 @@ export default async function DashboardPage() {
         {/* L'andamento economico. Compare solo se c'e' qualcosa da incassare: uno
             studio che non ha ancora registrato un compenso non ha bisogno di vedersi
             dire «0,00 €», che si legge come un rimprovero. */}
-        {soldi.daIncassare > 0 && (
+        {!interno && soldi.daIncassare > 0 && (
           <div className="flex items-baseline gap-2">
             <dd className="text-xl font-semibold tracking-tight" data-slot="kpi" data-da-incassare={soldi.daIncassare}>
               {euro(soldi.daIncassare)} €
@@ -155,6 +172,7 @@ export default async function DashboardPage() {
             </dt>
           </div>
         )}
+        {!visibili && (
         <div className="flex items-baseline gap-2">
           <dd className="text-xl font-semibold tracking-tight" data-slot="kpi">
             {quadro.documentiTotali}
@@ -163,6 +181,7 @@ export default async function DashboardPage() {
             {quadro.documentiTotali === 1 ? "documento pubblicato" : "documenti pubblicati"}
           </dt>
         </div>
+        )}
         {quadro.attivita[0] && (
           <div className="ml-auto hidden text-[13px] text-muted-foreground lg:block">
             Ultima attività: {fmtRelativa(quadro.attivita[0].quando)}
@@ -214,7 +233,7 @@ export default async function DashboardPage() {
               Crea la prima azienda cliente e avvia il suo primo percorso: le schermate guidate fanno il resto.
             </p>
             <div className="mt-5">
-              <NuovaAziendaDialog atLimit={usage.atLimit} limite={usage.limit} />
+              {gestisce && <NuovaAziendaDialog atLimit={usage.atLimit} limite={usage.limit} />}
             </div>
           </CardContent>
         </Card>
@@ -255,7 +274,7 @@ export default async function DashboardPage() {
                     </div>
                     <div className="relative z-20 flex shrink-0 items-center gap-1">
                       {a.isDemo && <Badge variant="outline">Demo</Badge>}
-                      <AziendaAzioni companyId={a.id} nome={a.nome} archiviata={false} />
+                      {gestisce && <AziendaAzioni companyId={a.id} nome={a.nome} archiviata={false} />}
                     </div>
                   </div>
                 </CardHeader>
@@ -318,7 +337,7 @@ export default async function DashboardPage() {
                     nome accessibile NON e' quello che si legge: a schermo c'e' «2/4»,
                     che a un lettore di schermo arriverebbe come «due barra quattro». */}
                 <CardFooter data-percorsi="" className="relative z-20 flex gap-1 p-2">
-                  {MODULI_PER_AREA.map((g) => {
+                  {gruppi.map((g) => {
                     const stati = g.moduli.map(
                       (m) => moduli.find((x) => x.modulo === m.href)?.stato ?? "non-avviato",
                     );
@@ -491,7 +510,7 @@ export default async function DashboardPage() {
           )}
         </section>
 
-        <section aria-label="Attività recente">
+        {!visibili && <section aria-label="Attività recente">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Attività recente</h2>
           {quadro.attivita.length === 0 ? (
             <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
@@ -512,7 +531,7 @@ export default async function DashboardPage() {
               ))}
             </ol>
           )}
-        </section>
+        </section>}
       </div>
 
       {archiviate.length > 0 && (
@@ -527,7 +546,7 @@ export default async function DashboardPage() {
                       <h3 className="truncate text-sm font-semibold">{a.nome}</h3>
                       <p className="text-xs text-muted-foreground">sola lettura · non conta nel limite</p>
                     </div>
-                    <AziendaAzioni companyId={a.id} nome={a.nome} archiviata />
+                    {gestisce && <AziendaAzioni companyId={a.id} nome={a.nome} archiviata />}
                   </div>
                 </CardHeader>
               </Card>

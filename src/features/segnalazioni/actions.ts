@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -33,7 +33,7 @@ const rotta = (companyId: string) => percorsoModulo(companyId, "segnalazioni");
 
 export async function creaAssettoAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     const id = await creaAssetto(s.userId, s.orgId, { companyId });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -46,7 +46,7 @@ export async function aggiornaProfiloAction(
   patch: z.input<typeof profiloAssettoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await aggiornaProfilo(s.userId, s.orgId, systemId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -59,7 +59,7 @@ export async function creaCanaleAction(
   input: z.input<typeof nuovoCanaleSchema>,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     const id = await creaCanale(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -72,7 +72,7 @@ export async function setCampoCanaleAction(
   input: z.input<typeof campoCanaleSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await setCampoCanale(s.userId, s.orgId, canaleId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -81,7 +81,7 @@ export async function setCampoCanaleAction(
 
 export async function eliminaCanaleAction(companyId: string, canaleId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await eliminaCanale(s.userId, s.orgId, canaleId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -94,7 +94,7 @@ export async function creaFascicoloAction(
   input: z.input<typeof nuovoFascicoloSchema>,
 ): Promise<ActionEsito<{ id: string; numero: number }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     const dati = await creaFascicolo(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true, dati };
@@ -107,7 +107,7 @@ export async function setCampoFascicoloAction(
   input: z.input<typeof campoFascicoloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await setCampoFascicolo(s.userId, s.orgId, reportId, input);
     // ⚠️ Si rivalida la pagina del FASCICOLO, non quella del modulo: `/segnalazioni` non
     // invalida `/segnalazioni/fascicolo/<id>`. È lo stesso difetto già pagato
@@ -119,7 +119,7 @@ export async function setCampoFascicoloAction(
 
 export async function eliminaFascicoloAction(companyId: string, reportId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await eliminaFascicolo(s.userId, s.orgId, reportId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -132,7 +132,7 @@ export async function setCampoRequisitoAction(
   input: z.input<typeof requisitoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("segnalazioni");
     await setCampoRequisito(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };

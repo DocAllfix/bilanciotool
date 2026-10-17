@@ -6,13 +6,22 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Monogramma } from "@/components/brand/logo";
 import { SidebarNav } from "./sidebar-nav";
+import type { ModuloAzienda } from "@/features/companies/moduli";
 import { Menu, X } from "lucide-react";
 
 // Navigazione mobile (sotto md la sidebar è nascosta): barra superiore con menu
 // a scomparsa. Le voci sono le STESSE della sidebar, rese dallo stesso
 // componente: prima erano un secondo elenco copiato a mano, che infatti si era
 // già fermato a tre voci mentre la sidebar ne aveva altre.
-export function MobileNav({ aziende = [] }: { aziende?: { id: string; nome: string }[] }) {
+export function MobileNav({
+  aziende = [],
+  percorsi = null,
+  senzaCompensi = false,
+}: {
+  aziende?: { id: string; nome: string }[];
+  percorsi?: readonly ModuloAzienda[] | null;
+  senzaCompensi?: boolean;
+}) {
   const [aperto, setAperto] = useState(false);
   const pathname = usePathname();
 
@@ -44,7 +53,7 @@ export function MobileNav({ aziende = [] }: { aziende?: { id: string; nome: stri
       </div>
       {aperto && (
         <div className="border-b border-sidebar-border bg-sidebar pb-3 pt-1">
-          <SidebarNav aziende={aziende} />
+          <SidebarNav aziende={aziende} percorsi={percorsi} senzaCompensi={senzaCompensi} />
         </div>
       )}
     </div>

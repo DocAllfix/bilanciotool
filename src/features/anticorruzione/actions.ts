@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -23,7 +23,7 @@ import type { z } from "zod";
 
 export async function creaSistemaAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     const id = await creaSistema(s.userId, s.orgId, { companyId });
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true, dati: { id } };
@@ -38,7 +38,7 @@ export async function aggiornaProfiloAction(
   patch: z.input<typeof profiloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     await aggiornaProfilo(s.userId, s.orgId, systemId, patch);
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true };
@@ -53,7 +53,7 @@ export async function creaSocioAction(
   nome: string,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     const id = await creaSocio(s.userId, s.orgId, systemId, { nome });
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true, dati: { id } };
@@ -68,7 +68,7 @@ export async function setCampoSocioAction(
   input: z.input<typeof campoSocioSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     await setCampoSocio(s.userId, s.orgId, socioId, input);
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true };
@@ -79,7 +79,7 @@ export async function setCampoSocioAction(
 
 export async function eliminaSocioAction(companyId: string, socioId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     await eliminaSocio(s.userId, s.orgId, socioId);
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true };
@@ -94,7 +94,7 @@ export async function setCampoRequisitoAction(
   input: z.input<typeof requisitoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("anticorruzione");
     await setCampoRequisito(s.userId, s.orgId, systemId, input);
     revalidatePath(percorsoModulo(companyId, "anticorruzione"));
     return { ok: true };
