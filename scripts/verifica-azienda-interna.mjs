@@ -80,8 +80,18 @@ try {
   let idInvito = null;
   await A.agisci("l'amministratore invita un collaboratore (ruolo predefinito)", async () => {
     await A.page.goto(`${BASE}/impostazioni/membri`, { waitUntil: "domcontentloaded" });
-    const t = await A.page.locator("main").innerText();
-    if (!/Chi lavora nell'azienda/.test(t)) throw new Error("la pagina parla ancora di studio");
+    // ⚠️ Si ASPETTA la frase: letto a `domcontentloaded`, `main` può contenere ancora il
+    // segnaposto di caricamento. In locale la pagina è pronta in quell'istante, su
+    // un'anteprima no: il controllo accusava la pagina di parlare di «studio» e l'invito
+    // non partiva, facendo cadere a catena tutto il resto.
+    await A.page
+      .locator("main")
+      .getByText(/Chi lavora nell'azienda/)
+      .first()
+      .waitFor({ timeout: 60_000 })
+      .catch(() => {
+        throw new Error("la pagina parla ancora di studio");
+      });
     if (!(await A.page.getByRole("radio", { name: /Collaboratore/ }).isChecked())) throw new Error("il ruolo predefinito non è Collaboratore");
     await A.page.locator("#invita-email").fill(COLLEGA);
     await A.page.getByRole("button", { name: /Invia invito/i }).click();
