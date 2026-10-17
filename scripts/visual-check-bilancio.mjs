@@ -117,6 +117,10 @@ const projectId = await (async () => {
   if (!row) throw new Error(`nessun bilancio 2025 per ${NOME_AZIENDA}`);
   const punteggi = [["T01", 4, 3], ["T02", 4, 4], ["T07", 5, 4], ["T03", 2, 2]];
   punteggiSeminati = punteggi.length;
+  // ⚠️ Dal 17 ottobre 2026 il progetto nasce coi temi PROPOSTI dal codice ATECO. Qui si
+  // fotografa una materialità valutata: le proposte si tolgono prima di seminare, e le
+  // provano `materialita-proposte.db` e `bilancio-percorso`.
+  await s2`delete from materiality_assessment where project_id = ${row.id} and proposta_motivo is not null`;
   for (const [t, imp, fin] of punteggi) {
     await s2`insert into materiality_assessment (id, organization_id, project_id, topic_key, score_impact, score_financial)
       select gen_random_uuid()::text, c.organization_id, ${row.id}, ${t}, ${imp}, ${fin}
