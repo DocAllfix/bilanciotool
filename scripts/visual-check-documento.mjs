@@ -48,6 +48,13 @@ await page.evaluate(() => {
 
 const [org] = await sql`select m.organization_id as id, m.user_id as uid from member m join "user" u on u.id=m.user_id where u.email=${email}`;
 await sql`update org_entitlement set status='active' where organization_id=${org.id}`;
+// Per i PDF d'esempio della vetrina (`scripts/esempi-landing.mjs`): il nome dello studio è
+// l'EMITTENTE che `/verifica` mostrerà per sempre, e si congela alla pubblicazione. Va dato
+// qui, prima, non dopo.
+if (process.env.ESEMPI_NOME_STUDIO) {
+  await sql`update organization set name = ${process.env.ESEMPI_NOME_STUDIO} where id = ${org.id}`;
+}
+console.log(`ORG=${org.id}`);
 
 // 2. Azienda + dati completi via SQL (setup deterministico; i flussi UI sono già
 //    coperti dagli e2e — qui serve un documento RICCO da fotografare).
