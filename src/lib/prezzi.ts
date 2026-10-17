@@ -13,10 +13,10 @@
 // diventa un addebito cento volte più piccolo senza che nessuno se ne accorga fino al primo
 // pagamento vero.
 
-export type PianoKey = "singola" | "professional" | "studio" | "studio_plus" | "enterprise";
+export type PianoKey = "singola" | "azienda" | "professional" | "studio" | "studio_plus" | "enterprise";
 
 /** In ordine di VENDITA: è l'ordine in cui le fasce compaiono ovunque si comprano. */
-export const CHIAVI_PIANO: readonly PianoKey[] = ["singola", "professional", "studio", "studio_plus", "enterprise"];
+export const CHIAVI_PIANO: readonly PianoKey[] = ["singola", "azienda", "professional", "studio", "studio_plus", "enterprise"];
 
 export type Piano = {
   key: PianoKey;
@@ -35,6 +35,10 @@ export type Piano = {
   /** Vero se su questa fascia NON si vendono blocchi di aziende: chi cresce sale di fascia.
    *  Lo applica il server (`apriCheckoutAction`, `creaSessioneCheckout`), non solo il dialogo. */
   senzaBlocchi?: boolean;
+  /** Vero per la fascia «Azienda»: l'organizzazione è un'azienda che lavora in casa, non uno
+   *  studio. Accende l'assegnazione dei percorsi alle persone (`requirePercorso`): un
+   *  collaboratore vede e scrive solo i percorsi che l'amministratore gli ha assegnato. */
+  usoInterno?: boolean;
   /** Centesimi. Prezzo di lancio: quello che si paga davvero finché la promozione dura.
    *  Il campo `primoAnno` resta il LISTINO, ed è il numero che si mostra barrato. */
   primoAnnoLancio?: number;
@@ -68,6 +72,27 @@ export const PIANI: Record<PianoKey, Piano> = {
     senzaBlocchi: true,
     lookupAnno1: "evalisdeck_singola_anno1_v1",
     lookupRinnovo: "evalisdeck_singola_rinnovo_v1",
+  },
+  /* ⚠️ L'AZIENDA CHE FA DA SÉ (decisione del committente del 17 ottobre 2026).
+   *
+   * Non uno studio con un portafoglio, ma un'azienda che porta avanti i propri percorsi in
+   * casa: un amministratore si abbona, invita i colleghi e assegna a ciascuno i percorsi di
+   * cui si occupa. Un'azienda sola (la propria), dieci accessi, rinnovo al −20% come tutte.
+   *
+   * ⚠️ NIENTE BLOCCHI: l'azienda è una, per definizione. Chi segue anche altre aziende è uno
+   * studio, e le fasce da studio sono quelle sotto. */
+  azienda: {
+    key: "azienda",
+    nome: "Azienda",
+    descrizione: "Per l'azienda che fa da sé: un amministratore, i colleghi, a ciascuno i suoi percorsi.",
+    aziende: 1,
+    accessi: 10,
+    primoAnno: 49000,
+    rinnovo: 39200,
+    senzaBlocchi: true,
+    usoInterno: true,
+    lookupAnno1: "evalisdeck_azienda_anno1_v1",
+    lookupRinnovo: "evalisdeck_azienda_rinnovo_v1",
   },
   professional: {
     key: "professional",
@@ -244,6 +269,7 @@ export const FONDATORI = {
 export const LOOKUP_STORICHE: Record<PianoKey, readonly string[]> = {
   // Nata col listino del 22 settembre 2026: nessun listino precedente.
   singola: [],
+  azienda: [],
   professional: [
     "evalisdeck_professional_anno1_v1",
     "evalisdeck_professional_rinnovo_v1",

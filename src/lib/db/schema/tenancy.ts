@@ -115,3 +115,36 @@ export const companyReferent = pgTable(
   },
   (t) => [uniqueIndex("company_referent_uq").on(t.companyId, t.userId)],
 );
+
+// Fascia «Azienda» (decisione del committente del 17 ottobre 2026): l'amministratore assegna a
+// ciascun collaboratore i percorsi di cui si occupa, e il collaboratore vede e scrive SOLO
+// quelli (`requirePercorso`). Negli studi la tabella resta vuota: lì ognuno vede tutto.
+//
+// ⚠️ Lo strato per persona è APPLICATIVO. RLS resta per studio, come su ogni tabella tenant:
+// una policy per persona su centocinquanta tabelle di percorso, molte senza `company_id`,
+// sarebbe una seconda verità da tenere allineata. Lo dichiara `percorso-guardia-pure`.
+//
+// ⚠️ Uscire dallo studio CANCELLA le assegnazioni (trigger sulla `member`, migrazione 0068):
+// chi venisse reinvitato non deve ritrovarsi i permessi di allora senza che nessuno li dia.
+export const assegnazionePercorso = pgTable(
+  "assegnazione_percorso",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    companyId: text("company_id")
+      .notNull()
+      .references(() => company.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    modulo: text("modulo").$type<import("@/features/companies/moduli").ModuloAzienda>().notNull(),
+    createdBy: text("created_by"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("assegnazione_percorso_uq").on(t.companyId, t.userId, t.modulo),
+    index("assegnazione_percorso_utente_idx").on(t.organizationId, t.userId),
+  ],
+);
