@@ -317,6 +317,13 @@ export const corpusRegisterRow = pgTable(
     /** Il riferimento leggibile, «NC001»: si compone dal prefisso e dal numero. */
     riferimento: text("riferimento"),
     dati: jsonb("dati").default({}).notNull(),
+    /**
+     * Le righe proposte dal codice ATECO (aspetti ambientali e pericoli del sistema
+     * integrato). `tipoKey` rende idempotente l'inserimento; `propostaMotivo` è la MARCA, piena
+     * finché nessuno tocca la riga. I documenti non contano le righe ancora marcate.
+     */
+    tipoKey: text("tipo_key"),
+    propostaMotivo: text("proposta_motivo"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

@@ -1,3 +1,4 @@
+import { mogModel } from "@/lib/db/schema";
 import { and, asc, eq } from "drizzle-orm";
 import { withTenant } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
@@ -32,11 +33,18 @@ export async function getSegnalazioni(userId: string, orgId: string, companyId: 
     // studio» — che è un 404 — da «la gestione non è ancora stata avviata», che è un
     // invito a cominciare. Restituire `null` per entrambi manderebbe in errore chi apre
     // il modulo per la prima volta.
-    const [azienda] = await tx
-      .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede })
+    const [az] = await tx
+      .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede, dipendenti: company.dipendenti })
       .from(company)
       .where(and(eq(company.id, companyId), eq(company.organizationId, orgId)));
-    if (!azienda) return null;
+    if (!az) return null;
+    // Se esiste un Modello 231 nel suo percorso: serve a PROPORRE il titolo dell'obbligo.
+    const [mog] = await tx
+      .select({ id: mogModel.id })
+      .from(mogModel)
+      .where(and(eq(mogModel.companyId, companyId), eq(mogModel.organizationId, orgId)))
+      .limit(1);
+    const azienda = { ...az, modello231: !!mog };
 
     const [assetto] = await tx
       .select()

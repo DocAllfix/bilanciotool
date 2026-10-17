@@ -848,6 +848,41 @@ try {
         righe.push({ profilo, modulo: "energetico", tipo: "uso", chiave, ordine: i + 1, valore: {}, motivo: ateco.energia.motivi[chiave] });
       });
     }
+    // Reati 231: «sempre» più quelli del profilo, e il 25-septies sotto il profilo speciale
+    // «_dipendenti», perché dipende dagli addetti e non dal codice ATECO.
+    const reati231 = new Set(load("mog231-reati.json").map((r) => r.id));
+    for (const [profilo, propri] of Object.entries(ateco.mog231.profili)) {
+      [...ateco.mog231.sempre, ...propri].forEach((chiave, i) => {
+        if (!reati231.has(chiave)) throw new Error(`ateco-proposte: reato 231 sconosciuto ${chiave}`);
+        righe.push({ profilo, modulo: "mog231", tipo: "reato", chiave, ordine: i + 1, valore: {}, motivo: ateco.mog231.motivi[chiave] });
+      });
+    }
+    righe.push({ profilo: "_dipendenti", modulo: "mog231", tipo: "reato", chiave: "25-septies", ordine: 1, valore: {}, motivo: ateco.mog231.motivi["25-septies"] });
+    const trattamentiGdpr = new Set(load("gdpr-trattamenti-tipo.json").map((t) => t.key));
+    for (const [profilo, elenco] of Object.entries(ateco.gdpr.profili)) {
+      elenco.forEach((chiave, i) => {
+        if (!trattamentiGdpr.has(chiave)) throw new Error(`ateco-proposte: trattamento GDPR sconosciuto ${chiave}`);
+        righe.push({ profilo, modulo: "gdpr", tipo: "trattamento", chiave, ordine: i + 1, valore: {}, motivo: ateco.gdpr.motivi[chiave] });
+      });
+    }
+    // Sistema integrato QAS: aspetti ambientali e pericoli, per GRUPPO di settore (i profili
+    // si mappano sui gruppi), più le righe comuni a ogni sede sotto il profilo «_sempre».
+    // La chiave è stabile per gruppo e posizione: è il `tipo_key` della riga nel registro.
+    {
+      const q = ateco.qas;
+      const aggiungi = (profilo, gruppo, voci, motivo) => {
+        voci.aspetti.forEach((v, i) =>
+          righe.push({ profilo, modulo: "sgiqas", tipo: "aspetto", chiave: `${gruppo}-a${i + 1}`, ordine: i + 1, valore: v, motivo }));
+        voci.pericoli.forEach((v, i) =>
+          righe.push({ profilo, modulo: "sgiqas", tipo: "pericolo", chiave: `${gruppo}-p${i + 1}`, ordine: i + 1, valore: v, motivo }));
+      };
+      aggiungi("_sempre", "comune", q.comuni, q.comuni.motivo);
+      for (const [profilo, gruppo] of Object.entries(q.profili)) {
+        const g = q.gruppi[gruppo];
+        if (!g) throw new Error(`ateco-proposte: gruppo QAS sconosciuto ${gruppo}`);
+        aggiungi(profilo, gruppo, g, g.motivo);
+      }
+    }
     for (const r of righe) {
       await sql`
         insert into ateco_proposta (id, set_id, profilo, modulo, tipo, chiave, ordine, valore, motivo)

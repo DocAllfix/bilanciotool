@@ -4,6 +4,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { sgesgProgramma, sgesgSchedaDef, sgesgSchedaDato } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
+import { profiloAzienda, type ProfiloAzienda } from "@/features/companies/profilo";
 
 // Le schede del metodo: catalogo congelato + compilato del programma.
 //
@@ -114,7 +115,39 @@ export type VistaScheda = {
   def: SchedaDef;
   dati: Record<string, unknown>;
   stato: "non_aperta" | "bozza" | "completata";
+  /** Per i campi VUOTI che l'anagrafica dell'azienda conosce: il valore da proporre. */
+  proposte: Record<string, string>;
 };
+
+/**
+ * I campi delle schede che l'anagrafica dell'azienda sa già riempire.
+ *
+ * ⚠️ Si PROPONGONO in lettura e non si scrivono all'avvio del programma: scriverli farebbe
+ * passare quindici schede da «non aperta» a «in bozza», cioè direbbe che qualcuno le ha
+ * aperte. Un clic li applica, come qualunque valore scritto a mano.
+ */
+export function proposteDallAnagrafica(az: ProfiloAzienda | null): Record<string, string> {
+  if (!az) return {};
+  // Il fatturato è un decimale in euro: «5200000.00» in un campo di testo si legge male.
+  const fatturato = az.fatturato?.replace(/\.0+$/, "") ?? null;
+  const voci: Record<string, string | null | undefined> = {
+    ragione_sociale: az.nome,
+    cliente: az.nome,
+    cliente_nome: az.nome,
+    cliente_potenziale: az.nome,
+    piva: az.piva,
+    sede: az.sede,
+    settore: az.settore,
+    ateco: az.ateco,
+    settore_ateco: [az.settore, az.ateco].filter(Boolean).join(" · ") || null,
+    dipendenti: az.dipendenti === null ? null : String(az.dipendenti),
+    fatturato,
+    sito_web: az.sitoWeb,
+    referente: az.referente?.nome,
+    ref_email: az.referente?.email,
+  };
+  return Object.fromEntries(Object.entries(voci).filter((e): e is [string, string] => !!e[1]?.trim()));
+}
 
 export async function getScheda(
   userId: string,
@@ -141,10 +174,20 @@ export async function getScheda(
         ),
       )
       .limit(1);
+    const dati = (d?.dati ?? {}) as Record<string, unknown>;
+    const [p] = await tx
+      .select({ companyId: sgesgProgramma.companyId })
+      .from(sgesgProgramma)
+      .where(and(eq(sgesgProgramma.id, programId), eq(sgesgProgramma.organizationId, orgId)))
+      .limit(1);
+    const tutte = p ? proposteDallAnagrafica(await profiloAzienda(tx, orgId, p.companyId)) : {};
+    const campi = new Set(((def.sezioni ?? []) as SezioneDef[]).flatMap((z) => z.c.map((c) => c.k)));
+    const vuoto = (v: unknown) => v === undefined || v === null || (typeof v === "string" && !v.trim());
     return {
       def: { ...def, sezioni: (def.sezioni ?? []) as SezioneDef[] },
-      dati: (d?.dati ?? {}) as Record<string, unknown>,
+      dati,
       stato: d ? d.stato : "non_aperta",
+      proposte: Object.fromEntries(Object.entries(tutte).filter(([k]) => campi.has(k) && vuoto(dati[k]))),
     };
   });
 }

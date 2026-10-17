@@ -532,3 +532,716 @@ Ogni voce porta questo testo accanto, nel percorso.
 - **Elettricità — WTT e perdite di rete**: Produrre e trasportare l'elettricità che si consuma genera emissioni a monte (categoria 4).
 - **Gas naturale — WTT**: Estrarre e trasportare il gas che si brucia genera emissioni a monte (categoria 4).
 - **Gasolio — WTT**: Raffinare e distribuire il gasolio genera emissioni a monte (categoria 4).
+
+## Bilancio energetico: usi finali accesi per profilo
+
+Se esiste l'esercizio precedente si riprendono i suoi usi finali; altrimenti questi.
+
+### Agricoltura, silvicoltura e pesca (divisioni 01–03)
+
+- Produzione del freddo e raffreddamento di processo
+- Pompaggi e circolazione fluidi
+- Riscaldamento degli ambienti
+- Illuminazione
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Estrazione di minerali (divisioni 05–09)
+
+- Macchine di formatura e lavorazione
+- Altre lavorazioni di processo
+- Aria compressa
+- Pompaggi e circolazione fluidi
+- Ventilazione e aspirazione fumi
+- Illuminazione
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Industria alimentare e delle bevande (divisioni 10–12)
+
+- Forni di mantenimento e trattamento termico
+- Essiccazione, preriscaldo, verniciatura
+- Altre lavorazioni di processo
+- Aria compressa
+- Produzione del freddo e raffreddamento di processo
+- Pompaggi e circolazione fluidi
+- Trattamento acque e reflui
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Tessile, abbigliamento e pelle (divisioni 13–15)
+
+- Macchine di formatura e lavorazione
+- Essiccazione, preriscaldo, verniciatura
+- Altre lavorazioni di processo
+- Aria compressa
+- Pompaggi e circolazione fluidi
+- Trattamento acque e reflui
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+
+### Legno, carta e stampa (divisioni 16–18)
+
+- Macchine di formatura e lavorazione
+- Essiccazione, preriscaldo, verniciatura
+- Altre lavorazioni di processo
+- Aria compressa
+- Ventilazione e aspirazione fumi
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+
+### Chimica, farmaceutica, gomma e plastica (divisioni 19–22)
+
+- Macchine di formatura e lavorazione
+- Essiccazione, preriscaldo, verniciatura
+- Altre lavorazioni di processo
+- Aria compressa
+- Produzione del freddo e raffreddamento di processo
+- Pompaggi e circolazione fluidi
+- Trattamento acque e reflui
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+
+### Vetro, ceramica, cemento e laterizi (divisioni 23)
+
+- Forni fusori e processi termici primari
+- Forni di mantenimento e trattamento termico
+- Macchine di formatura e lavorazione
+- Essiccazione, preriscaldo, verniciatura
+- Aria compressa
+- Ventilazione e aspirazione fumi
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+
+### Metallurgia e prodotti in metallo (divisioni 24–25)
+
+- Forni fusori e processi termici primari
+- Forni di mantenimento e trattamento termico
+- Macchine di formatura e lavorazione
+- Finitura, sbavatura, granigliatura
+- Essiccazione, preriscaldo, verniciatura
+- Aria compressa
+- Ventilazione e aspirazione fumi
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Produzione del freddo e raffreddamento di processo
+- Flotta aziendale su strada
+
+### Elettronica, apparecchi elettrici, macchine e mezzi di trasporto (divisioni 26–30)
+
+- Macchine di formatura e lavorazione
+- Finitura, sbavatura, granigliatura
+- Essiccazione, preriscaldo, verniciatura
+- Aria compressa
+- Ventilazione e aspirazione fumi
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Produzione del freddo e raffreddamento di processo
+- Raffrescamento degli ambienti
+
+### Mobili, altre manifatture, riparazione e installazione (divisioni 31–33)
+
+- Macchine di formatura e lavorazione
+- Finitura, sbavatura, granigliatura
+- Essiccazione, preriscaldo, verniciatura
+- Aria compressa
+- Ventilazione e aspirazione fumi
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Energia elettrica, gas e vapore (divisioni 35)
+
+- Altre lavorazioni di processo
+- Pompaggi e circolazione fluidi
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Flotta aziendale su strada
+
+### Acqua, reti fognarie e gestione dei rifiuti (divisioni 36–39)
+
+- Pompaggi e circolazione fluidi
+- Ventilazione e aspirazione fumi
+- Trattamento acque e reflui
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Costruzioni (divisioni 41–43)
+
+- Aria compressa
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Commercio all'ingrosso e al dettaglio (divisioni 45–47)
+
+- Produzione del freddo e raffreddamento di processo
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Trasporto e magazzinaggio (divisioni 49–53)
+
+- Aria compressa
+- Riscaldamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Movimentazione interna (carrelli e mezzi di piazzale)
+- Flotta aziendale su strada
+
+### Alloggio e ristorazione (divisioni 55–56)
+
+- Produzione del freddo e raffreddamento di processo
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+
+### Editoria, telecomunicazioni e servizi informatici (divisioni 58–63)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Altri servizi generali
+
+### Servizi finanziari e assicurativi (divisioni 64–66)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Altri servizi generali
+- Flotta aziendale su strada
+
+### Attività immobiliari (divisioni 68)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Altri servizi generali
+
+### Attività professionali, scientifiche e tecniche (divisioni 69–75)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Altri servizi generali
+- Flotta aziendale su strada
+
+### Noleggio, agenzie e servizi di supporto alle imprese (divisioni 77–82)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+- Flotta aziendale su strada
+
+### Pubblica amministrazione (divisioni 84)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+- Altri servizi generali
+- Flotta aziendale su strada
+
+### Istruzione (divisioni 85)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+- Altri servizi generali
+
+### Sanità e assistenza sociale (divisioni 86–88)
+
+- Produzione del freddo e raffreddamento di processo
+- Pompaggi e circolazione fluidi
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+
+### Attività artistiche, sportive e di intrattenimento (divisioni 90–93)
+
+- Generazione di vapore e acqua calda di processo
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+
+### Altre attività di servizi (divisioni 94–96)
+
+- Riscaldamento degli ambienti
+- Raffrescamento degli ambienti
+- Illuminazione
+- Uffici, ICT e sala server
+- Acqua calda sanitaria, spogliatoi e mensa
+- Flotta aziendale su strada
+
+## Modello 231: reati proposti come applicabili
+
+Entrano come «Sì» col motivo e la motivazione vuota: la scrive il consulente. Mai «No»: un
+reato escluso in silenzio è il difetto peggiore di una mappatura.
+
+**Per ogni impresa:**
+
+- 25-ter · Reati societari
+- 25-quinquiesdecies · Reati tributari
+- 24-bis · Delitti informatici e trattamento illecito di dati
+- 25-octies · Ricettazione, riciclaggio, impiego di denaro di provenienza illecita e autoriciclaggio
+
+**Per chi ha dipendenti:** 25-septies · Omicidio colposo e lesioni personali gravi o gravissime commessi con violazione delle norme antinfortunistiche
+
+### Agricoltura, silvicoltura e pesca (divisioni 01–03)
+
+- 25-undecies · Reati ambientali
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+- 25-quinquies · Delitti contro la personalità individuale
+- 24 · Indebita percezione di erogazioni, truffa in danno dello Stato o di un ente pubblico e frode informatica
+
+### Estrazione di minerali (divisioni 05–09)
+
+- 25-undecies · Reati ambientali
+
+### Industria alimentare e delle bevande (divisioni 10–12)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+
+### Tessile, abbigliamento e pelle (divisioni 13–15)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Legno, carta e stampa (divisioni 16–18)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Chimica, farmaceutica, gomma e plastica (divisioni 19–22)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Vetro, ceramica, cemento e laterizi (divisioni 23)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Metallurgia e prodotti in metallo (divisioni 24–25)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Elettronica, apparecchi elettrici, macchine e mezzi di trasporto (divisioni 26–30)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Mobili, altre manifatture, riparazione e installazione (divisioni 31–33)
+
+- 25-undecies · Reati ambientali
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Energia elettrica, gas e vapore (divisioni 35)
+
+- 25-undecies · Reati ambientali
+- 25 · Delitti contro la pubblica amministrazione
+
+### Acqua, reti fognarie e gestione dei rifiuti (divisioni 36–39)
+
+- 25-undecies · Reati ambientali
+- 25 · Delitti contro la pubblica amministrazione
+- 24 · Indebita percezione di erogazioni, truffa in danno dello Stato o di un ente pubblico e frode informatica
+
+### Costruzioni (divisioni 41–43)
+
+- 25-undecies · Reati ambientali
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+- 25-quinquies · Delitti contro la personalità individuale
+- 25 · Delitti contro la pubblica amministrazione
+
+### Commercio all'ingrosso e al dettaglio (divisioni 45–47)
+
+- 25-bis.1 · Delitti contro l'industria e il commercio
+- 25-sexiesdecies · Contrabbando
+
+### Trasporto e magazzinaggio (divisioni 49–53)
+
+- 25-undecies · Reati ambientali
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+- 25-sexiesdecies · Contrabbando
+
+### Alloggio e ristorazione (divisioni 55–56)
+
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+- 25-bis.1 · Delitti contro l'industria e il commercio
+
+### Editoria, telecomunicazioni e servizi informatici (divisioni 58–63)
+
+- 25-novies · Delitti in materia di violazione del diritto d'autore
+
+### Noleggio, agenzie e servizi di supporto alle imprese (divisioni 77–82)
+
+- 25-duodecies · Impiego di cittadini di paesi terzi il cui soggiorno è irregolare
+
+### Pubblica amministrazione (divisioni 84)
+
+- 25 · Delitti contro la pubblica amministrazione
+- 24 · Indebita percezione di erogazioni, truffa in danno dello Stato o di un ente pubblico e frode informatica
+
+### Istruzione (divisioni 85)
+
+- 24 · Indebita percezione di erogazioni, truffa in danno dello Stato o di un ente pubblico e frode informatica
+
+### Sanità e assistenza sociale (divisioni 86–88)
+
+- 25 · Delitti contro la pubblica amministrazione
+- 24 · Indebita percezione di erogazioni, truffa in danno dello Stato o di un ente pubblico e frode informatica
+- 25-undecies · Reati ambientali
+
+### Attività artistiche, sportive e di intrattenimento (divisioni 90–93)
+
+- 25-novies · Delitti in materia di violazione del diritto d'autore
+
+## Protezione dei dati: trattamenti proposti
+
+Entrano nel registro marcati «proposto»: finché nessuno li tocca non sono censiti, e il
+registro consegnato non li porta.
+
+**Per ogni azienda:**
+
+- Clienti: contratti, ordini e fatturazione
+- Fornitori: contratti e pagamenti
+- Posta elettronica e strumenti informatici
+
+**Per chi ha dipendenti:**
+
+- Gestione del rapporto di lavoro
+- Salute e sicurezza sul lavoro
+- Selezione del personale
+
+**Per chi ha un sito web:**
+
+- Sito web e cookie
+
+**Da 50 addetti:**
+
+- Segnalazioni di illeciti
+
+### Agricoltura, silvicoltura e pesca (divisioni 01–03)
+
+- Geolocalizzazione dei veicoli aziendali
+
+### Industria alimentare e delle bevande (divisioni 10–12)
+
+- Videosorveglianza
+
+### Chimica, farmaceutica, gomma e plastica (divisioni 19–22)
+
+- Videosorveglianza
+
+### Metallurgia e prodotti in metallo (divisioni 24–25)
+
+- Videosorveglianza
+
+### Elettronica, apparecchi elettrici, macchine e mezzi di trasporto (divisioni 26–30)
+
+- Videosorveglianza
+
+### Energia elettrica, gas e vapore (divisioni 35)
+
+- Geolocalizzazione dei veicoli aziendali
+
+### Acqua, reti fognarie e gestione dei rifiuti (divisioni 36–39)
+
+- Videosorveglianza
+- Geolocalizzazione dei veicoli aziendali
+
+### Costruzioni (divisioni 41–43)
+
+- Geolocalizzazione dei veicoli aziendali
+
+### Commercio all'ingrosso e al dettaglio (divisioni 45–47)
+
+- Videosorveglianza
+- Marketing e newsletter
+
+### Trasporto e magazzinaggio (divisioni 49–53)
+
+- Videosorveglianza
+- Geolocalizzazione dei veicoli aziendali
+
+### Alloggio e ristorazione (divisioni 55–56)
+
+- Videosorveglianza
+- Marketing e newsletter
+
+### Editoria, telecomunicazioni e servizi informatici (divisioni 58–63)
+
+- Marketing e newsletter
+
+### Servizi finanziari e assicurativi (divisioni 64–66)
+
+- Videosorveglianza
+- Marketing e newsletter
+
+### Attività immobiliari (divisioni 68)
+
+- Marketing e newsletter
+
+### Noleggio, agenzie e servizi di supporto alle imprese (divisioni 77–82)
+
+- Geolocalizzazione dei veicoli aziendali
+
+### Istruzione (divisioni 85)
+
+- Videosorveglianza
+
+### Sanità e assistenza sociale (divisioni 86–88)
+
+- Videosorveglianza
+
+### Attività artistiche, sportive e di intrattenimento (divisioni 90–93)
+
+- Videosorveglianza
+- Marketing e newsletter
+
+### Altre attività di servizi (divisioni 94–96)
+
+- Marketing e newsletter
+
+## Sistema integrato: aspetti ambientali e pericoli
+
+Righe proposte nei registri MOD-04.01 e MOD-05.01, con la sola descrizione: gravità,
+frequenza e probabilità restano vuote. I profili si raggruppano per settore.
+
+### Per ogni sede
+
+Aspetti ambientali:
+
+- Uffici e servizi generali · Consumo energetico ed emissioni di gas serra: Emissioni indirette da elettricità e riscaldamento
+- Uffici e servizi generali · Produzione di rifiuti: Rifiuti assimilabili, carta, toner e RAEE da avviare a recupero
+
+Pericoli:
+
+- Uffici · Lavoro al videoterminale: Postura e affaticamento visivo (Disturbi muscolo-scheletrici e visivi)
+- Tutti i locali · Presenza nei luoghi di lavoro: Incendio (Ustioni e intossicazione da fumi)
+
+### Lavorazioni manifatturiere — Tessile, abbigliamento e pelle, Legno, carta e stampa, Chimica, farmaceutica, gomma e plastica, Vetro, ceramica, cemento e laterizi, Metallurgia e prodotti in metallo, Elettronica, apparecchi elettrici, macchine e mezzi di trasporto, Mobili, altre manifatture, riparazione e installazione
+
+Aspetti ambientali:
+
+- Lavorazioni di reparto · Consumo energetico ed emissioni di gas serra: Consumi elettrici e termici dei macchinari
+- Lavorazioni di reparto · Produzione di rifiuti: Scarti di lavorazione, imballaggi e oli esausti
+- Lavorazioni di reparto · Emissioni in atmosfera: Polveri e fumi dalle lavorazioni, se convogliati soggetti ad autorizzazione
+- Lavorazioni di reparto · Rumore e vibrazioni: Rumore verso l'esterno dello stabilimento
+- Magazzino prodotti chimici · Sostanze pericolose: Sversamenti di oli, solventi o vernici
+- Ricevimento merci · Consumo di risorse: Materie prime e imballaggi in ingresso
+
+Pericoli:
+
+- Reparto produttivo · Uso di macchine e attrezzature: Organi in movimento, taglio, schiacciamento (Lesioni, amputazioni)
+- Reparto produttivo · Lavorazioni rumorose: Rumore (Ipoacusia)
+- Magazzino · Movimentazione con carrelli elevatori: Investimento e ribaltamento (Traumi gravi)
+- Reparto produttivo · Movimentazione manuale dei carichi: Sovraccarico biomeccanico (Lombalgie e disturbi muscolo-scheletrici)
+- Reparto produttivo · Uso di prodotti chimici: Agenti chimici (Irritazioni, intossicazioni)
+
+### Tipico dell'industria alimentare — Industria alimentare e delle bevande
+
+Aspetti ambientali:
+
+- Produzione · Scarichi idrici: Acque di lavaggio con carico organico
+- Produzione · Produzione di rifiuti: Scarti alimentari e sottoprodotti
+- Celle frigorifere · Consumo energetico ed emissioni di gas serra: Consumi del freddo e perdite di gas refrigeranti
+- Produzione · Odori e polveri: Odori dalle lavorazioni
+- Confezionamento · Consumo di risorse: Imballaggi primari e secondari
+
+Pericoli:
+
+- Produzione · Lavorazioni con coltelli e affettatrici: Taglio (Ferite da taglio)
+- Celle frigorifere · Ingresso in celle e ambienti freddi: Microclima freddo, chiusura accidentale (Ipotermia)
+- Produzione · Lavaggio e pavimenti bagnati: Scivolamento (Cadute e traumi)
+- Produzione · Cottura e sterilizzazione: Superfici calde e vapore (Ustioni)
+
+### Cantieri edili — Costruzioni
+
+Aspetti ambientali:
+
+- Cantiere · Produzione di rifiuti: Rifiuti da costruzione e demolizione
+- Cantiere · Odori e polveri: Polveri da demolizioni e movimento terra
+- Cantiere · Rumore e vibrazioni: Rumore e vibrazioni verso i residenti
+- Mezzi d'opera · Consumo energetico ed emissioni di gas serra: Gasolio dei mezzi di cantiere
+- Cantiere · Contaminazione del suolo: Sversamenti di carburanti e oli
+
+Pericoli:
+
+- Cantiere · Lavori in quota: Caduta dall'alto (Traumi gravi o mortali)
+- Cantiere · Scavi: Seppellimento, caduta nello scavo (Traumi gravi)
+- Cantiere · Uso di macchine movimento terra: Investimento (Traumi gravi)
+- Cantiere · Lavori in prossimità di linee elettriche: Elettrocuzione (Folgorazione)
+- Cantiere · Demolizioni e tagli: Polveri e silice cristallina (Malattie respiratorie)
+
+### Trasporto e della logistica — Trasporto e magazzinaggio
+
+Aspetti ambientali:
+
+- Flotta · Consumo energetico ed emissioni di gas serra: Carburante dei mezzi
+- Flotta · Emissioni in atmosfera: Gas di scarico e particolato
+- Officina e piazzale · Produzione di rifiuti: Pneumatici, oli esausti, batterie
+- Piazzale · Scarichi idrici: Acque di prima pioggia e di lavaggio mezzi
+
+Pericoli:
+
+- Strada · Guida dei mezzi: Incidente stradale (Traumi gravi o mortali)
+- Magazzino · Carico e scarico: Movimentazione manuale dei carichi (Disturbi muscolo-scheletrici)
+- Piazzale · Manovre dei mezzi: Investimento (Traumi gravi)
+- Strada · Turni di guida: Stress e fatica (Calo dell'attenzione)
+
+### Commercio — Commercio all'ingrosso e al dettaglio
+
+Aspetti ambientali:
+
+- Punto vendita · Consumo energetico ed emissioni di gas serra: Illuminazione, climatizzazione e banchi frigo
+- Punto vendita · Produzione di rifiuti: Imballaggi da avviare a recupero
+- Banchi frigoriferi · Emissioni in atmosfera: Perdite di gas refrigeranti
+
+Pericoli:
+
+- Magazzino · Movimentazione delle merci: Movimentazione manuale dei carichi (Disturbi muscolo-scheletrici)
+- Punto vendita · Lavoro al pubblico: Aggressione e rapina (Traumi e stress)
+- Magazzino · Scaffalature: Caduta di oggetti dall'alto (Traumi)
+
+### Attività d'ufficio e dei servizi — Editoria, telecomunicazioni e servizi informatici, Servizi finanziari e assicurativi, Attività immobiliari, Attività professionali, scientifiche e tecniche, Noleggio, agenzie e servizi di supporto alle imprese, Pubblica amministrazione, Istruzione, Attività artistiche, sportive e di intrattenimento, Altre attività di servizi
+
+Pericoli:
+
+- Uffici · Spostamenti per lavoro: Incidente stradale (Traumi)
+- Uffici · Organizzazione del lavoro: Stress lavoro-correlato (Disturbi psicofisici)
+
+### Strutture sanitarie — Sanità e assistenza sociale
+
+Aspetti ambientali:
+
+- Reparti · Produzione di rifiuti: Rifiuti sanitari pericolosi a rischio infettivo
+- Centrale termica · Consumo energetico ed emissioni di gas serra: Riscaldamento, vapore e climatizzazione continui
+- Laboratori · Sostanze pericolose: Reagenti, farmaci e gas medicali
+
+Pericoli:
+
+- Reparti · Assistenza ai pazienti: Agenti biologici (Infezioni)
+- Reparti · Movimentazione dei pazienti: Sovraccarico biomeccanico (Lombalgie)
+- Reparti · Uso di aghi e taglienti: Puntura accidentale (Infezioni trasmesse col sangue)
+- Reparti · Turni notturni: Lavoro notturno e stress (Disturbi del sonno e stress)
+
+### Alloggio e ristorazione — Alloggio e ristorazione
+
+Aspetti ambientali:
+
+- Cucina · Produzione di rifiuti: Rifiuti organici e oli di frittura esausti
+- Cucina · Scarichi idrici: Acque grasse da cucina
+- Struttura · Consumo di risorse: Acqua per lavanderia, docce e piscina
+
+Pericoli:
+
+- Cucina · Cottura e frittura: Superfici calde e oli bollenti (Ustioni)
+- Cucina · Uso di coltelli e affettatrici: Taglio (Ferite da taglio)
+- Sala e cucina · Pavimenti bagnati: Scivolamento (Cadute)
+- Lavanderia e pulizie · Uso di detergenti: Agenti chimici (Irritazioni)
+
+### Attività agricole — Agricoltura, silvicoltura e pesca
+
+Aspetti ambientali:
+
+- Campi · Sostanze pericolose: Uso di fitofarmaci e fertilizzanti
+- Campi · Consumo di risorse: Prelievi irrigui
+- Mezzi agricoli · Consumo energetico ed emissioni di gas serra: Gasolio agricolo
+
+Pericoli:
+
+- Campi · Uso del trattore: Ribaltamento (Traumi gravi o mortali)
+- Campi · Trattamenti fitosanitari: Agenti chimici (Intossicazioni)
+- Campi · Lavoro all'aperto: Microclima caldo e radiazione solare (Colpo di calore)
+
+### Gestione di acque e rifiuti — Acqua, reti fognarie e gestione dei rifiuti
+
+Aspetti ambientali:
+
+- Impianto · Odori e polveri: Odori dagli impianti di trattamento
+- Impianto · Scarichi idrici: Scarichi trattati e percolati
+- Raccolta · Consumo energetico ed emissioni di gas serra: Carburante dei mezzi di raccolta
+
+Pericoli:
+
+- Impianto · Ingresso in spazi confinati: Atmosfere asfittiche o tossiche (Asfissia)
+- Raccolta · Lavoro su strada: Investimento (Traumi gravi)
+- Impianto · Contatto con rifiuti: Agenti biologici (Infezioni)
+
+### Produzione e distribuzione di energia — Energia elettrica, gas e vapore
+
+Aspetti ambientali:
+
+- Impianti · Emissioni in atmosfera: Emissioni di combustione
+- Impianti · Sostanze pericolose: Oli dielettrici e gas isolanti (SF6)
+
+Pericoli:
+
+- Impianti · Lavori elettrici: Elettrocuzione (Folgorazione)
+- Impianti · Lavori in quota: Caduta dall'alto (Traumi gravi)
+
+### Attività estrattive — Estrazione di minerali
+
+Aspetti ambientali:
+
+- Cava · Uso del suolo e impatto visivo: Modifica del paesaggio e recupero ambientale
+- Cava · Odori e polveri: Polveri da abbattimento e frantumazione
+- Cava · Rumore e vibrazioni: Vibrazioni da esplosivi e mezzi
+
+Pericoli:
+
+- Cava · Uso di esplosivi: Esplosione (Traumi gravi o mortali)
+- Cava · Fronte di scavo: Caduta di materiale (Seppellimento e traumi)
+- Cava · Frantumazione: Polveri e silice cristallina (Malattie respiratorie)

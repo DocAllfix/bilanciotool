@@ -5,7 +5,7 @@ import { withTenant, type Tx } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestSetId } from "@/features/content-set";
-import { company, saCriterionState, saSystem } from "@/lib/db/schema";
+import { company, pasSystem, saCriterionState, saSystem } from "@/lib/db/schema";
 import { criterioSchema, profiloSchema, sistemaSchema } from "./validation";
 import type { z } from "zod";
 
@@ -38,7 +38,18 @@ export async function creaSistema(
     // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
     // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
     const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    // Il sistema di gestione sociale PAS 24000, se c'è, ha già contratto, siti e direzione:
+    // sono gli stessi fatti, e riscriverli li farebbe divergere fra i due percorsi.
+    const [gemello] = await tx
+      .select({ forma: pasSystem.forma, ccnl: pasSystem.ccnl, siti: pasSystem.siti, direzione: pasSystem.direzione })
+      .from(pasSystem)
+      .where(and(eq(pasSystem.companyId, v.companyId), eq(pasSystem.organizationId, orgId)))
+      .limit(1);
     await tx.insert(saSystem).values({
+      forma: gemello?.forma ?? null,
+      ccnl: gemello?.ccnl ?? null,
+      siti: gemello?.siti ?? null,
+      direzione: gemello?.direzione ?? null,
       id,
       organizationId: orgId,
       companyId: v.companyId,

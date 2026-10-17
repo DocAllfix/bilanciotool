@@ -52,8 +52,24 @@ describe.skipIf(!url)("seed contenuti metodologici", () => {
     // Dal 17 ottobre 2026 sono SEDICI: si aggiunge `ateco-v1`, le proposte per codice ATECO.
     expect(await conta(contentSet)).toBe(16);
     // Le proposte: una riga per voce di ogni profilo, contate dal file e non scritte qui.
-    const pa = propostePerAteco as { ghg: { profili: Record<string, string[]> }; energia: { profili: Record<string, string[]> } };
-    const attese = [pa.ghg, pa.energia].reduce((n, m) => n + Object.values(m.profili).flat().length, 0);
+    const pa = propostePerAteco as {
+      ghg: { profili: Record<string, string[]> };
+      energia: { profili: Record<string, string[]> };
+      mog231: { sempre: string[]; profili: Record<string, string[]> };
+      gdpr: { profili: Record<string, string[]> };
+    };
+    const reati = Object.values(pa.mog231.profili).reduce((n, l) => n + pa.mog231.sempre.length + l.length, 0) + 1;
+    const qas = (propostePerAteco as unknown as {
+      qas: {
+        comuni: { aspetti: unknown[]; pericoli: unknown[] };
+        gruppi: Record<string, { aspetti: unknown[]; pericoli: unknown[] }>;
+        profili: Record<string, string>;
+      };
+    }).qas;
+    const righeQas =
+      qas.comuni.aspetti.length + qas.comuni.pericoli.length +
+      Object.values(qas.profili).reduce((n, g) => n + qas.gruppi[g].aspetti.length + qas.gruppi[g].pericoli.length, 0);
+    const attese = [pa.ghg, pa.energia, pa.gdpr].reduce((n, m) => n + Object.values(m.profili).flat().length, 0) + reati + righeQas;
     expect(await conta(atecoProposta)).toBe(attese);
     // ⚠️ OTTO, e il numero non e' arrotondabile: `PROC-00`...`PROC-07`. Una fase in
     // meno significa un pezzo di metodo che nessuno compilera' perche' non compare.

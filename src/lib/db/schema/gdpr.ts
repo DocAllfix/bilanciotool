@@ -246,6 +246,8 @@ export const gdprTrattamento = pgTable(
     dpiaEsito: text("dpia_esito"),
     /** Da quale voce del catalogo e' nato: l'aggiunta dal catalogo e' idempotente. */
     tipoKey: text("tipo_key"),
+    /** Proposto all'avvio (migrazione 0069) e non ancora toccato: il motivo. */
+    propostaMotivo: text("proposta_motivo"),
     ordine: integer("ordine").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

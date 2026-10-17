@@ -1,5 +1,6 @@
 "use client";
 
+import { propostaDimensioneNis2 } from "@/lib/calc/proposte-compliance";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ export function VistaAmbito({ companyId, dati }: { companyId: string; dati: Dati
   // subito, altrimenti si leggono come rotti. Se il server rifiuta, si ripristina.
   const [settore, setSettore] = useState(p?.settore ?? "");
   const [dimensione, setDimensione] = useState(p?.dimensione ?? "");
+  const proposta = propostaDimensioneNis2(dati.azienda.dipendenti ?? null, dati.azienda.fatturato ?? null);
   const [criteri, setCriteri] = useState<string[]>((p?.criteri as string[]) ?? []);
 
   const salva = (patch: Parameters<typeof aggiornaAmbitoAction>[1], ripristina: () => void) =>
@@ -152,6 +154,23 @@ export function VistaAmbito({ companyId, dati }: { companyId: string; dati: Dati
               Media impresa da 50 addetti o 10 milioni; grande da 250 addetti o 50 milioni di
               fatturato.
             </p>
+            {/* La dimensione proposta dall'anagrafica: si applica con un clic, e solo finché il
+                campo è vuoto. È una qualificazione giuridica, e la firma il consulente. */}
+            {!dimensione && proposta && (
+              <p className="text-xs text-muted-foreground" data-proposta>
+                Proposta: <strong>{DIMENSIONI.find((d) => d.v === proposta.valore)?.nome}</strong>. {proposta.motivo}{" "}
+                <button
+                  type="button"
+                  className="font-medium text-primary underline-offset-2 hover:underline"
+                  onClick={() => {
+                    setDimensione(proposta.valore);
+                    salva({ dimensione: proposta.valore }, () => setDimensione(""));
+                  }}
+                >
+                  Usa questa
+                </button>
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

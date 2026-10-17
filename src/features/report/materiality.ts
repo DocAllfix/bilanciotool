@@ -93,7 +93,13 @@ export async function getMateriality(userId: string, orgId: string, projectId: s
     const valutazioni = await tx.select().from(materialityAssessment).where(eq(materialityAssessment.projectId, projectId));
     return { soglia: Number(p.soglia), valutazioni };
   });
-  const scores = Object.fromEntries(valutazioni.map((v) => [v.topicKey, { imp: v.scoreImpact, fin: v.scoreFinancial }]));
+  // ⚠️ L'esito conta solo i temi VALUTATI: una proposta dal codice ATECO non ancora toccata
+  // non rende materiale un tema, né sulla matrice né nelle lacune né per le politiche. È la
+  // stessa regola del documento pubblicato, e vale qui perché le tre superfici la leggono
+  // tutte da questa funzione.
+  const scores = Object.fromEntries(
+    valutazioni.filter((v) => !v.propostaMotivo).map((v) => [v.topicKey, { imp: v.scoreImpact, fin: v.scoreFinancial }]),
+  );
   return { soglia, valutazioni, esito: assessMateriality(scores, soglia) };
 }
 

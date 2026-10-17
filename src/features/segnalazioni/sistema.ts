@@ -5,7 +5,7 @@ import { withTenant, type Tx } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestSetId } from "@/features/content-set";
-import { company, wbChannel, wbReport, wbRequirementState, wbSystem } from "@/lib/db/schema";
+import { company, gdprSystem, wbChannel, wbReport, wbRequirementState, wbSystem } from "@/lib/db/schema";
 import {
   assettoSchema,
   campoCanaleSchema,
@@ -51,6 +51,12 @@ export async function creaAssetto(
     // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
     // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
     const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    // Il DPO è un FATTO già scritto nel percorso di protezione dei dati: si copia, una volta.
+    const [gdpr] = await tx
+      .select({ dpo: gdprSystem.dpoNome })
+      .from(gdprSystem)
+      .where(and(eq(gdprSystem.companyId, v.companyId), eq(gdprSystem.organizationId, orgId)))
+      .limit(1);
     await tx.insert(wbSystem).values({
       id,
       organizationId: orgId,
@@ -61,6 +67,7 @@ export async function creaAssetto(
       sede: an.sede,
       settore: an.settore,
       addetti: an.addetti,
+      dpo: gdpr?.dpo?.trim() || null,
       revisione: "1.0",
     });
 

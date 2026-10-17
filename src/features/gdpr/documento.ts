@@ -25,7 +25,11 @@ import type { PercorsoGdprAvviato } from "./queries";
 // o una nota libera di una violazione finirebbe lì dentro. È il perimetro dei documenti del
 // prototipo, ed è un test (`gdpr-documenti.db`).
 
-export function datiDocumentoGdpr(p: PercorsoGdprAvviato, esercizio: number, t: Tempo) {
+export function datiDocumentoGdpr(pTutto: PercorsoGdprAvviato, esercizio: number, t: Tempo) {
+  // ⚠️ Un trattamento PROPOSTO all'avvio e mai toccato non è un trattamento censito: nel
+  // registro consegnato non entra. Si filtra QUI, all'ingresso, perché il quadro e l'elenco
+  // si allineano per indice.
+  const p = { ...pTutto, righe: { ...pTutto.righe, trattamenti: pTutto.righe.trattamenti.filter((x) => !x.propostaMotivo) } };
   const q = quadroDa(p);
   const s = p.sistema;
   const r = p.righe;

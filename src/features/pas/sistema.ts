@@ -28,6 +28,7 @@ import {
   pasRischio,
   pasRischioTipo,
   pasSystem,
+  saSystem,
   pasTesto,
 } from "@/lib/db/schema";
 import { DERIVATI } from "@/lib/calc/pas/indicatori";
@@ -83,9 +84,16 @@ export async function avviaSistema(userId: string, orgId: string, input: z.input
     // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
     // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
     const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    // SA8000, se c'è, ha già contratto, siti e direzione (vedi `sa8000/sistema.ts`).
+    const [gemello] = await tx
+      .select({ forma: saSystem.forma, ccnl: saSystem.ccnl, siti: saSystem.siti, direzione: saSystem.direzione })
+      .from(saSystem)
+      .where(and(eq(saSystem.companyId, v.companyId), eq(saSystem.organizationId, orgId)))
+      .limit(1);
     const nuova = await tx
       .insert(pasSystem)
       .values({
+        forma: gemello?.forma ?? null, ccnl: gemello?.ccnl ?? null, siti: gemello?.siti ?? null, direzione: gemello?.direzione ?? null,
         id, organizationId: orgId, companyId: v.companyId, contentSetId: setId,
         // L'anagrafica si copia una volta (vedi `features/companies/profilo.ts`).
         piva: an.piva, sede: an.sede, settore: an.settore, ateco: an.ateco,

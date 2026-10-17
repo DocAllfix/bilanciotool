@@ -309,6 +309,8 @@ export type RigaRegistro = {
   numero: number;
   riferimento: string | null;
   dati: Record<string, unknown>;
+  /** Piena se la riga è una proposta non ancora toccata (aspetti e pericoli del QAS). */
+  propostaMotivo?: string | null;
 };
 
 /** Un registro: la sua definizione, le colonne e le registrazioni dell'azienda. */
@@ -343,6 +345,7 @@ export async function registroCorpus(
           numero: corpusRegisterRow.numero,
           riferimento: corpusRegisterRow.riferimento,
           dati: corpusRegisterRow.dati,
+          propostaMotivo: corpusRegisterRow.propostaMotivo,
         })
         .from(corpusRegisterRow)
         .where(

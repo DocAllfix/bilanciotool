@@ -1,3 +1,4 @@
+import { proponiReati231 } from "./proposte";
 import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, inArray } from "drizzle-orm";
@@ -57,7 +58,8 @@ export async function creaModello(
 
     // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
     // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
-    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    const az = await profiloAzienda(tx, orgId, v.companyId);
+    const an = anagraficaInTesto(az);
     await tx.insert(mogModel).values({
       id,
       organizationId: orgId,
@@ -77,6 +79,9 @@ export async function creaModello(
       entita: "mog_model",
       entitaId: id,
     });
+    // I reati tipici del settore e, se ci sono dipendenti, la sicurezza sul lavoro: proposti
+    // come applicabili, col motivo. Mai come non applicabili.
+    await proponiReati231(tx, userId, orgId, id, az);
   });
   return id;
 }
@@ -327,7 +332,8 @@ export async function setApplicabilita(
       .values({ id: randomUUID(), organizationId: orgId, modelId, crimeKey: v.crimeKey, [v.campo]: valore })
       .onConflictDoUpdate({
         target: [mogCrimeApplicability.modelId, mogCrimeApplicability.crimeKey],
-        set: { [v.campo]: valore, updatedAt: new Date() },
+        // Toccare un reato proposto lo rende del consulente: la marca si spegne.
+        set: { [v.campo]: valore, updatedAt: new Date(), propostaMotivo: null },
       });
 
     await logAudit(tx, {

@@ -29,6 +29,7 @@ export function PropostaValore({
   um,
   applica,
   etichetta,
+  formato = "numero",
 }: {
   valore: string;
   fonte: string;
@@ -37,8 +38,11 @@ export function PropostaValore({
   applica: (valore: string) => Promise<void>;
   /** Per il nome accessibile del pulsante: che cosa si sta compilando. */
   etichetta: string;
+  /** «testo» per ragioni sociali e indirizzi: la formattazione dei numeri storpierebbe «S.r.l.». */
+  formato?: "numero" | "testo";
 }) {
   const [inCorso, setInCorso] = useState(false);
+  const mostrato = formato === "testo" ? valore : numeroItaliano(valore);
   return (
     <button
       type="button"
@@ -52,12 +56,12 @@ export function PropostaValore({
           setInCorso(false);
         }
       }}
-      aria-label={`Usa ${numeroItaliano(valore)}${um ? ` ${um}` : ""} per ${etichetta}, ${fonte}`}
+      aria-label={`Usa ${mostrato}${um ? ` ${um}` : ""} per ${etichetta}, ${fonte}`}
       className="mt-1 inline-flex max-w-full items-center gap-1 rounded border border-dashed border-primary/40 px-1.5 py-0.5 text-left text-[11px] text-primary transition-colors hover:bg-accent disabled:opacity-50"
     >
       <Sparkles className="size-3 shrink-0" aria-hidden />
       <span className="truncate">
-        Usa {numeroItaliano(valore)}
+        Usa {mostrato}
         {um ? ` ${um}` : ""}{" "}
         <span className="text-muted-foreground">{fonte}</span>
       </span>

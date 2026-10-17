@@ -130,7 +130,16 @@ export async function getReportWizardData(userId: string, orgId: string, company
     stato: {
       materialita: {
         soglia: materialita.soglia,
-        perTopic: materialita.esito.perTopic,
+        // Le tendine mostrano anche i punteggi PROPOSTI, perché si confermino guardandoli;
+        // matrice e «materiale» seguono l'esito, che conta solo i temi valutati.
+        perTopic: {
+          ...Object.fromEntries(
+            materialita.valutazioni
+              .filter((v) => v.propostaMotivo)
+              .map((v) => [v.topicKey, { imp: v.scoreImpact, fin: v.scoreFinancial, materiale: false, valutato: false }]),
+          ),
+          ...materialita.esito.perTopic,
+        },
         materialKeys: materialita.esito.materialKeys,
         assessedCount: materialita.esito.assessedCount,
         // I temi proposti dal codice ATECO e non ancora toccati, col motivo.

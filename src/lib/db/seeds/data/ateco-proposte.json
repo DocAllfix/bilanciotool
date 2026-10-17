@@ -776,5 +776,869 @@
         "U20"
       ]
     }
+  },
+  "mog231": {
+    "nota": "Si propone solo «applicabile», mai «non applicabile»: escludere un reato è una decisione da motivare. Il reato 25-septies (sicurezza sul lavoro) si propone in base agli addetti, non al profilo.",
+    "motivi": {
+      "24": "L'ente riceve o gestisce erogazioni pubbliche, contributi o appalti: il rischio di indebita percezione è tipico.",
+      "25": "L'ente lavora con la pubblica amministrazione o per conto di essa: i delitti contro la PA sono il rischio principale.",
+      "25-ter": "Ogni società di capitali redige un bilancio e ha organi sociali: i reati societari la riguardano sempre.",
+      "25-quinquiesdecies": "Ogni impresa presenta dichiarazioni fiscali: i reati tributari la riguardano sempre.",
+      "24-bis": "Ogni azienda usa sistemi informatici e tratta dati: i delitti informatici sono un rischio comune.",
+      "25-octies": "Pagamenti e flussi finanziari espongono ogni impresa al rischio di ricettazione e autoriciclaggio.",
+      "25-undecies": "Le attività del settore producono emissioni, scarichi o rifiuti soggetti ad autorizzazione: i reati ambientali sono un rischio tipico.",
+      "25-duodecies": "Nel settore è frequente il ricorso a manodopera di paesi terzi, anche tramite appalto.",
+      "25-quinquies": "Nel settore il rischio di intermediazione illecita e sfruttamento del lavoro (caporalato) è documentato.",
+      "25-bis.1": "Chi produce o vende beni è esposto alla frode in commercio e alla vendita di prodotti con segni mendaci.",
+      "25-sexiesdecies": "Importazioni ed esportazioni espongono ai reati doganali di contrabbando.",
+      "25-novies": "Chi pubblica contenuti o sviluppa software usa opere protette dal diritto d'autore.",
+      "25-septies": "L'ente ha lavoratori dipendenti: gli obblighi di salute e sicurezza (D.Lgs. 81/2008) si applicano, e con essi il reato presupposto."
+    },
+    "sempre": [
+      "25-ter",
+      "25-quinquiesdecies",
+      "24-bis",
+      "25-octies"
+    ],
+    "profili": {
+      "alimentare": [
+        "25-undecies",
+        "25-bis.1",
+        "25-duodecies"
+      ],
+      "tessile_moda": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "legno_carta": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "chimica_plastica": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "minerali": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "metalli": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "macchine_elettronica": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "altre_manifatture": [
+        "25-undecies",
+        "25-bis.1"
+      ],
+      "agricoltura": [
+        "25-undecies",
+        "25-duodecies",
+        "25-quinquies",
+        "24"
+      ],
+      "estrattiva": [
+        "25-undecies"
+      ],
+      "energia": [
+        "25-undecies",
+        "25"
+      ],
+      "acqua_rifiuti": [
+        "25-undecies",
+        "25",
+        "24"
+      ],
+      "costruzioni": [
+        "25-undecies",
+        "25-duodecies",
+        "25-quinquies",
+        "25"
+      ],
+      "commercio": [
+        "25-bis.1",
+        "25-sexiesdecies"
+      ],
+      "trasporti": [
+        "25-undecies",
+        "25-duodecies",
+        "25-sexiesdecies"
+      ],
+      "alloggio_ristorazione": [
+        "25-duodecies",
+        "25-bis.1"
+      ],
+      "ict_editoria": [
+        "25-novies"
+      ],
+      "finanza": [],
+      "immobiliare": [],
+      "professionali": [],
+      "servizi_supporto": [
+        "25-duodecies"
+      ],
+      "pubblica_amministrazione": [
+        "25",
+        "24"
+      ],
+      "istruzione": [
+        "24"
+      ],
+      "sanita": [
+        "25",
+        "24",
+        "25-undecies"
+      ],
+      "cultura_sport": [
+        "25-novies"
+      ],
+      "altri_servizi": []
+    }
+  },
+  "gdpr": {
+    "nota": "Profili speciali: _sempre (ogni azienda), _dipendenti (con dipendenti), _sito (con sito web), _50 (almeno 50 addetti: canale di segnalazione obbligatorio).",
+    "motivi": {
+      "clienti-contratti-ordini-e-fatturazione": "Ogni azienda tratta i dati dei clienti per contratti, ordini e fatture.",
+      "fornitori-contratti-e-pagamenti": "Ogni azienda tratta i dati dei referenti dei fornitori per contratti e pagamenti.",
+      "posta-elettronica-e-strumenti-informatici": "Posta e strumenti informatici contengono dati personali di dipendenti e terzi.",
+      "gestione-del-rapporto-di-lavoro": "Con dipendenti c'è sempre il trattamento per paghe, presenze e adempimenti.",
+      "salute-e-sicurezza-sul-lavoro": "Con dipendenti c'è la sorveglianza sanitaria, che tratta dati particolari.",
+      "selezione-del-personale": "Chi assume raccoglie curricula e dati dei candidati.",
+      "sito-web-e-cookie": "L'azienda ha un sito web: moduli di contatto e cookie trattano dati dei visitatori.",
+      "segnalazioni-di-illeciti": "Dai 50 addetti il canale di segnalazione è obbligatorio (D.Lgs. 24/2023), e tratta dati riservati.",
+      "videosorveglianza": "Nel settore è frequente la videosorveglianza di locali, magazzini o aree aperte al pubblico.",
+      "geolocalizzazione-dei-veicoli-aziendali": "Nel settore i veicoli aziendali sono spesso localizzati, e la geolocalizzazione richiede garanzie per i lavoratori.",
+      "marketing-e-newsletter": "Nel settore il marketing diretto ai clienti è un'attività tipica."
+    },
+    "profili": {
+      "_sempre": [
+        "clienti-contratti-ordini-e-fatturazione",
+        "fornitori-contratti-e-pagamenti",
+        "posta-elettronica-e-strumenti-informatici"
+      ],
+      "_dipendenti": [
+        "gestione-del-rapporto-di-lavoro",
+        "salute-e-sicurezza-sul-lavoro",
+        "selezione-del-personale"
+      ],
+      "_sito": [
+        "sito-web-e-cookie"
+      ],
+      "_50": [
+        "segnalazioni-di-illeciti"
+      ],
+      "agricoltura": [
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "estrattiva": [],
+      "alimentare": [
+        "videosorveglianza"
+      ],
+      "tessile_moda": [],
+      "legno_carta": [],
+      "chimica_plastica": [
+        "videosorveglianza"
+      ],
+      "minerali": [],
+      "metalli": [
+        "videosorveglianza"
+      ],
+      "macchine_elettronica": [
+        "videosorveglianza"
+      ],
+      "altre_manifatture": [],
+      "energia": [
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "acqua_rifiuti": [
+        "videosorveglianza",
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "costruzioni": [
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "commercio": [
+        "videosorveglianza",
+        "marketing-e-newsletter"
+      ],
+      "trasporti": [
+        "videosorveglianza",
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "alloggio_ristorazione": [
+        "videosorveglianza",
+        "marketing-e-newsletter"
+      ],
+      "ict_editoria": [
+        "marketing-e-newsletter"
+      ],
+      "finanza": [
+        "videosorveglianza",
+        "marketing-e-newsletter"
+      ],
+      "immobiliare": [
+        "marketing-e-newsletter"
+      ],
+      "professionali": [],
+      "servizi_supporto": [
+        "geolocalizzazione-dei-veicoli-aziendali"
+      ],
+      "pubblica_amministrazione": [],
+      "istruzione": [
+        "videosorveglianza"
+      ],
+      "sanita": [
+        "videosorveglianza"
+      ],
+      "cultura_sport": [
+        "videosorveglianza",
+        "marketing-e-newsletter"
+      ],
+      "altri_servizi": [
+        "marketing-e-newsletter"
+      ]
+    }
+  },
+  "qas": {
+    "nota": "Righe proposte nei registri «Aspetti ambientali» (MOD-04.01) e «Pericoli e valutazione dei rischi» (MOD-05.01) del sistema integrato. Le valutazioni numeriche restano vuote: le dà il consulente.",
+    "comuni": {
+      "motivo": "Presente in ogni organizzazione con una sede",
+      "aspetti": [
+        {
+          "att": "Uffici e servizi generali",
+          "fase": "Produzione ed erogazione",
+          "asp": "Consumo energetico ed emissioni di gas serra",
+          "imp": "Emissioni indirette da elettricità e riscaldamento"
+        },
+        {
+          "att": "Uffici e servizi generali",
+          "fase": "Fine vita e smaltimento",
+          "asp": "Produzione di rifiuti",
+          "imp": "Rifiuti assimilabili, carta, toner e RAEE da avviare a recupero"
+        }
+      ],
+      "pericoli": [
+        {
+          "area": "Uffici",
+          "att": "Lavoro al videoterminale",
+          "per": "Postura e affaticamento visivo",
+          "danno": "Disturbi muscolo-scheletrici e visivi"
+        },
+        {
+          "area": "Tutti i locali",
+          "att": "Presenza nei luoghi di lavoro",
+          "per": "Incendio",
+          "danno": "Ustioni e intossicazione da fumi"
+        }
+      ]
+    },
+    "gruppi": {
+      "manifattura": {
+        "motivo": "Tipico delle lavorazioni manifatturiere",
+        "aspetti": [
+          {
+            "att": "Lavorazioni di reparto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Consumi elettrici e termici dei macchinari"
+          },
+          {
+            "att": "Lavorazioni di reparto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Scarti di lavorazione, imballaggi e oli esausti"
+          },
+          {
+            "att": "Lavorazioni di reparto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Emissioni in atmosfera",
+            "imp": "Polveri e fumi dalle lavorazioni, se convogliati soggetti ad autorizzazione"
+          },
+          {
+            "att": "Lavorazioni di reparto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Rumore e vibrazioni",
+            "imp": "Rumore verso l'esterno dello stabilimento"
+          },
+          {
+            "att": "Magazzino prodotti chimici",
+            "fase": "Produzione ed erogazione",
+            "asp": "Sostanze pericolose",
+            "imp": "Sversamenti di oli, solventi o vernici"
+          },
+          {
+            "att": "Ricevimento merci",
+            "fase": "Trasporto in ingresso",
+            "asp": "Consumo di risorse",
+            "imp": "Materie prime e imballaggi in ingresso"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Reparto produttivo",
+            "att": "Uso di macchine e attrezzature",
+            "per": "Organi in movimento, taglio, schiacciamento",
+            "danno": "Lesioni, amputazioni"
+          },
+          {
+            "area": "Reparto produttivo",
+            "att": "Lavorazioni rumorose",
+            "per": "Rumore",
+            "danno": "Ipoacusia"
+          },
+          {
+            "area": "Magazzino",
+            "att": "Movimentazione con carrelli elevatori",
+            "per": "Investimento e ribaltamento",
+            "danno": "Traumi gravi"
+          },
+          {
+            "area": "Reparto produttivo",
+            "att": "Movimentazione manuale dei carichi",
+            "per": "Sovraccarico biomeccanico",
+            "danno": "Lombalgie e disturbi muscolo-scheletrici"
+          },
+          {
+            "area": "Reparto produttivo",
+            "att": "Uso di prodotti chimici",
+            "per": "Agenti chimici",
+            "danno": "Irritazioni, intossicazioni"
+          }
+        ]
+      },
+      "alimentare": {
+        "motivo": "Tipico dell'industria alimentare",
+        "aspetti": [
+          {
+            "att": "Produzione",
+            "fase": "Produzione ed erogazione",
+            "asp": "Scarichi idrici",
+            "imp": "Acque di lavaggio con carico organico"
+          },
+          {
+            "att": "Produzione",
+            "fase": "Produzione ed erogazione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Scarti alimentari e sottoprodotti"
+          },
+          {
+            "att": "Celle frigorifere",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Consumi del freddo e perdite di gas refrigeranti"
+          },
+          {
+            "att": "Produzione",
+            "fase": "Produzione ed erogazione",
+            "asp": "Odori e polveri",
+            "imp": "Odori dalle lavorazioni"
+          },
+          {
+            "att": "Confezionamento",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo di risorse",
+            "imp": "Imballaggi primari e secondari"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Produzione",
+            "att": "Lavorazioni con coltelli e affettatrici",
+            "per": "Taglio",
+            "danno": "Ferite da taglio"
+          },
+          {
+            "area": "Celle frigorifere",
+            "att": "Ingresso in celle e ambienti freddi",
+            "per": "Microclima freddo, chiusura accidentale",
+            "danno": "Ipotermia"
+          },
+          {
+            "area": "Produzione",
+            "att": "Lavaggio e pavimenti bagnati",
+            "per": "Scivolamento",
+            "danno": "Cadute e traumi"
+          },
+          {
+            "area": "Produzione",
+            "att": "Cottura e sterilizzazione",
+            "per": "Superfici calde e vapore",
+            "danno": "Ustioni"
+          }
+        ]
+      },
+      "costruzioni": {
+        "motivo": "Tipico dei cantieri edili",
+        "aspetti": [
+          {
+            "att": "Cantiere",
+            "fase": "Produzione ed erogazione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Rifiuti da costruzione e demolizione"
+          },
+          {
+            "att": "Cantiere",
+            "fase": "Produzione ed erogazione",
+            "asp": "Odori e polveri",
+            "imp": "Polveri da demolizioni e movimento terra"
+          },
+          {
+            "att": "Cantiere",
+            "fase": "Produzione ed erogazione",
+            "asp": "Rumore e vibrazioni",
+            "imp": "Rumore e vibrazioni verso i residenti"
+          },
+          {
+            "att": "Mezzi d'opera",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Gasolio dei mezzi di cantiere"
+          },
+          {
+            "att": "Cantiere",
+            "fase": "Produzione ed erogazione",
+            "asp": "Contaminazione del suolo",
+            "imp": "Sversamenti di carburanti e oli"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Cantiere",
+            "att": "Lavori in quota",
+            "per": "Caduta dall'alto",
+            "danno": "Traumi gravi o mortali"
+          },
+          {
+            "area": "Cantiere",
+            "att": "Scavi",
+            "per": "Seppellimento, caduta nello scavo",
+            "danno": "Traumi gravi"
+          },
+          {
+            "area": "Cantiere",
+            "att": "Uso di macchine movimento terra",
+            "per": "Investimento",
+            "danno": "Traumi gravi"
+          },
+          {
+            "area": "Cantiere",
+            "att": "Lavori in prossimità di linee elettriche",
+            "per": "Elettrocuzione",
+            "danno": "Folgorazione"
+          },
+          {
+            "area": "Cantiere",
+            "att": "Demolizioni e tagli",
+            "per": "Polveri e silice cristallina",
+            "danno": "Malattie respiratorie"
+          }
+        ]
+      },
+      "trasporti": {
+        "motivo": "Tipico del trasporto e della logistica",
+        "aspetti": [
+          {
+            "att": "Flotta",
+            "fase": "Distribuzione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Carburante dei mezzi"
+          },
+          {
+            "att": "Flotta",
+            "fase": "Distribuzione",
+            "asp": "Emissioni in atmosfera",
+            "imp": "Gas di scarico e particolato"
+          },
+          {
+            "att": "Officina e piazzale",
+            "fase": "Produzione ed erogazione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Pneumatici, oli esausti, batterie"
+          },
+          {
+            "att": "Piazzale",
+            "fase": "Produzione ed erogazione",
+            "asp": "Scarichi idrici",
+            "imp": "Acque di prima pioggia e di lavaggio mezzi"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Strada",
+            "att": "Guida dei mezzi",
+            "per": "Incidente stradale",
+            "danno": "Traumi gravi o mortali"
+          },
+          {
+            "area": "Magazzino",
+            "att": "Carico e scarico",
+            "per": "Movimentazione manuale dei carichi",
+            "danno": "Disturbi muscolo-scheletrici"
+          },
+          {
+            "area": "Piazzale",
+            "att": "Manovre dei mezzi",
+            "per": "Investimento",
+            "danno": "Traumi gravi"
+          },
+          {
+            "area": "Strada",
+            "att": "Turni di guida",
+            "per": "Stress e fatica",
+            "danno": "Calo dell'attenzione"
+          }
+        ]
+      },
+      "commercio": {
+        "motivo": "Tipico del commercio",
+        "aspetti": [
+          {
+            "att": "Punto vendita",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Illuminazione, climatizzazione e banchi frigo"
+          },
+          {
+            "att": "Punto vendita",
+            "fase": "Distribuzione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Imballaggi da avviare a recupero"
+          },
+          {
+            "att": "Banchi frigoriferi",
+            "fase": "Produzione ed erogazione",
+            "asp": "Emissioni in atmosfera",
+            "imp": "Perdite di gas refrigeranti"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Magazzino",
+            "att": "Movimentazione delle merci",
+            "per": "Movimentazione manuale dei carichi",
+            "danno": "Disturbi muscolo-scheletrici"
+          },
+          {
+            "area": "Punto vendita",
+            "att": "Lavoro al pubblico",
+            "per": "Aggressione e rapina",
+            "danno": "Traumi e stress"
+          },
+          {
+            "area": "Magazzino",
+            "att": "Scaffalature",
+            "per": "Caduta di oggetti dall'alto",
+            "danno": "Traumi"
+          }
+        ]
+      },
+      "uffici": {
+        "motivo": "Tipico delle attività d'ufficio e dei servizi",
+        "aspetti": [],
+        "pericoli": [
+          {
+            "area": "Uffici",
+            "att": "Spostamenti per lavoro",
+            "per": "Incidente stradale",
+            "danno": "Traumi"
+          },
+          {
+            "area": "Uffici",
+            "att": "Organizzazione del lavoro",
+            "per": "Stress lavoro-correlato",
+            "danno": "Disturbi psicofisici"
+          }
+        ]
+      },
+      "sanita": {
+        "motivo": "Tipico delle strutture sanitarie",
+        "aspetti": [
+          {
+            "att": "Reparti",
+            "fase": "Fine vita e smaltimento",
+            "asp": "Produzione di rifiuti",
+            "imp": "Rifiuti sanitari pericolosi a rischio infettivo"
+          },
+          {
+            "att": "Centrale termica",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Riscaldamento, vapore e climatizzazione continui"
+          },
+          {
+            "att": "Laboratori",
+            "fase": "Produzione ed erogazione",
+            "asp": "Sostanze pericolose",
+            "imp": "Reagenti, farmaci e gas medicali"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Reparti",
+            "att": "Assistenza ai pazienti",
+            "per": "Agenti biologici",
+            "danno": "Infezioni"
+          },
+          {
+            "area": "Reparti",
+            "att": "Movimentazione dei pazienti",
+            "per": "Sovraccarico biomeccanico",
+            "danno": "Lombalgie"
+          },
+          {
+            "area": "Reparti",
+            "att": "Uso di aghi e taglienti",
+            "per": "Puntura accidentale",
+            "danno": "Infezioni trasmesse col sangue"
+          },
+          {
+            "area": "Reparti",
+            "att": "Turni notturni",
+            "per": "Lavoro notturno e stress",
+            "danno": "Disturbi del sonno e stress"
+          }
+        ]
+      },
+      "ristorazione": {
+        "motivo": "Tipico di alloggio e ristorazione",
+        "aspetti": [
+          {
+            "att": "Cucina",
+            "fase": "Produzione ed erogazione",
+            "asp": "Produzione di rifiuti",
+            "imp": "Rifiuti organici e oli di frittura esausti"
+          },
+          {
+            "att": "Cucina",
+            "fase": "Produzione ed erogazione",
+            "asp": "Scarichi idrici",
+            "imp": "Acque grasse da cucina"
+          },
+          {
+            "att": "Struttura",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo di risorse",
+            "imp": "Acqua per lavanderia, docce e piscina"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Cucina",
+            "att": "Cottura e frittura",
+            "per": "Superfici calde e oli bollenti",
+            "danno": "Ustioni"
+          },
+          {
+            "area": "Cucina",
+            "att": "Uso di coltelli e affettatrici",
+            "per": "Taglio",
+            "danno": "Ferite da taglio"
+          },
+          {
+            "area": "Sala e cucina",
+            "att": "Pavimenti bagnati",
+            "per": "Scivolamento",
+            "danno": "Cadute"
+          },
+          {
+            "area": "Lavanderia e pulizie",
+            "att": "Uso di detergenti",
+            "per": "Agenti chimici",
+            "danno": "Irritazioni"
+          }
+        ]
+      },
+      "agricoltura": {
+        "motivo": "Tipico delle attività agricole",
+        "aspetti": [
+          {
+            "att": "Campi",
+            "fase": "Produzione ed erogazione",
+            "asp": "Sostanze pericolose",
+            "imp": "Uso di fitofarmaci e fertilizzanti"
+          },
+          {
+            "att": "Campi",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo di risorse",
+            "imp": "Prelievi irrigui"
+          },
+          {
+            "att": "Mezzi agricoli",
+            "fase": "Produzione ed erogazione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Gasolio agricolo"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Campi",
+            "att": "Uso del trattore",
+            "per": "Ribaltamento",
+            "danno": "Traumi gravi o mortali"
+          },
+          {
+            "area": "Campi",
+            "att": "Trattamenti fitosanitari",
+            "per": "Agenti chimici",
+            "danno": "Intossicazioni"
+          },
+          {
+            "area": "Campi",
+            "att": "Lavoro all'aperto",
+            "per": "Microclima caldo e radiazione solare",
+            "danno": "Colpo di calore"
+          }
+        ]
+      },
+      "rifiuti": {
+        "motivo": "Tipico della gestione di acque e rifiuti",
+        "aspetti": [
+          {
+            "att": "Impianto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Odori e polveri",
+            "imp": "Odori dagli impianti di trattamento"
+          },
+          {
+            "att": "Impianto",
+            "fase": "Produzione ed erogazione",
+            "asp": "Scarichi idrici",
+            "imp": "Scarichi trattati e percolati"
+          },
+          {
+            "att": "Raccolta",
+            "fase": "Distribuzione",
+            "asp": "Consumo energetico ed emissioni di gas serra",
+            "imp": "Carburante dei mezzi di raccolta"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Impianto",
+            "att": "Ingresso in spazi confinati",
+            "per": "Atmosfere asfittiche o tossiche",
+            "danno": "Asfissia"
+          },
+          {
+            "area": "Raccolta",
+            "att": "Lavoro su strada",
+            "per": "Investimento",
+            "danno": "Traumi gravi"
+          },
+          {
+            "area": "Impianto",
+            "att": "Contatto con rifiuti",
+            "per": "Agenti biologici",
+            "danno": "Infezioni"
+          }
+        ]
+      },
+      "energia": {
+        "motivo": "Tipico della produzione e distribuzione di energia",
+        "aspetti": [
+          {
+            "att": "Impianti",
+            "fase": "Produzione ed erogazione",
+            "asp": "Emissioni in atmosfera",
+            "imp": "Emissioni di combustione"
+          },
+          {
+            "att": "Impianti",
+            "fase": "Produzione ed erogazione",
+            "asp": "Sostanze pericolose",
+            "imp": "Oli dielettrici e gas isolanti (SF6)"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Impianti",
+            "att": "Lavori elettrici",
+            "per": "Elettrocuzione",
+            "danno": "Folgorazione"
+          },
+          {
+            "area": "Impianti",
+            "att": "Lavori in quota",
+            "per": "Caduta dall'alto",
+            "danno": "Traumi gravi"
+          }
+        ]
+      },
+      "estrattiva": {
+        "motivo": "Tipico delle attività estrattive",
+        "aspetti": [
+          {
+            "att": "Cava",
+            "fase": "Produzione ed erogazione",
+            "asp": "Uso del suolo e impatto visivo",
+            "imp": "Modifica del paesaggio e recupero ambientale"
+          },
+          {
+            "att": "Cava",
+            "fase": "Produzione ed erogazione",
+            "asp": "Odori e polveri",
+            "imp": "Polveri da abbattimento e frantumazione"
+          },
+          {
+            "att": "Cava",
+            "fase": "Produzione ed erogazione",
+            "asp": "Rumore e vibrazioni",
+            "imp": "Vibrazioni da esplosivi e mezzi"
+          }
+        ],
+        "pericoli": [
+          {
+            "area": "Cava",
+            "att": "Uso di esplosivi",
+            "per": "Esplosione",
+            "danno": "Traumi gravi o mortali"
+          },
+          {
+            "area": "Cava",
+            "att": "Fronte di scavo",
+            "per": "Caduta di materiale",
+            "danno": "Seppellimento e traumi"
+          },
+          {
+            "area": "Cava",
+            "att": "Frantumazione",
+            "per": "Polveri e silice cristallina",
+            "danno": "Malattie respiratorie"
+          }
+        ]
+      }
+    },
+    "profili": {
+      "agricoltura": "agricoltura",
+      "estrattiva": "estrattiva",
+      "alimentare": "alimentare",
+      "tessile_moda": "manifattura",
+      "legno_carta": "manifattura",
+      "chimica_plastica": "manifattura",
+      "minerali": "manifattura",
+      "metalli": "manifattura",
+      "macchine_elettronica": "manifattura",
+      "altre_manifatture": "manifattura",
+      "energia": "energia",
+      "acqua_rifiuti": "rifiuti",
+      "costruzioni": "costruzioni",
+      "commercio": "commercio",
+      "trasporti": "trasporti",
+      "alloggio_ristorazione": "ristorazione",
+      "ict_editoria": "uffici",
+      "finanza": "uffici",
+      "immobiliare": "uffici",
+      "professionali": "uffici",
+      "servizi_supporto": "uffici",
+      "pubblica_amministrazione": "uffici",
+      "istruzione": "uffici",
+      "sanita": "sanita",
+      "cultura_sport": "uffici",
+      "altri_servizi": "uffici"
+    }
   }
 }

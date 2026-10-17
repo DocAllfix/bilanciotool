@@ -98,9 +98,30 @@ function SchedaTrattamento({ t, i, cmd, aperto }: { t: Trattamento; i: number; c
     <details className="group rounded-lg border bg-card" open={aperto || undefined} data-trattamento={t.id}>
       <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3">
         <span className="min-w-0 flex-1 truncate font-medium">{titolo}</span>
+        {t.propostaMotivo && (
+          <Badge variant="outline" className="border-primary/40 text-primary" data-proposta>
+            proposto
+          </Badge>
+        )}
         {t.dpiaNecessaria && <Badge variant="secondary">valutazione d&apos;impatto</Badge>}
         <span className="text-[12px] tabular-nums text-muted-foreground">{Math.round(t.completezza * 100)}% completo</span>
       </summary>
+      {/* Un trattamento proposto non è ancora censito: il registro consegnato non lo porta
+          finché il consulente non lo guarda. Modificare un campo lo conferma; «Conferma» lo fa
+          senza cambiare niente. */}
+      {t.propostaMotivo && (
+        <p className="border-t px-4 py-2.5 text-[12.5px] text-muted-foreground">
+          {t.propostaMotivo}{" "}
+          <button
+            type="button"
+            className="font-medium text-primary underline-offset-2 hover:underline"
+            onClick={() => salva("nome")(t.nome ?? "")}
+            aria-label={`Conferma il trattamento «${titolo}»`}
+          >
+            Conferma
+          </button>
+        </p>
+      )}
       <div className="grid gap-4 border-t px-4 py-4 sm:grid-cols-2">
         <CampoTesto id={id("nome")} etichetta="Nome del trattamento" valore={t.nome} salva={salva("nome")} />
         <CampoScelta id={id("ruolo")} etichetta="Ruolo" valore={t.ruolo} opzioni={RUOLI_TRATTAMENTO} salva={salva("ruolo")} />

@@ -9,6 +9,9 @@ import { logAudit } from "@/lib/audit";
 import { anagraficaInTesto, type ProfiloAzienda } from "./profilo";
 import { proponiVociGhg } from "@/features/ghg/proposte";
 import { proponiMaterialita } from "@/features/report/materiality";
+import { proponiReati231 } from "@/features/mog231/proposte";
+import { proponiRegistriQas } from "@/features/sgiqas/proposte";
+import { and, eq } from "drizzle-orm";
 
 // Un campo dell'anagrafica, appena salvato, entra da solo nei percorsi GIÀ AVVIATI che lo
 // hanno ancora vuoto (decisione del committente del 17 ottobre 2026).
@@ -92,6 +95,21 @@ export async function propagaAnagrafica(
   // L'ATECO appena arrivato in un inventario porta le sue voci tipiche, come alla creazione.
   for (const id of inventariConAteco) await proponiVociGhg(tx, userId, orgId, id, valori.ateco);
   for (const id of progettiConAteco) await proponiMaterialita(tx, userId, orgId, id, valori.ateco);
+  // I reati 231 dipendono da ATECO e addetti: i modelli già avviati ricevono le proposte che
+  // mancano, solo nei reati ancora senza valutazione.
+  if (valori.ateco || valori.addetti) {
+    const modelli = await tx.select({ id: mogModel.id }).from(mogModel).where(and(eq(mogModel.companyId, companyId), eq(mogModel.organizationId, orgId)));
+    for (const m of modelli) toccate += await proponiReati231(tx, userId, orgId, m.id, az);
+  }
+  // Il sistema integrato riceve gli aspetti e i pericoli del settore nuovo; le proposte non
+  // toccate del settore vecchio escono.
+  if (valori.ateco) {
+    const sistemi = await tx
+      .select({ setId: qasSystem.contentSetId })
+      .from(qasSystem)
+      .where(and(eq(qasSystem.companyId, companyId), eq(qasSystem.organizationId, orgId)));
+    for (const s of sistemi) toccate += await proponiRegistriQas(tx, userId, orgId, companyId, s.setId, az);
+  }
 
   if (toccate) {
     await logAudit(tx, {

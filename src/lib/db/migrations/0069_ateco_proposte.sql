@@ -50,3 +50,19 @@ CREATE UNIQUE INDEX "ghg_activity_row_tipo_uq" ON "ghg_activity_row" ("inventory
 -- La materialità proposta dal codice ATECO: stessa marca delle voci GHG. Piena finché nessuno
 -- tocca il tema, vuota dopo la prima modifica.
 ALTER TABLE "materiality_assessment" ADD COLUMN "proposta_motivo" text;
+--> statement-breakpoint
+
+-- I reati 231 proposti come applicabili (mai come non applicabili): stessa marca.
+ALTER TABLE "mog_crime_applicability" ADD COLUMN "proposta_motivo" text;
+--> statement-breakpoint
+
+-- I trattamenti GDPR proposti (tipici per tutti, per dipendenti, per sito, per settore).
+ALTER TABLE "gdpr_trattamento" ADD COLUMN "proposta_motivo" text;
+--> statement-breakpoint
+
+-- Aspetti ambientali e pericoli del sistema integrato, proposti nei registri del corpus.
+ALTER TABLE "corpus_register_row" ADD COLUMN "tipo_key" text;
+--> statement-breakpoint
+ALTER TABLE "corpus_register_row" ADD COLUMN "proposta_motivo" text;
+--> statement-breakpoint
+CREATE UNIQUE INDEX "corpus_register_row_tipo_uq" ON "corpus_register_row" ("company_id","content_set_id","register_id","tipo_key") WHERE "tipo_key" IS NOT NULL;

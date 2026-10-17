@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requirePercorsoDelContentSet, requirePercorsoDellaRiga } from "@/features/auth/percorsi";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { setOverride, setStatoDocumento } from "./documenti";
-import { aggiornaRiga, aggiungiRiga, eliminaRiga } from "./registri";
+import { aggiornaRiga, aggiungiRiga, confermaRiga, eliminaRiga } from "./registri";
 import type { aggiornaRigaSchema, overrideSchema, rigaRegistroSchema, statoDocumentoSchema } from "./validation";
 import type { z } from "zod";
 
@@ -84,6 +84,15 @@ export async function aggiornaRigaAction(
       throw new Error("Si aggiorna un campo per volta: la riga non si rimanda mai intera");
     }
     await aggiornaRiga(s.userId, s.orgId, input);
+    revalidatePath(rotta);
+    return { ok: true };
+  } catch (e) { return daErrore(e); }
+}
+
+export async function confermaRigaAction(rotta: string, companyId: string, rowId: string): Promise<ActionEsito> {
+  try {
+    const s = await requirePercorsoDellaRiga(rowId);
+    await confermaRiga(s.userId, s.orgId, companyId, rowId);
     revalidatePath(rotta);
     return { ok: true };
   } catch (e) { return daErrore(e); }

@@ -4,6 +4,7 @@ import { requireConsultant } from "@/features/auth/guards";
 import { getSoaData } from "@/features/soa/queries";
 import { SoaShell } from "@/components/soa/soa-shell";
 import { CreaDichiarazione } from "@/components/soa/crea-dichiarazione";
+import { propostaPrivacyDaGdpr } from "@/features/soa/proposte";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Statement of Applicability" };
@@ -29,7 +30,7 @@ export default async function SoaPage({
         <p className="mt-1 text-sm text-muted-foreground">
           Statement of Applicability · ISO/IEC 27001:2022 §6.1.3 d) · 27017 · 27018 · 27701
         </p>
-        <CreaDichiarazione companyId={companyId} />
+        <CreaDichiarazione companyId={companyId} proposta={await propostaPrivacyDaGdpr(s.userId, s.orgId, companyId)} />
       </div>
     );
   }

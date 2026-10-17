@@ -463,7 +463,10 @@ export async function publishMatrice231Snapshot(
   if (!d?.modello) throw new Error("Nessun Modello 231 da pubblicare per questa azienda");
 
   const nomeReato = new Map(d.catalogo.reati.map((r) => [r.key, r]));
-  const appPerReato = new Map(d.applicabilita.map((a) => [a.crimeKey, a]));
+  // ⚠️ Un reato PROPOSTO e mai toccato non è una valutazione: nel documento resta «da
+  // determinare». Altrimenti la matrice dichiarerebbe applicabile un reato che nessuno ha
+  // guardato.
+  const appPerReato = new Map(d.applicabilita.filter((a) => !a.propostaMotivo).map((a) => [a.crimeKey, a]));
   const perProcesso = new Map<string, typeof d.scenari>();
   for (const s of d.scenari) {
     const e = perProcesso.get(s.processId) ?? [];
@@ -806,7 +809,9 @@ export async function publishAnalisiAmbientaleSnapshot(
     azienda: d.azienda,
     sistema: d.sistema,
     colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
-    aspetti: reg.righe.map((r) => ({
+    // Le righe proposte dal codice ATECO e mai toccate non sono aspetti identificati: un
+    // documento firmato non le porta (lo stesso vale per i pericoli qui sotto).
+    aspetti: reg.righe.filter((r) => !r.propostaMotivo).map((r) => ({
       riferimento: r.riferimento,
       dati: r.dati,
       significativita: COLONNE_CALCOLATE_QAS.aspetti.valore(r.dati),
@@ -835,7 +840,7 @@ export async function publishValutazioneSslSnapshot(
     azienda: d.azienda,
     sistema: d.sistema,
     colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
-    pericoli: reg.righe.map((r) => ({
+    pericoli: reg.righe.filter((r) => !r.propostaMotivo).map((r) => ({
       riferimento: r.riferimento,
       dati: r.dati,
       livello: COLONNE_CALCOLATE_QAS.pericoli.valore(r.dati),

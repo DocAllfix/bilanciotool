@@ -11,11 +11,18 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 
-export function CreaDichiarazione({ companyId }: { companyId: string }) {
+export function CreaDichiarazione({
+  companyId,
+  proposta,
+}: {
+  companyId: string;
+  /** Il ruolo privacy che il percorso GDPR della stessa azienda suggerisce, col motivo. */
+  proposta?: { valore: string; motivo: string } | null;
+}) {
   const router = useRouter();
   const [errore, setErrore] = useState<string | null>(null);
   const [inCorso, setInCorso] = useState(false);
-  const [privacy, setPrivacy] = useState<string>("titolare");
+  const [privacy, setPrivacy] = useState<string>(proposta?.valore ?? "titolare");
   const [cloud, setCloud] = useState<string>("cliente");
 
   async function crea(e: React.FormEvent<HTMLFormElement>) {
@@ -59,6 +66,11 @@ export function CreaDichiarazione({ companyId }: { companyId: string }) {
                     {RUOLI_PRIVACY.map((r) => <SelectItem key={r} value={r}>{ETICHETTA_RUOLO_PRIVACY[r]}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                {proposta && (
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground" data-motivo>
+                    Proposto: {proposta.motivo}
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="soa-crea-cloud">Posizione rispetto ai servizi cloud</Label>

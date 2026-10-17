@@ -58,5 +58,74 @@ const usate = [...new Set(Object.values(proposte.ghg.profili).flat())].sort();
 for (const k of usate) righe.push(`- **${fattori.get(k)?.n ?? k}**: ${proposte.ghg.motivi[k]}`);
 righe.push("");
 
+// ── Gli altri percorsi ──────────────────────────────────────────────────────────────────
+const leggi = (f) => JSON.parse(readFileSync(`src/lib/db/seeds/data/${f}`, "utf8"));
+const usi = new Map(leggi("energy-end-uses.json").map((u) => [u.id, u.n]));
+const reati = new Map(leggi("mog231-reati.json").map((r) => [r.id, `${r.id} · ${r.t}`]));
+const trattamenti = new Map(leggi("gdpr-trattamenti-tipo.json").map((t) => [t.key, t.nome]));
+const intestazione = (p) => `### ${p.nome} (divisioni ${div(p.da)}${p.a !== p.da ? `–${div(p.a)}` : ""})`;
+const elenco = (chiavi, nomi) => chiavi.map((k) => `- ${nomi.get(k) ?? k}`);
+
+righe.push(
+  "## Bilancio energetico: usi finali accesi per profilo",
+  "",
+  "Se esiste l'esercizio precedente si riprendono i suoi usi finali; altrimenti questi.",
+  "",
+);
+for (const p of profili) righe.push(intestazione(p), "", ...elenco(proposte.energia.profili[p.key] ?? [], usi), "");
+
+righe.push(
+  "## Modello 231: reati proposti come applicabili",
+  "",
+  "Entrano come «Sì» col motivo e la motivazione vuota: la scrive il consulente. Mai «No»: un",
+  "reato escluso in silenzio è il difetto peggiore di una mappatura.",
+  "",
+  "**Per ogni impresa:**",
+  "",
+  ...elenco(proposte.mog231.sempre, reati),
+  "",
+  `**Per chi ha dipendenti:** ${reati.get("25-septies")}`,
+  "",
+);
+for (const p of profili) {
+  const propri = proposte.mog231.profili[p.key] ?? [];
+  if (propri.length) righe.push(intestazione(p), "", ...elenco(propri, reati), "");
+}
+
+righe.push(
+  "## Protezione dei dati: trattamenti proposti",
+  "",
+  "Entrano nel registro marcati «proposto»: finché nessuno li tocca non sono censiti, e il",
+  "registro consegnato non li porta.",
+  "",
+);
+const speciali = { _sempre: "Per ogni azienda", _dipendenti: "Per chi ha dipendenti", _sito: "Per chi ha un sito web", _50: "Da 50 addetti" };
+for (const [k, titolo] of Object.entries(speciali)) {
+  righe.push(`**${titolo}:**`, "", ...elenco(proposte.gdpr.profili[k] ?? [], trattamenti), "");
+}
+for (const p of profili) {
+  const propri = proposte.gdpr.profili[p.key] ?? [];
+  if (propri.length) righe.push(intestazione(p), "", ...elenco(propri, trattamenti), "");
+}
+
+const q = proposte.qas;
+righe.push(
+  "## Sistema integrato: aspetti ambientali e pericoli",
+  "",
+  "Righe proposte nei registri MOD-04.01 e MOD-05.01, con la sola descrizione: gravità,",
+  "frequenza e probabilità restano vuote. I profili si raggruppano per settore.",
+  "",
+);
+const gruppo = (titolo, g) => {
+  righe.push(`### ${titolo}`, "");
+  if (g.aspetti.length) righe.push("Aspetti ambientali:", "", ...g.aspetti.map((a) => `- ${a.att} · ${a.asp}: ${a.imp}`), "");
+  if (g.pericoli.length) righe.push("Pericoli:", "", ...g.pericoli.map((x) => `- ${x.area} · ${x.att}: ${x.per} (${x.danno})`), "");
+};
+gruppo("Per ogni sede", q.comuni);
+for (const [k, g] of Object.entries(q.gruppi)) {
+  const chi = profili.filter((p) => q.profili[p.key] === k).map((p) => p.nome);
+  gruppo(`${g.motivo.replace(/^Tipico (del|della|dei|delle|di) /, "").replace(/^./, (c) => c.toUpperCase())} — ${chi.join(", ")}`, g);
+}
+
 writeFileSync("docs/ateco-profili.md", righe.join("\n"));
 console.log(`docs/ateco-profili.md: ${profili.length} profili, ${usate.length} voci distinte`);
