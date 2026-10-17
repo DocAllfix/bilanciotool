@@ -191,6 +191,8 @@ export const mogCrimeApplicability = pgTable(
     crimeKey: text("crime_key").notNull(),
     applicabile: text("applicabile"),
     motivazione: text("motivazione"),
+    /** Proposta dal codice ATECO o dagli addetti (migrazione 0069), finché nessuno la tocca. */
+    propostaMotivo: text("proposta_motivo"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

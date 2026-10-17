@@ -13,7 +13,7 @@ import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vet
 import { Button } from "@/components/ui/button";
 import {
   ESTENSIONI, FONDATORI, PIANI, euro, prezzoDiVendita,
-  aziendeTesto, fasceVendibili, prezzoMinimo, quanteFasceInLettere,
+  aziendeTesto, fasceStudio, fasceVendibili, prezzoMinimo, quanteFasceInLettere,
 } from "@/lib/prezzi";
 import { indirizzoCanonico } from "@/lib/indirizzo";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
@@ -35,6 +35,9 @@ export const metadata: Metadata = {
 };
 
 const VENDIBILI = fasceVendibili();
+// Le schede della griglia: le fasce per studio. «Azienda» (uso interno) ha un riquadro suo.
+const STUDIO = fasceStudio();
+const INTERNA = PIANI.azienda;
 
 /** Ciò che c'è in ogni fascia. Uguale per tutte: cambia solo la capienza. */
 const COMPRESO: [string, string][] = [
@@ -113,7 +116,7 @@ export default function Prezzi() {
             {/* Quattro fasce: due per riga sugli schermi medi, tutte su quelli larghi. Con
                 tre colonne fisse la quarta andava a capo da sola, orfana. */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {VENDIBILI.map((k, i) => {
+              {STUDIO.map((k, i) => {
                 const p = PIANI[k];
                 const anno1 = prezzoDiVendita(p, "anno1")!;
                 const rinnovo = prezzoDiVendita(p, "rinnovo")!;
@@ -155,6 +158,41 @@ export default function Prezzi() {
                 );
               })}
             </div>
+
+            {/* ⚠️ La fascia per l'uso interno sta FUORI dalla griglia: ha la capienza di
+                «Un'azienda» ma è un'altra cosa — una sola azienda, la propria, e i
+                percorsi assegnati a ciascun collega. In fila con le altre si leggerebbero due
+                fasce da un'azienda a prezzi diversi, senza la differenza. */}
+            <Reveal delay={200}>
+              <div
+                className="mt-6 rounded-xl border bg-card p-6 sm:flex sm:items-center sm:justify-between sm:gap-6"
+                data-fascia-interna
+              >
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                    Per l&apos;uso interno
+                  </p>
+                  <h2 className="font-display mt-1.5 text-[19px] font-bold tracking-[-0.01em]">{INTERNA.nome}</h2>
+                  <p className="mt-1.5 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground">
+                    Per l&apos;azienda che fa da sé, non per chi segue clienti: una sola azienda, la tua, e{" "}
+                    {INTERNA.accessi}{" "}accessi per i colleghi. L&apos;amministratore assegna a ciascuno i
+                    percorsi di cui si occupa, e ognuno vede soltanto i suoi.
+                  </p>
+                  <p className="mt-3 text-[14px]">
+                    <span className="font-display text-[24px] font-bold tabular-nums" data-slot="kpi">
+                      {euro(prezzoDiVendita(INTERNA, "anno1")!.importo)}
+                    </span>{" "}
+                    <span className="text-[12.5px] text-muted-foreground">
+                      l&apos;anno, IVA esclusa · dal secondo anno{" "}
+                      {euro(prezzoDiVendita(INTERNA, "rinnovo")!.importo)}
+                    </span>
+                  </p>
+                </div>
+                <Button asChild variant="outline" className="mt-4 shrink-0 sm:mt-0">
+                  <Link href={`/attiva/${INTERNA.key}`}>Attiva la fascia «{INTERNA.nome}»</Link>
+                </Button>
+              </div>
+            </Reveal>
 
             <Reveal delay={220}>
               <div className="mt-6 rounded-xl border border-dashed p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
@@ -246,7 +284,7 @@ export default function Prezzi() {
                           <th scope="row" className="px-4 py-3 text-left font-medium">
                             {p.nome}
                           </th>
-                          <td className="px-4 py-3 tabular-nums">{p.aziende}</td>
+                          <td className="px-4 py-3 tabular-nums">{p.usoInterno ? "1, la propria" : p.aziende}</td>
                           <td className="px-4 py-3 tabular-nums">{euro(prezzoDiVendita(p, "anno1")!.importo)}</td>
                           <td className="px-4 py-3 tabular-nums">{euro(prezzoDiVendita(p, "rinnovo")!.importo)}</td>
                         </tr>

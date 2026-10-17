@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CampoTesto } from "@/components/comune/campo";
+import { PropostaValore } from "@/components/comune/proposta-valore";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -40,7 +41,7 @@ export function VistaSchedaEsg({
   soloLettura?: boolean;
 }) {
   const router = useRouter();
-  const { def, dati, stato } = vista;
+  const { def, dati, stato, proposte } = vista;
   const [inCorso, avvia] = useTransition();
   const [errore, setErrore] = useState<string | null>(null);
   const [statoLocale, setStatoLocale] = useState(stato);
@@ -146,6 +147,7 @@ export function VistaSchedaEsg({
                     campo={c}
                     schedaKey={def.key}
                     valore={dati[c.k]}
+                    proposta={soloLettura ? undefined : proposte[c.k]}
                     soloLettura={soloLettura}
                     salva={salva(c.k)}
                   />
@@ -184,12 +186,15 @@ function Campo({
   campo,
   schedaKey,
   valore,
+  proposta,
   soloLettura,
   salva,
 }: {
   campo: CampoDef;
   schedaKey: string;
   valore: unknown;
+  /** Il valore dell'anagrafica per un campo vuoto: si applica con un clic. */
+  proposta?: string;
   soloLettura?: boolean;
   // ⚠️ Un tipo solo per tutti i campi, array compreso: separarlo in due firme avrebbe
   // costretto il chiamante a sapere in anticipo che tipo di campo sta per rendere,
@@ -221,13 +226,27 @@ function Campo({
 
   return (
     <div className={largo ? "sm:col-span-2" : undefined}>
+      {/* La chiave porta il valore: applicata la proposta, il campo (non controllato) si
+          rimonta e mostra ciò che è stato salvato. */}
       <CampoTesto
+        key={valore === undefined || valore === null ? "" : String(valore)}
         id={id}
         etichetta={etichetta}
         valore={valore === undefined || valore === null ? null : String(valore)}
         multiriga={campo.t === "testo_lungo"}
         salva={salva as never}
       />
+      {proposta && (
+        <PropostaValore
+          valore={proposta}
+          formato={campo.t === "numero" ? "numero" : "testo"}
+          fonte="dall'anagrafica dell'azienda"
+          etichetta={campo.l}
+          applica={async (v) => {
+            await salva(v);
+          }}
+        />
+      )}
     </div>
   );
 }

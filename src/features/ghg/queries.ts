@@ -1,3 +1,4 @@
+import { consumiDellAnno, proposteVociGhg } from "@/features/ponti/consumi";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import { checklistRequirement, company, ghgActivityRow, ghgCategory, ghgInventory, ghgSourceType, ghgTarget } from "@/lib/db/schema";
 import { asc, eq } from "drizzle-orm";
@@ -70,6 +71,9 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
     stato: {
       sorgenti: statiSorgenti,
       checklist: statiChecklist,
+      // Le quantità per le voci proposte a zero, dal bilancio energetico dello stesso anno
+      // (per fattore). Si propongono accanto alla voce, non si scrivono.
+      proposteQuantita: proposteVociGhg(await withTenant({ userId, orgId }, (tx) => consumiDellAnno(tx, orgId, companyId, anno))),
       righe: righe.map((r) => ({
         id: r.id,
         sourceTypeKey: r.sourceTypeKey,
@@ -87,6 +91,7 @@ export async function getWizardData(userId: string, orgId: string, companyId: st
         incertezza: r.incertezza,
         evidenza: r.evidenza,
         note: r.note,
+        propostaMotivo: r.propostaMotivo,
       })),
       obiettivi: targets.map((t) => ({ id: t.id, nome: t.nome, ambito: t.ambito, riduzionePct: t.riduzionePct, annoTarget: t.annoTarget, note: t.note })),
       risultati,

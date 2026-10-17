@@ -1,3 +1,4 @@
+import { assessMateriality } from "@/lib/calc/report/materiality";
 import { db } from "@/lib/db";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
 import {
@@ -89,6 +90,7 @@ export async function publishGhgSnapshot(userId: string, orgId: string, companyI
     const [a] = await tx.select().from(company).where(eq(company.id, companyId));
     return a!;
   });
+  const righeDati = wiz.stato.righe.filter((r) => !r.propostaMotivo).map(({ propostaMotivo: _p, ...r }) => r);
 
   const dati = {
     generatoIl: new Date().toISOString(),
@@ -110,9 +112,11 @@ export async function publishGhgSnapshot(userId: string, orgId: string, companyI
     },
     sorgenti: wiz.stato.sorgenti,
     checklist: wiz.stato.checklist,
-    righe: wiz.stato.righe,
+    // ⚠️ Una voce ancora «proposta» non è un dato: nessuno l'ha guardata. Non entra nel
+    // documento, e il suo motivo non si congela. Il totale non cambia (sono a quantità zero).
+    righe: righeDati,
     obiettivi: wiz.stato.obiettivi,
-    fattoriUsati: wiz.catalogo.fattori.filter((f) => wiz.stato.righe.some((r) => r.factorKey === f.key)),
+    fattoriUsati: wiz.catalogo.fattori.filter((f) => righeDati.some((r) => r.factorKey === f.key)),
     risultati, // derivati congelati QUI
   };
 
@@ -164,11 +168,16 @@ export async function publishBilancioSnapshot(userId: string, orgId: string, com
       kpi: defs.map((d) => ({ key: d.key, sectionKey: d.sectionKey, nome: d.nome, um: d.um })),
       capitoli: templates.map((t) => ({ key: t.key, nome: t.nome })),
     },
-    materialita: {
-      soglia: materialita.soglia,
-      perTopic: materialita.esito.perTopic,
-      materialKeys: materialita.esito.materialKeys,
-    },
+    // ⚠️ Una materialità PROPOSTA dal codice ATECO e mai toccata non è una valutazione: è il
+    // punteggio tipico del settore. Nel documento conta solo ciò che il consulente ha valutato,
+    // altrimenti un tema risulterebbe «materiale» senza che nessuno l'abbia guardato.
+    materialita: (() => {
+      const valutati = Object.fromEntries(
+        materialita.valutazioni.filter((v) => !v.propostaMotivo).map((v) => [v.topicKey, { imp: v.scoreImpact, fin: v.scoreFinancial }]),
+      );
+      const esito = assessMateriality(valutati, materialita.soglia);
+      return { soglia: materialita.soglia, perTopic: esito.perTopic, materialKeys: esito.materialKeys };
+    })(),
     kpi: {
       corrente: kpi.corrente,
       precedente: kpi.precedente,
@@ -454,7 +463,10 @@ export async function publishMatrice231Snapshot(
   if (!d?.modello) throw new Error("Nessun Modello 231 da pubblicare per questa azienda");
 
   const nomeReato = new Map(d.catalogo.reati.map((r) => [r.key, r]));
-  const appPerReato = new Map(d.applicabilita.map((a) => [a.crimeKey, a]));
+  // ⚠️ Un reato PROPOSTO e mai toccato non è una valutazione: nel documento resta «da
+  // determinare». Altrimenti la matrice dichiarerebbe applicabile un reato che nessuno ha
+  // guardato.
+  const appPerReato = new Map(d.applicabilita.filter((a) => !a.propostaMotivo).map((a) => [a.crimeKey, a]));
   const perProcesso = new Map<string, typeof d.scenari>();
   for (const s of d.scenari) {
     const e = perProcesso.get(s.processId) ?? [];
@@ -797,7 +809,9 @@ export async function publishAnalisiAmbientaleSnapshot(
     azienda: d.azienda,
     sistema: d.sistema,
     colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
-    aspetti: reg.righe.map((r) => ({
+    // Le righe proposte dal codice ATECO e mai toccate non sono aspetti identificati: un
+    // documento firmato non le porta (lo stesso vale per i pericoli qui sotto).
+    aspetti: reg.righe.filter((r) => !r.propostaMotivo).map((r) => ({
       riferimento: r.riferimento,
       dati: r.dati,
       significativita: COLONNE_CALCOLATE_QAS.aspetti.valore(r.dati),
@@ -826,7 +840,7 @@ export async function publishValutazioneSslSnapshot(
     azienda: d.azienda,
     sistema: d.sistema,
     colonne: reg.colonne.map((c) => ({ chiave: c.chiave, etichetta: c.etichetta })),
-    pericoli: reg.righe.map((r) => ({
+    pericoli: reg.righe.filter((r) => !r.propostaMotivo).map((r) => ({
       riferimento: r.riferimento,
       dati: r.dati,
       livello: COLONNE_CALCOLATE_QAS.pericoli.valore(r.dati),

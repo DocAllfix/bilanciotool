@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
+import { documentoVisibile, percorsiVisibili } from "@/features/auth/percorsi";
 import { getSnapshot, resolveSnapshotImages } from "@/features/documents/snapshot";
 import { copertinaDelloSnapshot } from "@/features/documents/immagini";
 import type { ImmaginiCopertina } from "@/components/documento/copertina";
@@ -38,6 +39,8 @@ export default async function DocumentoPage({ params }: { params: Promise<{ snap
   const s = await requireConsultant();
   const snap = await getSnapshot(s.userId, s.orgId, snapshotId);
   if (!snap) notFound();
+  // Fascia «Azienda»: il documento di un percorso non assegnato non esiste per chi non lo ha.
+  if (!documentoVisibile(await percorsiVisibili(s), snap.tipo)) notFound();
 
   const dati = snap.dati as never;
   const codice = await codiceDelloSnapshot(s.userId, s.orgId, snap.id);

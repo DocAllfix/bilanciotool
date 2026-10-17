@@ -163,7 +163,8 @@ await check("i membri elencano il titolare, e il conteggio accessi e' coerente",
   await page.waitForLoadState("networkidle");
   const t = await page.locator("main").innerText();
   if (!t.includes(email)) throw new Error("il titolare non compare nell'elenco");
-  if (!/owner/i.test(t)) throw new Error("manca il ruolo");
+  // Il ruolo si legge in italiano: «owner» era il nome interno di Better Auth, mostrato così com era.
+  if (!/Titolare/.test(t)) throw new Error("manca il ruolo");
   if (!/1 di \d+ accessi/.test(t)) throw new Error("conteggio accessi assente o storto: " + t.slice(0, 120));
 });
 

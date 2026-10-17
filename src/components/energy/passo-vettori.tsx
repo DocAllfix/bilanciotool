@@ -1,5 +1,6 @@
 "use client";
 
+import { PropostaValore } from "@/components/comune/proposta-valore";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -98,12 +99,25 @@ export function PassoVettori({ companyId, bilancio, catalogo, stato, risultati }
                         <TableCell className="text-xs text-muted-foreground">{v.um}</TableCell>
                         <TableCell>
                           <Input
+                            key={`${v.key}-${inp?.quantita ?? ""}`}
                             className="text-right"
                             data-slot="kpi"
                             defaultValue={inp?.quantita ?? ""}
                             aria-label={`${v.nome}: quantità in ${v.um}`}
                             onBlur={(e) => { if (e.target.value !== (inp?.quantita ?? "")) salvaVettore(v.key, "quantita", e.target.value); }}
                           />
+                          {stato.proposteVettori[v.key] && (
+                            <PropostaValore
+                              valore={stato.proposteVettori[v.key].valore}
+                              fonte={stato.proposteVettori[v.key].fonte}
+                              um={v.um}
+                              etichetta={`${v.nome}: quantità`}
+                              applica={async (q) => {
+                                await salvaVettore(v.key, "quantita", q);
+                                router.refresh();
+                              }}
+                            />
+                          )}
                         </TableCell>
                         <TableCell>
                           <Input

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
+import { requirePercorso } from "@/features/auth/percorsi";
 import { getFascicolo, getSegnalazioni } from "@/features/segnalazioni/queries";
 import { DocumentoFascicoloWb } from "@/components/documento/documento-fascicolo-wb";
 import { marchioDelloStudio } from "@/features/documents/marchio";
@@ -30,6 +31,9 @@ export default async function StampaFascicoloPage({
 }) {
   const { companyId, reportId } = await params;
   const s = await requireConsultant();
+  // Fascia «Azienda»: la pagina di un percorso non assegnato non esiste per chi non lo ha.
+  // Il rifiuto si traduce in 404 e non in un'eccezione, che qui sarebbe un 500.
+  await requirePercorso("segnalazioni").catch(() => notFound());
 
   const [f, dati, marchio] = await Promise.all([
     getFascicolo(s.userId, s.orgId, reportId),

@@ -1,8 +1,8 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
 import {
   createDeclaration, setDecisionField, setModule, setRuoli, toggleMotivazione, updateProfilo,
 } from "./declarations";
@@ -27,7 +27,7 @@ export async function createDeclarationAction(input: {
   ruoloCloud?: "cliente" | "fornitore" | "entrambi" | "nessuno";
 }): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     const id = await createDeclaration(s.userId, s.orgId, input);
     revalidatePath(percorso(input.companyId));
     return { ok: true, dati: { id } };
@@ -38,7 +38,7 @@ export async function createDeclarationAction(input: {
 
 export async function updateProfiloAction(declarationId: string, patch: ProfiloSoa): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     await updateProfilo(s.userId, s.orgId, declarationId, patch);
     return { ok: true };
   } catch (e) {
@@ -54,7 +54,7 @@ export async function setRuoliAction(
   patch: z.input<typeof ruoliSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     await setRuoli(s.userId, s.orgId, declarationId, patch);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -71,7 +71,7 @@ export async function setModuleAction(
   input: z.input<typeof moduloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     await setModule(s.userId, s.orgId, declarationId, input);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -85,7 +85,7 @@ export async function setDecisionFieldAction(
   input: z.input<typeof decisioneSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     const v = decisioneSchema.parse(input);
     const valore = v.valore.trim() === "" ? null : v.valore.trim();
     await setDecisionField(s.userId, s.orgId, declarationId, v.frameworkKey, v.controlloId, v.campo, valore);
@@ -100,7 +100,7 @@ export async function toggleMotivazioneAction(
   input: z.input<typeof motivazioneSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("soa");
     await toggleMotivazione(s.userId, s.orgId, declarationId, input);
     return { ok: true };
   } catch (e) {
@@ -110,7 +110,7 @@ export async function toggleMotivazioneAction(
 
 export async function ricalcolaAction(companyId: string): Promise<ActionEsito> {
   try {
-    await requireConsultant();
+    await requirePercorso("soa");
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

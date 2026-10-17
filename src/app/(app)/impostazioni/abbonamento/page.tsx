@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { DialogoAcquisto } from "@/components/impostazioni/dialogo-acquisto";
 import { PulsantePortale } from "@/components/impostazioni/pulsante-portale";
 import {
-  PIANI, ESTENSIONI, euro, aziendeTesto, fasceVendibili,
+  PIANI, ESTENSIONI, euro, aziendeTesto, fasceStudio, fasceVendibili,
   prezzoDiVendita, prezzoEstensione, promozioneInCorso, FINE_LANCIO,
 } from "@/lib/prezzi";
 import { TITOLARE } from "@/lib/legale";
@@ -133,10 +133,12 @@ export default async function AbbonamentoPage({
             )}
           </CardHeader>
           <CardContent>
-            {/* Quattro fasce: due per riga sugli schermi medi, tutte e quattro su quelli
-                larghi. Con tre colonne fisse la quarta andava a capo da sola. */}
+            {/* Quattro fasce per studio: due per riga sugli schermi medi, tutte e quattro su
+                quelli larghi. «Azienda» (uso interno) viene dopo, su tutta la larghezza: ha la
+                capienza della prima ma è un'altra cosa, e in fila con le altre sarebbe la quinta
+                scheda, orfana su una riga sua. */}
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {fasceVendibili().map((k) => {
+              {[...fasceStudio(), ...fasceVendibili().filter((k) => PIANI[k].usoInterno)].map((k) => {
                 const p = PIANI[k];
                 // Prezzo mostrato e prezzo addebitato escono dalla STESSA funzione:
                 // e' l'unico modo perche' non possano divergere il giorno della scadenza.
@@ -150,8 +152,10 @@ export default async function AbbonamentoPage({
                     key={k}
                     className={
                       "flex h-full flex-col rounded-lg border p-4 " +
+                      (p.usoInterno ? "sm:col-span-2 lg:col-span-4 " : "") +
                       (scelta === k ? "border-primary/60 ring-1 ring-primary/20" : "")
                     }
+                    data-fascia={k}
                   >
                     <p className="font-medium">{p.nome}</p>
                     <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
@@ -171,8 +175,9 @@ export default async function AbbonamentoPage({
                       {euro(rinnovo.importo)}{" "}l&apos;anno
                     </p>
                     <ul className="mt-3 space-y-1 text-[13px] text-muted-foreground">
-                      <li>{aziendeTesto(p.aziende)}</li>
+                      <li>{p.usoInterno ? "1 azienda, la tua" : aziendeTesto(p.aziende)}</li>
                       <li>{p.accessi} accessi</li>
+                      {p.usoInterno && <li>Percorsi assegnati a ciascun collega</li>}
                     </ul>
                     {/* Se questa scheda si rende, NIENTE e' attivo: il blocco esterno lo
                         garantisce. Qui c'era un ramo «Il tuo piano» e uno «Passa a questo»,
@@ -185,7 +190,7 @@ export default async function AbbonamentoPage({
 
                         Resta la nota per chi si riabbona dopo una disdetta: sapere quale
                         piano aveva prima gli evita di doverlo ricordare. */}
-                    <div className="mt-auto space-y-2 pt-4">
+                    <div className={"mt-auto space-y-2 pt-4" + (p.usoInterno ? " sm:w-64" : "")}>
                       <DialogoAcquisto
                         piano={p.key}
                         etichetta="Attiva"

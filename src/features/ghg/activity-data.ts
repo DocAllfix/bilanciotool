@@ -2,7 +2,7 @@ import { withTenant } from "@/lib/db/tenant";
 import { ghgActivityRow, ghgInventory } from "@/lib/db/schema";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { rigaAttivitaSchema } from "./validation";
 import { nz, toFixedStr } from "@/lib/calc/shared/decimal";
@@ -58,7 +58,8 @@ export async function updateActivityRow(
   await withTenant({ userId, orgId }, async (tx) => {
     const updated = await tx
       .update(ghgActivityRow)
-      .set(normalizza(v))
+      // Modificare una voce proposta la rende del consulente: la marca si spegne.
+      .set({ ...normalizza(v), propostaMotivo: null })
       .where(eq(ghgActivityRow.id, rowId))
       .returning({ id: ghgActivityRow.id });
     if (!updated.length) throw new Error("Voce inesistente o di un altro tenant");
@@ -73,7 +74,9 @@ export async function duplicateActivityRow(userId: string, orgId: string, rowId:
     const [orig] = await tx.select().from(ghgActivityRow).where(eq(ghgActivityRow.id, rowId));
     if (!orig) throw new Error("Voce inesistente o di un altro tenant");
     const { id: _old, createdAt: _c, updatedAt: _u, ...resto } = orig;
-    await tx.insert(ghgActivityRow).values({ ...resto, id });
+    // La copia è una voce nuova del consulente: non porta la chiave della proposta (l'indice
+    // unico la respingerebbe) né la marca.
+    await tx.insert(ghgActivityRow).values({ ...resto, id, tipoKey: null, propostaMotivo: null });
     await logAudit(tx, { organizationId: orgId, userId, azione: "ghg.row.duplicate", entita: "ghg_activity_row", entitaId: id });
   });
   return id;
@@ -106,10 +109,16 @@ export async function copyRowsFromInventory(
   return withTenant({ userId, orgId }, async (tx) => {
     const [dest] = await tx.select({ id: ghgInventory.id }).from(ghgInventory).where(eq(ghgInventory.id, toInventoryId));
     if (!dest) throw new Error("Inventario di destinazione inesistente o di un altro tenant");
+    // La copia sostituisce le PROPOSTE non toccate: chi copia l'esercizio prima ha scelto le
+    // proprie voci, e le proposte a quantità zero lascerebbero doppioni. Le voci scritte o
+    // modificate dal consulente non si toccano.
+    await tx
+      .delete(ghgActivityRow)
+      .where(and(eq(ghgActivityRow.inventoryId, toInventoryId), isNotNull(ghgActivityRow.propostaMotivo), eq(ghgActivityRow.quantita, "0")));
     const rows = await tx.select().from(ghgActivityRow).where(eq(ghgActivityRow.inventoryId, fromInventoryId));
     for (const r of rows) {
       const { id: _o, createdAt: _c, updatedAt: _u, ...resto } = r;
-      await tx.insert(ghgActivityRow).values({ ...resto, id: randomUUID(), inventoryId: toInventoryId, quantita: "0" });
+      await tx.insert(ghgActivityRow).values({ ...resto, id: randomUUID(), inventoryId: toInventoryId, quantita: "0", tipoKey: null, propostaMotivo: null });
     }
     await logAudit(tx, {
       organizationId: orgId,

@@ -1,8 +1,8 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
 import { createAssessment, setAnswerField, setSoglia, updateProfilo } from "./assessments";
 import { perColonna, rispostaSchema, type ProfiloSupplier } from "./validation";
 import { daErrore, type ActionEsito } from "@/features/esito";
@@ -22,7 +22,7 @@ export async function createAssessmentAction(input: {
   sogliaRichiesta?: number;
 }): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("fornitore");
     const id = await createAssessment(s.userId, s.orgId, input);
     revalidatePath(percorso(input.companyId));
     return { ok: true, dati: { id } };
@@ -36,7 +36,7 @@ export async function updateProfiloAction(
   patch: ProfiloSupplier,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("fornitore");
     await updateProfilo(s.userId, s.orgId, assessmentId, patch);
     return { ok: true };
   } catch (e) {
@@ -50,7 +50,7 @@ export async function setSogliaAction(
   soglia: number,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("fornitore");
     await setSoglia(s.userId, s.orgId, assessmentId, soglia);
     revalidatePath(percorso(companyId));
     return { ok: true };
@@ -66,7 +66,7 @@ export async function setAnswerFieldAction(
   input: z.input<typeof rispostaSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("fornitore");
     const v = rispostaSchema.parse(input);
     await setAnswerField(s.userId, s.orgId, assessmentId, v.questionKey, v.campo, perColonna(v.campo, v.valore));
     return { ok: true };
@@ -78,7 +78,7 @@ export async function setAnswerFieldAction(
 /** Ricalcolo esplicito: l'unica azione che rilegge tutto il questionario. */
 export async function ricalcolaAction(companyId: string): Promise<ActionEsito> {
   try {
-    await requireConsultant();
+    await requirePercorso("fornitore");
     revalidatePath(percorso(companyId));
     return { ok: true };
   } catch (e) {

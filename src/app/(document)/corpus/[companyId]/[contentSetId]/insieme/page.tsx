@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireConsultant } from "@/features/auth/guards";
+import { requirePercorsoDelContentSet } from "@/features/auth/percorsi";
 import { documentoCorpus, listaCorpus } from "@/features/corpus/letture";
 import { anagraficaPerEdizione } from "@/features/corpus/anagrafiche";
 import { RendeCorpus } from "@/components/corpus/rende-corpus";
@@ -36,6 +37,9 @@ export default async function StampaInsiemePage({
   const { companyId, contentSetId } = await params;
   const { fase, tipo } = await searchParams;
   const s = await requireConsultant();
+  // Fascia «Azienda»: la pagina di un percorso non assegnato non esiste per chi non lo ha.
+  // Il rifiuto si traduce in 404 e non in un'eccezione, che qui sarebbe un 500.
+  await requirePercorsoDelContentSet(contentSetId).catch(() => notFound());
 
   const anagrafica = await anagraficaPerEdizione(s.userId, s.orgId, companyId, contentSetId);
   if (!anagrafica) notFound();

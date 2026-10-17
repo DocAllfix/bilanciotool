@@ -1,9 +1,9 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -36,7 +36,7 @@ function rivalida(companyId: string) {
 
 export async function creaAutovalutazioneAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("nis2", "sgnis2");
     const id = await creaAutovalutazione(s.userId, s.orgId, companyId);
     rivalida(companyId);
     return { ok: true, dati: { id } };
@@ -47,7 +47,7 @@ export async function creaAutovalutazioneAction(companyId: string): Promise<Acti
 
 export async function creaSistemaNis2Action(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("nis2", "sgnis2");
     const id = await creaSistema(s.userId, s.orgId, companyId);
     rivalida(companyId);
     return { ok: true, dati: { id } };
@@ -61,7 +61,7 @@ export async function aggiornaAmbitoAction(
   patch: z.input<typeof ambitoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("nis2", "sgnis2");
     await aggiornaAmbito(s.userId, s.orgId, companyId, patch);
     rivalida(companyId);
     return { ok: true };
@@ -75,7 +75,7 @@ export async function aggiornaAssettoAction(
   patch: z.input<typeof assettoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("nis2", "sgnis2");
     await aggiornaAssetto(s.userId, s.orgId, companyId, patch);
     rivalida(companyId);
     return { ok: true };
@@ -89,7 +89,7 @@ export async function setCampoRequisitoAction(
   input: z.input<typeof requisitoSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("nis2", "sgnis2");
     await setCampoRequisito(s.userId, s.orgId, companyId, input);
     rivalida(companyId);
     return { ok: true };

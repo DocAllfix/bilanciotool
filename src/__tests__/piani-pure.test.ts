@@ -26,8 +26,23 @@ import {
 const RISERVA = { maxActiveCompanies: 10, warnAtCompanies: 8, maxMembers: 5 };
 
 describe("il listino", () => {
-  it("ha i cinque livelli, in ordine di vendita, e solo quelli", () => {
-    expect(CHIAVI_PIANO).toEqual(["singola", "professional", "studio", "studio_plus", "enterprise"]);
+  it("ha i sei livelli, in ordine di vendita, e solo quelli", () => {
+    expect(CHIAVI_PIANO).toEqual(["singola", "azienda", "professional", "studio", "studio_plus", "enterprise"]);
+  });
+
+  it("la fascia «Azienda»: un'azienda, dieci accessi, 490 € poi 392 €, uso interno, niente blocchi", () => {
+    // Decisione del committente del 17 ottobre 2026: l'azienda che porta avanti i percorsi in
+    // casa, con un amministratore che li assegna ai colleghi.
+    expect(PIANI.azienda.aziende).toBe(1);
+    expect(PIANI.azienda.accessi).toBe(10);
+    expect(PIANI.azienda.primoAnno).toBe(49000);
+    expect(PIANI.azienda.rinnovo).toBe(39200);
+    expect(PIANI.azienda.senzaBlocchi).toBe(true);
+    expect(PIANI.azienda.usoInterno).toBe(true);
+    expect(chiavePiano(PIANI.azienda.lookupAnno1)).toBe("azienda");
+    expect(chiavePiano(PIANI.azienda.lookupRinnovo)).toBe("azienda");
+    // Le fasce da studio non accendono le assegnazioni: lì ognuno vede tutto il portafoglio.
+    for (const k of CHIAVI_PIANO.filter((x) => x !== "azienda")) expect(PIANI[k].usoInterno, k).toBeFalsy();
   });
 
   it("la fascia d'ingresso: un'azienda, tre accessi, 350 € poi 280 €, niente blocchi", () => {
@@ -51,12 +66,12 @@ describe("il listino", () => {
   });
 
   it("le fasce vendibili sono tutte tranne quella a trattativa, e si parte dalla più economica", () => {
-    expect(fasceVendibili()).toEqual(["singola", "professional", "studio", "studio_plus"]);
+    expect(fasceVendibili()).toEqual(["singola", "azienda", "professional", "studio", "studio_plus"]);
     expect(prezzoMinimo()).toBe(35000);
   });
 
   it("i titoli contano le fasce in lettere, e non restano a «Tre»", () => {
-    expect(quanteFasceInLettere()).toBe("Quattro");
+    expect(quanteFasceInLettere()).toBe("Cinque");
   });
 
   it("«1 azienda», non «1 aziende»", () => {

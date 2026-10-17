@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { PIANI, euro, aziendeTesto, fasceVendibili, prezzoDiVendita, promozioneInCorso, FINE_LANCIO } from "@/lib/prezzi";
+import { PIANI, euro, aziendeTesto, fasceStudio, prezzoDiVendita, promozioneInCorso, FINE_LANCIO } from "@/lib/prezzi";
 import { apriCheckoutAction } from "@/features/billing/actions";
 import type { PianoKey } from "@/lib/prezzi";
 import { fmtDataEstesa } from "@/lib/format";
@@ -22,7 +22,9 @@ import { fmtDataEstesa } from "@/lib/format";
 
 export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
   const [inCorso, setInCorso] = useState<PianoKey | null>(null);
-  const acquistabili = fasceVendibili();
+  // Le fasce PER STUDIO: l'offerta chiude il giro di chi segue clienti. «Azienda» (uso
+  // interno) si attiva da /attiva/azienda o dalla pagina Abbonamento.
+  const acquistabili = fasceStudio();
 
   async function acquista(piano: PianoKey) {
     setInCorso(piano);

@@ -1,6 +1,7 @@
 "use server";
 
 import { requireConsultant } from "@/features/auth/guards";
+import { documentoVisibile, percorsiVisibili, requirePercorsoDelDocumento } from "@/features/auth/percorsi";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import type { TipoDocumento } from "./tipi";
 import {
@@ -28,7 +29,7 @@ export async function publishDocumentAction(
   anno: number,
 ): Promise<ActionEsito<{ snapshotId: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorsoDelDocumento(tipo);
     // Switch esaustivo: un tipo nuovo senza funzione di pubblicazione non compila.
     const pubblica = (() => {
       switch (tipo) {
@@ -134,7 +135,9 @@ export type SnapshotRiga = {
 export async function listSnapshotsAction(companyId: string): Promise<ActionEsito<SnapshotRiga[]>> {
   try {
     const s = await requireConsultant();
-    const rows = await listSnapshots(s.userId, s.orgId, companyId);
+    // Nella fascia «Azienda» un collaboratore vede solo i documenti dei percorsi assegnati.
+    const visibili = await percorsiVisibili(s);
+    const rows = (await listSnapshots(s.userId, s.orgId, companyId)).filter((r) => documentoVisibile(visibili, r.tipo));
     return {
       ok: true,
       dati: rows.map((r) => ({

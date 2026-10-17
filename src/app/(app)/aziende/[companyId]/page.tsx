@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireConsultant } from "@/features/auth/guards";
+import { amministra, documentoVisibile, percorsiVisibili, usoInterno } from "@/features/auth/percorsi";
 import { getFascicolo, listDocumentiAzienda } from "@/features/companies/fascicolo";
 import { getStorico } from "@/features/companies/storico";
 import { Storico } from "@/components/portfolio/storico";
@@ -34,15 +35,28 @@ const ETICHETTA_STATO = {
 export default async function FascicoloPage({ params }: { params: Promise<{ companyId: string }> }) {
   const { companyId } = await params;
   const s = await requireConsultant();
-  const [f, documenti, storico, collegamenti, contatti, stato] = await Promise.all([
+  const [fTutto, documentiTutti, storicoTutto, collegamenti, contatti, stato, visibili, interno] = await Promise.all([
     getFascicolo(s.userId, s.orgId, companyId),
     listDocumentiAzienda(s.userId, s.orgId, companyId),
     getStorico(s.userId, s.orgId, companyId),
     elencaCollegamenti(s.userId, s.orgId, companyId),
     elencaContatti(s.userId, s.orgId, companyId),
     getAccountStatus(s.userId, s.orgId),
+    percorsiVisibili(s),
+    usoInterno(s.userId, s.orgId),
   ]);
-  if (!f) notFound();
+  if (!fTutto) notFound();
+  // Fascia «Azienda»: il collaboratore vede nel fascicolo solo i suoi percorsi, e i loro
+  // documenti. Il collegamento per il cliente lo gestisce chi amministra.
+  const documenti = documentiTutti.filter((d) => documentoVisibile(visibili, d.tipo));
+  // Il totale si ricalcola sull'elenco filtrato: contare i documenti dei percorsi nascosti
+  // direbbe al collaboratore che esiste qualcosa che non può vedere. L'elenco porta gli
+  // ultimi venti, che per i percorsi di una persona sola bastano.
+  const f = visibili
+    ? { ...fTutto, voci: fTutto.voci.filter((v) => visibili.has(v.modulo)), documentiTotali: documenti.length }
+    : fTutto;
+  const storico = storicoTutto.filter((x) => documentoVisibile(visibili, x.tipo));
+  const condivide = !interno || amministra(s.role);
 
   const avviati = f.voci.filter((v) => v.stato !== "non-avviato").length;
 
@@ -219,7 +233,7 @@ export default async function FascicoloPage({ params }: { params: Promise<{ comp
 
       {/* Sta qui e non nelle impostazioni: il collegamento riguarda UNA azienda, e si
           genera guardando i documenti che si sta per condividere. */}
-      <PannelloCondivisione companyId={companyId} collegamenti={collegamenti} />
+      {condivide && <PannelloCondivisione companyId={companyId} collegamenti={collegamenti} />}
 
       <div className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Documenti pubblicati</h2>

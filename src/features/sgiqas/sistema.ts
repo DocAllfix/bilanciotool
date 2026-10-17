@@ -1,3 +1,5 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
+import { proponiRegistriQas } from "./proposte";
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { withTenant, type Tx } from "@/lib/db/tenant";
@@ -50,6 +52,10 @@ export async function creaSistema(
       .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const az = await profiloAzienda(tx, orgId, v.companyId);
+    const an = anagraficaInTesto(az);
     await tx.insert(qasSystem).values({
       id,
       organizationId: orgId,
@@ -60,6 +66,10 @@ export async function creaSistema(
       // sembrare il sistema più piccolo di quello che è.
       norme: ["Q", "A", "S"],
       ragione: co.nome,
+      piva: an.piva,
+      sede: an.sede,
+      settore: an.settore,
+      addetti: an.addetti,
       revisione: "1.0",
     });
     await logAudit(tx, {
@@ -69,6 +79,7 @@ export async function creaSistema(
       entita: "qas_system",
       entitaId: id,
     });
+    await proponiRegistriQas(tx, userId, orgId, v.companyId, setId, az);
   });
   return id;
 }

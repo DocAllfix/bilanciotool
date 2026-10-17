@@ -3917,3 +3917,98 @@ Gate: typecheck · build · `qa -- legale` 26/26 · spazi verificati sull'HTML r
 su come rigenerarli); il corso PAS muto finché non si decidono le pronunce di «PAS» e «Social
 Accountability International»; le dimostrative già iscritte senza percorso PAS e col vecchio
 nome.
+
+**Fascia «Azienda» e voci che si trovano da sole (2026-10-17) — ramo `lavoro/azienda-interna`, NON in produzione**
+
+Due richieste del committente, piano in `~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`.
+
+**Fascia «Azienda»** (A1–A3): una sola azienda, la propria, **10 accessi**, 490 € il primo
+anno e 392 € dal secondo, `usoInterno: true`. Migrazione `0068` (CHECK sul piano allargato e
+tabella `assegnazione_percorso`, una riga per persona e percorso, cancellata con il membro).
+Un collaboratore vede **solo** i percorsi assegnati, e il server rifiuta letture e scritture
+sugli altri: `requirePercorso` in tutte le `actions.ts` dei moduli, `guardia-percorso.ts`
+nei layout (404), filtri su barra, fascicolo, dashboard, archivio e giro guidato. Titolare e
+amministratori vedono tutto; negli studi non cambia niente. Prezzi creati sulla sandbox.
+
+**Voci che si trovano da sole** (B0–B5), tre tipi:
+- **anagrafica copiata** all'avvio di ogni percorso, solo nei campi vuoti, e propagata ai
+  percorsi già avviati quando si salva la scheda cliente (`companies/propaga.ts`, clausola
+  WHERE, mai «leggi e poi scrivi»);
+- **proposte inserite**, marcate `proposta_motivo` col motivo: voci GHG (anno precedente o
+  15 del settore), usi finali, temi di materialità, reati 231, trattamenti GDPR, aspetti e
+  pericoli QAS. Catalogo `ateco-v1` (`ateco-proposte.json`, 948 righe, 26 profili per
+  DIVISIONE), leggibile in `docs/ateco-profili.md`;
+- **valori con «Usa»** accanto al campo vuoto: consumi fra GHG, bilancio energetico e
+  indicatori; risposte dell'autovalutazione ESG; dimensione NIS2; obbligo del canale di
+  segnalazione; ruolo privacy della SoA; anagrafica nelle schede del metodo ESG.
+
+Regole: la marca si spegne alla prima modifica o con «Conferma»; i documenti e gli esiti
+contano solo ciò che è confermato; cambiando ATECO escono solo le proposte mai toccate;
+aprire una pagina non scrive; qualificazioni giuridiche e numeri fra percorsi si
+**propongono**, non si scrivono; mai un «no» automatico. I profili JSONB si aggiornano con
+`fondiJsonb` (il leggi-modifica-scrivi perdeva campi in parallelo, provato in rosso).
+Elenco completo per percorso e per settore consegnato al committente
+(`Desktop/EvalisDeck - Voci automatiche.docx`, generato dai cataloghi).
+
+**Fase C — vetrina**: `fasceStudio()` separa le fasce per studio da «Azienda», che su
+`/prezzi` e nella pagina Abbonamento ha un riquadro suo (in fila sarebbe sembrata un doppione
+più caro della fascia da un'azienda); domande sui prezzi riscritte più «Lavoro dentro
+un'azienda…»; in home la porta `/attiva/azienda`, la voce di metodo e la domanda «Devo
+inserire tutto a mano?»; Termini §8 con l'uso interno (`AGGIORNATO_AL` = 2026-10-17, **da
+portare alla data del rilascio**). L'offerta di fine giro mostra solo le fasce per studio.
+
+**Difetti trovati, tutti prima del commit:**
+- ⚠️ **La materialità non sapeva dire «sono d'accordo».** La tendina mostra il valore
+  proposto, e scegliere lo stesso valore non salva niente: il tema restava proposta, fuori
+  dall'esito e dalle politiche. Ora c'è «Conferma» (`confermaTema`), col motivo in chiaro e
+  non solo nel `title`, che da telefono non esiste.
+- **Il collaudo del Bilancio passava per il motivo sbagliato**: sceglieva 4 dove la proposta
+  diceva già 4. Ora prova un tema non proposto (`data-tema-proposto`) e la conferma a parte.
+- **L'esito della materialità a schermo contava le proposte** mentre il documento no: un
+  tema poteva risultare «materiale» senza che nessuno l'avesse valutato.
+- **Il dialogo di «Azienda» suggeriva «Fino a 5 aziende»**, fascia per chi segue clienti.
+- **Il ruolo privacy proposto diceva «responsabile» a un titolare**: l'ha trovato il test.
+- `documenti-qas` inseriva righe con numeri ora occupati dalle proposte comuni.
+
+**Regole nate qui:**
+- **Una proposta che si accetta solo cambiando il valore non è accettabile.** Ogni percorso
+  con proposte ha la sua «Conferma».
+- **Un controllo che sceglie il valore già presente non prova il salvataggio**: passa
+  leggendo ciò che c'era prima.
+- **Un esito a schermo e uno nel documento si calcolano con la stessa regola**, nella stessa
+  funzione, o divergono.
+
+Gate: typecheck · build · suite **201 file / 2040 test in entrambe le modalità** · `qa`:
+tutto-pubblico 37/37, legale 26/26, attivazione 10/10, impostazioni 14/14, benvenuto 12/12,
+azienda-interna, ghg-proposte 10/10, ghg 24/24, bilancio 21/21, energetico 41/41, fornitore
+28/28, mog231 20/20, nis2 44/44, gdpr 26/26, pas 25/25, soa 34/34, sgesg-schede 14/14,
+sgesg 20/20, documenti-qas 18/18, corpus 12/12, tutto-demo 68/68, tutto-attivo 31/31,
+demo-completa 9/9, archiviata 35/35, portafoglio-aggiorna 5/5, guida 7/7 · foto di `/prezzi`,
+home e pagina Abbonamento **guardate** in chiaro, scuro e da telefono, console pulita.
+
+⚠️ **Per il rilascio, in quest'ordine**: prezzi vivi della fascia «Azienda» (sull'account
+vivo, verificandolo prima); migrazioni `0068` e `0069` (le colonne aggiunte alla `0069` dopo
+la sua prima applicazione in sviluppo sono nel file: in produzione si applica intera); seme
+`ateco-v1`; conteggi letti come `app_rls`; fusione. E il catalogo per settore va **rivisto dal
+committente** prima.
+
+✅ **In produzione dal 17 ottobre 2026**, col metodo:
+- prezzi vivi `evalisdeck_azienda_anno1_v1` (490 €) e `_rinnovo_v1` (392 €) sull'account
+  `acct_1U3GxSAOnVDvjrbP`, verificato prima di scrivere e riletto dopo;
+- anteprima `anteprima/azienda-interna`: il primo build è finito PRIMA di poterlo annullare
+  (con le variabili di produzione) ed è stato **cancellato** via API (404 dopo); sette
+  variabili legate al ramo; precedenza misurata (il conto del collaudo è nello sviluppo, non in
+  produzione). Giro 66 collaudi: `csp` rosso per il debito noto di Google Ads; `bilancio`
+  (controllo visivo) e `scheda-cliente` rossi per due correzioni vere fatte qui;
+  `formazione-comandi` e `sgesg-schede` rossi nella batteria e verdi da soli; cinque al
+  secondo tentativo (anticorruzione, azienda-interna, sa8000, segnalazioni, tracce);
+- produzione: guardia vista **rifiutarsi**, migrazioni `0068`+`0069` (70/70, 200 tabelle, 0
+  senza RLS, dati vivi invariati), seme `ateco-v1`, conteggi letti **come `app_rls`** uguali
+  alla previsione (`docs/rilascio-azienda-previsione.md`): 16 content set, 948 proposte, 0
+  assegnazioni, 0 righe marcate; vincolo sul piano provato in transazione annullata;
+- fusione su `main` come un commit solo.
+
+**Regola nata qui:** **un collaudo che legge `innerText` a `domcontentloaded` è verde solo dove
+la pagina è veloce.** In locale `verifica-azienda-interna` era verde; sull'anteprima, più lenta,
+leggeva il segnaposto di caricamento e faceva cadere a catena dodici controlli. Si aspetta il
+fatto.

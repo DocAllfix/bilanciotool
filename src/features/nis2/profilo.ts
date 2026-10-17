@@ -73,7 +73,8 @@ async function pretendiProfilo(tx: Tx, orgId: string, companyId: string) {
 /** L'azienda dello studio, o niente. Il filtro sull'organizzazione e' ESPLICITO oltre a RLS. */
 async function aziendaDelloStudio(tx: Tx, orgId: string, companyId: string) {
   const [a] = await tx
-    .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede })
+    // Addetti e fatturato servono a PROPORRE la dimensione (vedi `propostaDimensioneNis2`).
+    .select({ id: company.id, nome: company.nome, settore: company.settore, sede: company.sede, dipendenti: company.dipendenti, fatturato: company.fatturato })
     .from(company)
     .where(and(eq(company.id, companyId), eq(company.organizationId, orgId)));
   return a ?? null;

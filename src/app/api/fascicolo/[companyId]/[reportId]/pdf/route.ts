@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthError, ForbiddenError, requireConsultant } from "@/features/auth/guards";
+import { AuthError, ForbiddenError } from "@/features/auth/guards";
+import { requirePercorso } from "@/features/auth/percorsi";
 import { EntitlementError, requireEntitlement } from "@/features/entitlement";
 import { renderPdf } from "@/features/documents/pdf";
 import { getFascicolo, getSegnalazioni } from "@/features/segnalazioni/queries";
@@ -24,7 +25,7 @@ export async function GET(
 
   let s;
   try {
-    s = await requireConsultant();
+    s = await requirePercorso("segnalazioni");
     await requireEntitlement(s.userId, s.orgId, "export");
   } catch (e) {
     if (e instanceof AuthError) return NextResponse.json({ errore: "Non autenticato" }, { status: 401 });

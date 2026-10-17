@@ -14,7 +14,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, fasceStudio, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -180,8 +180,11 @@ await check("l'offerta mostra i prezzi del listino, senza barrati inventati", as
   // ⚠️ Gli importi si DERIVANO dal listino. Scritti a mano, questo controllo e' diventato
   // rosso il 27 agosto 2026 al cambio di fasce, per un motivo che col prodotto non
   // c'entrava: il prodotto mostrava i prezzi giusti, era il collaudo a ricordare i vecchi.
+  // ⚠️ Le fasce PER STUDIO: dal 17 ottobre 2026 l'offerta chiude il giro di chi segue
+  // clienti, e «Azienda» (uso interno) si attiva da /attiva/azienda. Chiederle tutte
+  // pretenderebbe una scheda tolta apposta.
   const t = await page.locator("body").innerText();
-  for (const k of CHIAVI_PIANO) {
+  for (const k of fasceStudio()) {
     const v = prezzoDiVendita(PIANI[k], "anno1");
     if (!v) continue;
     if (!t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  addActivityRowAction, copyRowsAction, deleteActivityRowAction, duplicateActivityRowAction, updateActivityRowAction,
+  addActivityRowAction, confermaVociAction, copyRowsAction, deleteActivityRowAction, duplicateActivityRowAction, updateActivityRowAction,
 } from "@/features/ghg/actions";
 import { computeRow, DQ_LEVELS, type DqLevel } from "@/lib/calc/ghg/row";
 import { fmtNum } from "@/lib/format";
@@ -17,9 +17,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Copy, Pencil, Plus } from "lucide-react";
+import { Check, Copy, Pencil, Plus, Sparkles } from "lucide-react";
 import type { Catalogo, Inventario, InventarioBreve, Riga, StatoWizard } from "./types";
 import { BottoneElimina } from "@/components/comune/bottone-elimina";
+import { PropostaValore } from "@/components/comune/proposta-valore";
 
 // Passo 3 — Dati di attività: una riga per sorgente e sito.
 // L'anteprima usa LE STESSE funzioni pure del server (src/lib/calc): mai
@@ -66,6 +67,36 @@ export function PassoDati({
   const [inCorso, setInCorso] = useState(false);
 
   const precedente = inventari.find((i) => i.anno < inventario.anno);
+  const proposte = stato.righe.filter((r) => r.propostaMotivo);
+  // «Copia dal» resta finché nessuno ha scritto niente: le proposte non toccate non contano
+  // come lavoro, e la copia le sostituisce (lato server).
+  const soloProposte = stato.righe.every((r) => r.propostaMotivo && Number(r.quantita) === 0);
+
+  /**
+   * La voce nuova parte da ciò che i passi prima hanno già detto: la prima sorgente INCLUSA
+   * che non ha ancora voci, col suo primo fattore, e la sede dal primo sito dei confini.
+   * Prima partiva sempre da «gas naturale», qualunque fosse l'azienda.
+   */
+  const nuovaVoce = (): Bozza => {
+    const conVoci = new Set(stato.righe.map((r) => r.sourceTypeKey));
+    const incluse = stato.sorgenti.filter((x) => x.stato === "in").map((x) => x.sourceTypeKey);
+    const sorgente = incluse.find((k) => !conVoci.has(k)) ?? incluse[0];
+    const fattore = sorgente ? catalogo.fattori.find((x) => x.sourceTypeKey === sorgente) : undefined;
+    const sede = (inventario.boundaries.siti ?? "").split(/[\n;,]/)[0]?.trim() ?? "";
+    const base = vuota();
+    if (!sorgente || !fattore) return { ...base, sede };
+    return {
+      ...base,
+      categoryKey: fattore.categoryKey,
+      sourceTypeKey: sorgente,
+      factorKey: fattore.key,
+      um: fattore.um,
+      fe: fattore.fe,
+      feMarket: fattore.feMarket ?? "",
+      feBiogenic: fattore.feBiogenic ?? "",
+      sede,
+    };
+  };
   const righe = useMemo(
     () =>
       stato.righe
@@ -142,7 +173,7 @@ export function PassoDati({
               {catalogo.categorie.map((c) => <SelectItem key={c.key} value={c.key}>Categoria {c.key}</SelectItem>)}
             </SelectContent>
           </Select>
-          {precedente && stato.righe.length === 0 && (
+          {precedente && soloProposte && (
             <Button
               variant="outline"
               onClick={async () => {
@@ -154,12 +185,22 @@ export function PassoDati({
               <Copy className="size-4" /> Copia dal {precedente.anno}
             </Button>
           )}
-          <Button onClick={() => setBozza(vuota())} data-tour="aggiungi-voce">
+          <Button onClick={() => setBozza(nuovaVoce())} data-tour="aggiungi-voce">
             <Plus className="size-4" /> Aggiungi voce
           </Button>
         </div>
       </div>
       {errore && !bozza && <p role="alert" className="mb-3 text-sm text-destructive">{errore}</p>}
+      {proposte.length > 0 && (
+        <div className="mb-3 flex items-start gap-2 rounded-md border border-primary/25 bg-accent/60 px-3 py-2.5 text-sm" data-proposte={proposte.length}>
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+          <p>
+            <strong>{proposte.length === 1 ? "Una voce proposta" : `${proposte.length} voci proposte`}</strong>{" "}
+            dal codice ATECO o dall&apos;esercizio prima, a quantità zero: il totale non cambia finché non scrivi un
+            numero. Compila quelle che ti riguardano, togli le altre. Modificarne una la rende tua.
+          </p>
+        </div>
+      )}
 
       <Card className="py-0">
         <CardContent className="px-0">
@@ -185,14 +226,48 @@ export function PassoDati({
                   <TableRow key={r.id}>
                     <TableCell><Badge variant="outline">{r.categoryKey}</Badge></TableCell>
                     <TableCell>
-                      <p className="font-medium">{r.descrizione || "(senza descrizione)"}</p>
+                      <p className="font-medium">
+                        {r.descrizione || "(senza descrizione)"}
+                        {r.propostaMotivo && (
+                          <Badge variant="outline" className="ml-2 border-primary/40 align-middle text-[10.5px] text-primary">
+                            proposta
+                          </Badge>
+                        )}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         {catalogo.sorgenti.find((s) => s.key === r.sourceTypeKey)?.nome}
                         {r.sede ? ` · ${r.sede}` : ""}
                       </p>
+                      {/* Le celle della tabella non vanno a capo (shadcn): senza \`whitespace-normal\`
+                          il motivo sbordava sulle colonne di quantità e qualità. */}
+                      {r.propostaMotivo && <p className="mt-0.5 max-w-md whitespace-normal text-xs text-muted-foreground" data-motivo>{r.propostaMotivo}</p>}
                     </TableCell>
                     <TableCell className="text-right">
                       {fmtNum(r.quantita, 2)} <span className="text-xs text-muted-foreground">{r.um}</span>
+                      {r.propostaMotivo && Number(r.quantita) === 0 && r.factorKey && stato.proposteQuantita[r.factorKey] && (
+                        <div>
+                          <PropostaValore
+                            valore={stato.proposteQuantita[r.factorKey].valore}
+                            fonte={stato.proposteQuantita[r.factorKey].fonte}
+                            um={r.um}
+                            etichetta={r.descrizione || "la voce"}
+                            applica={async (q) => {
+                              // La voce si salva intera come dal dialogo: è una modifica del
+                              // consulente, e spegne la marca «proposta».
+                              const esito = await updateActivityRowAction(companyId, r.id, {
+                                sourceTypeKey: r.sourceTypeKey,
+                                categoryKey: r.categoryKey as "1" | "2" | "3" | "4" | "5" | "6",
+                                sede: r.sede ?? "", descrizione: r.descrizione ?? "", factorKey: r.factorKey,
+                                um: r.um, quantita: q, fe: r.fe,
+                                feMarket: r.feMarket, quotaGo: r.quotaGo, feBiogenic: r.feBiogenic,
+                                dq: r.dq, incertezza: r.incertezza, evidenza: r.evidenza ?? "", note: r.note ?? "",
+                              });
+                              if (!esito.ok) return setErrore(esito.errore);
+                              router.refresh();
+                            }}
+                          />
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">{fmtNum(r.fe, 4)}</TableCell>
                     <TableCell className="text-right font-semibold">
@@ -209,6 +284,21 @@ export function PassoDati({
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">
+                        {r.propostaMotivo && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Conferma la voce «${r.descrizione || "senza descrizione"}»`}
+                            title="Conferma: la voce resta, e non è più una proposta"
+                            onClick={async () => {
+                              const esito = await confermaVociAction(companyId, [r.id]);
+                              if (!esito.ok) return setErrore(esito.errore);
+                              router.refresh();
+                            }}
+                          >
+                            <Check className="size-3.5" />
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" aria-label="Modifica" onClick={() => apriModifica(r)}><Pencil className="size-3.5" /></Button>
                         <Button variant="ghost" size="icon" aria-label="Duplica" onClick={async () => { await duplicateActivityRowAction(companyId, r.id); router.refresh(); }}><Copy className="size-3.5" /></Button>
                         <BottoneElimina

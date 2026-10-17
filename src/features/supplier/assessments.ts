@@ -1,4 +1,6 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
+import { fondiJsonb } from "@/lib/db/jsonb";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
@@ -36,11 +38,16 @@ export async function createAssessment(
     const [co] = await tx.select({ id: company.id }).from(company).where(eq(company.id, v.companyId));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
     await tx.insert(supplierAssessment).values({
       id,
       organizationId: orgId,
       companyId: v.companyId,
       contentSetId: setId,
+      // ⚠️ Il fatturato qui è in MILIONI (lo dice l'etichetta, e lo stampa l'attestato).
+      profilo: { piva: an.piva, settore: an.settore, ateco: an.ateco, dipendenti: an.addetti, fatturato: an.fatturatoMilioni, sede: an.sede },
       sogliaRichiesta: v.sogliaRichiesta ?? 60,
     });
 
@@ -76,13 +83,13 @@ export async function updateProfilo(
   await requireEntitlement(userId, orgId, "write_data");
   const v = profiloSchema.parse(patch);
   await withTenant({ userId, orgId }, async (tx) => {
-    const [row] = await tx
-      .select({ profilo: supplierAssessment.profilo })
-      .from(supplierAssessment)
-      .where(eq(supplierAssessment.id, assessmentId));
-    if (!row) throw new Error("Valutazione inesistente o di un altro tenant");
-    const aggiornato = { ...(row.profilo as ProfiloSupplier), ...v };
-    await tx.update(supplierAssessment).set({ profilo: aggiornato }).where(eq(supplierAssessment.id, assessmentId));
+    // Fusione in un'istruzione sola: vedi `fondiJsonb`.
+    const toccate = await tx
+      .update(supplierAssessment)
+      .set({ profilo: fondiJsonb(supplierAssessment.profilo, v) })
+      .where(and(eq(supplierAssessment.id, assessmentId), eq(supplierAssessment.organizationId, orgId)))
+      .returning({ id: supplierAssessment.id });
+    if (!toccate.length) throw new Error("Valutazione inesistente o di un altro tenant");
     await logAudit(tx, {
       organizationId: orgId,
       userId,

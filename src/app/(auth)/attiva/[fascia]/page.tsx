@@ -36,7 +36,9 @@ export async function generateMetadata({
   if (!p) return { title: "Attiva" };
   return {
     title: `Attiva «${p.nome}»`,
-    description: `${p.descrizione} ${aziendeTesto(p.aziende)} in portafoglio, tutti i percorsi compresi.`,
+    description: p.usoInterno
+      ? `${p.descrizione} Tutti i percorsi compresi.`
+      : `${p.descrizione} ${aziendeTesto(p.aziende)} in portafoglio, tutti i percorsi compresi.`,
     robots: { index: false, follow: true },
   };
 }
@@ -53,7 +55,11 @@ export default async function AttivaFasciaPage({ params }: { params: Promise<{ f
       destinazione={`/impostazioni/abbonamento?fascia=${p.key}`}
       perAcquisto
       titolo={`Attiva «${p.nome}»`}
-      sottotitolo={`${aziendeTesto(p.aziende)} in portafoglio e ${p.accessi} accessi, con tutti i percorsi compresi. Crea l'account: al passo dopo scegli come pagare.`}
+      sottotitolo={
+        p.usoInterno
+          ? `La tua azienda e ${p.accessi} accessi per i colleghi, ciascuno coi percorsi che gli assegni. Crea l'account: al passo dopo scegli come pagare.`
+          : `${aziendeTesto(p.aziende)} in portafoglio e ${p.accessi} accessi, con tutti i percorsi compresi. Crea l'account: al passo dopo scegli come pagare.`
+      }
     />
   );
 }

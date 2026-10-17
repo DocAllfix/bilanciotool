@@ -1,4 +1,6 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
+import { fondiJsonb } from "@/lib/db/jsonb";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { withTenant } from "@/lib/db/tenant";
@@ -64,6 +66,9 @@ export async function createDeclaration(
       .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
     await tx.insert(soaDeclaration).values({
       id,
       organizationId: orgId,
@@ -72,7 +77,7 @@ export async function createDeclaration(
       sogliaObiettivo: v.sogliaObiettivo ?? 80,
       ruoloPrivacy: v.ruoloPrivacy ?? "titolare",
       ruoloCloud: v.ruoloCloud ?? "cliente",
-      profilo: { versione: "1.0", data: new Date().toISOString().slice(0, 10) },
+      profilo: { versione: "1.0", data: new Date().toISOString().slice(0, 10), piva: an.piva, sede: an.sede },
     });
 
     await logAudit(tx, {
@@ -105,10 +110,11 @@ export async function updateProfilo(
   await requireEntitlement(userId, orgId, "write_data");
   const v = profiloSchema.parse(patch);
   await withTenant({ userId, orgId }, async (tx) => {
-    const row = await nostra(tx, orgId, declarationId);
+    await nostra(tx, orgId, declarationId);
+    // Fusione in un'istruzione sola: vedi `fondiJsonb`.
     await tx
       .update(soaDeclaration)
-      .set({ profilo: { ...(row.profilo as ProfiloSoa), ...v } })
+      .set({ profilo: fondiJsonb(soaDeclaration.profilo, v) })
       .where(and(eq(soaDeclaration.id, declarationId), eq(soaDeclaration.organizationId, orgId)));
     await logAudit(tx, {
       organizationId: orgId,

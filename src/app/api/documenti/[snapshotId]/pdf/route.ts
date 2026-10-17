@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuthError, ForbiddenError, requireConsultant } from "@/features/auth/guards";
+import { documentoVisibile, percorsiVisibili } from "@/features/auth/percorsi";
 import { EntitlementError, requireEntitlement } from "@/features/entitlement";
 import { nomeFileDocumento } from "@/features/documents/tipi";
 import { getSnapshot } from "@/features/documents/snapshot";
@@ -37,7 +38,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ snap
 
   try {
     const snap = await getSnapshot(s.userId, s.orgId, snapshotId);
-    if (!snap) return NextResponse.json({ errore: "Documento inesistente" }, { status: 404 });
+    // Un documento di un percorso non assegnato risponde come uno che non c'è (fascia «Azienda»).
+    if (!snap || !documentoVisibile(await percorsiVisibili(s), snap.tipo)) {
+      return NextResponse.json({ errore: "Documento inesistente" }, { status: 404 });
+    }
 
     // Se il PDF di questa versione esiste già, si serve quello e Chromium non parte.
     //

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { requireConsultant } from "@/features/auth/guards";
+import { usoInterno } from "@/features/auth/percorsi";
 import { can, getAccountStatus } from "@/features/entitlement";
 import { elencaCompensi, riepilogo } from "@/features/compensi";
 import { oggiIso } from "@/features/agenda";
@@ -15,6 +17,8 @@ export const metadata: Metadata = { title: "Compensi" };
 
 export default async function CompensiPage() {
   const s = await requireConsultant();
+  // I compensi sono di uno studio: nella fascia «Azienda» la pagina non esiste.
+  if (await usoInterno(s.userId, s.orgId)) notFound();
   const [voci, aziende, stato] = await Promise.all([
     elencaCompensi(s.userId, s.orgId),
     aziendeAttive(s.userId, s.orgId),

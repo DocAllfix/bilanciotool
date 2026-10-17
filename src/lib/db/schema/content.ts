@@ -16,7 +16,9 @@ export const contentSet = pgTable(
         // del corpus si congela indipendentemente da quella degli altri.
         "mog231", "iso37001", "sgiqas", "sa8000", "filiera", "wb", "sgesg",
         // `nis2` mancava qui pur essendo nel CHECK dalla migrazione 0055.
-        "nis2", "gdpr", "pas"],
+        "nis2", "gdpr", "pas",
+        // Le proposte per codice ATECO (migrazione 0069): un catalogo per tutti i percorsi.
+        "ateco"],
     }).notNull(),
     versione: integer("versione").notNull(),
     note: text("note"),
@@ -412,4 +414,23 @@ export const formazioneVerifica = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.corso, t.sezione] })],
+);
+
+// Le voci che si trovano da sole (migrazione 0069). Una riga per proposta: un profilo
+// ATECO, un percorso, una chiave del catalogo di quel percorso, i valori e il MOTIVO.
+// Catalogo: si legge e non si scrive dall'applicazione.
+export const atecoProposta = pgTable(
+  "ateco_proposta",
+  {
+    id: text("id").primaryKey(),
+    setId: text("set_id").notNull(),
+    profilo: text("profilo").notNull(),
+    modulo: text("modulo").notNull(),
+    tipo: text("tipo").notNull(),
+    chiave: text("chiave").notNull(),
+    ordine: integer("ordine").notNull(),
+    valore: jsonb("valore").default({}).notNull(),
+    motivo: text("motivo").notNull(),
+  },
+  (t) => [uniqueIndex("ateco_proposta_uq").on(t.setId, t.profilo, t.modulo, t.tipo, t.chiave)],
 );

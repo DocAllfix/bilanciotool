@@ -477,6 +477,20 @@
       "when": 1791461294459,
       "tag": "0067_documenti_pas",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1791547694459,
+      "tag": "0068_fascia_azienda",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1791634094459,
+      "tag": "0069_ateco_proposte",
+      "breakpoints": true
     }
   ]
 }

@@ -55,6 +55,8 @@ export type Riga = {
   incertezza: string | null;
   evidenza: string | null;
   note: string | null;
+  /** Voce proposta (dal codice ATECO o dall'esercizio prima) e non ancora toccata: il motivo. */
+  propostaMotivo: string | null;
 };
 
 export type Obiettivo = {
@@ -106,6 +108,8 @@ export type Progresso = {
 
 export type StatoWizard = {
   sorgenti: { sourceTypeKey: string; stato: "in" | "out" | "na"; motivazione: string | null }[];
+  /** Per fattore: la quantità proposta da un altro percorso (bilancio energetico). */
+  proposteQuantita: Record<string, { valore: string; fonte: string }>;
   checklist: { requirementKey: string; stato: "ok" | "par" | "no"; nota: string | null }[];
   righe: Riga[];
   obiettivi: Obiettivo[];

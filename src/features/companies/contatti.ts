@@ -1,3 +1,5 @@
+import { profiloAzienda } from "./profilo";
+import { propagaAnagrafica } from "./propaga";
 import { and, asc, count, desc, eq, ne } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { withTenant } from "@/lib/db/tenant";
@@ -264,5 +266,11 @@ export async function aggiornaAnagrafica(
       entitaId: companyId,
       dettagli: { campo },
     });
+    // Il campo appena salvato entra da solo nei percorsi già avviati che lo hanno vuoto. Solo
+    // un valore pieno si propaga: svuotare l'anagrafica non svuota i percorsi.
+    if (pulito !== null) {
+      const az = await profiloAzienda(tx, orgId, companyId);
+      if (az) await propagaAnagrafica(tx, userId, orgId, companyId, az);
+    }
   });
 }

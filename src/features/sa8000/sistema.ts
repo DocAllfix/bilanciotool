@@ -1,10 +1,11 @@
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { withTenant, type Tx } from "@/lib/db/tenant";
 import { logAudit } from "@/lib/audit";
 import { requireEntitlement } from "@/features/entitlement";
 import { latestSetId } from "@/features/content-set";
-import { company, saCriterionState, saSystem } from "@/lib/db/schema";
+import { company, pasSystem, saCriterionState, saSystem } from "@/lib/db/schema";
 import { criterioSchema, profiloSchema, sistemaSchema } from "./validation";
 import type { z } from "zod";
 
@@ -34,12 +35,31 @@ export async function creaSistema(
       .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    // Il sistema di gestione sociale PAS 24000, se c'è, ha già contratto, siti e direzione:
+    // sono gli stessi fatti, e riscriverli li farebbe divergere fra i due percorsi.
+    const [gemello] = await tx
+      .select({ forma: pasSystem.forma, ccnl: pasSystem.ccnl, siti: pasSystem.siti, direzione: pasSystem.direzione })
+      .from(pasSystem)
+      .where(and(eq(pasSystem.companyId, v.companyId), eq(pasSystem.organizationId, orgId)))
+      .limit(1);
     await tx.insert(saSystem).values({
+      forma: gemello?.forma ?? null,
+      ccnl: gemello?.ccnl ?? null,
+      siti: gemello?.siti ?? null,
+      direzione: gemello?.direzione ?? null,
       id,
       organizationId: orgId,
       companyId: v.companyId,
       contentSetId: setId,
       ragione: co.nome,
+      piva: an.piva,
+      sede: an.sede,
+      settore: an.settore,
+      addetti: an.addetti,
+      sitoWeb: an.sitoWeb,
       revisione: "1.0",
     });
     await logAudit(tx, {

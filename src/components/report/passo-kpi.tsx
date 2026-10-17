@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { CatalogoReport, ProgettoReport, StatoReport } from "./types";
+import { PropostaValore } from "@/components/comune/proposta-valore";
 
 // Passo 3 — Dati e indicatori: ~49 input su doppio anno; i derivati arrivano dal
 // server e sono dichiaratamente NON editabili (si calcolano, non si scrivono).
@@ -118,13 +119,25 @@ export function PassoKpi({
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">{k.um}</TableCell>
                       <TableCell>
+                        {/* La `key` col valore ridisegna il campo quando cambia dal server: è
+                            non controllato, e applicando una proposta resterebbe vuoto a schermo. */}
                         <Input
+                          key={`${k.key}-${stato.kpi.corrente[k.key] ?? ""}`}
                           className="text-right"
                           data-slot="kpi"
                           defaultValue={stato.kpi.corrente[k.key] ?? ""}
                           aria-label={`${k.nome} ${anno}`}
                           onBlur={(e) => { if (e.target.value !== (stato.kpi.corrente[k.key] ?? "")) salva(k.key, anno, e.target.value); }}
                         />
+                        {stato.kpi.proposte[k.key] && (
+                          <PropostaValore
+                            valore={stato.kpi.proposte[k.key].valore}
+                            fonte={stato.kpi.proposte[k.key].fonte}
+                            um={k.um}
+                            etichetta={`${k.nome} ${anno}`}
+                            applica={(v) => salva(k.key, anno, v)}
+                          />
+                        )}
                       </TableCell>
                       <TableCell>
                         <Input

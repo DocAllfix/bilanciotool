@@ -68,6 +68,10 @@ const righe = [
   ["pericoli", 2, "PER002", { area: "Magazzino", att: "Movimentazione", per: "Investimento da carrello", danno: "Trauma", p: "2 · poco probabile", g: "3 · grave" }],
   ["pericoli", 3, "PER003", { area: "Uffici", att: "Videoterminale", per: "Affaticamento visivo", danno: "Astenopia" }],
 ];
+// ⚠️ Dal 17 ottobre 2026 l'avvio del sistema inserisce aspetti e pericoli PROPOSTI (le righe
+// comuni a ogni sede, numerate da 1): occuperebbero i numeri di queste righe. Qui si provano
+// i calcoli dei documenti su righe scritte a mano; le proposte le prova `qas-proposte.db`.
+await sql`delete from corpus_register_row where company_id = ${az.id} and proposta_motivo is not null`;
 for (const [reg, n, rif, dati] of righe) {
   await sql`insert into corpus_register_row
     (id, organization_id, company_id, content_set_id, register_id, numero, riferimento, dati)

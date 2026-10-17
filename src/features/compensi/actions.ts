@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
+import { requireAmministrazioneInterna } from "@/features/auth/percorsi";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import {
   aCentesimi,
@@ -24,7 +24,7 @@ export async function creaCompensoAction(dati: {
   note?: string | null;
 }): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     const v = z
       .object({
         companyId: z.string().min(1, "Scegli l'azienda"),
@@ -61,7 +61,7 @@ export async function setCampoCompensoAction(
   valore: string | null,
 ): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     const c = z.enum(CAMPI).parse(campo);
     const v = z.string().max(2000).nullable().parse(valore);
     await setCampoCompenso(s.userId, s.orgId, idSchema.parse(compensoId), c, v);
@@ -79,7 +79,7 @@ export async function registraIncassoAction(
   note?: string | null,
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     const centesimi = aCentesimi(z.string().trim().min(1).parse(importo));
     if (centesimi === null || centesimi <= 0) throw new Error("L'importo non è valido: scrivilo come 500,00");
     const d = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "La data va scritta come AAAA-MM-GG").parse(data);
@@ -97,7 +97,7 @@ export async function registraIncassoAction(
 
 export async function eliminaIncassoAction(incassoId: string): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     await eliminaIncasso(s.userId, s.orgId, idSchema.parse(incassoId));
     revalidatePath("/compensi");
     return { ok: true, dati: null };
@@ -108,7 +108,7 @@ export async function eliminaIncassoAction(incassoId: string): Promise<ActionEsi
 
 export async function eliminaCompensoAction(compensoId: string): Promise<ActionEsito<null>> {
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     await eliminaCompenso(s.userId, s.orgId, idSchema.parse(compensoId));
     revalidatePath("/compensi");
     return { ok: true, dati: null };

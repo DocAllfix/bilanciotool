@@ -341,6 +341,7 @@ export default function LandingPage() {
               {(
                 [
                   ["Guide di valutazione per ogni tema", "Per ciascuno dei 18 temi di materialità e dei 20 usi finali dell'energia: cosa guardare, come stimarlo, in quali documenti aziendali trovare l'evidenza."],
+                  ["Le voci si trovano da sole", "Dal codice ATECO e dall'anagrafica dell'azienda entrano le voci tipiche dell'inventario GHG, gli usi finali dell'energia, i reati 231, i trattamenti GDPR, gli aspetti ambientali e i pericoli. Ciascuna porta il motivo: la confermi, la correggi o la togli, e nei documenti conta solo ciò che hai confermato."],
                   ["Esclusioni sempre motivate", "Il rilievo più frequente in audit è l'esclusione non giustificata. Qui senza motivazione scritta non si esclude."],
                   ["Scope 2 a doppia rendicontazione", "Location-based e market-based con Garanzie d'Origine e residual mix, come chiede la norma. Non un campo unico."],
                   ["Una sola fonte per le emissioni", "Il bilancio legge i numeri dall'inventario GHG: mai due versioni dello stesso dato in due documenti."],
@@ -445,6 +446,18 @@ export default function LandingPage() {
                   : c&apos;&egrave; dentro tutto il resto, gli stessi percorsi e gli stessi documenti.
                 </p>
               )}
+              {/* La porta di chi NON segue clienti: l'azienda che rendiconta da sé. Stessa forma
+                  della riga sopra, e come lei porta a `/attiva/<fascia>` senza cifre. */}
+              <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted-foreground">
+                Lavori dentro un&apos;azienda e non per clienti?{" "}
+                <Link
+                  href={`/attiva/${PIANI.azienda.key}`}
+                  className="font-medium text-foreground underline underline-offset-4"
+                >
+                  Attiva la fascia «{PIANI.azienda.nome}»
+                </Link>
+                : la tua azienda, i colleghi, e a ciascuno i percorsi di cui si occupa.
+              </p>
             </Reveal>
 
             <Reveal delay={100}>

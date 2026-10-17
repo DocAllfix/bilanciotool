@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { propostaObbligoSegnalazioni } from "@/lib/calc/proposte-compliance";
 import { aggiornaProfiloAction } from "@/features/segnalazioni/actions";
 import { CampoData, CampoScelta, CampoTesto } from "@/components/comune/campo";
 import { CONFIGURAZIONI_GESTORE, SI_NO, TITOLI_OBBLIGO } from "@/features/segnalazioni/validation";
@@ -14,6 +16,11 @@ export function VistaAssetto({ companyId, dati }: { companyId: string; dati: Dat
   const a = dati.assetto;
   const salva = (campo: string) => (valore: string | null) =>
     aggiornaProfiloAction(companyId, a.id, { [campo]: valore ?? "" });
+  const router = useRouter();
+  // Il titolo dell'obbligo proposto dagli addetti e dal Modello 231: si applica con un clic,
+  // e solo finché il campo è vuoto. È una qualificazione giuridica, e la firma il consulente.
+  const proposta = a.obbligo ? null : propostaObbligoSegnalazioni(dati.azienda.dipendenti ?? null, dati.azienda.modello231);
+  const propostaMog = !a.mogAdottato && dati.azienda.modello231;
 
   return (
     <div className="space-y-8" data-tour="wb-assetto">
@@ -35,11 +42,33 @@ export function VistaAssetto({ companyId, dati }: { companyId: string; dati: Dat
       </Gruppo>
 
       <Gruppo titolo="Titolo dell'obbligo">
-        <CampoScelta id="wb-obbligo" etichetta="Da che cosa nasce l'obbligo" valore={a.obbligo}
-          opzioni={TITOLI_OBBLIGO} salva={salva("obbligo")}
-          aiuto="L'obbligo sorge anche per il solo fatto di aver adottato il modello 231, e a prescindere da esso" />
-        <CampoScelta id="wb-mog" etichetta="Modello 231 adottato" valore={a.mogAdottato} opzioni={SI_NO}
-          salva={salva("mogAdottato")} />
+        <div>
+          <CampoScelta key={`obbligo-${a.obbligo ?? ""}`} id="wb-obbligo" etichetta="Da che cosa nasce l'obbligo" valore={a.obbligo}
+            opzioni={TITOLI_OBBLIGO} salva={salva("obbligo")}
+            aiuto="L'obbligo sorge anche per il solo fatto di aver adottato il modello 231, e a prescindere da esso" />
+          {proposta && (
+            <p className="mt-1.5 text-xs text-muted-foreground" data-proposta>
+              Proposta: <strong>{proposta.valore}</strong>. {proposta.motivo}{" "}
+              <button type="button" className="font-medium text-primary underline-offset-2 hover:underline"
+                onClick={async () => { await salva("obbligo")(proposta.valore); router.refresh(); }}>
+                Usa questa
+              </button>
+            </p>
+          )}
+        </div>
+        <div>
+          <CampoScelta key={`mog-${a.mogAdottato ?? ""}`} id="wb-mog" etichetta="Modello 231 adottato" valore={a.mogAdottato} opzioni={SI_NO}
+            salva={salva("mogAdottato")} />
+          {propostaMog && (
+            <p className="mt-1.5 text-xs text-muted-foreground" data-proposta>
+              Il Modello 231 è avviato nel suo percorso: se il consiglio l&apos;ha adottato, la risposta è «Sì».{" "}
+              <button type="button" className="font-medium text-primary underline-offset-2 hover:underline"
+                onClick={async () => { await salva("mogAdottato")("Sì"); router.refresh(); }}>
+                Usa «Sì»
+              </button>
+            </p>
+          )}
+        </div>
         <CampoScelta id="wb-condiviso" etichetta="Canale condiviso con altri enti" valore={a.canaleCondiviso}
           opzioni={SI_NO} salva={salva("canaleCondiviso")}
           aiuto="Ammesso per gli enti fino a 249 lavoratori; la condivisione va formalizzata" />

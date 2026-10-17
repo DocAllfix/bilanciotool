@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsultant } from "@/features/auth/guards";
+import { requireAmministrazioneInterna } from "@/features/auth/percorsi";
 import { creaCollegamento, revocaCollegamento } from "./index";
 import { DURATE, DURATA_PREDEFINITA } from "./token";
 import { daErrore, type ActionEsito } from "@/features/esito";
@@ -37,7 +38,7 @@ export async function creaCollegamentoAction(
   if (!p.success) return { ok: false, errore: p.error.issues[0]?.message ?? "Dati non validi" };
 
   try {
-    const s = await requireConsultant();
+    const s = await requireAmministrazioneInterna();
     const { token, scadeIl } = await creaCollegamento(s.userId, s.orgId, p.data.companyId, {
       giorni: p.data.giorni,
       nota: p.data.nota,

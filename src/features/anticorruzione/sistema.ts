@@ -1,3 +1,5 @@
+import { mogModel, wbChannel, wbSystem } from "@/lib/db/schema";
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, asc, eq } from "drizzle-orm";
 import { dbCorrente, withTenant } from "@/lib/db/tenant";
@@ -49,7 +51,30 @@ export async function creaSistema(
       .where(and(eq(company.id, v.companyId), eq(company.organizationId, orgId)));
     if (!co) throw new Error("Azienda inesistente o di un altro tenant");
 
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const an = anagraficaInTesto(await profiloAzienda(tx, orgId, v.companyId));
+    // La composizione dell'OdV è un FATTO già scritto nel Modello 231: si copia, una volta.
+    const [mog] = await tx
+      .select({ odv: mogModel.odvComposizione })
+      .from(mogModel)
+      .where(and(eq(mogModel.companyId, v.companyId), eq(mogModel.organizationId, orgId)))
+      .limit(1);
+    // Il canale di segnalazione è lo STESSO del D.Lgs. 24/2023: se il percorso Segnalazioni lo
+    // descrive già, se ne copiano le forme attive. Una volta: da qui i campi sono del sistema.
+    const canali = await tx
+      .select({ forma: wbChannel.forma, descrizione: wbChannel.descrizione, fornitore: wbChannel.fornitore })
+      .from(wbChannel)
+      .innerJoin(wbSystem, eq(wbSystem.id, wbChannel.systemId))
+      .where(and(eq(wbSystem.companyId, v.companyId), eq(wbSystem.organizationId, orgId), eq(wbChannel.attiva, true)));
+    const scritto = canali.find((c) => c.forma === "Scritta")?.descrizione?.trim() || null;
+    const orale = canali.find((c) => c.forma === "Orale")?.descrizione?.trim() || null;
+    const gestore = canali.map((c) => c.fornitore?.trim()).find(Boolean) || null;
     await tx.insert(briberySystem).values({
+      canaleEmail: scritto && scritto.includes("@") && !/^https?:\/\//i.test(scritto) ? scritto : null,
+      canaleUrl: scritto && /^(https?:\/\/|www\.)/i.test(scritto) ? scritto : null,
+      canaleTelefono: orale,
+      canaleTerzo: gestore,
       id,
       organizationId: orgId,
       companyId: v.companyId,
@@ -59,6 +84,11 @@ export async function creaSistema(
       // segnaposto del corpus (`[Nome Organizzazione]`), e chiederla di nuovo
       // significherebbe farla divergere da quella del portafoglio.
       ragione: co.nome,
+      piva: an.piva,
+      sede: an.sede,
+      settore: an.settore,
+      addetti: an.addetti,
+      odv: mog?.odv?.trim() || null,
       revisione: "1.0",
     });
 

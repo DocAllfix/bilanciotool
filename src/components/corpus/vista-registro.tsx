@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { aggiornaRigaAction, aggiungiRigaAction, eliminaRigaAction } from "@/features/corpus/actions";
+import { aggiornaRigaAction, aggiungiRigaAction, confermaRigaAction, eliminaRigaAction } from "@/features/corpus/actions";
 import type { ColonnaRegistro, RigaRegistro, VoceRegistro } from "@/features/corpus/letture";
 
 // Un registro del corpus: la tabella e la scheda della singola registrazione.
@@ -58,6 +58,23 @@ export function VistaRegistro({
   const [apertaId, setApertaId] = useState<string | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
   const [inCorso, setInCorso] = useState(false);
+  // Le proposte confermate in questa pagina: la marca sparisce subito, senza aspettare il
+  // rinfresco (comando ottimistico, ripristinato se il server rifiuta).
+  const [confermate, setConfermate] = useState<ReadonlySet<string>>(new Set());
+  const proposta = (r: RigaRegistro) => (r.propostaMotivo && !confermate.has(r.id) ? r.propostaMotivo : null);
+
+  async function conferma(rowId: string) {
+    setErrore(null);
+    setConfermate((s) => new Set(s).add(rowId));
+    const esito = await confermaRigaAction(rotta, companyId, rowId);
+    if (!esito.ok) {
+      setErrore(esito.errore);
+      setConfermate((s) => { const n = new Set(s); n.delete(rowId); return n; });
+      return;
+    }
+    setTimeout(() => router.refresh(), 0);
+  }
+  const daConfermare = righe.filter((r) => proposta(r)).length;
 
   const inTabella = colonne.filter((c) => c.inTabella);
   const aperta = righe.find((r) => r.id === apertaId) ?? null;
@@ -132,6 +149,14 @@ export function VistaRegistro({
         </p>
       )}
 
+      {daConfermare > 0 && (
+        <p className="rounded-xl border px-4 py-3 text-[13px] leading-relaxed text-muted-foreground" data-proposte>
+          {daConfermare === 1 ? "Una registrazione è proposta" : `${daConfermare} registrazioni sono proposte`} dal settore
+          dell&apos;azienda, senza valutazioni. Apri ciascuna, valuta e conferma le pertinenti, togli le altre: finché
+          restano proposte, i documenti non le contano.
+        </p>
+      )}
+
       {righe.length === 0 ? (
         <p className="rounded-xl border px-4 py-8 text-center text-[13px] text-muted-foreground">
           Nessuna registrazione. Il registro è previsto dalla procedura {registro.proCode ?? "di riferimento"}:
@@ -161,7 +186,14 @@ export function VistaRegistro({
             <tbody>
               {righe.map((r) => (
                 <tr key={r.id} className="border-b last:border-0" data-slot="riga-registro">
-                  <td className="px-3 py-2 font-mono tabular-nums">{r.riferimento ?? r.numero}</td>
+                  <td className="px-3 py-2 align-top">
+                    <span className="font-mono tabular-nums">{r.riferimento ?? r.numero}</span>
+                    {proposta(r) && (
+                      <span className="mt-1 block w-fit rounded-full border px-1.5 text-[11px] text-muted-foreground" data-slot="marca-proposta">
+                        proposta
+                      </span>
+                    )}
+                  </td>
                   {inTabella.map((c) => (
                     <td key={c.chiave} className="px-3 py-2 align-top">
                       <span className="line-clamp-2">{String(r.dati[c.chiave] ?? "")}</span>
@@ -195,6 +227,8 @@ export function VistaRegistro({
           rotta={rotta}
           colonne={colonne}
           riga={aperta}
+          motivo={proposta(aperta)}
+          onConferma={() => conferma(aperta.id)}
           onElimina={() => elimina(aperta.id)}
         />
       )}
@@ -207,12 +241,17 @@ function SchedaRiga({
   rotta,
   colonne,
   riga,
+  motivo,
+  onConferma,
   onElimina,
 }: {
   companyId: string;
   rotta: string;
   colonne: readonly ColonnaRegistro[];
   riga: RigaRegistro;
+  /** Il motivo della proposta, se la riga è ancora proposta. */
+  motivo: string | null;
+  onConferma: () => void;
   onElimina: () => void;
 }) {
   const [conferma, setConferma] = useState(false);
@@ -237,6 +276,16 @@ function SchedaRiga({
           </Button>
         )}
       </div>
+      {motivo && (
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-lg border px-3 py-2" data-slot="motivo-proposta">
+          <p className="max-w-prose text-[12px] leading-relaxed text-muted-foreground" data-motivo>
+            {motivo} Modificando un campo la registrazione diventa tua.
+          </p>
+          <Button size="sm" variant="outline" onClick={onConferma}>
+            Conferma
+          </Button>
+        </div>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         {colonne.map((c) => (
           <CampoRiga
@@ -280,11 +329,16 @@ function CampoRiga({
   const [scelto, setScelto] = useState(valore);
   const [errore, setErrore] = useState<string | null>(null);
   const id = `reg-${rowId}-${colonna.chiave}`;
+  // L'ultimo valore salvato: uscire da un campo senza cambiarlo non è una modifica, e non
+  // deve spegnere la marca di una proposta né scrivere una riga d'audit.
+  const salvato = useRef(valore);
 
   async function salva(v: string) {
+    if (v === salvato.current) return true;
     setErrore(null);
     const esito = await aggiornaRigaAction(rotta, { companyId, rowId, dati: { [colonna.chiave]: v } });
     if (!esito.ok) setErrore(esito.errore);
+    else salvato.current = v;
     return esito.ok;
   }
 

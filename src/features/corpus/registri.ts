@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 import { withTenant } from "@/lib/db/tenant";
 import {
   company,
@@ -202,7 +202,7 @@ export async function aggiornaRiga(
 
     const toccate = await tx
       .update(corpusRegisterRow)
-      .set({ dati: aggiornati })
+      .set({ dati: aggiornati, propostaMotivo: null })
       .where(and(eq(corpusRegisterRow.id, p.rowId), eq(corpusRegisterRow.organizationId, orgId)))
       .returning({ id: corpusRegisterRow.id });
     // Un update a zero righe sarebbe il caso peggiore: l'audit direbbe «modificata» e
@@ -248,6 +248,34 @@ export async function eliminaRiga(
       organizationId: orgId,
       userId,
       azione: "corpus.registro.elimina",
+      entita: "corpus_register_row",
+      entitaId: rowId,
+      dettagli: { companyId, registro: r.registerId },
+    });
+  });
+}
+
+/**
+ * Conferma una riga proposta (aspetti e pericoli del sistema integrato): spegne la marca
+ * senza toccare i valori. Da qui la riga è del consulente, e i documenti la contano.
+ */
+export async function confermaRiga(userId: string, orgId: string, companyId: string, rowId: string): Promise<void> {
+  await requireEntitlement(userId, orgId, "write_data");
+  await withTenant({ userId, orgId }, async (tx) => {
+    await nostra(tx, orgId, companyId);
+    const r = await riga(tx, orgId, rowId);
+    if (r.companyId !== companyId) throw new Error("Registrazione di un'altra azienda");
+    await pretendiRegistroScrivibile(tx, orgId, companyId, r.contentSetId, (await schemaRegistro(tx, r.contentSetId, r.registerId)).modCode);
+    const toccate = await tx
+      .update(corpusRegisterRow)
+      .set({ propostaMotivo: null })
+      .where(and(eq(corpusRegisterRow.id, rowId), eq(corpusRegisterRow.organizationId, orgId), isNotNull(corpusRegisterRow.propostaMotivo)))
+      .returning({ id: corpusRegisterRow.id });
+    if (!toccate.length) return;
+    await logAudit(tx, {
+      organizationId: orgId,
+      userId,
+      azione: "corpus.registro.conferma",
       entita: "corpus_register_row",
       entitaId: rowId,
       dettagli: { companyId, registro: r.registerId },

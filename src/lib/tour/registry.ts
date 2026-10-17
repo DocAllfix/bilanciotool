@@ -83,7 +83,7 @@ export const TOURS: TourDef[] = [
       {
         element: '[data-tour="proposta-ateco"]',
         title: "Proposta dal settore",
-        description: "Dal codice ATECO arriva una proposta di punteggi di partenza, curata per settore. Mai applicata in automatico: decidi tu, tema per tema.",
+        description: "Dal codice ATECO arrivano i punteggi tipici del settore, nei temi ancora vuoti e marcati «proposta». Confermali toccandoli, o correggili: un tema toccato resta tuo.",
       },
       {
         element: '[data-tour="bil-passo-3"]',

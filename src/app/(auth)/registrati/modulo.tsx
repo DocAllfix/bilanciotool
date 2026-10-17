@@ -83,7 +83,7 @@ export function ModuloIscrizione({
           <h1 className="text-lg font-semibold tracking-tight">Controlla la tua posta</h1>
           <p className="text-sm text-muted-foreground">
             Ti abbiamo mandato un messaggio per confermare l&apos;indirizzo. Apri il collegamento che
-            trovi dentro e il tuo studio è pronto.
+            trovi dentro e il tuo account è pronto.
           </p>
         </CardHeader>
         <CardContent className={`space-y-3 text-sm text-muted-foreground${senzaGuscio ? " px-0 pb-0" : ""}`}>

@@ -144,7 +144,10 @@ await agisci("la matrice elenca i temi del catalogo", async () => {
 
 let temaProvato = "";
 await agisci("l'impatto di un tema si salva", async () => {
-  const scelta = page.locator('[aria-label^="Impatto "]').first();
+  // ⚠️ Un tema NON proposto. Con l'ATECO 17.12 i temi del settore entrano già coi punteggi
+  // proposti: scegliere 4 dove la proposta dice già 4 non salva niente, e il controllo
+  // passerebbe leggendo il valore della proposta. Le proposte si provano qui sotto, a parte.
+  const scelta = page.locator('[data-tema]:not([data-tema-proposto]) [aria-label^="Impatto "]').first();
   temaProvato = (await scelta.getAttribute("aria-label")).replace("Impatto ", "");
   await scelta.click();
   await page.getByRole("option").filter({ hasText: "4" }).first().click();
@@ -185,6 +188,17 @@ await agisci("la proposta ATECO suggerisce, e i punteggi restano del consulente"
   await page.waitForTimeout(1500);
   const dopo = (await punteggi()).length;
   if (dopo < prima) throw new Error("la proposta ha cancellato dei punteggi");
+});
+
+await agisci("un tema proposto si conferma, e diventa del consulente", async () => {
+  const riga = page.locator("[data-tema][data-tema-proposto]").first();
+  await riga.waitFor({ timeout: 25_000 });
+  const tema = await riga.getAttribute("data-tema");
+  await riga.getByRole("button", { name: /^Conferma la proposta/ }).click();
+  await attendi(
+    async () => (await punteggi()).some((p) => p.topic_key === tema && p.proposta_motivo === null),
+    { cosa: "marca della proposta spenta" },
+  );
 });
 
 // ─── passo 3 · indicatori ────────────────────────────────────────────────────

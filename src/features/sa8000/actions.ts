@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import { aggiornaProfilo, creaSistema, setCampoCriterio } from "./sistema";
@@ -14,7 +14,7 @@ const rotta = (companyId: string) => percorsoModulo(companyId, "sa8000");
 
 export async function creaSistemaAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sa8000");
     const id = await creaSistema(s.userId, s.orgId, { companyId });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -27,7 +27,7 @@ export async function aggiornaProfiloAction(
   patch: z.input<typeof profiloSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sa8000");
     await aggiornaProfilo(s.userId, s.orgId, systemId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -40,7 +40,7 @@ export async function setCampoCriterioAction(
   input: z.input<typeof criterioSchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("sa8000");
     await setCampoCriterio(s.userId, s.orgId, systemId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };

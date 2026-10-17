@@ -1,3 +1,5 @@
+import { proponiTrattamenti } from "./proposte";
+import { anagraficaInTesto, profiloAzienda } from "@/features/companies/profilo";
 import { randomUUID } from "node:crypto";
 import { and, asc, eq, sql } from "drizzle-orm";
 import type { PgTable } from "drizzle-orm/pg-core";
@@ -74,9 +76,17 @@ export async function avviaSistema(userId: string, orgId: string, input: z.input
     if (!co) throw new Error("Azienda inesistente o di un altro studio");
 
     const id = randomUUID();
+    // L'anagrafica dell'azienda si copia una volta, nei campi che il percorso ha: chiederla di
+    // nuovo la farebbe divergere da quella del portafoglio. Da qui in poi i campi sono del percorso.
+    const az = await profiloAzienda(tx, orgId, v.companyId);
+    const an = anagraficaInTesto(az);
     const nuova = await tx
       .insert(gdprSystem)
-      .values({ id, organizationId: orgId, companyId: v.companyId, contentSetId: setId, ruolo: "Titolare del trattamento" })
+      .values({
+        id, organizationId: orgId, companyId: v.companyId, contentSetId: setId, ruolo: "Titolare del trattamento",
+        // L'anagrafica si copia una volta (vedi `features/companies/profilo.ts`).
+        piva: an.piva, sede: an.sede, settore: an.settore, ateco: an.ateco, dipendenti: an.addetti,
+      })
       .onConflictDoNothing({ target: gdprSystem.companyId })
       .returning({ id: gdprSystem.id });
     if (!nuova.length) {
@@ -87,6 +97,8 @@ export async function avviaSistema(userId: string, orgId: string, input: z.input
       return c.id;
     }
     await logAudit(tx, { organizationId: orgId, userId, azione: "gdpr.sistema.create", entita: "gdpr_system", entitaId: id });
+    // I trattamenti che quasi ogni azienda ha, marcati «proposta»: vedi `gdpr/proposte.ts`.
+    await proponiTrattamenti(tx, userId, orgId, id, setId, az);
     return id;
   });
 }
@@ -344,7 +356,8 @@ export async function setCampoRiga(userId: string, orgId: string, tipo: TipoRiga
     const valore = ISTANTI.has(campo) && typeof v === "string" ? new Date(v) : v;
     const agg = await tx
       .update(t)
-      .set({ [campo]: valore } as never)
+      // Toccare un trattamento proposto lo rende del consulente: la marca si spegne.
+      .set((tipo === "trattamento" ? { [campo]: valore, propostaMotivo: null } : { [campo]: valore }) as never)
       .where(and(eq(t.id, id), eq(t.organizationId, orgId)))
       .returning({ id: t.id });
     if (!agg.length) throw new Error("Voce inesistente o di un altro studio");

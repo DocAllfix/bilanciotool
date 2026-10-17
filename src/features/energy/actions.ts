@@ -1,8 +1,8 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireConsultant } from "@/features/auth/guards";
 import { createBalance, setAnnoBase, updateProfilo } from "./balances";
 import { deleteCompanyFactor, setMonthlyValue, setVectorField, upsertCompanyFactor } from "./vectors";
 import { setAllocation, setEndUseState, setStima } from "./allocation";
@@ -32,7 +32,7 @@ export async function createBalanceAction(input: {
   annoBase?: number;
 }): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     const id = await createBalance(s.userId, s.orgId, input);
     revalidatePath(percorso(input.companyId));
     return { ok: true, dati: { id } };
@@ -47,7 +47,7 @@ export async function updateProfiloAction(
   patch: ProfiloEnergetico,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await updateProfilo(s.userId, s.orgId, balanceId, patch);
     return { ok: true };
   } catch (e) {
@@ -62,7 +62,7 @@ export async function setAnnoBaseAction(
   annoBase: number,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setAnnoBase(s.userId, s.orgId, balanceId, annoBase);
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
@@ -78,7 +78,7 @@ export async function setVectorFieldAction(
   input: { vettoreKey: string; campo: "quantita" | "costo"; valore: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setVectorField(s.userId, s.orgId, balanceId, input);
     return { ok: true };
   } catch (e) {
@@ -91,7 +91,7 @@ export async function setMonthlyValueAction(
   input: { vettoreKey: string; mese: number; valore: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setMonthlyValue(s.userId, s.orgId, balanceId, input);
     return { ok: true };
   } catch (e) {
@@ -105,7 +105,7 @@ export async function upsertCompanyFactorAction(
   input: z.input<typeof fattoreCompanySchema>,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     const v = fattoreCompanySchema.parse(input);
     await upsertCompanyFactor(s.userId, s.orgId, companyId, v);
     revalidatePath(percorso(companyId, anno));
@@ -117,7 +117,7 @@ export async function upsertCompanyFactorAction(
 
 export async function deleteCompanyFactorAction(companyId: string, anno: number, key: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await deleteCompanyFactor(s.userId, s.orgId, companyId, key);
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
@@ -132,7 +132,7 @@ export async function setAllocationAction(
   input: { usoKey: string; vettoreKey: string; quantita: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setAllocation(s.userId, s.orgId, balanceId, input);
     return { ok: true };
   } catch (e) {
@@ -147,7 +147,7 @@ export async function setEndUseStateAction(
   input: { usoKey: string; attivo?: boolean; metodo?: "mis" | "cal" | "sti" | null; nota?: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setEndUseState(s.userId, s.orgId, balanceId, input);
     // Accendere o spegnere un uso cambia le righe della matrice: qui la
     // rivalidazione serve, ed è un'azione rara.
@@ -169,7 +169,7 @@ export async function setStimaAction(
   },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setStima(s.userId, s.orgId, balanceId, input);
     return { ok: true };
   } catch (e) {
@@ -182,7 +182,7 @@ export async function setDriverValueAction(
   input: { anno: number; driverKey: string; valore: string },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await setDriverValue(s.userId, s.orgId, companyId, input);
     return { ok: true };
   } catch (e) {
@@ -197,7 +197,7 @@ export async function addMeasureAction(
   input: { descrizione?: string; vettoreKey: string },
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     const id = await addMeasure(s.userId, s.orgId, balanceId, input);
     revalidatePath(percorso(companyId, anno));
     return { ok: true, dati: { id } };
@@ -221,7 +221,7 @@ export async function updateMeasureAction(
   },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await updateMeasure(s.userId, s.orgId, measureId, patch);
     return { ok: true };
   } catch (e) {
@@ -231,7 +231,7 @@ export async function updateMeasureAction(
 
 export async function deleteMeasureAction(companyId: string, anno: number, measureId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await deleteMeasure(s.userId, s.orgId, measureId);
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
@@ -246,7 +246,7 @@ export async function saveChapterAction(
   contenuto: unknown,
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await saveChapter(s.userId, s.orgId, balanceId, templateKey, contenuto);
     return { ok: true };
   } catch (e) {
@@ -269,7 +269,7 @@ export async function addMediaAction(
   },
 ): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     const id = await addMedia(s.userId, s.orgId, balanceId, templateKey, input as Parameters<typeof addMedia>[4]);
     revalidatePath(percorso(companyId, anno));
     return { ok: true, dati: { id } };
@@ -280,7 +280,7 @@ export async function addMediaAction(
 
 export async function removeMediaAction(companyId: string, anno: number, mediaId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await removeMedia(s.userId, s.orgId, mediaId);
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
@@ -296,7 +296,7 @@ export async function updateMediaAction(
   patch: { didascalia?: string | null; credito?: string | null; larghezza?: "piena" | "meta"; posizione?: number },
 ): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("energetico");
     await updateMedia(s.userId, s.orgId, mediaId, patch);
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
@@ -309,7 +309,7 @@ export async function updateMediaAction(
  *  quella che le azioni ad alta frequenza deliberatamente non fanno. */
 export async function ricalcolaAction(companyId: string, anno: number): Promise<ActionEsito> {
   try {
-    await requireConsultant();
+    await requirePercorso("energetico");
     revalidatePath(percorso(companyId, anno));
     return { ok: true };
   } catch (e) {

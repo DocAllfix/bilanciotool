@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { TITOLARE } from "@/lib/legale";
 import { getSessionOrNull, orgAttivaVerificata } from "@/features/auth/guards";
 import { getAccountStatus } from "@/features/entitlement";
+import { percorsiVisibili, usoInterno } from "@/features/auth/percorsi";
 import { listCompanyNames } from "@/features/companies/fascicolo";
 import { withTenant } from "@/lib/db/tenant";
 import { CollapsibleShell } from "@/components/app-shell/collapsible-shell";
@@ -30,19 +31,26 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // dell'applicazione le pagava a OGNI pagina, non solo sulla dashboard. `withTenant`
   // riusa quella aperta nella stessa catena di chiamate, quindi le due dentro non
   // cambiano di una riga. Misurato: 426 + 443 ms diventano una transazione sola.
-  const [status, aziende] = orgId
+  const [status, aziende, visibili, interno] = orgId
     ? await withTenant({ userId: session.userId, orgId }, () =>
         Promise.all([
           getAccountStatus(session.userId, orgId),
           listCompanyNames(session.userId, orgId),
+          // Fascia «Azienda»: la barra mostra al collaboratore solo i suoi percorsi.
+          typeof verificata === "string" ? null : percorsiVisibili({ userId: session.userId, ...verificata }),
+          usoInterno(session.userId, orgId),
         ]),
       )
-    : (["demo", [] as { id: string; nome: string; stato: "active" | "archived" }[]] as const);
+    : (["demo", [] as { id: string; nome: string; stato: "active" | "archived" }[], null, false] as const);
+  const percorsi = visibili ? [...visibili] : null;
+  // I compensi sono di uno studio (quanto si fattura a ciascun cliente): in un'azienda che
+  // lavora in casa non hanno senso per nessuno. La loro azione resta comunque riservata.
+  const senzaCompensi = interno;
 
   return (
     <>
-      <CollapsibleShell nome={session.name} email={session.email} aziende={aziende}>
-        <MobileNav aziende={aziende} />
+      <CollapsibleShell nome={session.name} email={session.email} aziende={aziende} percorsi={percorsi} senzaCompensi={senzaCompensi}>
+        <MobileNav aziende={aziende} percorsi={percorsi} senzaCompensi={senzaCompensi} />
         {status === "demo" && <DemoBanner />}
         {status === "past_due" && (
           <div className="border-b border-warning/40 bg-warning-subtle px-5 py-2.5 text-sm">

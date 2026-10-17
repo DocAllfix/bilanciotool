@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { MODULI_PER_AREA } from "@/features/companies/moduli";
+import { MODULI_PER_AREA, type ModuloAzienda } from "@/features/companies/moduli";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Briefcase, CalendarDays, ChevronLeft, FileStack, GraduationCap, HelpCircle, LifeBuoy, Settings2, Wallet } from "lucide-react";
 
@@ -70,10 +70,22 @@ function ConEtichetta({
 export function SidebarNav({
   compatta = false,
   aziende = [],
+  percorsi = null,
+  senzaCompensi = false,
 }: {
   compatta?: boolean;
   aziende?: { id: string; nome: string }[];
+  /** I percorsi visibili, o `null` per tutti. Fascia «Azienda»: un collaboratore vede solo i
+   *  suoi. È presentazione: il divieto vero sta sul server (`requirePercorso`). */
+  percorsi?: readonly ModuloAzienda[] | null;
+  /** Fascia «Azienda»: i compensi sono di uno studio, non di un'azienda che lavora in casa. */
+  senzaCompensi?: boolean;
 }) {
+  const gruppi = MODULI_PER_AREA.map((g) => ({
+    ...g,
+    moduli: percorsi ? g.moduli.filter((m) => percorsi.includes(m.href)) : g.moduli,
+  })).filter((g) => g.moduli.length > 0);
+  const voci = VOCI.filter((v) => !(senzaCompensi && v.href === "/compensi"));
   const pathname = usePathname();
   const companyId = aziendaDaRotta(pathname);
   const nomeAzienda = companyId ? (aziende.find((a) => a.id === companyId)?.nome ?? null) : null;
@@ -131,7 +143,7 @@ export function SidebarNav({
 
             Le aree senza moduli non compaiono: se la barra mostrasse
             «Responsabilita' dell'ente» sopra il vuoto, direbbe che manca qualcosa. */}
-        {MODULI_PER_AREA.map((g) => (
+        {gruppi.map((g) => (
           <div key={g.area} className="contents">
             {!compatta && (
               <p className="mt-3 px-2 text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/45 first:mt-0">
@@ -167,7 +179,7 @@ export function SidebarNav({
   return (
     <TooltipProvider>
     <nav className={cn("flex flex-col gap-0.5", compatta ? "px-2" : "px-3")} aria-label="Navigazione principale">
-      {VOCI.map((v) => {
+      {voci.map((v) => {
         const attiva = pathname === v.href || pathname.startsWith(v.href + "/");
         return (
           <ConEtichetta key={v.href} attivo={compatta} etichetta={v.label}>

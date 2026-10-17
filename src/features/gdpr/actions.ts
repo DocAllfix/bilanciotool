@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { oggiIso } from "@/lib/calc/comune/tempo-italia";
 import {
@@ -32,7 +32,7 @@ const rotta = (companyId: string) => `/aziende/${companyId}/gdpr`;
 
 async function esegui<T>(companyId: string, fn: (s: { userId: string; orgId: string }) => Promise<T>): Promise<ActionEsito<T>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("gdpr");
     const dati = await fn(s);
     revalidatePath(rotta(companyId));
     return { ok: true, dati };

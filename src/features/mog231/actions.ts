@@ -1,7 +1,7 @@
 "use server";
 
+import { requirePercorso } from "@/features/auth/percorsi";
 import { revalidatePath } from "next/cache";
-import { requireConsultant } from "@/features/auth/guards";
 import { daErrore, type ActionEsito } from "@/features/esito";
 import { percorsoModulo } from "@/features/companies/moduli";
 import {
@@ -19,7 +19,7 @@ const rotta = (companyId: string) => percorsoModulo(companyId, "mog231");
 
 export async function creaModelloAction(companyId: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     const id = await creaModello(s.userId, s.orgId, { companyId });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -28,7 +28,7 @@ export async function creaModelloAction(companyId: string): Promise<ActionEsito<
 
 export async function aggiornaProfiloAction(companyId: string, modelId: string, patch: z.input<typeof profiloSchema>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await aggiornaProfilo(s.userId, s.orgId, modelId, patch);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -37,7 +37,7 @@ export async function aggiornaProfiloAction(companyId: string, modelId: string, 
 
 export async function creaProcessoAction(companyId: string, modelId: string, nome: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     const id = await creaProcesso(s.userId, s.orgId, modelId, { nome });
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -46,7 +46,7 @@ export async function creaProcessoAction(companyId: string, modelId: string, nom
 
 export async function setCampoProcessoAction(companyId: string, processId: string, input: z.input<typeof campoProcessoSchema>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await setCampoProcesso(s.userId, s.orgId, processId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -55,7 +55,7 @@ export async function setCampoProcessoAction(companyId: string, processId: strin
 
 export async function eliminaProcessoAction(companyId: string, processId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await eliminaProcesso(s.userId, s.orgId, processId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -64,7 +64,7 @@ export async function eliminaProcessoAction(companyId: string, processId: string
 
 export async function aggiungiScenarioAction(companyId: string, processId: string, crimeKey: string): Promise<ActionEsito<{ id: string }>> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     const id = await aggiungiScenario(s.userId, s.orgId, processId, crimeKey);
     revalidatePath(rotta(companyId));
     return { ok: true, dati: { id } };
@@ -73,7 +73,7 @@ export async function aggiungiScenarioAction(companyId: string, processId: strin
 
 export async function setCampoScenarioAction(companyId: string, scenarioId: string, input: z.input<typeof campoScenarioSchema>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await setCampoScenario(s.userId, s.orgId, scenarioId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -82,7 +82,7 @@ export async function setCampoScenarioAction(companyId: string, scenarioId: stri
 
 export async function eliminaScenarioAction(companyId: string, scenarioId: string): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await eliminaScenario(s.userId, s.orgId, scenarioId);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -91,7 +91,7 @@ export async function eliminaScenarioAction(companyId: string, scenarioId: strin
 
 export async function setApplicabilitaAction(companyId: string, modelId: string, input: z.input<typeof applicabilitaSchema>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await setApplicabilita(s.userId, s.orgId, modelId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
@@ -100,7 +100,7 @@ export async function setApplicabilitaAction(companyId: string, modelId: string,
 
 export async function setCampoRequisitoAction(companyId: string, modelId: string, input: z.input<typeof requisitoSchema>): Promise<ActionEsito> {
   try {
-    const s = await requireConsultant();
+    const s = await requirePercorso("mog231");
     await setCampoRequisito(s.userId, s.orgId, modelId, input);
     revalidatePath(rotta(companyId));
     return { ok: true };
