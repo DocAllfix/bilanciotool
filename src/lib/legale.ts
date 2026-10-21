@@ -26,7 +26,7 @@ export const SEDE_COMPLETA = `${TITOLARE.indirizzo}, ${TITOLARE.cap} ${TITOLARE.
 /** Data di ultima revisione dei testi legali, in ISO. Una sola per tutti e tre:
  *  si rivedono insieme, e tre date diverse in fondo a tre pagine sorelle sono
  *  solo un modo per far sembrare vecchia quella che non è cambiata. */
-export const AGGIORNATO_AL = "2026-10-17";
+export const AGGIORNATO_AL = "2026-10-21";
 
 export const AGGIORNATO_AL_ESTESO = new Date(AGGIORNATO_AL).toLocaleDateString("it-IT", {
   day: "numeric",
@@ -74,7 +74,8 @@ export const FORNITORI = [
   },
   {
     nome: "Google Ireland Limited",
-    ruolo: "Statistiche di visita del sito pubblico (Google Analytics 4), solo previo consenso",
+    ruolo:
+      "Statistiche di visita (Google Analytics 4) e misura delle campagne pubblicitarie (Google Ads), ciascuna solo previo il proprio consenso",
     // Il contratto è con la società irlandese, ma l'infrastruttura di Google comporta
     // trattamenti anche negli Stati Uniti: si dichiara, non si nasconde dietro «Irlanda».
     dove: "Irlanda, con possibili trasferimenti negli Stati Uniti (EU-US Data Privacy Framework)",
@@ -101,7 +102,7 @@ export const COOKIE = [
     scopo:
       "Distingue una visita dall'altra per contare quanti visitatori arrivano e quali pagine leggono.",
     durata: "2 anni",
-    note: "Impostato da Google. Nessuna pubblicità e nessuna profilazione: gli usi pubblicitari sono disattivati nella configurazione della proprietà.",
+    note: "Impostato da Google. Solo col consenso alle statistiche.",
     consenso: true,
   },
   {
@@ -110,6 +111,32 @@ export const COOKIE = [
     scopo: "Conserva lo stato della sessione di misurazione per questa specifica proprietà.",
     durata: "2 anni",
     note: "Impostato da Google. Il suffisso è l'identificativo della nostra proprietà di misurazione.",
+    consenso: true,
+  },
+  // I cookie di Google Ads, MISURATI col browser il 21 ottobre 2026 aprendo la pagina da un
+  // annuncio e accettando la pubblicità. Senza quel consenso non compare nessuno dei tre.
+  {
+    nome: "_gcl_au",
+    tipo: "Pubblicitario — Google Ads",
+    scopo: "Collega le visite al sito agli annunci di Google Ads, per misurare quali campagne funzionano.",
+    durata: "90 giorni",
+    note: "Impostato da Google sul nostro dominio. Solo col consenso alla pubblicità.",
+    consenso: true,
+  },
+  {
+    nome: "_gcl_aw",
+    tipo: "Pubblicitario — Google Ads",
+    scopo: "Ricorda da quale clic su un annuncio è arrivata la visita, per attribuirle una richiesta o un acquisto.",
+    durata: "90 giorni",
+    note: "Impostato da Google sul nostro dominio. Solo col consenso alla pubblicità.",
+    consenso: true,
+  },
+  {
+    nome: "GCL_AW_P",
+    tipo: "Pubblicitario — Google Ads",
+    scopo: "Stessa funzione di _gcl_aw, conservata da Google sui propri domini.",
+    durata: "90 giorni",
+    note: "Cookie di terza parte su google.com, googleadservices.com e doubleclick.net, partizionato: vale solo per questo sito. Solo col consenso alla pubblicità.",
     consenso: true,
   },
 ] as const;
@@ -127,9 +154,9 @@ export const ARCHIVIAZIONE_LOCALE = [
     durata: "Finché non si svuotano i dati del browser",
   },
   {
-    nome: "evalisdeck-consenso-v1",
+    nome: "evalisdeck-consenso-v2",
     scopo:
-      "Ricorda se hai accettato o rifiutato i cookie di misurazione, per non richiedertelo a ogni pagina.",
+      "Ricorda che cosa hai scelto per statistiche e pubblicità, per non richiedertelo a ogni pagina.",
     durata: "Finché non si svuotano i dati del browser",
   },
   {

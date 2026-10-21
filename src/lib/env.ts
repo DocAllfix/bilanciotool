@@ -73,6 +73,12 @@ const schema = z
      */
     NEXT_PUBLIC_GA4_ID: vuotaComeAssente(z.string().regex(/^G-[A-Z0-9]{6,}$/).optional()),
     /**
+     * Google Ads (conversioni delle campagne). Facoltativa come GA4, e impostata SOLO in
+     * produzione: in sviluppo e sulle anteprime il traffico di collaudo finirebbe nelle
+     * conversioni di campagne vere. Parte solo col consenso alla «Pubblicità».
+     */
+    NEXT_PUBLIC_GOOGLE_ADS_ID: vuotaComeAssente(z.string().regex(/^AW-[0-9]{6,}$/).optional()),
+    /**
      * Sentry. Facoltativa, ma il modo in cui manca è il peggiore: senza DSN
      * `Sentry.init` parte lo stesso e **non riporta niente**, in silenzio. Il cruscotto
      * resta vuoto mentre il server risponde 500, ed è esattamente il guasto che

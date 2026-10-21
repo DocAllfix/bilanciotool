@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import { TUTTE, direttiveVariabili, fontiDaAmbiente } from "./src/lib/csp";
 
 // La regola che dice al browser da dove può caricare le cose. È la seconda serratura
 // dopo la sanificazione dell'HTML: nel prodotto ci sono tre punti in cui testo scritto
@@ -27,10 +28,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 //
 // Se l'archivio non e' configurato l'origine non si aggiunge: non c'e' niente da
 // permettere, e `isStorageConfigured()` dice gia' che quelle funzioni sono spente.
-const ORIGINE_ARCHIVIO = process.env.SUPABASE_URL
-  ? new URL(process.env.SUPABASE_URL).origin
-  : null;
-
+//
 // ⚠️ E L'ORIGINE CANONICA, per le immagini degli articoli.
 //
 // Le immagini del blog arrivano da `evalisdeck.it/wp-content/...`. In produzione le copre
@@ -41,13 +39,12 @@ const ORIGINE_ARCHIVIO = process.env.SUPABASE_URL
 // Non e' un difetto di produzione, ma e' una dipendenza taciuta: la nostra CSP funzionava
 // solo perche' il dominio era quello. Dichiararla costa una riga e vale il giorno in cui
 // il prodotto verra' servito da un indirizzo diverso.
-const ORIGINE_CANONICA = (() => {
-  try {
-    return new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://evalisdeck.it").origin;
-  } catch {
-    return "https://evalisdeck.it";
-  }
-})();
+//
+// Le due origini si ricavano in `src/lib/csp.ts`, insieme alle quattro direttive che
+// cambiano con le finalità di misurazione: le stesse servono ad Analytics, che per chi ha
+// acconsentito a una sola delle due le restringe nel browser (il perché sta in quel file).
+const FONTI = fontiDaAmbiente(process.env);
+const VARIABILI = direttiveVariabili(FONTI, TUTTE);
 const permessi = (...voci: (string | null)[]) => voci.filter(Boolean).join(" ");
 
 const CSP = [
@@ -61,15 +58,15 @@ const CSP = [
   // Un modulo non può spedire i suoi dati a un dominio che non sia il nostro: è la
   // difesa che regge anche se qualcosa di malevolo finisse comunque in pagina.
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  VARIABILI.script,
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   // `blob:` serve alle anteprime dei loghi ridimensionati nel browser prima del caricamento.
   // `googletagmanager` anche fra le IMMAGINI: Analytics manda una parte delle
   // misure come pixel, non come richiesta di rete. Previsto solo fra gli script,
   // il browser lo bloccava — e il collaudo l'ha visto, la lettura della regola no.
-  permessi("img-src 'self' data: blob: https://cms.evalisdeck.it", ORIGINE_CANONICA, ORIGINE_ARCHIVIO, "https://www.googletagmanager.com https://*.google-analytics.com"),
-  permessi("connect-src 'self'", ORIGINE_ARCHIVIO, "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com"),
+  VARIABILI.img,
+  VARIABILI.connect,
   // Il video di benvenuto sta nell'archivio e la rotta rinvia a un indirizzo firmato di
   // Supabase: un'altra origine. Senza questa riga `media-src` ricadeva su `default-src
   // 'self'` e il browser lo BLOCCAVA — da telefono come da computer.
@@ -77,8 +74,8 @@ const CSP = [
   // Il collaudo diceva verde perché scaricava il file con una richiesta di rete, che
   // della CSP della pagina non sa niente. Un `<video>` non è una fetch: va provato
   // facendolo caricare davvero, ed è quello che ora fa `verifica-benvenuto`.
-  permessi("media-src 'self' blob:", ORIGINE_ARCHIVIO),
-  "frame-src 'none'",
+  permessi("media-src 'self' blob:", FONTI.archivio),
+  VARIABILI.frame,
   "upgrade-insecure-requests",
 ].join("; ");
 

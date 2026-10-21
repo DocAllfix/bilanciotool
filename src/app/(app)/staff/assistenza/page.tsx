@@ -25,7 +25,13 @@ export default async function CodaPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-5 py-8" data-coda-staff>
       <header className="mb-6">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Coda assistenza</h1>
+        <p className="text-[12px] text-muted-foreground">
+          Coda assistenza ·{" "}
+          <Link href="/staff/arrivi" className="hover:underline">
+            Arrivi da campagna
+          </Link>
+        </p>
+        <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight">Coda assistenza</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
           Le richieste non chiuse, dalla più recente. {coda.length} in coda.
         </p>

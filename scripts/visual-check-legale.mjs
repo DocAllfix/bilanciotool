@@ -43,10 +43,15 @@ await check("il banner compare al primo accesso e chiede una scelta vera", async
   const testo = await nota.innerText();
   if (!/google analytics/i.test(testo)) throw new Error("non nomina lo strumento di misurazione");
   if (!/cookie tecnici/i.test(testo)) throw new Error("non distingue i cookie tecnici");
-  const bottoni = await nota.getByRole("button").allInnerTexts();
-  if (bottoni.length !== 2) throw new Error("bottoni: " + bottoni.join(", ") + " (attesi Rifiuta e Accetta)");
+  if (!/google ads/i.test(testo)) throw new Error("non nomina la misura delle campagne");
+  // Tre comandi dal 21 ottobre 2026: «Personalizza» apre le due finalità separate. Rifiuta e
+  // Accetta restano alla pari (lo misura `qa -- consenso`).
+  const bottoni = (await nota.getByRole("button").allInnerTexts()).map((b) => b.trim());
+  if (bottoni.join("|") !== "Rifiuta|Personalizza|Accetta") {
+    throw new Error("bottoni: " + bottoni.join(", ") + " (attesi Rifiuta, Personalizza, Accetta)");
+  }
   // Il rifiuto viene per primo: nessun dubbio su quale delle due strade sia privilegiata.
-  if (bottoni[0] !== "Rifiuta" || bottoni[1] !== "Accetta") throw new Error("ordine: " + bottoni.join(", "));
+  if (bottoni[0] !== "Rifiuta") throw new Error("ordine: " + bottoni.join(", "));
 });
 
 await check("il collegamento del banner porta alla cookie policy", async () => {
@@ -62,7 +67,7 @@ await check("«Rifiuta» chiude, viene ricordato, e non riapre cambiando pagina"
   await page.goto(BASE + "/privacy", { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(800);
   if (await page.getByRole("dialog", BANNER).count()) throw new Error("ritorna dopo la navigazione");
-  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v1"));
+  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v2"));
   if (v !== "rifiutato") throw new Error("non l'ha ricordato: " + v);
 });
 
@@ -71,7 +76,7 @@ await check("«Preferenze cookie» nel piede riapre la scelta", async () => {
   await page.getByRole("button", { name: /preferenze cookie/i }).first().click();
   await page.waitForTimeout(400);
   if (!(await page.getByRole("dialog", BANNER).count())) throw new Error("la revoca non riapre il riquadro");
-  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v1"));
+  const v = await page.evaluate(() => localStorage.getItem("evalisdeck-consenso-v2"));
   if (v !== null) throw new Error("la scelta precedente non e' stata cancellata: " + v);
 });
 
@@ -84,8 +89,8 @@ const ATTESI = {
   },
   "/cookie": {
     titolo: "Cookie policy",
-    sezioni: 7,
-    frasi: ["better-auth.session_token", "7 giorni", "articolo 122", "10 giugno 2021", "localStorage"],
+    sezioni: 8,
+    frasi: ["better-auth.session_token", "7 giorni", "articolo 122", "10 giugno 2021", "localStorage", "_gcl_aw", "senza cookie"],
   },
   "/termini": {
     titolo: "Termini e condizioni",
@@ -207,9 +212,9 @@ await check("l'informativa NON compare dentro un documento pubblicato", async ()
   });
   if (!doc) { console.log("       (nessun documento pubblicato: controllo saltato)"); return; }
   const p2 = await ctx.newPage();
-  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1")).catch(() => {});
+  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v2")).catch(() => {});
   await p2.goto(BASE + doc, { waitUntil: "domcontentloaded" });
-  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1"));
+  await p2.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v2"));
   await p2.reload({ waitUntil: "domcontentloaded" });
   await p2.waitForTimeout(1200);
   const n = await p2.getByRole("dialog", BANNER).count();

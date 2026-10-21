@@ -171,6 +171,14 @@ export default function PrivacyPage() {
               "Statistiche di visita del sito pubblico, per capire quali contenuti sono utili",
               "Consenso (art. 6.1.a), prestato con l'apposito riquadro e revocabile in ogni momento",
             ],
+            [
+              "Misura delle campagne pubblicitarie su Google Ads: quali annunci portano visite, richieste e acquisti",
+              "Consenso (art. 6.1.a), separato da quello per le statistiche e revocabile in ogni momento",
+            ],
+            [
+              "Conteggio aggregato degli arrivi da campagna, per giorno, campagna e pagina d'arrivo, senza cookie e senza identificativi",
+              "Legittimo interesse a sapere quali campagne portano visite (art. 6.1.f): il conteggio non riguarda nessuno in particolare",
+            ],
           ]}
         />
         <p>
@@ -180,11 +188,10 @@ export default function PrivacyPage() {
           la piattaforma non ne impiega.
         </p>
         <p>
-          Le statistiche di visita riguardano <strong>soltanto il sito pubblico</strong>{" "}e sono attivate solo se
-          acconsenti. Non seguono ciò che fai dentro l&apos;area riservata, non vedono i dati delle aziende che
-          rendiconti e non entrano nei documenti che generi. Nella configurazione del servizio di misurazione abbiamo
-          disattivato i <em>Segnali Google</em> e ogni uso pubblicitario dei dati. Il dettaglio è nella{" "}
-          <Link href="/cookie">cookie policy</Link>.
+          Statistiche e misura delle campagne sono attivate solo se acconsenti, ciascuna con il proprio consenso. Non
+          vedono i dati delle aziende che rendiconti e non entrano nei documenti che generi. Anche con il consenso alla
+          pubblicità non chiediamo a Google di mostrarti annunci personalizzati, e il browser blocca l&apos;invio dei
+          dati dei <em>Segnali Google</em>. Il dettaglio è nella <Link href="/cookie">cookie policy</Link>.
         </p>
       </Sezione>
 
@@ -243,8 +250,9 @@ export default function PrivacyPage() {
           aziende che rendiconti <strong>non escono dall&apos;Unione Europea</strong>.
         </p>
         <p>
-          Fa eccezione un solo trattamento, e solo se lo autorizzi: le{" "}
-          <strong>statistiche di visita del sito pubblico</strong>. Il servizio è fornito da Google Ireland Limited, ma
+          Fanno eccezione due trattamenti, e solo se li autorizzi: le{" "}
+          <strong>statistiche di visita</strong>{" "}e la <strong>misura delle campagne pubblicitarie</strong>. I servizi
+          sono forniti da Google Ireland Limited, ma
           l&apos;infrastruttura di Google comporta trattamenti anche negli <strong>Stati Uniti</strong>. Il trasferimento
           si fonda sulla decisione di adeguatezza della Commissione europea del 10 luglio 2023 relativa all&apos;
           <em>EU-US Data Privacy Framework</em>, a cui Google LLC aderisce, integrata dalle clausole contrattuali tipo.
@@ -306,8 +314,9 @@ export default function PrivacyPage() {
 
       <Sezione n={10} titolo="Cookie">
         <p>
-          Il sito e la piattaforma utilizzano soltanto cookie tecnici necessari al funzionamento. Il dettaglio, con
-          nomi, durate e finalità, è nella <Link href="/cookie">cookie policy</Link>.
+          Il sito e la piattaforma usano cookie tecnici necessari al funzionamento e, solo con il tuo consenso, cookie
+          statistici di Google Analytics e cookie pubblicitari di Google Ads. Il dettaglio, con nomi, durate e finalità,
+          è nella <Link href="/cookie">cookie policy</Link>.
         </p>
       </Sezione>
 

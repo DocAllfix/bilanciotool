@@ -40,6 +40,9 @@ page.on("console", (m) => {
   // In produzione non esiste. Contarla qui significherebbe dichiarare rotta una difesa
   // proprio nel momento in cui funziona.
   if (rumoreDiPiattaforma(t)) return;
+  // ⚠️ I Segnali Google di Analytics sono fermati DI PROPOSITO (profilazione che non
+  // chiediamo, vedi `src/lib/csp.ts`): è la difesa che funziona, non un indirizzo dimenticato.
+  if (/stats\.g\.doubleclick\.net/.test(t)) return;
   if (/Content Security Policy|Refused to (load|execute|connect|apply)/i.test(t)) {
     violazioni.push(`[${page.url()}] ${t.slice(0, 180)}`);
   }

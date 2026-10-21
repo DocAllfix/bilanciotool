@@ -4012,3 +4012,69 @@ committente** prima.
 la pagina è veloce.** In locale `verifica-azienda-interna` era verde; sull'anteprima, più lenta,
 leggeva il segnaposto di caricamento e faceva cadere a catena dodici controlli. Si aspetta il
 fatto.
+
+**Consenso a due finalità e conteggio nostro degli arrivi (2026-10-21) — ramo `lavoro/consenso-ads`, NON in produzione**
+
+Nato da una domanda del consulente che gestisce le campagne: **130 visite da Google Ads, 30 in
+Analytics**. Il committente chiedeva il «Consent Mode v2» (avanzato). Scartato: alle nostre
+quantità Google non modella niente (servono ~1.000 eventi al giorno negati per sette giorni), e
+mandare ping senza cookie prima del consenso contraddice la cookie policy pubblicata e le Linee
+guida EDPB 2/2023. Gran parte della differenza è il consenso che funziona; il resto sono clic che
+non diventano visite.
+
+**Il difetto vero era un altro: col consenso dato, la CSP bloccava Google Ads.** Il tag di
+Analytics porta con sé la destinazione `AW-18482101083` (tag combinati), e `pagead2`, `ad.doubleclick`,
+`googleadservices` non erano permessi: le conversioni da annuncio non si misuravano.
+
+- **Due finalità, due consensi**: «Rifiuta» · «Personalizza» · «Accetta». Le caselle partono
+  vuote. Chiave `evalisdeck-consenso-v2`, valori `rifiutato | statistiche | pubblicita |
+  accettato`; il vecchio «accettato» non vale più (era solo per le statistiche), il vecchio
+  rifiuto resta un rifiuto.
+- **I due tag sono combinati, in tutte e due le direzioni** (misurato): caricando Ads parte anche
+  GA4, e viceversa. Chi acconsente a UNA finalità riceve un `<meta>` di CSP più stretto, inserito
+  **prima** di gtag (`src/lib/csp.ts`, `restrizione`): un meta può solo restringere, ed è il
+  browser a fermare l'invio. L'intestazione permette entrambe. Per questo gtag si inserisce a
+  mano e non con `next/script`.
+- Niente annunci personalizzati (`ad_personalization` sempre negato). I **Segnali Google sono
+  accesi nella proprietà GA4**: `stats.g.doubleclick.net` parte anche con
+  `allow_google_signals: false` in `config`, e lo ferma la CSP. Rimedio vero: spegnerli in GA4.
+- Cambiare la scelta dopo che gtag è in pagina **ricarica il documento**: gtag non si spegne.
+- `NEXT_PUBLIC_GOOGLE_ADS_ID` (`AW-…`): **solo in produzione**, così il traffico di collaudo non
+  finisce nelle conversioni.
+- **Contatore nostro** (migrazione `0070`, `arrivo_campagna`): una riga per giorno, sorgente,
+  mezzo, campagna, clic Ads sì/no e pagina, con un contatore in una istruzione. Nessun cookie,
+  nessun indirizzo di rete, del `gclid` solo che c'era: per questo senza consenso. Lo segnala
+  `ContaArrivi` con `sendBeacon`; la rotta `/api/arrivi` rifiuta i siti esterni, i corpi oltre
+  2.000 caratteri e ciò che non è un arrivo, con un tetto giornaliero di 5.000. Si legge in
+  `/staff/arrivi`, che per chi non è staff non esiste.
+- Cookie policy (otto sezioni, cookie `_gcl_au`, `_gcl_aw`, `GCL_AW_P` misurati col browser),
+  privacy (due righe nuove fra finalità e basi giuridiche) e `AGGIORNATO_AL` = `2026-10-21`, **da
+  portare alla data del rilascio**. La cookie policy diceva «gli usi pubblicitari sono
+  disattivati»: era falso dal giorno in cui le campagne sono partite.
+
+**Regole nate qui:**
+- **Un banner si misura anche da telefono.** Con tre pulsanti, «Accetta» andava a capo da solo e
+  diventava largo il doppio di «Rifiuta» (302 contro 147 px): la disparità che il Garante vieta.
+  L'hanno viste le foto; il collaudo misurava solo a 1280. Ora misura anche a 360, e il controllo
+  è stato visto rosso sul build col difetto.
+- **Le misure di Google partono come beacon, e Playwright le dà per «interrotte».** Contare le
+  sole `requestfinished` dava zero misure a una pagina che misurava. Si conta ciò che è uscito
+  meno ciò che il browser ha fermato per la CSP (`errorText` = `csp`).
+- **Un'opzione di gtag che dice di spegnere qualcosa va misurata.** `allow_google_signals: false`,
+  con `set` e con `config`, non ha fermato la richiesta.
+- **Una CSP «per finalità» è l'intersezione di due politiche**: l'intestazione permette tutto
+  ciò che una scelta può chiedere, il meta toglie ciò che questa scelta non ha dato.
+
+Gate: typecheck · build (home, `/cookie`, `/privacy` statiche) · **2067 test su 203 file** · con
+`RLS_FORCE_ROLE=app_rls` 2065 su 2067: i due rossi di `filiera-flow.db` sono scadenze sotto carico,
+19/19 due volte da solo · `qa -- consenso` **32/32** (le quattro scelte sulle richieste uscite,
+più la parità da telefono, vista rossa sul build col difetto) · `qa -- arrivi` **7/7**, rosso
+rendendo il conteggio dipendente dal consenso · `csp` 6/6 · `legale` 26/26 · `tutto-pubblico`
+37/37 · `benvenuto` 12/12 · `benvenuto-velo` 4/4 · `vetrina-tour` 7/7 · `vetrina-cta` 9/9 ·
+`attivazione` 10/10 · `assistenza` 14/14 · `sitemap` 9/9 · banner fotografato in chiaro, scuro
+e da telefono, sfondamento 0.
+
+⚠️ **Per il rilascio, in quest'ordine**: migrazione `0070` sulla produzione (la rotta degli arrivi
+scrive in una tabella che altrimenti non c'è: risponderebbe 204 e non conterebbe niente, in
+silenzio); `NEXT_PUBLIC_GOOGLE_ADS_ID=AW-18482101083` **solo in produzione** su Vercel, prima del
+build; `AGGIORNATO_AL` alla data del rilascio; poi la fusione.

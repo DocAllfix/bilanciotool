@@ -4,6 +4,8 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { BannerCookie } from "@/components/legal/banner-cookie";
 import { Analytics } from "@/components/legal/analytics";
+import { ContaArrivi } from "@/components/legal/conta-arrivi";
+import { fontiDaAmbiente } from "@/lib/csp";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,6 +26,10 @@ const display = Bricolage_Grotesque({
 });
 
 const SITO = "https://evalisdeck.it";
+
+// Calcolate al build, come la CSP dell'intestazione: servono ad Analytics per restringerla
+// a chi acconsente a una sola finalità (il perché sta in `src/lib/csp.ts`).
+const FONTI_CSP = fontiDaAmbiente(process.env);
 const DESCRIZIONE =
   "Percorsi guidati per studi di consulenza e PMI: sostenibilità e GHG, Modello 231, NIS2, GDPR, sistemi di gestione certificabili. Calcoli automatici, documenti impaginati.";
 
@@ -69,7 +75,11 @@ export default function RootLayout({
           <BannerCookie />
           {/* Non rende niente finché il consenso non è esplicito: nessuno script,
               nessuna richiesta verso Google. */}
-          <Analytics />
+          <Analytics fontiCsp={FONTI_CSP} />
+          {/* Il conteggio NOSTRO degli arrivi da campagna: senza cookie, aggregato, e
+              quindi senza bisogno di consenso. Parte solo se l'indirizzo porta i
+              parametri di una campagna. */}
+          <ContaArrivi />
           {/* Il contenitore dei messaggi. Senza, `toast(...)` non rende NIENTE: sette
               componenti dicevano «collegamento copiato», «azienda archiviata», «nome
               dello studio salvato» e gli errori del dialogo d'acquisto, e nessuno li ha

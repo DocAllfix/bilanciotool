@@ -212,6 +212,14 @@ i due sono decisioni, non dimenticanze.
 - [x] **Privacy, cookie e termini** pubblicati e coerenti
       → *verifica:* `qa -- tutto-pubblico` — 27 su 27
 - [x] **Consenso GA4**: nessuna richiesta a Google prima della scelta
+- [x] **Consenso separato per statistiche e pubblicità** (21 ottobre 2026): «Personalizza» con
+      le due caselle vuote, e chi acconsente a una sola finalità riceve una CSP più stretta
+      che ferma gli invii del tag combinato verso l'altra
+      → *verifica:* `qa -- consenso` — 31 su 31, sulle richieste uscite davvero
+- [ ] **Segnali Google accesi nella proprietà GA4**: il browser li ferma (CSP), ma ogni
+      visitatore che accetta tutto ha una violazione in console
+      → *rimedio:* spegnerli in GA4 (Amministrazione → Raccolta dati), a cura di chi
+        gestisce la proprietà; poi `qa -- consenso` non vede più `stats.g.doubleclick.net`
 - [x] **Nessun prezzo sulla landing**
 - [ ] **Testi legali riletti ora che si incassa davvero**
       → *verifica:* devono dire il vero su pagamento, fatturazione elettronica, rinnovo
