@@ -34,7 +34,7 @@ async function scatta(nome, { width, height, tema }) {
   await page.addInitScript((t) => {
     try {
       localStorage.setItem("theme", t);
-      localStorage.setItem("evalisdeck-consenso-v1", "rifiutato");
+      localStorage.setItem("evalisdeck-consenso-v2", "rifiutato");
     } catch {}
   }, tema);
   await page.goto(`${BASE}/#percorsi`, { waitUntil: "domcontentloaded" });

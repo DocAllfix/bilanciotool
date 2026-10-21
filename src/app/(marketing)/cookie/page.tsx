@@ -7,7 +7,7 @@ import { TITOLARE, COOKIE, ARCHIVIAZIONE_LOCALE } from "@/lib/legale";
 export const metadata: Metadata = {
   title: "Cookie policy",
   description:
-    "Quali cookie usa EvalisDeck: tecnici sempre, statistici solo con il tuo consenso. Nomi, durate, finalità e come revocare.",
+    "Quali cookie usa EvalisDeck: tecnici sempre, statistici e pubblicitari solo con il tuo consenso, separato per ciascuno. Nomi, durate, finalità e come revocare.",
 };
 
 export default function CookiePage() {
@@ -18,15 +18,17 @@ export default function CookiePage() {
     >
       <Sezione n={1} titolo="In breve">
         <p>
-          EvalisDeck usa <strong>cookie tecnici</strong>, necessari a farlo funzionare, e{" "}
-          <strong>cookie statistici di Google Analytics</strong> che vengono attivati <strong>solo se acconsenti</strong>
-          . Non usiamo cookie di profilazione pubblicitaria, non facciamo pubblicità comportamentale e non vendiamo dati
-          di navigazione a nessuno.
+          EvalisDeck usa <strong>cookie tecnici</strong>, necessari a farlo funzionare, e due gruppi di cookie che
+          vengono attivati <strong>solo se acconsenti</strong>, ciascuno con il proprio consenso: i{" "}
+          <strong>cookie statistici di Google Analytics</strong>, per capire quali pagine sono utili, e i{" "}
+          <strong>cookie pubblicitari di Google Ads</strong>, per misurare quali annunci portano visite e richieste. Non
+          mostriamo annunci personalizzati, non facciamo pubblicità comportamentale e non vendiamo dati di navigazione a
+          nessuno.
         </p>
         <p>
-          Finché non esprimi una scelta, <strong>non viene impostato alcun cookie statistico e non viene inviata alcuna
-          richiesta ai server di Google</strong>: lo script di misurazione non viene proprio scaricato. Il cookie tecnico
-          di sessione compare invece dopo che ti sei autenticato, e serve a tenerti dentro.
+          Finché non esprimi una scelta, <strong>non viene impostato alcun cookie statistico o pubblicitario e non viene
+          inviata alcuna richiesta ai server di Google</strong>: lo script di misurazione non viene proprio scaricato. Il
+          cookie tecnico di sessione compare invece dopo che ti sei autenticato, e serve a tenerti dentro.
         </p>
         <p>
           Se rifiuti, il sito e la piattaforma funzionano esattamente allo stesso modo: non perdi nessuna funzione.
@@ -41,11 +43,17 @@ export default function CookiePage() {
           <strong>l&apos;informativa, non il consenso</strong>: sono quelli che tengono aperta la tua sessione.
         </p>
         <p>
-          I <strong>cookie statistici di Google Analytics</strong> stanno invece fuori da quella esclusione, perché
-          comportano un servizio di misurazione fornito da un soggetto terzo. Per questi il consenso è{" "}
-          <strong>preventivo, libero e revocabile</strong>: te lo chiediamo prima di attivarli, con «Accetta» e «Rifiuta»
-          nello stesso riquadro, alla stessa portata e con lo stesso numero di clic. Nessuna casella è preselezionata, e
-          chiudere il riquadro senza scegliere non vale come consenso.
+          I <strong>cookie statistici di Google Analytics</strong> e quelli <strong>pubblicitari di Google Ads</strong>{" "}
+          stanno invece fuori da quella esclusione, perché comportano servizi forniti da un soggetto terzo. Per questi il
+          consenso è <strong>preventivo, libero e revocabile</strong>: te lo chiediamo prima di attivarli, con «Accetta» e
+          «Rifiuta» nello stesso riquadro, alla stessa portata e con lo stesso numero di clic. Con «Personalizza» puoi
+          dire sì all&apos;uno e no all&apos;altro: le due caselle partono vuote, e chiudere il riquadro senza scegliere
+          non vale come consenso.
+        </p>
+        <p>
+          I due servizi di Google sono collegati fra loro, e ciascuno tenderebbe a inviare dati anche per conto
+          dell&apos;altro. Se acconsenti a uno solo, <strong>è il browser stesso a bloccare gli invii verso
+          l&apos;altro</strong>: lo impone una regola di sicurezza della pagina, non una nostra promessa.
         </p>
         <p>
           Puoi cambiare idea in qualunque momento con <strong>«Preferenze cookie»</strong>, in fondo a ogni pagina: la
@@ -71,17 +79,33 @@ export default function CookiePage() {
         />
         <p>
           Il cookie di sessione è di prima parte: lo imposta il nostro dominio, e alla disconnessione viene rimosso. I
-          due cookie di Google Analytics sono di terza parte, li imposta Google, e compaiono{" "}
-          <strong>soltanto dopo che hai accettato</strong>.
+          cookie di Google Analytics e di Google Ads li imposta Google, e compaiono{" "}
+          <strong>soltanto dopo che hai accettato la finalità corrispondente</strong>.
         </p>
         <p>
-          Nella proprietà di misurazione abbiamo disattivato i <em>Segnali Google</em>, la personalizzazione degli
-          annunci e la condivisione dei dati con gli altri servizi di Google: le statistiche restano statistiche e non
-          alimentano profili pubblicitari. La conservazione dei dati è impostata a 14 mesi.
+          Anche con il consenso alla pubblicità <strong>non chiediamo a Google di mostrarti annunci personalizzati</strong>
+          : lo dichiariamo nel segnale di consenso che il sito trasmette, e il browser blocca l&apos;invio dei dati dei{" "}
+          <em>Segnali Google</em>, che servono a costruire profili demografici e fra dispositivi. La conservazione dei
+          dati statistici è impostata a 14 mesi.
         </p>
       </Sezione>
 
-      <Sezione n={4} titolo="Altri dati conservati nel browser">
+      <Sezione n={4} titolo="Il conteggio degli arrivi da campagna, senza cookie">
+        <p>
+          Quando arrivi sul sito da un annuncio o da un collegamento di una campagna, l&apos;indirizzo della pagina porta
+          con sé il nome della campagna. Contiamo questi arrivi <strong>da noi</strong>, sul nostro server, sommandoli per
+          giorno, campagna e pagina d&apos;arrivo: è l&apos;unico modo di sapere quanti clic su un annuncio sono diventati
+          davvero una visita, compresi quelli di chi rifiuta i cookie.
+        </p>
+        <p>
+          Per questo conteggio <strong>non usiamo cookie né altri dati conservati nel tuo browser</strong>, non
+          registriamo l&apos;indirizzo di rete né alcun identificativo, e dell&apos;identificativo del clic di Google Ads
+          conserviamo solo il fatto che c&apos;era. Resta un numero per riga, che non riguarda nessuno in particolare: è
+          per questo che non ti chiediamo il consenso.
+        </p>
+      </Sezione>
+
+      <Sezione n={5} titolo="Altri dati conservati nel browser">
         <p>
           Oltre ai cookie, la piattaforma conserva alcune preferenze nell&apos;archiviazione locale del browser (
           <span className="font-mono text-[12.5px]">localStorage</span>). Non sono cookie e non vengono trasmesse al
@@ -100,10 +124,10 @@ export default function CookiePage() {
         />
       </Sezione>
 
-      <Sezione n={5} titolo="Revocare il consenso o cambiare idea">
+      <Sezione n={6} titolo="Revocare il consenso o cambiare idea">
         <p>
           Il modo più diretto è il comando <strong>«Preferenze cookie»</strong> in fondo a ogni pagina pubblica: azzera
-          la scelta registrata, spegne immediatamente la misurazione e ti ripropone il riquadro. Non devi cercare nulla
+          la scelta registrata, spegne immediatamente statistiche e pubblicità e ti ripropone il riquadro. Non devi cercare nulla
           nelle impostazioni del browser, e non serve scriverci.
         </p>
         <p className="not-prose">
@@ -111,13 +135,13 @@ export default function CookiePage() {
           <span className="text-muted-foreground">— apre il riquadro di scelta qui, adesso.</span>
         </p>
         <p>
-          La revoca vale per il futuro: i dati statistici già raccolti restano nei rapporti aggregati di Google fino alla
-          scadenza dei 14 mesi di conservazione. Se vuoi che i cookie già presenti spariscano subito dal tuo dispositivo,
+          La revoca vale per il futuro: i dati già raccolti restano nei rapporti aggregati di Google fino alla scadenza
+          dei rispettivi periodi di conservazione. Se vuoi che i cookie già presenti spariscano subito dal tuo dispositivo,
           cancellali dal browser come descritto qui sotto.
         </p>
       </Sezione>
 
-      <Sezione n={6} titolo="Come gestirli o eliminarli dal browser">
+      <Sezione n={7} titolo="Come gestirli o eliminarli dal browser">
         <p>
           Puoi bloccare o cancellare cookie e archiviazione locale in qualunque momento dalle impostazioni del tuo
           browser, alla voce dedicata alla privacy o ai dati dei siti. Le istruzioni sono nella documentazione ufficiale
@@ -159,7 +183,7 @@ export default function CookiePage() {
         </p>
       </Sezione>
 
-      <Sezione n={7} titolo="Riferimenti e contatti">
+      <Sezione n={8} titolo="Riferimenti e contatti">
         <p>
           Titolare del trattamento e finalità sono descritti nell&apos;
           <Link href="/privacy">informativa sulla privacy</Link>. Per domande su questa pagina:{" "}

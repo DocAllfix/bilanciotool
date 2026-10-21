@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, integer, boolean, date, primaryKey } from "drizzle-orm/pg-core";
 import { organization } from "./auth";
 
 // Config di piattaforma modificabile senza deploy (limiti anti-abuso, feature flag).
@@ -39,3 +39,31 @@ export const orgEntitlement = pgTable("org_entitlement", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
+
+// Gli arrivi da una campagna, contati da NOI e senza consenso (21 ottobre 2026).
+//
+// ⚠️ Esiste perché Google Analytics vede solo chi acconsente: il consulente che gestisce
+// le campagne leggeva 130 clic in Google Ads e 30 visite in Analytics, e non aveva un terzo
+// numero per capire quanta parte della differenza fosse il consenso e quanta fossero clic
+// che non diventano visite. Questo è il terzo numero.
+//
+// ⚠️ NESSUN DATO PERSONALE, ed è il motivo per cui non serve il consenso: una riga per
+// giorno, sorgente, mezzo, campagna e pagina d'arrivo, con un contatore. Niente cookie,
+// niente indirizzo di rete, niente identificativo; del `gclid` si conserva solo che c'era.
+// Non è una tabella di uno studio: passthrough come `rate_limit`, e la legge solo lo staff.
+export const arrivoCampagna = pgTable(
+  "arrivo_campagna",
+  {
+    /** Il giorno italiano, non quello UTC. */
+    giorno: date("giorno").notNull(),
+    sorgente: text("sorgente").notNull(),
+    mezzo: text("mezzo").notNull(),
+    campagna: text("campagna").notNull(),
+    /** L'indirizzo portava un identificativo di clic di Google Ads (gclid, gbraid, wbraid). */
+    clicAds: boolean("clic_ads").notNull(),
+    /** Il solo percorso, senza parametri. */
+    pagina: text("pagina").notNull(),
+    conteggio: integer("conteggio").notNull().default(1),
+  },
+  (t) => [primaryKey({ columns: [t.giorno, t.sorgente, t.mezzo, t.campagna, t.clicAds, t.pagina] })],
+);

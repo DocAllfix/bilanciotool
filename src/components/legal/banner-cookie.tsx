@@ -1,10 +1,16 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useId, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { bannerNascostoSulServer, iscriviConsenso, leggiConsenso, scegli } from "@/features/consenso/stato";
+import {
+  bannerNascostoSulServer,
+  daCaselle,
+  iscriviConsenso,
+  leggiConsenso,
+  scegli,
+} from "@/features/consenso/stato";
 
 // Il banner di consenso.
 //
@@ -20,6 +26,11 @@ import { bannerNascostoSulServer, iscriviConsenso, leggiConsenso, scegli } from 
 // è più corta dell'altra. La contestazione più frequente riguarda proprio il rifiuto
 // nascosto dietro un secondo passaggio.
 //
+// ⚠️ DUE FINALITÀ, DUE CONSENSI (21 ottobre 2026). Statistiche (Google Analytics) e
+// pubblicità (Google Ads) sono scopi diversi, e il Garante chiede che si possa dire sì a
+// uno e no all'altro. «Accetta» dà entrambi, «Rifiuta» nessuno, e «Personalizza» apre le
+// due caselle, VUOTE: una casella già spuntata non è un consenso.
+//
 // Non c'è una X per chiudere senza scegliere: chiudere senza decidere lascerebbe lo stato in
 // sospeso, e uno stato in sospeso vale come rifiuto — meglio dirlo con un pulsante che
 // lasciarlo intuire.
@@ -27,6 +38,10 @@ import { bannerNascostoSulServer, iscriviConsenso, leggiConsenso, scegli } from 
 export function BannerCookie() {
   const consenso = useSyncExternalStore(iscriviConsenso, leggiConsenso, bannerNascostoSulServer);
   const pathname = usePathname();
+  const [personalizza, setPersonalizza] = useState(false);
+  const [statistiche, setStatistiche] = useState(false);
+  const [pubblicita, setPubblicita] = useState(false);
+  const id = useId();
 
   // Il documento pubblicato è un altro registro, ed è la pagina che Chromium trasforma in
   // PDF: un riquadro fisso in fondo finirebbe stampato dentro il documento del cliente.
@@ -64,24 +79,94 @@ export function BannerCookie() {
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         <p className="text-[13.5px] leading-relaxed text-muted-foreground">
-          Usiamo <strong className="font-medium text-foreground">cookie tecnici</strong>, necessari al funzionamento, e
-          con il tuo consenso <strong className="font-medium text-foreground">Google Analytics</strong> per capire quali
-          pagine sono utili. Nessuna pubblicità, nessuna profilazione. Se rifiuti, il sito funziona esattamente allo
-          stesso modo. Il dettaglio è nella{" "}
+          Usiamo <strong className="font-medium text-foreground">cookie tecnici</strong>, necessari al funzionamento. Con
+          il tuo consenso usiamo anche <strong className="font-medium text-foreground">Google Analytics</strong>, per
+          capire quali pagine sono utili, e <strong className="font-medium text-foreground">Google Ads</strong>, per
+          misurare quali annunci portano visite e richieste. Nessun annuncio personalizzato. Se rifiuti, il sito funziona
+          esattamente allo stesso modo. Il dettaglio è nella{" "}
           <Link href="/cookie" className="font-medium text-primary hover:underline">
             cookie policy
           </Link>
           .
         </p>
-        <div className="flex shrink-0 gap-2">
+        {/* ⚠️ Da telefono tre pulsanti in fila non ci stanno, e lasciandoli andare a capo
+            «Accetta» finiva da solo su una riga, largo il doppio di «Rifiuta»: la disparità
+            che le Linee guida vietano. Rifiuta e Accetta stanno sempre affiancati e uguali;
+            «Personalizza», che è il passaggio in più, scende sotto. */}
+        <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex sm:flex-nowrap">
           <Button size="sm" variant="outline" onClick={() => scegli("rifiutato")} className="min-w-24 flex-1 sm:flex-none">
             Rifiuta
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-expanded={personalizza}
+            aria-controls={`${id}-scelte`}
+            onClick={() => setPersonalizza((v) => !v)}
+            className="order-last col-span-2 min-w-24 sm:order-none sm:col-span-1 sm:flex-none"
+          >
+            Personalizza
           </Button>
           <Button size="sm" onClick={() => scegli("accettato")} className="min-w-24 flex-1 sm:flex-none">
             Accetta
           </Button>
         </div>
       </div>
+      {personalizza ? (
+        <div id={`${id}-scelte`} className="mt-4 border-t pt-4" data-consenso-scelte="">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Casella
+              id={`${id}-statistiche`}
+              titolo="Statistiche"
+              testo="Google Analytics: quante visite, da dove, quali pagine. Imposta i cookie _ga."
+              valore={statistiche}
+              cambia={setStatistiche}
+            />
+            <Casella
+              id={`${id}-pubblicita`}
+              titolo="Pubblicità"
+              testo="Google Ads: quali annunci portano visite e richieste. Imposta i cookie _gcl. Niente annunci personalizzati."
+              valore={pubblicita}
+              cambia={setPubblicita}
+            />
+          </div>
+          <div className="mt-3 flex justify-end">
+            <Button size="sm" variant="outline" onClick={() => scegli(daCaselle(statistiche, pubblicita))}>
+              Salva le scelte
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+function Casella({
+  id,
+  titolo,
+  testo,
+  valore,
+  cambia,
+}: {
+  id: string;
+  titolo: string;
+  testo: string;
+  valore: boolean;
+  cambia: (v: boolean) => void;
+}) {
+  return (
+    <label htmlFor={id} className="flex cursor-pointer gap-2.5 rounded-lg border p-3 text-[13px] leading-snug">
+      <input
+        id={id}
+        type="checkbox"
+        checked={valore}
+        onChange={(e) => cambia(e.target.checked)}
+        className="mt-0.5 size-4 shrink-0 accent-primary"
+      />
+      <span>
+        <span className="block font-medium text-foreground">{titolo}</span>
+        <span className="text-muted-foreground">{testo}</span>
+      </span>
+    </label>
   );
 }

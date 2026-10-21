@@ -183,7 +183,7 @@ await agisci("⚠️ il banner dei cookie resta PREMIBILE sotto il giro guidato 
     });
     // `registraEEntra` la scelta sui cookie la fa già (è il clic che scadeva): la si
     // dimentica, così il banner torna com'è per chi entra senza aver ancora scelto.
-    await page.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v1"));
+    await page.evaluate(() => localStorage.removeItem("evalisdeck-consenso-v2"));
     await page.goto(`${BASE}/dashboard`, { waitUntil: "domcontentloaded" });
     await page.locator(".driver-popover").waitFor({ timeout: 60_000 });
     const banner = page.locator("[data-consenso]");
