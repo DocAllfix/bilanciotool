@@ -21,7 +21,13 @@ import { chromium } from "@playwright/test";
 import { rumoreDiPiattaforma } from "./comune-collaudo.mjs";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
-const DA_ANNUNCIO = "/?gclid=COLLAUDO-CONSENSO&utm_source=google&utm_medium=cpc&utm_campaign=collaudo";
+// ⚠️ SUL SITO VERO SI ARRIVA DALLA HOME NUDA. Un `gclid` finto finirebbe fra i clic di Google
+// Ads che il consulente legge, e `utm_*` fra i nostri conteggi degli arrivi: due misure vere
+// sporcate da un collaudo. Lì le prove sul conteggio si saltano (le fa `qa -- arrivi`, altrove).
+const IN_PRODUZIONE = /^https:\/\/(www\.)?evalisdeck\.it/.test(BASE);
+const DA_ANNUNCIO = IN_PRODUZIONE
+  ? "/"
+  : "/?gclid=COLLAUDO-CONSENSO&utm_source=google&utm_medium=cpc&utm_campaign=collaudo";
 const esiti = [];
 const nota = (nome, ok, dettaglio) => esiti.push({ nome, ok, dettaglio });
 
@@ -159,16 +165,20 @@ const gtagInPagina = (page) => page.locator("script[data-gtag]").count();
 
   // Il NOSTRO conteggio degli arrivi parte comunque: non usa cookie e non ha bisogno del
   // consenso. Ma non deve portarsi dietro il valore del gclid.
-  nota(
-    "il conteggio degli arrivi parte senza consenso",
-    v.arrivi.length === 1,
-    v.arrivi.length === 1 ? `un solo invio a /api/arrivi: ${v.arrivi[0]}` : `${v.arrivi.length} invii a /api/arrivi`,
-  );
-  nota(
-    "il conteggio non porta il gclid",
-    v.arrivi.every((c) => !c.includes("COLLAUDO-CONSENSO")),
-    "dell'identificativo del clic resta solo che c'era",
-  );
+  if (IN_PRODUZIONE) {
+    nota("senza campagna nell'indirizzo, nessun conteggio", v.arrivi.length === 0, `${v.arrivi.length} invii a /api/arrivi`);
+  } else {
+    nota(
+      "il conteggio degli arrivi parte senza consenso",
+      v.arrivi.length === 1,
+      v.arrivi.length === 1 ? `un solo invio a /api/arrivi` : `${v.arrivi.length} invii a /api/arrivi`,
+    );
+    nota(
+      "il conteggio non porta il gclid",
+      v.arrivi.every((c) => !c.includes("COLLAUDO-CONSENSO")),
+      "dell'identificativo del clic resta solo che c'era",
+    );
+  }
 
   nota("nessun errore in console", v.erroriConsole.length === 0, v.erroriConsole.slice(0, 2).join(" | ") || "pulita");
   await v.ctx.close();
