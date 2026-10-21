@@ -4091,7 +4091,10 @@ build; `AGGIORNATO_AL` alla data del rilascio; poi la fusione.
   tabella provata **come `app_rls`** in una transazione annullata (due arrivi → 2, vincolo che
   respinge un valore lungo, 0 righe dopo);
 - `NEXT_PUBLIC_GOOGLE_ADS_ID` creata **solo in produzione** con `vercel-variabile-produzione.mjs`;
-- fusione su `main` come un commit solo.
+- fusione su `main` come un commit solo. Dopo, sul sito vero e in sola lettura:
+  `tutto-pubblico` 37/37, `legale` 26/26, `sitemap` 9/9, `csp` 3/3 (parte pubblica), `consenso`
+  31/31 — con le sole statistiche il ping di Ads è fermato, con tutto accettato Google Ads riceve
+  le misure e imposta `_gcl_au`.
 
 **Regole nate qui:**
 - **Un collaudo lanciato a mano contro un'anteprima non porta il bypass di Vercel**: lo legge

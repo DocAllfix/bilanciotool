@@ -302,9 +302,12 @@ const gtagInPagina = (page) => page.locator("script[data-gtag]").count();
       : inattese[0],
   );
   if (cookie.some((n) => /^_gcl/.test(n)) || v.arrivate(HOST_PUBBLICITA).length) {
+    // `_gcl_aw` conserva l'identificativo del CLIC: nasce solo arrivando da un annuncio. Sul
+    // sito vero si parte dalla home nuda (niente gclid finto), e lì basta `_gcl_au`.
+    const cookieAtteso = IN_PRODUZIONE ? "_gcl_au" : "_gcl_aw";
     nota(
-      "col consenso pieno Google Ads riceve il clic",
-      cookie.includes("_gcl_aw") && v.arrivate(HOST_PUBBLICITA).length > 0,
+      IN_PRODUZIONE ? "col consenso pieno Google Ads misura" : "col consenso pieno Google Ads riceve il clic",
+      cookie.includes(cookieAtteso) && v.arrivate(HOST_PUBBLICITA).length > 0,
       `cookie ${cookie.filter((n) => /^_gcl/.test(n)).join(", ")} · ${v.arrivate(HOST_PUBBLICITA).length} misure`,
     );
   }
