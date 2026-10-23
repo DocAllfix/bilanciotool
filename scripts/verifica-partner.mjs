@@ -107,6 +107,37 @@ await agisci("nella pagina d'invito il campo NON c'è: l'invitato entra in uno s
   await ctx.close();
 });
 
+await agisci("il collegamento del partner apre l'iscrizione col codice già scritto, e lega lo studio", async () => {
+  const { ctx, p } = await anonima();
+  const email = `partner-link-${RUN}@example.com`;
+  await sql`delete from rate_limit where key like '%/sign-up/email'`;
+  await p.goto(`${BASE}/partner/NGR`, { waitUntil: "domcontentloaded" });
+  const campo = p.getByRole("textbox", { name: /Codice partner/ });
+  await campo.waitFor({ timeout: 20_000 });
+  if ((await campo.inputValue()) !== "NGR") throw new Error(`il campo contiene «${await campo.inputValue()}»`);
+  await p.getByText(/Ti ha presentato EvalisDeck NGR/).waitFor({ timeout: 10_000 });
+  await p.fill("#nome", "Dal Collegamento");
+  await p.fill("#email", email);
+  await p.fill("#password", PWD_COLLAUDO);
+  await p.click('button[type="submit"]');
+  await p.getByText(/Controlla la tua posta/i).waitFor({ timeout: 90_000 });
+  const [r] = await sql`select a.partner_codice, a.origine from attribuzione_partner a
+    join member m on m.organization_id = a.organization_id join "user" u on u.id = m.user_id
+    where u.email = ${email}`;
+  if (r?.partner_codice !== "NGR" || r?.origine !== "registrazione") throw new Error(`riga ${JSON.stringify(r)}`);
+  await ctx.close();
+});
+
+await agisci("un collegamento storto non perde chi l'ha aperto: si iscrive senza codice, e lo dice", async () => {
+  const { ctx, p } = await anonima();
+  await p.goto(`${BASE}/partner/NONESISTE`, { waitUntil: "domcontentloaded" });
+  const campo = p.getByRole("textbox", { name: /Codice partner/ });
+  await campo.waitFor({ timeout: 20_000 });
+  if (await campo.inputValue()) throw new Error(`il campo contiene «${await campo.inputValue()}»`);
+  await p.getByText(/non è attivo/).waitFor({ timeout: 10_000 });
+  await ctx.close();
+});
+
 // ── La pagina dello staff ─────────────────────────────────────────────────────────────
 
 const altro = await browser.newPage({ viewport: { width: 1400, height: 1000 } });
@@ -138,6 +169,8 @@ await agisci("lo staff vede NGR con lo studio iscritto col codice", async () => 
   if (!(await pagina.locator(`[data-partner="NGR"] [data-studio="${orgNgr}"]`).count())) {
     throw new Error("lo studio iscritto con NGR non compare sotto NGR");
   }
+  const link = await pagina.getByRole("textbox", { name: /Collegamento d'iscrizione del partner/ }).first().inputValue();
+  if (!/\/partner\/NGR$/.test(link)) throw new Error(`collegamento «${link}»`);
 });
 
 await agisci("lo staff attribuisce a mano uno studio iscritto senza codice", async () => {

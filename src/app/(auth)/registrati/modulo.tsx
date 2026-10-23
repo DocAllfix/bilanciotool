@@ -26,6 +26,7 @@ export function ModuloIscrizione({
   senzaGuscio = false,
   titolo,
   sottotitolo,
+  codicePartnerIniziale,
 }: {
   destinazione: string;
   perAcquisto?: boolean;
@@ -41,6 +42,9 @@ export function ModuloIscrizione({
   /** Senza la propria `Card`: serve quando il modulo vive dentro un'altra scheda, e due
    *  schede annidate si leggono come un errore di impaginazione. */
   senzaGuscio?: boolean;
+  /** Il codice già scritto, quando si arriva dal collegamento di un partner
+   *  (`/partner/<codice>`): chi lo riceve non deve doverlo ricopiare. Resta modificabile. */
+  codicePartnerIniziale?: string;
 }) {
   const [errore, setErrore] = useState<string | null>(null);
   const [inviata, setInviata] = useState(false);
@@ -165,11 +169,14 @@ export function ModuloIscrizione({
                 autoCapitalize="characters"
                 spellCheck={false}
                 maxLength={20}
+                defaultValue={codicePartnerIniziale}
                 className="h-11 text-base font-semibold uppercase tracking-wider"
                 aria-describedby="codicePartner-nota"
               />
               <p id="codicePartner-nota" className="text-xs text-muted-foreground">
-                Se ti ha presentato EvalisDeck un nostro partner, scrivi qui il suo codice. Non cambia il prezzo.
+                {codicePartnerIniziale
+                  ? "Già inserito dal collegamento del partner che ti ha presentato EvalisDeck. Non cambia il prezzo."
+                  : "Se ti ha presentato EvalisDeck un nostro partner, scrivi qui il suo codice. Non cambia il prezzo."}
               </p>
             </div>
           )}

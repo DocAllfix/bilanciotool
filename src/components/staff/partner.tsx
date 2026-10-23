@@ -98,3 +98,36 @@ export function RimuoviAttribuzione({ orgId, studio, codice }: { orgId: string; 
     />
   );
 }
+
+/** Il collegamento da dare al partner, con il comando per copiarlo. */
+export function CollegamentoPartner({ url }: { url: string }) {
+  const [copiato, setCopiato] = useState(false);
+  return (
+    <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2" data-collegamento-partner="">
+      <span className="text-[12px] text-muted-foreground">Collegamento da dare al partner:</span>
+      <input
+        readOnly
+        value={url}
+        aria-label="Collegamento d'iscrizione del partner"
+        className="min-w-0 flex-1 bg-transparent font-mono text-[12.5px] outline-none"
+        onFocus={(e) => e.currentTarget.select()}
+      />
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(url);
+            setCopiato(true);
+            toast.success("Collegamento copiato");
+          } catch {
+            toast.error("Non riesco a copiarlo: selezionalo e copialo a mano");
+          }
+        }}
+      >
+        {copiato ? "Copiato" : "Copia"}
+      </Button>
+    </div>
+  );
+}

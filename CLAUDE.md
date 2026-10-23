@@ -4190,3 +4190,15 @@ uno spazio alto quanto lui (misurato con `ResizeObserver`, cambia con la larghez
 **Regola nata qui:** **un elemento fisso in fondo allo schermo va misurato contro l'ultimo
 comando della pagina, alla larghezza di un portatile.** A 1400×1000 non si vede niente; a
 1280×720 copre il pulsante che conta.
+
+**Il collegamento del partner (2026-10-23)** — `evalisdeck.it/partner/NGR`: l'iscrizione col
+codice già scritto, da dare al partner perché la giri ai clienti. Pagina dinamica nel gruppo
+`(auth)` (legge il registro a ogni apertura: un partner nuovo funziona senza rilascio), fuori
+dagli indici; un collegamento storto lascia iscrivere senza codice e lo dice. **Nessun cookie**:
+il codice vive solo nell'indirizzo, perché ricordarlo nel browser per chi si iscrive più tardi
+sarebbe un dato di provvigione da chiedere nel banner. Il collegamento si copia da
+`/staff/partner`, costruito sull'indirizzo canonico. Gate: typecheck · build · guardia sulle
+pagine statiche · `qa -- partner` **11/11** sul build di produzione, con un'iscrizione vera dal
+collegamento fino alla riga. Anteprima completa saltata **per scelta dichiarata**: nessuna
+migrazione, nessun pagamento, una pagina nuova e un valore iniziale nel campo.
+

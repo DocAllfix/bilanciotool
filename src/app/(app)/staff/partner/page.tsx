@@ -6,7 +6,8 @@ import { elencoPerPartner, type StudioAttribuito } from "@/features/partner";
 import { stripe, stripeConfigurato } from "@/lib/stripe/client";
 import { euro } from "@/lib/calc/compensi/importi";
 import { fmtDataBreve } from "@/lib/format";
-import { AttribuzioneManuale, RimuoviAttribuzione } from "@/components/staff/partner";
+import { AttribuzioneManuale, CollegamentoPartner, RimuoviAttribuzione } from "@/components/staff/partner";
+import { indirizzoCanonico } from "@/lib/indirizzo";
 
 // I PARTNER E LE LORO PROVVIGIONI.
 //
@@ -93,6 +94,10 @@ export default async function PartnerPage() {
                 {incomplete ? " (parziale: Stripe non ha risposto per uno studio)" : ""}
               </p>
             </div>
+
+            {/* Il canonico e non quello corrente: il collegamento va in mano a clienti veri,
+                e uno copiato da un'anteprima smetterebbe di esistere fra un'ora. */}
+            <CollegamentoPartner url={`${indirizzoCanonico().replace(/\/+$/, "")}/partner/${p.codice}`} />
 
             {suoi.length === 0 ? (
               <p className="text-[13px] text-muted-foreground">Nessuno studio attribuito.</p>
