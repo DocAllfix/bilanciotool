@@ -188,6 +188,34 @@ const gtagInPagina = (page) => page.locator("script[data-gtag]").count();
 }
 
 // ============================================================================
+// 1b. Il banner aperto non copre l'ultimo comando della pagina
+// ============================================================================
+// ⚠️ Trovato il 23 ottobre 2026: su un portatile e da telefono «Crea l'account» restava sotto
+// il banner anche scorrendo fino in fondo, e chi si iscriveva doveva prima rispondere ai
+// cookie. Si misura col clic, non con l'occhio: `elementFromPoint` dice chi lo riceve.
+for (const vp of [{ width: 1280, height: 720 }, { width: 360, height: 740 }]) {
+  const ctx = await browser.newContext({ viewport: vp });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/registrati`, { waitUntil: "domcontentloaded" });
+  await banner(page).waitFor({ timeout: 20_000 });
+  await page.waitForTimeout(300);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(300);
+  const coperto = await page.evaluate(() => {
+    const b = document.querySelector('form button[type="submit"]')?.getBoundingClientRect();
+    if (!b) return "pulsante assente";
+    const chi = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+    return chi?.closest("[data-consenso]") ? "coperto dal banner" : null;
+  });
+  nota(
+    `col banner aperto il pulsante d'iscrizione si preme (${vp.width}×${vp.height})`,
+    coperto === null,
+    coperto ?? "libero, in fondo alla pagina",
+  );
+  await ctx.close();
+}
+
+// ============================================================================
 // 2. Chi rifiuta: niente, nemmeno dopo aver navigato
 // ============================================================================
 {

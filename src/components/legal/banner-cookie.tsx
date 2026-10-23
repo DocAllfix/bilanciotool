@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -42,12 +42,38 @@ export function BannerCookie() {
   const [statistiche, setStatistiche] = useState(false);
   const [pubblicita, setPubblicita] = useState(false);
   const id = useId();
+  const riquadro = useRef<HTMLDivElement>(null);
 
   // Il documento pubblicato è un altro registro, ed è la pagina che Chromium trasforma in
   // PDF: un riquadro fisso in fondo finirebbe stampato dentro il documento del cliente.
   const dentroUnDocumento = pathname?.startsWith("/documento/") ?? false;
 
-  if (consenso !== null || dentroUnDocumento) return null;
+  const visibile = consenso === null && !dentroUnDocumento;
+
+  // ⚠️ IL BANNER NON DEVE COPRIRE L'ULTIMA COSA DELLA PAGINA (23 ottobre 2026). È fisso in
+  // fondo allo schermo: su un portatile e da telefono copriva «Crea l'account» anche
+  // scorrendo fino in fondo, perché la pagina finiva prima che il pulsante potesse salire
+  // sopra di lui. Chi si iscriveva doveva rispondere ai cookie per poter premere il pulsante,
+  // e il modulo d'iscrizione, diventato più alto col codice partner, l'ha fatto vedere. Finché
+  // il banner è aperto la pagina riceve in fondo uno spazio alto quanto lui, misurato e non
+  // indovinato: cambia con la larghezza e con «Personalizza» aperto.
+  useEffect(() => {
+    const el = riquadro.current;
+    if (!visibile || !el) return;
+    const prima = document.body.style.paddingBottom;
+    const misura = () => {
+      document.body.style.paddingBottom = `${Math.ceil(el.getBoundingClientRect().height) + 24}px`;
+    };
+    misura();
+    const osserva = new ResizeObserver(misura);
+    osserva.observe(el);
+    return () => {
+      osserva.disconnect();
+      document.body.style.paddingBottom = prima;
+    };
+  }, [visibile]);
+
+  if (!visibile) return null;
 
   // ⚠️ `data-consenso` e NON `data-modale`, ed è una scelta pagata con un rosso.
   //
@@ -75,6 +101,7 @@ export function BannerCookie() {
       aria-live="polite"
       aria-label="Consenso ai cookie di misurazione"
       data-consenso=""
+      ref={riquadro}
       className="fixed inset-x-3 bottom-3 z-[10001] mx-auto max-w-3xl rounded-xl border bg-card p-4 shadow-lg print:hidden sm:inset-x-5 sm:bottom-5 sm:p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
