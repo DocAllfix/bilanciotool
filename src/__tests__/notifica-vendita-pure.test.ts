@@ -24,6 +24,12 @@ const stripeFinto = {
 };
 vi.mock("@/lib/stripe/client", () => ({ stripe: () => stripeFinto }));
 
+// Il partner dello studio si legge dal nostro database: qui lo si simula, così la mail del
+// percorso intero si prova nei tre stati (con partner, senza, lettura fallita).
+const partnerFinto = { attribuzioneDelloStudio: vi.fn() };
+vi.mock("@/features/partner", () => partnerFinto);
+vi.mock("@/features/billing/provisioning", () => ({ organizzazioneDelCliente: async () => "org_1" }));
+
 const spedite: { to: string; subject: string; html: string }[] = [];
 beforeAll(() => {
   vi.stubGlobal("fetch", async (_u: string, init: { body: string }) => {
@@ -158,6 +164,7 @@ describe("il percorso intero, con Stripe simulato e la posta intercettata", () =
     stripeFinto.invoices.retrieve.mockResolvedValue(fattura());
     stripeFinto.checkout.sessions.list.mockResolvedValue({ data: [sessione({ sdi: "M5UXCR1" })] });
     stripeFinto.customers.retrieve.mockResolvedValue({ deleted: false, metadata: {} });
+    partnerFinto.attribuzioneDelloStudio.mockResolvedValue(null);
   });
   afterEach(() => {
     if (precedente === undefined) delete process.env.VENDITE_NOTIFICHE_A;
@@ -180,13 +187,46 @@ describe("il percorso intero, con Stripe simulato e la posta intercettata", () =
 
   it("un pagamento vero manda UNA mail, all'indirizzo configurato, col codice destinatario", async () => {
     process.env.VENDITE_NOTIFICHE_A = "vendite@esempio.it";
-    expect(await notificaVendita(evento)).toBe("mail di vendita inviata");
+    expect(await notificaVendita(evento)).toBe("mail di vendita inviata a 1");
     expect(spedite).toHaveLength(1);
     expect(spedite[0].to).toBe("vendite@esempio.it");
     expect(spedite[0].html).toContain("M5UXCR1");
     expect(spedite[0].html).toContain("427,00 €");
     // L'abbonamento si trova nel posto della versione nuova delle API, e da lì la sessione.
     expect(stripeFinto.checkout.sessions.list).toHaveBeenCalledWith({ subscription: "sub_1", limit: 1 });
+  });
+
+  it("la mail parte a OGNI indirizzo dell'elenco, una per destinatario", async () => {
+    process.env.VENDITE_NOTIFICHE_A = "vendite@esempio.it, socio@esempio.it";
+    expect(await notificaVendita(evento)).toBe("mail di vendita inviata a 2");
+    expect(spedite.map((m) => m.to)).toEqual(["vendite@esempio.it", "socio@esempio.it"]);
+  });
+
+  it("⚠️ la mail dice il partner dello studio, letto dal database", async () => {
+    process.env.VENDITE_NOTIFICHE_A = "vendite@esempio.it";
+    partnerFinto.attribuzioneDelloStudio.mockResolvedValue({
+      organizationId: "org_1",
+      codice: "NGR",
+      nome: "NGR",
+      origine: "registrazione",
+      attribuitaIl: new Date("2026-10-23T08:00:00Z"),
+    });
+    await notificaVendita(evento);
+    expect(partnerFinto.attribuzioneDelloStudio).toHaveBeenCalledWith("org_1");
+    expect(spedite[0].html).toContain("<strong>Partner:</strong> <b>NGR (scritto all&#39;iscrizione il 23/10/2026)</b>");
+  });
+
+  it("senza partner dice «nessuno»; se la lettura fallisce dice «non verificato», non «nessuno»", async () => {
+    process.env.VENDITE_NOTIFICHE_A = "vendite@esempio.it";
+    await notificaVendita(evento);
+    expect(spedite[0].html).toContain("<strong>Partner:</strong> nessuno");
+
+    spedite.length = 0;
+    partnerFinto.attribuzioneDelloStudio.mockRejectedValue(new Error("database giù"));
+    const errore = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(await notificaVendita(evento)).toBe("mail di vendita inviata a 1");
+    errore.mockRestore();
+    expect(spedite[0].html).toContain("Non verificato");
   });
 
   it("⚠️ la ragione sociale la scrive chi paga: nell'HTML arriva neutralizzata", async () => {

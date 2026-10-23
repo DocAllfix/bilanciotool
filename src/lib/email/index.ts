@@ -404,6 +404,8 @@ export async function inviaNotificaVendita(to: string, v: Vendita): Promise<{ se
     heading: `${v.tipo} — ${v.totale}`,
     body: [
       `Pagamento ricevuto il <b>${esc(v.pagataIl)}</b>${v.numero ? `, fattura Stripe <b>${esc(v.numero)}</b>` : ""}.`,
+      // Il partner in evidenza, subito sotto: su questa riga si calcola una provvigione.
+      `<strong>Partner:</strong> ${v.partner === "Nessuno" ? "nessuno" : `<b>${esc(v.partner)}</b>`}`,
       [
         riga("Ragione sociale", v.ragioneSociale),
         riga("Partita IVA", v.partitaIva),

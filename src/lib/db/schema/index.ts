@@ -27,3 +27,4 @@ export * from "./nis2";
 export * from "./gdpr";
 export * from "./pas";
 export * from "./assistenza";
+export * from "./partner";

@@ -116,6 +116,17 @@ export async function creaSessioneCheckout(opts: {
 
   const base = indirizzoCorrente().replace(/\/+$/, "");
   const cliente = await clienteDelloStudio(opts.orgId, opts.email);
+  // Il partner dello studio, se c'è, finisce nei metadati di Stripe: così nel cruscotto si
+  // possono filtrare gli abbonamenti di un partner. La FONTE resta il nostro database
+  // (`attribuzione_partner`): un'attribuzione fatta a mano dopo l'acquisto vale lo stesso,
+  // e la mail di vendita legge da lì.
+  const { partnerDelloStudio } = await import("@/features/partner");
+  const codicePartner = await partnerDelloStudio(opts.userId, opts.orgId);
+  const metadati = {
+    organizationId: opts.orgId,
+    piano: opts.piano,
+    ...(codicePartner ? { partner: codicePartner } : {}),
+  };
 
   const righe: { price: string; quantity: number }[] = [
     { price: await idPrezzo(prezzo.lookup), quantity: 1 },
@@ -141,9 +152,9 @@ export async function creaSessioneCheckout(opts: {
     // l'abbonamento. Il webhook di rinnovo, fra un anno, vedrà solo il secondo.
     client_reference_id: opts.orgId,
     subscription_data: {
-      metadata: { organizationId: opts.orgId, piano: opts.piano },
+      metadata: metadati,
     },
-    metadata: { organizationId: opts.orgId, piano: opts.piano },
+    metadata: metadati,
     // Dati fiscali italiani raccolti ADESSO, non dopo. Senza partita IVA e codice
     // destinatario non si emette una fattura elettronica, e rincorrere un cliente che
     // ha già pagato per farsi dare un dato è il modo peggiore di iniziare un rapporto.

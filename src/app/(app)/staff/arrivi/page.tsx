@@ -54,7 +54,10 @@ export default async function ArriviPage() {
           <Link href="/staff/assistenza" className="hover:underline">
             Coda assistenza
           </Link>{" "}
-          · Arrivi da campagna
+          · Arrivi da campagna ·{" "}
+          <Link href="/staff/partner" className="hover:underline">
+            Partner
+          </Link>
         </p>
         <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight">Arrivi da campagna</h1>
         <p className="mt-1.5 max-w-prose text-sm text-muted-foreground">

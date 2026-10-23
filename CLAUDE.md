@@ -4105,3 +4105,85 @@ build; `AGGIORNATO_AL` alla data del rilascio; poi la fusione.
 - **Un collaudo che arriva «da un annuncio» non gira così sul sito vero**: un `gclid` finto
   finirebbe fra i clic di Google Ads e le `utm_*` fra i nostri conteggi. In produzione
   `verifica-consenso` parte dalla home nuda.
+
+**Il codice partner (2026-10-23)**
+
+Richiesta del committente: un codice «sconto che non sconta» (`NGR`) per attribuire i nuovi
+clienti a un partner che prende una provvigione.
+
+⚠️ **Un codice sconto a zero su Stripe NON esiste**, misurato sulla sandbox: lo 0% e gli 0 €
+vengono rifiutati («almeno 0,01» e «almeno 1 centesimo»). Un finto sconto da un centesimo
+finirebbe sulla fattura. Quindi il codice **non** sta alla cassa: lo si scrive
+all'**iscrizione** (decisione del committente), in un campo facoltativo ma in evidenza, e si
+lega allo studio. Da lì segue ogni pagamento, rinnovi compresi.
+
+- **Migrazione `0071`**: `partner` (registro dei codici, NGR seminato, CHECK sul formato) e
+  `attribuzione_partner` (una riga per studio, origine `registrazione` o `staff`, chi e
+  quando). Policy **non** uniformi: lo studio legge la propria riga e la crea una volta alla
+  nascita, ma **non può cambiarla né toglierla** — su quella riga si paga una provvigione.
+  Cambio e rimozione sono dello staff. Provato assumendo `app_rls` a mano.
+- **Iscrizione**: l'aggancio `before` di Better Auth verifica il codice PRIMA che l'account
+  esista; un codice sconosciuto ferma l'iscrizione con un messaggio, invece di diventare
+  un'attribuzione persa in silenzio. Minuscole e spazi si normalizzano, un formato
+  impossibile si rifiuta. Il campo non c'è nella pagina d'invito.
+- **Cassa**: `partner: NGR` nei metadati della sessione e dell'abbonamento Stripe, per
+  filtrare nel cruscotto. La FONTE resta il nostro database.
+- **Mail di vendita**: riga «Partner» letta dal database (vale anche per un'attribuzione fatta
+  a mano dopo l'acquisto), con tre stati: partner, «nessuno», «non verificato» se la lettura
+  fallisce. `VENDITE_NOTIFICHE_A` accetta ora un elenco separato da virgole, una mail per
+  destinatario.
+- **`/staff/partner`**: studi per partner, fatture pagate lette da Stripe (primo anno e
+  rinnovi, imponibile), attribuzione e rimozione a mano col registro attività.
+- Privacy: il codice partner fra i dati dell'account, e ciò che si comunica al partner (nome
+  dello studio e importi pagati). `AGGIORNATO_AL` = `2026-10-23`, **da portare alla data del
+  rilascio**.
+
+**Regole nate qui:**
+- **Prima di promettere una funzione di un servizio esterno, la si chiede al servizio.** «Un
+  coupon a zero» sembrava ovvio; la sandbox l'ha smentito in due chiamate che non creano niente.
+- **L'`afterAll` dentro un `describe` pulisce solo quel blocco.** Gli studi dei test sulla
+  policy restavano nel database: li ha mostrati la foto della pagina staff, non un test.
+- **La password dei collaudi si genera a ogni esecuzione** (`comune-credenziali.mjs`): un conto
+  creato da un collaudo non si riapre da uno script lanciato dopo.
+
+Gate: typecheck · build (`/registrati` e `/attiva` statiche) · **2089 test su 206 file in
+entrambe le modalità**, `RLS_FORCE_ROLE=app_rls` compresa · `partner.db` 8/8 con la policy sotto
+`app_rls`, `partner-pure` e `notifica-vendita-pure` coi tre stati, `partner-cassa.db` 2/2 contro
+la sandbox · tre controprove rosse sull'asserzione giusta (senza controllo all'iscrizione, con
+«non verificato» detto «nessuno», senza partner nei metadati) · `qa -- partner` **9/9** ·
+regressioni `tutto-pubblico` 37/37, `attivazione` 10/10, `invito` 14/14, `benvenuto` 12/12,
+`legale` 26/26, `checkout` 7/7, `impostazioni` 14/14, `tutto-attivo` 31/31 · modulo e pagina
+staff fotografati in chiaro, scuro e da telefono, sfondamento 0.
+
+⚠️ **Per il rilascio, in quest'ordine**: migrazione `0071` sulla produzione PRIMA del codice
+(l'iscrizione legge `partner`: senza la tabella nessuno riuscirebbe più a iscriversi);
+`VENDITE_NOTIFICHE_A` in produzione con l'indirizzo in più; `AGGIORNATO_AL`; fusione.
+
+⚠️ **Un difetto vero trovato dall'anteprima, ed era mio**: col riquadro del codice il modulo è
+diventato più alto, e su un portatile (1280×720) e da telefono il **banner dei cookie copriva
+«Crea l'account» anche scorrendo fino in fondo**: chi si iscriveva doveva prima rispondere ai
+cookie. Sei collaudi sono caduti sullo stesso clic, quello dell'«altro studio». In locale, a
+1400×1000, il pulsante restava libero. Ora, finché il banner è aperto, la pagina riceve in fondo
+uno spazio alto quanto lui (misurato con `ResizeObserver`, cambia con la larghezza e con
+«Personalizza»). Controllo nuovo in `verifica-consenso`, visto rosso sul build di prima.
+
+✅ **In produzione dal 23 ottobre 2026**, col metodo:
+- anteprima `anteprima/codice-partner`: primo build annullato, sette variabili legate al ramo,
+  build creato dieci secondi DOPO le variabili (verificato all'API). Precedenza misurata:
+  `partner` 9/9 dall'anteprima con le righe nello sviluppo, e in produzione 0 utenti di
+  collaudo. Giro completo: sei rossi tutti dal pulsante coperto; corretto, e sull'anteprima
+  nuova `consenso` 33/33, `partner` 9/9, `agenda` 16/16, `scheda-cliente` 16/16,
+  `sgesg-percorso` 20/20, `sgesg-schede` 14/14, `documenti-qas` verde, `compensi` 12/12 da solo
+  (5 rossi per scadenze mentre girava ancora il giro precedente: contesa);
+- produzione: stato chiesto in sola lettura (mancava solo la `0071`), guardia vista
+  **rifiutarsi**, migrazione `0071` (72/72, 203 tabelle, 0 senza RLS, dati vivi invariati),
+  provata **come `app_rls`** in una transazione annullata: NGR leggibile, lo studio crea la
+  propria riga ma non la sposta né la toglie (0 e 0), lo staff sì (1), un codice inesistente
+  respinto dalla chiave esterna, 0 righe dopo;
+- `VENDITE_NOTIFICHE_A`: aggiunto dilonardoa28@gmail.com accanto all'indirizzo del committente,
+  letto e riscritto via API senza stamparlo, verificato di sola produzione;
+- fusione su `main` come un commit solo.
+
+**Regola nata qui:** **un elemento fisso in fondo allo schermo va misurato contro l'ultimo
+comando della pagina, alla larghezza di un portatile.** A 1400×1000 non si vede niente; a
+1280×720 copre il pulsante che conta.

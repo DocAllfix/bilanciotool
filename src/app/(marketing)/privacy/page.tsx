@@ -62,6 +62,10 @@ export default function PrivacyPage() {
           <li>
             <strong>Dati di registrazione e di account</strong>: nome e cognome, indirizzo email, password (conservata
             esclusivamente sotto forma di impronta crittografica, mai in chiaro), nome dello studio, ruolo assegnato.
+            Se all&apos;iscrizione indichi un <strong>codice partner</strong>, lo conserviamo legato al tuo studio per
+            riconoscere al partner che ti ha presentato il servizio la provvigione sui pagamenti dell&apos;abbonamento. Il
+            partner non ha accesso alla piattaforma: gli comunichiamo soltanto ciò che serve a calcolare la provvigione,
+            cioè il nome dello studio e gli importi pagati.
           </li>
           <li>
             <strong>Dati di utilizzo del servizio</strong>: registro delle operazioni compiute sui dati (chi ha fatto

@@ -29,6 +29,10 @@ export default async function CodaPage() {
           Coda assistenza ·{" "}
           <Link href="/staff/arrivi" className="hover:underline">
             Arrivi da campagna
+          </Link>{" "}
+          ·{" "}
+          <Link href="/staff/partner" className="hover:underline">
+            Partner
           </Link>
         </p>
         <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight">Coda assistenza</h1>
