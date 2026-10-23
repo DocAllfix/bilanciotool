@@ -230,6 +230,8 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   // la vede tutto lo studio.
   // Assistenza. ⚠️ Nessuna etichetta riporta l'OGGETTO: la richiesta la vede solo chi l'ha
   // scritta, mentre questa cronologia la vede tutto lo studio.
+  "partner.attribuisci": "Studio attribuito a un partner",
+  "partner.rimuovi": "Partner tolto dallo studio",
   "assistenza.ticket.create": "Richiesta di assistenza inviata",
   "assistenza.ticket.reply": "Risposta in una richiesta di assistenza",
   "assistenza.ticket.staff_reply": "L'assistenza ha risposto a una richiesta",

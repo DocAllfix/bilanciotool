@@ -4105,3 +4105,56 @@ build; `AGGIORNATO_AL` alla data del rilascio; poi la fusione.
 - **Un collaudo che arriva «da un annuncio» non gira così sul sito vero**: un `gclid` finto
   finirebbe fra i clic di Google Ads e le `utm_*` fra i nostri conteggi. In produzione
   `verifica-consenso` parte dalla home nuda.
+
+**Il codice partner (2026-10-23) — ramo `lavoro/codice-partner`, NON in produzione**
+
+Richiesta del committente: un codice «sconto che non sconta» (`NGR`) per attribuire i nuovi
+clienti a un partner che prende una provvigione.
+
+⚠️ **Un codice sconto a zero su Stripe NON esiste**, misurato sulla sandbox: lo 0% e gli 0 €
+vengono rifiutati («almeno 0,01» e «almeno 1 centesimo»). Un finto sconto da un centesimo
+finirebbe sulla fattura. Quindi il codice **non** sta alla cassa: lo si scrive
+all'**iscrizione** (decisione del committente), in un campo facoltativo ma in evidenza, e si
+lega allo studio. Da lì segue ogni pagamento, rinnovi compresi.
+
+- **Migrazione `0071`**: `partner` (registro dei codici, NGR seminato, CHECK sul formato) e
+  `attribuzione_partner` (una riga per studio, origine `registrazione` o `staff`, chi e
+  quando). Policy **non** uniformi: lo studio legge la propria riga e la crea una volta alla
+  nascita, ma **non può cambiarla né toglierla** — su quella riga si paga una provvigione.
+  Cambio e rimozione sono dello staff. Provato assumendo `app_rls` a mano.
+- **Iscrizione**: l'aggancio `before` di Better Auth verifica il codice PRIMA che l'account
+  esista; un codice sconosciuto ferma l'iscrizione con un messaggio, invece di diventare
+  un'attribuzione persa in silenzio. Minuscole e spazi si normalizzano, un formato
+  impossibile si rifiuta. Il campo non c'è nella pagina d'invito.
+- **Cassa**: `partner: NGR` nei metadati della sessione e dell'abbonamento Stripe, per
+  filtrare nel cruscotto. La FONTE resta il nostro database.
+- **Mail di vendita**: riga «Partner» letta dal database (vale anche per un'attribuzione fatta
+  a mano dopo l'acquisto), con tre stati: partner, «nessuno», «non verificato» se la lettura
+  fallisce. `VENDITE_NOTIFICHE_A` accetta ora un elenco separato da virgole, una mail per
+  destinatario.
+- **`/staff/partner`**: studi per partner, fatture pagate lette da Stripe (primo anno e
+  rinnovi, imponibile), attribuzione e rimozione a mano col registro attività.
+- Privacy: il codice partner fra i dati dell'account, e ciò che si comunica al partner (nome
+  dello studio e importi pagati). `AGGIORNATO_AL` = `2026-10-23`, **da portare alla data del
+  rilascio**.
+
+**Regole nate qui:**
+- **Prima di promettere una funzione di un servizio esterno, la si chiede al servizio.** «Un
+  coupon a zero» sembrava ovvio; la sandbox l'ha smentito in due chiamate che non creano niente.
+- **L'`afterAll` dentro un `describe` pulisce solo quel blocco.** Gli studi dei test sulla
+  policy restavano nel database: li ha mostrati la foto della pagina staff, non un test.
+- **La password dei collaudi si genera a ogni esecuzione** (`comune-credenziali.mjs`): un conto
+  creato da un collaudo non si riapre da uno script lanciato dopo.
+
+Gate: typecheck · build (`/registrati` e `/attiva` statiche) · **2089 test su 206 file in
+entrambe le modalità**, `RLS_FORCE_ROLE=app_rls` compresa · `partner.db` 8/8 con la policy sotto
+`app_rls`, `partner-pure` e `notifica-vendita-pure` coi tre stati, `partner-cassa.db` 2/2 contro
+la sandbox · tre controprove rosse sull'asserzione giusta (senza controllo all'iscrizione, con
+«non verificato» detto «nessuno», senza partner nei metadati) · `qa -- partner` **9/9** ·
+regressioni `tutto-pubblico` 37/37, `attivazione` 10/10, `invito` 14/14, `benvenuto` 12/12,
+`legale` 26/26, `checkout` 7/7, `impostazioni` 14/14, `tutto-attivo` 31/31 · modulo e pagina
+staff fotografati in chiaro, scuro e da telefono, sfondamento 0.
+
+⚠️ **Per il rilascio, in quest'ordine**: migrazione `0071` sulla produzione PRIMA del codice
+(l'iscrizione legge `partner`: senza la tabella nessuno riuscirebbe più a iscriversi);
+`VENDITE_NOTIFICHE_A` in produzione con l'indirizzo in più; `AGGIORNATO_AL`; fusione.

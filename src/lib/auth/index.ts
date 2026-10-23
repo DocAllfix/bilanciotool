@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
-import { createAuthMiddleware } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { riconciliaPostiDopoAccettazione, verificaAccessiDisponibili } from "@/features/auth/limite-accessi";
 import { sql } from "drizzle-orm";
@@ -11,6 +11,32 @@ import { env } from "@/lib/env";
 import { sendVerificationEmail, sendResetPasswordEmail, sendOrgInvitationEmail, sendAccountEsistenteEmail } from "@/lib/email";
 import { createStudioOrg, firstMembershipOrgId, invitoDellaRegistrazione } from "@/features/auth/orgs";
 import { indirizzoCorrente } from "@/lib/indirizzo";
+import { attribuisciAllaRegistrazione, CodicePartnerSconosciuto, verificaCodiceIscrizione } from "@/features/partner";
+
+/**
+ * Il codice partner scritto all'iscrizione si verifica PRIMA che l'account esista.
+ *
+ * ⚠️ Un codice sconosciuto ferma l'iscrizione con un messaggio, invece di essere ignorato:
+ * su quel codice si paga una provvigione, e un «NRG» scritto per sbaglio diventerebbe
+ * un'attribuzione persa senza che nessuno lo sappia. Chi non ha un codice lascia il campo
+ * vuoto, e quello non è un errore.
+ *
+ * Non rivela niente sugli account: la risposta dipende solo dal codice, non dall'indirizzo.
+ */
+async function rifiutaCodicePartnerSconosciuto(ctx: {
+  path?: string;
+  body?: { codicePartner?: unknown };
+}): Promise<void> {
+  if (ctx.path !== "/sign-up/email") return;
+  try {
+    await verificaCodiceIscrizione(ctx.body?.codicePartner);
+  } catch (e) {
+    if (e instanceof CodicePartnerSconosciuto) {
+      throw new APIError("BAD_REQUEST", { message: e.message, code: "CODICE_PARTNER_SCONOSCIUTO" });
+    }
+    throw e;
+  }
+}
 
 /**
  * Chi prova a iscriversi con un indirizzo che ha già un account riceve un'email.
@@ -145,9 +171,18 @@ export const auth = betterAuth({
           // Chi si registra DAL LINK del proprio invito non riceve uno studio proprio:
           // entra in quello che lo invita. Solo dal link, non per il solo fatto di avere un
           // invito in attesa — vedi `invitoDellaRegistrazione`.
-          const corpo = (context as { body?: { callbackURL?: unknown } } | null | undefined)?.body;
+          const corpo = (context as { body?: { callbackURL?: unknown; codicePartner?: unknown } } | null | undefined)?.body;
           if (await invitoDellaRegistrazione(user.email, corpo?.callbackURL)) return;
           const orgId = await createStudioOrg(user.id, user.name ?? "");
+          // Il codice partner, già verificato dall'aggancio `before`, si lega allo studio che
+          // è appena nato. Non blocca l'iscrizione se fallisce: lo staff può attribuirlo a
+          // mano, e l'errore resta nei log col codice e lo studio.
+          try {
+            const p = await verificaCodiceIscrizione(corpo?.codicePartner);
+            if (p) await attribuisciAllaRegistrazione(user.id, orgId, p.codice);
+          } catch (e) {
+            console.error("[partner] attribuzione all'iscrizione non registrata per", orgId, corpo?.codicePartner, e);
+          }
           try {
             const { seedDemoCompany } = await import("@/features/demo/seed-demo-org");
             await seedDemoCompany(user.id, orgId);
@@ -171,6 +206,9 @@ export const auth = betterAuth({
   // degli inviti sono sue e non passano da nessuna nostra server action.
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
+      // Per primo: un codice partner sbagliato ferma l'iscrizione prima di tutto il resto,
+      // compreso l'avviso «hai già un account», che altrimenti partirebbe per niente.
+      await rifiutaCodicePartnerSconosciuto(ctx as never);
       await verificaAccessiDisponibili(ctx as never);
       await avvisaSeHaGiaUnAccount(ctx as never);
     }),

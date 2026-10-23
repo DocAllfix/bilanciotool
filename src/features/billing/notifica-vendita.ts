@@ -74,7 +74,41 @@ export type Vendita = {
   sdi: string | null;
   urlFattura: string | null;
   urlPannello: string;
+  /** Il partner dello studio, già scritto per la mail: vedi `testoPartner`. */
+  partner: string;
 };
+
+/**
+ * Il partner dello studio che ha pagato, come lo legge la mail.
+ *
+ * ⚠️ Tre stati e non due: «nessun partner» e «non sono riuscito a leggerlo» sono cose
+ * diverse, e scrivere «nessuno» quando la lettura è fallita farebbe perdere una provvigione
+ * senza che nessuno se ne accorga. Il valore predefinito è il secondo, apposta: chi
+ * dimenticasse di passarlo otterrebbe un avviso, non una bugia.
+ */
+export type PartnerVendita =
+  | { codice: string; nome: string; origine: "registrazione" | "staff"; dal: Date }
+  | "nessuno"
+  | "non-verificato";
+
+export function testoPartner(p: PartnerVendita): string {
+  if (p === "nessuno") return "Nessuno";
+  if (p === "non-verificato") {
+    return "Non verificato: l'attribuzione non si è potuta leggere. Controlla la pagina Partner dello staff.";
+  }
+  const [a, m, g] = giornoItaliano(p.dal).split("-");
+  const chi = p.nome && p.nome !== p.codice ? `${p.codice} — ${p.nome}` : p.codice;
+  const come = p.origine === "registrazione" ? "scritto all'iscrizione" : "attribuito dallo staff";
+  return `${chi} (${come} il ${g}/${m}/${a})`;
+}
+
+/** Gli indirizzi a cui mandare la mail: l'elenco è separato da virgole, i vuoti si scartano. */
+export function destinatariVendita(grezzo: string | undefined): string[] {
+  return (grezzo ?? "")
+    .split(",")
+    .map((x) => x.trim())
+    .filter((x) => x.includes("@"));
+}
 
 const TIPI: Record<string, string> = {
   subscription_create: "Primo acquisto",
@@ -114,6 +148,7 @@ export function componiVendita(
   fattura: Stripe.Invoice,
   sessione: Stripe.Checkout.Session | null,
   correzioni: Record<string, string> | null,
+  partner: PartnerVendita = "non-verificato",
 ): Vendita {
   const eur = (c: number) => `${euro(c)} €`;
   // ⚠️ Se Stripe non ha calcolato imposte non si scrive «IVA 0,00 €»: chi fattura lo
@@ -144,6 +179,7 @@ export function componiVendita(
     sdi: testo(correzioni?.sdi) ?? campo(sessione, "sdi"),
     urlFattura: fattura.hosted_invoice_url ?? null,
     urlPannello: `https://dashboard.stripe.com/invoices/${fattura.id}`,
+    partner: testoPartner(partner),
   };
 }
 
@@ -153,8 +189,8 @@ export function componiVendita(
  */
 export async function notificaVendita(evento: Stripe.Event): Promise<string> {
   if (evento.type !== "invoice.paid") return "non è una fattura pagata";
-  const destinatario = process.env.VENDITE_NOTIFICHE_A?.trim();
-  if (!destinatario) return "nessun destinatario configurato";
+  const destinatari = destinatariVendita(process.env.VENDITE_NOTIFICHE_A);
+  if (!destinatari.length) return "nessun destinatario configurato";
 
   const idFattura = (evento.data.object as { id?: string }).id;
   if (!idFattura) return "evento senza fattura";
@@ -178,8 +214,33 @@ export async function notificaVendita(evento: Stripe.Event): Promise<string> {
     const cliente = idCliente ? await stripe().customers.retrieve(idCliente) : null;
     const correzioni = cliente && !cliente.deleted ? (cliente.metadata ?? null) : null;
 
-    const { sent } = await inviaNotificaVendita(destinatario, componiVendita(fattura, sessione, correzioni));
-    return sent ? "mail di vendita inviata" : "mail di vendita NON inviata";
+    // Il partner si legge dal NOSTRO database, non dai metadati dell'abbonamento: un
+    // partner attribuito a mano dopo l'acquisto deve comparire anche sui rinnovi. Lo studio
+    // arriva dai metadati che la cassa scrive sull'abbonamento, o dal cliente Stripe.
+    const metadati = fattura.parent?.subscription_details?.metadata ?? null;
+    let partner: PartnerVendita = "non-verificato";
+    try {
+      const orgId =
+        (typeof metadati?.organizationId === "string" ? metadati.organizationId : null) ??
+        (idCliente ? await (await import("./provisioning")).organizzazioneDelCliente(idCliente) : null);
+      if (orgId) {
+        const a = await (await import("@/features/partner")).attribuzioneDelloStudio(orgId);
+        partner = a ? { codice: a.codice, nome: a.nome, origine: a.origine, dal: a.attribuitaIl } : "nessuno";
+      }
+    } catch (e) {
+      console.error("[billing] partner non letto per la fattura", idFattura, e);
+    }
+
+    const vendita = componiVendita(fattura, sessione, correzioni, partner);
+    // Una mail per destinatario: se un indirizzo rimbalza, gli altri la ricevono lo stesso.
+    let inviate = 0;
+    for (const a of destinatari) {
+      const { sent } = await inviaNotificaVendita(a, vendita);
+      if (sent) inviate++;
+    }
+    return inviate === destinatari.length
+      ? `mail di vendita inviata a ${inviate}`
+      : `mail di vendita inviata a ${inviate} su ${destinatari.length}`;
   } catch (e) {
     console.error("[billing] mail di vendita fallita per", idFattura, e);
     return "mail di vendita fallita";

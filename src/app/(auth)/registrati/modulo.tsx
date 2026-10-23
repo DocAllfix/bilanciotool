@@ -51,11 +51,15 @@ export function ModuloIscrizione({
     setErrore(null);
     setInCorso(true);
     const form = new FormData(e.currentTarget);
+    const codicePartner = String(form.get("codicePartner") ?? "").trim();
     const { error } = await authClient.signUp.email({
       name: String(form.get("nome")),
       email: String(form.get("email")),
       password: String(form.get("password")),
       callbackURL: destinazione,
+      // Il codice partner viaggia nel corpo dell'iscrizione: lo verifica e lo lega allo
+      // studio il server (`src/lib/auth/index.ts`). Vuoto, non si manda nemmeno.
+      ...(codicePartner && !emailFissa ? { codicePartner } : {}),
     });
     setInCorso(false);
     if (error) {
@@ -145,6 +149,30 @@ export function ModuloIscrizione({
             <Input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
             <p className="text-xs text-muted-foreground">Almeno 8 caratteri.</p>
           </div>
+          {/* Il codice partner, facoltativo ma in evidenza: chi è stato presentato da un
+              partner deve vederlo senza cercarlo, altrimenti la provvigione si perde. Non
+              compare nella pagina d'invito: chi è invitato entra in uno studio che esiste già,
+              e il partner, se c'è, ce l'ha quello studio. */}
+          {!emailFissa && (
+            <div className="space-y-1.5 rounded-lg border border-primary/30 bg-primary/5 p-3" data-codice-partner="">
+              <Label htmlFor="codicePartner" className="text-[15px] font-semibold">
+                Codice partner <span className="font-normal text-muted-foreground">(facoltativo)</span>
+              </Label>
+              <Input
+                id="codicePartner"
+                name="codicePartner"
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                maxLength={20}
+                className="h-11 text-base font-semibold uppercase tracking-wider"
+                aria-describedby="codicePartner-nota"
+              />
+              <p id="codicePartner-nota" className="text-xs text-muted-foreground">
+                Se ti ha presentato EvalisDeck un nostro partner, scrivi qui il suo codice. Non cambia il prezzo.
+              </p>
+            </div>
+          )}
           {errore && (
             <p role="alert" className="text-sm text-destructive">
               {errore}

@@ -32,7 +32,7 @@ import { attraversaProtezione } from "./comune-collaudo.mjs";// Registrazione pe
 // e' il riferimento noto, e serve a distinguere «un ambiente nostro» da «quello vero».
 const RIFERIMENTO_PRODUZIONE = "hahtljrexrngtfsplbsz";
 
-export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
+export async function registraEEntra(page, sql, { base, nome, email, pwd, codicePartner }) {
   // Le anteprime di Vercel sono protette: senza segreto la registrazione
   // atterrerebbe sulla pagina di accesso di Vercel invece che sul prodotto.
   await attraversaProtezione(page);
@@ -68,6 +68,8 @@ export async function registraEEntra(page, sql, { base, nome, email, pwd }) {
   await page.fill("#nome", nome);
   await page.fill("#email", email);
   await page.fill("#password", pwd);
+  // Facoltativo come nel modulo: chi non lo passa si iscrive senza partner.
+  if (codicePartner) await page.fill("#codicePartner", codicePartner);
   await page.click('button[type="submit"]');
 
   // La schermata «controlla la posta» conferma che la registrazione è riuscita: senza
