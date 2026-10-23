@@ -4182,7 +4182,10 @@ uno spazio alto quanto lui (misurato con `ResizeObserver`, cambia con la larghez
   respinto dalla chiave esterna, 0 righe dopo;
 - `VENDITE_NOTIFICHE_A`: aggiunto dilonardoa28@gmail.com accanto all'indirizzo del committente,
   letto e riscritto via API senza stamparlo, verificato di sola produzione;
-- fusione su `main` come un commit solo.
+- fusione su `main` come un commit solo. Dopo, sul sito vero e in sola lettura: il campo su
+  `/registrati` e `/attiva`, `tutto-pubblico` 37/37, `legale` 26/26, `sitemap` 9/9, `consenso`
+  33/33 (al secondo giro: il primo ha dato due rossi sulla revoca subito dopo tre collaudi dallo
+  stesso indirizzo, cioè il freno di Better Auth; a finestra scaduta verde).
 
 **Regola nata qui:** **un elemento fisso in fondo allo schermo va misurato contro l'ultimo
 comando della pagina, alla larghezza di un portatile.** A 1400×1000 non si vede niente; a
