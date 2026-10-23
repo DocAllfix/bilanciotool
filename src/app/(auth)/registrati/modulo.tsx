@@ -175,8 +175,8 @@ export function ModuloIscrizione({
               />
               <p id="codicePartner-nota" className="text-xs text-muted-foreground">
                 {codicePartnerIniziale
-                  ? "Già inserito dal collegamento del partner che ti ha presentato EvalisDeck. Non cambia il prezzo."
-                  : "Se ti ha presentato EvalisDeck un nostro partner, scrivi qui il suo codice. Non cambia il prezzo."}
+                  ? "Già inserito dal collegamento del partner che ti ha presentato EvalisDeck."
+                  : "Se ti ha presentato EvalisDeck un nostro partner, scrivi qui il suo codice."}
               </p>
             </div>
           )}
