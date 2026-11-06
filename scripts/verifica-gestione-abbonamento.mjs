@@ -51,6 +51,20 @@ const { agisci, riepilogo } = contatore(pagina, sonda);
 let orgId = null;
 let clienteId = null;
 let subId = null;
+let orologioId = null;
+
+/** Sposta il tempo di Stripe. Lo Stripe di prova elabora il salto in modo asincrono. */
+async function spostaOrologio(secondi) {
+  const c = await stripe.testHelpers.testClocks.retrieve(orologioId);
+  await stripe.testHelpers.testClocks.advance(orologioId, { frozen_time: c.frozen_time + secondi });
+  const scade = Date.now() + 300_000;
+  for (;;) {
+    const s = await stripe.testHelpers.testClocks.retrieve(orologioId);
+    if (s.status === "ready") return;
+    if (Date.now() > scade) throw new Error(`l'orologio è ancora «${s.status}»`);
+    await new Promise((f) => setTimeout(f, 3000));
+  }
+}
 
 /** Il riallineamento che farebbe il webhook: l'evento è firmato col segreto di prova. */
 async function consegna(tipo, oggetto) {
@@ -126,8 +140,17 @@ try {
   });
 
   await agisci("con l'abbonamento mensile attivo, la pagina lo dice", async () => {
+    // ⚠️ Su un OROLOGIO DI PROVA: il passaggio all'annuale va provato a metà del mese. Pochi
+    // secondi dopo l'attivazione, tenere la vecchia ricorrenza o ripartire da oggi darebbe lo
+    // stesso risultato, e il controllo non potrebbe accorgersi della differenza.
+    const orologio = await stripe.testHelpers.testClocks.create({
+      frozen_time: Math.floor(Date.now() / 1000),
+      name: `gestione-${RUN}`,
+    });
+    orologioId = orologio.id;
     const cliente = await stripe.customers.create({
       email: EMAIL,
+      test_clock: orologioId,
       name: "Gestione Collaudo",
       address: { line1: "Via Roma 1", postal_code: "80100", city: "Napoli", country: "IT" },
       metadata: { organizationId: orgId },
@@ -182,6 +205,8 @@ try {
   });
 
   await agisci("⚠️ passare all'annuale: l'anno riparte da oggi, e la parte di mese non usata si scala", async () => {
+    // A metà del mese: è qui che si vede se l'anno riparte da oggi.
+    await spostaOrologio(15 * 86_400);
     const comando = pagina.getByRole("button", { name: /Passa all'annuale/ });
     const etichetta = await comando.innerText();
     const risparmio = euro(risparmioAnnuo(piano));
@@ -198,21 +223,35 @@ try {
     if (sub.schedule) throw new Error("è comparso uno Schedule");
     // ⚠️ L'anno riparte DA OGGI: senza `billing_cycle_anchor: "now"` Stripe tiene la vecchia
     // ricorrenza e addebita un pro rata, mentre la finestra dice «paghi l'annuale».
-    const giorni = (voce.current_period_end - voce.current_period_start) / 86_400;
-    if (giorni < 360) throw new Error(`il periodo copre ${Math.round(giorni)} giorni, non un anno`);
+    //
+    // ⚠️ Si misura la scadenza contro l'OROLOGIO, non contro l'inizio del periodo. La prima
+    // versione faceva `fine - inizio`: senza ripartenza anche l'inizio resta quello vecchio,
+    // quindi dava sempre 365. Messa in rosso togliendo la correzione, è rimasta verde: non
+    // poteva accorgersi di niente.
+    const adesso = (await stripe.testHelpers.testClocks.retrieve(orologioId)).frozen_time;
+    const giorni = (voce.current_period_end - adesso) / 86_400;
+    if (giorni < 360) throw new Error(`la scadenza è fra ${Math.round(giorni)} giorni, non un anno: l'anno non riparte da oggi`);
     const f = sub.latest_invoice;
     if (f.status !== "paid") throw new Error(`fattura ${f.status}`);
+    // E in fattura c'è l'annuale INTERO, non un pro rata: è ciò che la finestra ha promesso.
+    if (!f.lines.data.some((r) => r.amount === anno.importo)) {
+      throw new Error(`nessuna riga da ${euro(anno.importo)}: ${f.lines.data.map((r) => euro(r.amount)).join(" · ")}`);
+    }
     // L'imponibile è l'annuale meno la parte di mese non usata: mai più dell'annuale, e mai
     // meno dell'annuale meno un mese intero.
     if (f.subtotal > anno.importo || f.subtotal < anno.importo - mese.importo) {
       throw new Error(`imponibile ${euro(f.subtotal)}, atteso fra ${euro(anno.importo - mese.importo)} e ${euro(anno.importo)}`);
     }
-    await pagina.getByRole("button", { name: "Disdici il rinnovo" }).waitFor({ timeout: 30_000 * fattoreAttesa() });
-    if (await pagina.getByRole("button", { name: /Passa all'annuale/ }).count()) {
-      throw new Error("propone ancora il passaggio a chi è già annuale");
-    }
-    const stato = await pagina.locator("[data-stato-abbonamento]").innerText();
-    if (!/si rinnova ogni anno/.test(stato)) throw new Error(`la pagina dice: ${stato}`);
+    // ⚠️ Si aspetta il FATTO a schermo: il database si aggiorna prima che la pagina si rinfreschi,
+    // e leggere subito direbbe «propone ancora il passaggio» su una pagina che sta per cambiare.
+    // Se il comando non sparisse mai, il controllo cadrebbe qui, sull'asserzione giusta.
+    await pagina
+      .getByRole("button", { name: /Passa all'annuale/ })
+      .waitFor({ state: "detached", timeout: 30_000 * fattoreAttesa() })
+      .catch(() => {
+        throw new Error("propone ancora il passaggio a chi è già annuale");
+      });
+    await pagina.getByText(/si rinnova ogni anno/).waitFor({ timeout: 30_000 * fattoreAttesa() });
   });
 
   await agisci("⚠️ un abbonamento con lo Schedule del listino vecchio non offre i comandi", async () => {
@@ -231,8 +270,8 @@ try {
 } finally {
   const esito = riepilogo("Gestione dell'abbonamento");
   try {
-    if (subId) await stripe.subscriptions.cancel(subId);
-    if (clienteId) await stripe.customers.del(clienteId);
+    // L'orologio si porta via cliente, abbonamento e fatture.
+    if (orologioId) await stripe.testHelpers.testClocks.del(orologioId);
   } catch (e) {
     console.log("  (pulizia su Stripe non riuscita:", String(e.message).slice(0, 100) + ")");
   }

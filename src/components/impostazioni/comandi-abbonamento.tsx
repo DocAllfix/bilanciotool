@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,10 @@ import { PIANI, euro, prezzoDiVendita, risparmioAnnuo, type PianoKey, type Perio
 // ⚠️ Nessun `confirm()` nativo: Playwright li scarta da soli e alcuni browser li sopprimono.
 // La conferma è una finestra del prodotto, e dice CHE COSA succede prima che succeda.
 //
-// ⚠️ Dopo ogni comando la pagina si rinfresca con `router.refresh()` in un tick successivo:
-// lo stato vero lo scrive il server rileggendo l'abbonamento da Stripe, non questo
-// componente.
+// ⚠️ Dopo ogni comando la pagina si rinfresca in un EFFETTO, non dentro la transizione: è la
+// regola nata dal portafoglio che non si aggiornava (4 volte su 8), dove un `router.refresh()`
+// chiamato dentro `useTransition` restava appeso e si perdeva. Lo stato vero lo scrive il
+// server rileggendo l'abbonamento da Stripe, non questo componente.
 
 function Conferma({
   apri,
@@ -84,7 +85,10 @@ export function ComandiAbbonamento({
   scadenza: string | null;
 }) {
   const router = useRouter();
-  const rinfresca = () => setTimeout(() => router.refresh(), 0);
+  const [fatti, setFatti] = useState(0);
+  useEffect(() => {
+    if (fatti > 0) router.refresh();
+  }, [fatti, router]);
   const p = PIANI[piano];
   const annuale = prezzoDiVendita(p, "anno");
   const risparmio = risparmioAnnuo(p);
@@ -96,7 +100,7 @@ export function ComandiAbbonamento({
       return false;
     }
     toast.success(ok);
-    rinfresca();
+    setFatti((n) => n + 1);
     return true;
   }
 
