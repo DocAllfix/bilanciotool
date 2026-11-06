@@ -2,88 +2,30 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check, CreditCard, Minus, Plus } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { apriCheckoutAction } from "@/features/billing/actions";
-import { PIANI, ESTENSIONI, euro, aziendeTesto, prezzoDiVendita, prezzoEstensione, type PianoKey, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
+import { PIANI, euro, aziendeTesto, prezzoDiVendita, type PianoKey, type Periodo } from "@/lib/prezzi";
+import { InterruttorePeriodo, PrezzoFascia, usePeriodo } from "@/components/prezzi/periodo";
 
 // La scelta di che cosa si compra, prima di andare a pagare.
 //
-// Le estensioni esistevano dappertutto — prezzi su Stripe, righe nel checkout, lettura
-// nel webhook, somma nei limiti, marchio congelato nello snapshot — tranne in una
-// schermata che le vendesse. Erano quattro prodotti costruiti e invendibili: il
-// white-label si attivava solo scrivendo a mano nel database.
-//
 // Il totale si mostra QUI, prima di uscire verso Stripe: chi arriva sulla pagina di
 // pagamento e trova un importo che non si aspettava chiude, e non torna.
-
-// I tetti vengono dal listino, non riscritti qui: il server applica gli stessi, e due
-// numeri in due posti divergono al primo che cambia.
-const MAX_BLOCCHI = MAX_BLOCCHI_AZIENDE;
-const MAX_ACCESSI = MAX_ACCESSI_EXTRA;
-
-function Contatore({
-  etichetta,
-  dettaglio,
-  valore,
-  imposta,
-  massimo,
-  prezzo,
-}: {
-  etichetta: string;
-  dettaglio: string;
-  valore: number;
-  imposta: (n: number) => void;
-  massimo: number;
-  prezzo: number;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-lg border p-3">
-      <div className="min-w-0">
-        <p className="text-sm font-medium">{etichetta}</p>
-        <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-          {dettaglio} · {euro(prezzo)} l&apos;anno
-        </p>
-      </div>
-      <div className="flex shrink-0 items-center gap-1">
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="size-8"
-          aria-label={`Togli: ${etichetta}`}
-          disabled={valore === 0}
-          onClick={() => imposta(valore - 1)}
-        >
-          <Minus className="size-3.5" />
-        </Button>
-        <span className="w-8 text-center text-sm font-medium tabular-nums" aria-live="polite">
-          {valore}
-        </span>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="size-8"
-          aria-label={`Aggiungi: ${etichetta}`}
-          disabled={valore >= massimo}
-          onClick={() => imposta(valore + 1)}
-        >
-          <Plus className="size-3.5" />
-        </Button>
-      </div>
-    </div>
-  );
-}
+//
+// ⚠️ Dal 6 novembre 2026 si sceglie solo il PERIODO: blocchi di aziende, accessi e marchio
+// non si vendono più (gli accessi e il marchio sono inclusi, e chi cresce passa al piano
+// più capiente). Il prezzo è lo stesso a ogni rinnovo.
 
 export function DialogoAcquisto({
   piano,
   etichetta,
   variante = "default",
   apriSubito = false,
+  periodoIniziale,
 }: {
   piano: PianoKey;
   etichetta: string;
@@ -93,42 +35,37 @@ export function DialogoAcquisto({
    *  un ricarico — o il tasto indietro dopo essere usciti verso Stripe — lo riaprirebbe
    *  addosso a chi l'aveva appena chiuso. */
   apriSubito?: boolean;
+  /** Facoltativo: senza, il periodo è quello scelto nell'interruttore della pagina
+   *  (`PeriodoProvider`), letto ogni volta che la finestra si apre. */
+  periodoIniziale?: Periodo;
 }) {
+  const pagina = usePeriodo();
   const [aperto, setAperto] = useState(apriSubito);
-  const [blocchi, setBlocchi] = useState(0);
-  const [accessi, setAccessi] = useState(0);
-  const [marchio, setMarchio] = useState(false);
+  const [periodo, setPeriodo] = useState<Periodo>(periodoIniziale ?? pagina.periodo);
   const [inCorso, setInCorso] = useState(false);
 
   function cambiaApertura(v: boolean) {
+    // Si apre sul periodo che la pagina mostra in quel momento: chi ha guardato il mensile
+    // e preme «Attiva» deve trovarsi davanti il mensile, non l'annuale di quando la
+    // pagina si è caricata.
+    if (v) setPeriodo(periodoIniziale ?? pagina.periodo);
     setAperto(v);
     if (!v && apriSubito && typeof window !== "undefined") {
       const u = new URL(window.location.href);
-      if (u.searchParams.has("fascia")) {
+      if (u.searchParams.has("fascia") || u.searchParams.has("periodo")) {
         u.searchParams.delete("fascia");
+        u.searchParams.delete("periodo");
         window.history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
       }
     }
   }
 
   const p = PIANI[piano];
-  const anno1 = prezzoDiVendita(p, "anno1")!;
-  const rinnovo = prezzoDiVendita(p, "rinnovo")!;
-  const pBlocco = prezzoEstensione(ESTENSIONI.bloccoAziende);
-
-  // Le estensioni costano uguale il primo anno e al rinnovo: si portano dietro con il
-  // prezzo a cui sono state comprate, esattamente come il piano tiene il suo ridotto.
-  const estensioni = blocchi * pBlocco.importo;
-  const totaleAnno1 = anno1.importo + estensioni;
-  const totaleRinnovo = rinnovo.importo + estensioni;
+  const prezzo = prezzoDiVendita(p, periodo);
 
   async function acquista() {
     setInCorso(true);
-    const esito = await apriCheckoutAction({
-      piano,
-      // Il server conta AZIENDE, non blocchi: il blocco è un'unità di vendita.
-      aziendeExtra: blocchi * ESTENSIONI.bloccoAziende.aziende,
-    });
+    const esito = await apriCheckoutAction({ piano, periodo });
     if (!esito.ok) {
       setInCorso(false);
       toast.error(esito.errore);
@@ -150,81 +87,29 @@ export function DialogoAcquisto({
         <DialogHeader>
           <DialogTitle>{p.nome}</DialogTitle>
           <DialogDescription>
-            {/* Diceva «tutti e cinque i percorsi»: sono quattordici, e il numero cresce a
-                ogni modulo. Senza numero la frase non invecchia. */}
-            {aziendeTesto(p.aziende + blocchi * ESTENSIONI.bloccoAziende.aziende)} ·{" "}
-            {p.accessi + accessi} accessi · tutti i percorsi
+            {p.usoInterno ? "1 azienda, la tua" : aziendeTesto(p.aziende)} · {p.accessi} accessi · tutti i percorsi
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
-          <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
-            Serve altra capacità?
-          </p>
-          {/* ⚠️ Nella fascia «Un'azienda» il contatore non c'è: un blocco costerebbe più della
-              fascia superiore. Il server rifiuta comunque i blocchi su questa fascia
-              (`apriCheckoutAction`): qui si indica la strada giusta invece di nasconderla. */}
-          {/* ⚠️ Per l'uso interno il suggerimento della fascia superiore sarebbe fuorviante: le
-              fasce per studio servono a chi segue clienti, e non hanno i percorsi assegnati. */}
-          {p.usoInterno ? (
-            <p className="rounded-lg border p-3 text-[13px] leading-relaxed text-muted-foreground">
-              Questa fascia copre una sola azienda, la tua. Se segui anche aziende di clienti ti serve una
-              fascia per studio: scrivici e spostiamo l&apos;account senza rifare niente.
+        <div className="space-y-4">
+          <InterruttorePeriodo periodo={periodo} onCambia={setPeriodo} />
+          <div className="rounded-lg border bg-muted/40 p-4">
+            <PrezzoFascia piano={piano} periodo={periodo} compatto />
+            <p className="mt-3 border-t pt-3 text-[12px] leading-relaxed text-muted-foreground">
+              {periodo === "anno"
+                ? "Si rinnova da solo ogni anno, allo stesso prezzo. Lo disdici quando vuoi da questa pagina: resta attivo fino alla fine dell'anno pagato."
+                : "Si rinnova da solo ogni mese. Lo disdici quando vuoi da questa pagina, e puoi passare all'annuale in ogni momento."}{" "}
+              Rimborso integrale entro quattordici giorni dal primo pagamento, se non hai ancora pubblicato un documento.
             </p>
-          ) : p.senzaBlocchi ? (
-            <p className="rounded-lg border p-3 text-[13px] leading-relaxed text-muted-foreground">
-              Più di un&apos;azienda? La fascia «{PIANI.professional.nome}» costa{" "}
-              <span className="font-medium text-foreground tabular-nums">
-                {euro(prezzoDiVendita(PIANI.professional, "anno1")!.importo)}
-              </span>{" "}
-              l&apos;anno e comprende tutto il resto allo stesso modo.
-            </p>
-          ) : (
-          <Contatore
-            etichetta={`Blocchi da ${ESTENSIONI.bloccoAziende.aziende} aziende`}
-            dettaglio={`+${blocchi * ESTENSIONI.bloccoAziende.aziende} aziende`}
-            valore={blocchi}
-            imposta={setBlocchi}
-            massimo={MAX_BLOCCHI}
-            prezzo={pBlocco.importo}
-          />
-          )}
-          {/* ⚠️ Qui c'erano «Accessi aggiuntivi» e «Documenti col marchio del tuo studio».
-              Non si vendono piu': gli accessi sono inclusi in ogni fascia (15/30/60, tetti
-              che nessuno studio vero raggiunge) e il marchio dello studio e' compreso.
-              Toglierli dal dialogo e' meta' del lavoro — l'altra meta' e' che il server
-              continui a RICONOSCERE le lookup di chi le aveva comprate, in
-              `ricostruisciCapacita`, altrimenti al primo evento Stripe la loro capacita'
-              si rimpicciolirebbe in silenzio. */}
-        </div>
-
-        <div className="rounded-lg border bg-muted/40 p-3">
-          <p className="flex items-baseline justify-between gap-3">
-            <span className="text-sm">Primo anno</span>
-            <span className="flex items-baseline gap-2">
-              {anno1.listino !== undefined && estensioni === 0 && (
-                <span className="text-[12.5px] text-muted-foreground line-through tabular-nums">
-                  {euro(anno1.listino)}
-                </span>
-              )}
-              <span className="text-lg font-semibold tabular-nums">{euro(totaleAnno1)}</span>
-            </span>
-          </p>
-          <p className="mt-1 flex items-baseline justify-between gap-3 text-[12.5px] text-muted-foreground">
-            <span>Poi ogni anno, rinnovo automatico</span>
-            <span className="tabular-nums">{euro(totaleRinnovo)}</span>
-          </p>
-          <p className="mt-2 border-t pt-2 text-[12px] leading-relaxed text-muted-foreground">
-            IVA esclusa. Il rinnovo si disdice fino al giorno prima della scadenza.
-          </p>
+          </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => cambiaApertura(false)} disabled={inCorso}>
             Annulla
           </Button>
-          <Button onClick={acquista} disabled={inCorso}>
-            {inCorso ? "Apro il pagamento…" : `Paga ${euro(totaleAnno1)}`}
+          <Button onClick={acquista} disabled={inCorso || !prezzo}>
+            {inCorso ? "Apro il pagamento…" : prezzo ? `Paga ${euro(prezzo.importo)} + IVA` : "Non disponibile"}
           </Button>
         </DialogFooter>
       </DialogContent>

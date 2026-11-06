@@ -9,19 +9,19 @@
 export const DOMANDE: [string, string][] = [
   [
     "Come funziona la demo guidata?",
-    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulle tue aziende, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
+    "Ti registri in un minuto e trovi un'azienda d'esempio già compilata: puoi percorrere tutti i moduli, modificare i dati, vedere i calcoli cambiare. Un tour ti accompagna nelle schermate principali. Quando decidi di lavorare sulla tua azienda, o su quelle che segui, sblocchi l'abbonamento: fino ad allora nessuna carta è richiesta.",
   ],
   [
     "Come si acquista? E quanto costa?",
-    "L'abbonamento è annuale e si sottoscrive per studio, non per documento e non per utente: comprende tutti i percorsi, i documenti che pubblichi senza limite di numero, gli accessi delle persone che lavorano con te, i documenti col marchio del tuo studio e gli aggiornamenti dei fattori. L'unica cosa che scegli è la capienza: quante aziende gestisci in portafoglio. Si attiva con carta, Satispay, Klarna o Amazon Pay, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Le fasce e gli importi stanno nella pagina Prezzi.",
+    "Con un abbonamento annuale o mensile, sempre allo stesso prezzo, che non si paga per documento né per utente: comprende tutti i percorsi, i documenti che pubblichi senza limite di numero, gli accessi per i colleghi, i documenti col tuo marchio e gli aggiornamenti dei fattori. C'è un piano per l'azienda che fa da sé e due per i consulenti, che si scelgono per quante aziende seguono. Si attiva con carta, oppure ti mandiamo un preventivo da pagare a bonifico se ti serve l'ordine d'acquisto. Piani e importi stanno nella pagina Prezzi.",
   ],
   [
     "Serve essere consulenti per usarlo?",
-    "No, ma è pensato per chi la rendicontazione la fa di mestiere: studi, consulenti HSE/ESG, responsabili qualità. Una PMI può usarlo in autonomia, perché le guide di valutazione tema per tema spiegano cosa guardare e dove trovare i dati in azienda.",
+    "No. È pensato per chi in azienda si occupa di conformità, qualità, ambiente o sicurezza e deve produrre i documenti senza un consulente per ogni norma: le guide di valutazione, passo per passo, spiegano cosa guardare e dove trovare i dati in azienda. I consulenti lo usano per seguire più aziende clienti con lo stesso metodo.",
   ],
   [
     "Devo comprarli tutti?",
-    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. Ogni azienda del portafoglio ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Molti studi partono dall'inventario GHG e dal bilancio, e aggiungono il bilancio energetico, la Dichiarazione di Applicabilità o il Modello 231 quando arriva il cliente che li chiede. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
+    "L'abbonamento è uno solo e comprende tutto: non ci sono moduli a pagamento separato né costi per documento prodotto. La tua azienda ha il suo fascicolo, e dentro apri soltanto i percorsi che ti servono. Si parte di solito da ciò che qualcuno sta chiedendo adesso, l'inventario delle emissioni per il cliente o il canale delle segnalazioni per la legge, e si aggiunge il resto quando serve. I percorsi non aperti non danno fastidio e non sporcano l'interfaccia.",
   ],
   [
     "Devo inserire tutto a mano?",
@@ -33,11 +33,11 @@ export const DOMANDE: [string, string][] = [
   ],
   [
     "I fattori di emissione sono aggiornati?",
-    "La libreria di partenza usa fonti pubbliche (ISPRA, DEFRA, IPCC) versionate per edizione: gli aggiornamenti annuali arrivano con l'abbonamento e non riscrivono mai gli inventari già pubblicati. Ogni fattore può essere personalizzato dallo studio, con fonte documentata.",
+    "La libreria di partenza usa fonti pubbliche (ISPRA, DEFRA, IPCC) versionate per edizione: gli aggiornamenti annuali arrivano con l'abbonamento e non riscrivono mai gli inventari già pubblicati. Ogni fattore si può personalizzare, con fonte documentata.",
   ],
   [
     "Dove stanno i dati? E se non rinnovo?",
-    "Su database europei (Francoforte), isolati per studio a livello di database. Se non rinnovi, l'account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili. Non cancelliamo il lavoro di nessuno.",
+    "Su database europei (Francoforte), isolati per account a livello di database. Se non rinnovi, l'account passa in sola lettura: i dati restano tuoi, consultabili ed esportabili. Non cancelliamo il lavoro di nessuno.",
   ],
   [
     "Chi c'è dietro EvalisDeck?",

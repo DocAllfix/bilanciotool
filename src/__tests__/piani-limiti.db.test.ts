@@ -5,7 +5,7 @@ import { organization, member, orgEntitlement, company, auditLog, platformConfig
 import { createCompany } from "@/features/companies";
 import { getCompanyUsage, getLimitiEffettivi, assertSeatAvailable } from "@/features/entitlement";
 import { eq, sql } from "drizzle-orm";
-import { PIANI, ESTENSIONI, sogliaAvviso } from "@/lib/prezzi";
+import { PIANI, AZIENDE_PER_BLOCCO, sogliaAvviso } from "@/lib/prezzi";
 
 // La capacità comprata, applicata sui fatti del database.
 //
@@ -99,7 +99,8 @@ describe.skipIf(!url)("piani: la capacità comprata è quella che vale", () => {
   });
 
   it("i blocchi comprati allargano la capacità, e l'azienda successiva passa", async () => {
-    const extra = ESTENSIONI.bloccoAziende.aziende;
+    // I blocchi non si vendono più, ma chi li ha comprati li conserva: la colonna conta ancora.
+    const extra = AZIENDE_PER_BLOCCO;
     await db.update(orgEntitlement).set({ aziendeExtra: extra }).where(eq(orgEntitlement.organizationId, orgId));
     const l = await getLimitiEffettivi(orgId, userId);
     expect(l.maxActiveCompanies, `${CAPIENZA} del piano + ${extra} comprate`).toBe(CAPIENZA + extra);

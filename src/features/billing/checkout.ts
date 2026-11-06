@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { stripeCustomer, organization } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { stripe, idPrezzo } from "@/lib/stripe/client";
-import { PIANI, prezzoDiVendita, type PianoKey } from "@/lib/prezzi";
+import { PIANI, prezzoDiVendita, type PianoKey, type Periodo } from "@/lib/prezzi";
 import { env } from "@/lib/env";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
@@ -100,19 +100,16 @@ export async function creaSessioneCheckout(opts: {
   orgId: string;
   email: string;
   piano: PianoKey;
-  /** Estensioni acquistate insieme al piano, come quantità. */
-  aziendeExtra?: number;
+  /** Annuale o mensile: decide quale prezzo Stripe va in cassa. */
+  periodo: Periodo;
 }): Promise<EsitoCheckout> {
   const piano = PIANI[opts.piano];
   if (piano.trattativa) throw new Error("Il piano Enterprise si concorda, non si acquista online.");
-  // Secondo strato dopo `apriCheckoutAction`: chiunque chiami questa funzione non deve
-  // poter creare una sessione con blocchi su una fascia che non li prevede.
-  if (piano.senzaBlocchi && opts.aziendeExtra) {
-    throw new Error(`La fascia «${piano.nome}» non prevede blocchi aggiuntivi.`);
-  }
 
-  const prezzo = prezzoDiVendita(piano, "anno1");
-  if (!prezzo) throw new Error("Piano senza prezzo acquistabile.");
+  // ⚠️ Secondo strato dopo `apriCheckoutAction`: un piano ritirato dalla vendita non ha un
+  // prezzo da addebitare, e chiunque chiami questa funzione si ferma qui.
+  const prezzo = prezzoDiVendita(piano, opts.periodo);
+  if (!prezzo) throw new Error(`La fascia «${piano.nome}» non è più in vendita.`);
 
   const base = indirizzoCorrente().replace(/\/+$/, "");
   const cliente = await clienteDelloStudio(opts.orgId, opts.email);
@@ -125,23 +122,16 @@ export async function creaSessioneCheckout(opts: {
   const metadati = {
     organizationId: opts.orgId,
     piano: opts.piano,
+    periodo: opts.periodo,
     ...(codicePartner ? { partner: codicePartner } : {}),
   };
 
+  // ⚠️ UNA RIGA SOLA: il piano. Accessi e marchio sono inclusi in ogni fascia, e dal
+  // 6 novembre 2026 nemmeno i blocchi di aziende si vendono più. Le loro chiavi Stripe
+  // restano riconosciute in `ESTENSIONI_RITIRATE`, ma nessuna sessione nuova può crearle.
   const righe: { price: string; quantity: number }[] = [
     { price: await idPrezzo(prezzo.lookup), quantity: 1 },
   ];
-  // Le estensioni entrano nella stessa sessione: un solo pagamento, un solo abbonamento.
-  const { ESTENSIONI, prezzoEstensione } = await import("@/lib/prezzi");
-  if (opts.aziendeExtra) {
-    righe.push({
-      price: await idPrezzo(prezzoEstensione(ESTENSIONI.bloccoAziende).lookup),
-      quantity: Math.ceil(opts.aziendeExtra / ESTENSIONI.bloccoAziende.aziende),
-    });
-  }
-  // ⚠️ Accessi e marchio non si vendono piu': gli accessi sono inclusi in ogni fascia e il
-  // marchio dello studio pure. Le loro chiavi Stripe restano riconosciute in
-  // `ESTENSIONI_RITIRATE`, ma nessuna sessione nuova puo' piu' crearle.
 
   const sessione = await stripe().checkout.sessions.create({
     mode: "subscription",
@@ -230,7 +220,7 @@ export async function creaSessioneCheckout(opts: {
       azione: "billing.checkout.apri",
       entita: "organization",
       entitaId: opts.orgId,
-      dettagli: { piano: opts.piano, importo: prezzo.importo, lookup: prezzo.lookup },
+      dettagli: { piano: opts.piano, periodo: opts.periodo, importo: prezzo.importo, lookup: prezzo.lookup },
     }),
   );
 

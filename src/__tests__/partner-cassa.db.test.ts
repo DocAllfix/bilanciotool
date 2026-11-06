@@ -28,7 +28,7 @@ async function iscrivi(email: string, codicePartner?: string) {
 async function metadatiDellaCassa(s: { userId: string; orgId: string; email: string }) {
   const { creaSessioneCheckout } = await import("@/features/billing/checkout");
   const { stripe } = await import("@/lib/stripe/client");
-  const { url } = await creaSessioneCheckout({ userId: s.userId, orgId: s.orgId, email: s.email, piano: "singola" });
+  const { url } = await creaSessioneCheckout({ userId: s.userId, orgId: s.orgId, email: s.email, piano: "azienda", periodo: "mese" });
   const id = new URL(url).pathname.split("/").find((x) => x.startsWith("cs_test_"));
   expect(id, "la sessione è di prova").toBeTruthy();
   const sessione = await stripe().checkout.sessions.retrieve(id!);
@@ -49,7 +49,8 @@ describe.skipIf(!attivo)("il codice partner alla cassa", () => {
   it("uno studio NGR paga con `partner: NGR` nei metadati", async () => {
     const m = await metadatiDellaCassa(await iscrivi(`cassa-ngr-${RUN}@example.com`, "NGR"));
     expect(m.partner).toBe("NGR");
-    expect(m.piano).toBe("singola");
+    expect(m.piano).toBe("azienda");
+    expect(m.periodo).toBe("mese");
   });
 
   it("uno studio senza partner non porta la chiave", async () => {

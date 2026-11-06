@@ -34,6 +34,16 @@ export const orgEntitlement = pgTable("org_entitlement", {
   demoStartedAt: timestamp("demo_started_at").defaultNow().notNull(),
   activatedAt: timestamp("activated_at"),
   currentPeriodEnd: timestamp("current_period_end"),
+  // Come si paga (6 novembre 2026): un anno anticipato o un mese per volta. `null` per chi è
+  // in demo, per gli abbonamenti dei listini precedenti e per le attivazioni a mano: la
+  // pagina Abbonamento ne deduce quali comandi mostrare (disdetta, passaggio all'annuale) e
+  // il cron dei preavvisi scrive solo a chi rinnova un ANNO. Lo scrive il provisioning,
+  // leggendo `price.recurring.interval` della riga del piano.
+  periodo: text("periodo", { enum: ["anno", "mese"] }),
+  // Vero se l'abbonamento è stato disdetto e si fermerà alla fine del periodo pagato
+  // (`cancel_at_period_end` di Stripe). Fino ad allora l'account resta pienamente attivo:
+  // serve a dire «non si rinnoverà» invece di lasciar credere il contrario.
+  disdettaAFinePeriodo: boolean("disdetta_a_fine_periodo").default(false).notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date())

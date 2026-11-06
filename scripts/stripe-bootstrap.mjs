@@ -18,7 +18,7 @@
 
 import Stripe from "stripe";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, FONDATORI, euro, FINE_LANCIO } from "../src/lib/prezzi.ts";
+import { PIANI, ESTENSIONI, PERIODI, euro } from "../src/lib/prezzi.ts";
 
 const APPLICA = process.argv.includes("--applica");
 const chiave = process.env.STRIPE_SECRET_KEY;
@@ -65,7 +65,10 @@ async function prodotto(chiaveInterna, nome, descrizione) {
   return stripe.products.create({ name: nome, description: descrizione, metadata: { chiave: chiaveInterna } });
 }
 
-async function prezzo(productId, lookupKey, importo, ricorrente) {
+/** L'intervallo Stripe di un nostro periodo; `null` per gli addebiti una tantum. */
+const INTERVALLO = { anno: "year", mese: "month" };
+
+async function prezzo(productId, lookupKey, importo, intervallo) {
   // ⚠️ Una chiave o un importo assenti significano «questa variante non esiste piu' nel
   // listino», non «crea qualcosa». Dal 27 agosto 2026 i piani non hanno prezzi di lancio:
   // senza questa uscita, lo script chiederebbe a Stripe un prezzo `undefined` da
@@ -77,6 +80,15 @@ async function prezzo(productId, lookupKey, importo, ricorrente) {
   const esistente = trovati.data[0];
 
   if (esistente) {
+    // ⚠️ Anche l'INTERVALLO: un prezzo mensile creato per errore come annuale avrebbe lo
+    // stesso importo e la stessa chiave, e passerebbe il controllo sull'importo — mentre
+    // Stripe addebiterebbe 59 € l'anno invece che al mese.
+    const intervalloEsistente = esistente.recurring?.interval ?? null;
+    if (intervalloEsistente !== (intervallo ?? null)) {
+      console.log(`  ⚠  ${lookupKey}: su Stripe intervallo «${intervalloEsistente}», nel listino «${intervallo}» — i prezzi sono immutabili: crea una chiave nuova`);
+      problemi++;
+      return esistente;
+    }
     if (esistente.unit_amount !== importo) {
       // Il caso che questo script esiste per intercettare: il listino dice una cosa,
       // Stripe ne addebita un'altra, e nessuno se ne accorge fino alla contestazione.
@@ -93,7 +105,7 @@ async function prezzo(productId, lookupKey, importo, ricorrente) {
   }
 
   if (!APPLICA) {
-    console.log(`  +  ${lookupKey} da creare (${euro(importo)}${ricorrente ? ", annuale" : ", una tantum"})`);
+    console.log(`  +  ${lookupKey} da creare (${euro(importo)}, ${intervallo === "year" ? "annuale" : intervallo === "month" ? "mensile" : "una tantum"})`);
     creati++;
     return null;
   }
@@ -102,7 +114,11 @@ async function prezzo(productId, lookupKey, importo, ricorrente) {
     currency: "eur",
     unit_amount: importo,
     lookup_key: lookupKey,
-    ...(ricorrente ? { recurring: { interval: "year" } } : {}),
+    // ⚠️ IVA ESCLUSA dichiarata sul prezzo, non lasciata al predefinito dell'account: il
+    // listino dice «IVA esclusa», e un prezzo marcato IVA inclusa farebbe incassare l'IVA
+    // dall'importo invece di aggiungerla.
+    tax_behavior: "exclusive",
+    ...(intervallo ? { recurring: { interval: intervallo } } : {}),
   });
   console.log(`  +  ${lookupKey} creato (${euro(importo)})`);
   creati++;
@@ -113,48 +129,24 @@ console.log(APPLICA ? "APPLICO le modifiche\n" : "PROVA A VUOTO — niente viene
 
 console.log("Piani");
 for (const piano of Object.values(PIANI)) {
-  // Enterprise è a trattativa: non ha prezzi pubblici e non deve averne su Stripe,
-  // altrimenti qualcuno prima o poi ci costruisce sopra un checkout.
-  if (!piano.lookupAnno1) {
-    console.log(`  ·  ${piano.nome}: a trattativa, nessun prezzo`);
+  if (!piano.vendita) {
+    console.log(`  ·  ${piano.nome}: ${piano.trattativa ? "a trattativa" : "non più in vendita"}, nessun prezzo nuovo`);
     continue;
   }
   const prod = await prodotto(`piano_${piano.key}`, `EvalisDeck — ${piano.nome}`, piano.descrizione);
-  // Il LISTINO resta creato anche durante la promozione: e' il prezzo che si mostra
-  // barrato e quello che si pratichera' alla scadenza. Un barrato che non corrisponde a
-  // nessun prezzo reale sarebbe un numero inventato per fare scena.
-  await prezzo(prod.id, piano.lookupAnno1, piano.primoAnno, true);
-  await prezzo(prod.id, piano.lookupRinnovo, piano.rinnovo, true);
-  await prezzo(prod.id, piano.lookupAnno1Lancio, piano.primoAnnoLancio, true);
-  await prezzo(prod.id, piano.lookupRinnovoLancio, piano.rinnovoLancio, true);
+  for (const periodo of PERIODI) {
+    await prezzo(prod.id, piano.vendita[periodo].lookup, piano.vendita[periodo].importo, INTERVALLO[periodo]);
+  }
 }
 
-console.log("");
-console.log("Programma Fondatori");
-{
-  // ⚠️ Due prezzi, e il secondo conta piu' del primo: la fase 2 dello Schedule deve
-  // portare QUELLO, altrimenti al tredicesimo mese il Fondatore torna a pagare come
-  // tutti — in silenzio, su un accordo firmato.
-  const prod = await prodotto(
-    "programma_fondatori",
-    "EvalisDeck — Programma Fondatori",
-    `Dodici mesi in fascia «${PIANI[FONDATORI.piano].nome}» a condizioni riservate, poi rinnovo scontato a vita.`,
-  );
-  await prezzo(prod.id, FONDATORI.lookupAnno1, FONDATORI.primoAnno, true);
-  await prezzo(prod.id, FONDATORI.lookupRinnovo, FONDATORI.rinnovo, true);
-}
+// ⚠️ Programma Fondatori, blocchi di aziende, accessi e marchio NON si creano più: sono
+// ritirati dalla vendita. I loro prezzi restano su Stripe, dove gli abbonamenti già venduti
+// li usano: questo script non li tocca e non li archivia.
 
 console.log("\nEstensioni");
 for (const [nome, e] of Object.entries(ESTENSIONI)) {
-  const importo = e.prezzo ?? e.min;
   const prod = await prodotto(`estensione_${nome}`, `EvalisDeck — ${etichetta(nome)}`, descrizione(nome));
-  // L'avvio assistito è una tantum: tutto il resto è annuale come l'abbonamento.
-  const ricorrente = nome !== "avvioAssistito";
-  await prezzo(prod.id, e.lookup, importo, ricorrente);
-  await prezzo(prod.id, e.lookupLancio, e.prezzoLancio ?? e.minLancio, ricorrente);
-  // ⚠️ Le estensioni RITIRATE non si ricreano e non si toccano: i loro prezzi restano su
-  // Stripe, vivi, perche' gli abbonamenti in corso ci puntano. Archiviarli dal cruscotto
-  // e' una scelta separata, e comunque non spezza un abbonamento esistente.
+  await prezzo(prod.id, e.lookup, e.min, null);
 }
 
 function etichetta(k) {

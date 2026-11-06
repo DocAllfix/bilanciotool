@@ -31,7 +31,7 @@ const SITO = "https://evalisdeck.it";
 // a chi acconsente a una sola finalità (il perché sta in `src/lib/csp.ts`).
 const FONTI_CSP = fontiDaAmbiente(process.env);
 const DESCRIZIONE =
-  "Percorsi guidati per studi di consulenza e PMI: sostenibilità e GHG, Modello 231, NIS2, GDPR, sistemi di gestione certificabili. Calcoli automatici, documenti impaginati.";
+  "Percorsi guidati per chi segue la conformità in azienda, e per i suoi consulenti: sostenibilità e GHG, Modello 231, segnalazioni, NIS2, GDPR, sistemi di gestione certificabili. Calcoli automatici, documenti impaginati.";
 
 export const metadata: Metadata = {
   // Nome scelto dal committente (2026-07-30): famiglia di prodotto Evalis.

@@ -8,68 +8,75 @@ import { Reveal } from "@/components/landing/scroll-reveal";
 import { Faq } from "@/components/landing/faq";
 import { DOMANDE_PREZZI } from "@/components/landing/domande-prezzi";
 import { CalcolatoreRitorno } from "@/components/landing/calcolatore-ritorno";
-import { ModuloFondatori } from "@/components/landing/modulo-fondatori";
+import { ModuloEnterprise } from "@/components/landing/modulo-enterprise";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
+import { InterruttorePeriodo, PeriodoProvider, PrezzoFascia } from "@/components/prezzi/periodo";
+import { PulsanteAttiva } from "@/components/prezzi/pulsante-attiva";
 import { Button } from "@/components/ui/button";
 import {
-  ESTENSIONI, FONDATORI, PIANI, euro, prezzoDiVendita,
-  aziendeTesto, fasceStudio, fasceVendibili, prezzoMinimo, quanteFasceInLettere,
+  PERIODI, PIANI, euro, prezzoDiVendita, costoAnnuoMensile, aziendeTesto,
+  fasceVendibili, prezzoMinimoMensile, quanteFasceInLettere,
 } from "@/lib/prezzi";
 import { indirizzoCanonico } from "@/lib/indirizzo";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
 // ⚠️ PAGINA STATICA. Non legge la richiesta, e non deve farlo nemmeno indirettamente:
-// `pagine-statiche-pure.test.ts` SEGUE GLI IMPORT a partire da qui. È la regola nata dal
-// 500 sul primo articolo del blog, dove `SiteHeader` chiamava `getSessionOrNull()` tre
-// livelli sotto e impediva a Next di generare come statica ogni pagina che lo montava.
+// `pagine-statiche-pure.test.ts` SEGUE GLI IMPORT a partire da qui. L'interruttore
+// mensile/annuale vive nel browser (`PeriodoProvider`): la pagina si genera una volta sola
+// con l'annuale, che è il predefinito.
 
 export const metadata: Metadata = {
   title: { absolute: "Prezzi · EvalisDeck" },
   description:
-    `Un abbonamento annuale per studio, tutto incluso: ${QUANTI_PERCORSI} percorsi guidati, documenti senza ` +
-    `limite di numero, accessi e marchio dello studio compresi. Si sceglie solo la capienza del portafoglio, ` +
-    // ⚠️ Il «da» si chiede al listino: leggeva `PIANI.professional`, e con la fascia da
-    // un'azienda avrebbe continuato a dire 590 € mentre si vende a 350.
-    `da ${euro(prezzoMinimo())} l'anno.`,
+    `Annuale o mensile, tutto incluso: ${QUANTI_PERCORSI} percorsi guidati, documenti senza limite di numero, ` +
+    `accessi per i colleghi compresi. Per l'azienda che fa da sé e per i consulenti fino a 30 aziende, ` +
+    // ⚠️ Il «da» si chiede al listino, mai scritto a mano.
+    `da ${euro(prezzoMinimoMensile())} al mese, IVA esclusa.`,
   alternates: { canonical: `${indirizzoCanonico()}/prezzi` },
 };
 
 const VENDIBILI = fasceVendibili();
-// Le schede della griglia: le fasce per studio. «Azienda» (uso interno) ha un riquadro suo.
-const STUDIO = fasceStudio();
-const INTERNA = PIANI.azienda;
 
-/** Ciò che c'è in ogni fascia. Uguale per tutte: cambia solo la capienza. */
+/** Ciò che c'è in ogni piano. Uguale per tutti: cambia solo la capienza. */
 const COMPRESO: [string, string][] = [
   ["Tutti i percorsi, presenti e futuri", "I percorsi rilasciati durante il tuo abbonamento entrano senza sovrapprezzo"],
   ["Documenti pubblicati senza limite", "Versioni immutabili, archivio e codice di verifica pubblico"],
-  ["Gli accessi del tuo studio", "Le persone che lavorano con te sono comprese"],
-  ["Documenti col marchio del tuo studio", "Escono col tuo nome, non col nostro"],
-  ["Portale di consultazione per i clienti", "Ogni tua azienda scarica i propri documenti senza account"],
+  ["Gli accessi per i colleghi", "Chi lavora con te entra col proprio account, e vede ciò che gli assegni"],
+  ["Documenti col tuo marchio", "Escono col nome della tua azienda o del tuo studio, non col nostro"],
+  ["Portale di consultazione", "Chi deve leggere i documenti li scarica senza account"],
   ["Aggiornamenti dei fattori", "Librerie ISPRA, DEFRA e IPCC versionate: gli inventari pubblicati non si riscrivono"],
 ];
 
-// I dati strutturati portano i prezzi VERI, presi dal listino: un `Offer` che dichiara
-// un importo diverso da quello che si paga è il modo più rapido di perdere la fiducia di
-// un motore di ricerca, e non si recupera correggendolo dopo.
+// I dati strutturati portano i prezzi VERI, presi dal listino, con il periodo dichiarato:
+// un `Offer` che dichiara un importo diverso da quello che si paga è il modo più rapido di
+// perdere la fiducia di un motore di ricerca.
 const OFFERTE = {
   "@context": "https://schema.org",
   "@type": "Product",
   name: "EvalisDeck",
   description: metadata.description,
   brand: { "@type": "Organization", name: "Evalis Srl" },
-  offers: VENDIBILI.map((k) => {
+  offers: VENDIBILI.flatMap((k) => {
     const p = PIANI[k];
-    const v = prezzoDiVendita(p, "anno1")!;
-    return {
-      "@type": "Offer",
-      name: p.nome,
-      description: p.descrizione,
-      price: (v.importo / 100).toFixed(2),
-      priceCurrency: "EUR",
-      availability: "https://schema.org/InStock",
-      url: `${indirizzoCanonico()}/prezzi`,
-    };
+    return PERIODI.map((periodo) => {
+      const v = prezzoDiVendita(p, periodo)!;
+      return {
+        "@type": "Offer",
+        name: `${p.nome}, ${periodo === "anno" ? "annuale" : "mensile"}`,
+        description: p.descrizione,
+        price: (v.importo / 100).toFixed(2),
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: (v.importo / 100).toFixed(2),
+          priceCurrency: "EUR",
+          billingDuration: periodo === "anno" ? "P1Y" : "P1M",
+          valueAddedTaxIncluded: false,
+        },
+        availability: "https://schema.org/InStock",
+        url: `${indirizzoCanonico()}/prezzi`,
+      };
+    });
   }),
 };
 
@@ -95,133 +102,110 @@ export default function Prezzi() {
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                   <span className="h-px w-8 bg-primary" aria-hidden />
-                  Abbonamento per studio
+                  Prezzi
                 </p>
                 <h1 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[46px]">
-                  Un abbonamento solo. {quanteFasceInLettere()} fasce.
+                  {quanteFasceInLettere()} piani. Tutti i percorsi in ognuno.
                 </h1>
                 <p className="mt-5 text-[16px] leading-relaxed text-muted-foreground">
-                  Si sottoscrive per studio e comprende sempre tutto: i {QUANTI_PERCORSI}{" "}percorsi, presenti e
-                  futuri, gli accessi delle persone che lavorano con te, i documenti pubblicati senza limite di
-                  numero. L&apos;unica cosa che scegli è la capienza: quante aziende gestisci in portafoglio.
+                  Per l&apos;azienda che porta avanti la conformità al proprio interno, e per i consulenti che
+                  seguono più aziende. Paghi l&apos;anno o il mese, sempre allo stesso prezzo: i {QUANTI_PERCORSI}{" "}
+                  percorsi, i documenti senza limite di numero e gli accessi per chi lavora con te sono compresi in
+                  ogni piano. L&apos;unica cosa che scegli è quante aziende segui.
                 </p>
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ============================================================== LE FASCE */}
-        <section className="border-b bg-muted/30">
-          <div className="mx-auto w-full max-w-6xl px-5 py-16">
-            {/* Quattro fasce: due per riga sugli schermi medi, tutte su quelli larghi. Con
-                tre colonne fisse la quarta andava a capo da sola, orfana. */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {STUDIO.map((k, i) => {
-                const p = PIANI[k];
-                const anno1 = prezzoDiVendita(p, "anno1")!;
-                const rinnovo = prezzoDiVendita(p, "rinnovo")!;
-                const consigliata = k === "studio";
-                return (
-                  <Reveal key={k} delay={i * 70}>
-                    <div
-                      className={
-                        "flex h-full flex-col rounded-xl border bg-card p-6 " +
-                        (consigliata ? "border-primary/60 shadow-md" : "")
-                      }
-                    >
-                      {consigliata && (
-                        <p className="mb-3 self-start rounded-full bg-primary px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-primary-foreground">
-                          La più scelta
+        {/* ============================================================== I PIANI */}
+        <PeriodoProvider>
+          <section className="border-b bg-muted/30" data-piani>
+            <div className="mx-auto w-full max-w-6xl px-5 py-16">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <p className="text-[14px] text-muted-foreground">Prezzi IVA esclusa.</p>
+                <InterruttorePeriodo />
+              </div>
+
+              <div className="mt-6 grid gap-6 md:grid-cols-3">
+                {VENDIBILI.map((k, i) => {
+                  const p = PIANI[k];
+                  const primario = p.pubblico === "azienda";
+                  return (
+                    <Reveal key={k} delay={i * 70}>
+                      <div
+                        className={
+                          "flex h-full flex-col rounded-xl border bg-card p-6 " +
+                          (primario ? "border-primary/60 shadow-md" : "")
+                        }
+                        data-scheda-piano={k}
+                      >
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+                          {primario ? "Per la tua azienda" : "Per i consulenti"}
                         </p>
-                      )}
-                      <h2 className="font-display text-[21px] font-bold tracking-[-0.01em]">{p.nome}</h2>
-                      <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
-                      <p className="font-display mt-6 text-[38px] font-bold leading-none tabular-nums" data-slot="kpi">
-                        {euro(anno1.importo)}
-                      </p>
-                      <p className="mt-2 text-[12.5px] text-muted-foreground">
-                        l&apos;anno, IVA esclusa · dal secondo anno {euro(rinnovo.importo)}
-                      </p>
-                      <p className="mt-5 border-t pt-4 text-[14px] font-medium">
-                        {aziendeTesto(p.aziende)} in portafoglio
-                      </p>
-                      <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-                        Tutto il resto è compreso, ed è identico in ogni fascia.
-                      </p>
-                      <div className="mt-auto pt-6">
-                        <Button asChild className="w-full" variant={consigliata ? "default" : "outline"}>
-                          <Link href="/attiva">Attiva questa fascia</Link>
-                        </Button>
+                        <h2 className="font-display mt-1.5 text-[21px] font-bold tracking-[-0.01em]">{p.nome}</h2>
+                        <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
+                        <div className="mt-6">
+                          <PrezzoFascia piano={k} />
+                        </div>
+                        <ul className="mt-5 space-y-1.5 border-t pt-4 text-[13.5px]">
+                          <li className="flex gap-2">
+                            <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+                            {p.usoInterno ? "Un'azienda, la tua" : aziendeTesto(p.aziende)}
+                          </li>
+                          <li className="flex gap-2">
+                            <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+                            {p.accessi} accessi
+                          </li>
+                          {p.usoInterno && (
+                            <li className="flex gap-2">
+                              <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+                              A ciascun collega i suoi percorsi
+                            </li>
+                          )}
+                          <li className="flex gap-2">
+                            <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+                            Tutti i {QUANTI_PERCORSI} percorsi
+                          </li>
+                        </ul>
+                        <div className="mt-auto pt-6">
+                          <PulsanteAttiva piano={k} variante={primario ? "default" : "outline"} />
+                        </div>
                       </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
+                    </Reveal>
+                  );
+                })}
+              </div>
+
+              <Reveal delay={220}>
+                <div
+                  id="enterprise"
+                  className="mt-6 scroll-mt-24 rounded-xl border border-dashed p-6 md:grid md:grid-cols-[minmax(0,22rem)_1fr] md:gap-8"
+                >
+                  <div>
+                    <h2 className="font-display text-[21px] font-bold tracking-[-0.01em]">{PIANI.enterprise.nome}</h2>
+                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
+                      Oltre 30 aziende, gruppi societari, reti di studi, capofila con molti fornitori: esigenze troppo
+                      diverse fra loro perché un listino unico le serva bene. Raccontaci di che cosa avete bisogno e
+                      prepariamo un&apos;offerta.
+                    </p>
+                  </div>
+                  <div className="mt-5 md:mt-0">
+                    <ModuloEnterprise />
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delay={260}>
+                <p className="mt-6 text-[13px] leading-relaxed text-muted-foreground">
+                  Se superi le aziende del tuo piano, la piattaforma te lo segnala prima che accada: si passa al piano
+                  più capiente, oppure oltre le 30 aziende a {PIANI.enterprise.nome}. Nessun lavoro si blocca e nulla
+                  va rifatto.
+                </p>
+              </Reveal>
             </div>
-
-            {/* ⚠️ La fascia per l'uso interno sta FUORI dalla griglia: ha la capienza di
-                «Un'azienda» ma è un'altra cosa — una sola azienda, la propria, e i
-                percorsi assegnati a ciascun collega. In fila con le altre si leggerebbero due
-                fasce da un'azienda a prezzi diversi, senza la differenza. */}
-            <Reveal delay={200}>
-              <div
-                className="mt-6 rounded-xl border bg-card p-6 sm:flex sm:items-center sm:justify-between sm:gap-6"
-                data-fascia-interna
-              >
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-                    Per l&apos;uso interno
-                  </p>
-                  <h2 className="font-display mt-1.5 text-[19px] font-bold tracking-[-0.01em]">{INTERNA.nome}</h2>
-                  <p className="mt-1.5 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground">
-                    Per l&apos;azienda che fa da sé, non per chi segue clienti: una sola azienda, la tua, e{" "}
-                    {INTERNA.accessi}{" "}accessi per i colleghi. L&apos;amministratore assegna a ciascuno i
-                    percorsi di cui si occupa, e ognuno vede soltanto i suoi.
-                  </p>
-                  <p className="mt-3 text-[14px]">
-                    <span className="font-display text-[24px] font-bold tabular-nums" data-slot="kpi">
-                      {euro(prezzoDiVendita(INTERNA, "anno1")!.importo)}
-                    </span>{" "}
-                    <span className="text-[12.5px] text-muted-foreground">
-                      l&apos;anno, IVA esclusa · dal secondo anno{" "}
-                      {euro(prezzoDiVendita(INTERNA, "rinnovo")!.importo)}
-                    </span>
-                  </p>
-                </div>
-                <Button asChild variant="outline" className="mt-4 shrink-0 sm:mt-0">
-                  <Link href={`/attiva/${INTERNA.key}`}>Attiva la fascia «{INTERNA.nome}»</Link>
-                </Button>
-              </div>
-            </Reveal>
-
-            <Reveal delay={220}>
-              <div className="mt-6 rounded-xl border border-dashed p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
-                <div>
-                  <h2 className="font-display text-[19px] font-bold tracking-[-0.01em]">{PIANI.enterprise.nome}</h2>
-                  <p className="mt-1.5 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground">
-                    Reti di studi, mandati di filiera, capofila con molti fornitori: esigenze troppo diverse fra
-                    loro perché un listino unico le serva bene. Scrivici e prepariamo un preventivo.
-                  </p>
-                </div>
-                <Button asChild variant="outline" className="mt-4 shrink-0 sm:mt-0">
-                  <a href="mailto:info@evalisdeck.it?subject=Preventivo%20EvalisDeck%20oltre%2030%20aziende">
-                    Chiedi un preventivo
-                  </a>
-                </Button>
-              </div>
-            </Reveal>
-
-            <Reveal delay={260}>
-              <p className="mt-6 text-[13px] leading-relaxed text-muted-foreground">
-                Se superi le aziende della tua fascia, la piattaforma te lo segnala prima che accada: puoi
-                aggiungere blocchi da {ESTENSIONI.bloccoAziende.aziende} aziende a{" "}
-                {euro(ESTENSIONI.bloccoAziende.prezzo)} l&apos;anno, oppure scriverci per passare alla fascia
-                superiore. Dalla fascia «{PIANI.singola.nome}» si passa direttamente alla superiore, che costa
-                meno di un&apos;azienda più un blocco. Nessun lavoro si blocca e nulla va rifatto.
-              </p>
-            </Reveal>
-          </div>
-        </section>
+          </section>
+        </PeriodoProvider>
 
         {/* ========================================================= TUTTO INCLUSO */}
         <section className="border-b">
@@ -229,11 +213,11 @@ export default function Prezzi() {
             <Reveal>
               <div className="max-w-2xl">
                 <h2 className="font-display text-[28px] font-bold leading-tight tracking-[-0.02em] md:text-[34px]">
-                  Tutto incluso, in ogni fascia.
+                  Tutto incluso, in ogni piano.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Nessun modulo a pagamento separato, nessuna funzione riservata alle fasce superiori: il
-                  contenuto è identico per tutti. Cambia una cosa sola, quante aziende puoi gestire.
+                  Nessun modulo a pagamento separato, nessuna funzione riservata ai piani più cari: il contenuto è
+                  identico per tutti. Cambia una cosa sola, quante aziende puoi seguire.
                 </p>
               </div>
             </Reveal>
@@ -253,27 +237,19 @@ export default function Prezzi() {
             </div>
 
             {/* ⚠️ La tabella scorre nel PROPRIO contenitore, mai il corpo della pagina: su un
-                telefono da 360px tre colonne di numeri non ci stanno, e una pagina che
-                sfonda in orizzontale si legge come un difetto anche quando il contenuto è
-                giusto. */}
+                telefono da 360px sei colonne di numeri non ci stanno. */}
             <Reveal delay={200}>
               <div className="mt-12 overflow-x-auto rounded-xl border">
-                <table className="w-full min-w-[34rem] border-collapse text-[13.5px]">
-                  <caption className="sr-only">Le fasce a confronto: capienza e prezzo</caption>
+                <table className="w-full min-w-[40rem] border-collapse text-[13.5px]">
+                  <caption className="sr-only">I piani a confronto: capienza e prezzo, annuale e mensile</caption>
                   <thead>
                     <tr className="border-b bg-muted/40 text-left">
-                      <th scope="col" className="px-4 py-3 font-semibold">
-                        Fascia
-                      </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
-                        Aziende
-                      </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
-                        Primo anno
-                      </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
-                        Dal secondo anno
-                      </th>
+                      <th scope="col" className="px-4 py-3 font-semibold">Piano</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">Aziende</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">Accessi</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">Annuale</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">Mensile</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">12 mesi col mensile</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -281,22 +257,23 @@ export default function Prezzi() {
                       const p = PIANI[k];
                       return (
                         <tr key={k} className="border-b last:border-0">
-                          <th scope="row" className="px-4 py-3 text-left font-medium">
-                            {p.nome}
-                          </th>
+                          <th scope="row" className="px-4 py-3 text-left font-medium">{p.nome}</th>
                           <td className="px-4 py-3 tabular-nums">{p.usoInterno ? "1, la propria" : p.aziende}</td>
-                          <td className="px-4 py-3 tabular-nums">{euro(prezzoDiVendita(p, "anno1")!.importo)}</td>
-                          <td className="px-4 py-3 tabular-nums">{euro(prezzoDiVendita(p, "rinnovo")!.importo)}</td>
+                          <td className="px-4 py-3 tabular-nums">{p.accessi}</td>
+                          <td className="px-4 py-3 font-medium tabular-nums">{euro(prezzoDiVendita(p, "anno")!.importo)}</td>
+                          <td className="px-4 py-3 tabular-nums">{euro(prezzoDiVendita(p, "mese")!.importo)}</td>
+                          <td className="px-4 py-3 text-muted-foreground tabular-nums">{euro(costoAnnuoMensile(p)!)}</td>
                         </tr>
                       );
                     })}
                     <tr>
-                      <th scope="row" className="px-4 py-3 text-left font-medium">
-                        {PIANI.enterprise.nome}
-                      </th>
+                      <th scope="row" className="px-4 py-3 text-left font-medium">{PIANI.enterprise.nome}</th>
+                      <td className="px-4 py-3 text-muted-foreground">oltre 30</td>
                       <td className="px-4 py-3 text-muted-foreground">su misura</td>
-                      <td className="px-4 py-3 text-muted-foreground" colSpan={2}>
-                        preventivo
+                      <td className="px-4 py-3 text-muted-foreground" colSpan={3}>
+                        <Link href="#enterprise" className="underline underline-offset-4 hover:text-foreground">
+                          contattaci
+                        </Link>
                       </td>
                     </tr>
                   </tbody>
@@ -315,9 +292,8 @@ export default function Prezzi() {
                   Il conto da fare prima di decidere.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Quanti documenti servono per ripagare l&apos;abbonamento? Mettici i tuoi numeri: la tariffa che
-                  pratichi ai tuoi clienti la conosci tu, e nessuna media di mercato dice qualcosa di utile sul
-                  tuo studio.
+                  Mettici i tuoi numeri: quanto ti costa oggi farti preparare i documenti, o quanto li fai pagare ai
+                  tuoi clienti. Nessuna media di mercato dice qualcosa di utile sul tuo caso.
                 </p>
               </div>
             </Reveal>
@@ -338,7 +314,7 @@ export default function Prezzi() {
                   Che cosa comprende «tutti i percorsi».
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Sono {QUANTI_PERCORSI}, divisi in {AREE_VETRINA.length} gruppi, e ci sono tutti in ogni fascia.
+                  Sono {QUANTI_PERCORSI}, divisi in {AREE_VETRINA.length} gruppi, e ci sono tutti in ogni piano.
                 </p>
               </div>
             </Reveal>
@@ -372,37 +348,6 @@ export default function Prezzi() {
           </div>
         </section>
 
-        {/* ======================================================== I FONDATORI */}
-        <section id="fondatori" className="scroll-mt-20 border-b bg-sidebar text-sidebar-foreground">
-          <div className="mx-auto w-full max-w-6xl px-5 py-20">
-            <Reveal>
-              <div className="max-w-2xl">
-                <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-sidebar-primary">
-                  <span className="h-px w-8 bg-sidebar-primary" aria-hidden />
-                  {FONDATORI.posti} posti
-                </p>
-                <h2 className="font-display mt-4 text-[28px] font-bold leading-tight tracking-[-0.02em] text-white md:text-[34px]">
-                  Programma Fondatori
-                </h2>
-                <p className="mt-5 text-[15px] leading-relaxed text-sidebar-foreground/80">
-                  Selezioniamo {FONDATORI.posti}{" "}studi che useranno la piattaforma su mandati reali in
-                  questa fase di lancio. Dodici mesi a condizioni riservate, uno sconto che resta per tutta la
-                  vita dell&apos;abbonamento, un canale diretto con chi sviluppa e voce sulla priorità dei
-                  prossimi percorsi. In cambio chiediamo riscontri operativi e, se il servizio convince, una
-                  testimonianza.
-                </p>
-                <p className="mt-4 text-[13.5px] leading-relaxed text-sidebar-foreground/60">
-                  La testimonianza è dovuta solo in caso di effettiva soddisfazione: non chiediamo a nessuno di
-                  dichiarare quello che non pensa.
-                </p>
-                <div className="mt-8 max-w-xl">
-                  <ModuloFondatori />
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
         {/* ========================================================== LE DOMANDE */}
         <section id="domande" className="scroll-mt-20 border-b">
           <div className="mx-auto w-full max-w-6xl px-5 py-20">
@@ -431,15 +376,15 @@ export default function Prezzi() {
             <Reveal>
               <div className="max-w-2xl">
                 <h2 className="font-display text-[28px] font-bold leading-tight tracking-[-0.02em] md:text-[34px]">
-                  Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
+                  Prima di pagare, guardalo lavorare su un&apos;azienda vera.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Registrati e guarda come lavora: la demo è percorribile per intero e non chiede la carta. Se hai
-                  già deciso, attivi subito e salti il giro.
+                  Registrati e apri la demo: un&apos;azienda d&apos;esempio già compilata, percorribile per intero, senza
+                  carta. Se hai già deciso, attivi subito e salti il giro.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild size="lg">
-                    <Link href="/attiva">Attiva il servizio</Link>
+                    <Link href="/attiva/azienda">Attiva il servizio</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
                     <Link href="/registrati">Prova la demo guidata</Link>

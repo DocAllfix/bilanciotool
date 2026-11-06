@@ -269,10 +269,10 @@ export default async function VetrinaPercorso({ params }: { params: Promise<{ sl
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild size="lg">
-                    <Link href="/attiva/singola">Attiva il servizio</Link>
+                    <Link href="/attiva/azienda">Attiva il servizio</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
-                    <Link href="/prezzi">Vedi le fasce</Link>
+                    <Link href="/prezzi">Vedi i prezzi</Link>
                   </Button>
                 </div>
               </div>

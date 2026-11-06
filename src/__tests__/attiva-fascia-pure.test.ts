@@ -26,8 +26,18 @@ describe("le porte d'acquisto per fascia", () => {
     expect(src).toContain("/impostazioni/abbonamento?fascia=");
   });
 
-  it("la home rimanda alla porta della fascia d'ingresso, senza scriverne il nome a mano", () => {
+  it("la home rimanda alla porta del piano per l'azienda, ricavato dal listino e non scritto a mano", () => {
+    // Dal 6 novembre 2026 il cliente primario è l'azienda che fa da sé: i richiami della home
+    // portano al suo piano, e il piano si chiede al listino (`pubblico === "azienda"`).
     const home = readFileSync("src/app/(marketing)/page.tsx", "utf8");
-    expect(home).toContain("`/attiva/${fasceVendibili()[0]}`");
+    expect(home).toContain('PIANI[k].pubblico === "azienda"');
+    expect(home).toContain("`/attiva/${PIANO_AZIENDA}`");
+  });
+
+  it("⚠️ le porte delle fasce ritirate rinviano invece di rispondere 404", () => {
+    // Sono indirizzi già usciti: in email, nei collegamenti dei partner, negli articoli.
+    const config = readFileSync("next.config.ts", "utf8");
+    expect(config).toContain('source: "/attiva/singola"');
+    expect(config).toContain('source: "/attiva/professional"');
   });
 });

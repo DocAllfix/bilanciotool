@@ -161,12 +161,21 @@ const nextConfig: NextConfig = {
   async redirects() {
     const CANONICO = "evalisdeck.it";
     const ALTRI_HOST = ["www.evalisdeck.it", "evalisdeck.vercel.app", "bilanciotool.vercel.app"];
-    return ALTRI_HOST.map((host) => ({
+    const host = ALTRI_HOST.map((host) => ({
       source: "/:percorso*",
       has: [{ type: "host" as const, value: host }],
       destination: `https://${CANONICO}/:percorso*`,
       permanent: true,
     }));
+    // ⚠️ LE FASCE RITIRATE IL 6 NOVEMBRE 2026 hanno indirizzi d'attivazione già usciti: in
+    // email, nei collegamenti dei partner, negli articoli del blog. Senza un rinvio
+    // diventerebbero 404 proprio per chi stava per comprare. «Un'azienda» porta al piano
+    // per l'azienda; «Fino a 5 aziende» era per i consulenti, e i loro piani stanno sui prezzi.
+    const fasceRitirate = [
+      { source: "/attiva/singola", destination: "/attiva/azienda", permanent: true },
+      { source: "/attiva/professional", destination: "/prezzi", permanent: true },
+    ];
+    return [...host, ...fasceRitirate];
   },
 };
 

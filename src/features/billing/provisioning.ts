@@ -4,7 +4,7 @@ import { orgEntitlement, stripeCustomer, stripeSubscription, entitlementEvent, m
 import { and, eq } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 import { withTenant } from "@/lib/db/tenant";
-import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, chiavePiano, type PianoKey } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI_RITIRATE, LOOKUP_BLOCCHI, AZIENDE_PER_BLOCCO, chiavePiano, type PianoKey, type Periodo } from "@/lib/prezzi";
 import { indirizzoCorrente } from "@/lib/indirizzo";
 
 // Da un abbonamento Stripe allo stato dell'account.
@@ -24,7 +24,17 @@ export type Capacita = {
   aziendeExtra: number;
   accessiExtra: number;
   whiteLabel: boolean;
+  /** Annuale o mensile, letto dall'intervallo della riga del PIANO. `null` se non c'è un
+   *  piano o se Stripe dà un intervallo che non vendiamo. */
+  periodo: Periodo | null;
 };
+
+/** L'intervallo di un prezzo Stripe tradotto nel nostro periodo. */
+export function periodoDaIntervallo(intervallo: string | null | undefined): Periodo | null {
+  if (intervallo === "year") return "anno";
+  if (intervallo === "month") return "mese";
+  return null;
+}
 
 /**
  * Che cosa è stato comprato, leggendo le righe dell'abbonamento.
@@ -38,6 +48,7 @@ export function capacitaDaAbbonamento(sub: Stripe.Subscription): Capacita {
   let aziendeExtra = 0;
   let accessiExtra = 0;
   let whiteLabel = false;
+  let periodo: Periodo | null = null;
 
   for (const riga of sub.items.data) {
     const lookup = riga.price.lookup_key ?? "";
@@ -46,22 +57,21 @@ export function capacitaDaAbbonamento(sub: Stripe.Subscription): Capacita {
     const trovato = chiavePiano(lookup);
     if (trovato) {
       piano = trovato;
+      // ⚠️ Il periodo si legge dalla riga del PIANO e dall'intervallo che Stripe addebita
+      // davvero, non dai metadati: un abbonamento passato all'annuale porta ancora
+      // `periodo: mese` nei metadati della sessione che l'ha creato.
+      periodo = periodoDaIntervallo(riga.price.recurring?.interval);
       continue;
     }
     // ⚠️ Si riconoscono anche le lookup RITIRATE. Una lookup che non si riconosce piu' non
     // produce un errore: produce una capacita' piu' piccola, in silenzio, a un cliente che
     // quelle righe le ha pagate.
-    const BLOCCHI: string[] = [
-      ESTENSIONI.bloccoAziende.lookup,
-      ESTENSIONI_RITIRATE.bloccoAziendeV1.lookup,
-      ESTENSIONI_RITIRATE.bloccoAziendeV1.lookupLancio,
-    ];
     const ACCESSI: string[] = [ESTENSIONI_RITIRATE.accesso.lookup, ESTENSIONI_RITIRATE.accesso.lookupLancio];
     const MARCHIO: string[] = [ESTENSIONI_RITIRATE.whiteLabel.lookup, ESTENSIONI_RITIRATE.whiteLabel.lookupLancio];
 
-    if (BLOCCHI.includes(lookup)) {
+    if (LOOKUP_BLOCCHI.includes(lookup)) {
       // In `aziendeExtra` finiscono le AZIENDE, non i blocchi: cinque per blocco.
-      aziendeExtra += quantita * ESTENSIONI.bloccoAziende.aziende;
+      aziendeExtra += quantita * AZIENDE_PER_BLOCCO;
     } else if (ACCESSI.includes(lookup)) {
       accessiExtra += quantita;
     } else if (MARCHIO.includes(lookup)) {
@@ -81,7 +91,13 @@ export function capacitaDaAbbonamento(sub: Stripe.Subscription): Capacita {
   // quando furono generati.
   if (piano) whiteLabel = true;
 
-  return { piano, aziendeExtra, accessiExtra, whiteLabel };
+  return { piano, aziendeExtra, accessiExtra, whiteLabel, periodo };
+}
+
+/** Vero se l'abbonamento si fermerà alla fine del periodo pagato invece di rinnovarsi. */
+export function disdettoAFinePeriodo(sub: Pick<Stripe.Subscription, "cancel_at_period_end" | "cancel_at" | "status">): boolean {
+  if (sub.status === "canceled") return false;
+  return Boolean(sub.cancel_at_period_end || sub.cancel_at);
 }
 
 /** Lo stato del nostro entitlement a partire da quello dell'abbonamento Stripe. */
@@ -169,11 +185,12 @@ export async function applicaAbbonamento(
         status: stato,
         // Il piano si scrive solo se l'abbonamento ne contiene uno: un evento su una
         // riga di sola estensione non deve azzerare il piano comprato.
-        ...(capacita.piano ? { piano: capacita.piano, activatedAt: new Date() } : {}),
+        ...(capacita.piano ? { piano: capacita.piano, activatedAt: new Date(), periodo: capacita.periodo } : {}),
         aziendeExtra: capacita.aziendeExtra,
         accessiExtra: capacita.accessiExtra,
         whiteLabel: capacita.whiteLabel,
         currentPeriodEnd: rinnovoIl,
+        disdettaAFinePeriodo: disdettoAFinePeriodo(sub),
       })
       .where(eq(orgEntitlement.organizationId, orgId))
       .returning({ id: orgEntitlement.organizationId });
@@ -227,7 +244,7 @@ export async function applicaAbbonamento(
       accessiExtra: capacita.accessiExtra,
       whiteLabel: capacita.whiteLabel,
       currentPeriodEnd: rinnovoIl,
-      dettagli: { statoStripe: sub.status },
+      dettagli: { statoStripe: sub.status, periodo: capacita.periodo, disdetta: disdettoAFinePeriodo(sub) },
     });
 
     await logAudit(tx, {
@@ -240,7 +257,7 @@ export async function applicaAbbonamento(
     });
   });
 
-  await avvisaSeCambiato(orgId, statoPrecedente, stato, capacita.piano);
+  await avvisaSeCambiato(orgId, statoPrecedente, stato, capacita.piano, capacita.periodo);
 }
 
 /**
@@ -255,6 +272,7 @@ async function avvisaSeCambiato(
   prima: string | null,
   adesso: string,
   piano: PianoKey | null,
+  periodo: Periodo | null = null,
 ): Promise<void> {
   if (prima === adesso) return;
   try {
@@ -271,6 +289,8 @@ async function avvisaSeCambiato(
         accessi: p.accessi,
         url: `${base}/dashboard`,
         urlAbbonamento: `${base}/impostazioni/abbonamento`,
+        periodo,
+        usoInterno: Boolean(p.usoInterno),
       });
     } else if (adesso === "past_due") {
       await email.sendPagamentoFallitoEmail(destinatario, {

@@ -2,10 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 import { NORME_VETRINA, NUMERI_VETRINA as NV } from "@/components/landing/numeri-vetrina";
-import { FONDATORI, PIANI, fasceVendibili } from "@/lib/prezzi";
+import { PROBLEMI } from "@/components/landing/problemi";
+import { PIANI, fasceVendibili, fasceConsulenti } from "@/lib/prezzi";
+import { vetrinaDelModulo } from "@/features/vetrina/registro";
 
 /** Tutti i percorsi in fila, per i testi che li elencano. */
 const TUTTI_I_PERCORSI = AREE_VETRINA.flatMap((a) => a.percorsi);
+
+/** Il piano dell'azienda che fa da sé: è il cliente primario dal 6 novembre 2026. */
+const PIANO_AZIENDA = fasceVendibili().find((k) => PIANI[k].pubblico === "azienda") ?? "azienda";
+/** La capienza più alta che si compra online, per la sezione dei consulenti. */
+const MASSIMO_CONSULENTI = Math.max(...fasceConsulenti().map((k) => PIANI[k].aziende));
 
 import { SiteHeader } from "@/components/landing/site-header";
 import { HeroDeck } from "@/components/landing/hero-deck";
@@ -19,34 +26,41 @@ import { FasciaEcoVadis, FirmaEcoVadis } from "@/components/landing/ecovadis";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
+// ⚠️ IL DESTINATARIO È CAMBIATO il 6 novembre 2026, per decisione del committente: i
+// consulenti non rispondevano, e il cliente primario è l'AZIENDA che ha un responsabile
+// interno per questo lavoro. La pagina parla a lui; i consulenti strutturati hanno una
+// sezione loro e i loro piani.
+//
+// ⚠️ LA COPY È DURA MA VERA. Ogni obbligo e ogni sanzione citati qui stanno in
+// `problemi.ts` con la loro fonte, e la fonte si stampa sotto il testo: su un prodotto che
+// vende conformità, un'affermazione sbagliata in vetrina è il danno peggiore.
+//
+// ⚠️ NESSUNA CIFRA DI PREZZO sulla home: i prezzi stanno su `/prezzi`. Le sanzioni si
+// scrivono in «euro» a lettere, mai col simbolo: il collaudo pubblico cerca gli importi
+// col simbolo per verificare che qui non ce ne siano.
+
 export const metadata: Metadata = {
   // `absolute` perché il layout radice accoda «· EvalisDeck» a ogni titolo, e qui il
-  // marchio sta già in testa: senza, la home usciva «EvalisDeck · … · EvalisDeck». È il
-  // titolo che Google mostra per il nome del prodotto, quindi il marchio ripetuto si
-  // mangiava i sessanta caratteri utili proprio nel posto che conta di più.
+  // marchio sta già in testa.
   title: {
-    absolute: "EvalisDeck · I documenti di conformità, un solo strumento",
+    absolute: "EvalisDeck · La conformità della tua azienda, in un solo strumento",
   },
-  description: `${QUANTI_PERCORSI} percorsi guidati per studi di consulenza e PMI: inventario GHG, bilanci ESG ed energetico, Modello 231, NIS2, GDPR, ISO 27001, SA8000, PAS 24000 e altri. Calcoli automatici e versioni immutabili.`,
+  description: `Per chi in azienda si occupa di conformità: ${QUANTI_PERCORSI} percorsi guidati, dall'inventario GHG e dai bilanci ESG ed energetico al Modello 231, alle segnalazioni, a NIS2, GDPR, ISO 27001 e SA8000. Calcoli automatici, documenti impaginati, versioni immutabili.`,
 };
 
-
 // Dati strutturati: chi produce lo strumento e con quale riconoscimento.
-// Il rating sta su Organization (è di Evalis), non sul software: la stessa
-// distinzione che facciamo in pagina, detta ai motori di ricerca.
+// Il rating sta su Organization (è di Evalis), non sul software.
 const DATI_STRUTTURATI = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Evalis Srl",
-  // Il dominio vero: l'indirizzo di Vercel era rimasto dal primo rilascio, e ai motori
-  // di ricerca diceva che l'organizzazione sta da un'altra parte.
   url: "https://evalisdeck.it",
   ...(ecovadisValido()
     ? {
         award: `Medaglia EcoVadis ${ECOVADIS.medaglia} (${ECOVADIS.punteggio}/100, ${ECOVADIS.percentile}° percentile), ${ECOVADIS.mese}`,
         hasCredential: {
           "@type": "EducationalOccupationalCredential",
-          name: `Valutazione di sostenibilità EcoVadis — medaglia ${ECOVADIS.medaglia}`,
+          name: `Valutazione di sostenibilità EcoVadis, medaglia ${ECOVADIS.medaglia}`,
           credentialCategory: "rating",
           recognizedBy: { "@type": "Organization", name: "EcoVadis" },
           validFrom: ECOVADIS.emessoIl,
@@ -60,18 +74,14 @@ const DATI_STRUTTURATI = {
       "@type": "SoftwareApplication",
       name: "EvalisDeck",
       applicationCategory: "BusinessApplication",
-      // ⚠️ L'elenco si DERIVA dal registro. Scritto a mano ne nominava cinque su dodici,
-      // e a leggerlo sembrava il catalogo completo: e' la forma peggiore di dato stantio,
-      // perche' non e' falso in nulla di cio' che dice — e' falso in cio' che tace.
-      description: `Percorsi guidati per studi di consulenza e PMI: ${TUTTI_I_PERCORSI.map((p) => p.titolo).join(", ")}.`,
+      // ⚠️ L'elenco si DERIVA dal registro: scritto a mano ne nominava cinque su dodici.
+      description: `Percorsi guidati per le aziende e i loro consulenti: ${TUTTI_I_PERCORSI.map((p) => p.titolo).join(", ")}.`,
     },
   },
 };
 
 // Le domande frequenti dette anche ai motori di ricerca, con le STESSE risposte che
-// stanno in pagina: si leggono dallo stesso elenco, non si ricopiano. Due copie
-// divergono alla prima correzione, e quella che diverge e' sempre quella che nessuno
-// rilegge — mentre e' proprio quella che finisce nei risultati.
+// stanno in pagina: si leggono dallo stesso elenco, non si ricopiano.
 const DOMANDE_STRUTTURATE = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -96,18 +106,19 @@ export default function LandingPage() {
             <div>
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary sm:tracking-[0.22em]">
                 <span className="h-px w-8 shrink-0 bg-primary" aria-hidden />
-                Rendicontazione · studi e PMI
+                Per chi segue la conformità in azienda
               </p>
-              <h1 className="font-display mt-5 text-[36px] font-bold leading-[1.05] tracking-[-0.03em] sm:text-[44px] md:text-[64px]">
-                Dalla raccolta dati al documento firmato.
+              <h1 className="font-display mt-5 text-[36px] font-bold leading-[1.05] tracking-[-0.03em] sm:text-[44px] md:text-[58px]">
+                Ogni richiesta di conformità finisce sulla tua scrivania.
               </h1>
               <p className="font-display mt-3 text-[20px] font-semibold tracking-[-0.01em] text-primary sm:text-[22px] md:text-[26px]">
-                Un solo strumento.
+                Falla uscire come un documento pronto.
               </p>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Percorsi guidati, dall&apos;inventario GHG al Modello 231: ogni passo sa
-                cosa chiede la norma, i calcoli si fanno da soli, e quello che ne esce è un documento impaginato che
-                regge la verifica.
+                Il cliente chiede le emissioni, la banca i dati di sostenibilità, la legge un canale per le
+                segnalazioni, l&apos;ente di certificazione la documentazione. EvalisDeck ti guida passo per passo, fa
+                i calcoli e produce il documento impaginato che regge la verifica: senza ripartire da un foglio
+                bianco, e senza un consulente per ogni norma.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button size="lg" asChild data-tour="cta-demo">
@@ -115,11 +126,8 @@ export default function LandingPage() {
                     Prova la demo guidata <ArrowRight className="size-4" />
                   </Link>
                 </Button>
-                {/* Il secondo pulsante e' «Attiva», non l'esempio in PDF: chi ha gia'
-                    deciso deve trovare un COMANDO, non una riga di testo sottolineata
-                    sotto ai bottoni. L'esempio resta, come collegamento. */}
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="/attiva">Attiva il servizio</Link>
+                  <Link href={`/attiva/${PIANO_AZIENDA}`}>Attiva il servizio</Link>
                 </Button>
               </div>
               <p className="mt-4 text-sm">
@@ -132,18 +140,12 @@ export default function LandingPage() {
                   <FileText className="size-4" /> Guarda un bilancio d&apos;esempio
                 </a>
               </p>
-              {/* Chi ha gia' deciso non deve passare per la demo: la seconda frase
-                  gli apre una porta, senza rubare il primo piano a chi vuole guardare. */}
               <p className="mt-3 text-xs text-muted-foreground">
                 Un&apos;azienda d&apos;esempio già compilata ti aspetta. Nessuna carta richiesta.{" "}
-                <Link href="/#acquisto" className="underline underline-offset-2 hover:text-foreground">
-                  Come si acquista
+                <Link href="/#consulenti" className="underline underline-offset-2 hover:text-foreground">
+                  Sei un consulente?
                 </Link>
               </p>
-              {/* La medaglia sopra la piega, richiesta del committente. Sta qui e
-                  non in una striscia in cima perché non deve spingere giù il
-                  titolo né rubare il colpo d'occhio al Deck: è una prova di
-                  serietà accanto alla promessa, non un'insegna. */}
               <FirmaEcoVadis />
             </div>
             <HeroDeck />
@@ -185,92 +187,72 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ==================================================== I PERCORSI */}
-        <section id="percorsi" className="scroll-mt-20 border-b">
+        {/* ======================================================= IL PROBLEMA */}
+        <section id="problema" className="scroll-mt-20 border-b">
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <Reveal>
               <div className="max-w-2xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                   <span className="h-px w-8 bg-primary" aria-hidden />
-                  {QUANTI_PERCORSI} percorsi, un solo archivio
+                  Che cosa ti stanno chiedendo
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
-                  Ogni azienda del portafoglio ha il suo fascicolo. Dentro, {QUANTI_PERCORSI} percorsi in{" "}
-                  {AREE_VETRINA.length} gruppi.
+                  Le richieste arrivano tutte. Arrivano adesso. E hanno una scadenza.
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Alcuni si redigono per esercizio e seguono il calendario. Altri sono fotografie che si aggiornano
-                  per revisioni, quando il committente, la banca o l&apos;ente di certificazione le chiedono.
+                  Clienti, banche, enti di certificazione e autorità chiedono documenti diversi con regole diverse, e
+                  spesso li chiedono alla stessa persona. Ecco che cosa c&apos;è in gioco, norma per norma.
                 </p>
               </div>
             </Reveal>
 
-            {/* ⚠️ IL BLOCCO E' IL GRUPPO, NON LA SCHEDA.
-                Prima erano schede in `md:grid-cols-2` dentro ciascun gruppo: con 4/4/3
-                percorsi facevano 2+2, 2+2, 2+1 — una scheda orfana — e col dodicesimo ne
-                sarebbero diventate due. E' la storia della card del portafoglio, dove a
-                ogni modulo nuovo si cambiava il numero di colonne rimandando il problema
-                al modulo dopo. Con le righe il numero di percorsi per gruppo smette di
-                essere una variabile di disposizione: 4+4+3 oggi, 5+4+3 domani, uguale. */}
-            <div className="mt-16 space-y-14">
-              {AREE_VETRINA.map((area) => (
-                <div key={area.nome}>
-                  <Reveal delay={40}>
-                    <div className="border-b pb-5">
-                      <h3 className="font-display flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[15px] font-bold uppercase tracking-[0.16em]">
-                        <span className={`h-2 w-8 shrink-0 self-center ${area.tratto}`} aria-hidden />
-                        {area.nome}
-                        <span className="font-mono text-[11.5px] font-normal normal-case tracking-normal text-muted-foreground" data-slot="kpi">
-                          {area.percorsi.length} percorsi
-                        </span>
-                      </h3>
-                      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
-                        {area.perche}
+            {/* ⚠️ Un elenco a due colonne, non una griglia di schede uguali: è un'anti-reference
+                di PRODUCT.md, e qui ogni voce ha un peso diverso e una fonte da leggere. */}
+            <ol className="mt-12 grid gap-x-12 md:grid-cols-2" data-problemi>
+              {PROBLEMI.map((p, i) => (
+                <Reveal key={p.titolo} delay={i * 50}>
+                  <li className="grid grid-cols-[40px_1fr] gap-3 border-t py-6">
+                    <span className="font-display text-[18px] font-bold text-primary/50" data-slot="kpi">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3 className="font-display text-[18px] font-semibold leading-snug tracking-[-0.01em]">{p.titolo}</h3>
+                      <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{p.testo}</p>
+                      <p className="mt-2 font-mono text-[11px] leading-snug text-muted-foreground/80" data-fonte>
+                        {p.fonte}
                       </p>
                     </div>
-                  </Reveal>
-                  <div>
-                    {area.percorsi.map((p, i) => (
-                      <Reveal key={p.titolo} delay={40 + i * 40}>
-                        <Percorso titolo={p.titolo} norma={p.norma} passi={p.passi} punto={p.punto} />
-                      </Reveal>
-                    ))}
-                  </div>
-                </div>
+                  </li>
+                </Reveal>
               ))}
-            </div>
+            </ol>
 
             <Reveal delay={200}>
-              <p className="mt-14 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
-                <span className="inline-flex items-center gap-2 font-semibold text-foreground">
-                  <span className="size-2 rounded-full bg-scope-1" aria-hidden />
-                  Dall&apos;inventario al bilancio
-                  <ArrowRight className="size-3.5" aria-hidden />
-                </span>
-                le emissioni calcolate nell&apos;inventario entrano nel bilancio senza essere riscritte: una sola fonte,
-                mai due versioni dello stesso numero in due documenti.
+              <p className="mt-10 max-w-2xl border-l-2 border-primary pl-5 text-[16px] font-medium leading-relaxed">
+                Non serve un consulente per ogni norma. Serve un metodo che sappia che cosa chiede ciascuna, e qualcuno
+                che lo segua. Quel qualcuno, di solito, sei tu.
               </p>
             </Reveal>
           </div>
         </section>
 
         {/* ==================================================== COME FUNZIONA */}
-        <section className="bg-sidebar text-sidebar-foreground">
+        <section id="come-funziona" className="scroll-mt-20 bg-sidebar text-sidebar-foreground">
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <Reveal>
               <div className="max-w-xl">
                 <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-sidebar-primary">
                   <span className="h-px w-8 bg-sidebar-primary" aria-hidden />
-                  Come funziona
+                  Che cosa fa, esattamente
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] text-white md:text-[42px]">
-                  Tre gesti. Il resto è mestiere della piattaforma.
+                  Tre gesti. Il resto lo fa la piattaforma.
                 </h2>
               </div>
             </Reveal>
             <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 md:grid-cols-3">
               <Reveal className="h-full">
-                <PassoScuro n="01" titolo="Compili il percorso" testo="Ogni passo spiega cosa serve, perché la norma lo chiede e dove trovare il dato. Un'esclusione senza motivazione non passa.">
+                <PassoScuro n="01" titolo="Rispondi alle domande del percorso" testo="Ogni passo dice cosa serve, perché la norma lo chiede e dove trovare il dato in azienda. Dal codice ATECO arrivano le voci tipiche del tuo settore, già proposte. Un'esclusione senza motivazione non passa.">
                   <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
                     <div className="flex items-center justify-between text-[10px] text-sidebar-foreground/70">
                       <span>Registro sorgenti</span>
@@ -288,7 +270,7 @@ export default function LandingPage() {
                 </PassoScuro>
               </Reveal>
               <Reveal delay={100} className="h-full">
-                <PassoScuro n="02" titolo="I calcoli si fanno da soli" testo={`Quantità per fattore, doppio Scope 2, incertezza combinata, ${NV.derivatiBilancio} indicatori derivati. In decimale, mai in virgola mobile.`}>
+                <PassoScuro n="02" titolo="I calcoli si fanno da soli" testo={`Quantità per fattore, doppio Scope 2, incertezza combinata, ${NV.derivatiBilancio} indicatori derivati, scadenze di legge. In decimale, mai in virgola mobile: lo stesso numero, ogni volta.`}>
                   <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
                     <p className="text-[10px] text-sidebar-foreground/70">Gas naturale · 12.500 Smc × 1,9755</p>
                     <p className="mt-1 text-xl font-semibold tracking-tight text-white" data-slot="kpi">24,694 <span className="text-xs font-normal text-sidebar-foreground/70">tCO₂e</span></p>
@@ -300,7 +282,7 @@ export default function LandingPage() {
                 </PassoScuro>
               </Reveal>
               <Reveal delay={200} className="h-full">
-                <PassoScuro n="03" titolo="Pubblichi il deck" testo="Documento impaginato con copertina, grafici vettoriali e indice GRI/ESRS. Ogni versione è congelata: quello che consegni resta quello.">
+                <PassoScuro n="03" titolo="Consegni il documento" testo="Impaginato, con copertina, grafici e indice dei contenuti richiesti. Ogni versione è congelata e porta un codice di verifica pubblico: quello che consegni resta quello, e chiunque può controllarlo.">
                   <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-14 w-10 flex-col justify-end rounded-sm p-1" style={{ background: "oklch(0.25 0.03 230)" }}>
@@ -320,6 +302,129 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ==================================================== I PERCORSI */}
+        <section id="percorsi" className="scroll-mt-20 border-b">
+          <div className="mx-auto w-full max-w-6xl px-5 py-24">
+            <Reveal>
+              <div className="max-w-2xl">
+                <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                  <span className="h-px w-8 bg-primary" aria-hidden />
+                  {QUANTI_PERCORSI} percorsi, un solo archivio
+                </p>
+                <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[42px]">
+                  La tua azienda ha un fascicolo. Dentro, {QUANTI_PERCORSI} percorsi in {AREE_VETRINA.length} gruppi.
+                </h2>
+                <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+                  Apri solo quelli che ti servono. Alcuni si redigono per esercizio e seguono il calendario; altri sono
+                  fotografie che si aggiornano per revisioni, quando il cliente, la banca o l&apos;ente di
+                  certificazione le chiedono.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* ⚠️ IL BLOCCO E' IL GRUPPO, NON LA SCHEDA: con le righe il numero di percorsi
+                per gruppo smette di essere una variabile di disposizione. */}
+            <div className="mt-16 space-y-14">
+              {AREE_VETRINA.map((area) => (
+                <div key={area.nome}>
+                  <Reveal delay={40}>
+                    <div className="border-b pb-5">
+                      <h3 className="font-display flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[15px] font-bold uppercase tracking-[0.16em]">
+                        <span className={`h-2 w-8 shrink-0 self-center ${area.tratto}`} aria-hidden />
+                        {area.nome}
+                        <span className="font-mono text-[11.5px] font-normal normal-case tracking-normal text-muted-foreground" data-slot="kpi">
+                          {area.percorsi.length} percorsi
+                        </span>
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
+                        {area.perche}
+                      </p>
+                    </div>
+                  </Reveal>
+                  <div>
+                    {area.percorsi.map((p, i) => {
+                      const v = p.modulo ? vetrinaDelModulo(p.modulo) : null;
+                      return (
+                        <Reveal key={p.titolo} delay={40 + i * 40}>
+                          <Percorso
+                            titolo={p.titolo}
+                            norma={p.norma}
+                            passi={p.passi}
+                            punto={p.punto}
+                            href={v ? `/percorsi/${v.slug}` : null}
+                          />
+                        </Reveal>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Reveal delay={200}>
+              <p className="mt-14 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-5 text-[13px] text-muted-foreground">
+                <span className="inline-flex items-center gap-2 font-semibold text-foreground">
+                  <span className="size-2 rounded-full bg-scope-1" aria-hidden />
+                  Dall&apos;inventario al bilancio
+                  <ArrowRight className="size-3.5" aria-hidden />
+                </span>
+                le emissioni calcolate nell&apos;inventario entrano nel bilancio senza essere riscritte: una sola fonte,
+                mai due versioni dello stesso numero in due documenti.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================ COME LAVORA L'AZIENDA */}
+        <section id="azienda" className="scroll-mt-20 border-b bg-muted/30">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-24 md:grid-cols-[1fr_1.3fr]">
+            <Reveal>
+              <div>
+                <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                  <span className="h-px w-8 bg-primary" aria-hidden />
+                  In azienda
+                </p>
+                <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[40px]">
+                  Un responsabile, i colleghi, a ciascuno i suoi percorsi.
+                </h2>
+                <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
+                  La conformità non la fa una persona sola: l&apos;ufficio ambiente ha i consumi, le risorse umane i
+                  dati sul personale, l&apos;IT la sicurezza. Ognuno lavora sulla sua parte, e il documento esce uno.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={100}>
+              <ul className="divide-y rounded-xl border bg-card">
+                {(
+                  [
+                    [
+                      "Inviti i colleghi",
+                      `Il piano «${PIANI[PIANO_AZIENDA].nome}» comprende ${PIANI[PIANO_AZIENDA].accessi} accessi. Ciascuno entra col proprio account, e il registro delle attività dice chi ha fatto che cosa.`,
+                    ],
+                    [
+                      "Assegni i percorsi",
+                      "L'inventario GHG all'ufficio ambiente, la protezione dei dati al referente privacy, il Modello 231 a chi segue l'organismo di vigilanza: ognuno vede e modifica soltanto i suoi.",
+                    ],
+                    [
+                      "Un dato si scrive una volta",
+                      "L'anagrafica dell'azienda passa da sola in ogni percorso, e i consumi passano fra inventario, bilancio energetico e indicatori come valori da confermare. Nessuno ricopia niente.",
+                    ],
+                    [
+                      "Il documento regge la verifica",
+                      "Ogni versione pubblicata è congelata e porta un codice che chiunque può controllare sulla pagina pubblica di verifica. Il cliente, la banca o l'auditor vedono che è autentico.",
+                    ],
+                  ] as [string, string][]
+                ).map(([t, d]) => (
+                  <li key={t} className="p-5">
+                    <h3 className="font-display text-[17px] font-semibold tracking-[-0.01em]">{t}</h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{d}</p>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ========================================================= IL METODO */}
         <section id="metodo" className="scroll-mt-20 border-b">
           <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-24 md:grid-cols-[1fr_1.5fr]">
@@ -330,10 +435,11 @@ export default function LandingPage() {
                   Il metodo incorporato
                 </p>
                 <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[40px]">
-                  Non un editor vuoto. Un consulente impacchettato in software.
+                  Non un editor vuoto. Il metodo di un consulente, dentro il software.
                 </h2>
                 <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-                  EvalisDeck nasce da anni di pratiche vere. Ogni schermata sa cosa chiede la norma, e te lo dice prima che lo chieda il verificatore.
+                  EvalisDeck nasce da anni di pratiche vere. Ogni schermata sa cosa chiede la norma, e te lo dice prima
+                  che lo chieda il verificatore.
                 </p>
               </div>
             </Reveal>
@@ -367,97 +473,85 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ===================================================== COME SI ACQUISTA */}
-        {/*
-          Nata da una domanda vera di un potenziale cliente: «se voglio acquistare il
-          servizio direttamente senza demo non e' previsto? Non vedo le modalita' di
-          acquisto». Aveva ragione: ogni richiamo della pagina diceva «prova la demo», e
-          chi aveva gia' deciso non trovava una strada.
+        {/* ===================================================== PER I CONSULENTI */}
+        <section id="consulenti" className="scroll-mt-20 border-b">
+          <div className="mx-auto w-full max-w-6xl px-5 py-20">
+            <Reveal>
+              <div className="grid gap-10 md:grid-cols-[1fr_1.3fr] md:items-start">
+                <div>
+                  <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                    <span className="h-px w-8 bg-primary" aria-hidden />
+                    Per i consulenti
+                  </p>
+                  <h2 className="font-display mt-4 text-[30px] font-bold leading-[1.1] tracking-[-0.02em] md:text-[36px]">
+                    Segui più aziende? Lo stesso metodo, per tutto il portafoglio.
+                  </h2>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Button asChild>
+                      <Link href="/prezzi">I piani per i consulenti</Link>
+                    </Button>
+                  </div>
+                </div>
+                <ul className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                  {(
+                    [
+                      ["Un fascicolo per cliente", "Ogni azienda che segui ha i suoi percorsi, i suoi esercizi e il suo archivio di documenti."],
+                      ["Col marchio del tuo studio", "I documenti escono col nome dello studio, non col nostro, in ogni piano."],
+                      ["Il cliente consulta da solo", "Un collegamento di consultazione per azienda: scarica i propri documenti senza account."],
+                      [
+                        `Fino a ${MASSIMO_CONSULENTI} aziende, e oltre`,
+                        `Due piani per capienza, i collaboratori dello studio compresi; oltre le ${MASSIMO_CONSULENTI} aziende, ${PIANI.enterprise.nome} con condizioni concordate.`,
+                      ],
+                    ] as [string, string][]
+                  ).map(([t, d]) => (
+                    <li key={t}>
+                      <h3 className="font-display text-[16px] font-semibold tracking-[-0.01em]">{t}</h3>
+                      <p className="mt-1 text-[13.5px] leading-relaxed text-muted-foreground">{d}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </section>
 
-          I PREZZI RESTANO FUORI, decisione del committente. Ma «niente prezzi» non
-          significa «niente informazioni»: qui si dice che cosa si compra, come si paga e
-          perche' gli importi si vedono solo entrando. Tacere il come, oltre al quanto, fa
-          sembrare che non si venda affatto.
-        */}
+        {/* ===================================================== COME SI ACQUISTA */}
+        {/* ⚠️ I PREZZI RESTANO FUORI dalla home, per scelta: stanno su /prezzi. Ma «niente
+            prezzi» non significa «niente informazioni»: qui si dice che cosa si compra, come
+            si paga, come si disdice. Tacere il come fa sembrare che non si venda affatto. */}
         <section id="acquisto" className="scroll-mt-20 border-b bg-muted/30">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pb-12 pt-24 md:grid-cols-[1fr_1.15fr]">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-24 md:grid-cols-[1fr_1.15fr]">
             <Reveal>
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
                 <span className="h-px w-8 bg-primary" aria-hidden />
                 Come si acquista
               </p>
               <h2 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[40px]">
-                Un abbonamento solo, annuale, tutto incluso.
+                Un abbonamento, annuale o mensile, tutto incluso.
               </h2>
               <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                Si sottoscrive per studio, non per documento e non per utente. Comprende tutti i percorsi, i
-                documenti che pubblichi senza limite di numero, gli accessi delle persone che lavorano con te, i
-                documenti col marchio del tuo studio e gli aggiornamenti dei fattori.
+                Non si paga per documento e non per utente. Comprende tutti i percorsi, i documenti che pubblichi senza
+                limite di numero, gli accessi per i colleghi, i documenti col tuo marchio e gli aggiornamenti dei
+                fattori. Paghi l&apos;anno, che costa meno, oppure il mese, sempre allo stesso prezzo.
               </p>
               <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                {/* ⚠️ Qui c'era: «Gli importi si vedono appena entri, nella pagina Abbonamento:
-                    dipendono da quante aziende segui e da quante persone accedono.»
-                    Due difetti in una frase. Metteva un PEDAGGIO davanti a una domanda
-                    legittima — per sapere quanto costa bisognava registrarsi — e da quando
-                    gli accessi sono inclusi la seconda meta' sarebbe anche diventata falsa.
-                    Nessuna cifra sulla home per scelta: il numero da solo ancora la lettura
-                    sul costo prima che si sia capito cosa si compra, e il contesto che lo
-                    rende leggibile (il ritorno) sta sulla pagina prezzi. */}
-                {/* ⚠️ «da una sola fino a trenta» NON è una cifra di prezzo: è la capienza, ed
-                    è l'unico modo perché chi segue una sola azienda capisca che c'è una porta
-                    per lui. La fascia d'ingresso esiste dal 22 settembre 2026 e la home
-                    parlava solo al plurale — «per studio», «portafoglio» — mentre la testata
-                    dice già «studi e PMI». I numeri si DERIVANO dal listino: scritti a mano,
-                    al prossimo cambio di fasce questa riga resterebbe indietro in silenzio. */}
-                L&apos;unica cosa che scegli &egrave; la capienza: quante aziende gestisci in portafoglio, da{" "}
-                {PIANI[fasceVendibili()[0]].aziende === 1 ? "una sola" : PIANI[fasceVendibili()[0]].aziende}{" "}
-                fino a {PIANI[fasceVendibili().at(-1)!].aziende}.{" "}
+                C&apos;è un piano per l&apos;azienda che fa da sé e ci sono quelli per i consulenti, fino a{" "}
+                {MASSIMO_CONSULENTI} aziende.{" "}
                 <Link href="/prezzi" className="font-medium text-foreground underline underline-offset-4">
-                  Vedi le fasce
+                  Vedi i prezzi
                 </Link>
                 . La registrazione &egrave; gratuita e non chiede la carta.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button size="lg" asChild data-tour="cta-acquisto">
-                  <Link href="/attiva">
+                  <Link href={`/attiva/${PIANO_AZIENDA}`}>
                     Attiva il servizio <ArrowRight className="size-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="ghost" asChild className="text-foreground">
-                  <a href="mailto:info@evalisdeck.it?subject=Preventivo%20EvalisDeck">Chiedi un preventivo</a>
+                  <Link href="/prezzi#enterprise">Oltre 30 aziende? Contattaci</Link>
                 </Button>
               </div>
-
-              {/* ⚠️ La porta di chi segue UNA sola azienda. Senza questa riga la fascia
-                  d'ingresso si raggiungeva solo passando dal listino intero, e chi ha un
-                  cliente solo doveva capire da sé quale delle quattro fasce fosse la sua.
-                  Porta a `/attiva/<fascia>`: stessa iscrizione di «Attiva il servizio», ma
-                  la scelta viaggia con lui e il dialogo d'acquisto si apre già su quella.
-                  Nessuna cifra: il prezzo sta su /prezzi, per decisione del committente. */}
-              {PIANI[fasceVendibili()[0]].aziende === 1 && (
-                <p className="mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground">
-                  Segui una sola azienda?{" "}
-                  <Link
-                    href={`/attiva/${fasceVendibili()[0]}`}
-                    className="font-medium text-foreground underline underline-offset-4"
-                  >
-                    Attiva la fascia «{PIANI[fasceVendibili()[0]].nome}»
-                  </Link>
-                  : c&apos;&egrave; dentro tutto il resto, gli stessi percorsi e gli stessi documenti.
-                </p>
-              )}
-              {/* La porta di chi NON segue clienti: l'azienda che rendiconta da sé. Stessa forma
-                  della riga sopra, e come lei porta a `/attiva/<fascia>` senza cifre. */}
-              <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted-foreground">
-                Lavori dentro un&apos;azienda e non per clienti?{" "}
-                <Link
-                  href={`/attiva/${PIANI.azienda.key}`}
-                  className="font-medium text-foreground underline underline-offset-4"
-                >
-                  Attiva la fascia «{PIANI.azienda.nome}»
-                </Link>
-                : la tua azienda, i colleghi, e a ciascuno i percorsi di cui si occupa.
-              </p>
             </Reveal>
 
             <Reveal delay={100}>
@@ -466,7 +560,7 @@ export default function LandingPage() {
                   [
                     [
                       "Attivi subito, con carta",
-                      "Crei l'account, scegli il piano e paghi con carta, Satispay, Klarna o Amazon Pay. Lo studio si sblocca in pochi secondi, senza aspettare nessuno.",
+                      "Crei l'account, scegli il piano e paghi con carta. L'account si sblocca in pochi secondi, senza aspettare nessuno.",
                     ],
                     [
                       "Oppure guardi prima, e attivi dopo",
@@ -477,16 +571,16 @@ export default function LandingPage() {
                       "Per chi ha bisogno dell'ordine d'acquisto o del pagamento differito: scrivici indicando il piano e ti mandiamo il preventivo. All'attivazione pensiamo noi.",
                     ],
                     [
-                      "Fattura elettronica e partita IVA",
-                      "Al pagamento raccogliamo partita IVA e codice destinatario, così la fattura parte senza doverti rincorrere dopo.",
+                      "Fattura e partita IVA",
+                      "Al pagamento raccogliamo partita IVA e codice destinatario, così la fattura si emette senza doverti rincorrere dopo.",
                     ],
                     [
                       "Quattordici giorni per ripensarci",
-                      "Finché non hai pubblicato il primo documento e non sono passati quattordici giorni dall'attivazione, il rimborso è integrale.",
+                      "Finché non hai pubblicato il primo documento e non sono passati quattordici giorni dal primo pagamento, il rimborso è integrale.",
                     ],
                     [
-                      "Il rinnovo è annuale e si disdice",
-                      "Dal secondo anno l'abbonamento si rinnova da solo a un prezzo ridotto. Si disdice fino al giorno prima della scadenza, e i dati restano tuoi e consultabili.",
+                      "Si disdice quando vuoi",
+                      "Annuale o mensile, il rinnovo è automatico allo stesso prezzo e si disdice dalla pagina dell'abbonamento. I dati restano tuoi e consultabili.",
                     ],
                   ] as [string, string][]
                 ).map(([t, d]) => (
@@ -498,53 +592,9 @@ export default function LandingPage() {
               </ul>
             </Reveal>
           </div>
-
-          {/* ⚠️ IL PROGRAMMA SI PRESENTA COME UNA SELEZIONE, NON COME UNO SCONTO.
-              Il primo anno costa 300 euro contro i 1.290 di listino: il 77% in meno.
-              Detto come «condizioni simboliche» sulla pagina piu' vista, quello DIVENTA il
-              prezzo, e chi arriva smette di comprare a listino per candidarsi. Detto come
-              «selezioniamo dieci studi» e' un invito a una cosa per cui bisogna essere
-              scelti, e non insegna un'aspettativa di prezzo a nessuno.
-
-              Nessuna cifra qui, per la stessa ragione. Il numero dei posti invece si': e'
-              cio' che rende la selezione concreta invece che una formula di marketing, e
-              per questo va rispettato — accettarne quindici dopo averne dichiarati dieci
-              rende la pagina bugiarda da sola.
-
-              ⚠️ Una FASCIA e non una sezione, e sorella della griglia e non dentro: le
-              sezioni scure della home sono gia' tre e una quarta diluirebbe i momenti
-              firmati di DESIGN.md, e il menu ha gia' cinque voci — a 768px si e' gia'
-              stretto una volta. */}
-          <div className="mx-auto w-full max-w-6xl px-5 pb-24">
-            <Reveal delay={140}>
-              <div className="border-t pt-8 md:flex md:items-baseline md:justify-between md:gap-10">
-                <div className="max-w-xl">
-                  <h3 className="font-display flex flex-wrap items-baseline gap-x-3 text-[17px] font-semibold tracking-[-0.01em]">
-                    Programma Fondatori
-                    <span className="text-[12px] font-normal uppercase tracking-[0.16em] text-primary">
-                      selezione aperta
-                    </span>
-                  </h3>
-                  <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">
-                    Selezioniamo {FONDATORI.posti} studi che useranno la piattaforma su mandati reali in questa
-                    fase. In cambio chiediamo riscontri operativi e, se il servizio convince, una testimonianza.
-                  </p>
-                </div>
-                {/* ⚠️ Il collegamento porta il PERCORSO e non la sola ancora: la stessa
-                    intestazione compare su pagine che quella sezione non ce l'hanno. */}
-                <Link
-                  href="/prezzi#fondatori"
-                  className="mt-4 inline-flex shrink-0 items-center gap-2 text-[14px] font-medium underline underline-offset-4 hover:text-primary md:mt-0"
-                >
-                  Come funziona
-                  <ArrowRight className="size-3.5" aria-hidden />
-                </Link>
-              </div>
-            </Reveal>
-          </div>
         </section>
 
-        {/* ================================================ CHI C'È DIETRO */}
+        {/* ================================================ CHI C'È DIETRO */}
         <FasciaEcoVadis />
 
         {/* ============================================================== FAQ */}
@@ -573,11 +623,11 @@ export default function LandingPage() {
           <div className="mx-auto w-full max-w-6xl px-5 py-24">
             <div className="max-w-2xl">
               <h2 className="font-display text-[36px] font-bold leading-[1.06] tracking-[-0.02em] text-white md:text-[46px]">
-Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
+                La prossima richiesta arriverà. Falla trovare pronta.
               </h2>
               <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-sidebar-foreground/80">
-                Registrati, apri la demo guidata, guarda come lavora. Se convince, sblocchi e porti dentro i tuoi
-                clienti. Se hai già deciso, attivi subito e salti il giro.
+                Registrati, apri la demo guidata su un&apos;azienda d&apos;esempio già compilata e guarda come lavora.
+                Se convince, attivi e porti dentro la tua azienda. Se hai già deciso, attivi subito e salti il giro.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button size="lg" asChild>
@@ -586,7 +636,7 @@ Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white" asChild>
-                  <Link href="/attiva">Attiva il servizio</Link>
+                  <Link href={`/attiva/${PIANO_AZIENDA}`}>Attiva il servizio</Link>
                 </Button>
                 <Button size="lg" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" asChild>
                   <a href="/esempi/esempio-rapporto-ghg-2025.pdf" target="_blank" rel="noopener">
@@ -605,27 +655,46 @@ Il prossimo documento parte da un&apos;azienda d&apos;esempio già compilata.
 }
 
 // ---------------------------------------------------------------- componenti
-function Percorso({ titolo, norma, passi, punto }: { titolo: string; norma: string; passi: string[]; punto: string }) {
+function Percorso({
+  titolo,
+  norma,
+  passi,
+  punto,
+  href,
+}: {
+  titolo: string;
+  norma: string;
+  passi: string[];
+  punto: string;
+  /** La pagina pubblica del percorso, se esiste. */
+  href: string | null;
+}) {
   return (
     <article className="grid gap-x-10 gap-y-3 border-b py-7 md:grid-cols-[minmax(0,19.5rem)_1fr]">
       <div>
-        <h3 className="font-display text-[19px] font-semibold leading-tight tracking-[-0.01em]">{titolo}</h3>
+        <h3 className="font-display text-[19px] font-semibold leading-tight tracking-[-0.01em]">
+          {href ? (
+            <Link href={href} className="underline-offset-4 hover:text-primary hover:underline">
+              {titolo}
+            </Link>
+          ) : (
+            titolo
+          )}
+        </h3>
         <p className="mt-1.5 font-mono text-[11.5px] leading-snug text-muted-foreground">{norma}</p>
+        {href && (
+          <Link
+            href={href}
+            className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Che cosa fa, in dettaglio <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        )}
       </div>
       <div>
-        {/* La TRACCIA dei passi, in linea e non in colonna.
-            Gli otto passi sono la prova migliore che il metodo c'e', e restano tutti: ma
-            dodici percorsi per otto righe erano ottantasei righe di elenco, cioe' uno
-            scorrimento interminabile proprio nella sezione che deve convincere. Letti in
-            orizzontale sono un percorso, che e' esattamente cio' che sono. */}
+        {/* ⚠️ Ogni passo e' indivisibile, ma FRA un passo e l'altro ci vuole uno spazio VERO:
+            senza, `nowrap` salda l'intera traccia e la pagina sfonda da telefono. */}
         <p className="text-[13px] leading-relaxed text-muted-foreground">
-          {/* ⚠️ Ogni passo e' indivisibile, ma FRA un passo e l'altro ci vuole uno spazio VERO.
-              Senza, il browser legge gli otto passi come un'unica sequenza che non puo'
-              andare a capo: su un telefono da 360px la riga diventava larga 909 e la
-              pagina sfondava di 795. Con `whitespace-nowrap` su ciascuno e nessuno spazio
-              in mezzo, `nowrap` non protegge il passo — salda l'intera traccia.
-              E senza `nowrap` del tutto si va a capo DENTRO il nome: «Dati / di attivita'»,
-              e il punto separatore smette di dire dove finisce un passo. */}
           {passi.map((passo, i) => (
             <span key={passo}>
               {i > 0 && (
@@ -652,8 +721,7 @@ function PassoScuro({ n, titolo, testo, children }: { n: string; titolo: string;
       <p className="font-display text-[40px] font-bold leading-none tracking-tight text-sidebar-primary/50" data-slot="kpi">{n}</p>
       <h3 className="font-display mt-3 text-[20px] font-semibold tracking-[-0.01em] text-white">{titolo}</h3>
       <p className="mt-2 text-[13px] leading-relaxed text-sidebar-foreground/75">{testo}</p>
-      {/* Illustrazione, non contenuto: il lettore di schermo la salta e il
-          testo minuscolo qui dentro e una scelta di disegno. */}
+      {/* Illustrazione, non contenuto: il lettore di schermo la salta. */}
       <div className="mt-auto pt-5" aria-hidden>
         {children}
       </div>

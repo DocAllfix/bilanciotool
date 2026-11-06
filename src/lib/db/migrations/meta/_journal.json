@@ -505,6 +505,13 @@
       "when": 1791806894459,
       "tag": "0071_partner",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1791893294459,
+      "tag": "0072_periodo_abbonamento",
+      "breakpoints": true
     }
   ]
 }

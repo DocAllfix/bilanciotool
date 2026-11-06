@@ -34,7 +34,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           queste pagine no — e sono le prime che si incontrano. */}
       <main className="w-full max-w-sm">{children}</main>
       <p className="mt-10 max-w-sm text-center text-xs leading-relaxed text-muted-foreground">
-        Bilanci di sostenibilità e inventari GHG per le PMI, con il metodo incorporato.
+        Conformità, sostenibilità e sistemi di gestione per l&apos;azienda che fa da sé, con il metodo incorporato.
       </p>
     </div>
   );

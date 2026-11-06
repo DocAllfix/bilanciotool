@@ -62,3 +62,8 @@ export function moduloDellaVetrina(v: Vetrina) {
   if (!m) throw new Error(`Vetrina «${v.slug}»: il modulo «${v.modulo}» non è nel registro.`);
   return m;
 }
+
+/** La pagina pubblica di un modulo, se c'è: la home e il blog ci collegano le schede. */
+export function vetrinaDelModulo(modulo: ModuloAzienda): Vetrina | null {
+  return VETRINE.find((v) => v.modulo === modulo) ?? null;
+}

@@ -11,13 +11,20 @@ export { renderEmail, esc };
 // Senza RESEND_API_KEY il sender è no-op ({sent:false}) e in dev logga il link,
 // così signup/inviti funzionano anche senza chiavi. MAI loggare token in produzione.
 
-async function send(to: string, subject: string, html: string): Promise<{ sent: boolean }> {
+async function send(
+  to: string,
+  subject: string,
+  html: string,
+  opzioni: { replyTo?: string } = {},
+): Promise<{ sent: boolean }> {
   if (!env.RESEND_API_KEY) return { sent: false };
   // `reply_to` separato dal mittente: `evalisdeck.it` NON riceve posta, quindi senza
   // questo chi risponde a un'email automatica — e la gente risponde — scrive nel vuoto.
   // È una variabile perché cambierà: oggi è una casella qualsiasi che leggiamo, domani
   // sarà l'assistenza vera, e sostituirla non deve richiedere un rilascio di codice.
-  const replyTo = process.env.RESEND_REPLY_TO;
+  // Per le richieste che arrivano a NOI (contatto Enterprise) il `reply_to` è invece chi
+  // ha scritto: rispondere deve aprire la conversazione con lui, non con noi stessi.
+  const replyTo = opzioni.replyTo ?? process.env.RESEND_REPLY_TO;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -194,8 +201,25 @@ export async function inviaAllarmeBlog(righe: string[]): Promise<{ sent: boolean
  */
 export async function sendBenvenutoEmail(
   to: string,
-  d: { piano: string; aziende: number; accessi: number; url: string; urlAbbonamento: string },
+  d: {
+    piano: string;
+    aziende: number;
+    accessi: number;
+    url: string;
+    urlAbbonamento: string;
+    /** Come si paga: si dice, perché chi ha scelto il mensile deve sapere che si rinnova ogni mese. */
+    periodo?: "anno" | "mese" | null;
+    /** La fascia «Azienda»: le persone lavorano nell'azienda, non in uno studio. */
+    usoInterno?: boolean;
+  },
 ) {
+  const dove = d.usoInterno ? "nella tua azienda" : "nello studio";
+  const rinnovo =
+    d.periodo === "mese"
+      ? " Si rinnova da solo ogni mese, e lo disdici quando vuoi da Impostazioni → Abbonamento."
+      : d.periodo === "anno"
+        ? " Si rinnova da solo ogni anno, allo stesso prezzo, e lo disdici quando vuoi da Impostazioni → Abbonamento."
+        : "";
   return send(
     to,
     `Il tuo abbonamento è attivo — piano ${d.piano}`,
@@ -203,7 +227,7 @@ export async function sendBenvenutoEmail(
       previewText: `Piano ${d.piano} attivo: ${aziendeTesto(d.aziende)}, ${d.accessi} accessi.`,
       heading: "Il tuo abbonamento è attivo",
       body: [
-        `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire <b>${d.aziende === 1 ? "un'azienda" : `fino a ${d.aziende} aziende`}</b> e invitare <b>${d.accessi} persone</b> nello studio.`,
+        `Il piano <b>${esc(d.piano)}</b> è attivo. Da adesso puoi seguire <b>${d.aziende === 1 ? "un'azienda" : `fino a ${d.aziende} aziende`}</b> e invitare <b>${d.accessi} persone</b> ${dove}.${rinnovo}`,
         "Pubblicare documenti, generare i PDF e creare aziende non è più bloccato.",
         `La ricevuta del pagamento te la manda Stripe per email. Le <b>fatture</b> dell'abbonamento, insieme al metodo di pagamento e ai dati fiscali, le trovi in <a href="${esc(d.urlAbbonamento)}" style="color:#115952">Impostazioni → Abbonamento</a>.`,
       ],
@@ -253,7 +277,7 @@ export async function sendPreavvisoRinnovoEmail(
       heading: "Il tuo abbonamento si rinnova fra una settimana",
       body: [
         `Il <b>${esc(d.quando)}</b> rinnoveremo automaticamente il tuo abbonamento, con un addebito di <b>${esc(d.importo)}</b>.`,
-        "Non devi fare niente. Se vuoi cambiare piano, aggiornare la carta o non rinnovare, puoi farlo da qui fino al giorno prima.",
+        "Non devi fare niente. Se vuoi aggiornare la carta o non rinnovare, puoi farlo da qui fino al giorno prima.",
       ],
       button: { label: "Vedi il tuo abbonamento", url: d.url },
     }),
@@ -261,18 +285,22 @@ export async function sendPreavvisoRinnovoEmail(
 }
 
 /**
- * Una candidatura al Programma Fondatori, che arriva a noi.
+ * Una richiesta di contatto per Enterprise, che arriva a noi (6 novembre 2026).
  *
- * ⚠️ Va alla casella che LEGGIAMO, non al mittente: `evalisdeck.it` non riceve posta, e
- * un'email mandata li' si perderebbe senza che nessuno se ne accorga — meno che mai chi
- * l'ha scritta. Il `reply_to` lo mette `send`, quindi rispondere apre la conversazione
- * con la persona giusta.
+ * ⚠️ Va alla casella che LEGGIAMO, non al mittente: `evalisdeck.it` non riceve posta.
+ *
+ * ⚠️ E il `reply_to` è CHI HA SCRITTO. La candidatura Fondatori, che questa sostituisce,
+ * diceva «rispondendo si scrive direttamente a chi si è candidato» mentre `send` metteva
+ * come `reply_to` la nostra stessa casella: rispondere era scrivere a noi stessi, e la
+ * persona aspettava una risposta che le arrivava solo se qualcuno copiava a mano
+ * l'indirizzo dal corpo del messaggio.
  */
-export async function inviaCandidaturaFondatori(d: {
+export async function inviaRichiestaEnterprise(d: {
   nome: string;
-  studio: string;
+  organizzazione: string;
   email: string;
   telefono: string;
+  aziende: string;
   messaggio: string;
 }): Promise<{ sent: boolean }> {
   const destinatario = process.env.RESEND_REPLY_TO;
@@ -280,20 +308,21 @@ export async function inviaCandidaturaFondatori(d: {
 
   const righe = ([
     ["Nome", d.nome],
-    ["Studio", d.studio],
+    ["Azienda o studio", d.organizzazione],
     ["Email", d.email],
     ["Telefono", d.telefono],
+    ["Aziende da seguire", d.aziende],
   ] as [string, string][])
     .filter(([, v]) => v)
     .map(([k, v]) => `<strong>${esc(k)}:</strong> ${esc(v)}`);
 
   const html = renderEmail({
-    previewText: `Candidatura di ${esc(d.nome)} al Programma Fondatori`,
-    heading: "Candidatura al Programma Fondatori",
+    previewText: `Richiesta Enterprise di ${esc(d.nome)}, ${esc(d.organizzazione)}`,
+    heading: "Richiesta di contatto Enterprise",
     body: [...righe, ...(d.messaggio ? [esc(d.messaggio)] : [])],
-    nota: "Rispondendo a questa email si scrive direttamente a chi si e' candidato.",
+    nota: "Rispondendo a questa email si scrive direttamente a chi ha fatto la richiesta.",
   });
-  return send(destinatario, `Programma Fondatori — ${d.nome}`, html);
+  return send(destinatario, `Enterprise — ${d.organizzazione}`, html, { replyTo: d.email });
 }
 
 // ── Assistenza ─────────────────────────────────────────────────────────────────────────
