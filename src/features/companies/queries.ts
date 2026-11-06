@@ -214,6 +214,9 @@ export const ETICHETTE_AUDIT: Record<string, string> = {
   "corpus.registro.elimina": "Registrazione eliminata",
   "billing.checkout.apri": "Pagamento avviato",
   "billing.abbonamento.aggiorna": "Abbonamento aggiornato",
+  "billing.abbonamento.disdici": "Rinnovo disdetto",
+  "billing.abbonamento.annulla_disdetta": "Disdetta annullata",
+  "billing.abbonamento.passa_annuale": "Passaggio all'abbonamento annuale",
   // Implementazione del sistema di gestione ESG.
   "sgesg.programma.create": "Programma ESG avviato",
   "sgesg.programma.set": "Programma ESG aggiornato",

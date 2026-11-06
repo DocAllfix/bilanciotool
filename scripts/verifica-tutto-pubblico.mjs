@@ -70,8 +70,10 @@ await agisci("la vetrina dice COME si acquista", async () => {
   }
   if (/si vedono appena entri/i.test(t)) throw new Error("la home nasconde ancora gli importi");
   for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
-    if (v && t.includes(euro(v.importo))) throw new Error(`la home mostra una cifra (${euro(v.importo)})`);
+    for (const periodo of ["anno", "mese"]) {
+      const v = prezzoDiVendita(PIANI[k], periodo);
+      if (v && t.includes(euro(v.importo))) throw new Error(`la home mostra una cifra (${euro(v.importo)})`);
+    }
   }
 });
 
@@ -96,12 +98,14 @@ await agisci("dalla vetrina si arriva all'attivazione senza passare dalla demo",
   // considera interna non finisce mai.
   await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(600);
-  const diretti = await page.locator('a[href="/attiva"]').count();
+  // ⚠️ Dal 6 novembre 2026 i richiami portano anche a `/attiva/<piano>`, col piano per
+  // l'azienda già scelto: si contano tutte le porte d'attivazione.
+  const diretti = await page.locator('a[href^="/attiva"]').count();
   if (diretti < 2) throw new Error(`solo ${diretti} richiami all'attivazione`);
-  await page.locator('a[href="/attiva"]').first().click();
-  await page.waitForURL("**/attiva", { timeout: 20_000 });
+  await page.locator('main a[href^="/attiva"]').first().click();
+  await page.waitForURL("**/attiva**", { timeout: 20_000 });
   const t = await page.locator("main").innerText();
-  if (!/Attiva il tuo studio/i.test(t)) throw new Error("la pagina non riconosce l'intento d'acquisto");
+  if (!/Attiva (EvalisDeck|«)/i.test(t)) throw new Error("la pagina non riconosce l'intento d'acquisto");
   if (!/gratuita/i.test(t)) throw new Error("non dice che la registrazione è gratuita");
 });
 
@@ -200,7 +204,7 @@ await agisci("da telefono l'attivazione e' raggiungibile sopra la piega", async 
   await p2.waitForTimeout(2000);
   // Il PRIMO VISIBILE, non il primo nel documento: quello dell'intestazione esiste nel
   // markup ma e' nascosto sotto una certa larghezza, e misurarlo direbbe «non c'e'».
-  const tutti = p2.locator('a[href="/attiva"]');
+  const tutti = p2.locator('a[href^="/attiva"]');
   let b = null;
   for (let i = 0; i < (await tutti.count()); i++) {
     const r = await tutti.nth(i).boundingBox();

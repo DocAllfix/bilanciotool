@@ -6,11 +6,15 @@ SaaS multi-studio per la rendicontazione ESG delle PMI italiane: un modulo **Inv
 
 ## Utenti
 
-- **Consulente ESG di studio** (utente primario): gestisce un portafoglio di aziende clienti. La sua domanda: *"a che punto è ogni pratica, cosa manca prima della verifica, dove lo dimostro?"* Tollera densità; non tollera perdite di dati o numeri non difendibili in audit.
-- **Titolare dello studio** (compratore): paga l'abbonamento annuale. Domanda: *"quanto tempo risparmio per pratica e che figura faccio col cliente?"* Guarda il documento finale, non i form.
-- **Referente PMI** (fase 2, invitato): compila dati e carica evidenze su richiesta. Domanda: *"cosa devo mettere qui e dove lo trovo?"* Zero gergo, guide contestuali.
+- **Responsabile interno dell'azienda** (utente primario e compratore, dal 6 novembre 2026): la persona a cui arrivano le richieste di clienti, banche, enti di certificazione e autorità: qualità, ambiente, sicurezza, HR, amministrazione. Spesso non è un esperto di ogni norma. La sua domanda: *"che cosa mi stanno chiedendo, che cosa rischio, e come ne esco con un documento che regge?"* Il piano è «Azienda».
+- **Colleghi dell'azienda** (invitati dal responsabile): lavorano solo sui percorsi assegnati. Domanda: *"cosa devo mettere qui e dove lo trovo?"* Zero gergo, guide contestuali.
+- **Consulente che segue più aziende** (secondario): gestisce un portafoglio di clienti, coi piani per capienza. Domanda: *"a che punto è ogni pratica, cosa manca prima della verifica, dove lo dimostro?"* Tollera densità; non tollera perdite di dati o numeri non difendibili in audit.
+
+⚠️ L'app interna parla ancora a uno studio («portafoglio», «studio»): il riallineamento del sito pubblico è del 6 novembre 2026, quello dell'app è un lavoro a sé.
 
 ## Tono di voce
+
+**Sulle pagine pubbliche la copy è dura ma vera** (decisione del committente, 6 novembre 2026): si parte da ciò che pesa davvero su chi legge, obblighi, sanzioni, richieste dei clienti, e si dice con chiarezza che cosa fa il sistema. Ogni obbligo o sanzione porta la fonte normativa, stampata in pagina, e si dice chi è obbligato: mai scadenze inventate, mai «obbligatorio per tutti» dove la legge pone soglie. Le fonti stanno in `docs/fonti-vetrina.md`. Dentro l'app il tono resta quello che segue.
 
 Italiano professionale e concreto, come i prototipi: frasi che spiegano il *perché normativo* ("un'esclusione senza motivazione è il rilievo più frequente in verifica"). Niente hype, niente anglicismi evitabili, niente emoji nel prodotto. I numeri parlano: sempre unità di misura e fonte.
 

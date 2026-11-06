@@ -153,8 +153,8 @@ export function PrezzoFascia({
         </p>
       )}
       <p className={`font-display mt-1 ${grande} font-bold leading-none tabular-nums`} data-slot="kpi">
-        {euro(prezzo.importo)}
-        <span className="ml-1.5 align-baseline text-[13px] font-medium text-muted-foreground">
+        {euro(prezzo.importo)}{" "}
+        <span className="ml-1 align-baseline text-[13px] font-medium text-muted-foreground">
           {periodo === "anno" ? "l'anno" : "al mese"}
         </span>
       </p>
@@ -164,11 +164,11 @@ export function PrezzoFascia({
       </p>
       {periodo === "anno" && risparmioM !== null && risparmioA ? (
         <p className="mt-3 inline-flex rounded-md bg-primary/10 px-2 py-1 text-[12.5px] font-medium text-primary" data-risparmio>
-          Risparmi {euro(risparmioM)} al mese, {euro(risparmioA)} l&apos;anno
+          Risparmi {euro(risparmioM)} al mese, {euro(risparmioA)}{" "}l&apos;anno
         </p>
       ) : annuale && risparmioA ? (
         <p className="mt-3 text-[12.5px] text-muted-foreground" data-risparmio>
-          Con l&apos;annuale paghi {euro(annuale.importo)} e risparmi {euro(risparmioA)} l&apos;anno.
+          Con l&apos;annuale paghi {euro(annuale.importo)} e risparmi {euro(risparmioA)}{" "}l&apos;anno.
         </p>
       ) : null}
     </div>

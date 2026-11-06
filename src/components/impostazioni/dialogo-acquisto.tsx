@@ -87,7 +87,7 @@ export function DialogoAcquisto({
         <DialogHeader>
           <DialogTitle>{p.nome}</DialogTitle>
           <DialogDescription>
-            {p.usoInterno ? "1 azienda, la tua" : aziendeTesto(p.aziende)} · {p.accessi} accessi · tutti i percorsi
+            {p.usoInterno ? "1 azienda, la tua" : aziendeTesto(p.aziende)} · {p.accessi}{" "}accessi · tutti i percorsi
           </DialogDescription>
         </DialogHeader>
 

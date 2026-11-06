@@ -7,10 +7,10 @@
 // fascia giusta. La catena finale è già provata da `qa -- attivazione`; qui si verifica che
 // il richiamo ci si agganci davvero, e che dica il vero sul prezzo.
 //
-// ⚠️ IL CONTROLLO CHE CONTA PIÙ DI TUTTI è quello sui posti: la frase che promette il prezzo
-// d'introduzione si confronta con la RIGA DEL DATABASE, non col numero scritto nel banner. Un
-// contatore che non scende è una scarsità inventata, cioè la cosa che questo meccanismo è
-// stato costruito per non essere.
+// ⚠️ IL CONTROLLO CHE CONTA PIÙ DI TUTTI è quello sul barrato: si confronta con dodici mesi di
+// mensile LETTI DAL LISTINO, non col numero scritto nel banner. Un barrato che non è un'offerta
+// reale è pubblicità ingannevole. E i posti d'introduzione e i Fondatori, ritirati il 6 novembre
+// 2026, non devono più comparire.
 
 import { chromium } from "@playwright/test";
 import postgres from "postgres";
@@ -18,11 +18,7 @@ import "dotenv/config";
 import { strumenta, contatore, fattoreAttesa, spegniTour } from "./comune-collaudo.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import {
-  PIANI, FASCIA_INTRODUZIONE, POSTI_INTRODUZIONE, FONDATORI,
-  euro, prezzoDiVendita, promozioneInCorso,
-} from "../src/lib/prezzi.ts";
-import { rigaPosti } from "../src/features/vetrina/posti.ts";
+import { PIANI, euro, prezzoDiVendita, costoAnnuoMensile } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const ROTTA = "/percorsi/bilancio-energetico";
@@ -36,8 +32,11 @@ const page = await ctx.newPage();
 const sonda = strumenta(page);
 const { agisci, riepilogo } = contatore(page, sonda);
 
-const piano = PIANI[FASCIA_INTRODUZIONE];
-const anno1 = prezzoDiVendita(piano, "anno1");
+// Il piano che la vetrina propone: l'azienda che fa da sé, il cliente primario.
+const PIANO_PROPOSTO = "azienda";
+const piano = PIANI[PIANO_PROPOSTO];
+const anno = prezzoDiVendita(piano, "anno");
+const mese = prezzoDiVendita(piano, "mese");
 
 /** ⚠️ Il giro guidato parte da solo alla prima visita, e il suo velo si prende i clic: è il
  *  comportamento giusto del prodotto e il modo sbagliato di collaudarlo. Si spegne come in
@@ -83,43 +82,27 @@ await agisci("arrivati ai risultati, il richiamo compare", async () => {
   await page.locator('[data-vetrina="richiamo"]').waitFor({ timeout: 20_000 * fattoreAttesa() });
 });
 
-await agisci("il prezzo è quello del listino, e non c'è nessun barrato inventato", async () => {
+await agisci("il prezzo è quello del listino, annuale e mensile", async () => {
   const t = await page.locator('[data-vetrina="richiamo"]').innerText();
-  if (!t.includes(euro(anno1.importo))) throw new Error(`non mostra ${euro(anno1.importo)}`);
-  // ⚠️ Oggi nessuna fascia ha un prezzo di lancio: un barrato qui sarebbe un prezzo mai
-  // praticato, cioè pubblicità ingannevole. Il controllo si riadatta da solo se un giorno
-  // la promozione esisterà davvero.
-  const barrati = await page.locator('[data-vetrina="richiamo"] .line-through').count();
-  if (promozioneInCorso()) {
-    if (!barrati) throw new Error("c'è una promozione in corso e il listino non è barrato");
-  } else if (barrati) {
-    throw new Error("mostra un prezzo barrato senza nessuno sconto vero");
-  }
-  return `${euro(anno1.importo)}${promozioneInCorso() ? " (con barrato)" : " senza barrato"}`;
+  if (!t.includes(euro(anno.importo))) throw new Error(`non mostra ${euro(anno.importo)}`);
+  if (!t.includes(euro(mese.importo))) throw new Error(`non mostra ${euro(mese.importo)}`);
+  if (!t.includes(piano.nome)) throw new Error(`non nomina «${piano.nome}»`);
+  return `${euro(anno.importo)} l'anno, ${euro(mese.importo)} al mese`;
 });
 
-await agisci("⚠️ i posti dichiarati sono quelli del database", async () => {
-  const [r] = await sql`
-    select count(*)::int n from org_entitlement
-    where piano = ${FASCIA_INTRODUZIONE} and status = 'active'`;
-  const attesa = rigaPosti(Math.max(0, POSTI_INTRODUZIONE - r.n), POSTI_INTRODUZIONE);
-  const riga = page.locator('[data-vetrina="posti"]');
-  const presente = (await riga.count()) > 0;
-
-  if (attesa === null) {
-    if (presente) throw new Error("i posti sono finiti e il richiamo li promette ancora");
-    return `posti esauriti (${r.n} attivazioni): il richiamo tace, ed è giusto`;
-  }
-  if (!presente) throw new Error(`restano posti (${r.n} attivazioni) e il richiamo non lo dice`);
-  const mostrato = (await riga.innerText()).replace(/\s+/g, " ").trim();
-  if (mostrato !== attesa) throw new Error(`mostra «${mostrato}», il database dice «${attesa}»`);
+await agisci("⚠️ il barrato è dodici mesi di mensile, letti dal listino", async () => {
+  const atteso = euro(costoAnnuoMensile(piano));
+  const b = page.locator('[data-vetrina="richiamo"] [data-barrato]');
+  if (!(await b.count())) throw new Error("nessun barrato accanto all'annuale");
+  const mostrato = (await b.innerText()).replace(/invece di/i, "").trim();
+  if (mostrato !== atteso) throw new Error(`mostra «${mostrato}», dodici mesi di mensile fanno ${atteso}`);
   return mostrato;
 });
 
-await agisci("nomina il Programma Fondatori, con i posti veri", async () => {
+await agisci("⚠️ posti d'introduzione e Fondatori non ci sono più", async () => {
   const t = await page.locator('[data-vetrina="richiamo"]').innerText();
-  if (!t.includes(String(FONDATORI.posti))) throw new Error("non dice quanti posti sono");
-  if (!t.includes(euro(FONDATORI.primoAnno))) throw new Error("non dice quanto costa");
+  if (/Fondatori|posti su|poi si va a listino/i.test(t)) throw new Error(`il richiamo dice ancora: ${t.slice(0, 120)}`);
+  if (await page.locator('[data-vetrina="posti"]').count()) throw new Error("c'è ancora la riga dei posti");
 });
 
 await agisci("chiudendolo non ricompare, nemmeno ricaricando", async () => {
@@ -160,7 +143,7 @@ await agisci("il comando porta alla porta della fascia giusta", async () => {
   await p2.getByRole("button", { name: /Risultati/ }).click();
   await p2.locator('[data-vetrina="richiamo-cta"]').waitFor({ timeout: 20_000 * fattoreAttesa() });
   await p2.locator('[data-vetrina="richiamo-cta"]').click();
-  await p2.waitForURL(`**/attiva/${FASCIA_INTRODUZIONE}`, { timeout: 20_000 * fattoreAttesa() });
+  await p2.waitForURL(`**/attiva/${PIANO_PROPOSTO}`, { timeout: 20_000 * fattoreAttesa() });
   const t = await p2.locator("main").innerText();
   if (!t.includes(piano.nome)) throw new Error(`la porta non nomina «${piano.nome}»`);
   await ctx2.close();
@@ -168,15 +151,15 @@ await agisci("il comando porta alla porta della fascia giusta", async () => {
 
 await agisci("iscrivendosi da lì si arriva al pagamento di quella fascia", async () => {
   await registraEEntra(page, sql, { base: BASE, nome: "Da Vetrina", email: EMAIL, pwd: PWD_COLLAUDO });
-  await page.goto(`${BASE}/impostazioni/abbonamento?fascia=${FASCIA_INTRODUZIONE}`, {
+  await page.goto(`${BASE}/impostazioni/abbonamento?fascia=${PIANO_PROPOSTO}`, {
     waitUntil: "domcontentloaded",
   });
   const d = page.getByRole("dialog");
   await d.waitFor({ timeout: 30_000 * fattoreAttesa() });
   const t = await d.innerText();
   if (!t.includes(piano.nome)) throw new Error(`il dialogo si è aperto su un'altra fascia: ${t.slice(0, 60)}`);
-  if (!t.includes(euro(anno1.importo))) throw new Error("il dialogo non mostra il prezzo del listino");
-  return `${piano.nome} · ${euro(anno1.importo)}`;
+  if (!t.includes(euro(anno.importo))) throw new Error("il dialogo non mostra il prezzo del listino");
+  return `${piano.nome} · ${euro(anno.importo)}`;
 });
 
 const ko = riepilogo("Vetrina: dal richiamo alla cassa");

@@ -14,7 +14,7 @@ import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { rumoreDiPiattaforma, spegniTour } from "./comune-collaudo.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, PERIODI, euro, fasceVendibili, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.SHOT_DIR ?? "./shots-impostazioni";
@@ -84,13 +84,16 @@ await check("chi non ha un piano vede il listino, con tutte le fasce e le estens
   // dal listino: Professional», che manda a cercare un difetto nella pagina invece che
   // nel collaudo: la pagina mostrava le fasce nuove, correttamente.
   const t = await page.locator("main").innerText();
-  for (const k of CHIAVI_PIANO) {
+  for (const k of fasceVendibili()) {
     const p = PIANI[k];
     if (!t.includes(p.nome)) throw new Error(`manca la fascia «${p.nome}»`);
-    const v = prezzoDiVendita(p, "anno1");
+    const v = prezzoDiVendita(p, "anno");
     if (v && !t.includes(euro(v.importo))) throw new Error(`manca il prezzo di «${p.nome}»`);
   }
-  if (!t.includes(euro(ESTENSIONI.bloccoAziende.prezzo))) throw new Error("manca il prezzo dei blocchi");
+  // ⚠️ Le fasce ritirate non si propongono più, nemmeno qui.
+  for (const k of ["singola", "professional"]) {
+    if (t.includes(PIANI[k].nome)) throw new Error(`propone ancora la fascia ritirata «${PIANI[k].nome}»`);
+  }
 });
 
 await check("gli importi stanno sulla pagina prezzi, non sulla HOME", async () => {
@@ -102,17 +105,21 @@ await check("gli importi stanno sulla pagina prezzi, non sulla HOME", async () =
 
   await p.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
   const home = await p.locator("body").innerText();
-  for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
-    if (v && home.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} e' finito sulla home`);
+  for (const k of fasceVendibili()) {
+    for (const periodo of PERIODI) {
+      const v = prezzoDiVendita(PIANI[k], periodo);
+      if (v && home.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} e' finito sulla home`);
+    }
   }
   if (!/href="\/prezzi"/.test(await p.content())) throw new Error("la home non rimanda ai prezzi");
 
   await p.goto(`${BASE}/prezzi`, { waitUntil: "domcontentloaded" });
   const prezzi = await p.locator("body").innerText();
-  for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
-    if (v && !prezzi.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} manca da /prezzi`);
+  for (const k of fasceVendibili()) {
+    for (const periodo of PERIODI) {
+      const v = prezzoDiVendita(PIANI[k], periodo);
+      if (v && !prezzi.includes(euro(v.importo))) throw new Error(`${euro(v.importo)} manca da /prezzi`);
+    }
   }
   await p.close();
 });

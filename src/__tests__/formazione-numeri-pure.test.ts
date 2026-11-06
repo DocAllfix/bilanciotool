@@ -55,7 +55,7 @@ const RIFERIMENTI = "(art\\.|articolo|artt\\.|comma|commi|allegato|Allegato|dire
  * sanzionatorio dell'art. 38, e il suo «10» non ha niente a che vedere con i 10 pilastri
  * del 231 — che è esattamente quello che la guardia proponeva di usare al suo posto.
  */
-const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti)";
+const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti|lavoratori)";
 
 /** I file di CONTENUTO: le sezioni comuni e quelle dei singoli percorsi. */
 function fileDiContenuto(): string[] {
@@ -64,6 +64,11 @@ function fileDiContenuto(): string[] {
   if (existsSync(corsi)) {
     for (const f of readdirSync(corsi)) if (f.endsWith(".ts")) file.push(join(corsi, f));
   }
+  // ⚠️ E i contenuti PUBBLICI dei percorsi e i problemi della home (6 novembre 2026): sono
+  // pagine indicizzate, e un conteggio scritto a mano lì lo legge per primo chi sta per
+  // comprare. La stessa regola, sugli stessi numeri.
+  file.push(join(process.cwd(), "src", "features", "vetrina", "contenuti.ts"));
+  file.push(join(process.cwd(), "src", "components", "landing", "problemi.ts"));
   return file.filter((f) => existsSync(f));
 }
 

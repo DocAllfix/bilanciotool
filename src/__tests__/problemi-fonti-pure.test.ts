@@ -28,3 +28,31 @@ describe("i problemi della home", () => {
     expect(home).toContain("data-fonte");
   });
 });
+
+describe("i problemi delle pagine dei percorsi", () => {
+  it("⚠️ ogni dolore di ogni pagina ha una fonte che cita un atto", async () => {
+    const { contenutiPubblicati } = await import("@/features/vetrina/contenuti");
+    const pagine = contenutiPubblicati();
+    expect(pagine.length).toBeGreaterThan(0);
+    for (const c of pagine) {
+      expect(c.dolori.length, c.slug).toBeGreaterThan(0);
+      for (const d of c.dolori) {
+        expect(d.fonte, `${c.slug}: ${d.titolo}`).toMatch(/D\.Lgs\.|Regolamento|Direttiva|UNI|ISO|Linee guida|Orientamenti/);
+        expect(`${d.titolo} ${d.testo}`, `${c.slug}: ${d.titolo}`).not.toMatch(/€/);
+      }
+    }
+  });
+
+  it("⚠️ nessun trattino lungo nel testo pubblico", async () => {
+    const { contenutiPubblicati } = await import("@/features/vetrina/contenuti");
+    const { PROBLEMI } = await import("@/components/landing/problemi");
+    const testi = [
+      ...PROBLEMI.flatMap((p) => [p.titolo, p.testo, p.fonte]),
+      ...contenutiPubblicati().flatMap((c) => [
+        c.titolo, c.descrizione, c.promessa, ...c.perChi, ...c.cosaFa.flat(), ...c.primaDopo.flat(), ...c.domande.flat(),
+        ...c.dolori.flatMap((d) => [d.titolo, d.testo, d.fonte]),
+      ]),
+    ];
+    for (const t of testi) expect(t).not.toMatch(/—/);
+  });
+});

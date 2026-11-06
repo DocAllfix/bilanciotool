@@ -57,8 +57,8 @@ export default async function AttivaFasciaPage({ params }: { params: Promise<{ f
       titolo={`Attiva «${p.nome}»`}
       sottotitolo={
         p.usoInterno
-          ? `La tua azienda e ${p.accessi} accessi per i colleghi, ciascuno coi percorsi che gli assegni. Crea l'account: al passo dopo scegli se pagare l'anno o il mese.`
-          : `${aziendeTesto(p.aziende)} da seguire e ${p.accessi} accessi, con tutti i percorsi compresi. Crea l'account: al passo dopo scegli se pagare l'anno o il mese.`
+          ? `La tua azienda e ${p.accessi} accessi per i colleghi, ciascuno coi percorsi che gli assegni. Crea l'account, la registrazione è gratuita: al passo dopo scegli se pagare l'anno o il mese.`
+          : `${aziendeTesto(p.aziende)} da seguire e ${p.accessi} accessi, con tutti i percorsi compresi. Crea l'account, la registrazione è gratuita: al passo dopo scegli se pagare l'anno o il mese.`
       }
     />
   );

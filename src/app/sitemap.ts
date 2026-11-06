@@ -41,6 +41,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // dice «modificata adesso» per sempre, e Google impara a ignorare il campo — anche
     // quando poi diciamo il vero.
     { url: `${base}/prezzi`, changeFrequency: "monthly", priority: 0.9 },
+    // L'indice dei percorsi: la home ci collega, e la verifica della sitemap pretende che
+    // ogni pagina indicizzabile linkata dalla home ci sia.
+    { url: `${base}/percorsi`, changeFrequency: "monthly", priority: 0.8 },
     // ⚠️ La verifica sta in sitemap perche' e' una pagina che vogliamo si TROVI: chi
     // riceve un documento non sa che esiste, e la cerca. Non espone niente finche' non
     // le si da' un codice, quindi non ha la riserva del portale cliente.

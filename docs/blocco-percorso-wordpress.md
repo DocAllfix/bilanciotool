@@ -31,11 +31,14 @@ insieme**, senza toccarli.
 
 ## I percorsi disponibili
 
-L'`id` è lo slug del percorso. Oggi ce n'è uno:
+L'`id` è lo slug del percorso. L'elenco completo sta su `evalisdeck.it/percorsi`. Oggi:
 
 | `id` | dove porta |
 |---|---|
-| `bilancio-energetico` | `/percorsi/bilancio-energetico` |
+| `inventario-gas-serra` | `/percorsi/inventario-gas-serra` |
+| `bilancio-energetico` | `/percorsi/bilancio-energetico` (l'unico con la prova interattiva) |
+| `whistleblowing-segnalazioni` | `/percorsi/whistleblowing-segnalazioni` |
+| `nis2-autovalutazione` | `/percorsi/nis2-autovalutazione` |
 
 Gli altri arrivano con la stessa forma. Per sapere se uno è già attivo basta aprire
 `evalisdeck.it/percorsi/<id>`: se risponde, il blocco funziona.

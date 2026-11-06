@@ -35,7 +35,7 @@ export const PROBLEMI: Problema[] = [
     titolo: "Il canale per le segnalazioni non è facoltativo.",
     testo:
       "Dai 50 dipendenti in su, o con un Modello 231 adottato, serve un canale interno di segnalazione con una procedura conforme. Senza, ANAC sanziona da 10.000 a 50.000 euro. E una casella di posta, per le linee guida ANAC, non è un canale idoneo.",
-    fonte: "D.Lgs. 24/2023, artt. 3, 4 e 21 c. 1 lett. b); Linee guida ANAC sui canali interni",
+    fonte: "D.Lgs. 24/2023, art. 3, art. 4 e art. 21 c. 1 lett. b); Linee guida ANAC sui canali interni",
   },
   {
     titolo: "La diagnosi energetica ha una scadenza, e una sanzione.",
@@ -53,12 +53,12 @@ export const PROBLEMI: Problema[] = [
     titolo: "Il reato di un dipendente può diventare un problema dell'azienda.",
     testo:
       "Se viene commesso nel suo interesse, l'azienda ne risponde con sanzioni pecuniarie e, nei casi più gravi, interdittive. Ciò che la esonera è un Modello di organizzazione adottato prima del fatto, e attuato davvero.",
-    fonte: "D.Lgs. 231/2001, artt. 5, 6 e 9",
+    fonte: "D.Lgs. 231/2001, art. 5, art. 6 e art. 9",
   },
   {
     titolo: "Un dato personale perso va notificato entro 72 ore.",
     testo:
       "Al Garante, con ciò che è successo e ciò che hai fatto. E il registro dei trattamenti, che quasi ogni azienda deve tenere, si scrive prima, non dopo. Le sanzioni arrivano a 20 milioni di euro o al 4% del fatturato mondiale.",
-    fonte: "Regolamento (UE) 2016/679, artt. 30, 33 e 83",
+    fonte: "Regolamento (UE) 2016/679, art. 30, art. 33 e art. 83",
   },
 ];

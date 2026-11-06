@@ -70,9 +70,19 @@ function rigaDelPiano(sub: Stripe.Subscription) {
   return sub.items.data.find((i) => chiavePiano(i.price.lookup_key)) ?? null;
 }
 
-async function registra(userId: string, orgId: string, azione: string, dettagli: Record<string, unknown>) {
-  await withTenant({ userId, orgId }, (tx) =>
-    logAudit(tx, { organizationId: orgId, userId, azione, entita: "organization", entitaId: orgId, dettagli }),
+// ⚠️ L'azione si scrive alla lettera in ogni chiamata, con la sua chiave: è la forma che
+// `etichette-audit-pure` sa leggere. Passata come parametro le sfuggirebbe, e nel registro
+// delle attività comparirebbe il nome macchina senza che nessun test lo dica.
+async function registra(voce: { userId: string; orgId: string; azione: string; dettagli: Record<string, unknown> }) {
+  await withTenant({ userId: voce.userId, orgId: voce.orgId }, (tx) =>
+    logAudit(tx, {
+      organizationId: voce.orgId,
+      userId: voce.userId,
+      azione: voce.azione,
+      entita: "organization",
+      entitaId: voce.orgId,
+      dettagli: voce.dettagli,
+    }),
   );
 }
 
@@ -84,7 +94,7 @@ export async function disdiciAbbonamento(userId: string, orgId: string): Promise
   const sub = await abbonamentoVivo(orgId);
   const aggiornato = await stripe().subscriptions.update(sub.id, { cancel_at_period_end: true });
   await applicaAbbonamento(aggiornato, orgId);
-  await registra(userId, orgId, "billing.abbonamento.disdici", { subscriptionId: sub.id });
+  await registra({ userId, orgId, azione: "billing.abbonamento.disdici", dettagli: { subscriptionId: sub.id } });
 }
 
 /** Ritira la disdetta: l'abbonamento torna a rinnovarsi come prima. */
@@ -92,7 +102,7 @@ export async function annullaDisdetta(userId: string, orgId: string): Promise<vo
   const sub = await abbonamentoVivo(orgId);
   const aggiornato = await stripe().subscriptions.update(sub.id, { cancel_at_period_end: false });
   await applicaAbbonamento(aggiornato, orgId);
-  await registra(userId, orgId, "billing.abbonamento.annulla_disdetta", { subscriptionId: sub.id });
+  await registra({ userId, orgId, azione: "billing.abbonamento.annulla_disdetta", dettagli: { subscriptionId: sub.id } });
 }
 
 /**
@@ -101,9 +111,18 @@ export async function annullaDisdetta(userId: string, orgId: string): Promise<vo
  * Stripe sostituisce il prezzo, riparte da oggi con un periodo di un anno e scala dalla
  * fattura la parte di mese già pagata e non ancora usata.
  *
+ * ⚠️ `billing_cycle_anchor: "now"` NON è facoltativo. Senza, Stripe tiene la vecchia
+ * ricorrenza: misurato sulla sandbox, un passaggio fatto un mese dopo l'attivazione
+ * addebitava undici dodicesimi dell'annuale, con la scadenza all'anniversario della prima
+ * attivazione — mentre la finestra e i Termini dicono «paghi l'annuale, e l'anno decorre dal
+ * passaggio». Con la ripartenza la fattura è 499 € meno la parte di mese non usata.
+ *
  * ⚠️ `pending_if_incomplete`: il cambio si applica SOLO se il pagamento dell'annuale riesce.
  * Senza, una carta rifiutata lascerebbe l'abbonamento già passato all'annuale e una fattura
  * insoluta: il cliente si ritroverebbe in sofferenza per aver cercato di risparmiare.
+ * Misurato sulla sandbox: con la carta rifiutata l'abbonamento resta mensile e la fattura
+ * resta aperta; al secondo tentativo Stripe la annulla e ne incassa una sola, quindi dire
+ * «controlla la carta e riprova» non espone a un doppio addebito.
  *
  * ⚠️ Niente metadati nello stesso aggiornamento: con `pending_if_incomplete` Stripe accetta
  * solo i campi che riguardano righe e fatturazione. Il periodo non serve scriverlo da
@@ -130,6 +149,7 @@ export async function passaAllAnnuale(userId: string, orgId: string): Promise<{ 
 
   const aggiornato = await stripe().subscriptions.update(sub.id, {
     items: [{ id: riga.id, price: await idPrezzo(annuale.lookup), quantity: 1 }],
+    billing_cycle_anchor: "now",
     proration_behavior: "always_invoice",
     payment_behavior: "pending_if_incomplete",
     expand: ["latest_invoice"],
@@ -147,6 +167,6 @@ export async function passaAllAnnuale(userId: string, orgId: string): Promise<{ 
   await applicaAbbonamento(aggiornato, orgId);
   const fattura = aggiornato.latest_invoice;
   const addebitato = fattura && typeof fattura !== "string" ? (fattura.amount_paid ?? null) : null;
-  await registra(userId, orgId, "billing.abbonamento.passa_annuale", { subscriptionId: sub.id, piano, addebitato });
+  await registra({ userId, orgId, azione: "billing.abbonamento.passa_annuale", dettagli: { subscriptionId: sub.id, piano, addebitato } });
   return { addebitato };
 }

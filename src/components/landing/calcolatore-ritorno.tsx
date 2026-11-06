@@ -130,7 +130,7 @@ function ContoAzienda() {
             <>
               Con i tuoi numeri, fare da te costa{" "}
               <strong className="tabular-nums" data-slot="kpi">
-                {euro(differenza)} in meno
+                {euro(differenza)}{" "}in meno
               </strong>{" "}
               in un anno, e i documenti restano tuoi da aggiornare quando serve.
             </>
@@ -195,7 +195,7 @@ function ContoConsulente() {
             <>
               L&apos;abbonamento si ripaga{" "}
               <strong className="tabular-nums" data-slot="kpi">
-                {una(volte)} volte
+                {una(volte)}{" "}volte
               </strong>{" "}
               con i documenti che prevedi di vendere in un anno.
             </>

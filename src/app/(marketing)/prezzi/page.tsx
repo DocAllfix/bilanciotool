@@ -105,7 +105,7 @@ export default function Prezzi() {
                   Prezzi
                 </p>
                 <h1 className="font-display mt-4 text-[34px] font-bold leading-[1.08] tracking-[-0.02em] md:text-[46px]">
-                  {quanteFasceInLettere()} piani. Tutti i percorsi in ognuno.
+                  {quanteFasceInLettere()}{" "}piani. Tutti i percorsi in ognuno.
                 </h1>
                 <p className="mt-5 text-[16px] leading-relaxed text-muted-foreground">
                   Per l&apos;azienda che porta avanti la conformità al proprio interno, e per i consulenti che
@@ -155,7 +155,7 @@ export default function Prezzi() {
                           </li>
                           <li className="flex gap-2">
                             <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
-                            {p.accessi} accessi
+                            {p.accessi}{" "}accessi
                           </li>
                           {p.usoInterno && (
                             <li className="flex gap-2">
@@ -165,7 +165,7 @@ export default function Prezzi() {
                           )}
                           <li className="flex gap-2">
                             <Check className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
-                            Tutti i {QUANTI_PERCORSI} percorsi
+                            Tutti i {QUANTI_PERCORSI}{" "}percorsi
                           </li>
                         </ul>
                         <div className="mt-auto pt-6">
@@ -314,7 +314,7 @@ export default function Prezzi() {
                   Che cosa comprende «tutti i percorsi».
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Sono {QUANTI_PERCORSI}, divisi in {AREE_VETRINA.length} gruppi, e ci sono tutti in ogni piano.
+                  Sono {QUANTI_PERCORSI}, divisi in {AREE_VETRINA.length}{" "}gruppi, e ci sono tutti in ogni piano.
                 </p>
               </div>
             </Reveal>
@@ -340,7 +340,7 @@ export default function Prezzi() {
             </div>
             <Reveal delay={240}>
               <p className="mt-10 text-[13.5px]">
-                <Link href="/#percorsi" className="font-medium underline underline-offset-4 hover:text-primary">
+                <Link href="/percorsi" className="font-medium underline underline-offset-4 hover:text-primary">
                   Che cosa fa ciascuno, in dettaglio
                 </Link>
               </p>

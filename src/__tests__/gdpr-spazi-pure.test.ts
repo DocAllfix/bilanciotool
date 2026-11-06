@@ -23,6 +23,19 @@ const FILE = [
   ...readdirSync("src/components/gdpr").map((f) => join("src/components/gdpr", f)),
   ...readdirSync("src/components/pas").map((f) => join("src/components/pas", f)),
   "src/components/comune/percorso.tsx",
+  // I prezzi e le pagine del pivot del 6 novembre 2026: «209 €l'anno» è stato trovato
+  // sull'HTML reso della pagina prezzi, ed è il caso esatto che questa guardia esiste per
+  // cogliere nel sorgente.
+  ...readdirSync("src/components/prezzi").map((f) => join("src/components/prezzi", f)),
+  "src/components/impostazioni/dialogo-acquisto.tsx",
+  "src/components/impostazioni/comandi-abbonamento.tsx",
+  "src/components/onboarding/offerta-lancio.tsx",
+  "src/components/vetrina/richiamo-acquisto.tsx",
+  "src/components/landing/calcolatore-ritorno.tsx",
+  "src/components/landing/modulo-enterprise.tsx",
+  "src/app/(marketing)/prezzi/page.tsx",
+  "src/app/(marketing)/percorsi/page.tsx",
+  "src/app/(marketing)/percorsi/[slug]/page.tsx",
   "src/components/documento/documento-gdpr.tsx",
   "src/components/documento/documento-pas.tsx",
 ].filter((f) => f.endsWith(".tsx"));

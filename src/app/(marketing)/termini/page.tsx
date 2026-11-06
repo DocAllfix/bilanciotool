@@ -24,7 +24,7 @@ export default function TerminiPage() {
           ne produce versioni impaginate e conservate.
         </p>
         <p>
-          Il servizio si rivolge in via principale a <strong>studi di consulenza, professionisti e imprese</strong>{" "}che
+          Il servizio si rivolge in via principale a <strong>imprese, professionisti e studi di consulenza</strong>{" "}che
           operano nell&apos;esercizio della propria attività. Dove una disposizione riguardi soltanto chi agisce come{" "}
           <strong>consumatore</strong>{" "}ai sensi del Codice del consumo, è indicato espressamente.
         </p>
@@ -37,9 +37,9 @@ export default function TerminiPage() {
           compiute con esse, e deve segnalare senza ritardo qualunque accesso non autorizzato.
         </p>
         <p>
-          A ogni registrazione corrisponde uno <strong>studio</strong>, cioè lo spazio di lavoro isolato che contiene le
-          aziende rendicontate. L&apos;amministratore dello studio può invitare altri utenti entro i limiti indicati
-          alla sezione 8 e ne risponde come propri incaricati.
+          A ogni registrazione corrisponde uno <strong>spazio di lavoro</strong>{" "}isolato, che contiene l&apos;azienda o
+          le aziende rendicontate. L&apos;amministratore dell&apos;account può invitare altri utenti entro i limiti
+          indicati alla sezione 8 e ne risponde come propri incaricati.
         </p>
       </Sezione>
 
@@ -62,27 +62,33 @@ export default function TerminiPage() {
           pagamento secondo l&apos;aliquota di legge e i dati fiscali forniti.
         </p>
         <p>
-          L&apos;abbonamento è per studio, comprensivo di tutte le funzioni: non ci sono componenti aggiuntivi a
-          pagamento né costi per singolo documento prodotto. La{" "}
-          <strong>prima annualità comprende l&apos;avviamento</strong>{" "}(configurazione dello studio, contenuti
-          metodologici, assistenza all&apos;avvio); le annualità successive si rinnovano a un canone ridotto.
+          L&apos;abbonamento comprende tutte le funzioni e tutti i percorsi: non ci sono moduli a pagamento separato né
+          costi per singolo documento prodotto. Si sottoscrive con <strong>pagamento annuale</strong>{" "}oppure{" "}
+          <strong>mensile</strong>, a scelta del cliente; il canone è lo stesso a ogni rinnovo, salvo modifiche
+          comunicate secondo la sezione 15. Eventuali servizi accessori, come l&apos;avvio assistito, si concordano a
+          parte e per iscritto.
         </p>
         <p>
           I pagamenti sono gestiti da un fornitore specializzato: il fornitore del servizio non tratta né conserva i
-          numeri completi delle carte. La fattura è emessa e resa disponibile in formato elettronico.
+          numeri completi delle carte. La documentazione di ogni pagamento è resa disponibile nell&apos;area di gestione
+          dell&apos;abbonamento, e la fattura è emessa secondo la normativa vigente sulla base dei dati fiscali forniti.
         </p>
       </Sezione>
 
       <Sezione n={5} titolo="Durata, rinnovo automatico e disdetta">
         <p>
-          L&apos;abbonamento ha durata annuale e si <strong>rinnova automaticamente</strong>{" "}alla scadenza, al canone di
-          rinnovo in vigore, salvo disdetta. Un avviso di rinnovo con l&apos;importo che sarà addebitato è inviato per
-          posta elettronica <strong>prima</strong>{" "}della scadenza.
+          L&apos;abbonamento ha la durata del periodo scelto, un anno o un mese, e si{" "}
+          <strong>rinnova automaticamente</strong>{" "}alla scadenza per un periodo uguale, salvo disdetta. Per gli
+          abbonamenti annuali un avviso di rinnovo con l&apos;importo che sarà addebitato è inviato per posta
+          elettronica <strong>prima</strong>{" "}della scadenza; per quelli mensili la ricevuta di ogni addebito è inviata
+          al momento del pagamento.
         </p>
         <p>
-          La disdetta si esercita in ogni momento dall&apos;area di gestione dell&apos;abbonamento, senza penali e senza
-          obbligo di motivazione, e ha effetto dalla scadenza in corso: il servizio resta pienamente utilizzabile fino a
-          quel giorno.
+          La disdetta si esercita in ogni momento dall&apos;area di gestione dell&apos;abbonamento, oppure scrivendo ai
+          contatti indicati, senza penali e senza obbligo di motivazione, e ha effetto dalla scadenza del periodo in
+          corso: il servizio resta pienamente utilizzabile fino a quel giorno. Fino ad allora la disdetta si può
+          ritirare. Chi paga mese per mese può passare in ogni momento al pagamento annuale: il periodo annuale decorre
+          dal passaggio, e la parte del mese già pagata e non fruita è scalata dal primo addebito annuale.
         </p>
         <p>
           In caso di mancato pagamento, l&apos;account passa in <strong>sola lettura</strong>{" "}dopo i tentativi di
@@ -102,8 +108,7 @@ export default function TerminiPage() {
           Chiedendo l&apos;attivazione immediata del servizio, il consumatore accetta che l&apos;esecuzione cominci
           prima della scadenza del termine. In caso di recesso successivo all&apos;attivazione è dovuto un importo{" "}
           <strong>proporzionale al servizio già fruito</strong>{" "}fino alla comunicazione del recesso, ai sensi
-          dell&apos;articolo 57, comma 3, del Codice del consumo. La quota di avviamento, una volta eseguita la
-          prestazione, resta dovuta.
+          dell&apos;articolo 57, comma 3, del Codice del consumo.
         </p>
         <p>
           Il diritto di recesso non spetta a chi acquista nell&apos;esercizio della propria attività professionale o
@@ -125,8 +130,8 @@ export default function TerminiPage() {
           </li>
           <li>
             <strong>Dopo la pubblicazione del primo documento</strong>, o trascorsi i quattordici giorni, il canone
-            dell&apos;annualità in corso non è rimborsabile, salvo i casi indicati di seguito. Resta ferma la facoltà di
-            disdetta per l&apos;annualità successiva.
+            del periodo in corso, annuale o mensile, non è rimborsabile, salvo i casi indicati di seguito. Resta ferma
+            la facoltà di disdetta per il periodo successivo.
           </li>
           <li>
             <strong>Rimborso proporzionale</strong>{" "}ai giorni non fruiti quando il servizio risulti indisponibile per
@@ -156,7 +161,7 @@ export default function TerminiPage() {
           L&apos;abbonamento consente il numero di aziende attive e di utenti previsto dalla fascia sottoscritta:
           da <strong>{PIANI[fasceVendibili()[0]].aziende} a {PIANI[fasceVendibili().at(-1)!].aziende} aziende
           attive</strong>{" "}e da <strong>{PIANI[fasceVendibili()[0]].accessi} a {PIANI[fasceVendibili().at(-1)!].accessi}{" "}
-          utenti</strong>{" "}per studio, più le eventuali estensioni acquistate. Le aziende archiviate non concorrono al limite e
+          utenti</strong>{" "}per account, più le eventuali estensioni acquistate in precedenza. Le aziende archiviate non concorrono al limite e
           restano consultabili in sola lettura; l&apos;azienda dimostrativa è esclusa dal conteggio.
         </p>
         {/* ⚠️ La fascia per l'uso interno vende un perimetro diverso, e va detto qui: senza,
@@ -286,7 +291,7 @@ export default function TerminiPage() {
         </p>
         <p>
           Nei rapporti con clienti professionali, la responsabilità del fornitore per danni diretti è limitata
-          all&apos;importo corrisposto per l&apos;annualità nel corso della quale il fatto si è verificato; sono esclusi
+          all&apos;importo corrisposto nei dodici mesi precedenti il fatto; sono esclusi
           i danni indiretti, la perdita di profitto e la perdita di opportunità commerciali. Nulla in questa clausola
           limita la responsabilità per dolo o colpa grave, né i diritti inderogabili riconosciuti ai consumatori.
         </p>

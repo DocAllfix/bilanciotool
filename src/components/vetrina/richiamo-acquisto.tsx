@@ -128,7 +128,7 @@ export function RichiamoAcquisto({ visto }: { visto: boolean }) {
               {euro(anno.importo)}
             </span>
             <span className="text-[12.5px] text-muted-foreground">
-              l&apos;anno, oppure {euro(mese.importo)} al mese · {piano.nome} · IVA esclusa
+              l&apos;anno, oppure {euro(mese.importo)} al mese · {piano.nome}{" "}· IVA esclusa
             </span>
           </p>
 

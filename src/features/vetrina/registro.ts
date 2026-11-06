@@ -1,4 +1,5 @@
 import { MODULI_PER_AREA, type ModuloAzienda } from "@/features/companies/moduli";
+import { contenutiPubblicati, type ContenutoPercorso } from "@/features/vetrina/contenuti";
 
 // Quali percorsi hanno una vetrina pubblica, e con che indirizzo.
 //
@@ -12,44 +13,15 @@ import { MODULI_PER_AREA, type ModuloAzienda } from "@/features/companies/moduli
 // controlliamo noi. Cambiarlo dopo costa un rinvio permanente e i collegamenti che nessuno
 // aggiorna.
 //
-// Oggi ce n'è una sola. La forma è al plurale perché le altre tredici arriveranno se questa
-// converte, e allora la pagina è già scritta per riceverle.
+// Le pagine arrivano a gruppi: prima un campione per approvare tono e struttura, poi le
+// altre. Il modello è uno solo, e riceve tutte quelle che `contenuti.ts` dichiara.
 
-export type Vetrina = {
-  /** L'indirizzo pubblico: `/percorsi/<slug>`. */
-  slug: string;
-  modulo: ModuloAzienda;
-  /** Il titolo della pagina: dice al lettore che cosa risolve, non come si chiama il modulo. */
-  titolo: string;
-  /** Per il `<title>` e la condivisione. */
-  descrizione: string;
-  /** Che cosa si può toccare davvero nella vetrina: si dichiara, non si lascia scoprire. */
-  provi: string[];
-  /** Che cosa NON c'è, perché vive solo nell'account. */
-  nonCiSono: string[];
-};
+// ⚠️ Dal 6 novembre 2026 le vetrine si RICAVANO dai contenuti delle pagine dei percorsi
+// (`contenuti.ts`): una pagina nuova compare da sola in sitemap, nel blocco del blog e
+// nell'indice `/percorsi`, senza un secondo elenco da tenere allineato.
+export type Vetrina = ContenutoPercorso;
 
-export const VETRINE: Vetrina[] = [
-  {
-    slug: "bilancio-energetico",
-    modulo: "energetico",
-    titolo: "Bilancio energetico: vettori, usi finali e diagnosi",
-    descrizione:
-      "Prova il percorso della diagnosi energetica senza registrarti: metti i consumi dei tuoi " +
-      "vettori, ripartiscili sugli usi finali e guarda dove va l'energia, con i fattori di " +
-      "conversione della norma.",
-    provi: [
-      "I consumi dell'anno per ciascun vettore, con costi e conversione in kWh, tep e tonnellate di CO₂e",
-      "La ripartizione sugli usi finali, con la quadratura che segnala subito ciò che non torna",
-      "Dove va l'energia: diagramma di flusso e graduatoria degli usi che pesano di più",
-    ],
-    nonCiSono: [
-      "Il documento impaginato e il PDF da consegnare",
-      "Il salvataggio: qui non si registra niente, i numeri restano nel tuo browser",
-      "Indicatori su due anni, interventi con il ritorno dell'investimento, racconto e verifica",
-    ],
-  },
-];
+export const VETRINE: Vetrina[] = contenutiPubblicati();
 
 export function vetrinaPerSlug(slug: string): Vetrina | null {
   return VETRINE.find((v) => v.slug === slug) ?? null;
