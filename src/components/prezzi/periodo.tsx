@@ -71,7 +71,17 @@ export function InterruttorePeriodo({
       <>
         Annuale
         {sconto > 0 && (
-          <span className="ml-1.5 rounded-full bg-primary/12 px-1.5 py-0.5 text-[10.5px] font-semibold text-primary">
+          // ⚠️ L'annuale è il periodo predefinito, cioè il fondo del pulsante è quasi sempre
+          // `bg-primary`: con `text-primary` lo sconto era verde su verde, presente nel testo
+          // e invisibile a schermo. L'ha visto solo guardare il dialogo.
+          <span
+            className={
+              "ml-1.5 rounded-full px-1.5 py-0.5 text-[10.5px] font-semibold " +
+              (periodo === "anno"
+                ? "bg-primary-foreground/20 text-primary-foreground"
+                : "bg-primary/12 text-primary")
+            }
+          >
             fino a −{sconto}%
           </span>
         )}

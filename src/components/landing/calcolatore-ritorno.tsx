@@ -85,7 +85,7 @@ function Risultato({ etichetta, valore }: { etichetta: string; valore: string })
 
 const una = (n: number) => n.toFixed(1).replace(".", ",");
 
-/** Il conto dell'azienda: quanto costa farlo fare fuori, contro il piano Azienda. */
+/** Il conto dell'azienda: quanto costa affidarlo all'esterno, contro il piano Azienda. */
 function ContoAzienda() {
   const [documenti, setDocumenti] = useState(3);
   const [costoEsterno, setCostoEsterno] = useState(3000);
@@ -106,7 +106,7 @@ function ContoAzienda() {
           max={50}
         />
         <Campo
-          etichetta="Quanto ti costa ciascuno, fatto fuori"
+          etichetta="Quanto ti costa ciascuno, affidato all'esterno"
           suffisso="€"
           valore={costoEsterno}
           imposta={setCostoEsterno}
@@ -120,7 +120,7 @@ function ContoAzienda() {
       </div>
       <div className="flex flex-col justify-between gap-6">
         <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-          <Risultato etichetta="Fatti fare fuori" valore={euro(esterno)} />
+          <Risultato etichetta="Affidati all'esterno" valore={euro(esterno)} />
           <Risultato etichetta={`Piano ${piano.nome}, un anno`} valore={anno ? euro(anno.importo) : "su preventivo"} />
         </dl>
         <p className="border-t pt-5 text-[14.5px] leading-relaxed" data-conto-esito>
@@ -135,7 +135,7 @@ function ContoAzienda() {
               in un anno, e i documenti restano tuoi da aggiornare quando serve.
             </>
           ) : (
-            <>Con questi numeri farli fare fuori costa meno del piano: il valore sta nel tenerli aggiornati da te.</>
+            <>Con questi numeri affidarli all'esterno costa meno del piano: il valore sta nel tenerli aggiornati da te.</>
           )}
         </p>
       </div>

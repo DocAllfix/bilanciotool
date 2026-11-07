@@ -156,7 +156,7 @@ export default async function VetrinaPercorso({ params }: { params: Promise<{ sl
             <Reveal>
               <Intestazione occhiello="Perché adesso" titolo="Che cosa c'è in gioco." />
             </Reveal>
-            <ol className="mt-10 grid gap-x-12 md:grid-cols-2" data-dolori>
+            <ol className={"mt-10 grid gap-x-12 " + (v.dolori.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")} data-dolori>
               {v.dolori.map((d, i) => (
                 <Reveal key={d.titolo} delay={i * 50}>
                   <li className="border-t py-6">

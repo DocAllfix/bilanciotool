@@ -105,6 +105,27 @@ await agisci("⚠️ posti d'introduzione e Fondatori non ci sono più", async (
   if (await page.locator('[data-vetrina="posti"]').count()) throw new Error("c'è ancora la riga dei posti");
 });
 
+await agisci("⚠️ lo sconto sull'interruttore si legge, a periodo selezionato", async () => {
+  // L'annuale è il predefinito: «fino a −29%» era `text-primary` su un pulsante `bg-primary`,
+  // verde su verde. Il testo c'era, quindi nessun controllo sul testo poteva accorgersene.
+  const altra = await page.context().newPage();
+  await altra.goto(`${BASE}/prezzi`, { waitUntil: "domcontentloaded" });
+  const voce = altra.locator('[data-interruttore-periodo] [data-periodo="anno"]').first();
+  await voce.waitFor({ timeout: 15_000 });
+  const { testo, fondo, scritta } = await voce.evaluate((b) => {
+    const s = b.querySelector("span");
+    return {
+      fondo: getComputedStyle(b).backgroundColor,
+      testo: s ? getComputedStyle(s).color : "",
+      scritta: s?.textContent ?? "",
+    };
+  });
+  await altra.close();
+  if (!/−\d+%/.test(scritta)) throw new Error(`nessuno sconto sul pulsante: «${scritta}»`);
+  if (testo === fondo) throw new Error(`«${scritta}» ha lo stesso colore del fondo: ${testo}`);
+  return scritta;
+});
+
 await agisci("chiudendolo non ricompare, nemmeno ricaricando", async () => {
   await page.locator('[data-vetrina="richiamo-chiudi"]').click();
   await page.waitForTimeout(400 * fattoreAttesa());
