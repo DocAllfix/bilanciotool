@@ -60,6 +60,27 @@ un legale abbia controllato.
 | I grandi gruppi rendicontano la catena del valore, e chiedono i dati ai fornitori | Dir. (UE) 2022/2464 (CSRD) | ⚠️ **da riverificare**: l'Omnibus ha ristretto soglie e richieste ai fornitori. La frase non cita soglie e parla di ciò che accade sul mercato, ma va riletta |
 | Le banche considerano i fattori ambientali nella concessione del credito | EBA/GL/2020/06 | da conoscenza degli orientamenti |
 
+## Le dodici pagine aggiunte il 7 novembre 2026
+
+Stesso criterio: fonti secondarie concordi, testo ufficiale da rileggere da chi firma.
+
+| Affermazione | Riferimento | Stato |
+|---|---|---|
+| Dopo l'Omnibus l'obbligo CSRD riguarda solo i grandi gruppi; CSDDD ristretta ai grandissimi | Dir. (UE) 2026/470, pubblicata il 26 febbraio 2026 | **confermata** da commenti; soglie non scritte in pagina |
+| L'Unione indica il VSME come riferimento per le richieste di dati alle PMI | Raccomandazione (UE) 2025/1710 | **confermata**; il numero C(2025) 4984 è l'identificativo interno |
+| Divieto dei prodotti ottenuti con lavoro forzato dal 14 dicembre 2027 | Reg. (UE) 2024/3015 | **confermata** |
+| SA8000:2026: nuove certificazioni dal primo gennaio 2027, autovalutazione dei certificati entro il 31 dicembre 2026 | calendario di transizione SAI | **confermata** sul sito di SAI |
+| Comunicazione del divario retributivo dai 100 dipendenti; valutazione congiunta oltre il 5% | Dir. (UE) 2023/970, art. 9 e art. 10 | testo della direttiva; il recepimento italiano non è citato |
+| Rapporto biennale sul personale sopra i 50 dipendenti | D.Lgs. 198/2006, art. 46 | da conoscenza del decreto |
+| Presunzione di conformità del modello con sistema di sicurezza UNI-INAIL o standard britannico | D.Lgs. 81/2008, art. 30 c. 5 | testo del decreto; la ISO 45001 non è nominata dalla legge, e la pagina non dice che lo sia |
+| Corruzione pubblica e fra privati come reati presupposto | D.Lgs. 231/2001, art. 25 e art. 25-ter; art. 2635 c.c. | testo del decreto |
+| Canale di segnalazione obbligatorio per chi ha un Modello | D.Lgs. 231/2001, art. 6 c. 2-bis | testo del decreto come modificato dal D.Lgs. 24/2023 |
+| Organi di amministrazione NIS2 responsabili e tenuti alla formazione | D.Lgs. 138/2024, art. 23 | da conoscenza del decreto |
+| Registro dei trattamenti: esenzione sotto i 250 non vale per i trattamenti non occasionali | Reg. (UE) 2016/679, art. 30 par. 5 | testo del regolamento |
+| Risposta all'interessato entro un mese | Reg. (UE) 2016/679, art. 12 par. 3 | testo del regolamento |
+| Dichiarazione di applicabilità con giustificazione di inclusioni ed esclusioni | ISO/IEC 27001:2022, §6.1.3 d) | testo della norma |
+| ESRS adottati con atto delegato | Reg. delegato (UE) 2023/2772 | ⚠️ l'Omnibus prevede una revisione degli ESRS: la citazione va riletta quando esce |
+
 ## Che cosa NON si afferma, di proposito
 
 - Che il Modello 231 sia obbligatorio: non lo è, è ciò che esonera.
@@ -67,3 +88,7 @@ un legale abbia controllato.
   commerciale.
 - «Chi non risponde esce dagli albi fornitori»: si dice «resta a sperare», che è un giudizio.
 - Prezzi medi di mercato dei documenti: nel calcolatore li scrive chi legge.
+- Le soglie numeriche dell'Omnibus: la pagina dice «grandi gruppi», perché le soglie sono
+  appena cambiate e il recepimento non è finito.
+- Che il percorso SoA copra tutto il sistema ISO/IEC 27001, o che un attestato di
+  autovalutazione valga come certificazione: le domande delle pagine dicono il contrario.

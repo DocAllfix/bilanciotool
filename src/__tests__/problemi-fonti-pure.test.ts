@@ -37,7 +37,12 @@ describe("i problemi delle pagine dei percorsi", () => {
     for (const c of pagine) {
       expect(c.dolori.length, c.slug).toBeGreaterThan(0);
       for (const d of c.dolori) {
-        expect(d.fonte, `${c.slug}: ${d.titolo}`).toMatch(/D\.Lgs\.|Regolamento|Direttiva|UNI|ISO|Linee guida|Orientamenti/);
+        // ⚠️ SA8000 e PAS 24000 sono gli standard stessi su cui il percorso è costruito: la
+        // fonte di ciò che chiedono è il loro testo, non una legge. Per i GRI e gli ESRS invece
+        // si cita l'atto che li rende vincolanti dove esiste (il Regolamento delegato).
+        expect(d.fonte, `${c.slug}: ${d.titolo}`).toMatch(
+          /D\.Lgs\.|Regolamento|Direttiva|UNI|ISO|Linee guida|Orientamenti|SA8000|PAS 24000/,
+        );
         expect(`${d.titolo} ${d.testo}`, `${c.slug}: ${d.titolo}`).not.toMatch(/€/);
       }
     }
