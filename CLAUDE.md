@@ -4202,3 +4202,85 @@ pagine statiche · `qa -- partner` **11/11** sul build di produzione, con un'isc
 collegamento fino alla riga. Anteprima completa saltata **per scelta dichiarata**: nessuna
 migrazione, nessun pagamento, una pagina nuova e un valore iniziale nel campo.
 
+**Il pivot: l'azienda col responsabile interno, il listino mensile/annuale, sedici pagine dei
+percorsi (2026-11-06/07) — ramo `anteprima/pivot-icp`, NON in produzione**
+
+Decisione del committente: i consulenti non rispondono, il cliente primario diventa **l'azienda
+con un responsabile interno**; i consulenti strutturati restano un'opzione. Piano in
+`~/.claude/plans/analizza-e-controanalizza-tutto-rosy-flask.md`.
+
+- **Listino** (`src/lib/prezzi.ts`, campo `vendita` con `anno` e `mese`): Azienda **499 €/anno o
+  59 €/mese** (1 azienda, 10 accessi, uso interno) · Consulenti fino a 15 aziende **1.299/149** ·
+  fino a 30 **1.990/229** · Enterprise su contatto (`/api/contatto`, arriva per email e non si
+  salva). Stesso prezzo a ogni rinnovo. **Ritirati dalla vendita ma riconosciuti**: Un'azienda,
+  Fino a 5, Fondatori, blocchi di aziende, posti d'introduzione — le lookup storiche restano,
+  perché `capacitaDaAbbonamento` ricava da lì le capacità di chi paga.
+- **Il barrato è dodici mesi di mensile**, calcolato dal listino; gli arrotondamenti non vanno mai
+  a nostro favore (`barrato-pure`). È un'offerta che il cliente può scegliere davvero: un
+  «listino» inventato sarebbe pubblicità ingannevole.
+- **Niente Schedule a due fasi per gli abbonamenti nuovi**: su un mensile sarebbe stato un mese
+  di fase 1 e poi un anno al prezzo di «rinnovo». Lo Schedule nasce solo da una lookup storica
+  «primo anno».
+- **Migrazione `0072`**: `org_entitlement.periodo` e `disdetta_a_fine_periodo`. Va in produzione
+  **prima** del codice: `applicaAbbonamento` le scrive, e senza colonne il webhook di chi ha
+  pagato fallisce.
+- **Disdetta, annullamento e «Passa all'annuale»** dalla pagina Abbonamento (`gestione.ts`); per
+  gli abbonamenti storici con Schedule resta «scrivici». Il passaggio usa
+  `proration_behavior: "always_invoice"` e `payment_behavior: "pending_if_incomplete"`: il piano
+  cambia solo se il pagamento riesce.
+- **Home riscritta** per il responsabile interno, coi problemi che citano la fonte normativa
+  stampata sotto (`problemi-fonti-pure`). **Nessuna cifra sulla home**, come prima.
+- **Sedici pagine dei percorsi**, `/percorsi/<slug>`, una per modulo: contenuti come DATO in
+  `src/features/vetrina/contenuti.ts` (`Record<ModuloAzienda, …>`, il compilatore pretende tutti
+  e sedici), passi e documenti derivati dal registro, conteggi da `NUMERI`, fonti raccolte e
+  verificate in `docs/fonti-vetrina.md`. Hub `/percorsi`, sitemap, blocco per WordPress coi
+  sedici slug.
+- **Anteprima per il committente** (`scripts/anteprima-committente.mjs apri|collegamento|chiudi`):
+  segreto di bypass dedicato, distinto da quello dei collaudi e da revocare a fine revisione;
+  email di verifica sul ramo e webhook della sandbox puntato all'alias del ramo. Stato in
+  `.env.anteprima-committente`, fuori da git.
+
+**Difetti trovati, tutti prima del rilascio:**
+- ⚠️ **«fino a −29%» era verde su verde** sul pulsante selezionato: il testo c'era, quindi nessun
+  controllo sul testo poteva accorgersene. Ora `vetrina-cta` confronta il colore calcolato dello
+  sconto con lo sfondo del pulsante; vista rossa sull'anteprima di prima.
+- **`verifica-pagamento` saltava il dialogo d'acquisto**: la stessa correzione fatta a
+  `verifica-checkout` il 15 agosto, mai propagata a questa copia. Terza occorrenza della regola
+  «la duplicazione conserva i difetti».
+- **Con l'IVA automatica Stripe rifiutava il cliente senza indirizzo** («customer's location
+  isn't recognized»): il collaudo ora glielo dà.
+- La guardia sulle fonti rifiutava i GRI/ESRS: si cita il Regolamento delegato (UE) 2023/2772
+  che li rende vincolanti. SA8000 e PAS 24000 sono ammessi come fonte di sé stessi, ed è scritto.
+
+**Regole nate qui:**
+- **Un colore si prova sul colore calcolato, non sulla classe né sul testo.** Un'etichetta può
+  esserci ed essere invisibile.
+- **Un collaudo eseguito sul deployment sbagliato accusa il prodotto di ciò che quel deployment
+  non ha.** Il giro completo è partito sul build precedente alle dodici pagine nuove, e
+  `pagine-percorso` — che legge le attese dal codice corrente — ha dato 404 su pagine che lì non
+  esistevano. Ogni push crea un indirizzo nuovo: il bersaglio va riletto dopo ogni push.
+- **Su un'anteprima la conferma dell'email si prova col segreto dell'ambiente**: la chiave locale
+  di Resend può solo inviare, quindi il collegamento si costruisce firmandolo. Non prova che la
+  mail arrivi in una casella vera: quello lo verifica una persona.
+
+Gate: typecheck · build (home, `/prezzi`, `/percorsi/*` statiche) · suite **2066/2066 con
+`RLS_FORCE_ROLE=app_rls`** · sull'anteprima `qsvsn1jr2`: `pagine-percorso` **68/68**,
+`tutto-pubblico` 37/37, `azienda-interna` 14/14, `consenso` 33/33 · acquisto annuale (608,78 €
+IVA compresa) e mensile (71,98 €) da browser pulito, attivazione dal webhook vero della sandbox,
+passaggio all'annuale · giro completo **67/70** sul build precedente: i tre rossi sono
+`pagine-percorso` (build senza le pagine nuove), `tutto-pubblico` (pagina autore del blog in
+cache come 404 su quel build: 200 sul nuovo e in produzione) e `azienda-interna` (contesa), tutti
+verdi sull'anteprima nuova; quattro al secondo tentativo (compensi, formazione-comandi,
+sgesg-documenti, tracce).
+
+⚠️ **Per il rilascio, in quest'ordine, e solo con l'autorizzazione del committente**: prezzi vivi
+sull'account `acct_1U3GxS…` (verificato prima di scrivere); migrazione `0072` sulla produzione;
+fusione su `main` come commit unico; collaudi di sola lettura; `AGGIORNATO_AL` alla data del
+rilascio; rilettura delle fonti di `docs/fonti-vetrina.md` sul testo ufficiale; revoca del segreto
+del committente; disdetta dell'abbonamento di collaudo da 3,50 €. I vecchi prezzi vivi **non** si
+archiviano: gli abbonamenti storici li usano.
+
+⚠️ **Da dire al committente**: app e video dicono ancora «studio» e «portafoglio»; un consulente
+con 2-14 clienti paga 1.299 €; la fattura elettronica non ha ancora chi la emetta; gli
+abbonamenti mensili producono una mail di vendita al mese.
+
