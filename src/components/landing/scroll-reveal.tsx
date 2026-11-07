@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { migliaia } from "./migliaia";
+
+export { migliaia };
 
 // Reveal allo scroll: translate+fade una volta sola, disattivato con
 // prefers-reduced-motion (regola DESIGN.md). Niente librerie.
@@ -48,8 +51,6 @@ export function Reveal({
   );
 }
 
-/** Le migliaia col punto, a mano: `toLocaleString` dipende dall'ICU, e server e browser ne hanno due diversi. */
-export const migliaia = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 // Contatore animato per la banda numeri.
 //

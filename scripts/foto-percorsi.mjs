@@ -65,7 +65,7 @@ async function scatta(nome, { width, height, tema }) {
 
   // Nessuna riga deve restare invisibile: e' la prova che lo scorrimento e' bastato.
   const spente = await page.evaluate(() =>
-    [...document.querySelectorAll("#percorsi article")].filter((e) => {
+    [...document.querySelectorAll("#percorsi [data-modulo]")].filter((e) => {
       const o = getComputedStyle(e.parentElement ?? e).opacity;
       return Number(o) < 0.9;
     }).length,
@@ -75,8 +75,8 @@ async function scatta(nome, { width, height, tema }) {
   const sfondamento = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   if (sfondamento > 0) rilievi.push(`${nome}: la pagina sfonda di ${sfondamento}px in orizzontale`);
 
-  const quanti = await page.locator("#percorsi article").count();
-  const gruppi = await page.locator("#percorsi h2 ~ div > div > div:first-child p").count();
+  const quanti = await page.locator("#percorsi [data-modulo]").count();
+  const gruppi = await page.locator("#percorsi [data-gruppo]").count();
 
   const el = page.locator("#percorsi");
   await el.screenshot({ path: `${OUT}/percorsi-${nome}.png` });

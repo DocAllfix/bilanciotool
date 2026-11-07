@@ -98,7 +98,9 @@ const riga = registro.match(/export const MODULI = \[([^\]]+)\]/);
 if (!riga) errors.push("non riesco a leggere MODULI dal registro: formato cambiato?");
 const attesi = riga ? (riga[1].match(/"/g) ?? []).length / 2 : 0;
 
-const resi = await page.evaluate(() => document.querySelectorAll("#percorsi article").length);
+// Si contano gli AGGANCI, non la struttura: la home del 7 novembre 2026 è una griglia di
+// voci e non più di schede, e un collaudo appeso a `article` diceva «zero percorsi».
+const resi = await page.evaluate(() => document.querySelectorAll("#percorsi [data-modulo]").length);
 if (attesi && resi !== attesi) {
   // ⚠️ Contro un bersaglio REMOTO lo scarto non e' un difetto della pagina: e' il sito che
   // serve un build piu' vecchio del sorgente. Detto come «percorsi in pagina: 5 invece di
@@ -115,7 +117,7 @@ if (attesi && resi !== attesi) {
 // I tre gruppi devono esserci tutti, e ciascuno col proprio tratto di colore: un gruppo
 // senza tinta e' il difetto delle classi costruite a stringa, che il compilatore non vede.
 const gruppi = riga ? (registro.match(/export const AREE_MODULI = \[([^\]]+)\]/)?.[1].match(/"/g) ?? []).length / 2 : 0;
-const intestazioni = await page.evaluate(() => document.querySelectorAll("#percorsi h3.font-display span[class*='bg-area-']").length);
+const intestazioni = await page.evaluate(() => document.querySelectorAll("#percorsi [data-gruppo] span[class*='bg-area-']").length);
 if (gruppi && intestazioni !== gruppi) {
   errors.push(`gruppi con tratto di colore in pagina: ${intestazioni} invece di ${gruppi}`);
 }

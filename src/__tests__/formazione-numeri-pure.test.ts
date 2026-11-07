@@ -179,6 +179,9 @@ describe("i numeri della formazione", () => {
           // parte di un numero più lungo o di un codice — «34.850 €» non contiene un 34, e
           // «8.12» è un controllo della norma, non otto di qualcosa.
           //
+          // E un numero attaccato a un numerale romano da un punto è un allegato o un capo
+          // («Allegato II.13» del Codice degli appalti, 7 novembre 2026).
+          //
           // I conteggi del seme sono sempre numeri di COSE. Una regola copre anche la
           // frase che nessuno ha ancora scritto; un'eccezione a mano copre solo quella.
           //
@@ -188,7 +191,7 @@ describe("i numeri della formazione", () => {
           const comeConteggio = new RegExp(
             // «il 31», «dal 31», «al 31» sono date: un conteggio prende «i» o «gli», mai
             // l'articolo singolare. Stessa regola di `slide-distillate.ts`.
-            `(?<![\\d\\-/])(?<![\\d][.,])(?<!${RIFERIMENTI} )(?<!\\b(?:il|dal|al) )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
+            `(?<![\\d\\-/])(?<![\\d][.,])(?<![IVX]\\.)(?<!${RIFERIMENTI} )(?<!\\b(?:il|dal|al) )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
             "u",
           );
           if (comeConteggio.test(daControllare)) {

@@ -29,7 +29,8 @@ describe("le porte d'acquisto per fascia", () => {
   it("la home rimanda alla porta del piano per l'azienda, ricavato dal listino e non scritto a mano", () => {
     // Dal 6 novembre 2026 il cliente primario è l'azienda che fa da sé: i richiami della home
     // portano al suo piano, e il piano si chiede al listino (`pubblico === "azienda"`).
-    const home = readFileSync("src/app/(marketing)/page.tsx", "utf8");
+    // Dal 7 novembre 2026 il corpo della home sta in `landing.tsx`, che la home rende.
+    const home = readFileSync("src/components/landing/landing.tsx", "utf8");
     expect(home).toContain('PIANI[k].pubblico === "azienda"');
     expect(home).toContain("`/attiva/${PIANO_AZIENDA}`");
   });

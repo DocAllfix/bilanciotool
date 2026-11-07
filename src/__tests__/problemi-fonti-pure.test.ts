@@ -14,7 +14,8 @@ describe("i problemi della home", () => {
     for (const p of PROBLEMI) {
       expect(p.fonte.trim(), p.titolo).not.toBe("");
       // Un riferimento normativo vero: decreto, regolamento, direttiva o norma tecnica.
-      expect(p.fonte, p.titolo).toMatch(/D\.Lgs\.|Regolamento|Direttiva|UNI|ISO|Linee guida/);
+      // «Orientamenti» sono quelli EBA, che chiedono alle banche di valutare i fattori ESG.
+      expect(p.fonte, p.titolo).toMatch(/D\.Lgs\.|Regolamento|Direttiva|UNI|ISO|Linee guida|Orientamenti/);
     }
   });
 
@@ -22,9 +23,12 @@ describe("i problemi della home", () => {
     for (const p of PROBLEMI) expect(`${p.titolo} ${p.testo}`, p.titolo).not.toMatch(/€/);
   });
 
-  it("la fonte si stampa davvero sotto ogni voce", () => {
-    const home = readFileSync("src/app/(marketing)/page.tsx", "utf8");
+  it("la fonte si stampa davvero sotto ogni voce", async () => {
+    const home = readFileSync("src/components/landing/landing.tsx", "utf8");
     expect(home).toContain("{p.fonte}");
+    // E ogni mittente ha almeno una richiesta: un mittente vuoto sarebbe una riga muta.
+    const { MITTENTI } = await import("@/components/landing/problemi");
+    for (const m of MITTENTI) expect(PROBLEMI.some((p) => p.mittente === m), m).toBe(true);
     expect(home).toContain("data-fonte");
   });
 });

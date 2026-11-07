@@ -10,18 +10,24 @@ import { migliaia } from "@/components/landing/scroll-reveal";
 // «5 documenti pubblicabili» quando erano diventati trentotto. Un numero sulla home è il
 // primo che un cliente ripete: si conta, e questa guardia impedisce che torni scritto.
 
-const HOME = readFileSync("src/app/(marketing)/page.tsx", "utf8");
-const BANDA = HOME.slice(HOME.indexOf("STRIP NUMERI"), HOME.indexOf("I PERCORSI */"));
+// ⚠️ Dal 7 novembre 2026 la banda dei contatori animati non c'è più (era il cliché
+// dell'«hero-metric»): i numeri stanno in una riga sotto la griglia dei percorsi, nel corpo
+// della home (`landing.tsx`). La regola resta la stessa: si contano, non si scrivono.
+const HOME = readFileSync("src/components/landing/landing.tsx", "utf8");
+const BANDA = HOME.slice(HOME.indexOf("I PERCORSI */"), HOME.indexOf("L'UNICITÀ */"));
 
-describe("banda dei numeri della vetrina", () => {
-  it("la banda si trova davvero", () => {
+describe("i numeri della vetrina", () => {
+  it("la sezione dei percorsi si trova davvero, e i suoi numeri vengono dal registro", () => {
     expect(BANDA.length).toBeGreaterThan(500);
-    expect(BANDA).toContain("NV.");
+    expect(BANDA).toContain("NV.percorsi");
+    expect(BANDA).toContain("NV.requisiti");
   });
 
-  it("nessuna cifra scritta a mano nella banda né nei passi della home", () => {
-    // Le tuple della banda: `[49, "", …]` è la forma che non deve tornare.
+  it("nessuna cifra scritta a mano nei numeri né nei passi della home", () => {
+    // Le tuple della vecchia banda: `[49, "", …]` è la forma che non deve tornare.
     expect(BANDA.match(/\[\s*\d+\s*,/g) ?? []).toEqual([]);
+    // Nemmeno nei testi: «16 percorsi» scritto a mano diventa falso al diciassettesimo.
+    expect(HOME).not.toMatch(/>\s*\d+ percorsi/);
     expect(HOME).not.toMatch(/\b\d+ indicatori derivati/);
     expect(HOME).not.toMatch(/\b\d+ dei quali calcolati/);
   });

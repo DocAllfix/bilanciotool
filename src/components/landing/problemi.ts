@@ -1,19 +1,28 @@
-// I problemi che la home mette davanti a chi legge, con la FONTE di ciascuno.
+// Le richieste che la home mette davanti a chi legge, con la FONTE di ciascuna.
 //
-// ⚠️ SPIETATI MA VERI (6 novembre 2026). La copy deve far sentire la pressione reale —
-// obblighi, sanzioni, richieste dei clienti — e su un prodotto che vende conformità
-// un'affermazione sbagliata in vetrina è il danno peggiore: la legge prima un potenziale
-// cliente, e la riprende un concorrente. Quindi ogni voce dice CHI è obbligato (le soglie
-// esistono e si scrivono) e porta la fonte primaria, che compare in pagina sotto il testo.
-// Una guardia (`problemi-fonti-pure.test.ts`) pretende la fonte su ogni voce.
+// ⚠️ DURE MA VERE (6 novembre 2026, riscritte il 7). La copy deve far sentire la pressione
+// reale, e su un prodotto che vende conformità un'affermazione sbagliata in vetrina è il
+// danno peggiore: la legge prima un potenziale cliente, e la riprende un concorrente.
+// Quindi ogni voce dice CHI è obbligato (le soglie esistono e si scrivono) e porta la
+// fonte primaria, che compare in pagina sotto il testo. La guardia è
+// `problemi-fonti-pure.test.ts`.
 //
-// ⚠️ Gli importi delle sanzioni si scrivono in LETTERE di euro («10.000 euro»), mai col
-// simbolo: la home non mostra cifre di prezzo, e il collaudo pubblico lo verifica cercando
-// proprio gli importi col simbolo dell'euro.
+// ⚠️ Due frasi sono scritte più miti di come le si vorrebbe, di proposito:
+// - la BANCA non «rifiuta il finanziamento»: gli orientamenti EBA le chiedono di valutare
+//   i fattori ESG, non di rifiutare. È vero, invece, che senza i dati dell'impresa ragiona
+//   su stime (EBA/GL/2025/01 le ammette quando i dati mancano);
+// - la GARA non «si perde»: l'Allegato II.13 riduce la GARANZIA a chi è certificato, e
+//   questo è ciò che si scrive.
 //
-// Verificate il 6 novembre 2026: D.Lgs. 24/2023 art. 21 c. 1 lett. b); D.Lgs. 102/2014
-// art. 8 e art. 16 c. 1; D.Lgs. 138/2024 (soglie per soggetti essenziali e importanti);
-// D.Lgs. 231/2001 artt. 5, 6, 9; Reg. (UE) 2016/679 artt. 30, 33, 83; Dir. (UE) 2022/2464.
+// ⚠️ Gli importi delle sanzioni si scrivono in LETTERE di euro, mai col simbolo: la home
+// non mostra cifre di prezzo, e il collaudo pubblico lo verifica cercando proprio gli
+// importi col simbolo dell'euro.
+//
+// Verificate il 7 novembre 2026: D.Lgs. 36/2023 art. 106, comma 8, e Allegato II.13 (l'elenco
+// comprende ISO 14064-1, l'attestazione del Modello 231, SA8000, ISO 9001, 14001, 45001 e
+// 27001); EBA/GL/2020/06 (fattori ESG nella valutazione del merito di credito);
+// EBA/GL/2025/01 (stime quando i dati mancano); Raccomandazione (UE) 2025/1710 (VSME);
+// D.Lgs. 24/2023 artt. 4 e 21; D.Lgs. 138/2024; Reg. (UE) 2016/679 art. 33.
 
 export type Problema = {
   /** La frase che si legge per prima: la situazione, detta come la vive chi la subisce. */
@@ -24,41 +33,49 @@ export type Problema = {
   fonte: string;
 };
 
-export const PROBLEMI: Problema[] = [
+/** Da dove arriva la richiesta. L'ordine è quello in cui si leggono in pagina. */
+export const MITTENTI = ["Il cliente", "La banca", "La gara", "La legge"] as const;
+export type Mittente = (typeof MITTENTI)[number];
+
+export type Richiesta = Problema & { mittente: Mittente };
+
+export const PROBLEMI: Richiesta[] = [
   {
-    titolo: "Il cliente ti manda il questionario ESG, e vuole i numeri.",
+    mittente: "Il cliente",
+    titolo: "Ti manda il questionario ESG, e vuole numeri.",
     testo:
-      "I grandi gruppi devono rendicontare la propria catena del valore, e le domande le girano ai fornitori: emissioni, energia, politiche sul personale, prove documentali. Chi risponde con dati e documenti resta fra i fornitori qualificati. Chi risponde a voce, resta a sperare.",
-    fonte: "Direttiva (UE) 2022/2464 (CSRD), rendicontazione sulla catena del valore",
+      "I grandi gruppi rendicontano la loro catena del valore e girano le domande ai fornitori. Chi risponde con dati e documenti resta fra i qualificati.",
+    fonte: "Direttiva (UE) 2022/2464 (CSRD); Raccomandazione (UE) 2025/1710 (VSME)",
   },
   {
-    titolo: "Il canale per le segnalazioni non è facoltativo.",
-    testo:
-      "Dai 50 dipendenti in su, o con un Modello 231 adottato, serve un canale interno di segnalazione con una procedura conforme. Senza, ANAC sanziona da 10.000 a 50.000 euro. E una casella di posta, per le linee guida ANAC, non è un canale idoneo.",
-    fonte: "D.Lgs. 24/2023, art. 3, art. 4 e art. 21 c. 1 lett. b); Linee guida ANAC sui canali interni",
+    mittente: "La banca",
+    titolo: "Nel tuo merito di credito entrano anche i fattori ESG.",
+    testo: "La banca li deve valutare quando concede un prestito. Se non ha i tuoi numeri, ragiona su stime di settore.",
+    fonte: "Orientamenti EBA/GL/2020/06; Orientamenti EBA/GL/2025/01",
   },
   {
-    titolo: "La diagnosi energetica ha una scadenza, e una sanzione.",
+    mittente: "La gara",
+    titolo: "In gara, chi non è certificato versa di più.",
     testo:
-      "Grandi imprese e imprese a forte consumo di energia la devono ogni quattro anni, secondo la norma tecnica. Mancarla costa da 4.000 a 40.000 euro, e i dati che servono sono quelli che hai già nelle bollette.",
-    fonte: "D.Lgs. 102/2014, art. 8 e art. 16 c. 1; UNI CEI EN 16247",
+      "Inventario GHG, attestazione del Modello 231, SA8000 e sistemi ISO certificati riducono la garanzia da presentare.",
+    fonte: "D.Lgs. 36/2023, art. 106, comma 8, e Allegato II.13",
   },
   {
-    titolo: "NIS2 riguarda più aziende di quanto si pensi.",
-    testo:
-      "Si applica alle medie e grandi imprese di molti settori: dall'energia ai trasporti, dai rifiuti all'alimentare, fino a parte della manifattura e ai servizi digitali. Le sanzioni arrivano a 10 milioni di euro o al 2% del fatturato mondiale per i soggetti essenziali, a 7 milioni o all'1,4% per gli importanti.",
-    fonte: "D.Lgs. 138/2024, di recepimento della Direttiva (UE) 2022/2555",
+    mittente: "La legge",
+    titolo: "Dai 50 dipendenti, il canale per le segnalazioni.",
+    testo: "Senza un canale interno conforme, ANAC sanziona da 10.000 a 50.000 euro.",
+    fonte: "D.Lgs. 24/2023, art. 4 e art. 21",
   },
   {
-    titolo: "Il reato di un dipendente può diventare un problema dell'azienda.",
-    testo:
-      "Se viene commesso nel suo interesse, l'azienda ne risponde con sanzioni pecuniarie e, nei casi più gravi, interdittive. Ciò che la esonera è un Modello di organizzazione adottato prima del fatto, e attuato davvero.",
-    fonte: "D.Lgs. 231/2001, art. 5, art. 6 e art. 9",
+    mittente: "La legge",
+    titolo: "NIS2 riguarda le medie e grandi imprese di molti settori.",
+    testo: "Le sanzioni arrivano a 10 milioni di euro o al 2% del fatturato mondiale.",
+    fonte: "D.Lgs. 138/2024",
   },
   {
-    titolo: "Un dato personale perso va notificato entro 72 ore.",
-    testo:
-      "Al Garante, con ciò che è successo e ciò che hai fatto. E il registro dei trattamenti, che quasi ogni azienda deve tenere, si scrive prima, non dopo. Le sanzioni arrivano a 20 milioni di euro o al 4% del fatturato mondiale.",
-    fonte: "Regolamento (UE) 2016/679, art. 30, art. 33 e art. 83",
+    mittente: "La legge",
+    titolo: "Un dato personale perso si notifica entro 72 ore.",
+    testo: "Al Garante, con ciò che è successo e ciò che hai fatto per rimediare.",
+    fonte: "Regolamento (UE) 2016/679, art. 33",
   },
 ];

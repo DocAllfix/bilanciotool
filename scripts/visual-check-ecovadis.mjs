@@ -29,7 +29,10 @@ await check("il file del badge risponde 200 ed è un SVG", async () => {
   if (!/Platinum/i.test(t)) throw new Error("il badge non dice Platinum");
 });
 
-await check("la fascia sta fra 'Il metodo' e le FAQ", async () => {
+// ⚠️ Dal 7 novembre 2026 la fascia «Chi ha costruito lo strumento» e la domanda «Chi c'è
+// dietro?» sono diventate una riga nella chiusura (`#evalis`), con lo stesso limite detto
+// con le stesse parole. Il collaudo cerca la firma dove sta adesso.
+await check("la firma sta nella chiusura, dopo le domande", async () => {
   const pos = await page.evaluate(() => {
     const y = (s) => { const el = document.querySelector(s); return el ? el.getBoundingClientRect().top + window.scrollY : null; };
     // Il badge GRANDE, quello della fascia: da quando l'hero ne porta uno piccolo
@@ -41,11 +44,11 @@ await check("la fascia sta fra 'Il metodo' e le FAQ", async () => {
     return { metodo: y("#metodo"), faq: y("#faq"), badge: img ? img.getBoundingClientRect().top + window.scrollY : null };
   });
   if (pos.badge === null) throw new Error("badge assente");
-  if (!(pos.metodo < pos.badge && pos.badge < pos.faq)) throw new Error(JSON.stringify(pos));
+  if (!(pos.faq < pos.badge)) throw new Error(JSON.stringify(pos));
 });
 
 await check("il badge si carica davvero (non è un'immagine rotta)", async () => {
-  await page.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
+  await page.evaluate(() => document.querySelector("#evalis")?.scrollIntoView({ block: "center" }));
   await page.waitForTimeout(900);
   const dim = await page.evaluate(() => {
     const i = [...document.querySelectorAll("img")]
@@ -85,17 +88,10 @@ await check("il piede porta il badge piccolo", async () => {
   if (n !== 1) throw new Error("badge nel footer: " + n);
 });
 
-await check("la voce FAQ 'Chi c'è dietro' si apre e spiega il limite", async () => {
-  await page.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
-  const b = page.getByRole("button", { name: "Chi c'è dietro EvalisDeck?" }).first();
-  await b.click();
-  await page.waitForTimeout(600);
-  if ((await b.getAttribute("aria-expanded")) !== "true") throw new Error("la voce non si apre");
-  const t = await page.evaluate(() => document.body.innerText);
-  if (!t.includes("non certifica EvalisDeck")) throw new Error("il limite non è dichiarato nella risposta");
-  await b.click();
-  await page.waitForTimeout(400);
-  if ((await b.getAttribute("aria-expanded")) !== "false") throw new Error("la voce non si richiude");
+await check("la firma dichiara il limite accanto al marchio", async () => {
+  const t = await page.evaluate(() => document.querySelector("#evalis")?.innerText ?? "");
+  if (!t) throw new Error("manca la firma #evalis");
+  if (!t.includes("non certifica EvalisDeck")) throw new Error("il limite non è dichiarato accanto al marchio");
 });
 
 await check("i dati strutturati sono JSON valido e il premio è sull'organizzazione", async () => {
@@ -108,8 +104,7 @@ await check("i dati strutturati sono JSON valido e il premio è sull'organizzazi
   if (JSON.stringify(j.makesOffer).includes("award")) throw new Error("il premio non deve stare sul software");
 });
 
-await page.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
-await page.evaluate(() => window.scrollBy(0, -520));
+await page.evaluate(() => document.querySelector("#evalis")?.scrollIntoView({ block: "center" }));
 await page.waitForTimeout(600);
 await page.screenshot({ path: `${OUT}/01-fascia-chiara.png` });
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
@@ -129,8 +124,7 @@ await dark.goto(BASE + "/", { waitUntil: "networkidle" });
 if (!(await dark.evaluate(() => document.documentElement.classList.contains("dark")))) {
   errors.push("[dark] il tema scuro non si è applicato: il controllo successivo non prova nulla");
 }
-await dark.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
-await dark.evaluate(() => window.scrollBy(0, -520));
+await dark.evaluate(() => document.querySelector("#evalis")?.scrollIntoView({ block: "center" }));
 await dark.waitForTimeout(800);
 await dark.screenshot({ path: `${OUT}/03-fascia-scura.png` });
 await check("nel tema scuro il badge resta visibile e leggibile", async () => {
@@ -156,9 +150,8 @@ const m = await ctxM.newPage();
 m.on("console", (x) => { if (x.type() === "error" && !rumoreDiPiattaforma(x.text())) errors.push(`[mobile] ${x.text()}`); });
 m.on("pageerror", (e) => errors.push(`[mobile pageerror] ${e.message}`));
 await m.goto(BASE + "/", { waitUntil: "networkidle" });
-await check("su mobile la fascia impila e non sborda", async () => {
-  await m.evaluate(() => document.querySelector("#faq")?.scrollIntoView());
-  await m.evaluate(() => window.scrollBy(0, -700));
+await check("su mobile la firma impila e non sborda", async () => {
+  await m.evaluate(() => document.querySelector("#evalis")?.scrollIntoView({ block: "center" }));
   await m.waitForTimeout(900);
   const r = await m.evaluate(() => {
     const i = [...document.querySelectorAll("img")]

@@ -2,7 +2,13 @@
 
 ## Cosa
 
-SaaS multi-studio per la rendicontazione ESG delle PMI italiane: un modulo **Inventario GHG** (ISO 14064-1:2018, percorso in 8 passi fino al rapporto conforme al §9.3.1) e un modulo **Bilancio di Sostenibilità** (GRI 2021 / ESRS-VSME, percorso in 7 passi fino al documento impaginato), integrati: l'inventario alimenta la sezione emissioni del bilancio. Il valore non è il calcolo ma il **metodo incorporato**: guide per tema, motivazioni d'esclusione, checklist d'audit, scale di valutazione — un consulente impacchettato in software. Nato dai due prototipi in `archivio/`.
+SaaS per la conformità delle aziende italiane: **16 percorsi guidati in 3 gruppi** (Ecosostenibilità, Compliance, Sistemi di gestione), dall'inventario GHG e dai bilanci ESG ed energetico al Modello 231, alle segnalazioni, a NIS2, GDPR, ISO 37001, SA8000, PAS 24000 e alla SoA ISO/IEC 27001. Ogni percorso guida passo per passo, fa i calcoli e produce un documento impaginato, congelato alla pubblicazione e verificabile con un codice pubblico.
+
+**La promessa è «un posto solo», mai «un solo modulo».** I percorsi stanno nel fascicolo dell'azienda e condividono i dati: l'anagrafica si scrive una volta, i consumi passano fra inventario, bilancio energetico e indicatori, il bilancio legge le emissioni dall'inventario. Non sono sedici programmi messi insieme.
+
+Il valore non è il calcolo ma il **metodo incorporato**: guide per tema, motivazioni d'esclusione, checklist d'audit, scale di valutazione, voci proposte dal codice ATECO. Un consulente impacchettato in software. Nato dai prototipi in `archivio/`.
+
+**Registro per superficie**: le pagine pubbliche (home, prezzi, pagine dei percorsi) sono `brand`; l'app è `product`; il documento consegnato è editoriale.
 
 ## Utenti
 

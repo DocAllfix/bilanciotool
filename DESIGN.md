@@ -99,3 +99,25 @@ Tre token, uno per **gruppo**, definiti in `globals.css` come `--area-*` ed espo
 - **da avviare** — contorno tratteggiato grigio, icona spenta: **nessun colore di modulo**, perche il colore significa «questo percorso esiste».
 
 **Contrasto verificato** su entrambi i temi: bianco su fondo pieno da 4,97 a 7,19 nel tema chiaro; colore su fondo scuro da 7,44 a 9,06. Tutti sopra AA.
+
+## Registro del sito pubblico (dal 7 novembre 2026)
+
+La scala qui sopra è quella dell'app, densa. Il sito pubblico ne ha una sua, fluida e a passi di almeno 1,25, definita come token in `globals.css` e usata con utility proprie:
+
+| Utility | Misura | Uso |
+|---|---|---|
+| `text-display` | da 40 a 72 px | il titolo dell'apertura, uno per pagina |
+| `text-headline` | da 30 a 48 px | i titoli di sezione |
+| `text-title` | 21 px | i titoli dentro una sezione |
+| `text-lead` | da 17 a 20 px | la frase sotto un titolo |
+| `text-fonte` | 12 px, mono | la fonte normativa stampata sotto ogni richiesta |
+
+**Niente dimensioni scritte a mano** nelle sezioni nuove: la home precedente ne usava una ventina diverse (`text-[13.5px]`, `text-[14.5px]`…), ed è il segno di una scala che non c'è.
+
+**Il petrolio sulle superfici ampie** è `vetrina-petrolio`, non `primary`: nel tema scuro `primary` si schiarisce per il contrasto dei pulsanti, e un'intera fascia a quella chiarezza abbaglierebbe. Sopra il petrolio i pulsanti si invertono (`vetrina-petrolio-accento` con testo petrolio): il `primary` sul petrolio fa 1,5:1. Contrasti misurati: testo 10,97:1, testo attenuato 7,14:1, accento 8,33:1.
+
+**Due livelli di colore**, scelti con `data-tema` sulla radice della pagina: «petrolio» (le superfici ampie sono petrolio, i titoli dell'apertura sono petrolio, circa un terzo della pagina) e «sobria» (petrolio solo su titoli, pulsanti e la chiusura). Le sezioni usano sempre le stesse utility (`bg-tema-superficie`, `text-tema-testo`, `text-tema-attenuato`, `border-tema-bordo`, `text-tema-titolo`): cambia soltanto a che cosa puntano.
+
+**Da non rifare** (dalla versione precedente della home): la banda dei contatori animati, gli occhielli maiuscoli con la lineetta sopra ogni sezione, le liste numerate 01/02/03, gli aloni sfocati, l'alternanza di fasce chiare e scure, l'interfaccia ricostruita con dei riquadri al posto delle schermate vere.
+
+**Le schermate del prodotto** in vetrina sono vere e si rifanno con `node scripts/foto-gesti.mjs` quando l'interfaccia cambia.
