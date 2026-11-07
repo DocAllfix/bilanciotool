@@ -1,8 +1,9 @@
 // Apre un'anteprima al committente, e la richiude.
 //
 //   node scripts/anteprima-committente.mjs apri             prepara ramo, webhook e segreto
+//   node scripts/anteprima-committente.mjs pubblica         toglie l'accesso di Vercel alle anteprime
 //   node scripts/anteprima-committente.mjs collegamento <https://deployment>   stampa il link
-//   node scripts/anteprima-committente.mjs chiudi           toglie tutto
+//   node scripts/anteprima-committente.mjs chiudi           toglie tutto, e rimette l'accesso
 //
 // ⚠️ PERCHÉ SERVE, misurato il 7 novembre 2026. Un'anteprima preparata per i collaudi NON si
 // può consegnare così com'è a una persona che deve provarla davvero:
@@ -23,6 +24,15 @@
 //
 // ⚠️ E L'ENDPOINT SANDBOX VA TOLTO A FINE REVISIONE. Quello rimasto attivo in agosto, puntato
 // altrove, ha mandato al committente 93 email di «consegna fallita». `chiudi` lo cancella.
+//
+// ⚠️ PERCHÉ ESISTE `pubblica` (7 novembre 2026). Il collegamento col segreto funziona per
+// chiunque lo apra, ma solo la PRIMA volta: dopo il rinvio la barra degli indirizzi mostra
+// l'indirizzo nudo, e chi lo copia da lì e lo inoltra manda una pagina di accesso di Vercel.
+// Il committente deve poter girare il collegamento a chi vuole, quindi per il periodo della
+// revisione l'autenticazione di Vercel si spegne (deciso dall'utente). Vale per TUTTE le
+// anteprime del progetto (database di sviluppo e Stripe di prova: nessun dato vero), Vercel
+// le serve comunque con `X-Robots-Tag: noindex`, e `chiudi` rimette l'impostazione che c'era,
+// letta e salvata qui.
 //
 // Lo stato sta in `.env.anteprima-committente`, escluso da git come ogni `.env*`.
 
@@ -150,6 +160,24 @@ if (comando === "apri") {
   stato.ALIAS = alias;
   scriviStato(stato);
   console.log(`\nStato salvato in ${STATO}. Ora ridistribuisci: le variabili valgono dal prossimo build.`);
+} else if (comando === "pubblica") {
+  const stato = leggiStato();
+  const progetto = (await api("GET", `/v9/projects/${projectId}`)).dati;
+  const prima = progetto.ssoProtection?.deploymentType ?? "";
+  if (!prima) {
+    console.log("L'autenticazione di Vercel è già spenta: niente da fare.");
+  } else {
+    if (progetto.passwordProtection) console.log("⚠️ C'è anche una protezione con password: non la tocco.");
+    // Si salva PRIMA di spegnere: se il processo morisse dopo, `chiudi` saprebbe comunque
+    // che cosa rimettere.
+    stato.PROTEZIONE_PRIMA = prima;
+    scriviStato(stato);
+    const r = await api("PATCH", `/v9/projects/${projectId}`, { ssoProtection: null });
+    if (!r.ok) throw new Error(`protezione: ${r.stato} ${r.testo.slice(0, 200)}`);
+    const dopo = (await api("GET", `/v9/projects/${projectId}`)).dati.ssoProtection;
+    console.log(`Autenticazione di Vercel: «${prima}» → ${dopo ? JSON.stringify(dopo) : "spenta"}`);
+    console.log("Le anteprime si aprono senza parametri. Si rimette con «chiudi».");
+  }
 } else if (comando === "collegamento") {
   const stato = leggiStato();
   const base = process.argv[3]?.replace(/\/+$/, "");
@@ -157,7 +185,11 @@ if (comando === "apri") {
     console.error("Uso: collegamento <https://deployment>, dopo «apri».");
     process.exit(1);
   }
-  console.log(`${base}/?x-vercel-protection-bypass=${stato.BYPASS}&x-vercel-set-bypass-cookie=true`);
+  console.log(
+    stato.PROTEZIONE_PRIMA
+      ? `${base}/  (pubblica: si apre e si inoltra senza parametri)`
+      : `${base}/?x-vercel-protection-bypass=${stato.BYPASS}&x-vercel-set-bypass-cookie=true`,
+  );
 } else if (comando === "chiudi") {
   const stato = leggiStato();
   if (stato.WEBHOOK_ID) {
@@ -170,8 +202,20 @@ if (comando === "apri") {
     });
     console.log(r.ok ? "segreto revocato" : `segreto NON revocato: ${r.stato} ${r.testo.slice(0, 160)}`);
   }
+  if (stato.PROTEZIONE_PRIMA) {
+    const r = await api("PATCH", `/v9/projects/${projectId}`, {
+      ssoProtection: { deploymentType: stato.PROTEZIONE_PRIMA },
+    });
+    console.log(
+      r.ok
+        ? `autenticazione di Vercel rimessa: «${stato.PROTEZIONE_PRIMA}»`
+        : `autenticazione NON rimessa: ${r.stato} ${r.testo.slice(0, 160)}`,
+    );
+    // Se non si è potuta rimettere, lo stato resta: senza, si perderebbe che cosa rimettere.
+    if (!r.ok) process.exit(1);
+  }
   rmSync(STATO, { force: true });
   console.log("Stato locale rimosso. Le variabili del ramo restano: valgono solo per quel ramo.");
 } else {
-  console.log("Comandi: apri · collegamento <https://deployment> · chiudi");
+  console.log("Comandi: apri · pubblica · collegamento <https://deployment> · chiudi");
 }
