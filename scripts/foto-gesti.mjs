@@ -11,7 +11,8 @@
 // ⚠️ Registra un conto di collaudo nel database dell'ambiente e lo attiva: si lancia SOLO
 // contro lo sviluppo o un'anteprima, mai contro la produzione.
 import { chromium } from "@playwright/test";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import postgres from "postgres";
 import sharp from "sharp";
 import "dotenv/config";
@@ -42,28 +43,53 @@ if (!inv) throw new Error("la dimostrativa non ha l'inventario GHG");
 const radice = `${BASE}/aziende/${az.id}/ghg/${inv.anno}`;
 console.log(`  ${az.nome}, inventario ${inv.anno}`);
 
-/** Fotografa il contenuto principale, senza la barra laterale: in vetrina conta il lavoro. */
-async function scatta(nome, selettore = "main") {
+/**
+ * Ritaglia la parte che il gesto racconta, non la schermata intera.
+ *
+ * ⚠️ Una schermata intera rimpicciolita a 640 px in vetrina ha il testo a 8-9 px, cioè
+ * illeggibile (critica di Axialoop, 7 novembre 2026). Si fotografa a una finestra stretta,
+ * dove l'interfaccia si dispone in circa 700 px, e si ritaglia il blocco che contiene i testi
+ * dati: in pagina l'immagine si vede a grandezza vera, e i pulsanti si leggono.
+ */
+async function ritaglia(nome, testi) {
   await page.waitForTimeout(1200);
-  const el = page.locator(selettore).first();
-  await el.waitFor({ timeout: 60_000 });
-  const png = await el.screenshot({ animations: "disabled" });
-  const meta = await sharp(png).metadata();
-  // 16:10, dall'alto: la parte che si legge per prima.
-  const larghezza = meta.width;
-  const altezza = Math.min(meta.height, Math.round((larghezza * 10) / 16));
-  await sharp(png).extract({ left: 0, top: 0, width: larghezza, height: altezza }).resize({ width: 1600 }).webp({ quality: 82 }).toFile(`${OUT}/${nome}.webp`);
-  console.log(`  ✓ ${nome}.webp`);
+  // La barra dell'app da telefono resta ferma in alto, e nel ritaglio coprirebbe la prima
+  // riga: per la foto la si rimette nel flusso.
+  await page.addStyleTag({ content: ".sticky, .fixed { position: static !important; } .fixed.bottom-16 { display: none !important; }" });
+  const box = await page.evaluate((cercati) => {
+    const candidati = [...document.querySelectorAll("main *")].filter((el) => {
+      const t = el.textContent ?? "";
+      const r = el.getBoundingClientRect();
+      return r.width >= 480 && cercati.every((c) => t.includes(c));
+    });
+    // Il più piccolo che li contiene tutti: è il blocco che racconta il gesto.
+    candidati.sort((x, y) => x.getBoundingClientRect().height - y.getBoundingClientRect().height);
+    const el = candidati[0];
+    if (!el) return null;
+    el.scrollIntoView({ block: "start" });
+    const r = el.getBoundingClientRect();
+    return { x: r.left + window.scrollX, y: r.top + window.scrollY, width: r.width };
+  }, testi);
+  if (!box) throw new Error(`${nome}: nessun blocco contiene ${testi.join(" + ")}`);
+  const margine = 12;
+  const clip = { x: Math.max(0, box.x - margine), y: Math.max(0, box.y - margine), width: box.width + margine * 2 };
+  clip.height = Math.round((clip.width * 10) / 16);
+  const png = await page.screenshot({ fullPage: true, clip, animations: "disabled" });
+  await sharp(png).resize({ width: 1408 }).webp({ quality: 84 }).toFile(`${OUT}/${nome}.webp`);
+  console.log(`  ✓ ${nome}.webp (${Math.round(clip.width)} px di interfaccia)`);
 }
 
+// Da qui la finestra è stretta: l'interfaccia si dispone in circa 700 px.
+await page.setViewportSize({ width: 760, height: 1000 });
+
 await page.goto(`${radice}?passo=2`, { waitUntil: "domcontentloaded" });
-await page.getByText("Sorgenti", { exact: false }).first().waitFor({ timeout: 60_000 });
-await scatta("domande");
+await page.getByText("Combustione fissa", { exact: false }).first().waitFor({ timeout: 60_000 });
+await ritaglia("domande", ["Combustione fissa", "Non applicabile"]);
 
 await page.goto(`${radice}?passo=5`, { waitUntil: "domcontentloaded" });
-await page.getByText("Risultati", { exact: false }).first().waitFor({ timeout: 60_000 });
+await page.getByText("Totale location-based", { exact: false }).first().waitFor({ timeout: 60_000 });
 await page.waitForTimeout(1500); // i grafici si disegnano dopo i dati
-await scatta("calcoli");
+await ritaglia("calcoli", ["Totale location-based", "Totale market-based"]);
 
 // Il documento: si pubblica dal passo del rapporto e si apre la versione appena congelata.
 await page.goto(`${radice}?passo=8`, { waitUntil: "domcontentloaded" });
@@ -96,6 +122,21 @@ if (!riquadro) throw new Error("nel documento non c'è un grafico da fotografare
 const png = await page.screenshot({ fullPage: true, clip: { ...riquadro, height: Math.round((riquadro.width * 10) / 16) } });
 await sharp(png).resize({ width: 1600 }).webp({ quality: 82 }).toFile(`${OUT}/documento.webp`);
 console.log("  ✓ documento.webp");
+
+// ⚠️ Il nome del file cambia col contenuto. Il server ottimizza le immagini e le ricorda per
+// INDIRIZZO: un file nuovo con lo stesso nome non si vede finché quella memoria non scade, e
+// in vetrina resterebbe la schermata vecchia senza che niente lo dica. Visto succedere in
+// locale il 7 novembre 2026. La home legge i nomi da `gesti-immagini.json`.
+const elenco = {};
+for (const nome of ["domande", "calcoli", "documento"]) {
+  const dati = readFileSync(`${OUT}/${nome}.webp`);
+  const impronta = createHash("sha1").update(dati).digest("hex").slice(0, 8);
+  for (const vecchio of readdirSync(OUT).filter((f) => f.startsWith(`${nome}-`) && f.endsWith(".webp"))) rmSync(`${OUT}/${vecchio}`);
+  renameSync(`${OUT}/${nome}.webp`, `${OUT}/${nome}-${impronta}.webp`);
+  elenco[nome] = `/landing/gesti/${nome}-${impronta}.webp`;
+}
+writeFileSync("src/components/landing/gesti-immagini.json", `${JSON.stringify(elenco, null, 2)}\n`);
+console.log("  elenco:", JSON.stringify(elenco));
 
 await browser.close();
 await sql.end();

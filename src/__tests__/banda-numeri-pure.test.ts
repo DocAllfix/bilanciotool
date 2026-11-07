@@ -19,8 +19,9 @@ const BANDA = HOME.slice(HOME.indexOf("I PERCORSI */"), HOME.indexOf("L'UNICITÀ
 describe("i numeri della vetrina", () => {
   it("la sezione dei percorsi si trova davvero, e i suoi numeri vengono dal registro", () => {
     expect(BANDA.length).toBeGreaterThan(500);
+    // Dal 7 novembre 2026 la sezione dice solo quanti sono i percorsi: il resto dei numeri
+    // (requisiti, procedure) è uscito con la semplificazione chiesta dal committente.
     expect(BANDA).toContain("NV.percorsi");
-    expect(BANDA).toContain("NV.requisiti");
   });
 
   it("nessuna cifra scritta a mano nei numeri né nei passi della home", () => {

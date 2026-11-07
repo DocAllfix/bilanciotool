@@ -52,12 +52,19 @@ await agisci("tutti i collegamenti interni della home rispondono", async () => {
 // Nato da una domanda di un potenziale cliente: «non vedo le modalità di acquisto».
 // Ogni richiamo diceva «prova la demo», e chi aveva già deciso non trovava una strada.
 await agisci("la vetrina dice COME si acquista", async () => {
+  // ⚠️ Dal 7 novembre 2026 il COME (annuale o mensile, bonifico, rimborso, disdetta) sta
+  // sulla pagina dei prezzi, per decisione del committente: la home ne dice una riga e
+  // rimanda. La regola del 13 agosto resta intera, cioè chi ha già deciso trova la strada,
+  // ma a un clic: si controlla la pagina dove la risposta sta adesso.
   await vai("/");
+  const home = await page.locator("main").innerText();
+  if (!/abbonamento/i.test(home)) throw new Error("la home non dice che è un abbonamento");
+  await vai("/prezzi");
   const t = await page.locator("body").innerText();
-  if (!/Come si acquista/i.test(t)) throw new Error("nessuna sezione sull'acquisto");
-  for (const atteso of [/abbonamento/i, /annuale/i, /bonifico|preventivo/i, /rimborso/i, /disdice/i]) {
-    if (!atteso.test(t)) throw new Error(`la sezione non parla di ${atteso}`);
+  for (const atteso of [/annuale/i, /bonifico|preventivo/i, /rimborso/i, /disdic/i]) {
+    if (!atteso.test(t)) throw new Error(`la pagina dei prezzi non parla di ${atteso}`);
   }
+  await vai("/");
   // ⚠️ Deve dire ANCHE dove sono gli importi. Fino al 27 agosto 2026 la home diceva «si
   // vedono appena entri», cioe' metteva un PEDAGGIO davanti a una domanda legittima: per
   // sapere quanto costa bisognava registrarsi. Ora c'e' una pagina, e la home ci rimanda.
@@ -68,11 +75,14 @@ await agisci("la vetrina dice COME si acquista", async () => {
   if (!(await page.locator('main a[href="/prezzi"], footer a[href="/prezzi"]').count())) {
     throw new Error("nessun rimando alla pagina dei prezzi");
   }
-  if (/si vedono appena entri/i.test(t)) throw new Error("la home nasconde ancora gli importi");
+  // ⚠️ Si guarda il testo della HOME: `t` è quello della pagina dei prezzi, dove le cifre
+  // devono esserci, e usarlo qui farebbe accusare la home di ciò che sta altrove.
+  const testoHome = await page.locator("body").innerText();
+  if (/si vedono appena entri/i.test(testoHome)) throw new Error("la home nasconde ancora gli importi");
   for (const k of CHIAVI_PIANO) {
     for (const periodo of ["anno", "mese"]) {
       const v = prezzoDiVendita(PIANI[k], periodo);
-      if (v && t.includes(euro(v.importo))) throw new Error(`la home mostra una cifra (${euro(v.importo)})`);
+      if (v && testoHome.includes(euro(v.importo))) throw new Error(`la home mostra una cifra (${euro(v.importo)})`);
     }
   }
 });

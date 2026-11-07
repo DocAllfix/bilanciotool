@@ -212,3 +212,26 @@ oggi, in una riga, con il suo limite.
 - L'alternanza di fasce chiare e scure: ne resta una sola scura.
 - Le sezioni «In azienda» e «Il metodo», fuse nella 5.
 - Le sei schede di «Come si acquista», diventate tre righe.
+
+---
+
+## Secondo giro (7 novembre 2026, pomeriggio)
+
+Richieste del committente: più necessità e più dura, meno parole, l'abbonamento ridotto a
+«Vedi i prezzi», i percorsi come icone chiaramente cliccabili, l'apertura e le sue varianti
+intatte. Più la critica di Axialoop sul ritmo.
+
+- **Le richieste**: quattro righe a tutta larghezza, una frase grande per mittente. Il cliente
+  «rendiconta la sua filiera. Cioè te.»; la banca «pesa anche il tuo rischio ESG»; la gara
+  «chi non è certificato versa di più»; la legge «il reato è del dipendente, la sanzione è
+  dell'azienda», più segnalazioni, NIS2 e GDPR in una riga con le loro soglie.
+  ⚠️ Scartata «senza, si versa per intero»: per una PMI la garanzia è già ridotta del 50%.
+- **I percorsi**: tessere colorate col nome sotto, in un pannello solo diviso per gruppo.
+- **L'unicità**: l'anagrafica dell'azienda d'esempio e gli stessi valori dentro cinque
+  percorsi (612.000 kWh, 48 dipendenti, ATECO 25.62), con i passaggi che il prodotto fa davvero.
+- **Abbonamento e consulenti**: una sezione sola a due colonne. Il «come si paga» sta nella
+  pagina dei prezzi, e il collaudo `tutto-pubblico` ora lo cerca lì.
+- **Domande**: sei, di una o due frasi.
+
+Parole nel corpo della home, domande escluse: **553**, con un tetto di 800 che il collaudo
+`landing` fa rispettare.

@@ -51,6 +51,7 @@
   --color-tema-attenuato: var(--tema-attenuato);
   --color-tema-bordo: var(--tema-bordo);
   --color-tema-titolo: var(--tema-titolo);
+  --color-tema-accento: var(--tema-accento);
   /* Registro marketing: la scala del sito pubblico, a passi di almeno 1,25. L'app ha la
      sua (DESIGN.md, Tipografia): qui servono misure fluide e un contrasto più forte. */
   --text-display: clamp(2.5rem, 1.35rem + 4.1vw, 4.5rem);
@@ -431,6 +432,7 @@
   --tema-attenuato: var(--vetrina-petrolio-muted);
   --tema-bordo: var(--vetrina-petrolio-border);
   --tema-titolo: var(--primary);
+  --tema-accento: var(--vetrina-petrolio-accento);
 }
 [data-tema="sobria"] {
   --tema-superficie: var(--background);
@@ -438,6 +440,7 @@
   --tema-attenuato: var(--muted-foreground);
   --tema-bordo: var(--border);
   --tema-titolo: var(--foreground);
+  --tema-accento: var(--primary);
 }
 
 /* ─── Il laboratorio della landing (DA TOGLIERE con la pagina /lab/landing) ──────
