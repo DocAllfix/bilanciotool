@@ -4301,9 +4301,10 @@ con tre attributi sulla radice: il committente ha deciso guardando, e toglierlo 
 cancellare file, non riscrivere la pagina.
 
 ⚠️ **Prima del rilascio, oltre ai passi del pivot:**
-- `CODICE_ESEMPIO` in `apertura-dati.ts` è di un documento del database di **sviluppo**: va
-  sostituito col codice di un documento pubblicato sulla dimostrativa dello studio Evalis **in
-  produzione** (e `STATI_ESEMPIO.ghg` con la sua versione), altrimenti il «verifica»
-  dell'apertura porta a «non trovato» sul sito vero.
+- `CODICE_ESEMPIO` in `apertura-dati.ts` è **`null`** dal rilascio dell'8 novembre: in
+  produzione non c'era un documento GHG della «Corvane Meccanica S.r.l.» (le dimostrative
+  interne sono precedenti alla rinomina), e il fascicolo porta a `/verifica` senza codice.
+  Per rimettere la prova cliccabile serve un documento vero in produzione, con un emittente
+  che non sia il nome di una persona: scelta del committente su quale conto pubblicarlo.
 - `node scripts/anteprima-committente.mjs chiudi` a revisione finita: rimette la protezione di
   Vercel sulle anteprime (`all_except_custom_domains`), revoca il segreto e cancella il webhook.

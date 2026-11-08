@@ -23,12 +23,18 @@ export const AZIENDA_ESEMPIO = { nome: "Corvane Meccanica S.r.l.", ateco: "25.62
  * Il codice di verifica stampato sul documento d'esempio, che si clicca e apre la pagina
  * pubblica di verifica.
  *
- * ⚠️ DEVE ESISTERE nel database dell'ambiente: un codice inventato porterebbe a «non
- * trovato», cioè alla prova del contrario. Questo è di un documento della dimostrativa nel
- * database di SVILUPPO, e serve all'anteprima. Prima del rilascio va sostituito con il
- * codice di un documento pubblicato sulla dimostrativa dello studio Evalis in produzione.
+ * ⚠️ DEVE ESISTERE nel database della PRODUZIONE: un codice inventato porterebbe a «non
+ * trovato», cioè alla prova del contrario. E deve essere di un documento GHG della
+ * «Corvane Meccanica S.r.l.» con la versione di `STATI_ESEMPIO.ghg`, e con un emittente
+ * che non sia il nome di una persona: la pagina di verifica li mostra, a un clic dal
+ * fascicolo che dice il contrario.
+ *
+ * L'8 novembre 2026, al rilascio, in produzione un documento così NON c'era (le
+ * dimostrative interne sono precedenti alla rinomina e si chiamano ancora «Meccanica
+ * Adriatica»). Finché manca, `null`: il fascicolo porta alla pagina che spiega la verifica
+ * invece che a un codice che non esiste.
  */
-export const CODICE_ESEMPIO = "EV-DJQ3-HYQJ";
+export const CODICE_ESEMPIO: string | null = null;
 
 /** Lo stato di ogni percorso nel fascicolo d'esempio. Il compilatore li pretende tutti. */
 export type StatoEsempio = { stato: "pubblicato"; versione: number } | { stato: "in-corso" } | { stato: "da-avviare" };

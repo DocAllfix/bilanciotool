@@ -84,12 +84,18 @@ export function FascicoloVetrina() {
         <span className="text-muted-foreground">
           Ultimo pubblicato: Inventario GHG 2025, v{STATI_ESEMPIO.ghg.stato === "pubblicato" ? STATI_ESEMPIO.ghg.versione : 1}
         </span>
-        <Link
-          href={`/verifica?codice=${CODICE_ESEMPIO}`}
-          className="font-mono text-[11.5px] font-medium text-primary underline-offset-4 hover:underline"
-        >
-          {CODICE_ESEMPIO} · verifica
-        </Link>
+        {CODICE_ESEMPIO ? (
+          <Link
+            href={`/verifica?codice=${CODICE_ESEMPIO}`}
+            className="font-mono text-[11.5px] font-medium text-primary underline-offset-4 hover:underline"
+          >
+            {CODICE_ESEMPIO} · verifica
+          </Link>
+        ) : (
+          <Link href="/verifica" className="text-[12px] font-medium text-primary underline-offset-4 hover:underline">
+            Codice verificabile · come funziona
+          </Link>
+        )}
       </div>
     </figure>
   );
