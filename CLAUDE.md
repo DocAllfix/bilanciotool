@@ -4308,3 +4308,24 @@ cancellare file, non riscrivere la pagina.
   che non sia il nome di una persona: scelta del committente su quale conto pubblicarlo.
 - `node scripts/anteprima-committente.mjs chiudi` a revisione finita: rimette la protezione di
   Vercel sulle anteprime (`all_except_custom_domains`), revoca il segreto e cancella il webhook.
+
+✅ **Pivot in produzione dall'8 novembre 2026 (`edc8e6d`)**, col metodo:
+- prezzi vivi: account verificato prima di scrivere (`acct_1U3GxSAOnVDvjrbP`, «Evalis Deck»),
+  `stripe-bootstrap` letto a vuoto, poi applicato: 6 prezzi nuovi riletti da Stripe uguali alla
+  previsione (importo, intervallo, `eur`, `exclusive`, attivi); quelli della fascia `singola`
+  restano attivi per l'abbonamento esistente;
+- produzione: stato chiesto in sola lettura (mancava solo la `0072`), guardia vista
+  **rifiutarsi**, migrazione `0072` applicata, poi la previsione confrontata: 73 migrazioni, 0
+  tabelle senza RLS, colonne nuove vuote e leggibili da `app_rls`, «trimestre» respinto e «mese»
+  accettato in transazioni annullate, nessuna riga cambiata;
+- fusione su `main` come un commit solo. Dopo, sul sito vero e in sola lettura:
+  `tutto-pubblico` 37/37, `sitemap` 9/9, `legale` 26/26, `pagine-percorso` 68/68 (al secondo
+  giro: il primo cadde sui 429 di Better Auth), `csp` 3/3, `consenso` 33/33, webhook vivo (400
+  senza firma);
+- `anteprima-committente.mjs chiudi`: webhook sandbox tolto, segreto revocato, protezione delle
+  anteprime rimessa (302 verificato).
+
+⚠️ **Restano aperti**: il codice d'esempio della home (`CODICE_ESEMPIO = null`, vedi sopra);
+l'abbonamento di collaudo da 3,50 € del 22 settembre, non disdetto (si rinnova il 22 settembre
+2027); la rilettura legale di `docs/fonti-vetrina.md`; la chiave Stripe viva incollata in chat
+mesi fa, da ruotare.
