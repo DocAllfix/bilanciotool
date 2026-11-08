@@ -33,7 +33,7 @@ export default async function PaginaPartner({ params }: { params: Promise<{ codi
     return (
       <ModuloIscrizione
         destinazione="/dashboard"
-        sottotitolo="Il codice partner di questo collegamento non è attivo: puoi iscriverti lo stesso, e se ti ha presentato un partner scrivi qui sotto il suo codice. Apri il tuo studio in modalità demo, senza impegno."
+        sottotitolo="Il codice partner di questo collegamento non è attivo: puoi iscriverti lo stesso, e se ti ha presentato un partner scrivi qui sotto il suo codice. Apri il tuo spazio in modalità demo, senza impegno."
       />
     );
   }
@@ -43,7 +43,7 @@ export default async function PaginaPartner({ params }: { params: Promise<{ codi
     <ModuloIscrizione
       destinazione="/dashboard"
       codicePartnerIniziale={partner.codice}
-      sottotitolo={`Ti ha presentato EvalisDeck ${chi}: il suo codice partner è già inserito. Apri il tuo studio in modalità demo, con un'azienda di esempio, senza impegno.`}
+      sottotitolo={`Ti ha presentato EvalisDeck ${chi}: il suo codice partner è già inserito. Apri il tuo spazio in modalità demo, con un'azienda di esempio, senza impegno.`}
     />
   );
 }

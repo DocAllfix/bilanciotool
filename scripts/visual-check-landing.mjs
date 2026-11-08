@@ -98,7 +98,9 @@ const riga = registro.match(/export const MODULI = \[([^\]]+)\]/);
 if (!riga) errors.push("non riesco a leggere MODULI dal registro: formato cambiato?");
 const attesi = riga ? (riga[1].match(/"/g) ?? []).length / 2 : 0;
 
-const resi = await page.evaluate(() => document.querySelectorAll("#percorsi article").length);
+// Si contano gli AGGANCI, non la struttura: la home del 7 novembre 2026 è una griglia di
+// voci e non più di schede, e un collaudo appeso a `article` diceva «zero percorsi».
+const resi = await page.evaluate(() => document.querySelectorAll("#percorsi [data-modulo]").length);
 if (attesi && resi !== attesi) {
   // ⚠️ Contro un bersaglio REMOTO lo scarto non e' un difetto della pagina: e' il sito che
   // serve un build piu' vecchio del sorgente. Detto come «percorsi in pagina: 5 invece di
@@ -112,10 +114,26 @@ if (attesi && resi !== attesi) {
   );
 }
 
+// ⚠️ IL TETTO DI PAROLE (7 novembre 2026). La home era a 4.099 parole e il committente l'ha
+// voluta «meno verbosa»: senza un numero, le parole tornano una frase alla volta, ognuna
+// ragionevole. Si contano quelle visibili nel corpo della pagina, esclusi le domande
+// frequenti (che si aprono a richiesta) e il piede. Oggi sono circa 730; il tetto lascia un
+// margine, non una seconda pagina.
+const TETTO_PAROLE = 800;
+const parole = await page.evaluate(() => {
+  const main = document.querySelector("main");
+  if (!main) return -1;
+  const copia = main.cloneNode(true);
+  copia.querySelector("#faq")?.remove();
+  return (copia.textContent ?? "").split(/\s+/).filter(Boolean).length;
+});
+if (parole > TETTO_PAROLE) errors.push(`la home conta ${parole} parole fuori dalle domande: il tetto è ${TETTO_PAROLE}`);
+console.log(`parole nel corpo della home (domande escluse): ${parole} su ${TETTO_PAROLE}`);
+
 // I tre gruppi devono esserci tutti, e ciascuno col proprio tratto di colore: un gruppo
 // senza tinta e' il difetto delle classi costruite a stringa, che il compilatore non vede.
 const gruppi = riga ? (registro.match(/export const AREE_MODULI = \[([^\]]+)\]/)?.[1].match(/"/g) ?? []).length / 2 : 0;
-const intestazioni = await page.evaluate(() => document.querySelectorAll("#percorsi h3.font-display span[class*='bg-area-']").length);
+const intestazioni = await page.evaluate(() => document.querySelectorAll("#percorsi [data-gruppo] [data-tratto][class*='bg-area-']").length);
 if (gruppi && intestazioni !== gruppi) {
   errors.push(`gruppi con tratto di colore in pagina: ${intestazioni} invece di ${gruppi}`);
 }

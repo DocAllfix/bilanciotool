@@ -3,17 +3,17 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { DOMANDE } from "./domande";
 
 
 /**
- * L'elenco si puo' passare: la home usa `DOMANDE`, la pagina prezzi le sue.
+ * L'elenco si passa sempre: la home usa `DOMANDE`, la pagina prezzi e le pagine dei
+ * percorsi le loro.
  *
- * ⚠️ Il valore predefinito resta `DOMANDE` perche' il comportamento di chi la usava
- * prima non deve cambiare — e perche' le stesse risposte alimentano i dati strutturati,
- * quindi devono uscire da UN elenco solo, non da una copia.
+ * ⚠️ Niente valore predefinito importato da `domande.ts`: quel file legge i numeri dal
+ * registro dei moduli e dal seme, e questo componente è `"use client"`. Un'importazione
+ * qui li porterebbe tutti nel pacchetto del browser per mostrare sei domande.
  */
-export function Faq({ domande = DOMANDE }: { domande?: [string, string][] } = {}) {
+export function Faq({ domande }: { domande: [string, string][] }) {
   const [aperta, setAperta] = useState<number | null>(0);
   return (
     <div className="divide-y rounded-2xl border bg-card px-6">

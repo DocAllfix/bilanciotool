@@ -51,16 +51,22 @@ un elenco piatto di caselle non dice quando una casella diventa urgente.
         `active` solo perché il webhook lo dice
 - [x] **Webhook idempotente**: lo stesso evento due volte provisiona una volta sola
       → *verifica:* evento reinviato davvero a Stripe; firma inventata → 400
-- [x] **Estensioni acquistabili**, col totale mostrato prima di pagare
-      → *verifica:* `qa -- estensioni` — l'importo della sessione Stripe combacia con quello
-        mostrato, righe e quantità comprese
-- [x] **Le estensioni sopravvivono al rinnovo**
-      → *verifica:* `qa -- estensioni` legge la fase 2 **da Stripe**: piano ridotto più le
-        estensioni. Rimettendo il difetto il collaudo torna rosso
+- [x] **Annuale e mensile alla cassa**, con l'importo del listino
+      → *verifica:* `qa -- checkout` — l'importo chiesto da Stripe combacia col listino
+- [x] **Disdetta e passaggio all'annuale dal pannello**
+      → *verifica:* `qa -- gestione-abbonamento` — scadenza misurata contro l'orologio di
+        prova, non contro il periodo che Stripe dichiara: fine meno inizio dà sempre 365
+- [x] **Gli abbonamenti venduti col vecchio listino restano riconosciuti**
+      → *verifica:* `listino-storico-pure` — piani ritirati, Fondatori e blocchi si leggono
+        ancora, e le loro capacità non diminuiscono
 - [x] **Chiavi live** in produzione
       → *verifica:* la sessione creata dal sito è `cs_live_`
-- [x] **Passaggio anno 1 → rinnovo con test clock** — fatto il 2026-08-14
-      → *verifica:* `qa -- rinnovo` — 8 su 8. Non e' una simulazione nostra: si crea
+- [x] **Rinnovo allo stesso prezzo con test clock** — dal 2026-11-06 nessuno Schedule per i
+      nuovi abbonamenti
+      → *verifica:* `qa -- rinnovo` e `qa -- rinnovo --mensile`, 8 su 8 ciascuno
+- [x] **Passaggio anno 1 → rinnovo degli abbonamenti STORICI** — fatto il 2026-08-14 col
+      collaudo di allora, che oggi prova il listino nuovo
+      → *come fu verificato:* non era una simulazione nostra: si creava
         l'abbonamento su un **orologio di prova** di Stripe, si sposta il tempo di un anno
         e un giorno, ed e' Stripe a far scattare il rinnovo. Il piano passa al prezzo
         ridotto, le estensioni si portano dietro il proprio, lo Schedule si stacca
@@ -220,7 +226,7 @@ i due sono decisioni, non dimenticanze.
       visitatore che accetta tutto ha una violazione in console
       → *rimedio:* spegnerli in GA4 (Amministrazione → Raccolta dati), a cura di chi
         gestisce la proprietà; poi `qa -- consenso` non vede più `stats.g.doubleclick.net`
-- [x] **Nessun prezzo sulla landing**
+- [x] **Nessuna cifra sulla home**: il listino sta su `/prezzi`, pubblico dal 2026-08-27
 - [ ] **Testi legali riletti ora che si incassa davvero**
       → *verifica:* devono dire il vero su pagamento, fatturazione elettronica, rinnovo
         automatico e recesso. La sezione rimborsi cita già il criterio verificabile
@@ -551,8 +557,9 @@ Non bloccano il lancio, ma vanno saputi.
 4. **`export` è una capability senza funzione propria**: protegge il collegamento al
    cliente, ma non esiste ancora un comando «esporta i miei dati».
 5. **`user_onboarding` e `company_referent`** sono tabelle create e mai usate.
-6. **Le estensioni non si comprano a metà anno**: si scelgono all'acquisto del piano, poi
-   si aggiungono scrivendoci. Il flusso a rateo tocca l'abbonamento in corso e non esiste.
+6. **I blocchi di aziende non si vendono più** (dal 2026-11-06): chi supera il proprio piano
+   passa a quello più capiente, oltre 30 aziende a Enterprise. Chi li ha già comprati li
+   conserva, e li legge `capacitaDaAbbonamento`.
 7. **`@vitest/coverage-v8`** è l'unico pacchetto senza alcun riferimento versionato:
    nessun blocco `coverage` in `vitest.config.ts`, nessuno script che passi `--coverage`.
    La cartella `coverage/` dice che qualcuno l'ha lanciato a mano. O si aggiunge un

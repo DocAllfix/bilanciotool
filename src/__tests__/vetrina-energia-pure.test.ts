@@ -7,7 +7,6 @@ import {
 import { VETTORI, RIPARTIZIONE } from "@/features/demo/scenario-energia";
 import { computeVectors } from "@/lib/calc/energy/vectors";
 import { numero, percentuale } from "@/features/vetrina/formato";
-import { rigaPosti } from "@/features/vetrina/posti";
 import { VETRINE, moduloDellaVetrina } from "@/features/vetrina/registro";
 
 // La vetrina pubblica del Bilancio energetico gira nel browser, senza database e senza
@@ -159,23 +158,5 @@ describe("i numeri leggibili della vetrina", () => {
       .filter((r) => !r.trimStart().startsWith("//"))
       .join("\n");
     expect(src.includes("toLocale")).toBe(false);
-  });
-});
-
-describe("la frase sui posti al prezzo d'introduzione", () => {
-  it("dice quanti ne restano, e li accorda", () => {
-    expect(rigaPosti(5, 5)).toBe("Prezzo d'introduzione: restano 5 posti su 5, poi si va a listino.");
-    expect(rigaPosti(1, 5)).toBe("Prezzo d'introduzione: resta 1 posto su 5, poi si va a listino.");
-  });
-
-  it("⚠️ esauriti i posti TACE, invece di promettere un prezzo che non c'è più", () => {
-    // È la regola che rende onesta l'urgenza: il sistema non deve poter diventare bugiardo
-    // per inerzia, come il barrato che sparisce da solo alla scadenza della promozione.
-    expect(rigaPosti(0, 5)).toBeNull();
-    expect(rigaPosti(-2, 5)).toBeNull();
-  });
-
-  it("se il contatore non risponde non inventa niente", () => {
-    expect(rigaPosti(null, 5)).toBeNull();
   });
 });

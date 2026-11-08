@@ -1,4 +1,4 @@
-import { ESTENSIONI, PIANI, euro, prezzoDiVendita, fasceStudio } from "@/lib/prezzi";
+import { PIANI, euro, prezzoDiVendita, fasceConsulenti, costoAnnuoMensile, risparmioAnnuo } from "@/lib/prezzi";
 
 // Le domande sui prezzi, con le risposte vere.
 //
@@ -11,59 +11,59 @@ import { ESTENSIONI, PIANI, euro, prezzoDiVendita, fasceStudio } from "@/lib/pre
 // sempre quella che nessuno rilegge — mentre è proprio quella che finisce nei risultati
 // di ricerca, perché queste risposte alimentano anche i dati strutturati.
 
-const anno1 = (k: keyof typeof PIANI) => euro(prezzoDiVendita(PIANI[k], "anno1")!.importo);
-const rinnovo = (k: keyof typeof PIANI) => euro(prezzoDiVendita(PIANI[k], "rinnovo")!.importo);
+type K = keyof typeof PIANI;
+const anno = (k: K) => euro(prezzoDiVendita(PIANI[k], "anno")!.importo);
+const mese = (k: K) => euro(prezzoDiVendita(PIANI[k], "mese")!.importo);
 
-/** «a, b e c»: le fasce si elencano dal listino, non a mano. Con la fascia da un'azienda
- *  queste risposte elencavano ancora tre fasce, e alimentano anche il `FAQPage`. */
+/** «a, b e c». */
 function elenco(voci: string[]): string {
   return voci.length < 2 ? voci.join("") : `${voci.slice(0, -1).join(", ")} e ${voci.at(-1)}`;
 }
-// Le fasce per studio in fila; «Azienda» (uso interno) ha una frase sua, perché ha la stessa
-// capienza della prima e messa in fila si leggerebbe come un doppione più caro.
-const [prima, ...altre] = fasceStudio();
+
 const interna = PIANI.azienda;
-const fraseInterna =
-  `Per l'uso interno di un'azienda c'è la fascia «${interna.nome}»: ${anno1("azienda")} l'anno, una sola azienda, ` +
-  `la propria, e ${interna.accessi} accessi per i colleghi, ciascuno coi percorsi che gli assegni.`;
-const capienza = (k: keyof typeof PIANI) =>
-  PIANI[k].aziende === 1 ? "un'azienda" : `fino a ${PIANI[k].aziende} aziende`;
+const consulenti = fasceConsulenti();
+const capienza = (k: K) => `fino a ${PIANI[k].aziende} aziende`;
 
 export const DOMANDE_PREZZI: [string, string][] = [
   [
     "Quanto costa, e da cosa dipende?",
-    `L'abbonamento è annuale e si sottoscrive per studio, non per documento e non per utente. ` +
-      `Si parte da ${anno1(prima)} l'anno per seguire ${capienza(prima)}; poi ` +
-      `${elenco(altre.map((k) => `${anno1(k)} ${capienza(k)}`))}. ` +
-      `IVA esclusa. L'unica cosa che scegli è la capienza del portafoglio: il contenuto è identico in ogni fascia. ` +
-      fraseInterna,
+    `Per l'azienda che fa da sé c'è il piano «${interna.nome}»: ${anno("azienda")} l'anno oppure ${mese("azienda")} ` +
+      `al mese, una sola azienda, la tua, e ${interna.accessi} accessi per i colleghi. Per i consulenti: ` +
+      `${elenco(consulenti.map((k) => `${anno(k)} l'anno o ${mese(k)} al mese per ${capienza(k)}`))}. ` +
+      `IVA esclusa. Si paga per azienda seguita, non per documento e non per utente: il contenuto è identico in ` +
+      `ogni piano.`,
   ],
   [
-    "Che cosa è compreso in ogni fascia?",
-    "Tutti i percorsi, quelli di oggi e quelli che rilasceremo durante il tuo abbonamento. I documenti che " +
-      "pubblichi, senza limite di numero. Gli accessi per le persone del tuo studio. Il portale da cui ogni tuo " +
-      "cliente consulta e scarica i propri documenti. I documenti col marchio del tuo studio. Gli aggiornamenti " +
-      "delle librerie dei fattori di emissione. Non ci sono moduli a pagamento separato né funzioni riservate " +
-      "alle fasce superiori.",
+    "Meglio l'annuale o il mensile?",
+    `L'annuale costa meno: con «${interna.nome}» dodici mesi di mensile fanno ${euro(costoAnnuoMensile(interna)!)}, ` +
+      `l'annuale ${anno("azienda")}, cioè ${euro(risparmioAnnuo(interna)!)} risparmiati. Il mensile serve a chi ` +
+      `vuole partire senza impegnarsi per un anno: si disdice quando vuoi, e si passa all'annuale in ogni momento ` +
+      `dalla pagina dell'abbonamento, scalando la parte di mese già pagata.`,
   ],
   [
     "Il secondo anno costa uguale?",
-    `No, costa il 20% in meno: ${elenco(fasceStudio().map(rinnovo))} ` +
-      `secondo la fascia, e ${rinnovo("azienda")} la fascia «${interna.nome}». Il rinnovo è automatico e si disdice fino al giorno prima della scadenza.`,
+    `Sì: il prezzo è lo stesso a ogni rinnovo, ${elenco([interna.nome, ...consulenti.map((k) => PIANI[k].nome)].map(
+      (n, i) => `${[anno("azienda"), ...consulenti.map(anno)][i]} l'anno per «${n}»`,
+    ))}. Il rinnovo è automatico, e si disdice da solo dalla pagina dell'abbonamento fino al giorno prima.`,
   ],
   [
-    "Cosa succede se supero le aziende della mia fascia?",
-    `La piattaforma te lo segnala prima che accada. Puoi aggiungere blocchi da ` +
-      `${ESTENSIONI.bloccoAziende.aziende} aziende a ${euro(ESTENSIONI.bloccoAziende.prezzo)} l'anno ciascuno, ` +
-      `oppure scriverci per passare alla fascia superiore. Dalla fascia «${PIANI.singola.nome}» si passa ` +
-      `direttamente alla superiore, che costa meno di un'azienda più un blocco. Nessun lavoro si blocca e nulla va rifatto.`,
+    "Che cosa è compreso in ogni piano?",
+    "Tutti i percorsi, quelli di oggi e quelli che rilasceremo durante il tuo abbonamento. I documenti che " +
+      "pubblichi, senza limite di numero. Gli accessi per i colleghi. Il portale da cui chi deve leggere i " +
+      "documenti li scarica senza account. I documenti col tuo marchio. Gli aggiornamenti delle librerie dei " +
+      "fattori di emissione. Non ci sono moduli a pagamento separato né funzioni riservate ai piani più cari.",
   ],
   [
     "Lavoro dentro un'azienda, non per clienti. Fa per me?",
-    `Sì: è la fascia «${interna.nome}». Gestisci una sola azienda, la tua, con ${interna.accessi} accessi per i ` +
+    `Sì: è il piano «${interna.nome}». Gestisci una sola azienda, la tua, con ${interna.accessi} accessi per i ` +
       `colleghi. Chi amministra assegna a ciascuno i percorsi di cui si occupa, per esempio l'inventario GHG ` +
       `all'ufficio ambiente e la protezione dei dati al referente privacy: ognuno vede e modifica soltanto i ` +
-      `suoi. Percorsi e documenti sono gli stessi delle altre fasce.`,
+      `suoi. Percorsi e documenti sono gli stessi degli altri piani.`,
+  ],
+  [
+    "Cosa succede se supero le aziende del mio piano?",
+    `La piattaforma te lo segnala prima che accada, e si passa al piano più capiente; oltre le 30 aziende c'è ` +
+      `${PIANI.enterprise.nome}, con condizioni concordate. Nessun lavoro si blocca e nulla va rifatto.`,
   ],
   [
     "Posso vedere il prodotto prima di pagare?",
@@ -73,19 +73,20 @@ export const DOMANDE_PREZZI: [string, string][] = [
   ],
   [
     "Come si paga? E la fattura?",
-    "Con carta, Satispay, Klarna o Amazon Pay. Al pagamento raccogliamo partita IVA e codice destinatario, " +
-      "così la fattura elettronica parte senza doverti rincorrere dopo. Se ti serve un ordine d'acquisto o il " +
-      "bonifico, scrivici indicando la fascia e ti mandiamo il preventivo.",
+    "Con carta, e con gli altri metodi che la pagina di pagamento ti propone. Al pagamento raccogliamo partita " +
+      "IVA e codice destinatario, così la fattura si emette senza doverti rincorrere dopo. Se ti serve un ordine " +
+      "d'acquisto o il bonifico, scrivici indicando il piano e ti mandiamo il preventivo.",
   ],
   [
     "E se cambio idea?",
-    "Finché non hai pubblicato il primo documento e non sono passati quattordici giorni dall'attivazione, il " +
-      "rimborso è integrale. Se non rinnovi, l'account passa in sola lettura: i dati restano tuoi, consultabili " +
-      "ed esportabili. Non cancelliamo il lavoro di nessuno.",
+    "Finché non hai pubblicato il primo documento e non sono passati quattordici giorni dal primo pagamento, il " +
+      "rimborso è integrale, annuale o mensile che sia. Se disdici, l'account resta attivo fino alla fine del " +
+      "periodo pagato e poi passa in sola lettura: i dati restano tuoi, consultabili ed esportabili.",
   ],
   [
-    "Seguo più di 30 aziende. C'è una fascia per me?",
-    `Sì, ma si concorda: reti di studi, mandati di filiera e capofila con molti fornitori hanno esigenze ` +
-      `diverse fra loro, e un listino unico servirebbe male tutti. Scrivici e prepariamo un preventivo.`,
+    "Seguo più di 30 aziende. C'è un piano per me?",
+    `Sì, ${PIANI.enterprise.nome}, e si concorda: gruppi societari, reti di studi e capofila con molti fornitori ` +
+      `hanno esigenze diverse fra loro, e un listino unico servirebbe male tutti. Scrivici dal modulo in fondo ai ` +
+      `piani e prepariamo un'offerta.`,
   ],
 ];

@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { NUMERI_VETRINA, NORME_VETRINA } from "@/components/landing/numeri-vetrina";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
-import { migliaia } from "@/components/landing/scroll-reveal";
 
 // La banda dei numeri della vetrina non porta cifre scritte a mano.
 //
@@ -10,18 +9,25 @@ import { migliaia } from "@/components/landing/scroll-reveal";
 // «5 documenti pubblicabili» quando erano diventati trentotto. Un numero sulla home è il
 // primo che un cliente ripete: si conta, e questa guardia impedisce che torni scritto.
 
-const HOME = readFileSync("src/app/(marketing)/page.tsx", "utf8");
-const BANDA = HOME.slice(HOME.indexOf("STRIP NUMERI"), HOME.indexOf("I PERCORSI */"));
+// ⚠️ Dal 7 novembre 2026 la banda dei contatori animati non c'è più (era il cliché
+// dell'«hero-metric»): i numeri stanno in una riga sotto la griglia dei percorsi, nel corpo
+// della home (`landing.tsx`). La regola resta la stessa: si contano, non si scrivono.
+const HOME = readFileSync("src/components/landing/landing.tsx", "utf8");
+const BANDA = HOME.slice(HOME.indexOf("I PERCORSI */"), HOME.indexOf("L'UNICITÀ */"));
 
-describe("banda dei numeri della vetrina", () => {
-  it("la banda si trova davvero", () => {
+describe("i numeri della vetrina", () => {
+  it("la sezione dei percorsi si trova davvero, e i suoi numeri vengono dal registro", () => {
     expect(BANDA.length).toBeGreaterThan(500);
-    expect(BANDA).toContain("NV.");
+    // Dal 7 novembre 2026 la sezione dice solo quanti sono i percorsi: il resto dei numeri
+    // (requisiti, procedure) è uscito con la semplificazione chiesta dal committente.
+    expect(BANDA).toContain("NV.percorsi");
   });
 
-  it("nessuna cifra scritta a mano nella banda né nei passi della home", () => {
-    // Le tuple della banda: `[49, "", …]` è la forma che non deve tornare.
+  it("nessuna cifra scritta a mano nei numeri né nei passi della home", () => {
+    // Le tuple della vecchia banda: `[49, "", …]` è la forma che non deve tornare.
     expect(BANDA.match(/\[\s*\d+\s*,/g) ?? []).toEqual([]);
+    // Nemmeno nei testi: «16 percorsi» scritto a mano diventa falso al diciassettesimo.
+    expect(HOME).not.toMatch(/>\s*\d+ percorsi/);
     expect(HOME).not.toMatch(/\b\d+ indicatori derivati/);
     expect(HOME).not.toMatch(/\b\d+ dei quali calcolati/);
   });
@@ -46,11 +52,5 @@ describe("banda dei numeri della vetrina", () => {
       expect(NORME_VETRINA.some((n) => n === m.norma || n.startsWith(`${m.norma} `)), m.norma).toBe(true);
     }
     expect(new Set(NORME_VETRINA).size).toBe(NORME_VETRINA.length);
-  });
-
-  it("le migliaia col punto, come in italiano", () => {
-    expect(migliaia(1007)).toBe("1.007");
-    expect(migliaia(511)).toBe("511");
-    expect(migliaia(1234567)).toBe("1.234.567");
   });
 });

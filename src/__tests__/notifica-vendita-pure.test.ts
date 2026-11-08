@@ -121,7 +121,21 @@ describe("che cosa porta la mail", () => {
   });
 
   it("⚠️ un rinnovo si chiama rinnovo: è la seconda fattura da emettere, non un duplicato", () => {
-    expect(componiVendita(fattura({ billing_reason: "subscription_cycle" }), null, null).tipo).toBe("Rinnovo annuale");
+    expect(componiVendita(fattura({ billing_reason: "subscription_cycle" }), null, null).tipo).toBe("Rinnovo");
+  });
+
+  it("⚠️ il rinnovo dice se è mensile o annuale, dal periodo che la fattura copre", () => {
+    const conPeriodo = (giorni: number) =>
+      fattura({
+        billing_reason: "subscription_cycle",
+        lines: { data: [{ description: "Azienda × 1", amount: 5900, period: { start: 1_800_000_000, end: 1_800_000_000 + giorni * 86_400 } }] },
+      } as never);
+    expect(componiVendita(conPeriodo(31), null, null).tipo).toBe("Rinnovo mensile");
+    expect(componiVendita(conPeriodo(28), null, null).tipo).toBe("Rinnovo mensile");
+    expect(componiVendita(conPeriodo(365), null, null).tipo).toBe("Rinnovo annuale");
+    expect(componiVendita(conPeriodo(366), null, null).tipo).toBe("Rinnovo annuale");
+    // Il primo acquisto resta primo acquisto, qualunque sia il periodo.
+    expect(componiVendita(fattura({ billing_reason: "subscription_create" }), null, null).tipo).toBe("Primo acquisto");
   });
 
   it("⚠️ senza imposte calcolate da Stripe IVA e imponibile restano vuoti, non «0,00»", () => {

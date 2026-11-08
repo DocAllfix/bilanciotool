@@ -13,6 +13,7 @@ import Stripe from "stripe";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
+import { PIANI, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -61,7 +62,12 @@ await check("uno studio si registra e resta in prova", async () => {
 
 await check("si arriva alla pagina di pagamento", async () => {
   await page.goto(`${BASE}/impostazioni/abbonamento`, { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: /Attiva/ }).first().click();
+  await page.getByRole("button", { name: /^Attiva$/ }).first().click();
+  // ⚠️ Fra il pulsante e Stripe c'è il DIALOGO: la stessa correzione del 15 agosto su
+  // `verifica-checkout`, che questa copia non aveva mai ricevuto.
+  const paga = page.getByRole("button", { name: /^Paga / });
+  await paga.waitFor({ timeout: 15_000 });
+  await paga.click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60_000 });
   // Niente `networkidle`: la pagina di Stripe tiene connessioni aperte e quel silenzio
   // non arriva mai. Basta che ci si sia arrivati.
@@ -81,12 +87,18 @@ await check("si paga davvero, con una carta di prova", async () => {
   const pm = await stripe.paymentMethods.attach("pm_card_visa", { customer: riga.stripe_customer_id });
   await stripe.customers.update(riga.stripe_customer_id, {
     invoice_settings: { default_payment_method: pm.id },
+    // Con l'IVA automatica Stripe vuole sapere dove sta il cliente. Alla cassa l'indirizzo lo
+    // scrive lui; qui il pagamento passa dall'API, e senza il paese Stripe rifiuta.
+    address: { country: "IT", postal_code: "81031", city: "Aversa", line1: "Via di prova 1" },
   });
-  const prezzi = await stripe.prices.list({ lookup_keys: ["evalisdeck_studio_anno1_lancio_v1"], limit: 1 });
+  // La chiave si chiede al listino: scritta a mano era rimasta a una del listino di agosto.
+  const lookup = prezzoDiVendita(PIANI.azienda, "mese").lookup;
+  const prezzi = await stripe.prices.list({ lookup_keys: [lookup], limit: 1 });
   const sub = await stripe.subscriptions.create({
     customer: riga.stripe_customer_id,
     items: [{ price: prezzi.data[0].id }],
-    metadata: { organizationId: orgId, piano: "studio" },
+    automatic_tax: { enabled: true },
+    metadata: { organizationId: orgId, piano: "azienda", periodo: "mese" },
   });
   if (sub.status !== "active") throw new Error("abbonamento in stato " + sub.status);
 });
@@ -120,28 +132,17 @@ await check("l'abbonamento è registrato e legato allo studio", async () => {
   if (s.status !== "active") throw new Error("stato " + s.status);
 });
 
-await check("il piano a due fasi esiste: il rinnovo costerà meno", async () => {
-  // Il difetto che altrimenti si scopre fra dodici mesi, su un cliente vero.
-  let schedule = null;
-  for (let i = 0; i < 10; i++) {
-    const [s] = await sql`select stripe_schedule_id from stripe_subscription where organization_id = ${orgId}`;
-    if (s?.stripe_schedule_id) { schedule = s.stripe_schedule_id; break; }
-    await new Promise((r) => setTimeout(r, 3000));
-  }
-  if (!schedule) throw new Error("nessun piano a due fasi creato");
-  const sch = await stripe.subscriptionSchedules.retrieve(schedule);
-  if (sch.phases.length < 2) throw new Error("una fase sola: il rinnovo resterebbe al prezzo del primo anno");
-  if (sch.end_behavior !== "release") throw new Error("end_behavior: " + sch.end_behavior);
-  const primo = sch.phases[0].items[0].price;
-  const secondo = sch.phases[1].items[0].price;
-  const [p1, p2] = await Promise.all([
-    stripe.prices.retrieve(typeof primo === "string" ? primo : primo.id),
-    stripe.prices.retrieve(typeof secondo === "string" ? secondo : secondo.id),
-  ]);
-  if (!(p2.unit_amount < p1.unit_amount)) {
-    throw new Error(`il rinnovo non è più economico: ${p1.unit_amount} → ${p2.unit_amount}`);
-  }
-  console.log(`       primo anno ${p1.unit_amount / 100} € → rinnovo ${p2.unit_amount / 100} €`);
+await check("⚠️ nessuno Schedule, e il periodo è quello pagato", async () => {
+  // Dal 6 novembre 2026 il prezzo è lo stesso a ogni rinnovo. Uno Schedule su un mensile
+  // addebiterebbe per un anno un prezzo di rinnovo: l'evento arriva da Stripe, e dopo qualche
+  // secondo non deve essercene traccia.
+  await new Promise((r) => setTimeout(r, 6000));
+  const [s] = await sql`select stripe_subscription_id, stripe_schedule_id from stripe_subscription where organization_id = ${orgId}`;
+  if (s?.stripe_schedule_id) throw new Error("creato uno Schedule: " + s.stripe_schedule_id);
+  const sub = await stripe.subscriptions.retrieve(s.stripe_subscription_id);
+  if (sub.schedule) throw new Error("su Stripe c'è uno Schedule");
+  const [e] = await sql`select piano, periodo from org_entitlement where organization_id = ${orgId}`;
+  if (e.piano !== "azienda" || e.periodo !== "mese") throw new Error(`piano ${e.piano}, periodo ${e.periodo}`);
 });
 
 await check("lo stesso evento due volte non attiva due abbonamenti", async () => {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { tipoDiFattura } from "@/features/billing/notifica-vendita";
 import Link from "next/link";
 import type Stripe from "stripe";
 import { sessioneStaff } from "../guardia";
@@ -19,11 +20,6 @@ import { indirizzoCanonico } from "@/lib/indirizzo";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Partner" };
 
-const TIPI: Record<string, string> = {
-  subscription_create: "Primo anno",
-  subscription_cycle: "Rinnovo",
-  subscription_update: "Modifica",
-};
 
 type Fattura = { id: string; numero: string | null; pagataIl: Date; tipo: string; imponibile: number; totale: number };
 
@@ -36,7 +32,8 @@ async function fattureDi(s: StudioAttribuito): Promise<Fattura[] | null> {
       id: f.id ?? "",
       numero: f.number,
       pagataIl: new Date((f.status_transitions.paid_at ?? f.created) * 1000),
-      tipo: TIPI[f.billing_reason ?? ""] ?? "Altro",
+      // Primo acquisto, rinnovo mensile o annuale: la stessa etichetta della mail di vendita.
+      tipo: tipoDiFattura(f),
       imponibile: f.total_excluding_tax ?? f.total,
       totale: f.total,
     }));

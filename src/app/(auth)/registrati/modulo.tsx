@@ -19,6 +19,19 @@ import { Label } from "@/components/ui/label";
 // dopo l'idratazione — il titolo comparirebbe sbagliato e poi cambierebbe sotto gli
 // occhi. Due pagine, due contenuti gia' giusti alla prima pennellata.
 
+/**
+ * La destinazione dopo la conferma dell'indirizzo, col periodo scelto sulla pagina prezzi.
+ *
+ * ⚠️ Il periodo arriva come `?periodo=mese` su `/attiva/<fascia>`, che è una pagina
+ * STATICA: leggerlo con `useSearchParams` farebbe cambiare il testo dopo l'idratazione.
+ * Qui si legge solo AL MOMENTO DELL'INVIO, quando la pagina è viva da un pezzo, e si passa
+ * alla pagina dei piani — che è dinamica e apre il dialogo già sul mensile.
+ */
+function conPeriodo(destinazione: string): string {
+  if (typeof window === "undefined" || !destinazione.includes("?fascia=")) return destinazione;
+  return new URLSearchParams(window.location.search).get("periodo") === "mese" ? `${destinazione}&periodo=mese` : destinazione;
+}
+
 export function ModuloIscrizione({
   destinazione,
   perAcquisto = false,
@@ -60,7 +73,7 @@ export function ModuloIscrizione({
       name: String(form.get("nome")),
       email: String(form.get("email")),
       password: String(form.get("password")),
-      callbackURL: destinazione,
+      callbackURL: conPeriodo(destinazione),
       // Il codice partner viaggia nel corpo dell'iscrizione: lo verifica e lo lega allo
       // studio il server (`src/lib/auth/index.ts`). Vuoto, non si manda nemmeno.
       ...(codicePartner && !emailFissa ? { codicePartner } : {}),
@@ -118,13 +131,13 @@ export function ModuloIscrizione({
     <Guscio>
       <CardHeader className={senzaGuscio ? "px-0 pt-0" : undefined}>
         <h1 className="text-lg font-semibold tracking-tight">
-          {titolo ?? (perAcquisto ? "Attiva il tuo studio" : "Crea il tuo account")}
+          {titolo ?? (perAcquisto ? "Attiva EvalisDeck" : "Crea il tuo account")}
         </h1>
         <p className="text-sm text-muted-foreground">
           {sottotitolo ??
             (perAcquisto
             ? "Confermi l'indirizzo e ti portiamo dritto alla scelta del piano. La registrazione è gratuita: paghi solo quando decidi, e puoi vedere il listino prima."
-            : "Registrandoti apri il tuo studio in modalità demo: esplori tutto con un’azienda di esempio, senza impegno.")}
+            : "Registrandoti apri il tuo spazio in modalità demo: esplori tutto con un’azienda di esempio, senza impegno.")}
         </p>
       </CardHeader>
       <CardContent className={senzaGuscio ? "px-0 pb-0" : undefined}>

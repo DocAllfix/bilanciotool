@@ -114,20 +114,20 @@ export default function PrivacyPage() {
             eccezione delle decisioni del riesame, che sono testo dell&apos;alta direzione.
           </li>
           <li>
-            {/* ⚠️ Chi si candida al Programma Fondatori NON e' un utente: non ha un account,
-                non ha accettato i Termini, e ci lascia nome ed email prima di qualunque
-                rapporto. Qui il titolare siamo NOI, e la base giuridica e' la sua stessa
-                richiesta. La rotta non scrive niente nel database: la candidatura diventa
-                un'email e vive dove vive la corrispondenza. Va detto prima che il modulo
-                riceva un dato vero, non dopo. */}
-            <strong>Candidature al Programma Fondatori</strong>: nome, studio, indirizzo email, telefono e il testo
-            che scrivi nel modulo della pagina Prezzi. Di questi dati{" "}
+            {/* ⚠️ Chi scrive dal modulo Enterprise NON e' un utente: non ha un account, non ha
+                accettato i Termini, e ci lascia nome ed email prima di qualunque rapporto. Qui
+                il titolare siamo NOI, e la base giuridica e' la sua stessa richiesta. La rotta
+                non scrive niente nel database: la richiesta diventa un'email e vive dove vive
+                la corrispondenza. Prende il posto delle candidature al Programma Fondatori,
+                ritirato il 6 novembre 2026. */}
+            <strong>Richieste di contatto Enterprise</strong>: nome, azienda o studio, indirizzo email, telefono,
+            numero di aziende indicato e il testo che scrivi nel modulo della pagina Prezzi. Di questi dati{" "}
             <strong>{TITOLARE.ragioneSociale} è titolare</strong>, e la base giuridica è l&apos;esecuzione di
-            misure precontrattuali richieste da te (art. 6.1.b del GDPR): li trattiamo solo per valutare la
-            candidatura e risponderti.{" "}
-            <strong>Non vengono salvati nella piattaforma</strong>: la candidatura ci arriva come messaggio di
-            posta e resta nella nostra casella, dove si conserva per il tempo della corrispondenza. Non li usiamo
-            per invii commerciali e non li cediamo a nessuno.
+            misure precontrattuali richieste da te (art. 6.1.b del GDPR): li trattiamo solo per rispondere alla
+            richiesta e prepararti un&apos;offerta.{" "}
+            <strong>Non vengono salvati nella piattaforma</strong>: la richiesta ci arriva come messaggio di posta
+            e resta nella nostra casella, dove si conserva per il tempo della corrispondenza. Non li usiamo per invii
+            commerciali e non li cediamo a nessuno.
           </li>
           <li>
             <strong>Dati amministrativi dei rapporti fra studio e cliente</strong>: importi concordati, acconti

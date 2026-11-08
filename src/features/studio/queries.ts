@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
-import { organization, member, invitation, user, orgEntitlement, entitlementEvent, assegnazionePercorso } from "@/lib/db/schema";
+import { organization, member, invitation, user, orgEntitlement, entitlementEvent, assegnazionePercorso, stripeSubscription } from "@/lib/db/schema";
 import type { ModuloAzienda } from "@/features/companies/moduli";
-import { and, eq, gt, asc } from "drizzle-orm";
+import { and, eq, gt, asc, desc, notInArray } from "drizzle-orm";
 import { getAccountStatus, getCompanyUsage, getLimitiEffettivi } from "@/features/entitlement";
-import { PIANI, type PianoKey } from "@/lib/prezzi";
+import { PIANI, type PianoKey, type Periodo } from "@/lib/prezzi";
 import { withTenant } from "@/lib/db/tenant";
 
 // Letture per la pagina Impostazioni.
@@ -129,6 +129,17 @@ export type QuadroAbbonamento = {
   rinnovoIl: Date | null;
   /** Il rimborso di quattordici giorni si può ancora chiedere? */
   rimborsabile: boolean;
+  /** Annuale o mensile. `null` per i listini precedenti e le attivazioni a mano. */
+  periodo: Periodo | null;
+  /** Disdetto: si ferma alla fine del periodo pagato. */
+  disdettaAFinePeriodo: boolean;
+  /**
+   * Si può gestire da qui (disdetta, passaggio all'annuale)? Serve un abbonamento Stripe
+   * vivo SENZA Schedule: gli abbonamenti del listino precedente hanno un piano a due fasi,
+   * e Stripe non lascia cambiarli direttamente. Per quelli e per le attivazioni a mano
+   * resta «scrivici».
+   */
+  gestibileDaQui: boolean;
 };
 
 export async function getQuadroAbbonamento(userId: string, orgId: string): Promise<QuadroAbbonamento> {
@@ -145,6 +156,8 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
           whiteLabel: orgEntitlement.whiteLabel,
           attivatoIl: orgEntitlement.activatedAt,
           rinnovoIl: orgEntitlement.currentPeriodEnd,
+          periodo: orgEntitlement.periodo,
+          disdetta: orgEntitlement.disdettaAFinePeriodo,
         })
         .from(orgEntitlement)
         .where(eq(orgEntitlement.organizationId, orgId))
@@ -154,6 +167,19 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
 
   const e = righe[0];
   const piano = (e?.piano ?? null) as PianoKey | null;
+  const [sub] = await withTenant({ userId, orgId }, (tx) =>
+    tx
+      .select({ schedule: stripeSubscription.stripeScheduleId })
+      .from(stripeSubscription)
+      .where(
+        and(
+          eq(stripeSubscription.organizationId, orgId),
+          notInArray(stripeSubscription.status, ["canceled", "incomplete_expired"]),
+        ),
+      )
+      .orderBy(desc(stripeSubscription.updatedAt))
+      .limit(1),
+  );
   // La PRIMA attivazione, dal registro. La colonna `activated_at` non serve: viene
   // riscritta a ogni evento che contenga un piano — quindi anche al rinnovo annuale — e
   // con essa si spostava in avanti la finestra di recesso a quattordici giorni promessa
@@ -179,6 +205,9 @@ export async function getQuadroAbbonamento(userId: string, orgId: string): Promi
     attivatoIl,
     rinnovoIl: e?.rinnovoIl ?? null,
     rimborsabile: await entroQuattordiciGiorniSenzaDocumenti(orgId, attivatoIl),
+    periodo: (e?.periodo ?? null) as Periodo | null,
+    disdettaAFinePeriodo: e?.disdetta ?? false,
+    gestibileDaQui: Boolean(sub) && !sub?.schedule,
   };
 }
 

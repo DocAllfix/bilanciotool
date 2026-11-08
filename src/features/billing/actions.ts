@@ -3,12 +3,13 @@
 import { z } from "zod";
 import { ForbiddenError, requireStudioAdmin } from "@/features/auth/guards";
 import { EntitlementError } from "@/features/entitlement";
-import { CHIAVI_PIANO, PIANI, ESTENSIONI, MAX_BLOCCHI_AZIENDE, MAX_ACCESSI_EXTRA } from "@/lib/prezzi";
+import { CHIAVI_PIANO, PERIODI, PIANI, inVendita } from "@/lib/prezzi";
 import { stripeConfigurato } from "@/lib/stripe/client";
 import { creaSessioneCheckout } from "./checkout";
 import { urlPortale } from "./portale";
 import type { ActionEsito } from "@/features/esito";
 import { bloccoAlCheckout, messaggioBlocco } from "./gia-abbonato";
+import { GestioneRifiutata, annullaDisdetta, disdiciAbbonamento, passaAllAnnuale } from "./gestione";
 
 // Il pagamento lo avvia solo chi può impegnare lo studio: `requireStudioAdmin`, non
 // `requireConsultant`. Un collaboratore invitato non deve poter sottoscrivere un
@@ -16,15 +17,8 @@ import { bloccoAlCheckout, messaggioBlocco } from "./gia-abbonato";
 
 const schema = z.object({
   piano: z.enum(CHIAVI_PIANO as unknown as [string, ...string[]]),
-  // I tetti sono gli STESSI del dialogo d'acquisto, e la fonte e' una: il server
-  // accettava 500 aziende e 200 accessi mentre il client si fermava a 10 blocchi e 20
-  // accessi. Due verita' sullo stesso limite, e quella che decide non era quella scritta.
-  aziendeExtra: z.coerce.number().int().min(0).max(MAX_BLOCCHI_AZIENDE * ESTENSIONI.bloccoAziende.aziende).optional(),
-  // ⚠️ `accessiExtra` e `whiteLabel` NON si comprano piu': gli accessi sono inclusi in
-  // ogni fascia e il marchio dello studio pure. Accettarli qui e ignorarli nel checkout
-  // sarebbe peggio che rifiutarli — un campo che il server prende e non usa fa credere
-  // che qualcosa sia stato comprato. Le loro chiavi Stripe restano riconosciute in
-  // `ESTENSIONI_RITIRATE`, per chi le aveva gia'.
+  // L'annuale è il predefinito: è quello che la pagina propone per primo.
+  periodo: z.enum(PERIODI as unknown as [string, ...string[]]).default("anno"),
 });
 
 export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ url: string }>> {
@@ -32,17 +26,15 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
   if (!p.success) return { ok: false, errore: p.error.issues[0]?.message ?? "Dati non validi" };
 
   const piano = p.data.piano as keyof typeof PIANI;
+  const periodo = p.data.periodo as "anno" | "mese";
   if (PIANI[piano].trattativa) {
     return { ok: false, errore: "Il piano Enterprise si concorda: scrivici e prepariamo l'offerta." };
   }
-  // ⚠️ Il dialogo non mostra il contatore dei blocchi su questa fascia, ma una server action
-  // è un endpoint HTTP: il divieto vive qui. Un'azienda più un blocco costerebbe più della
-  // fascia da cinque, e non vendiamo la strada più cara.
-  if (PIANI[piano].senzaBlocchi && p.data.aziendeExtra) {
-    return {
-      ok: false,
-      errore: `La fascia «${PIANI[piano].nome}» non prevede blocchi aggiuntivi: per seguire più aziende scegli la fascia superiore.`,
-    };
+  // ⚠️ Si valida contro ciò che è IN VENDITA, non contro tutte le chiavi di piano: quelle
+  // contengono anche le fasce ritirate, che devono restare riconosciute per chi le ha
+  // pagate ma non si devono poter comprare da una richiesta costruita a mano.
+  if (!inVendita(piano)) {
+    return { ok: false, errore: `La fascia «${PIANI[piano].nome}» non è più in vendita: scegli uno dei piani della pagina.` };
   }
   if (!stripeConfigurato()) {
     return { ok: false, errore: "Il pagamento non è ancora attivo su questo ambiente." };
@@ -63,7 +55,7 @@ export async function apriCheckoutAction(input: unknown): Promise<ActionEsito<{ 
       orgId: s.orgId,
       email: s.email,
       piano,
-      aziendeExtra: p.data.aziendeExtra,
+      periodo,
     });
     return { ok: true, dati: { url } };
   } catch (e) {
@@ -112,4 +104,46 @@ export async function apriPortaleAction(): Promise<ActionEsito<{ url: string }>>
     console.error("[billing] portale non aperto:", e);
     return { ok: false, errore: "Non riesco ad aprire la gestione dell'abbonamento. Riprova fra poco." };
   }
+}
+
+/** Il comando sull'abbonamento, con le risposte dette nella lingua del cliente. */
+async function comandoAbbonamento<T>(
+  fai: (userId: string, orgId: string) => Promise<T>,
+): Promise<ActionEsito<T>> {
+  if (!stripeConfigurato()) {
+    return { ok: false, errore: "La gestione del pagamento non è attiva su questo ambiente." };
+  }
+  try {
+    const s = await requireStudioAdmin();
+    return { ok: true, dati: await fai(s.userId, s.orgId) };
+  } catch (e) {
+    if (e instanceof GestioneRifiutata) return { ok: false, errore: e.message, codice: e.codice };
+    if (e instanceof EntitlementError) return { ok: false, errore: e.message, codice: e.code };
+    if (e instanceof ForbiddenError) {
+      return { ok: false, errore: "L'abbonamento lo gestisce chi amministra l'account. Chiedi al titolare." };
+    }
+    console.error("[billing] comando sull'abbonamento non riuscito:", e);
+    return { ok: false, errore: "Non riesco a modificare l'abbonamento adesso. Riprova fra poco." };
+  }
+}
+
+/** Disdice alla fine del periodo pagato. */
+export async function disdiciAbbonamentoAction(): Promise<ActionEsito<null>> {
+  return comandoAbbonamento(async (u, o) => {
+    await disdiciAbbonamento(u, o);
+    return null;
+  });
+}
+
+/** Ritira la disdetta. */
+export async function annullaDisdettaAction(): Promise<ActionEsito<null>> {
+  return comandoAbbonamento(async (u, o) => {
+    await annullaDisdetta(u, o);
+    return null;
+  });
+}
+
+/** Dal mensile all'annuale. */
+export async function passaAllAnnualeAction(): Promise<ActionEsito<{ addebitato: number | null }>> {
+  return comandoAbbonamento((u, o) => passaAllAnnuale(u, o));
 }

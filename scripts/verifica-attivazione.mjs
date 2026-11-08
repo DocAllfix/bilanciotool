@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 import postgres from "postgres";
 import "dotenv/config";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
+import { PIANI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -32,7 +32,7 @@ const page = await ctx.newPage();
 await check("la vetrina porta a /attiva, che si presenta come attivazione", async () => {
   await page.goto(`${BASE}/attiva`, { waitUntil: "networkidle" });
   const t = await page.locator("main").innerText();
-  if (!/Attiva il tuo studio/i.test(t)) throw new Error(`la pagina dice: ${t.slice(0, 90)}`);
+  if (!/Attiva EvalisDeck/i.test(t)) throw new Error(`la pagina dice: ${t.slice(0, 90)}`);
   if (!/gratuita/i.test(t)) throw new Error("non rassicura che la registrazione è gratuita");
   if (!(await page.getByRole("button", { name: /Prosegui verso i piani/i }).count())) {
     throw new Error("il comando non annuncia dove si va");
@@ -88,29 +88,24 @@ await check("confermato l'indirizzo, la pagina dei piani accoglie e vende", asyn
   const t = await page.locator("main").innerText();
   // I piani si riconoscono dai loro NOMI e dai loro prezzi, presi dal listino: le cifre
   // scritte a mano qui hanno reso rosso questo controllo al cambio di fasce.
-  for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
+  for (const k of fasceVendibili()) {
+    const v = prezzoDiVendita(PIANI[k], "anno");
     if (v && !t.includes(euro(v.importo))) throw new Error(`il piano ${PIANI[k].nome} non compare`);
   }
   if (await page.locator("video").count()) throw new Error("qui parte il video di benvenuto");
 });
 
-await check("da qui si compra: il dialogo offre piano ed estensioni", async () => {
+await check("da qui si compra: il dialogo offre il piano, annuale o mensile", async () => {
   await page.getByRole("button", { name: /^Attiva$/ }).first().click();
   await page.waitForTimeout(1000);
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("il dialogo d'acquisto non si apre");
   const t = await d.innerText();
-  // Che cosa offre il dialogo dipende dalla FASCIA, e qui si preme la prima del listino:
-  // quella d'ingresso i blocchi non li vende, e propone invece la fascia superiore.
-  const prima = PIANI[fasceVendibili()[0]];
-  if (prima.senzaBlocchi) {
-    if (/Blocchi da \d+ aziende/.test(t)) throw new Error(`«${prima.nome}» non deve offrire blocchi`);
-    if (!/Più di un'azienda\?/.test(t)) throw new Error("non indica la fascia superiore");
-  } else if (!/Blocchi da \d+ aziende/.test(t)) {
-    throw new Error("non offre le estensioni");
-  }
-  if (!/Primo anno/.test(t)) throw new Error("non mostra il totale");
+  // ⚠️ Dal 6 novembre 2026 i blocchi non si vendono più: il dialogo offre il piano e il
+  // periodo, e mostra l'importo prima di uscire verso Stripe.
+  if (/Blocchi da \d+ aziende/.test(t)) throw new Error("offre ancora i blocchi di aziende, che non si vendono più");
+  if (!(await d.locator("[data-interruttore-periodo]").count())) throw new Error("non si sceglie fra annuale e mensile");
+  if (!/Paga .* \+ IVA/.test(t)) throw new Error("non mostra l'importo prima del pagamento");
   await page.keyboard.press("Escape");
 });
 
@@ -135,7 +130,7 @@ await check("la home offre la porta della fascia d'ingresso, e ci porta davvero"
   const t = await page.locator("main").innerText();
   if (!t.includes(INGRESSO.nome)) throw new Error(`la pagina non nomina «${INGRESSO.nome}»`);
   // ⚠️ Nessuna cifra qui: i prezzi stanno su /prezzi, per decisione del committente.
-  const v = prezzoDiVendita(INGRESSO, "anno1");
+  const v = prezzoDiVendita(INGRESSO, "anno");
   if (v && t.includes(euro(v.importo))) throw new Error("l'importo e' finito sulla porta d'iscrizione");
 });
 

@@ -1,30 +1,26 @@
-// Il secondo anno, visto davvero.
+// Il rinnovo, visto davvero: annuale e mensile.
 //
-//   node scripts/verifica-rinnovo.mjs            (chiavi di PROVA, obbligatorio)
+//   npm run qa -- rinnovo              (annuale: un anno e un giorno)
+//   npm run qa -- rinnovo --mensile    (mensile: un mese e un giorno)
 //
-// È l'unico comportamento del pagamento che nessuno ha mai osservato accadere, e non è
-// un dettaglio: è il rinnovo, cioè il modello di ricavo dal secondo anno in poi. Fino a
-// oggi sapevamo che lo Schedule a due fasi *si crea* con i valori giusti; che cosa
-// succeda quando la prima fase finisce era una deduzione.
-//
-// Si usa un OROLOGIO DI PROVA di Stripe (`test_clock`): si crea l'abbonamento, si sposta
-// il tempo di un anno e un giorno, e si guarda cosa resta. Nessun'attesa di dodici mesi
+// Chiavi di PROVA obbligatorie. Si usa un OROLOGIO DI PROVA di Stripe (`test_clock`): si crea
+// l'abbonamento, si sposta il tempo oltre la scadenza, e si guarda cosa resta. Nessuna attesa
 // e nessuna simulazione fatta da noi: è Stripe a far scattare il rinnovo.
 //
-// Le tre cose che devono succedere, e ognuna può rompersi da sola:
-//   1. il piano passa al prezzo di RINNOVO, non resta a quello del primo anno;
-//   2. le estensioni si portano dietro il proprio prezzo (era il difetto della fase 2,
-//      corretto ad agosto: sparivano al primo rinnovo, in silenzio);
-//   3. `subscription_schedule.released` NON deve disattivare l'account. Con
-//      `end_behavior: "release"` lo Schedule si stacca a fasi esaurite e l'abbonamento
-//      continua da solo: è il comportamento voluto, e un webhook che lo leggesse come
-//      una disdetta spegnerebbe il servizio a un cliente che ha appena pagato.
+// ⚠️ DAL 6 NOVEMBRE 2026 IL PREZZO È LO STESSO A OGNI RINNOVO, e NON SI CREA PIÙ LO SCHEDULE.
+// Le cose che devono succedere, e ognuna può rompersi da sola:
+//   1. il webhook NON aggancia uno Schedule: su un mensile sarebbe un danno, perché la fase
+//      uno durerebbe un mese e la due addebiterebbe per un anno un prezzo di rinnovo;
+//   2. al rinnovo la fattura vale lo stesso imponibile, con l'IVA sopra;
+//   3. il periodo nel nostro database si sposta in avanti, e l'account resta attivo;
+//   4. l'anteprima della prossima fattura — quella che il cron usa per il preavviso — dice
+//      lo stesso importo che Stripe addebita davvero.
 
 import postgres from "postgres";
 import Stripe from "stripe";
 import { randomUUID, createHmac } from "node:crypto";
 import "dotenv/config";
-import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, FONDATORI, euro, prezzoDiVendita, prezzoEstensione, rinnovoPerLeRighe } from "../src/lib/prezzi.ts";
+import { PIANI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 2 });
@@ -38,12 +34,14 @@ if (/_live_/.test(process.env.STRIPE_SECRET_KEY ?? "")) {
   process.exit(1);
 }
 
+const MENSILE = process.argv.includes("--mensile");
+const periodo = MENSILE ? "mese" : "anno";
 const RUN = Date.now();
 const orgId = `org-rinnovo-${RUN}`;
 const userId = `user-rinnovo-${RUN}`;
 
-const BLOCCHI = 2;
-const ACCESSI = 3;
+const piano = PIANI.azienda;
+const prezzo = prezzoDiVendita(piano, periodo);
 
 let ok = 0;
 const falliti = [];
@@ -60,14 +58,9 @@ async function prova(nome, fn) {
 
 /** Consegna a mano un evento al nostro webhook, firmandolo col segreto di prova.
  *
- *  L'OGGETTO è vero, riletto da Stripe; la BUSTA che lo avvolge la costruiamo qui, ed è
- *  una distinzione che è costata cara: mancava `created`, che Stripe mette sempre, e il
- *  provisioning ci costruiva sopra una data invalida — 500 nel percorso dei pagamenti.
- *  Il difetto era nostro (ora corretto, e coperto da un test), ma il collaudo lo ha
- *  trovato per il motivo sbagliato: stava spedendo una busta che Stripe non spedisce.
- *
- *  Una busta finta va tenuta il più vicino possibile a quella vera, altrimenti prova
- *  qualcosa che in produzione non succede — e, peggio, NON prova quello che succede. */
+ *  L'OGGETTO è vero, riletto da Stripe; la BUSTA che lo avvolge la costruiamo qui, e va tenuta
+ *  il più vicino possibile a quella vera: mancava `created`, che Stripe mette sempre, e il
+ *  collaudo trovò un difetto per il motivo sbagliato. */
 async function consegna(tipo, oggetto) {
   const segreto = process.env.STRIPE_WEBHOOK_SECRET;
   if (!segreto) throw new Error("STRIPE_WEBHOOK_SECRET assente: non posso firmare l'evento");
@@ -88,50 +81,19 @@ async function consegna(tipo, oggetto) {
   if (!r.ok) throw new Error(`il webhook ha risposto ${r.status}: ${(await r.text()).slice(0, 160)}`);
 }
 
-// ⚠️ CON `--fondatore` si esercita un abbonamento del Programma. E' il caso in cui lo
-// sconto puo' perdersi: un Fondatore ha la fascia «studio» ma NON il suo prezzo di
-// rinnovo, e se la fase 2 dello Schedule portasse quello, al tredicesimo mese tornerebbe
-// a pagare come tutti — in silenzio, su un accordo firmato, visibile solo fra un anno.
-const FONDATORE = process.argv.includes("--fondatore");
-
-const piano = PIANI[FONDATORE ? FONDATORI.piano : "studio"];
-const pAnno1 = FONDATORE
-  ? { importo: FONDATORI.primoAnno, lookup: FONDATORI.lookupAnno1 }
-  : prezzoDiVendita(piano, "anno1");
-// Il rinnovo si chiede alla STESSA funzione che usa il webhook. Perche' il collaudo non
-// finisca d'accordo con un difetto, piu' sotto c'e' anche un'asserzione indipendente.
-const pRinnovo = rinnovoPerLeRighe([pAnno1.lookup], piano.key);
-const pBlocco = prezzoEstensione(ESTENSIONI.bloccoAziende);
-// ⚠️ L'estensione degli accessi non si vende piu', ma un abbonamento in corso puo'
-// averla: si esercita quella RITIRATA, che e' cio' che un cliente vero ha davvero.
-const pAccesso = prezzoEstensione(ESTENSIONI_RITIRATE.accesso);
-const estensioni = BLOCCHI * pBlocco.importo + ACCESSI * pAccesso.importo;
-const ATTESO_RINNOVO = pRinnovo.importo + estensioni;
-
 const idDi = async (lookup) => {
   const l = await stripe.prices.list({ lookup_keys: [lookup], limit: 1, active: true });
-  if (!l.data[0]) throw new Error(`prezzo «${lookup}» assente su Stripe`);
+  if (!l.data[0]) throw new Error(`prezzo «${lookup}» assente su Stripe: lancia stripe-bootstrap`);
   return l.data[0].id;
 };
 
-// ⚠️ L'attesa NON viene solo dalla funzione in prova: per il Fondatore si ricalcola dalla
-// clausola — rinnovo di listino della fascia meno il 20% — cosi' un errore dentro
-// `rinnovoPerLeRighe` non puo' passare inosservato perche' sbaglia in due posti uguali.
-if (FONDATORE) {
-  const atteso = Math.round(prezzoDiVendita(piano, "rinnovo").importo * 0.8);
-  if (pRinnovo.importo !== atteso) {
-    throw new Error(`lo sconto Fondatore vale ${euro(pRinnovo.importo)}, la clausola dice ${euro(atteso)}`);
-  }
-}
-console.log(`  modo: ${FONDATORE ? "PROGRAMMA FONDATORI" : "abbonamento normale"}`);
-console.log(`\n  atteso al rinnovo: ${euro(ATTESO_RINNOVO)}`);
-console.log(`  (piano ${euro(pRinnovo.importo)} + ${BLOCCHI} blocchi + ${ACCESSI} accessi)\n`);
+console.log(`\nRinnovo ${MENSILE ? "MENSILE" : "ANNUALE"} — ${BASE}`);
+console.log(`  atteso a ogni rinnovo: ${euro(prezzo.importo)} + IVA\n`);
 
 let clockId = null;
 let subId = null;
 
 try {
-  // ─── lo studio ─────────────────────────────────────────────────────────────
   await sql`insert into "user" (id, name, email, email_verified, created_at, updated_at)
             values (${userId}, 'Titolare Rinnovo', ${`rinnovo-${RUN}@example.com`}, true, now(), now())`;
   await sql`insert into organization (id, name, slug, created_at)
@@ -140,94 +102,64 @@ try {
             values (${randomUUID()}, ${orgId}, ${userId}, 'owner', now())`;
   await sql`insert into org_entitlement (organization_id, status) values (${orgId}, 'demo')`;
 
-  console.log("— primo anno —");
-
   await prova("si crea l'abbonamento su un orologio di prova", async () => {
     const clock = await stripe.testHelpers.testClocks.create({
       frozen_time: Math.floor(Date.now() / 1000),
       name: `rinnovo-${RUN}`,
     });
     clockId = clock.id;
-
     const cliente = await stripe.customers.create({
       email: `rinnovo-${RUN}@example.com`,
       name: "Studio Rinnovo",
-      // Un cliente in Italia, come quelli che passano dalla cassa: e' l'indirizzo a far
-      // calcolare a Stripe Tax il 22%. Senza, la prova sull'IVA del rinnovo non misurerebbe niente.
+      // Un cliente in Italia: è l'indirizzo a far calcolare a Stripe Tax il 22%.
       address: { line1: "Via Roma 1", postal_code: "80100", city: "Napoli", country: "IT" },
       test_clock: clockId,
       metadata: { organizationId: orgId },
     });
-    // Un metodo di pagamento serve davvero: senza, la fattura del rinnovo non si paga e
-    // l'abbonamento finisce in `past_due` — si misurerebbe l'assenza della carta, non il
-    // comportamento dello Schedule.
+    // Senza carta la fattura del rinnovo non si paga: si misurerebbe l'assenza della carta.
     const pm = await stripe.paymentMethods.create({ type: "card", card: { token: "tok_visa" } });
     await stripe.paymentMethods.attach(pm.id, { customer: cliente.id });
     await stripe.customers.update(cliente.id, { invoice_settings: { default_payment_method: pm.id } });
-
-    // La chiave di `stripe_customer` e' l'organizzazione: una sola riga per studio, senza
-    // identificativo proprio.
     await sql`insert into stripe_customer (organization_id, stripe_customer_id, created_at)
               values (${orgId}, ${cliente.id}, now())`;
 
     const sub = await stripe.subscriptions.create({
       customer: cliente.id,
-      items: [
-        { price: await idDi(pAnno1.lookup), quantity: 1 },
-        { price: await idDi(pBlocco.lookup), quantity: BLOCCHI },
-        { price: await idDi(pAccesso.lookup), quantity: ACCESSI },
-      ],
-      // Come la cassa (`automatic_tax` in `checkout.ts`): l'IVA la calcola Stripe Tax.
+      items: [{ price: await idDi(prezzo.lookup), quantity: 1 }],
       automatic_tax: { enabled: true },
-      metadata: { organizationId: orgId, piano: piano.key },
+      metadata: { organizationId: orgId, piano: piano.key, periodo },
     });
     subId = sub.id;
-
-    // È il webhook a fare tutto: attivazione e Schedule a due fasi. In locale Stripe non
-    // ci arriva, quindi l'evento glielo si porta a mano.
-    const completo = await stripe.subscriptions.retrieve(subId);
-    await consegna("customer.subscription.created", completo);
+    await consegna("customer.subscription.created", await stripe.subscriptions.retrieve(subId));
   });
 
-  await prova("l'account è attivo, col piano e le estensioni comprate", async () => {
-    const [e] = await sql`select status, piano, aziende_extra, accessi_extra from org_entitlement
+  await prova("l'account è attivo, col piano e il periodo giusti", async () => {
+    const [e] = await sql`select status, piano, periodo, disdetta_a_fine_periodo from org_entitlement
                           where organization_id=${orgId}`;
     if (e.status !== "active") throw new Error(`stato ${e.status}`);
     if (e.piano !== piano.key) throw new Error(`piano ${e.piano}`);
-    const azienderAttese = BLOCCHI * ESTENSIONI.bloccoAziende.aziende;
-    if (e.aziende_extra !== azienderAttese) throw new Error(`aziende extra ${e.aziende_extra}`);
-    if (e.accessi_extra !== ACCESSI) throw new Error(`accessi extra ${e.accessi_extra}`);
+    if (e.periodo !== periodo) throw new Error(`periodo ${e.periodo}, atteso ${periodo}`);
+    if (e.disdetta_a_fine_periodo) throw new Error("risulta disdetto");
   });
 
-  await prova("lo Schedule ha due fasi, e la seconda porta il rinnovo PIÙ le estensioni", async () => {
+  await prova("⚠️ il webhook NON ha agganciato uno Schedule", async () => {
     const sub = await stripe.subscriptions.retrieve(subId);
-    if (!sub.schedule) throw new Error("nessuno Schedule creato");
-    const sch = await stripe.subscriptionSchedules.retrieve(
-      typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id,
-    );
-    if (sch.phases.length !== 2) throw new Error(`fasi: ${sch.phases.length}`);
-    if (sch.end_behavior !== "release") throw new Error(`end_behavior ${sch.end_behavior}`);
-
-    let totale = 0;
-    for (const voce of sch.phases[1].items) {
-      const p = await stripe.prices.retrieve(typeof voce.price === "string" ? voce.price : voce.price.id);
-      totale += p.unit_amount * (voce.quantity ?? 1);
-    }
-    if (totale !== ATTESO_RINNOVO) {
-      throw new Error(`la fase 2 vale ${euro(totale)}, atteso ${euro(ATTESO_RINNOVO)}`);
-    }
+    if (sub.schedule) throw new Error(`c'è lo Schedule ${sub.schedule}: su un mensile sarebbe un danno`);
   });
 
-  // ─── un anno dopo ──────────────────────────────────────────────────────────
-  console.log("\n— si sposta l'orologio di un anno —");
+  await prova("l'anteprima del preavviso dice l'importo giusto", async () => {
+    const a = await stripe.invoices.createPreview({ subscription: subId });
+    const imponibile = a.total_excluding_tax ?? a.subtotal;
+    if (imponibile !== prezzo.importo) throw new Error(`anteprima ${euro(imponibile)}, atteso ${euro(prezzo.importo)}`);
+  });
 
-  await prova("l'orologio avanza oltre la fine del primo anno", async () => {
+  console.log(`\n— si sposta l'orologio oltre la scadenza —`);
+
+  await prova("l'orologio avanza", async () => {
     const sub = await stripe.subscriptions.retrieve(subId);
     const fine = sub.items.data[0].current_period_end;
     await stripe.testHelpers.testClocks.advance(clockId, { frozen_time: fine + 86_400 });
-
-    // Stripe elabora il salto in modo asincrono: si aspetta che l'orologio torni pronto.
-    // È l'unico punto lento del collaudo, e l'attesa è generosa di proposito.
+    // Stripe elabora il salto in modo asincrono: l'attesa è generosa di proposito.
     const scade = Date.now() + 300_000;
     for (;;) {
       const c = await stripe.testHelpers.testClocks.retrieve(clockId);
@@ -238,76 +170,45 @@ try {
     }
   });
 
-  await prova("l'abbonamento è passato al prezzo di RINNOVO, estensioni comprese", async () => {
+  await prova("il prezzo non è cambiato, e la riga è la stessa", async () => {
     const sub = await stripe.subscriptions.retrieve(subId);
-    let totale = 0;
-    const chiavi = [];
-    for (const voce of sub.items.data) {
-      const p = await stripe.prices.retrieve(voce.price.id);
-      totale += p.unit_amount * (voce.quantity ?? 1);
-      chiavi.push(`${p.lookup_key}×${voce.quantity ?? 1}`);
-    }
-    if (totale !== ATTESO_RINNOVO) {
-      throw new Error(`ora vale ${euro(totale)}, atteso ${euro(ATTESO_RINNOVO)} — ${chiavi.join(" + ")}`);
-    }
-    if (!chiavi.some((c) => /rinnovo/.test(c))) throw new Error(`nessuna riga di rinnovo: ${chiavi.join(" + ")}`);
-  });
-
-  await prova("lo Schedule si è staccato, e l'abbonamento continua da solo", async () => {
-    // `end_behavior: "release"`: a fasi esaurite lo Schedule lascia l'abbonamento vivo.
-    // È il comportamento voluto, e il motivo per cui `subscription_schedule.released`
-    // NON è una disdetta.
-    const sub = await stripe.subscriptions.retrieve(subId);
+    const riga = sub.items.data[0];
+    if (riga.price.lookup_key !== prezzo.lookup) throw new Error(`ora punta a ${riga.price.lookup_key}`);
     if (!["active", "trialing"].includes(sub.status)) throw new Error(`stato Stripe ${sub.status}`);
+    if (sub.schedule) throw new Error("è comparso uno Schedule");
   });
 
-  await prova("dopo il rinnovo l'account resta attivo, col piano e le estensioni", async () => {
-    // Gli eventi che Stripe avrebbe mandato, consegnati a mano perché il collaudo gira
-    // in locale. Anche quello che il nostro webhook ignora: se lo leggesse come una
-    // disdetta, spegnerebbe un cliente che ha appena pagato.
-    const sub = await stripe.subscriptions.retrieve(subId);
-    await consegna("customer.subscription.updated", sub);
-    if (sub.schedule) {
-      const sch = await stripe.subscriptionSchedules.retrieve(
-        typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id,
-      );
-      await consegna("subscription_schedule.released", sch);
-    }
-
-    const [e] = await sql`select status, piano, aziende_extra, accessi_extra, current_period_end
-                          from org_entitlement where organization_id=${orgId}`;
-    if (e.status !== "active") throw new Error(`l'account è finito in «${e.status}» dopo il rinnovo`);
-    if (e.piano !== piano.key) throw new Error(`il piano è diventato «${e.piano}»`);
-    if (e.accessi_extra !== ACCESSI) throw new Error(`gli accessi extra sono ${e.accessi_extra}`);
-    if (e.aziende_extra !== BLOCCHI * ESTENSIONI.bloccoAziende.aziende) {
-      throw new Error(`le aziende extra sono ${e.aziende_extra}`);
-    }
-    if (!e.current_period_end || e.current_period_end.getTime() < Date.now()) {
-      throw new Error("la data di rinnovo non è stata spostata in avanti");
-    }
-  });
-
-  await prova("la fattura del secondo anno è stata pagata", async () => {
+  await prova("la fattura del rinnovo è pagata: stesso imponibile, IVA sopra", async () => {
     const fatture = await stripe.invoices.list({ subscription: subId, limit: 5 });
     const pagate = fatture.data.filter((f) => f.status === "paid");
     if (pagate.length < 2) {
       throw new Error(`fatture pagate: ${pagate.length} (${fatture.data.map((f) => f.status).join(", ")})`);
     }
-    const seconda = pagate[0];
-    // ⚠️ L'imponibile e' quello della fase 2, e sopra c'e' l'IVA al 22%: un rinnovo che
-    // partisse SENZA IVA mentre il primo anno l'aveva si scoprirebbe solo fra dodici mesi.
-    if (seconda.subtotal !== ATTESO_RINNOVO) {
-      throw new Error(`l'imponibile della seconda fattura è ${euro(seconda.subtotal)}, atteso ${euro(ATTESO_RINNOVO)}`);
+    const rinnovo = pagate[0];
+    if (rinnovo.billing_reason !== "subscription_cycle") throw new Error(`motivo ${rinnovo.billing_reason}`);
+    if (rinnovo.subtotal !== prezzo.importo) {
+      throw new Error(`imponibile ${euro(rinnovo.subtotal)}, atteso ${euro(prezzo.importo)}`);
     }
-    const iva = seconda.total - seconda.subtotal;
-    if (Math.abs(iva - ATTESO_RINNOVO * 0.22) > 2) {
-      throw new Error(`IVA del rinnovo ${euro(iva)}, attesa ${euro(Math.round(ATTESO_RINNOVO * 0.22))}`);
+    const iva = rinnovo.total - rinnovo.subtotal;
+    if (Math.abs(iva - prezzo.importo * 0.22) > 2) throw new Error(`IVA ${euro(iva)}`);
+    if (rinnovo.amount_paid !== rinnovo.total) throw new Error(`pagato ${euro(rinnovo.amount_paid)} su ${euro(rinnovo.total)}`);
+    console.log(`       rinnovo: ${euro(rinnovo.subtotal)} + IVA ${euro(iva)} = ${euro(rinnovo.total)}`);
+  });
+
+  await prova("dopo il rinnovo l'account resta attivo, e la scadenza si è spostata", async () => {
+    const [prima] = await sql`select current_period_end from org_entitlement where organization_id=${orgId}`;
+    await consegna("customer.subscription.updated", await stripe.subscriptions.retrieve(subId));
+    const [e] = await sql`select status, piano, periodo, current_period_end from org_entitlement
+                          where organization_id=${orgId}`;
+    if (e.status !== "active") throw new Error(`l'account è finito in «${e.status}» dopo il rinnovo`);
+    if (e.piano !== piano.key) throw new Error(`il piano è diventato «${e.piano}»`);
+    if (e.periodo !== periodo) throw new Error(`il periodo è diventato «${e.periodo}»`);
+    if (!e.current_period_end || e.current_period_end.getTime() <= prima.current_period_end.getTime()) {
+      throw new Error("la data di rinnovo non è stata spostata in avanti");
     }
-    if (seconda.amount_paid !== seconda.total) throw new Error(`pagato ${euro(seconda.amount_paid)} su ${euro(seconda.total)}`);
-    console.log(`       rinnovo: ${euro(seconda.subtotal)} + IVA ${euro(iva)} = ${euro(seconda.total)}`);
   });
 } finally {
-  // Pulizia: l'orologio si porta via clienti, abbonamenti e fatture creati sopra.
+  // L'orologio si porta via clienti, abbonamenti e fatture creati sopra.
   try {
     if (clockId) await stripe.testHelpers.testClocks.del(clockId);
   } catch (e) {
@@ -323,7 +224,7 @@ try {
   await sql.end();
 }
 
-console.log(`\nRinnovo: ${ok} ok, ${falliti.length} falliti`);
+console.log(`\nRinnovo ${periodo}: ${ok} ok, ${falliti.length} falliti`);
 if (falliti.length) {
   console.log("\nDA GUARDARE:");
   for (const f of falliti) console.log(`  · ${f.nome}\n      ${f.motivo}`);

@@ -6,11 +6,7 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { rigaPosti } from "@/features/vetrina/posti";
-import {
-  FASCIA_INTRODUZIONE, FONDATORI, PIANI, POSTI_INTRODUZIONE,
-  euro, prezzoDiVendita,
-} from "@/lib/prezzi";
+import { PIANI, euro, prezzoDiVendita, costoAnnuoMensile } from "@/lib/prezzi";
 
 // Il richiamo all'acquisto della vetrina.
 //
@@ -19,13 +15,16 @@ import {
 // leggere. È la stessa regola per cui l'offerta di fine giro guidato si vede solo dopo il
 // giro: interrompere chi sta ancora capendo che cos'è non vende niente, infastidisce.
 //
-// ⚠️ IL PREZZO VIENE DAL LISTINO, sempre. `prezzoDiVendita` restituisce importo e chiave
-// Stripe insieme, e il barrato compare SOLO se esiste un prezzo di lancio vero: oggi non
-// esiste, e questo banner non lo inventa. Un barrato senza sconto reale è pubblicità
-// ingannevole — vietata anche fra imprese — e alla cassa il conto non tornerebbe comunque,
-// perché Stripe addebita quello che il listino dice.
+// ⚠️ IL PREZZO VIENE DAL LISTINO, sempre, e il barrato è VERO: dodici mesi pagati col
+// mensile, che si possono scegliere davvero. Un barrato senza un'offerta reale dietro è
+// pubblicità ingannevole — vietata anche fra imprese.
 //
-// L'urgenza vera è un'altra, e si conta: i posti al prezzo d'introduzione.
+// ⚠️ Qui c'era una riga «Prezzo d'introduzione: restano N posti, poi si va a listino».
+// Prometteva un aumento che non è mai esistito — il prezzo d'introduzione ERA il listino —
+// e il 6 novembre 2026 è stata tolta insieme al Programma Fondatori.
+
+/** Il piano proposto da questa vetrina: l'azienda che fa da sé, il cliente primario. */
+const PIANO_PROPOSTO = "azienda" as const;
 
 const CHIAVE = "evalisdeck-vetrina-richiamo";
 const DOPO_MS = 60_000;
@@ -33,7 +32,6 @@ const DOPO_MS = 60_000;
 export function RichiamoAcquisto({ visto }: { visto: boolean }) {
   const [aperto, setAperto] = useState(false);
   const [chiuso, setChiuso] = useState(true); // finché non si legge la memoria: mai lampeggiare
-  const [rimasti, setRimasti] = useState<number | null>(null);
 
   useEffect(() => {
     try {
@@ -41,22 +39,6 @@ export function RichiamoAcquisto({ visto }: { visto: boolean }) {
     } catch {
       setChiuso(false);
     }
-  }, []);
-
-  // I posti si chiedono al server, una volta: è un intero, non un dato di nessuno.
-  useEffect(() => {
-    let vivo = true;
-    fetch("/api/vetrina/posti")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (vivo && typeof d?.rimasti === "number") setRimasti(d.rimasti);
-      })
-      .catch(() => {
-        /* senza contatore il richiamo compare lo stesso, senza la riga sui posti. */
-      });
-    return () => {
-      vivo = false;
-    };
   }, []);
 
   // Il valore consegnato apre il richiamo; il tempo è solo il ripiego per chi legge e basta.
@@ -102,10 +84,10 @@ export function RichiamoAcquisto({ visto }: { visto: boolean }) {
 
   if (chiuso || !aperto || modale) return null;
 
-  const piano = PIANI[FASCIA_INTRODUZIONE];
-  const anno1 = prezzoDiVendita(piano, "anno1")!;
-  const rinnovo = prezzoDiVendita(piano, "rinnovo")!;
-  const posti = rigaPosti(rimasti, POSTI_INTRODUZIONE);
+  const piano = PIANI[PIANO_PROPOSTO];
+  const anno = prezzoDiVendita(piano, "anno")!;
+  const mese = prezzoDiVendita(piano, "mese")!;
+  const barrato = costoAnnuoMensile(piano);
 
   const chiudi = () => {
     setChiuso(true);
@@ -135,37 +117,30 @@ export function RichiamoAcquisto({ visto }: { visto: boolean }) {
             secondo la norma e apri gli altri percorsi sulla stessa azienda.
           </p>
 
-          <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            {/* Il barrato compare solo se il listino ha davvero un prezzo di lancio. */}
-            {anno1.listino !== undefined && (
-              <span className="text-[13px] text-muted-foreground line-through tabular-nums">
-                {euro(anno1.listino)}
-              </span>
+          <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1" data-vetrina="prezzo">
+            {barrato !== null && (
+              <s className="text-[13px] text-muted-foreground tabular-nums" data-barrato>
+                <span className="sr-only">invece di </span>
+                {euro(barrato)}
+              </s>
             )}
             <span className="font-display text-[22px] font-bold tabular-nums" data-slot="kpi">
-              {euro(anno1.importo)}
+              {euro(anno.importo)}
             </span>
             <span className="text-[12.5px] text-muted-foreground">
-              il primo anno, poi {euro(rinnovo.importo)} l&apos;anno · {piano.nome}
+              l&apos;anno, oppure {euro(mese.importo)} al mese · {piano.nome}{" "}· IVA esclusa
             </span>
           </p>
 
-          {posti && (
-            <p className="mt-1.5 text-[12.5px] font-medium text-primary" data-vetrina="posti">
-              {posti}
-            </p>
-          )}
-
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Button asChild size="sm" data-vetrina="richiamo-cta">
-              <Link href={`/attiva/${FASCIA_INTRODUZIONE}`}>Attiva il servizio</Link>
+              <Link href={`/attiva/${PIANO_PROPOSTO}`}>Attiva il servizio</Link>
             </Button>
             <Link
-              href="/prezzi#fondatori"
+              href="/prezzi"
               className="text-[12.5px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
             >
-              Oppure il Programma Fondatori: {FONDATORI.posti} posti, primo anno{" "}
-              {euro(FONDATORI.primoAnno)}
+              Segui aziende clienti? I piani per i consulenti
             </Link>
           </div>
         </div>

@@ -1,8 +1,6 @@
 import type Stripe from "stripe";
-import { stripe, idPrezzo } from "@/lib/stripe/client";
-import { PIANI, rinnovoPerLeRighe, type PianoKey } from "@/lib/prezzi";
+import { stripe } from "@/lib/stripe/client";
 import { applicaAbbonamento, organizzazioneDelCliente } from "./provisioning";
-import { vociDelRinnovo } from "./fasi";
 
 // Il dispatch degli eventi Stripe.
 //
@@ -23,77 +21,18 @@ import { vociDelRinnovo } from "./fasi";
 
 export type EsitoEvento = { fatto: boolean; nota: string };
 
-/**
- * Il piano a due fasi: primo anno al suo prezzo, poi rinnovo al prezzo ridotto, per
- * sempre.
+/* ⚠️ IL PIANO A DUE FASI NON SI CREA PIÙ (6 novembre 2026).
  *
- * Si crea DOPO il pagamento, a partire dall'abbonamento appena nato. Non prima: al
- * momento del checkout l'abbonamento non esiste ancora.
+ * Fino al listino precedente ogni abbonamento nuovo riceveva uno Schedule: primo anno al
+ * suo prezzo, poi rinnovo al prezzo ridotto. Dal 6 novembre il prezzo è lo stesso ogni
+ * periodo, quindi lo Schedule non ha niente da fare — e su un MENSILE sarebbe un danno:
+ * la fase uno sarebbe durata un mese, e la due avrebbe addebitato per un anno il prezzo di
+ * «rinnovo» di un listino che non esiste più.
  *
- * ⚠️ `end_behavior: "release"` significa che, esaurite le fasi, lo Schedule si stacca e
- * l'abbonamento continua da solo al prezzo dell'ultima fase. È il comportamento che
- * vogliamo — e il motivo per cui `subscription_schedule.released` NON è una disdetta.
+ * Gli abbonamenti già venduti con lo Schedule lo conservano: vive su Stripe, e Stripe lo
+ * porta a termine da solo. Questo file non lo tocca, e `subscription_schedule.*` resta fra
+ * gli eventi ignorati — `released` non è una disdetta.
  */
-async function creaPianoDueFasi(sub: Stripe.Subscription, piano: PianoKey): Promise<void> {
-  if (sub.schedule) return; // già fatto: l'evento è arrivato due volte
-
-  // ⚠️ Il prezzo di rinnovo si chiede alle RIGHE, non al solo piano. Un Fondatore ha la
-  // fascia «studio» ma non il suo rinnovo di listino: se la fase 2 portasse quello, al
-  // tredicesimo mese tornerebbe a pagare come tutti — in silenzio, su un accordo firmato.
-  const lookups = sub.items.data.map((i) => i.price.lookup_key ?? null);
-  const rinnovo = rinnovoPerLeRighe(lookups, piano);
-  if (!rinnovo) return;
-
-  const schedule = await stripe().subscriptionSchedules.create({ from_subscription: sub.id });
-  const fase = schedule.phases[0];
-  if (!fase) return;
-
-  // Le righe si leggono dall'ABBONAMENTO e non dalla fase appena creata: qui c'è la
-  // chiave del listino e c'è `recurring`, cioè le due cose che servono a distinguere
-  // il piano dalle estensioni e le estensioni dagli addebiti una tantum. Nella fase
-  // ci sono solo id di prezzo, che non dicono che cosa siano.
-  const righe = sub.items.data.map((i) => ({
-    priceId: i.price.id,
-    lookupKey: i.price.lookup_key ?? null,
-    quantita: i.quantity ?? 1,
-    ricorrente: Boolean(i.price.recurring),
-  }));
-
-  // Il calcolo dell'IVA si dichiara su entrambe le fasi, copiato dall'abbonamento. Oggi
-  // Stripe lo porterebbe comunque dalle impostazioni dello Schedule creato con
-  // `from_subscription`: MISURATO il 5 ottobre 2026 togliendo queste righe, il rinnovo con
-  // l'orologio di prova arrivava lo stesso con l'IVA. Restano perché un rinnovo senza IVA si
-  // scoprirebbe fra dodici mesi, su un cliente vero, e dichiararlo costa una riga. Un
-  // abbonamento che non lo aveva resta com'era.
-  const automatic_tax = { enabled: Boolean(sub.automatic_tax?.enabled) };
-
-  await stripe().subscriptionSchedules.update(schedule.id, {
-    end_behavior: "release",
-    phases: [
-      {
-        // La prima fase si ridichiara identica a com'è: Stripe pretende l'elenco
-        // completo, e ometterla la cancellerebbe.
-        items: fase.items.map((i) => ({
-          price: typeof i.price === "string" ? i.price : i.price.id,
-          quantity: i.quantity ?? 1,
-        })),
-        start_date: fase.start_date,
-        end_date: fase.end_date,
-        automatic_tax,
-      },
-      {
-        // Piano al prezzo di rinnovo PIÙ le estensioni comprate: prima c'era la sola
-        // riga del piano, e le estensioni sparivano al primo rinnovo.
-        items: vociDelRinnovo(righe, await idPrezzo(rinnovo.lookup)),
-        // `duration` e non `iterations`: quest'ultimo non esiste più nella versione
-        // corrente dell'API, e il compilatore l'ha intercettato prima che diventasse
-        // un errore in produzione su un rinnovo fra dodici mesi.
-        duration: { interval: "year", interval_count: 1 },
-        automatic_tax,
-      },
-    ],
-  });
-}
 
 /**
  * Rilegge l'abbonamento da Stripe e ne riporta lo stato nell'account.
@@ -145,29 +84,20 @@ export async function gestisciEvento(evento: Stripe.Event): Promise<EsitoEvento>
       return riallinea(subId, "attivato dal checkout", evento);
     }
 
-    case "customer.subscription.created": {
-      const esito = await riallinea(evento.data.object.id, "abbonamento creato", evento);
-      // Le due fasi si impostano su OGNI abbonamento nuovo, non solo su quelli nati dal
-      // checkout: un abbonamento creato a mano — per un Enterprise, o per rimediare a un
-      // pagamento fuori flusso — resterebbe altrimenti al prezzo del primo anno per
-      // sempre, e il cliente pagherebbe il rinnovo piu' caro del dovuto. Trovato dal
-      // collaudo, che paga via API e non dal modulo.
-      // L'abbonamento e' gia' stato letto da `riallinea`: si riusa, non si richiede.
-      if (esito.fatto && esito.sub) {
-        const piano = esito.sub.metadata?.piano as PianoKey | undefined;
-        if (piano && PIANI[piano]) await creaPianoDueFasi(esito.sub, piano);
-      }
-      return esito;
-    }
-
+    case "customer.subscription.created":
     case "customer.subscription.updated":
     case "customer.subscription.deleted":
       return riallinea(evento.data.object.id, `abbonamento ${evento.type.split(".").pop()}`, evento);
 
     case "invoice.paid":
     case "invoice.payment_failed": {
-      const fattura = evento.data.object as Stripe.Invoice & { subscription?: string | { id: string } };
-      const sub = fattura.subscription;
+      // ⚠️ Con l'API `2026-07-29.dahlia` l'abbonamento di una fattura sta in
+      // `parent.subscription_details.subscription`: il campo `subscription` alla radice è
+      // quello delle versioni precedenti. Si leggono entrambi, perché l'endpoint può essere
+      // registrato con una versione diversa da quella dell'SDK — e leggendone uno solo una
+      // fattura pagata risulterebbe «non legata a un abbonamento», in silenzio.
+      const fattura = evento.data.object as Stripe.Invoice & { subscription?: string | { id: string } | null };
+      const sub = fattura.parent?.subscription_details?.subscription ?? fattura.subscription ?? null;
       if (!sub) return { fatto: false, nota: "fattura non legata a un abbonamento" };
       return riallinea(typeof sub === "string" ? sub : sub.id, `fattura ${evento.type.split(".").pop()}`, evento);
     }

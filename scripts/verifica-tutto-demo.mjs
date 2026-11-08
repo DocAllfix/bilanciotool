@@ -14,7 +14,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
+import { PIANI, euro, prezzoDiVendita, fasceVendibili } from "../src/lib/prezzi.ts";
 
 /** Riusa un conto gia' esistente quando il freno sulle registrazioni ha gia' colpito. */
 async function entra(page, sql, base, email) {
@@ -374,8 +374,8 @@ await agisci("impostazioni: l'abbonamento propone i piani a chi non ne ha", asyn
   const t = await page.locator("main").innerText();
   // Gli importi si DERIVANO dal listino: scritti a mano invecchiano al primo cambio di
   // fasce, e il collaudo accusa il prodotto di un difetto che non ha.
-  for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
+  for (const k of fasceVendibili()) {
+    const v = prezzoDiVendita(PIANI[k], "anno");
     if (v && !t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
 });
@@ -390,7 +390,7 @@ await agisci("l'invito a un collega parte", async () => {
 // Qui il collaudo si FERMA prima di uscire verso Stripe, e non è pigrizia: in
 // produzione le chiavi sono vive, e ogni clic su «Paga» creerebbe un cliente e una
 // sessione veri nell'account che incassa. A ogni esecuzione. Che il pulsante porti
-// davvero al pagamento lo prova `qa -- estensioni`, che gira contro le chiavi di prova.
+// davvero al pagamento lo prova `qa -- gestione-abbonamento`, che gira contro le chiavi di prova.
 await agisci("il dialogo d'acquisto è pronto a mandare al pagamento", async () => {
   await vai("/impostazioni/abbonamento");
   await page.getByRole("button", { name: /^(Attiva|Passa a questo)/ }).first().click();
@@ -398,17 +398,9 @@ await agisci("il dialogo d'acquisto è pronto a mandare al pagamento", async () 
   const d = page.getByRole("dialog");
   if (!(await d.count())) throw new Error("il dialogo d'acquisto non si apre");
   const t = await d.innerText();
-  // ⚠️ Che cosa offre il dialogo dipende dalla FASCIA, e qui si preme la prima del listino:
-  // dal 22 settembre 2026 è «Un'azienda», che i blocchi non li vende (costerebbero più della
-  // fascia superiore). Il collaudo chiede al listino invece di aspettarsi sempre i blocchi.
-  const prima = PIANI[fasceVendibili()[0]];
-  if (prima.senzaBlocchi) {
-    if (/Blocchi da \d+ aziende/.test(t)) throw new Error(`«${prima.nome}» non deve offrire blocchi`);
-    if (!/Più di un'azienda\?/.test(t)) throw new Error("non indica la fascia superiore");
-  } else if (!/Blocchi da \d+ aziende/.test(t)) {
-    throw new Error("non offre le estensioni");
-  }
-  if (!/Primo anno/.test(t)) throw new Error("non mostra il totale del primo anno");
+  // ⚠️ Dal 6 novembre 2026 i blocchi non si vendono più: il dialogo offre piano e periodo.
+  if (/Blocchi da \d+ aziende/.test(t)) throw new Error("offre ancora i blocchi di aziende");
+  if (!(await d.locator("[data-interruttore-periodo]").count())) throw new Error("non si sceglie fra annuale e mensile");
   const paga = d.getByRole("button", { name: /^Paga / });
   if (!(await paga.count())) throw new Error("nessun comando per pagare");
   if (await paga.isDisabled()) throw new Error("il comando per pagare è spento");

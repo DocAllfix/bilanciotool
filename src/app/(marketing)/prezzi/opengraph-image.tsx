@@ -12,7 +12,7 @@ import { PIANI, euro, fasceVendibili, prezzoDiVendita, quanteFasceInLettere } fr
 // È la stessa ragione per cui `prezzoDiVendita` restituisce importo e chiave Stripe
 // insieme: ciò che si mostra e ciò che si addebita escono da un posto solo.
 
-export const alt = `EvalisDeck · un abbonamento solo, ${quanteFasceInLettere().toLowerCase()} fasce`;
+export const alt = `EvalisDeck · ${quanteFasceInLettere().toLowerCase()} piani, annuali o mensili, tutti i percorsi compresi`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -24,7 +24,8 @@ const CHIARO = "#eef2f3";
 export default function Immagine() {
   const fasce = fasceVendibili().map((k) => ({
     nome: PIANI[k].nome,
-    prezzo: euro(prezzoDiVendita(PIANI[k], "anno1")!.importo),
+    prezzo: euro(prezzoDiVendita(PIANI[k], "anno")!.importo),
+    mese: euro(prezzoDiVendita(PIANI[k], "mese")!.importo),
   }));
 
   return new ImageResponse(
@@ -53,12 +54,12 @@ export default function Immagine() {
               marginTop: 18,
             }}
           >
-            Un abbonamento solo.
+            Tutti i percorsi.
           </div>
           <div style={{ color: "#fff", fontSize: 62, fontWeight: 800, lineHeight: 1.05, letterSpacing: -2 }}>
             {/* Una stringa sola: `{x} fasce.` sarebbero DUE nodi figli, e Satori pretende
                 `display: flex` su un div con più figli — il build si ferma. */}
-            {`${quanteFasceInLettere()} fasce.`}
+            {`${quanteFasceInLettere()} piani.`}
           </div>
         </div>
 
@@ -77,13 +78,14 @@ export default function Immagine() {
             >
               <div style={{ color: CHIARO, fontSize: 21, opacity: 0.75 }}>{f.nome}</div>
               <div style={{ color: "#fff", fontSize: 42, fontWeight: 800, marginTop: 8 }}>{f.prezzo}</div>
-              <div style={{ color: CHIARO, fontSize: 18, opacity: 0.55, marginTop: 4 }}>l&apos;anno</div>
+              {/* Una stringa sola, per la stessa ragione di sopra. */}
+              <div style={{ color: CHIARO, fontSize: 18, opacity: 0.55, marginTop: 4 }}>{`l'anno, o ${f.mese} al mese`}</div>
             </div>
           ))}
         </div>
 
         <div style={{ color: CHIARO, fontSize: 22, opacity: 0.7 }}>
-          Tutti i percorsi, accessi e marchio dello studio compresi. Si sceglie solo la capienza.
+          Per la tua azienda o per i consulenti. Annuale o mensile, IVA esclusa.
         </div>
       </div>
     ),

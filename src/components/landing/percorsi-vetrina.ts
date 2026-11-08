@@ -33,6 +33,8 @@ import { MODULI_PER_AREA, type AreaModuli, type ModuloAzienda } from "@/features
 import { NUMERI } from "@/features/formazione/numeri";
 
 export type PercorsoVetrina = {
+  /** La chiave del modulo: serve a collegare la scheda alla sua pagina pubblica. */
+  modulo?: ModuloAzienda;
   titolo: string;
   norma: string;
   passi: string[];
@@ -325,7 +327,7 @@ export const AREE_VETRINA: AreaVetrina[] = MODULI_PER_AREA.map((gruppo) => ({
   nome: gruppo.nome,
   tratto: gruppo.colore.tratto,
   perche: PERCHE_INSIEME[gruppo.area],
-  percorsi: gruppo.moduli.map((m) => ({ titolo: m.nome, ...RACCONTO[m.href] })),
+  percorsi: gruppo.moduli.map((m) => ({ modulo: m.href, titolo: m.nome, ...RACCONTO[m.href] })),
 }));
 
 /** Quanti percorsi in tutto. Si conta, non si scrive: è già stato scritto «undici». */

@@ -36,6 +36,36 @@
   --color-area-ecosostenibilita: var(--area-ecosostenibilita);
   --color-area-compliance: var(--area-compliance);
   --color-area-sistemi: var(--area-sistemi);
+  --color-vetrina-petrolio: var(--vetrina-petrolio);
+  --color-vetrina-petrolio-foreground: var(--vetrina-petrolio-foreground);
+  --color-vetrina-petrolio-muted: var(--vetrina-petrolio-muted);
+  --color-vetrina-petrolio-border: var(--vetrina-petrolio-border);
+  --color-vetrina-petrolio-accento: var(--vetrina-petrolio-accento);
+  --color-carta: var(--carta);
+  --color-inchiostro: var(--inchiostro);
+  /* Le superfici del tema «petrolio» della vetrina, scelto dal committente l'8 novembre
+     2026 (le variabili `--tema-*` sono definite più sotto, in «Il tema della vetrina»). */
+  --color-tema-superficie: var(--tema-superficie);
+  --color-tema-testo: var(--tema-testo);
+  --color-tema-attenuato: var(--tema-attenuato);
+  --color-tema-bordo: var(--tema-bordo);
+  --color-tema-titolo: var(--tema-titolo);
+  --color-tema-accento: var(--tema-accento);
+  /* Registro marketing: la scala del sito pubblico, a passi di almeno 1,25. L'app ha la
+     sua (DESIGN.md, Tipografia): qui servono misure fluide e un contrasto più forte. */
+  --text-display: clamp(2.5rem, 1.35rem + 4.1vw, 4.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-headline: clamp(1.875rem, 1.3rem + 2.2vw, 3rem);
+  --text-headline--line-height: 1.06;
+  --text-headline--letter-spacing: -0.025em;
+  --text-title: 1.3125rem;
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.01em;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-lead--line-height: 1.55;
+  --text-fonte: 0.75rem;
+  --text-fonte--line-height: 1.4;
   --color-scope-1: var(--scope-1);
   --color-scope-2: var(--scope-2);
   --color-scope-3: var(--scope-3);
@@ -108,6 +138,17 @@
   --area-ecosostenibilita: oklch(0.48 0.12 155); /* verde */
   --area-compliance: oklch(0.55 0.115 68); /* ambra */
   --area-sistemi: oklch(0.49 0.09 250); /* blu */
+  /* Il petrolio delle superfici ampie della vetrina. Non è `primary`: quello nel tema
+     scuro si schiarisce per il contrasto dei pulsanti, e un'apertura intera a quella
+     chiarezza abbaglierebbe. Questo resta profondo in entrambi i temi, col testo chiaro. */
+  --vetrina-petrolio: oklch(0.32 0.06 195);
+  --vetrina-petrolio-foreground: oklch(0.96 0.01 195);
+  --vetrina-petrolio-muted: oklch(0.82 0.03 195);
+  --vetrina-petrolio-border: oklch(0.42 0.055 195);
+  --vetrina-petrolio-accento: oklch(0.86 0.09 180);
+  /* La carta dei documenti resta chiara in entrambi i temi: un documento si stampa. */
+  --carta: oklch(0.992 0.003 95);
+  --inchiostro: oklch(0.24 0.028 240);
   /* Palette dati (dataviz): scope GHG e pilastri ESG */
   --scope-1: oklch(0.42 0.068 185); /* petrolio — dirette */
   --scope-2: oklch(0.52 0.085 245); /* blu — energia importata */
@@ -159,6 +200,11 @@
   --area-ecosostenibilita: oklch(0.74 0.12 155);
   --area-compliance: oklch(0.78 0.11 72);
   --area-sistemi: oklch(0.72 0.095 250);
+  --vetrina-petrolio: oklch(0.29 0.05 195);
+  --vetrina-petrolio-foreground: oklch(0.96 0.01 195);
+  --vetrina-petrolio-muted: oklch(0.82 0.03 195);
+  --vetrina-petrolio-border: oklch(0.39 0.045 195);
+  --vetrina-petrolio-accento: oklch(0.86 0.09 180);
   --scope-1: oklch(0.68 0.085 180);
   --scope-2: oklch(0.68 0.09 245);
   --scope-3: oklch(0.76 0.1 80);
@@ -369,4 +415,34 @@
   0%   { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 55%, transparent); }
   70%  { box-shadow: 0 0 0 10px color-mix(in oklch, var(--primary) 0%, transparent); }
   100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent); }
+}
+
+/* ─── Il tema della vetrina ─────────────────────────────────────────────────────
+   «Petrolio», scelto dal committente l'8 novembre 2026 nel laboratorio della landing: il
+   petrolio del marchio occupa le superfici ampie (le richieste, la chiusura) e i titoli
+   dell'apertura sono petrolio, circa un terzo della pagina. La variante «sobria» è uscita
+   insieme al laboratorio. Le sezioni usano utility proprie (`bg-tema-superficie`,
+   `text-tema-testo`…) e non direttamente quelle del petrolio, così un ritocco del tema si
+   fa qui e non in ogni sezione. Contrasti misurati (Axialoop, 7 novembre 2026): testo su
+   petrolio 10,97:1, testo attenuato 7,14:1, accento 8,33:1.
+   Sta su `:root` (cioè su `html`, come `.dark`): le variabili a cui punta prendono il
+   valore del tema chiaro o scuro dell'elemento stesso. */
+:root {
+  --tema-superficie: var(--vetrina-petrolio);
+  --tema-testo: var(--vetrina-petrolio-foreground);
+  --tema-attenuato: var(--vetrina-petrolio-muted);
+  --tema-bordo: var(--vetrina-petrolio-border);
+  --tema-titolo: var(--primary);
+  --tema-accento: var(--vetrina-petrolio-accento);
+}
+
+/* L'entrata delle caselle del fascicolo nell'apertura: una volta sola, in uscita, senza
+   toccare la disposizione. Il titolo NON si anima mai: è l'elemento che il browser
+   misura per primo, e non deve partire trasparente. */
+@keyframes casellaEntra {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .casella-entra { animation: casellaEntra 520ms cubic-bezier(0.23, 1, 0.32, 1) both; }
 }

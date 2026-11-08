@@ -31,7 +31,7 @@ function abbonamento(stato: string, fineperiodo: number): Stripe.Subscription {
       data: [
         {
           quantity: 1,
-          price: { id: "price_x", lookup_key: PIANI.studio.lookupAnno1, recurring: { interval: "year" } },
+          price: { id: "price_x", lookup_key: PIANI.studio.vendita!.anno.lookup, recurring: { interval: "year" } },
           current_period_end: fineperiodo,
         },
       ],

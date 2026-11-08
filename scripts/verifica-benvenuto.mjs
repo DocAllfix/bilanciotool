@@ -14,7 +14,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, fasceStudio, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, euro, fasceVendibili, prezzoDiVendita, costoAnnuoMensile } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 const RUN = Date.now();
@@ -184,8 +184,9 @@ await check("l'offerta mostra i prezzi del listino, senza barrati inventati", as
   // clienti, e «Azienda» (uso interno) si attiva da /attiva/azienda. Chiederle tutte
   // pretenderebbe una scheda tolta apposta.
   const t = await page.locator("body").innerText();
-  for (const k of fasceStudio()) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
+  // Dal 6 novembre 2026 l'offerta mostra TUTTI i piani in vendita, annuale predefinito.
+  for (const k of fasceVendibili()) {
+    const v = prezzoDiVendita(PIANI[k], "anno");
     if (!v) continue;
     if (!t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
@@ -193,10 +194,15 @@ await check("l'offerta mostra i prezzi del listino, senza barrati inventati", as
   // un prezzo che nessuno ha mai scontato e' pubblicita' ingannevole, vietata anche fra
   // professionisti. Il barrato torna il giorno che i dati avranno di nuovo un prezzo di
   // lancio, e allora questo controllo lo pretendera' da solo.
-  const inPromozione = CHIAVI_PIANO.some((k) => prezzoDiVendita(PIANI[k], "anno1")?.listino !== undefined);
-  const barrati = await page.locator(".line-through").count();
-  if (inPromozione && barrati < 1) throw new Error("promozione attiva ma nessun listino barrato");
-  if (!inPromozione && barrati > 0) throw new Error(`${barrati} prezzi barrati senza nessuno sconto vero`);
+  // ⚠️ Il barrato ora c'è, ed è VERO: dodici mesi di mensile, letti dal listino. Ogni
+  // barrato mostrato deve coincidere con quello di un piano in vendita.
+  const barrati = await page.locator("[data-barrato]").allInnerTexts();
+  const veri = new Set(fasceVendibili().map((k) => euro(costoAnnuoMensile(PIANI[k]))));
+  if (barrati.length < 1) throw new Error("nessun barrato accanto all'annuale");
+  for (const b of barrati) {
+    const cifra = b.replace(/invece di/i, "").trim();
+    if (!veri.has(cifra)) throw new Error(`barrato «${cifra}» che non è dodici mesi di mensile`);
+  }
   if (!/Quattordici giorni per ripensarci/.test(t)) throw new Error("il rimborso non e' dichiarato");
   if (/Enterprise/.test(t)) throw new Error("Enterprise non si compra da qui: si tratta");
 });

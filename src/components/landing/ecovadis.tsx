@@ -37,7 +37,7 @@ export function FirmaEcoVadis() {
       <BadgeEcoVadis dimensione={64} className="size-16 shrink-0" />
       <p className="text-[13px] leading-relaxed text-muted-foreground">
         Sviluppato per {ECOVADIS.azienda}, valutata{" "}
-        <a href="#metodo" className="font-semibold text-primary hover:underline">
+        <a href="/#evalis" className="font-semibold text-primary hover:underline">
           EcoVadis {ECOVADIS.medaglia}
         </a>{" "}
         <span data-slot="kpi">

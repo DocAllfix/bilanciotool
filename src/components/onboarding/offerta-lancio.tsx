@@ -4,10 +4,10 @@ import { useState } from "react";
 import { X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { PIANI, euro, aziendeTesto, fasceStudio, prezzoDiVendita, promozioneInCorso, FINE_LANCIO } from "@/lib/prezzi";
+import { PIANI, aziendeTesto, fasceVendibili } from "@/lib/prezzi";
 import { apriCheckoutAction } from "@/features/billing/actions";
 import type { PianoKey } from "@/lib/prezzi";
-import { fmtDataEstesa } from "@/lib/format";
+import { InterruttorePeriodo, PeriodoProvider, PrezzoFascia, usePeriodo } from "@/components/prezzi/periodo";
 
 // L'offerta, alla fine del giro guidato.
 //
@@ -17,18 +17,28 @@ import { fmtDataEstesa } from "@/lib/format";
 // professionista che si accorge di un'urgenza inventata smette di fidarsi anche del
 // resto.
 //
-// Il piano consigliato è Studio, e resta tale anche con la fascia d'ingresso: un
-// riferimento dichiarato evita che ognuno rifaccia il ragionamento da capo.
+// ⚠️ Niente «Il più scelto»: con un listino nuovo non è un fatto, è un'etichetta, e su un
+// prodotto che vende conformità un'affermazione non vera in una finestra d'acquisto è il
+// peggior biglietto da visita. I tre piani stanno alla pari, ciascuno col suo pubblico.
 
 export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
+  return (
+    <PeriodoProvider>
+      <Offerta onChiudi={onChiudi} />
+    </PeriodoProvider>
+  );
+}
+
+function Offerta({ onChiudi }: { onChiudi: () => void }) {
   const [inCorso, setInCorso] = useState<PianoKey | null>(null);
-  // Le fasce PER STUDIO: l'offerta chiude il giro di chi segue clienti. «Azienda» (uso
-  // interno) si attiva da /attiva/azienda o dalla pagina Abbonamento.
-  const acquistabili = fasceStudio();
+  const { periodo } = usePeriodo();
+  // Tutti i piani in vendita: chi ha appena fatto il giro può essere l'azienda che fa da sé
+  // o il consulente che segue clienti, e l'offerta non sa quale dei due.
+  const acquistabili = fasceVendibili();
 
   async function acquista(piano: PianoKey) {
     setInCorso(piano);
-    const esito = await apriCheckoutAction({ piano });
+    const esito = await apriCheckoutAction({ piano, periodo });
     if (!esito.ok) {
       setInCorso(null);
       toast.error(esito.errore);
@@ -53,7 +63,7 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
             </h2>
             <p className="mt-1.5 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
               In prova resti libero di guardare l&apos;azienda dimostrativa. Con l&apos;abbonamento
-              carichi le tue aziende, pubblichi i documenti e li consegni ai clienti.
+              lavori sulla tua azienda o su quelle che segui, e pubblichi i documenti.
             </p>
           </div>
           <button
@@ -65,58 +75,31 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
           </button>
         </div>
 
-        {/* Solo se un prezzo scontato c'è davvero: la data da sola annunciava una promozione
-            che non esisteva. */}
-        {promozioneInCorso() && (
-          <p className="mt-4 inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12.5px] font-medium text-primary">
-            Prezzi di lancio, validi fino al{" "}
-            {fmtDataEstesa(FINE_LANCIO)}
-          </p>
-        )}
+        <InterruttorePeriodo className="mt-4" />
 
-        {/* Quattro fasce: due per riga sugli schermi medi, quattro su quelli larghi. */}
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
           {acquistabili.map((k) => {
             const p = PIANI[k];
-            const anno1 = prezzoDiVendita(p, "anno1")!;
-            const rinnovo = prezzoDiVendita(p, "rinnovo")!;
-            const consigliato = k === "studio";
             return (
-              <div
-                key={k}
-                className={
-                  "flex flex-col rounded-lg border p-4 " +
-                  (consigliato ? "border-primary/50 bg-accent/40 ring-1 ring-primary/20" : "")
-                }
-              >
-                {consigliato && (
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-primary">
-                    Il più scelto
-                  </p>
-                )}
-                <p className="font-medium">{p.nome}</p>
+              <div key={k} className="flex flex-col rounded-lg border p-4" data-offerta-piano={k}>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">
+                  {p.pubblico === "azienda" ? "Per la tua azienda" : "Per i consulenti"}
+                </p>
+                <p className="mt-1 font-medium">{p.nome}</p>
                 <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{p.descrizione}</p>
 
-                <p className="mt-3 flex flex-wrap items-baseline gap-2">
-                  {anno1.listino !== undefined && (
-                    <span className="text-[13px] tabular-nums text-muted-foreground line-through">
-                      {euro(anno1.listino)}
-                    </span>
-                  )}
-                  <span className="text-xl font-semibold tabular-nums">{euro(anno1.importo)}</span>
-                </p>
-                <p className="text-[12px] text-muted-foreground">
-                  primo anno, poi {euro(rinnovo.importo)} l&apos;anno
-                </p>
+                <div className="mt-3">
+                  <PrezzoFascia piano={k} compatto />
+                </div>
 
                 <ul className="mt-3 space-y-1.5 text-[13px] text-muted-foreground">
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                    {aziendeTesto(p.aziende)}
+                    {p.usoInterno ? "1 azienda, la tua" : aziendeTesto(p.aziende)}
                   </li>
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                    {p.accessi} accessi
+                    {p.accessi}{" "}accessi
                   </li>
                   <li className="flex items-start gap-1.5">
                     <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
@@ -124,11 +107,11 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
                   </li>
                 </ul>
 
-                <div className="mt-4 pt-1">
+                <div className="mt-auto pt-4">
                   <Button
                     onClick={() => acquista(k)}
                     disabled={inCorso !== null}
-                    variant={consigliato ? "default" : "outline"}
+                    variant={p.pubblico === "azienda" ? "default" : "outline"}
                     size="sm"
                     className="w-full"
                   >
@@ -146,7 +129,7 @@ export function OffertaLancio({ onChiudi }: { onChiudi: () => void }) {
           <p className="text-[12.5px] leading-relaxed text-muted-foreground">
             Quattordici giorni per ripensarci, finché non hai pubblicato il primo documento.
             <br className="hidden sm:block" />
-            Nessun vincolo oltre l&apos;anno: il rinnovo si disdice quando vuoi.
+            Annuale o mensile, il rinnovo si disdice quando vuoi.
           </p>
           <Button variant="ghost" size="sm" onClick={onChiudi} className="text-muted-foreground">
             Continua a esplorare

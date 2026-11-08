@@ -46,11 +46,11 @@ export async function GET() {
   const base = indirizzoCanonico();
   const testo = `# EvalisDeck
 
-> Piattaforma SaaS italiana per la rendicontazione di sostenibilità, la conformità e i sistemi di gestione delle PMI: inventari di gas serra secondo ISO 14064-1:2018, bilanci di sostenibilità con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, diagnosi energetiche, Modello 231, ISO 37001, whistleblowing, due diligence di filiera, SGI qualità-ambiente-sicurezza, SA8000 e Statement of Applicability ISO/IEC 27001. Pensata per studi di consulenza che gestiscono un portafoglio di aziende clienti.
+> Piattaforma SaaS italiana per la rendicontazione di sostenibilità, la conformità e i sistemi di gestione delle PMI: inventari di gas serra secondo ISO 14064-1:2018, bilanci di sostenibilità con riferimento ai GRI Standards 2021 e alla struttura ESRS/VSME, diagnosi energetiche, Modello 231, ISO 37001, whistleblowing, due diligence di filiera, SGI qualità-ambiente-sicurezza, SA8000, PAS 24000, NIS2, protezione dei dati e Statement of Applicability ISO/IEC 27001. Pensata per le aziende che seguono la conformità con un responsabile interno, e per i consulenti che seguono più aziende.
 
 ## Cosa fa
 
-- ${QUANTI_PERCORSI} percorsi guidati in ${AREE_VETRINA.length} gruppi. Ogni azienda del portafoglio ha il proprio fascicolo e apre solo i percorsi che le servono.
+- ${QUANTI_PERCORSI} percorsi guidati in ${AREE_VETRINA.length} gruppi. Ogni azienda ha il proprio fascicolo e apre solo i percorsi che le servono; l'amministratore assegna i percorsi ai colleghi.
 - Integrazione fra i percorsi: la sezione emissioni del bilancio legge direttamente dall'inventario GHG della stessa azienda, senza ricopiare il dato.
 - Pubblicazione con versioni immutabili a livello di database, PDF impaginato e codice di verifica pubblico.
 
@@ -60,11 +60,12 @@ ${elencoPercorsi()}
 
 ## Modello
 
-Abbonamento annuale per studio: primo anno con avviamento incluso, rinnovo a prezzo ridotto. Demo guidata gratuita su un'azienda d'esempio. Dati ospitati nell'Unione Europea.
+Abbonamento annuale o mensile, sempre allo stesso prezzo, con tutti i percorsi compresi: un piano per l'azienda che fa da sé, due per i consulenti fino a 30 aziende, Enterprise oltre. Demo guidata gratuita su un'azienda d'esempio. Dati ospitati nell'Unione Europea.
 
 ## Pagine
 
 - [Home](${base}/)
+- [Prezzi](${base}/prezzi)
 - [Bilancio d'esempio (PDF)](${base}/esempi/esempio-bilancio-2025.pdf)
 - [Rapporto GHG d'esempio (PDF)](${base}/esempi/esempio-rapporto-ghg-2025.pdf)
 ${await sezioneBlog(base)}`;

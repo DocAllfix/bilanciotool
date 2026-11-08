@@ -55,7 +55,7 @@ const RIFERIMENTI = "(art\\.|articolo|artt\\.|comma|commi|allegato|Allegato|dire
  * sanzionatorio dell'art. 38, e il suo «10» non ha niente a che vedere con i 10 pilastri
  * del 231 — che è esattamente quello che la guardia proponeva di usare al suo posto.
  */
-const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti)";
+const GRANDEZZE = "(mila|milioni|miliardi|euro|ore|giorni|mesi|anni|addetti|dipendenti|lavoratori)";
 
 /** I file di CONTENUTO: le sezioni comuni e quelle dei singoli percorsi. */
 function fileDiContenuto(): string[] {
@@ -64,6 +64,11 @@ function fileDiContenuto(): string[] {
   if (existsSync(corsi)) {
     for (const f of readdirSync(corsi)) if (f.endsWith(".ts")) file.push(join(corsi, f));
   }
+  // ⚠️ E i contenuti PUBBLICI dei percorsi e i problemi della home (6 novembre 2026): sono
+  // pagine indicizzate, e un conteggio scritto a mano lì lo legge per primo chi sta per
+  // comprare. La stessa regola, sugli stessi numeri.
+  file.push(join(process.cwd(), "src", "features", "vetrina", "contenuti.ts"));
+  file.push(join(process.cwd(), "src", "components", "landing", "problemi.ts"));
   return file.filter((f) => existsSync(f));
 }
 
@@ -174,6 +179,9 @@ describe("i numeri della formazione", () => {
           // parte di un numero più lungo o di un codice — «34.850 €» non contiene un 34, e
           // «8.12» è un controllo della norma, non otto di qualcosa.
           //
+          // E un numero attaccato a un numerale romano da un punto è un allegato o un capo
+          // («Allegato II.13» del Codice degli appalti, 7 novembre 2026).
+          //
           // I conteggi del seme sono sempre numeri di COSE. Una regola copre anche la
           // frase che nessuno ha ancora scritto; un'eccezione a mano copre solo quella.
           //
@@ -183,7 +191,7 @@ describe("i numeri della formazione", () => {
           const comeConteggio = new RegExp(
             // «il 31», «dal 31», «al 31» sono date: un conteggio prende «i» o «gli», mai
             // l'articolo singolare. Stessa regola di `slide-distillate.ts`.
-            `(?<![\\d\\-/])(?<![\\d][.,])(?<!${RIFERIMENTI} )(?<!\\b(?:il|dal|al) )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
+            `(?<![\\d\\-/])(?<![\\d][.,])(?<![IVX]\\.)(?<!${RIFERIMENTI} )(?<!\\b(?:il|dal|al) )${valore}(?![\\d\\-/%])(?![.,]\\d)(?! ${MESI})(?! ${GRANDEZZE})`,
             "u",
           );
           if (comeConteggio.test(daControllare)) {

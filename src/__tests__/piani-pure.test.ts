@@ -1,175 +1,87 @@
-// I piani, le loro capacità e le estensioni comprate.
-//
-// Fino a ieri i limiti erano gli stessi per ogni studio del mondo: 10 aziende e 5 accessi,
-// da `platform_config`. Col listino a quattro livelli diventano una proprietà
-// dell'abbonamento, e la somma «capacità del piano + blocchi acquistati» è il numero che
-// decide se una richiesta passa. Sbagliarlo significa o vendere capacità che il sistema non
-// concede, o concederne a chi non l'ha pagata: si sbaglia in silenzio in tutte e due le
-// direzioni, e per questo sta qui, puro e provato.
-
 import { describe, it, expect } from "vitest";
 import {
-  PIANI,
-  ESTENSIONI,
   CHIAVI_PIANO,
+  PIANI,
+  PERIODI,
+  euro,
+  fasceVendibili,
+  fasceConsulenti,
+  inVendita,
+  prezzoDiVendita,
+  prezzoMinimoMensile,
+  quanteFasceInLettere,
   sogliaAvviso,
   limitiEffettivi,
-  euro,
-  chiavePiano,
   aziendeTesto,
-  fasceVendibili,
-  prezzoMinimo,
-  promozioneInCorso,
-  quanteFasceInLettere,
+  type Limiti,
 } from "@/lib/prezzi";
 
-const RISERVA = { maxActiveCompanies: 10, warnAtCompanies: 8, maxMembers: 5 };
+// IL LISTINO DEL 6 NOVEMBRE 2026, deciso dal committente.
+//
+// Tre piani in vendita, annuale o mensile, sempre allo stesso prezzo. Questi numeri sono la
+// specifica: se cambiano, cambia ciò che Stripe addebita, e il test deve dirlo.
 
-describe("il listino", () => {
-  it("ha i sei livelli, in ordine di vendita, e solo quelli", () => {
-    expect(CHIAVI_PIANO).toEqual(["singola", "azienda", "professional", "studio", "studio_plus", "enterprise"]);
+const RISERVA: Limiti = { maxActiveCompanies: 10, warnAtCompanies: 8, maxMembers: 5 };
+
+describe("il listino in vendita", () => {
+  it("si vendono Azienda e le due fasce Consulenti, in quest'ordine", () => {
+    expect(fasceVendibili()).toEqual(["azienda", "studio", "studio_plus"]);
+    expect(fasceConsulenti()).toEqual(["studio", "studio_plus"]);
+    expect(quanteFasceInLettere()).toBe("Tre");
   });
 
-  it("la fascia «Azienda»: un'azienda, dieci accessi, 490 € poi 392 €, uso interno, niente blocchi", () => {
-    // Decisione del committente del 17 ottobre 2026: l'azienda che porta avanti i percorsi in
-    // casa, con un amministratore che li assegna ai colleghi.
-    expect(PIANI.azienda.aziende).toBe(1);
-    expect(PIANI.azienda.accessi).toBe(10);
-    expect(PIANI.azienda.primoAnno).toBe(49000);
-    expect(PIANI.azienda.rinnovo).toBe(39200);
-    expect(PIANI.azienda.senzaBlocchi).toBe(true);
+  it("gli importi sono quelli decisi, in centesimi", () => {
+    const attesi: Record<string, [number, number]> = {
+      azienda: [49900, 5900],
+      studio: [129900, 14900],
+      studio_plus: [199000, 22900],
+    };
+    for (const [k, [anno, mese]] of Object.entries(attesi)) {
+      const p = PIANI[k as keyof typeof PIANI];
+      expect(prezzoDiVendita(p, "anno")?.importo, `${k} annuale`).toBe(anno);
+      expect(prezzoDiVendita(p, "mese")?.importo, `${k} mensile`).toBe(mese);
+    }
+    expect(euro(199000)).toBe("1.990 €");
+    expect(prezzoMinimoMensile()).toBe(5900);
+  });
+
+  it("le capienze sono quelle di sempre", () => {
+    expect([PIANI.azienda.aziende, PIANI.azienda.accessi]).toEqual([1, 10]);
+    expect([PIANI.studio.aziende, PIANI.studio.accessi]).toEqual([15, 30]);
+    expect([PIANI.studio_plus.aziende, PIANI.studio_plus.accessi]).toEqual([30, 60]);
     expect(PIANI.azienda.usoInterno).toBe(true);
-    expect(chiavePiano(PIANI.azienda.lookupAnno1)).toBe("azienda");
-    expect(chiavePiano(PIANI.azienda.lookupRinnovo)).toBe("azienda");
-    // Le fasce da studio non accendono le assegnazioni: lì ognuno vede tutto il portafoglio.
-    for (const k of CHIAVI_PIANO.filter((x) => x !== "azienda")) expect(PIANI[k].usoInterno, k).toBeFalsy();
+    expect(PIANI.azienda.pubblico).toBe("azienda");
   });
 
-  it("la fascia d'ingresso: un'azienda, tre accessi, 350 € poi 280 €, niente blocchi", () => {
-    // Decisione del committente del 22 settembre 2026. Chi cresce passa alla fascia
-    // superiore: un'azienda più un blocco costerebbe 700 € per sei, contro i 590 € della
-    // fascia da cinque, e il prodotto non deve vendere la strada più cara.
-    expect(PIANI.singola.aziende).toBe(1);
-    expect(PIANI.singola.accessi).toBe(3);
-    expect(PIANI.singola.primoAnno).toBe(35000);
-    expect(PIANI.singola.rinnovo).toBe(28000);
-    expect(PIANI.singola.senzaBlocchi).toBe(true);
-    expect(chiavePiano(PIANI.singola.lookupAnno1)).toBe("singola");
-    expect(chiavePiano(PIANI.singola.lookupRinnovo)).toBe("singola");
+  it("⚠️ i piani ritirati e Enterprise NON hanno un prezzo da addebitare", () => {
+    // È l'interruttore della vendita: senza `vendita`, il checkout non trova niente da
+    // mettere in cassa nemmeno se qualcuno forza la richiesta.
+    for (const k of ["singola", "professional", "enterprise"] as const) {
+      expect(inVendita(k), k).toBe(false);
+      for (const periodo of PERIODI) expect(prezzoDiVendita(PIANI[k], periodo), `${k} ${periodo}`).toBeNull();
+    }
   });
 
-  it("il rinnovo è il primo anno meno il 20%, su OGNI fascia vendibile", () => {
-    // La regola, non i valori: una fascia nuova che la violasse lo direbbe qui.
+  it("ogni chiave Stripe in vendita è unica e dice il proprio periodo", () => {
+    const chiavi = fasceVendibili().flatMap((k) => PERIODI.map((p) => prezzoDiVendita(PIANI[k], p)!.lookup));
+    expect(new Set(chiavi).size).toBe(chiavi.length);
     for (const k of fasceVendibili()) {
-      expect(PIANI[k].rinnovo, k).toBe(Math.round(PIANI[k].primoAnno * 0.8));
+      expect(PIANI[k].vendita!.anno.lookup).toMatch(/_anno_v\d+$/);
+      expect(PIANI[k].vendita!.mese.lookup).toMatch(/_mese_v\d+$/);
     }
   });
 
-  it("le fasce vendibili sono tutte tranne quella a trattativa, e si parte dalla più economica", () => {
-    expect(fasceVendibili()).toEqual(["singola", "azienda", "professional", "studio", "studio_plus"]);
-    expect(prezzoMinimo()).toBe(35000);
-  });
-
-  it("i titoli contano le fasce in lettere, e non restano a «Tre»", () => {
-    expect(quanteFasceInLettere()).toBe("Cinque");
-  });
-
-  it("«1 azienda», non «1 aziende»", () => {
-    expect(aziendeTesto(1)).toBe("1 azienda");
-    expect(aziendeTesto(5)).toBe("5 aziende");
-    expect(aziendeTesto(0)).toBe("0 aziende");
-  });
-
-  it("nessuna promozione dichiarata col listino attuale", () => {
-    // La pastiglia «Prezzi di lancio» compariva per la sola data, senza un prezzo scontato
-    // da nessuna parte: una promozione annunciata che non esiste.
-    expect(promozioneInCorso(new Date("2026-09-22T12:00:00Z"))).toBe(false);
-  });
-
-  it("le capacità crescono col prezzo", () => {
-    expect(PIANI.professional.aziende).toBe(5);
-    expect(PIANI.studio.aziende).toBe(15);
-    expect(PIANI.studio_plus.aziende).toBe(30);
-    // Gli accessi sono «inclusi»: tetti alti che nessuno studio vero raggiunge, ma non
-    // infiniti — un limite che il prodotto non applica e' un limite che non esiste.
-    expect(PIANI.professional.accessi).toBe(15);
-    expect(PIANI.studio.accessi).toBe(30);
-    expect(PIANI.studio_plus.accessi).toBe(60);
-  });
-
-  it("gli importi stanno in centesimi, mai in euro", () => {
-    // Un importo in euro dentro Stripe diventa un addebito cento volte più piccolo, e non
-    // se ne accorge nessuno finché non arriva il primo pagamento.
-    expect(PIANI.studio.primoAnno).toBe(129000);
-    expect(PIANI.studio.rinnovo).toBe(103200);
-    for (const k of CHIAVI_PIANO) {
-      if (PIANI[k].trattativa) continue;
-      expect(PIANI[k].primoAnno % 100, `${k}: importo non tondo`).toBe(0);
-      expect(PIANI[k].primoAnno).toBeGreaterThan(PIANI[k].rinnovo);
-    }
-  });
-
-  it("il rinnovo costa meno del primo anno su tutti i piani vendibili", () => {
-    expect(PIANI.professional.rinnovo).toBeLessThan(PIANI.professional.primoAnno);
-    expect(PIANI.studio_plus.rinnovo).toBeLessThan(PIANI.studio_plus.primoAnno);
-  });
-
-  it("enterprise si tratta: nessun prezzo da vendere da solo", () => {
-    expect(PIANI.enterprise.trattativa).toBe(true);
-  });
-
-  it("ogni piano vendibile ha le sue chiavi Stripe, distinte", () => {
-    const chiavi = CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa).flatMap((k) => [
-      PIANI[k].lookupAnno1,
-      PIANI[k].lookupRinnovo,
-    ]);
-    expect(chiavi.every(Boolean)).toBe(true);
-    expect(new Set(chiavi).size, "due piani non possono condividere una chiave").toBe(chiavi.length);
-  });
-
-  it("l'unica estensione ricorrente in vendita è il blocco di aziende", () => {
-    // ⚠️ Accessi e marchio dello studio sono INCLUSI in ogni fascia dal 27 agosto 2026:
-    // le loro chiavi vivono in `ESTENSIONI_RITIRATE`, riconosciute ma non piu' vendibili.
-    expect(ESTENSIONI.bloccoAziende.aziende).toBe(5);
-    expect(ESTENSIONI.bloccoAziende.prezzo).toBe(35000);
-    expect(Object.keys(ESTENSIONI).sort()).toEqual(["avvioAssistito", "bloccoAziende"]);
-  });
-
-  it("⚠️ il blocco non conviene mai piu' della fascia superiore", () => {
-    // Se convenisse, un cliente accumulerebbe blocchi invece di salire — e resterebbe a
-    // pagare piu' del dovuto senza accorgersene, il che e' peggio di un prezzo alto.
-    // Il blocco costa 70 € ad azienda, cioe' ESATTAMENTE il costo marginale del salto da
-    // 5 a 15 aziende: comprare blocchi non conviene mai piu' che salire di fascia, ed e'
-    // pari fino alla prima. Contro il salto da 15 a 30 (60 € ad azienda) e' piu' caro,
-    // quindi chi cresce molto viene spinto a salire, com'e' giusto.
-    const perAzienda = ESTENSIONI.bloccoAziende.prezzo / ESTENSIONI.bloccoAziende.aziende;
-    const saltoAStudio = (PIANI.studio.primoAnno - PIANI.professional.primoAnno) / (PIANI.studio.aziende - PIANI.professional.aziende);
-    const saltoAPlus = (PIANI.studio_plus.primoAnno - PIANI.studio.primoAnno) / (PIANI.studio_plus.aziende - PIANI.studio.aziende);
-    expect(perAzienda).toBeGreaterThanOrEqual(saltoAStudio);
-    expect(perAzienda).toBeGreaterThan(saltoAPlus);
-    // E dalla fascia d'ingresso: salire da una a cinque aziende costa 60 € ad azienda,
-    // meno del blocco. Il blocco lì non si vende nemmeno (`senzaBlocchi`), ma se un giorno
-    // tornasse acquistabile non deve diventare la strada conveniente.
-    const saltoAProfessional =
-      (PIANI.professional.primoAnno - PIANI.singola.primoAnno) / (PIANI.professional.aziende - PIANI.singola.aziende);
-    expect(perAzienda).toBeGreaterThan(saltoAProfessional);
-    // ⚠️ E la frase che le pagine STAMPANO: «la fascia superiore costa meno di un'azienda
-    // più un blocco». Se il listino cambiasse, la frase diventerebbe falsa su una pagina
-    // pubblica: qui diventa rossa prima.
-    expect(PIANI.professional.primoAnno).toBeLessThan(PIANI.singola.primoAnno + ESTENSIONI.bloccoAziende.prezzo);
+  it("le chiavi di piano non si perdono: il CHECK del database le contiene tutte", () => {
+    expect([...CHIAVI_PIANO].sort()).toEqual(["azienda", "enterprise", "professional", "singola", "studio", "studio_plus"]);
   });
 });
 
 describe("sogliaAvviso — quando dire «stai per finire»", () => {
   it("avvisa a un quinto dalla fine, non a un numero fisso", () => {
-    // Con l'8 fisso di prima, il piano da 3 aziende non avrebbe MAI avvisato e quello da 25
-    // avrebbe avvisato al terzo di capacità: l'avviso va in proporzione.
     expect(sogliaAvviso(5)).toBe(4);
     expect(sogliaAvviso(15)).toBe(12);
     expect(sogliaAvviso(30)).toBe(24);
-    // La fascia da un'azienda: avvisa quando è piena, cioè insieme al limite. Il portafoglio
-    // allora mostra una nota neutra, non l'avviso giallo (vedi `dashboard/page.tsx`).
-    expect(sogliaAvviso(PIANI.singola.aziende)).toBe(1);
+    expect(sogliaAvviso(PIANI.azienda.aziende)).toBe(1);
   });
 
   it("non avvisa mai a zero né sopra il limite", () => {
@@ -183,29 +95,25 @@ describe("sogliaAvviso — quando dire «stai per finire»", () => {
 
 describe("limitiEffettivi — capacità del piano più quello che si è comprato", () => {
   it("senza piano si torna ai valori di riserva", () => {
-    // È il caso di chi sta ancora in demo: non ha comprato niente, e i limiti restano
-    // quelli di piattaforma.
     expect(limitiEffettivi({ piano: null, aziendeExtra: 0, accessiExtra: 0 }, RISERVA)).toEqual(RISERVA);
   });
 
-  it("il piano da solo detta le sue capacità", () => {
+  it("il piano da solo detta le sue capacità, anche se ritirato", () => {
+    // ⚠️ Un piano ritirato dalla vendita resta riconosciuto: chi l'ha pagato lo conserva.
     expect(limitiEffettivi({ piano: "professional", aziendeExtra: 0, accessiExtra: 0 }, RISERVA)).toEqual({
       maxActiveCompanies: 5,
       warnAtCompanies: 4,
       maxMembers: 15,
     });
+    expect(limitiEffettivi({ piano: "singola" }, RISERVA).maxActiveCompanies).toBe(1);
   });
 
-  it("i blocchi comprati si sommano alla capacità del piano", () => {
-    const l = limitiEffettivi({ piano: "professional", aziendeExtra: 10, accessiExtra: 3 }, RISERVA);
-    expect(l.maxActiveCompanies).toBe(15);
-    // ⚠️ `accessiExtra` non si vende piu', ma continua a sommarsi: chi l'aveva comprato
-    // non deve perderlo perche' abbiamo smesso di venderlo.
-    expect(l.maxMembers).toBe(18);
-    // 15 aziende: si avvisa a 12, cioè con tre posti liberi — un quinto di 15.
-    // La soglia segue il limite VERO, non quello del piano: chi ha comprato capacità in più
-    // non deve vedersi l'avviso ancora tarato sul piano nudo.
-    expect(l.warnAtCompanies).toBe(12);
+  it("le estensioni comprate in passato si sommano ancora", () => {
+    // ⚠️ Blocchi e accessi non si vendono più, ma chi li ha comprati non deve perderli.
+    const l = limitiEffettivi({ piano: "studio", aziendeExtra: 10, accessiExtra: 3 }, RISERVA);
+    expect(l.maxActiveCompanies).toBe(25);
+    expect(l.maxMembers).toBe(33);
+    expect(l.warnAtCompanies).toBe(20);
   });
 
   it("enterprise parte dalla capacità più alta e ci somma il negoziato", () => {
@@ -215,22 +123,24 @@ describe("limitiEffettivi — capacità del piano più quello che si è comprato
   });
 
   it("estensioni malformate non allargano i limiti", () => {
-    // Numeri negativi o assurdi non devono poter ridurre o gonfiare la capacità: qualunque
-    // valore storto vale zero, e resta la capacità del piano.
     for (const storto of [-5, Number.NaN, Number.POSITIVE_INFINITY]) {
-      const l = limitiEffettivi(
-        { piano: "studio", aziendeExtra: storto, accessiExtra: storto },
-        RISERVA,
-      );
+      const l = limitiEffettivi({ piano: "studio", aziendeExtra: storto, accessiExtra: storto }, RISERVA);
       expect(l.maxActiveCompanies, `extra ${storto}`).toBe(15);
       expect(l.maxMembers, `extra ${storto}`).toBe(30);
     }
   });
 });
 
-describe("euro — come si scrivono gli importi a schermo", () => {
-  it("converte i centesimi senza decimali inutili", () => {
-    expect(euro(129000)).toBe("1.290 €");
-    expect(euro(35000)).toBe("350 €");
+describe("euro e aziendeTesto — come si scrivono a schermo", () => {
+  it("converte i centesimi senza decimali inutili, e con entrambi quando ci sono", () => {
+    expect(euro(129900)).toBe("1.299 €");
+    expect(euro(5900)).toBe("59 €");
+    expect(euro(4159)).toBe("41,59 €");
+    expect(euro(4150)).toBe("41,50 €");
+  });
+
+  it("il singolare di azienda", () => {
+    expect(aziendeTesto(1)).toBe("1 azienda");
+    expect(aziendeTesto(15)).toBe("15 aziende");
   });
 });

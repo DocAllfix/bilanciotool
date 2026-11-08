@@ -13,7 +13,7 @@ import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { strumenta, contatore, attendi, spegniTour, fattoreAttesa, attraversaProtezione } from "./comune-collaudo.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita, limitiEffettivi } from "../src/lib/prezzi.ts";
+import { PIANI, CHIAVI_PIANO, euro, prezzoDiVendita, limitiEffettivi } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "https://evalisdeck.it").replace(/\/+$/, "");
 const PWD = PWD_COLLAUDO;
@@ -347,22 +347,15 @@ await agisci("l'abbonamento mostra il piano e la capacita' usata", async () => {
 });
 
 // Chi ha gia' un piano non vedeva NIENTE: la pagina si fermava alla capacita' usata.
-// Non deve per forza esserci un pulsante — comprare un'estensione a meta' anno tocca
-// l'abbonamento gia' in corso, e quel flusso non c'e' — ma deve esserci una STRADA:
-// quali estensioni esistono, quanto costano, e a chi scrivere per averle.
-await agisci("chi ha un piano vede le estensioni e come ottenerle", async () => {
+// Chi ha un piano deve trovare una STRADA: che cosa è compreso, dove sono le fatture, come
+// si disdice, a chi scrivere. Dal 6 novembre 2026 le estensioni non si vendono più, e chi
+// ha un abbonamento con carta disdice dalla pagina: lo prova `qa -- gestione-abbonamento`.
+await agisci("chi ha un piano vede il proprio abbonamento e come gestirlo", async () => {
   await vai("/impostazioni/abbonamento");
   const t = await page.locator("main").innerText();
-  if (!/Aggiungere capacità/i.test(t)) throw new Error("nessuna sezione per aggiungere capacita'");
-  // ⚠️ L'unica estensione ricorrente in vendita e' il blocco di aziende: accessi e
-  // marchio dello studio sono INCLUSI in ogni fascia dal 27 agosto 2026. Questo
-  // controllo pretendeva ancora «+1 accesso» e «Documenti col tuo marchio», cioe' due
-  // cose che il prodotto ha smesso di vendere apposta.
-  if (!t.includes(`+${ESTENSIONI.bloccoAziende.aziende} aziende`)) {
-    throw new Error("manca l'estensione dei blocchi di aziende");
-  }
-  if (/\+1 accesso|marchio del tuo studio.*€/i.test(t)) {
-    throw new Error("la pagina vende ancora accessi o marchio, che ora sono inclusi");
+  if (!/Il tuo abbonamento/i.test(t)) throw new Error("nessuna sezione sull'abbonamento in corso");
+  if (/\+1 accesso|Blocchi da \d+ aziende/i.test(t)) {
+    throw new Error("la pagina vende ancora accessi o blocchi, che non si vendono più");
   }
   if (!/access[io].*(compres|inclus)/i.test(t)) {
     throw new Error("non dice che gli accessi sono compresi");

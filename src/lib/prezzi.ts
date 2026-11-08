@@ -1,247 +1,277 @@
 // Il listino, in un posto solo.
 //
 // Lo leggono l'entitlement (per sapere quanta capacità concedere), il checkout (per sapere
-// cosa vendere), lo script di avvio di Stripe (per creare i prezzi) e la pagina Abbonamento
-// (per mostrarli). Quattro consumatori, una sola verità: un listino ricopiato in quattro
-// posti diverge al primo aggiornamento, e il posto che diverge è sempre quello che decide
-// se una richiesta passa.
-//
-// ⚠️ **NON va mai importato dalla landing.** Decisione del committente del 2026-08-07: i
-// prezzi non stanno sul sito pubblico, si vedono solo dopo l'accesso.
+// cosa vendere), lo script di avvio di Stripe (per creare i prezzi), le pagine pubbliche e
+// la pagina Abbonamento (per mostrarli). Una sola verità: un listino ricopiato in più posti
+// diverge al primo aggiornamento, e il posto che diverge è sempre quello che decide se una
+// richiesta passa.
 //
 // ⚠️ **Gli importi sono in CENTESIMI.** Stripe ragiona in centesimi, e un importo in euro
 // diventa un addebito cento volte più piccolo senza che nessuno se ne accorga fino al primo
 // pagamento vero.
+//
+// ⚠️ **Il listino del 6 novembre 2026.** Tre piani in vendita, ciascuno ANNUALE o MENSILE,
+// sempre allo stesso prezzo: niente primo anno diverso dal rinnovo, niente Schedule a due
+// fasi, niente prezzi di lancio. Tutto il resto — le fasce da un'azienda e da cinque, il
+// Programma Fondatori, i blocchi di aziende — è ritirato DALLA VENDITA ma non dal
+// RICONOSCIMENTO: chi l'ha pagato continua a leggerlo nelle righe del proprio abbonamento,
+// e quelle righe devono continuare a dire che cosa ha comprato.
 
 export type PianoKey = "singola" | "azienda" | "professional" | "studio" | "studio_plus" | "enterprise";
 
-/** In ordine di VENDITA: è l'ordine in cui le fasce compaiono ovunque si comprano. */
-export const CHIAVI_PIANO: readonly PianoKey[] = ["singola", "azienda", "professional", "studio", "studio_plus", "enterprise"];
+/** Prima i piani in vendita, nell'ordine in cui compaiono; poi i ritirati, che restano
+ *  riconosciuti. ⚠️ Le chiavi NON cambiano mai: `org_entitlement.piano` le contiene. */
+export const CHIAVI_PIANO: readonly PianoKey[] = ["azienda", "studio", "studio_plus", "enterprise", "singola", "professional"];
+
+/** Come si paga: un anno anticipato o un mese per volta. */
+export type Periodo = "anno" | "mese";
+export const PERIODI: readonly Periodo[] = ["anno", "mese"];
+
+export type Prezzo = {
+  /** Centesimi, IVA esclusa. */
+  importo: number;
+  /** La chiave Stripe che corrisponde a QUELL'importo e a quel periodo. */
+  lookup: string;
+};
 
 export type Piano = {
   key: PianoKey;
   nome: string;
   descrizione: string;
+  /** A chi si rivolge: decide in che parte della pagina compare. */
+  pubblico: "azienda" | "consulenti";
   /** Aziende attive incluse nel piano. Le archiviate e la demo non contano mai. */
   aziende: number;
-  /** Persone che possono accedere allo studio, titolare compreso. */
+  /** Persone che possono accedere, titolare compreso. */
   accessi: number;
-  /** Centesimi. Primo anno, avviamento incluso. */
-  primoAnno: number;
-  /** Centesimi. Dal secondo anno, rinnovo automatico. */
-  rinnovo: number;
-  /** Vero solo per Enterprise: non si vende da solo, si tratta. */
+  /** Vero solo per Enterprise: non si vende online, si tratta. */
   trattativa?: boolean;
-  /** Vero se su questa fascia NON si vendono blocchi di aziende: chi cresce sale di fascia.
-   *  Lo applica il server (`apriCheckoutAction`, `creaSessioneCheckout`), non solo il dialogo. */
-  senzaBlocchi?: boolean;
   /** Vero per la fascia «Azienda»: l'organizzazione è un'azienda che lavora in casa, non uno
    *  studio. Accende l'assegnazione dei percorsi alle persone (`requirePercorso`): un
    *  collaboratore vede e scrive solo i percorsi che l'amministratore gli ha assegnato. */
   usoInterno?: boolean;
-  /** Centesimi. Prezzo di lancio: quello che si paga davvero finché la promozione dura.
-   *  Il campo `primoAnno` resta il LISTINO, ed è il numero che si mostra barrato. */
-  primoAnnoLancio?: number;
-  rinnovoLancio?: number;
-  /** Chiavi Stripe. I prezzi si risolvono per queste, mai per id in variabile d'ambiente. */
-  lookupAnno1?: string;
-  lookupRinnovo?: string;
-  lookupAnno1Lancio?: string;
-  lookupRinnovoLancio?: string;
+  /**
+   * I prezzi in vendita oggi, annuale e mensile. ASSENTE = il piano non si compra online:
+   * ritirato, oppure a trattativa. È l'unico interruttore della vendita: `fasceVendibili`
+   * lo legge, il checkout lo pretende, e un piano senza `vendita` non ha un prezzo da
+   * addebitare nemmeno se qualcuno forza la richiesta.
+   */
+  vendita?: Record<Periodo, Prezzo>;
 };
 
 export const PIANI: Record<PianoKey, Piano> = {
-  /* ⚠️ LA FASCIA D'INGRESSO (decisione del committente del 22 settembre 2026).
-   *
-   * Un'azienda sola, per chi parte dal primo cliente o segue un'unica realtà. Stesso schema
-   * delle altre: primo anno, poi rinnovo al −20%, nessun barrato.
-   *
-   * ⚠️ NIENTE BLOCCHI. Un'azienda più un blocco da cinque costerebbe 700 € per sei aziende,
-   * contro i 590 € della fascia «Fino a 5»: il prodotto venderebbe la strada più cara a chi
-   * non ha fatto il conto. Chi cresce passa alla fascia superiore.
-   *
-   * ⚠️ Chiavi `_v1`: la fascia è nuova, non sostituisce niente, e non ha listini storici. */
-  singola: {
-    key: "singola",
-    nome: "Un'azienda",
-    descrizione: "Per chi parte dal primo cliente: tutto incluso, su un'azienda.",
-    aziende: 1,
-    accessi: 3,
-    primoAnno: 35000,
-    rinnovo: 28000,
-    senzaBlocchi: true,
-    lookupAnno1: "evalisdeck_singola_anno1_v1",
-    lookupRinnovo: "evalisdeck_singola_rinnovo_v1",
-  },
-  /* ⚠️ L'AZIENDA CHE FA DA SÉ (decisione del committente del 17 ottobre 2026).
+  /* ⚠️ L'AZIENDA CHE FA DA SÉ: il cliente primario dal 6 novembre 2026.
    *
    * Non uno studio con un portafoglio, ma un'azienda che porta avanti i propri percorsi in
-   * casa: un amministratore si abbona, invita i colleghi e assegna a ciascuno i percorsi di
-   * cui si occupa. Un'azienda sola (la propria), dieci accessi, rinnovo al −20% come tutte.
-   *
-   * ⚠️ NIENTE BLOCCHI: l'azienda è una, per definizione. Chi segue anche altre aziende è uno
-   * studio, e le fasce da studio sono quelle sotto. */
+   * casa: un responsabile si abbona, invita i colleghi e assegna a ciascuno i percorsi di cui
+   * si occupa. Un'azienda sola (la propria), dieci accessi. */
   azienda: {
     key: "azienda",
     nome: "Azienda",
-    descrizione: "Per l'azienda che fa da sé: un amministratore, i colleghi, a ciascuno i suoi percorsi.",
+    descrizione: "Per l'azienda che fa da sé: un responsabile, i colleghi, a ciascuno i suoi percorsi.",
+    pubblico: "azienda",
     aziende: 1,
     accessi: 10,
-    primoAnno: 49000,
-    rinnovo: 39200,
-    senzaBlocchi: true,
     usoInterno: true,
-    lookupAnno1: "evalisdeck_azienda_anno1_v1",
-    lookupRinnovo: "evalisdeck_azienda_rinnovo_v1",
+    vendita: {
+      anno: { importo: 49900, lookup: "evalisdeck_azienda_anno_v2" },
+      mese: { importo: 5900, lookup: "evalisdeck_azienda_mese_v1" },
+    },
   },
-  professional: {
-    key: "professional",
-    nome: "Fino a 5 aziende",
-    // Diceva «Per chi parte»: da quando esiste la fascia da un'azienda, chi parte è là.
-    descrizione: "Per i primi mandati in portafoglio, tutto gia' incluso.",
-    aziende: 5,
-    accessi: 15,
-    primoAnno: 59000,
-    rinnovo: 47200,
-    lookupAnno1: "evalisdeck_professional_anno1_v2",
-    lookupRinnovo: "evalisdeck_professional_rinnovo_v2",
-  },
+  /* ⚠️ LE CHIAVI `studio` E `studio_plus` RESTANO, con le stesse capienze: chi le ha già
+   * pagate a mano o su Stripe trova lo stesso limite, e il CHECK sul piano non si tocca.
+   * Cambiano il nome mostrato e i prezzi, cioè le chiavi Stripe. */
   studio: {
     key: "studio",
-    nome: "Fino a 15 aziende",
-    descrizione: "Per lo studio avviato che segue un portafoglio.",
+    nome: "Consulenti fino a 15 aziende",
+    descrizione: "Per il consulente che segue più aziende clienti, con i collaboratori dello studio.",
+    pubblico: "consulenti",
     aziende: 15,
     accessi: 30,
-    primoAnno: 129000,
-    rinnovo: 103200,
-    lookupAnno1: "evalisdeck_studio_anno1_v2",
-    lookupRinnovo: "evalisdeck_studio_rinnovo_v2",
+    vendita: {
+      anno: { importo: 129900, lookup: "evalisdeck_studio_anno_v3" },
+      mese: { importo: 14900, lookup: "evalisdeck_studio_mese_v1" },
+    },
   },
   studio_plus: {
     key: "studio_plus",
-    nome: "Fino a 30 aziende",
-    descrizione: "Per lo studio strutturato, con piu' collaboratori al lavoro.",
+    nome: "Consulenti fino a 30 aziende",
+    descrizione: "Per lo studio strutturato, con un portafoglio ampio e più collaboratori al lavoro.",
+    pubblico: "consulenti",
     aziende: 30,
     accessi: 60,
-    primoAnno: 219000,
-    rinnovo: 175200,
-    lookupAnno1: "evalisdeck_studio_plus_anno1_v2",
-    lookupRinnovo: "evalisdeck_studio_plus_rinnovo_v2",
+    vendita: {
+      anno: { importo: 199000, lookup: "evalisdeck_studio_plus_anno_v3" },
+      mese: { importo: 22900, lookup: "evalisdeck_studio_plus_mese_v1" },
+    },
   },
   enterprise: {
     key: "enterprise",
-    nome: "Oltre 30 aziende",
-    descrizione: "Reti di studi e mandati di filiera: capacita' e condizioni concordate.",
+    nome: "Enterprise",
+    descrizione: "Oltre 30 aziende, gruppi e reti: capacità e condizioni concordate.",
+    pubblico: "consulenti",
     // La base è quella del piano più capiente, e il negoziato si scrive nelle estensioni.
     // Così non servono capacità «nulle» da gestire ovunque, e l'accordo resta leggibile.
     aziende: 30,
     accessi: 60,
-    primoAnno: 0,
-    rinnovo: 0,
     trattativa: true,
+  },
+  /* ⚠️ RITIRATI DALLA VENDITA il 6 novembre 2026. Restano perché `org_entitlement.piano`
+   * può contenerli: un piano che sparisce da qui riporta chi l'ha pagato ai limiti di
+   * riserva, in silenzio. */
+  singola: {
+    key: "singola",
+    nome: "Un'azienda",
+    descrizione: "Fascia ritirata: un'azienda, per chi seguiva un solo cliente.",
+    pubblico: "consulenti",
+    aziende: 1,
+    accessi: 3,
+  },
+  professional: {
+    key: "professional",
+    nome: "Fino a 5 aziende",
+    descrizione: "Fascia ritirata: i primi mandati in portafoglio.",
+    pubblico: "consulenti",
+    aziende: 5,
+    accessi: 15,
   },
 };
 
-/* ⚠️ LE CHIAVI DEI PIANI NON CAMBIANO MAI.
+/** Il prezzo in vendita per un piano e un periodo, o `null` se il piano non si compra. */
+export function prezzoDiVendita(piano: Piano, periodo: Periodo): Prezzo | null {
+  if (piano.trattativa) return null;
+  return piano.vendita?.[periodo] ?? null;
+}
+
+/** Le fasce che si comprano online, in ordine di vendita. Enterprise si concorda. */
+export function fasceVendibili(): PianoKey[] {
+  return CHIAVI_PIANO.filter((k) => prezzoDiVendita(PIANI[k], "anno") !== null);
+}
+
+/** Le fasce per chi segue aziende clienti: quelle che si scelgono per capienza. */
+export function fasceConsulenti(): PianoKey[] {
+  return fasceVendibili().filter((k) => PIANI[k].pubblico === "consulenti");
+}
+
+/** Vero se il piano si può comprare online adesso. Lo chiede il server prima della cassa. */
+export function inVendita(piano: PianoKey): boolean {
+  return fasceVendibili().includes(piano);
+}
+
+/* ────────────────────────────── mensile contro annuale ──────────────────────────────
  *
- * `org_entitlement.piano` contiene `professional | studio | studio_plus | enterprise` per
- * chi ha gia' pagato: rinominarle sarebbe una migrazione su dati vivi per guadagnare
- * un'etichetta. Cambia `nome`, che e' testo mostrato, e cambiano le capienze — che
- * SALGONO, quindi nessun abbonato in corso ci perde: il limite si legge da
- * `PIANI[piano].aziende`, e chi aveva dieci aziende ne trova quindici.
+ * ⚠️ IL BARRATO È VERO PER COSTRUZIONE. Il numero mostrato barrato accanto all'annuale è
+ * quanto costano dodici mesi pagati col mensile: un'offerta che esiste, che il cliente può
+ * scegliere nella stessa pagina e che Stripe addebita davvero. Non è un «listino» inventato
+ * per far sembrare grande lo sconto — quello sarebbe pubblicità ingannevole, vietata anche
+ * fra professionisti (D.Lgs. 145/2007), e su un prodotto che vende conformità anche il
+ * peggior biglietto da visita.
  *
- * ⚠️ E LE `lookup` SONO NUOVE (`_v2`). Su Stripe i prezzi sono immutabili: un importo
- * diverso e' un prezzo diverso. Le `_v1` restano su Stripe, archiviate ma vive, perche'
- * gli abbonamenti in corso ci puntano e `vociDelRinnovo` se le porta dietro nella fase 2
- * dello Schedule. Toglierle spezzerebbe il rinnovo di chi ha gia' pagato.
+ * ⚠️ E GLI ARROTONDAMENTI NON SONO MAI A NOSTRO FAVORE. Il risparmio e lo sconto si
+ * arrotondano per DIFETTO, il costo mensile equivalente per ECCESSO: a un centesimo di
+ * distanza dal vero, il numero mostrato è sempre quello meno conveniente per chi vende.
  */
 
+/** Dodici mesi pagati col mensile, in centesimi: il barrato accanto all'annuale. */
+export function costoAnnuoMensile(piano: Piano): number | null {
+  const mese = prezzoDiVendita(piano, "mese");
+  return mese ? mese.importo * 12 : null;
+}
+
+/** Quanto si risparmia in un anno scegliendo l'annuale, in centesimi. */
+export function risparmioAnnuo(piano: Piano): number | null {
+  const anno = prezzoDiVendita(piano, "anno");
+  const barrato = costoAnnuoMensile(piano);
+  if (!anno || barrato === null) return null;
+  return Math.max(0, barrato - anno.importo);
+}
+
+/** Il risparmio annuo diviso per dodici, arrotondato per DIFETTO al centesimo. */
+export function risparmioMensile(piano: Piano): number | null {
+  const r = risparmioAnnuo(piano);
+  return r === null ? null : Math.floor(r / 12);
+}
+
+/** Quanto «costa al mese» l'annuale, arrotondato per ECCESSO al centesimo. */
+export function equivalenteMensile(piano: Piano): number | null {
+  const anno = prezzoDiVendita(piano, "anno");
+  return anno ? Math.ceil(anno.importo / 12) : null;
+}
+
+/** Lo sconto dell'annuale sul mensile, in punti percentuali interi per DIFETTO. */
+export function scontoPercentuale(piano: Piano): number | null {
+  const anno = prezzoDiVendita(piano, "anno");
+  const barrato = costoAnnuoMensile(piano);
+  if (!anno || !barrato) return null;
+  return Math.floor(((barrato - anno.importo) * 100) / barrato);
+}
+
+/** Il mensile più basso fra le fasce in vendita: il «da … al mese» delle pagine pubbliche. */
+export function prezzoMinimoMensile(): number {
+  return Math.min(...fasceVendibili().map((k) => prezzoDiVendita(PIANI[k], "mese")!.importo));
+}
+
+/**
+ * «Tre», per i titoli che contano le fasce.
+ *
+ * ⚠️ Era scritto a mano «Tre fasce» sulla pagina prezzi e sull'immagine di condivisione:
+ * aggiungendo una fascia sarebbero rimasti bugiardi in silenzio. Un numero fuori elenco
+ * SOLLEVA al build invece di stampare una cifra in mezzo a un titolo.
+ */
+export function quanteFasceInLettere(): string {
+  const n = fasceVendibili().length;
+  const parole: Record<number, string> = { 1: "Una", 2: "Due", 3: "Tre", 4: "Quattro", 5: "Cinque", 6: "Sei" };
+  const p = parole[n];
+  if (!p) throw new Error(`Numero di fasce senza parola: ${n}. Aggiungila in quanteFasceInLettere.`);
+  return p;
+}
+
+/* ────────────────────────────── estensioni ────────────────────────────── */
+
 export const ESTENSIONI = {
-  /** Unità di VENDITA: un blocco vale cinque aziende. In `aziendeExtra` finiscono le
-   *  aziende (cinque per blocco), non i blocchi.
-   *
-   *  ⚠️ Resta in vendita, ed e' importante: il CAMBIO FASCIA non esiste, quindi questo e'
-   *  l'unico modo di crescere oltre la capienza senza disdire. Prezzato in modo che non
-   *  convenga mai piu' della fascia superiore — chi cresce deve salire, non accumulare
-   *  blocchi. */
-  bloccoAziende: { aziende: 5, prezzo: 35000, lookup: "evalisdeck_blocco_aziende_v2" },
-  /** Formazione e configurazione iniziale: una tantum, importo concordato entro la forbice. */
+  /** Formazione e configurazione iniziale: una tantum, importo concordato entro la forbice.
+   *  Non si vende alla cassa: la si concorda, e lo staff la addebita. */
   avvioAssistito: { min: 50000, max: 80000, lookup: "evalisdeck_avvio_assistito_v1" },
 } as const;
 
 /* ⚠️ NON PIU' IN VENDITA, MA ANCORA RICONOSCIUTE.
  *
- * Gli accessi ora sono inclusi (15/30/60, tetti che nessuno studio vero raggiunge) e il
- * marchio dello studio e' compreso in ogni fascia: entrambe le estensioni spariscono dal
- * dialogo d'acquisto e dal checkout.
+ * Gli accessi sono inclusi, il marchio dello studio è compreso, e dal 6 novembre 2026 nemmeno
+ * i blocchi di aziende si vendono più: chi cresce passa al piano più capiente, oltre c'è
+ * Enterprise. (Stripe, fra l'altro, non mescola righe mensili e annuali nello stesso
+ * abbonamento: un blocco annuale accanto a un piano mensile non si potrebbe nemmeno vendere.)
  *
- * Ma NON si cancellano da qui. `ricostruisciCapacita` in `provisioning.ts` ricava la
- * capacita' di un abbonamento LEGGENDO LE LOOKUP delle sue righe: una lookup che non
- * riconosce piu' non produce un errore, produce una capacita' piu' piccola — in silenzio,
+ * Ma NON si cancellano da qui. `capacitaDaAbbonamento` in `provisioning.ts` ricava la
+ * capacità di un abbonamento LEGGENDO LE LOOKUP delle sue righe: una lookup che non
+ * riconosce più non produce un errore, produce una capacità più piccola — in silenzio,
  * al prossimo evento Stripe, a un cliente che quelle righe le ha pagate.
- *
- * Un pericolo si evita, non si filtra: restano qui, e chi le ha continua ad averle.
  */
 export const ESTENSIONI_RITIRATE = {
   accesso: { prezzo: 15000, prezzoLancio: 7500, lookup: "evalisdeck_accesso_v1", lookupLancio: "evalisdeck_accesso_lancio_v1" },
   whiteLabel: { prezzo: 60000, prezzoLancio: 30000, lookup: "evalisdeck_white_label_v1", lookupLancio: "evalisdeck_white_label_lancio_v1" },
   bloccoAziendeV1: { aziende: 5, prezzo: 90000, prezzoLancio: 45000, lookup: "evalisdeck_blocco_aziende_v1", lookupLancio: "evalisdeck_blocco_aziende_lancio_v1" },
+  bloccoAziendeV2: { aziende: 5, prezzo: 35000, lookup: "evalisdeck_blocco_aziende_v2" },
 } as const;
 
+/** Le chiavi di tutti i blocchi da cinque aziende, comprati in qualunque listino. */
+export const LOOKUP_BLOCCHI: readonly string[] = [
+  ESTENSIONI_RITIRATE.bloccoAziendeV2.lookup,
+  ESTENSIONI_RITIRATE.bloccoAziendeV1.lookup,
+  ESTENSIONI_RITIRATE.bloccoAziendeV1.lookupLancio,
+];
+/** Quante aziende vale un blocco. */
+export const AZIENDE_PER_BLOCCO = 5;
+
 /**
- * Il piano a cui appartiene una chiave del listino, o `null` se non è un piano.
+ * IL PROGRAMMA FONDATORI — RITIRATO il 6 novembre 2026.
  *
- * Le quattro varianti — listino/lancio × primo anno/rinnovo — sono lo stesso piano a
- * prezzi diversi. Sta qui perché la stessa domanda serve a chi legge le capacità da un
- * abbonamento e a chi costruisce le fasi del rinnovo: due copie divergerebbero al
- * primo listino nuovo, e la copia che diverge decide quanto paga qualcuno.
- */
-/**
- * IL PROGRAMMA FONDATORI.
- *
- * Dodici mesi in fascia «fino a 15 aziende» a un corrispettivo simbolico, poi uno sconto
- * che resta per tutta la vita dell'abbonamento. In cambio il Fondatore usa la piattaforma
- * su mandati reali, dà riscontri, e — se soddisfatto — una testimonianza.
- *
- * ⚠️ LO SCONTO SI CALCOLA SUL PREZZO DI RINNOVO, NON SUL LISTINO PIENO. La lettera dice
- * «20% sul prezzo di listino dei rinnovi», e il rinnovo di listino è già il primo anno
- * meno 20%: leggendo la clausola sull'importo pieno il Fondatore pagherebbe 1.032 €, cioè
- * esattamente quanto chiunque altro, e la clausola non promettterebbe nulla. Sarebbe una
- * contropartita vuota per una videochiamata al mese, una testimonianza con nome e
- * fotografia e un caso studio. Deciso dal committente il 27 agosto 2026.
- *
- * ⚠️ E IL PERMANENTE NON RICHIEDE CODICE, purché la fase 2 dello Schedule porti QUESTO
- * prezzo. Lo Schedule ha `end_behavior: "release"`: finita la seconda fase si stacca, e
- * dal terzo anno Stripe rinnova con il prezzo che trova sull'abbonamento — che è quello
- * della fase 2. Se invece la fase 2 portasse il rinnovo di listino, al TREDICESIMO MESE
- * il Fondatore tornerebbe a pagare come tutti, in silenzio: è lo stesso difetto che il 13
- * agosto faceva sparire le estensioni al rinnovo, e si vedrebbe solo fra un anno.
+ * Non si vende più e non compare più da nessuna parte. Resta per una ragione sola: le sue
+ * chiavi Stripe concedono la fascia «studio», e un abbonamento Fondatore creato a mano
+ * prima del ritiro deve continuare a essere riconosciuto. Togliere queste righe non
+ * produrrebbe un errore: produrrebbe un Fondatore in sola lettura al primo evento Stripe.
  */
 export const FONDATORI = {
-  /** La fascia che il Programma concede: capienza e capacità sono quelle. */
   piano: "studio" as PianoKey,
-  /**
-   * Quanti se ne accettano.
-   *
-   * ⚠️ STA QUI E NON NELLE PAGINE, perche' il numero compare sulla home e su `/prezzi`:
-   * scritto due volte, prima o poi diverge — ed e' il difetto che questa sessione ha
-   * inseguito tutto il giorno, dalla vetrina ferma a undici percorsi ai nomi dei piani
-   * diversi fra sito e fattura.
-   *
-   * ⚠️ E VA RISPETTATO. Il numero regge l'inquadratura del Programma: non e' uno sconto,
-   * e' una selezione — ed e' cio' che permette di nominarlo sulla pagina piu' vista senza
-   * insegnare a nessuno che il prezzo vero e' un altro. Accettarne quindici dopo averne
-   * dichiarati dieci rende la pagina bugiara da sola, come un listino barrato senza
-   * sconto vero.
-   *
-   * Dieci sono anche l'impegno che la lettera d'intenti mette a carico nostro: una
-   * videochiamata al mese per tre mesi, per ciascuno.
-   */
-  posti: 10,
-  /** Centesimi. Dodici mesi al corrispettivo simbolico. */
-  primoAnno: 30000,
-  /** Centesimi. Il rinnovo di listino della fascia, meno il 20% del Fondatore. */
-  rinnovo: 82560,
   lookupAnno1: "evalisdeck_fondatori_anno1_v1",
   lookupRinnovo: "evalisdeck_fondatori_rinnovo_v1",
 } as const;
@@ -252,65 +282,84 @@ export const FONDATORI = {
  * ⚠️ SENZA QUESTE, CHI HA GIA' PAGATO PERDE L'ABBONAMENTO. Su Stripe i prezzi sono
  * immutabili: cambiare un importo significa creare una chiave nuova, e gli abbonamenti in
  * corso continuano a puntare alla vecchia per sempre. `chiavePiano` traduce una chiave nel
- * piano che rappresenta, ed e' la traduzione da cui dipendono due cose che non possono
- * sbagliare:
+ * piano che rappresenta, e `capacitaDaAbbonamento` ne ricava il piano dalle righe
+ * dell'abbonamento: chiave non riconosciuta = nessun piano = capacità azzerata, al prossimo
+ * evento Stripe, a un cliente che paga regolarmente.
  *
- *   · `ricostruisciCapacita` ricava il piano dalle righe dell'abbonamento. Chiave non
- *     riconosciuta = nessun piano = capacita' azzerata, al prossimo evento Stripe, a un
- *     cliente che paga regolarmente;
- *   · `vociDelRinnovo` SOSTITUISCE la riga del piano col prezzo di rinnovo e porta avanti
- *     tutto il resto. Una riga di piano non riconosciuta verrebbe trattata come
- *     un'estensione e portata avanti INSIEME al rinnovo nuovo: due piani sulla stessa
- *     fattura.
- *
- * Quindi una chiave entra qui e non esce mai piu'. Cambiare listino significa aggiungere
- * le nuove a `PIANI` e spostare le vecchie qui, non sostituirle.
+ * Quindi una chiave entra qui e non esce mai più. Cambiare listino significa aggiungere le
+ * nuove a `PIANI` e spostare le vecchie qui, non sostituirle.
  */
 export const LOOKUP_STORICHE: Record<PianoKey, readonly string[]> = {
-  // Nata col listino del 22 settembre 2026: nessun listino precedente.
-  singola: [],
-  azienda: [],
-  professional: [
-    "evalisdeck_professional_anno1_v1",
-    "evalisdeck_professional_rinnovo_v1",
-    "evalisdeck_professional_anno1_lancio_v1",
-    "evalisdeck_professional_rinnovo_lancio_v1",
+  azienda: [
+    // Listino del 17 ottobre 2026: primo anno e rinnovo.
+    "evalisdeck_azienda_anno1_v1",
+    "evalisdeck_azienda_rinnovo_v1",
   ],
   studio: [
     "evalisdeck_studio_anno1_v1",
     "evalisdeck_studio_rinnovo_v1",
     "evalisdeck_studio_anno1_lancio_v1",
     "evalisdeck_studio_rinnovo_lancio_v1",
+    "evalisdeck_studio_anno1_v2",
+    "evalisdeck_studio_rinnovo_v2",
   ],
   studio_plus: [
     "evalisdeck_studio_plus_anno1_v1",
     "evalisdeck_studio_plus_rinnovo_v1",
     "evalisdeck_studio_plus_anno1_lancio_v1",
     "evalisdeck_studio_plus_rinnovo_lancio_v1",
+    "evalisdeck_studio_plus_anno1_v2",
+    "evalisdeck_studio_plus_rinnovo_v2",
   ],
   enterprise: [],
+  singola: [
+    // Listino del 22 settembre 2026: c'è un abbonamento vivo che punta qui.
+    "evalisdeck_singola_anno1_v1",
+    "evalisdeck_singola_rinnovo_v1",
+  ],
+  professional: [
+    "evalisdeck_professional_anno1_v1",
+    "evalisdeck_professional_rinnovo_v1",
+    "evalisdeck_professional_anno1_lancio_v1",
+    "evalisdeck_professional_rinnovo_lancio_v1",
+    "evalisdeck_professional_anno1_v2",
+    "evalisdeck_professional_rinnovo_v2",
+  ],
 };
 
+/**
+ * Il piano a cui appartiene una chiave del listino — in vendita o storica — o `null` se
+ * non è un piano.
+ */
 export function chiavePiano(lookup: string | null | undefined): PianoKey | null {
   if (!lookup) return null;
   return (
     CHIAVI_PIANO.find((k) => {
-      const p = PIANI[k];
+      const v = PIANI[k].vendita;
       return (
-        lookup === p.lookupAnno1 ||
-        lookup === p.lookupRinnovo ||
-        lookup === p.lookupAnno1Lancio ||
-        lookup === p.lookupRinnovoLancio ||
-        // ⚠️ Anche i listini precedenti: chi ha pagato l'anno scorso punta ancora a quelli.
+        lookup === v?.anno.lookup ||
+        lookup === v?.mese.lookup ||
+        // ⚠️ Anche i listini precedenti: chi ha pagato ieri punta ancora a quelli.
         LOOKUP_STORICHE[k].includes(lookup) ||
-        // ⚠️ E le chiavi del Programma Fondatori, che concedono la loro fascia: senza,
-        // `ricostruisciCapacita` non troverebbe nessun piano e un Fondatore si
-        // ritroverebbe l'account in sola lettura al primo evento Stripe.
+        // ⚠️ E le chiavi del Programma Fondatori, che concedono la loro fascia.
         (k === FONDATORI.piano && (lookup === FONDATORI.lookupAnno1 || lookup === FONDATORI.lookupRinnovo))
       );
     }) ?? null
   );
 }
+
+/** Il periodo di una chiave IN VENDITA, o `null` per le chiavi storiche e sconosciute. */
+export function periodoDellaChiave(lookup: string | null | undefined): Periodo | null {
+  if (!lookup) return null;
+  for (const k of CHIAVI_PIANO) {
+    const v = PIANI[k].vendita;
+    if (v?.anno.lookup === lookup) return "anno";
+    if (v?.mese.lookup === lookup) return "mese";
+  }
+  return null;
+}
+
+/* ────────────────────────────── limiti ────────────────────────────── */
 
 export type Limiti = { maxActiveCompanies: number; warnAtCompanies: number; maxMembers: number };
 
@@ -336,7 +385,7 @@ export function capacitaDelPiano(piano: PianoKey): { aziende: number; accessi: n
 }
 
 /**
- * I limiti che valgono davvero per uno studio: capacità del piano **più** i blocchi comprati.
+ * I limiti che valgono davvero: capacità del piano **più** le estensioni.
  *
  * Senza piano si torna ai valori di riserva della piattaforma: è il caso di chi sta ancora in
  * demo, che non ha comprato niente e non deve per questo restare senza limiti.
@@ -347,8 +396,8 @@ export function limitiEffettivi(
 ): Limiti {
   if (!abbonamento.piano || !(abbonamento.piano in PIANI)) return riserva;
 
-  // `aziendeExtra` conta AZIENDE, non blocchi. Il blocco da cinque è un'unità di vendita:
-  // comprarne due scrive 10 qui. Tenere i blocchi in questa colonna renderebbe
+  // `aziendeExtra` conta AZIENDE, non blocchi. Il blocco da cinque era un'unità di vendita:
+  // comprarne due scriveva 10 qui. Tenere i blocchi in questa colonna renderebbe
   // inesprimibile un accordo Enterprise da 75 aziende, che multiplo di cinque non è per
   // obbligo, e costringerebbe ogni lettore a ricordarsi il fattore di conversione.
   const base = capacitaDelPiano(abbonamento.piano);
@@ -358,21 +407,18 @@ export function limitiEffettivi(
   return { maxActiveCompanies: aziende, warnAtCompanies: sogliaAvviso(aziende), maxMembers: accessi };
 }
 
-/** Centesimi → importo leggibile in italiano. Niente decimali quando non servono.
- *  `useGrouping` esplicito: lasciato in automatico, l'italiano non separa le migliaia sui
- *  numeri di quattro cifre, e «2900 €» accanto a «5.400 €» si legge come una svista. */
+/* ────────────────────────────── testo ────────────────────────────── */
+
+/** Centesimi → importo leggibile in italiano. Niente decimali quando non servono. */
 export function euro(centesimi: number): string {
   // ⚠️ NIENTE `toLocaleString`. Dipende dai dati ICU del runtime, e server e browser ne
   // hanno due diversi: lo stesso importo si stamperebbe in due modi nella stessa pagina,
   // React butterebbe via l'HTML del server con l'errore #418, e su una cifra di denaro non
-  // è una questione estetica. La regola è già scritta per i compensi, dove `toLocaleString`
-  // in Node restituiva `1234` invece di `1.234`; qui era rimasta.
+  // è una questione estetica. `euro()` gira anche NEL BROWSER, dentro l'interruttore
+  // mensile/annuale e il calcolatore della pagina prezzi.
   //
-  // ⚠️ E ora conta davvero: `euro()` gira anche NEL BROWSER, dentro il calcolatore della
-  // pagina prezzi. Finché la usava solo il server il difetto non si poteva vedere.
-  //
-  // I centesimi si mostrano solo quando ci sono, e allora si mostrano ENTRAMBI: «825,60 €»
-  // e non «825,6 €», perché un importo con un decimale solo non è una cifra di denaro.
+  // I centesimi si mostrano solo quando ci sono, e allora si mostrano ENTRAMBI: «41,59 €»
+  // e non «41,6 €», perché un importo con un decimale solo non è una cifra di denaro.
   const segno = centesimi < 0 ? "-" : "";
   const n = Math.abs(Math.round(centesimi));
   const intero = String(Math.floor(n / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -380,218 +426,12 @@ export function euro(centesimi: number): string {
   return `${segno}${intero}${cent ? "," + String(cent).padStart(2, "0") : ""} €`;
 }
 
-/* ────────────────────────────── promozione di lancio ──────────────────────────────
- *
- * Un listino solo, più basso, col prezzo pieno mostrato barrato accanto. Non è un
- * doppio listino: il pieno esiste davvero su Stripe ed è quello che si praticherà
- * quando la promozione finisce — è la ragione per cui il barrato regge anche se
- * qualcuno lo contesta, perché la pubblicità ingannevole è vietata anche fra
- * professionisti.
- *
- * La promozione ha una SCADENZA, e alla scadenza il barrato sparisce da solo: nessuno
- * deve ricordarsi di togliere un numero, e il sistema non può diventare bugiardo per
- * inerzia. L'invariante è uno: si mostra ciò che si addebita. Mai il pieno addebitando
- * il ridotto, mai il ridotto addebitando il pieno.
- */
-
-/** Un anno esatto dall'apertura commerciale, decisa dal committente il 2026-08-10. */
-export const FINE_LANCIO = new Date("2027-08-10T23:59:59.000Z");
-
-export function lancioAttivo(quando: Date = new Date()): boolean {
-  return quando.getTime() <= FINE_LANCIO.getTime();
-}
-
-export type PrezzoDiVendita = {
-  /** Centesimi effettivamente addebitati. */
-  importo: number;
-  /** La chiave Stripe che corrisponde a QUELL'importo. */
-  lookup: string;
-  /** Il listino da mostrare barrato. Assente quando non c'è promozione in corso. */
-  listino?: number;
-};
-
-/**
- * Che cosa si vende, adesso, per un piano e una fase.
- *
- * Importo e chiave Stripe escono da qui INSIEME. Se il prezzo esposto lo calcolasse un
- * componente e la chiave la scegliesse il checkout, il giorno della scadenza uno dei
- * due cambierebbe prima dell'altro — e il cliente vedrebbe un numero pagandone un altro.
- */
-export function prezzoDiVendita(
-  piano: Piano,
-  fase: "anno1" | "rinnovo",
-  quando: Date = new Date(),
-): PrezzoDiVendita | null {
-  if (piano.trattativa) return null;
-  const pieno = fase === "anno1" ? piano.primoAnno : piano.rinnovo;
-  const lookupPieno = fase === "anno1" ? piano.lookupAnno1 : piano.lookupRinnovo;
-  const scontato = fase === "anno1" ? piano.primoAnnoLancio : piano.rinnovoLancio;
-  const lookupScontato = fase === "anno1" ? piano.lookupAnno1Lancio : piano.lookupRinnovoLancio;
-  if (!lookupPieno) return null;
-
-  if (lancioAttivo(quando) && scontato && lookupScontato) {
-    return { importo: scontato, lookup: lookupScontato, listino: pieno };
-  }
-  return { importo: pieno, lookup: lookupPieno };
-}
-
-/** Le fasce che si comprano online, in ordine di vendita. Enterprise si concorda. */
-export function fasceVendibili(): PianoKey[] {
-  return CHIAVI_PIANO.filter((k) => !PIANI[k].trattativa);
-}
-
-/**
- * Le fasce PER STUDIO, cioè quelle che si scelgono per capienza del portafoglio.
- *
- * ⚠️ «Azienda» (uso interno) ha la stessa capienza di «Un'azienda» ma è un'altra cosa: una
- * sola azienda propria, percorsi assegnati per persona. Messa in fila con le altre, la pagina
- * dei prezzi direbbe «350 € per un'azienda; poi 490 € un'azienda» senza spiegare la differenza.
- * Le pagine pubbliche la presentano a parte.
- */
-export function fasceStudio(): PianoKey[] {
-  return fasceVendibili().filter((k) => !PIANI[k].usoInterno);
-}
-
-/**
- * Il primo anno più basso fra le fasce in vendita: il «da … l'anno» delle pagine pubbliche.
- *
- * ⚠️ Prima quel numero leggeva `PIANI.professional`: con la fascia da un'azienda la pagina
- * avrebbe continuato a dire «da 590 €» mentre si vendeva a 350. Si chiede al listino.
- */
-export function prezzoMinimo(quando: Date = new Date()): number {
-  return Math.min(...fasceVendibili().map((k) => prezzoDiVendita(PIANI[k], "anno1", quando)!.importo));
-}
-
-/**
- * C'è davvero una promozione da annunciare?
- *
- * ⚠️ Non basta la data. `lancioAttivo()` dice solo che il periodo di lancio non è scaduto:
- * dal 27 agosto 2026 nessuna fascia ha un prezzo di lancio, e la pastiglia «Prezzi di
- * lancio, validi fino al…» annunciava una promozione che non esisteva — lo stesso rischio
- * che ha fatto togliere i barrati. Si annuncia solo se un prezzo scontato c'è.
- */
-export function promozioneInCorso(quando: Date = new Date()): boolean {
-  return fasceVendibili().some((k) => {
-    const v = prezzoDiVendita(PIANI[k], "anno1", quando);
-    return v?.listino !== undefined;
-  });
-}
-
-/**
- * «Quattro», per i titoli che contano le fasce («Un abbonamento solo. Quattro fasce.»).
- *
- * ⚠️ Era scritto a mano «Tre fasce» sulla pagina prezzi e sull'immagine di condivisione:
- * aggiungendo una fascia sarebbero rimasti bugiardi in silenzio. Un numero fuori elenco
- * SOLLEVA al build invece di stampare una cifra in mezzo a un titolo.
- */
-export function quanteFasceInLettere(): string {
-  const n = fasceVendibili().length;
-  const parole: Record<number, string> = { 2: "Due", 3: "Tre", 4: "Quattro", 5: "Cinque", 6: "Sei" };
-  const p = parole[n];
-  if (!p) throw new Error(`Numero di fasce senza parola: ${n}. Aggiungila in quanteFasceInLettere.`);
-  return p;
-}
-
-/** «1 azienda», «5 aziende». Con la fascia da un'azienda il plurale fisso si legge sbagliato. */
+/** «1 azienda», «5 aziende». */
 export function aziendeTesto(n: number): string {
   return `${n} ${n === 1 ? "azienda" : "aziende"}`;
 }
 
-/** Come sopra, per le estensioni: stessa regola, stessa scadenza. */
-export function prezzoEstensione(
-  e: { prezzo: number; prezzoLancio?: number; lookup: string; lookupLancio?: string },
-  quando: Date = new Date(),
-): PrezzoDiVendita {
-  // ⚠️ Il lancio e' FACOLTATIVO, come gia' per i piani: le estensioni in vendita oggi non
-  // ne hanno, e senza promozione si vende il listino senza barrato. Il meccanismo resta
-  // per una promozione futura invece di essere smontato e riscritto.
-  return lancioAttivo(quando) && e.prezzoLancio !== undefined && e.lookupLancio !== undefined
-    ? { importo: e.prezzoLancio, lookup: e.lookupLancio, listino: e.prezzo }
-    : { importo: e.prezzo, lookup: e.lookup };
-}
-
-/**
- * Quante estensioni si possono comprare in un colpo solo.
- *
- * Stanno QUI e non nel dialogo d'acquisto perché il server deve applicare gli stessi
- * numeri: prima il client si fermava a 10 blocchi e 20 accessi mentre la server action
- * accettava 500 aziende e 200 accessi. Due verità sullo stesso limite, e quella che
- * decideva non era quella scritta nell'interfaccia.
- *
- * Non sono soglie di sicurezza — l'importo va solo verso l'alto, non è una perdita — ma
- * un tetto che il prodotto dichiara e non applica è un tetto che non esiste.
- */
-/**
- * QUANTI STUDI ENTRANO AL PREZZO D'INTRODUZIONE.
- *
- * La vetrina pubblica dei percorsi dice «350 € per i primi N studi che attivano, poi si va a
- * listino». È l'unica urgenza che abbiamo senza toccare Stripe, ed è vera a una condizione:
- * che il contatore sia reale e che dopo gli N posti il prezzo salga davvero.
- *
- * ⚠️ IL NUMERO NON SI GONFIA. Un «restano 3 posti» inventato è pubblicità ingannevole, e su
- * un prodotto che vende conformità è anche il peggior biglietto da visita: chi se ne accorge
- * smette di credere a tutto il resto, compresi i numeri dei documenti. Il tetto invece si
- * SCEGLIE — più è piccolo, più il richiamo morde, e resta vero. Qui è cinque.
- *
- * Il conteggio lo fa `/api/vetrina/posti` sulle attivazioni vere. Esauriti i posti la frase
- * cambia da sola: il sistema non deve poter diventare bugiardo per inerzia, che è la stessa
- * ragione per cui il barrato del lancio sparisce alla scadenza.
- */
-export const POSTI_INTRODUZIONE = 5;
-
-/** La fascia a cui si riferisce il prezzo d'introduzione: quella d'ingresso. */
-export const FASCIA_INTRODUZIONE: PianoKey = "singola";
-
-export const MAX_BLOCCHI_AZIENDE = 10;
-export const MAX_ACCESSI_EXTRA = 20;
-
-/**
- * Che cosa si addebita al rinnovo, viste le righe dell'abbonamento in corso.
- *
- * ⚠️ Il piano da solo non basta a rispondere: un Fondatore ha la fascia «studio» ma non
- * il suo prezzo di rinnovo. La domanda si fa alle RIGHE, che sono l'unica cosa che
- * distingue un abbonamento del Programma da uno normale.
- */
-export function rinnovoPerLeRighe(lookups: readonly (string | null)[], piano: PianoKey): PrezzoDiVendita | null {
-  const fondatore = lookups.some((l) => l === FONDATORI.lookupAnno1 || l === FONDATORI.lookupRinnovo);
-  if (fondatore) return { importo: FONDATORI.rinnovo, lookup: FONDATORI.lookupRinnovo };
-  return prezzoDiVendita(PIANI[piano], "rinnovo");
-}
-
-/** Una riga dell'abbonamento come la legge il preavviso: chiave, importo e quantità. */
-export type RigaPreavviso = {
-  lookup: string | null;
-  /** Centesimi, dal prezzo Stripe della riga. `null` se Stripe non lo dà. */
-  importoUnitario: number | null;
-  quantita: number;
-  /** Falso per gli addebiti una tantum, che al rinnovo non si ripetono. */
-  ricorrente: boolean;
-};
-
-/**
- * Quanto si addebiterà al rinnovo, per il preavviso di sette giorni prima.
- *
- * ⚠️ Il cron annunciava `prezzoDiVendita(PIANI[piano], "rinnovo")` a tutti: a un Fondatore
- * 1.032 € invece di 825,60 €, e a chi aveva comprato blocchi il solo piano. Le regole sono
- * quelle della fase 2 dello Schedule (`vociDelRinnovo`): il piano al suo rinnovo — chiesto
- * alle RIGHE, perché il Fondatore ha la fascia «studio» ma non il suo prezzo — più le righe
- * ricorrenti che si portano dietro al prezzo a cui sono state comprate.
- *
- * `null` quando non si può sapere con certezza: meglio «l'importo del tuo piano» che una
- * cifra sbagliata in un'email che annuncia un addebito.
- *
- * `righe = null` è lo studio attivato a mano (bonifico): nessun abbonamento Stripe da
- * leggere, vale il rinnovo della fascia.
- */
-export function importoDelPreavviso(piano: PianoKey, righe: readonly RigaPreavviso[] | null): number | null {
-  if (!righe) return prezzoDiVendita(PIANI[piano], "rinnovo")?.importo ?? null;
-  const base = rinnovoPerLeRighe(righe.map((r) => r.lookup), piano);
-  if (!base) return null;
-  let totale = base.importo;
-  for (const r of righe) {
-    if (chiavePiano(r.lookup) || !r.ricorrente) continue;
-    if (r.importoUnitario === null) return null;
-    totale += r.importoUnitario * Math.max(1, r.quantita);
-  }
-  return totale;
+/** «al mese» / «l'anno», per scrivere un prezzo accanto al suo periodo. */
+export function perPeriodo(periodo: Periodo): string {
+  return periodo === "anno" ? "l'anno" : "al mese";
 }

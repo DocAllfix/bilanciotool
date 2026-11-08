@@ -31,13 +31,28 @@ insieme**, senza toccarli.
 
 ## I percorsi disponibili
 
-L'`id` è lo slug del percorso. Oggi ce n'è uno:
+L'`id` è lo slug del percorso. L'elenco completo sta su `evalisdeck.it/percorsi`. Oggi:
 
 | `id` | dove porta |
 |---|---|
-| `bilancio-energetico` | `/percorsi/bilancio-energetico` |
+| `inventario-gas-serra` | `/percorsi/inventario-gas-serra` |
+| `bilancio-energetico` | `/percorsi/bilancio-energetico` (l'unico con la prova interattiva) |
+| `bilancio-sostenibilita` | `/percorsi/bilancio-sostenibilita` |
+| `sistema-gestione-esg` | `/percorsi/sistema-gestione-esg` |
+| `autovalutazione-esg-fornitori` | `/percorsi/autovalutazione-esg-fornitori` |
+| `modello-231` | `/percorsi/modello-231` |
+| `anticorruzione-iso-37001` | `/percorsi/anticorruzione-iso-37001` |
+| `whistleblowing-segnalazioni` | `/percorsi/whistleblowing-segnalazioni` |
+| `due-diligence-filiera` | `/percorsi/due-diligence-filiera` |
+| `nis2-autovalutazione` | `/percorsi/nis2-autovalutazione` |
+| `sistema-gestione-nis2` | `/percorsi/sistema-gestione-nis2` |
+| `protezione-dati-gdpr` | `/percorsi/protezione-dati-gdpr` |
+| `sistema-integrato-qualita-ambiente-sicurezza` | `/percorsi/sistema-integrato-qualita-ambiente-sicurezza` |
+| `certificazione-sa8000` | `/percorsi/certificazione-sa8000` |
+| `sistema-gestione-sociale-pas-24000` | `/percorsi/sistema-gestione-sociale-pas-24000` |
+| `statement-of-applicability-iso-27001` | `/percorsi/statement-of-applicability-iso-27001` |
 
-Gli altri arrivano con la stessa forma. Per sapere se uno è già attivo basta aprire
+Sono tutti e sedici i percorsi. Per sapere se un indirizzo risponde basta aprire
 `evalisdeck.it/percorsi/<id>`: se risponde, il blocco funziona.
 
 ## Se si sbaglia l'`id`

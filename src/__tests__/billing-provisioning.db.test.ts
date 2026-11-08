@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { user, organization, member, orgEntitlement, auditLog, stripeCustomer, stripeSubscription, stripeProcessedEvent } from "@/lib/db/schema";
 import { prendiInCarico, rilascia } from "@/features/billing/idempotenza";
 import { applicaAbbonamento, capacitaDaAbbonamento, statoDaStripe } from "@/features/billing/provisioning";
-import { PIANI, ESTENSIONI, ESTENSIONI_RITIRATE, LOOKUP_STORICHE } from "@/lib/prezzi";
+import { PIANI, ESTENSIONI_RITIRATE, LOOKUP_STORICHE } from "@/lib/prezzi";
 import { eq } from "drizzle-orm";
 
 // Provisioning e idempotenza: la parte del pagamento in cui un difetto costa un cliente.
@@ -22,19 +22,22 @@ const customerId = `cus_test_${RUN}`;
 
 /** Un abbonamento Stripe finto, con le sole parti che leggiamo. */
 function abbonamento(opts: {
-  lookups: { lookup: string; quantity?: number }[];
+  lookups: { lookup: string; quantity?: number; intervallo?: "year" | "month" }[];
   status?: string;
   id?: string;
+  disdetto?: boolean;
 }): Stripe.Subscription {
   return {
     id: opts.id ?? `sub_test_${RUN}`,
     status: opts.status ?? "active",
     customer: customerId,
     schedule: null,
+    cancel_at_period_end: opts.disdetto ?? false,
+    cancel_at: null,
     metadata: { organizationId: orgId },
     items: {
       data: opts.lookups.map((l) => ({
-        price: { lookup_key: l.lookup },
+        price: { lookup_key: l.lookup, recurring: { interval: l.intervallo ?? "year" } },
         quantity: l.quantity ?? 1,
         current_period_end: Math.floor(Date.now() / 1000) + 86_400 * 365,
       })),
@@ -76,14 +79,16 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
     // chi ha pagato con la chiave che non riconosciamo resta senza capacita'. E siccome i
     // prezzi Stripe sono immutabili, «la chiave che non riconosciamo» e' quella di ogni
     // cliente attivo il giorno in cui si cambia listino.
-    const tutte = [PIANI.studio.lookupAnno1, PIANI.studio.lookupRinnovo, ...LOOKUP_STORICHE.studio];
+    const tutte = [PIANI.studio.vendita!.anno.lookup, PIANI.studio.vendita!.mese.lookup, ...LOOKUP_STORICHE.studio];
     for (const lookup of tutte) {
       expect(capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] })).piano, lookup).toBe("studio");
     }
   });
 
-  it("la fascia «Un'azienda» si riconosce dalle sue chiavi, col marchio incluso", async () => {
-    for (const lookup of [PIANI.singola.lookupAnno1, PIANI.singola.lookupRinnovo]) {
+  it("⚠️ la fascia «Un'azienda», ritirata, si riconosce ancora dalle sue chiavi, col marchio incluso", async () => {
+    // In produzione c'è un abbonamento vivo che punta qui: ritirarla dalla vendita non deve
+    // toglierle niente.
+    for (const lookup of LOOKUP_STORICHE.singola) {
       const c = capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] }));
       expect(c.piano, lookup).toBe("singola");
       expect(c.whiteLabel, lookup).toBe(true);
@@ -95,7 +100,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
     // Il white-label era un'estensione da 600 €/anno ed e' diventato parte
     // dell'abbonamento: e' l'unico modo di rendere vero «tutto incluso» sulla pagina
     // prezzi. Chi ha un piano lo ottiene senza chiedere, e senza comprare niente.
-    for (const lookup of [PIANI.professional.lookupAnno1, PIANI.studio.lookupAnno1, ...LOOKUP_STORICHE.studio_plus]) {
+    for (const lookup of [...LOOKUP_STORICHE.professional, PIANI.azienda.vendita!.mese.lookup, ...LOOKUP_STORICHE.studio_plus]) {
       expect(capacitaDaAbbonamento(abbonamento({ lookups: [{ lookup: lookup! }] })).whiteLabel, lookup).toBe(true);
     }
   });
@@ -103,7 +108,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
   it("senza piano il marchio resta il nostro", async () => {
     // Il ramo che conta al contrario: un abbonamento con la sola estensione blocchi e
     // nessun piano non deve regalare il marchio.
-    const solaEstensione = abbonamento({ lookups: [{ lookup: ESTENSIONI.bloccoAziende.lookup }] });
+    const solaEstensione = abbonamento({ lookups: [{ lookup: ESTENSIONI_RITIRATE.bloccoAziendeV2.lookup }] });
     expect(capacitaDaAbbonamento(solaEstensione).piano).toBeNull();
     expect(capacitaDaAbbonamento(solaEstensione).whiteLabel).toBe(false);
   });
@@ -137,6 +142,42 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
     expect(e.piano).toBe("studio");
   });
 
+  it("⚠️ il periodo si legge dall'intervallo della riga del PIANO, non dai metadati", async () => {
+    await applicaAbbonamento(
+      abbonamento({ lookups: [{ lookup: PIANI.azienda.vendita!.mese.lookup, intervallo: "month" }] }),
+      orgId,
+    );
+    let [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
+    expect(e.piano).toBe("azienda");
+    expect(e.periodo).toBe("mese");
+
+    // Passato all'annuale sullo stesso abbonamento: il periodo segue il prezzo nuovo.
+    await applicaAbbonamento(
+      abbonamento({ lookups: [{ lookup: PIANI.azienda.vendita!.anno.lookup, intervallo: "year" }] }),
+      orgId,
+    );
+    [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
+    expect(e.periodo).toBe("anno");
+  });
+
+  it("⚠️ una disdetta a fine periodo lascia l'account ATTIVO e lo dice", async () => {
+    await applicaAbbonamento(
+      abbonamento({ lookups: [{ lookup: PIANI.studio.vendita!.mese.lookup, intervallo: "month" }], disdetto: true }),
+      orgId,
+    );
+    let [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
+    expect(e.status).toBe("active");
+    expect(e.disdettaAFinePeriodo).toBe(true);
+
+    // Ripensandoci, la disdetta si spegne.
+    await applicaAbbonamento(
+      abbonamento({ lookups: [{ lookup: PIANI.studio.vendita!.mese.lookup, intervallo: "month" }] }),
+      orgId,
+    );
+    [e] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
+    expect(e.disdettaAFinePeriodo).toBe(false);
+  });
+
   it("gli stati Stripe si traducono in ciò che l'account può fare", async () => {
     expect(statoDaStripe("active")).toBe("active");
     expect(statoDaStripe("trialing")).toBe("active");
@@ -157,7 +198,7 @@ describe.skipIf(!url)("provisioning dal pagamento", () => {
   });
 
   it("applicare due volte lo stesso abbonamento lascia lo stesso risultato", async () => {
-    const sub = abbonamento({ lookups: [{ lookup: PIANI.studio_plus.lookupAnno1Lancio! }] });
+    const sub = abbonamento({ lookups: [{ lookup: LOOKUP_STORICHE.studio_plus[2] }] });
     await applicaAbbonamento(sub, orgId);
     const [primo] = await db.select().from(orgEntitlement).where(eq(orgEntitlement.organizationId, orgId));
     await applicaAbbonamento(sub, orgId);

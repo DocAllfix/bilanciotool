@@ -13,8 +13,8 @@ import { giornoItaliano, oraItaliana } from "@/lib/calc/comune/tempo-italia";
 // non lo riporta. Per trovarlo bisognava aprire quel pagamento nel pannello; al rinnovo,
 // un anno dopo, non c'era più da nessuna parte.
 //
-// ⚠️ UNA FATTURA PAGATA, NON UN CHECKOUT. Sono abbonamenti annuali: il primo acquisto e
-// ogni rinnovo producono una fattura pagata, e ciascuna va fatturata allo SdI. Il rinnovo
+// ⚠️ UNA FATTURA PAGATA, NON UN CHECKOUT. Gli abbonamenti sono annuali o mensili: il primo
+// acquisto e ogni rinnovo producono una fattura pagata, e ciascuna va fatturata allo SdI. Il rinnovo
 // non passa dalla cassa, quindi agganciarsi alla sessione di checkout avrebbe perso tutti i
 // rinnovi. Importi e dati del cliente si leggono dalla FATTURA, riletta da Stripe con la
 // versione delle API dell'SDK (`parent.subscription_details`, non il vecchio campo
@@ -112,9 +112,29 @@ export function destinatariVendita(grezzo: string | undefined): string[] {
 
 const TIPI: Record<string, string> = {
   subscription_create: "Primo acquisto",
-  subscription_cycle: "Rinnovo annuale",
+  subscription_cycle: "Rinnovo",
   subscription_update: "Modifica dell'abbonamento",
 };
+
+const GIORNO = 86_400;
+
+/**
+ * Che fattura è, detto come lo direbbe chi la deve emettere.
+ *
+ * ⚠️ Un rinnovo si dice MENSILE o ANNUALE leggendo il periodo che la fattura copre, non il
+ * piano: dal 6 novembre 2026 lo stesso piano si paga in tutti e due i modi, e un rinnovo
+ * mensile chiamato «annuale» farebbe cercare al commercialista undici fatture che non ci sono.
+ */
+export function tipoDiFattura(fattura: Pick<Stripe.Invoice, "billing_reason" | "lines">): string {
+  const base = TIPI[fattura.billing_reason ?? ""] ?? "Pagamento";
+  if (fattura.billing_reason !== "subscription_cycle") return base;
+  const p = fattura.lines?.data?.find((r) => r.period?.start && r.period?.end)?.period;
+  if (!p) return base;
+  const giorni = (p.end - p.start) / GIORNO;
+  if (giorni >= 300) return "Rinnovo annuale";
+  if (giorni <= 40) return "Rinnovo mensile";
+  return base;
+}
 
 function testo(v: string | null | undefined): string | null {
   const t = v?.trim();
@@ -164,7 +184,7 @@ export function componiVendita(
     null;
 
   return {
-    tipo: TIPI[fattura.billing_reason ?? ""] ?? "Pagamento",
+    tipo: tipoDiFattura(fattura),
     numero: fattura.number,
     pagataIl: dataItaliana(fattura.status_transitions.paid_at ?? fattura.created),
     righe: fattura.lines.data.map((r) => ({ descrizione: r.description ?? "—", importo: eur(r.amount) })),

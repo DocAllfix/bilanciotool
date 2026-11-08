@@ -30,8 +30,8 @@ const check = async (nome, fn) => {
   catch (e) { ko++; console.log("  KO   " + nome + " -> " + String(e.message).split("\n")[0].slice(0, 180)); }
 };
 
-const piano = PIANI.professional;
-const pieno = prezzoDiVendita(piano, "anno1").importo;
+const piano = PIANI.azienda;
+const pieno = prezzoDiVendita(piano, "anno").importo;
 const atteso = Math.round(pieno * 0.01); // buono al 99%
 console.log(`  ${piano.nome}: pieno ${euro(pieno)} → atteso col codice ${euro(atteso)}\n`);
 

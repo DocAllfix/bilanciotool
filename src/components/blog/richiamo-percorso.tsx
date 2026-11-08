@@ -40,7 +40,9 @@ export function RichiamoPercorso({ slug }: { slug: string }) {
         href={`/percorsi/${vetrina.slug}`}
         className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[13.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
       >
-        Provalo senza registrarti <ArrowRight className="size-3.5" aria-hidden />
+        {/* ⚠️ «Provalo senza registrarti» solo dove la prova esiste davvero: promettere una
+            prova interattiva su una pagina che non ce l'ha è un collegamento che delude. */}
+        {vetrina.demo ? "Provalo senza registrarti" : "Che cosa fa, in dettaglio"} <ArrowRight className="size-3.5" aria-hidden />
       </Link>
     </aside>
   );

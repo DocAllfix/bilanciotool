@@ -11,7 +11,7 @@ import postgres from "postgres";
 import "dotenv/config";
 import { registraEEntra } from "./comune-registrazione.mjs";
 import { PWD_COLLAUDO } from "./comune-credenziali.mjs";
-import { PIANI, CHIAVI_PIANO, ESTENSIONI, euro, prezzoDiVendita } from "../src/lib/prezzi.ts";
+import { PIANI, PERIODI, euro, fasceVendibili, prezzoDiVendita } from "../src/lib/prezzi.ts";
 
 const BASE = (process.env.BASE ?? "http://localhost:3000").replace(/\/+$/, "");
 // Si registra uno studio NUOVO, che e' in prova e non ha ancora un piano: e' l'unico
@@ -59,8 +59,8 @@ await check("i prezzi del listino si vedono nell'offerta", async () => {
   const t = await page.locator("body").innerText();
   // Gli importi si DERIVANO dal listino: scritti a mano invecchiano al primo cambio di
   // fasce, e il collaudo accusa il prodotto di un difetto che non ha.
-  for (const k of CHIAVI_PIANO) {
-    const v = prezzoDiVendita(PIANI[k], "anno1");
+  for (const k of fasceVendibili()) {
+    const v = prezzoDiVendita(PIANI[k], "anno");
     if (v && !t.includes(euro(v.importo))) throw new Error(`manca ${euro(v.importo)} (${PIANI[k].nome})`);
   }
 });
@@ -113,7 +113,9 @@ await check("Stripe chiede l'importo giusto, in euro", async () => {
   // fallirebbe su una differenza di formattazione dichiarandola una differenza di
   // importo — cioè accuserebbe Stripe di chiedere una cifra sbagliata mentre chiede
   // esattamente quella giusta.
-  const attesi = CHIAVI_PIANO.map((k) => prezzoDiVendita(PIANI[k], "anno1"))
+  // Annuale o mensile, secondo il periodo scelto nel dialogo.
+  const attesi = fasceVendibili()
+    .flatMap((k) => PERIODI.map((p) => prezzoDiVendita(PIANI[k], p)))
     .filter(Boolean)
     .map((v) => v.importo / 100);
   const inPagina = leggiImporti(t);
