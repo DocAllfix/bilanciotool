@@ -1,37 +1,20 @@
 // I testi e i dati d'esempio dell'apertura della home.
 //
-// Stanno in un file senza "use client" perché li leggono sia la home sia il laboratorio
-// (`/lab/landing`), che sono componenti server.
+// Stanno in un file senza "use client" perché li leggono componenti server.
 import type { ModuloAzienda } from "@/features/companies/moduli";
 import { QUANTI_PERCORSI } from "./percorsi-vetrina";
 
-/** Le due immagini dell'apertura fra cui si sceglie nel laboratorio. */
-export const FORME = ["fascicolo", "documento"] as const;
-export type Forma = (typeof FORME)[number];
-
 /**
- * I titoli da confrontare (docs/copy-landing-v3.md, sezione 1).
+ * Il titolo dell'apertura, scelto dal committente l'8 novembre 2026 fra i cinque del
+ * laboratorio (docs/copy-landing-v3.md, sezione 1), con l'immagine del fascicolo e il
+ * tema «petrolio».
  *
- * ⚠️ «Uno» porta sempre accanto la cosa plurale che raccoglie: «un solo strumento» da
- * solo si leggerebbe «un solo modulo». Il numero dei percorsi si conta, non si scrive.
- *
- * ⚠️ Il quinto è la formulazione del committente, ristretta a «per rispondere»: detta
- * senza limite («di cui la tua azienda avrà bisogno») prometterebbe anche ciò che non
- * copriamo, come la sicurezza sul lavoro. Resta un'affermazione assoluta: va scelta
- * sapendolo.
+ * ⚠️ «Un posto solo» porta accanto la cosa plurale che raccoglie («tutta la
+ * conformità»): detto da solo si leggerebbe «un solo modulo».
  */
-export const TITOLI: string[] = [
-  "Tutta la conformità dell'azienda, in un posto solo.",
-  "Clienti, banche, gare, legge. Rispondi da qui.",
-  `${QUANTI_PERCORSI} percorsi. Un solo strumento.`,
-  "Una richiesta arriva. Il documento è già pronto.",
-  "L'unico strumento che ti serve per rispondere.",
-];
+export const TITOLO = "Tutta la conformità dell'azienda, in un posto solo.";
 
 export const SOTTOTITOLO = `${QUANTI_PERCORSI} percorsi guidati, dalle emissioni al Modello 231. Rispondi alle domande, i calcoli si fanno da soli, consegni un documento verificabile.`;
-
-/** La scelta che la home usa finché il laboratorio non ne decide un'altra. */
-export const APERTURA_PREDEFINITA = { forma: "fascicolo" as Forma, titolo: 2, tema: "petrolio" as const };
 
 /** L'azienda d'esempio: la stessa della dimostrativa, così chi entra nella demo la ritrova. */
 export const AZIENDA_ESEMPIO = { nome: "Corvane Meccanica S.r.l.", ateco: "25.62" };

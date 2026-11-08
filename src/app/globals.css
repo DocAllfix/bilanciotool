@@ -43,9 +43,8 @@
   --color-vetrina-petrolio-accento: var(--vetrina-petrolio-accento);
   --color-carta: var(--carta);
   --color-inchiostro: var(--inchiostro);
-  /* Le superfici che cambiano col TEMA della vetrina («petrolio» o «sobria», attributo
-     `data-tema` sulla radice della pagina). `inline` è ciò che le fa funzionare: l'utility
-     legge la variabile dove sta l'elemento, quindi ridefinirla nel sotto-albero basta. */
+  /* Le superfici del tema «petrolio» della vetrina, scelto dal committente l'8 novembre
+     2026 (le variabili `--tema-*` sono definite più sotto, in «Il tema della vetrina»). */
   --color-tema-superficie: var(--tema-superficie);
   --color-tema-testo: var(--tema-testo);
   --color-tema-attenuato: var(--tema-attenuato);
@@ -419,14 +418,16 @@
 }
 
 /* ─── Il tema della vetrina ─────────────────────────────────────────────────────
-   Due livelli di colore, decisi sulla radice della pagina con `data-tema`:
-   - «petrolio»: il petrolio del marchio occupa le superfici ampie (le richieste, la
-     chiusura), i titoli dell'apertura sono petrolio. Circa un terzo della pagina.
-   - «sobria»: petrolio solo su titoli, pulsanti e una fascia, la chiusura.
-   Le sezioni usano sempre le stesse utility (`bg-tema-superficie`, `text-tema-testo`…):
-   cambia soltanto a che cosa puntano. Contrasti misurati (Axialoop, 7 novembre 2026):
-   testo su petrolio 10,97:1, testo attenuato 7,14:1, accento 8,33:1. */
-[data-tema="petrolio"] {
+   «Petrolio», scelto dal committente l'8 novembre 2026 nel laboratorio della landing: il
+   petrolio del marchio occupa le superfici ampie (le richieste, la chiusura) e i titoli
+   dell'apertura sono petrolio, circa un terzo della pagina. La variante «sobria» è uscita
+   insieme al laboratorio. Le sezioni usano utility proprie (`bg-tema-superficie`,
+   `text-tema-testo`…) e non direttamente quelle del petrolio, così un ritocco del tema si
+   fa qui e non in ogni sezione. Contrasti misurati (Axialoop, 7 novembre 2026): testo su
+   petrolio 10,97:1, testo attenuato 7,14:1, accento 8,33:1.
+   Sta su `:root` (cioè su `html`, come `.dark`): le variabili a cui punta prendono il
+   valore del tema chiaro o scuro dell'elemento stesso. */
+:root {
   --tema-superficie: var(--vetrina-petrolio);
   --tema-testo: var(--vetrina-petrolio-foreground);
   --tema-attenuato: var(--vetrina-petrolio-muted);
@@ -434,27 +435,6 @@
   --tema-titolo: var(--primary);
   --tema-accento: var(--vetrina-petrolio-accento);
 }
-[data-tema="sobria"] {
-  --tema-superficie: var(--background);
-  --tema-testo: var(--foreground);
-  --tema-attenuato: var(--muted-foreground);
-  --tema-bordo: var(--border);
-  --tema-titolo: var(--foreground);
-  --tema-accento: var(--primary);
-}
-
-/* ─── Il laboratorio della landing (DA TOGLIERE con la pagina /lab/landing) ──────
-   Tutte le combinazioni stanno già nell'HTML statico: il selettore cambia tre attributi
-   sulla radice e queste regole nascondono il resto. I nomi sulla radice (`data-forma`,
-   `data-titolo`) sono diversi da quelli sui contenitori (`data-f`, `data-t`), altrimenti
-   i selettori si confonderebbero. */
-[data-forma="fascicolo"] [data-f]:not([data-f="fascicolo"]),
-[data-forma="documento"] [data-f]:not([data-f="documento"]) { display: none; }
-[data-titolo="1"] [data-t]:not([data-t="1"]),
-[data-titolo="2"] [data-t]:not([data-t="2"]),
-[data-titolo="3"] [data-t]:not([data-t="3"]),
-[data-titolo="4"] [data-t]:not([data-t="4"]),
-[data-titolo="5"] [data-t]:not([data-t="5"]) { display: none; }
 
 /* L'entrata delle caselle del fascicolo nell'apertura: una volta sola, in uscita, senza
    toccare la disposizione. Il titolo NON si anima mai: è l'elemento che il browser

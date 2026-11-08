@@ -116,7 +116,7 @@ La scala qui sopra è quella dell'app, densa. Il sito pubblico ne ha una sua, fl
 
 **Il petrolio sulle superfici ampie** è `vetrina-petrolio`, non `primary`: nel tema scuro `primary` si schiarisce per il contrasto dei pulsanti, e un'intera fascia a quella chiarezza abbaglierebbe. Sopra il petrolio i pulsanti si invertono (`vetrina-petrolio-accento` con testo petrolio): il `primary` sul petrolio fa 1,5:1. Contrasti misurati: testo 10,97:1, testo attenuato 7,14:1, accento 8,33:1.
 
-**Due livelli di colore**, scelti con `data-tema` sulla radice della pagina: «petrolio» (le superfici ampie sono petrolio, i titoli dell'apertura sono petrolio, circa un terzo della pagina) e «sobria» (petrolio solo su titoli, pulsanti e la chiusura). Le sezioni usano sempre le stesse utility (`bg-tema-superficie`, `text-tema-testo`, `text-tema-attenuato`, `border-tema-bordo`, `text-tema-titolo`): cambia soltanto a che cosa puntano.
+**Tema «petrolio»**, scelto dal committente l'8 novembre 2026: le superfici ampie (le richieste, la chiusura) sono petrolio e i titoli dell'apertura sono petrolio, circa un terzo della pagina. Le sezioni usano utility proprie (`bg-tema-superficie`, `text-tema-testo`, `text-tema-attenuato`, `border-tema-bordo`, `text-tema-titolo`, `text-tema-accento`), definite su `:root` in `globals.css`: un ritocco del tema si fa lì e non in ogni sezione. La variante «sobria» è uscita insieme al laboratorio dell'apertura.
 
 **Da non rifare** (dalla versione precedente della home): la banda dei contatori animati, gli occhielli maiuscoli con la lineetta sopra ogni sezione, le liste numerate 01/02/03, gli aloni sfocati, l'alternanza di fasce chiare e scure, l'interfaccia ricostruita con dei riquadri al posto delle schermate vere.
 

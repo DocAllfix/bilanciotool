@@ -15,11 +15,10 @@ import { MITTENTI, PROBLEMI } from "./problemi";
 import { NUMERI_VETRINA as NV } from "./numeri-vetrina";
 import { BadgeEcoVadis, FirmaEcoVadis } from "./ecovadis";
 import { FascicoloVetrina } from "./fascicolo-vetrina";
-import { DocumentoVetrina } from "./documento-vetrina";
 import { TreGesti, type Gesto } from "./tre-gesti";
 // I nomi dei file cambiano col contenuto: li scrive `scripts/foto-gesti.mjs`.
 import IMMAGINI_GESTI from "./gesti-immagini.json";
-import { APERTURA_PREDEFINITA, SOTTOTITOLO, TITOLI, type Forma } from "./apertura-dati";
+import { SOTTOTITOLO, TITOLO } from "./apertura-dati";
 
 // LA LANDING (versione del 7 novembre 2026), costruita sui testi di
 // `docs/copy-landing-v3.md`: necessità, utilità, unicità, in otto sezioni.
@@ -33,9 +32,8 @@ import { APERTURA_PREDEFINITA, SOTTOTITOLO, TITOLI, type Forma } from "./apertur
 // ⚠️ NESSUNA CIFRA DI PREZZO sulla home: i prezzi stanno su `/prezzi`. Il collaudo
 // pubblico cerca gli importi col simbolo dell'euro per verificarlo.
 //
-// La stessa pagina serve due indirizzi: la home, con la scelta predefinita, e il
-// laboratorio (`/lab/landing`), che rende TUTTE le varianti dell'apertura e le fa
-// scegliere con gli attributi sulla radice.
+// L'apertura (titolo, immagine del fascicolo, tema «petrolio») l'ha scelta il committente
+// l'8 novembre 2026 nel laboratorio, che poi è stato tolto.
 
 /** Il piano dell'azienda che fa da sé: è il cliente primario dal 6 novembre 2026. */
 const PIANO_AZIENDA = fasceVendibili().find((k) => PIANI[k].pubblico === "azienda") ?? "azienda";
@@ -78,11 +76,7 @@ const DATI_PASSATI: [ModuloAzienda, string][] = [
 
 
 
-export type SceltaApertura = { forme: Forma[]; titoli: number[] };
-
-export function Landing({ apertura }: { apertura?: SceltaApertura }) {
-  const forme = apertura?.forme ?? [APERTURA_PREDEFINITA.forma];
-  const titoli = apertura?.titoli ?? [APERTURA_PREDEFINITA.titolo];
+export function Landing() {
   return (
     <>
       <SiteHeader />
@@ -95,11 +89,7 @@ export function Landing({ apertura }: { apertura?: SceltaApertura }) {
         <section className="border-b">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-14 md:grid-cols-[1fr_1fr] md:gap-16 md:py-20">
             <div>
-              {titoli.map((t) => (
-                <h1 key={t} data-t={t} className="font-display text-display font-bold text-balance text-tema-titolo">
-                  {TITOLI[t - 1]}
-                </h1>
-              ))}
+              <h1 className="font-display text-display font-bold text-balance text-tema-titolo">{TITOLO}</h1>
               <p className="mt-6 max-w-[34rem] text-lead text-muted-foreground">{SOTTOTITOLO}</p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button size="lg" asChild data-tour="cta-demo">
@@ -129,13 +119,7 @@ export function Landing({ apertura }: { apertura?: SceltaApertura }) {
               </p>
               <FirmaEcoVadis />
             </div>
-            <div>
-              {forme.map((f) => (
-                <div key={f} data-f={f}>
-                  {f === "fascicolo" ? <FascicoloVetrina /> : <DocumentoVetrina />}
-                </div>
-              ))}
-            </div>
+            <FascicoloVetrina />
           </div>
         </section>
 

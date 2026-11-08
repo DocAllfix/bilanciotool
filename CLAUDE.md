@@ -4284,3 +4284,26 @@ archiviano: gli abbonamenti storici li usano.
 con 2-14 clienti paga 1.299 €; la fattura elettronica non ha ancora chi la emetta; gli
 abbonamenti mensili producono una mail di vendita al mese.
 
+
+**La landing nuova (7-8 novembre 2026)** — dalla critica del committente («troppo verbosa e
+troppo poco diretta»): necessità, utilità, unicità, in otto sezioni
+(`src/components/landing/landing.tsx`), copy in `docs/copy-landing-v3.md`. Corpo da circa
+4.100 parole a **560**, con un tetto di 800 difeso da `visual-check-landing`. Le richieste di
+clienti, banche, gare e legge portano la fonte stampata sotto (`problemi.ts`,
+`problemi-fonti-pure`); i 16 percorsi sono icone che aprono la loro pagina; l'unicità si mostra
+con lo stesso dato che passa in cinque percorsi. L'apertura l'ha scelta il committente l'8
+novembre in un laboratorio poi tolto: **titolo «Tutta la conformità dell'azienda, in un posto
+solo.», immagine del fascicolo, tema petrolio** (variabili `--tema-*` su `:root`).
+
+**Regola nata qui:** **una variante da scegliere si mostra nella pagina vera, non in una
+descrizione.** Il laboratorio rendeva tutte le combinazioni nell'HTML statico e le sceglieva
+con tre attributi sulla radice: il committente ha deciso guardando, e toglierlo è stato
+cancellare file, non riscrivere la pagina.
+
+⚠️ **Prima del rilascio, oltre ai passi del pivot:**
+- `CODICE_ESEMPIO` in `apertura-dati.ts` è di un documento del database di **sviluppo**: va
+  sostituito col codice di un documento pubblicato sulla dimostrativa dello studio Evalis **in
+  produzione** (e `STATI_ESEMPIO.ghg` con la sua versione), altrimenti il «verifica»
+  dell'apertura porta a «non trovato» sul sito vero.
+- `node scripts/anteprima-committente.mjs chiudi` a revisione finita: rimette la protezione di
+  Vercel sulle anteprime (`all_except_custom_domains`), revoca il segreto e cancella il webhook.

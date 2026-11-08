@@ -125,8 +125,6 @@ const parole = await page.evaluate(() => {
   if (!main) return -1;
   const copia = main.cloneNode(true);
   copia.querySelector("#faq")?.remove();
-  // Nel laboratorio le varianti nascoste ci sono tutte: si contano solo quelle visibili.
-  for (const el of copia.querySelectorAll("[data-t]:not([data-t='1']), [data-f]:not([data-f='fascicolo'])")) el.remove();
   return (copia.textContent ?? "").split(/\s+/).filter(Boolean).length;
 });
 if (parole > TETTO_PAROLE) errors.push(`la home conta ${parole} parole fuori dalle domande: il tetto è ${TETTO_PAROLE}`);

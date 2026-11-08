@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { AREE_VETRINA, QUANTI_PERCORSI } from "@/components/landing/percorsi-vetrina";
 import { DOMANDE } from "@/components/landing/domande";
 import { Landing } from "@/components/landing/landing";
-import { APERTURA_PREDEFINITA } from "@/components/landing/apertura-dati";
 import { ECOVADIS, ecovadisValido } from "@/lib/ecovadis";
 import { DatiStrutturati } from "@/components/seo/dati-strutturati";
 
@@ -77,7 +76,7 @@ const DOMANDE_STRUTTURATE = {
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-dvh flex-col bg-background" data-tema={APERTURA_PREDEFINITA.tema}>
+    <div className="flex min-h-dvh flex-col bg-background">
       <DatiStrutturati dato={DATI_STRUTTURATI} />
       <DatiStrutturati dato={DOMANDE_STRUTTURATE} />
       <Landing />

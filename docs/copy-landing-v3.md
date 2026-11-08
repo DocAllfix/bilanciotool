@@ -24,7 +24,11 @@ su 8.
 
 ## 1. Apertura
 
-**Titoli da confrontare nel laboratorio:**
+> ✅ **Scelta del committente, 8 novembre 2026: T1, con l'immagine del fascicolo e il tema
+> «petrolio».** Il laboratorio (`/lab/landing`) e le varianti scartate sono stati tolti dal
+> codice; la tabella resta come traccia della scelta.
+
+**Titoli che erano a confronto nel laboratorio:**
 
 | | Titolo | Parole | Nota |
 |---|---|---|---|

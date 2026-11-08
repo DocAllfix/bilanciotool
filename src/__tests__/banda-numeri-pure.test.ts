@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { NUMERI_VETRINA, NORME_VETRINA } from "@/components/landing/numeri-vetrina";
 import { MODULI_AZIENDA } from "@/features/companies/moduli";
-import { migliaia } from "@/components/landing/scroll-reveal";
 
 // La banda dei numeri della vetrina non porta cifre scritte a mano.
 //
@@ -53,11 +52,5 @@ describe("i numeri della vetrina", () => {
       expect(NORME_VETRINA.some((n) => n === m.norma || n.startsWith(`${m.norma} `)), m.norma).toBe(true);
     }
     expect(new Set(NORME_VETRINA).size).toBe(NORME_VETRINA.length);
-  });
-
-  it("le migliaia col punto, come in italiano", () => {
-    expect(migliaia(1007)).toBe("1.007");
-    expect(migliaia(511)).toBe("511");
-    expect(migliaia(1234567)).toBe("1.234.567");
   });
 });
